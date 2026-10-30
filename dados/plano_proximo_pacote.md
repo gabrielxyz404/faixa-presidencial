@@ -20,7 +20,8 @@ Ver dados/famosos_politicos_rascunho.json.
 ## 3. STF com viés e linha penal (base real + pequena variação por partida)
 Ver dados/famosos_politicos_rascunho.json (chave "stf").
 
-## 4. Modo zoeira
+## 4. Propostas bizarras no motor normal (sem modo separado)
+Não existe "modo zoeira": é o mesmo motor entendendo e simulando bem também propostas feitas na brincadeira.
 Aceitar propostas bizarras legais (instrumento certo, custo pequeno, efeito de viralização/imprensa zoando), barrar ilegais (impessoalidade art. 37 §1º, liberdades do art. 5º, símbolos por lei) e manter "absurdo" só para o impossível. "kkk", emoji e gíria não tornam proposta absurda. Bateria: testes/bench/zoeira_dev.json (+ reservado fora do repo).
 
 ## 5. Programa do Missão (Livro Amarelo)
