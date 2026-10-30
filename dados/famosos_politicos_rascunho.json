@@ -220,5 +220,60 @@
       "nota": "viés informado por Gabriel"
     }
   ],
-  "podcasts_regras": "Convidam o presidente na campanha e no mandato (recusa tem custo); perguntas no estilo do programa sobre medidas e temas do público; opositores reais também vão e criticam só medidas/política; aliados podem defender; selo 'simulado', sem vida pessoal nem acusações."
+  "podcasts_regras": "Convidam o presidente na campanha e no mandato (recusa tem custo); perguntas no estilo do programa sobre medidas e temas do público; opositores reais também vão e criticam só medidas/política; aliados podem defender; selo 'simulado', sem vida pessoal nem acusações.",
+  "stf": {
+    "regra": "Perfil base de votos públicos em casos emblemáticos + pequena variação por partida (aprovado por Gabriel). Só votos, nunca declarações. Selo simulado.",
+    "ministros": [
+      {
+        "nome": "Gilmar Mendes",
+        "penal": "garantista forte",
+        "vies": "centro"
+      },
+      {
+        "nome": "Dias Toffoli",
+        "penal": "garantista",
+        "vies": "centro"
+      },
+      {
+        "nome": "Kassio Nunes Marques",
+        "penal": "garantista",
+        "vies": "direita conservadora"
+      },
+      {
+        "nome": "André Mendonça",
+        "penal": "moderado",
+        "vies": "direita conservadora"
+      },
+      {
+        "nome": "Cristiano Zanin",
+        "penal": "garantista",
+        "vies": "esquerda"
+      },
+      {
+        "nome": "Flávio Dino",
+        "penal": "moderado",
+        "vies": "esquerda"
+      },
+      {
+        "nome": "Edson Fachin",
+        "penal": "linha dura",
+        "vies": "progressista em direitos"
+      },
+      {
+        "nome": "Cármen Lúcia",
+        "penal": "linha dura",
+        "vies": "centro"
+      },
+      {
+        "nome": "Luiz Fux",
+        "penal": "linha dura",
+        "vies": "centro-direita"
+      },
+      {
+        "nome": "Alexandre de Moraes",
+        "penal": "linha dura",
+        "vies": "centro-direita"
+      }
+    ]
+  }
 }
