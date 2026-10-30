@@ -166,6 +166,9 @@ def inicia(pg):
         bt = pg.locator('button').filter(has_text=re.compile(r'^\s*Escolher nome\s*$'))
         if bt.count() == 0: break
         bt.first.click(timeout=5000); pg.wait_for_timeout(250)
+        # gabinete fixo entre versões: escolhe sempre pela aba "Técnicos" (lista estática), não pela ordem da indicação partidária
+        tab = pg.locator('[role=tab]').filter(has_text=re.compile(r'^\s*Técnicos\s*$'))
+        if tab.count(): tab.first.click(timeout=3000); pg.wait_for_timeout(200)
         pg.locator('button:not([disabled])').filter(has_text=re.compile(r'^\s*Escolher\s*$')).first.click(timeout=5000); pg.wait_for_timeout(250)
     click(pg, "Avançar"); click(pg, "Tomar posse"); pg.wait_for_timeout(800)
 

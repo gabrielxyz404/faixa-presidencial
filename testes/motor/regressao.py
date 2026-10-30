@@ -9,7 +9,7 @@ run = lambda *a: subprocess.run([sys.executable, os.path.join(H, 'run_sandbox.py
 r = run(os.path.join(R, 'batch3.py'), ROOT, OUT)
 errs = json.load(open(os.path.join(OUT, 'errs.json'))) if os.path.exists(os.path.join(OUT, 'errs.json')) else ['batch3 falhou: ' + r.stderr[-400:]]
 def norm(t): return [re.sub(r'[\d,.+−-]+', '#', l) for l in (t or '').splitlines() if not re.search(r'Emendas p/|sim / precisa|Faltam votos|\d+/\d+.*\d+/\d+', l)]
-base = json.load(open(os.path.join(R, 'raw_depois.json'))); novo = json.load(open(os.path.join(OUT, 'raw.json')))
+base = json.load(open(os.path.join(R, os.environ.get('BASE_RAW', 'raw_v38.json')))); novo = json.load(open(os.path.join(OUT, 'raw.json')))
 mud = [x['i'] for x, y in zip(base, novo) if norm(x.get('txt')) != norm(y.get('txt'))]
 print('25 propostas: mudaram', mud or 'nenhuma', '| erros de página/console:', errs or 'nenhum')
 K = ['topic', 'inst', 'instDet', 'cost', 'rev', 'once', 'cf']
