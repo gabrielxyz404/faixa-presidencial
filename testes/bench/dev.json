@@ -1,0 +1,4894 @@
+[
+ {
+  "t": "Zerar o IPI de motos",
+  "area": "tributos",
+  "tema": [
+   "moto"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "DEC"
+  ],
+  "custo": null,
+  "receita": [
+   -4,
+   -0.3
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "IPI é alterável por decreto (CF 153 §1º); IPI de motocicletas rende ~R$ 1-2 bi"
+ },
+ {
+  "t": "Cobrar IPVA federal de jatinhos e lanchas",
+  "area": "tributos",
+  "tema": [
+   "ipva|aeronave|jato|lancha|embarcac"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC",
+   "PLP",
+   "COM"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   5
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional",
+   "controverso"
+  ],
+  "nota": "IPVA é imposto estadual (CF 155 III); a União não pode instituí-lo (STF Tema 1.153 permite aos estados)"
+ },
+ {
+  "t": "Aumentar a tributação das bets para 30% do faturamento",
+  "area": "tributos",
+  "tema": [
+   "bet|aposta|jogo"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": [
+   1,
+   15
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 14.790/2023 fixa 12% sobre GGR; arrecadação ~R$ 4 bi/ano; subir para 30% rende alguns bi a mais"
+ },
+ {
+  "t": "Cobrar imposto de renda das igrejas",
+  "area": "tributos",
+  "tema": [
+   "igreja|templo|religi|dizimo"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   20
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional",
+   "controverso"
+  ],
+  "nota": "Imunidade de templos de qualquer culto (CF 150 VI b) é garantia do contribuinte; exigiria PEC e é pétrea para muitos"
+ },
+ {
+  "t": "Baixar o imposto das empresas de 34% para 25% sobre o lucro",
+  "area": "tributos",
+  "tema": [
+   "irpj|csll|imposto de renda|lucro|empresa|pessoa juridica"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": [
+   -150,
+   -30
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "IRPJ+CSLL arrecadam ~R$ 400 bi; 9 pontos de 34 são ~R$ 100 bi"
+ },
+ {
+  "t": "Acabar com o imposto sobre herança e doação",
+  "area": "tributos",
+  "tema": [
+   "heranca|itcmd|doacao"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PEC",
+   "COM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional",
+   "controverso"
+  ],
+  "nota": "ITCMD é estadual (CF 155 I); a União não extingue sem PEC; efeito federal desprezível"
+ },
+ {
+  "t": "Devolver parte dos impostos do gás de cozinha e da cesta para famílias do CadÚnico",
+  "area": "tributos",
+  "tema": [
+   "cashback|devolu|imposto|cadunico|reforma tributaria|cbs|ibs"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PLP"
+  ],
+  "custo": null,
+  "receita": [
+   -40,
+   -0.5
+  ],
+  "unico": null,
+  "jaVigente": "LC 214/2025",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Cashback de IBS/CBS já previsto na EC 132/2023 e na LC 214/2025"
+ },
+ {
+  "t": "Subir o Imposto Seletivo sobre refrigerante e bebida açucarada",
+  "area": "tributos",
+  "tema": [
+   "seletivo|refrigerante|bebida|acucar"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   0.5,
+   15
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Imposto Seletivo (CF 153 VIII, EC 132/2023) começa em 2027; alíquotas por lei ordinária"
+ },
+ {
+  "t": "Cobrar uma contribuição única de 5% sobre o patrimônio dos bilionários",
+  "area": "tributos",
+  "tema": [
+   "bilionari|fortuna|patrimonio|riqueza|super-?rico"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PLP",
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": [
+   10,
+   150
+  ],
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Patrimônio de bilionários ~R$ 1 tri; 5% ~R$ 50 bi uma vez; risco de confisco e bis in idem (CF 150 IV, 154 I)"
+ },
+ {
+  "t": "Zerar o imposto de importação de máquinas e equipamentos para a indústria",
+  "area": "tributos",
+  "tema": [
+   "importacao|maquina|equipamento|bens de capital|tarifa"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": [
+   -12,
+   -0.5
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "II é alterado por resolução Gecex/Camex (CF 153 §1º); bens de capital ~R$ 6-10 bi de II"
+ },
+ {
+  "t": "Cobrar imposto de quem manda dinheiro pra paraíso fiscal",
+  "area": "tributos",
+  "tema": [
+   "offshore|paraiso|exterior|remessa|fundos? exclusiv"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   15
+  ],
+  "unico": null,
+  "jaVigente": "Lei 14.754/2023",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 14.754/2023 tributa offshores em 15% e fundos exclusivos"
+ },
+ {
+  "t": "Aumentar o salário mínimo em R$ 100 acima da inflação",
+  "area": "trabalho e previdência",
+  "tema": [
+   "salario minimo"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "DEC",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   15,
+   60
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Cada R$ 1 no mínimo custa ~R$ 0,35-0,4 bi/ano em benefícios; R$ 100 ~R$ 35-40 bi"
+ },
+ {
+  "t": "Cortar o abono salarial para quem ganha mais de um salário mínimo",
+  "area": "trabalho e previdência",
+  "tema": [
+   "abono"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PEC",
+   "PL"
+  ],
+  "custo": [
+   -25,
+   -3
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Abono (CF 239 §3º) vai até 2 SM; ~R$ 30 bi/ano; economia da faixa 1-2 SM é parte relevante"
+ },
+ {
+  "t": "Proteger o emprego contra robôs e inteligência artificial",
+  "area": "trabalho e previdência",
+  "tema": [
+   "automacao|robo|inteligencia artificial|\\bia\\b|tecnologia"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 7º XXVII prevê proteção contra automação 'na forma da lei', nunca regulamentada"
+ },
+ {
+  "t": "Cortar pela metade a contribuição patronal ao INSS de quem contratar maior de 50 anos",
+  "area": "trabalho e previdência",
+  "tema": [
+   "contribuicao patronal|inss|50 anos|contrat|desoner"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": [
+   -10,
+   -0.3
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Alíquota patronal de 20% (Lei 8.212/91); renúncia limitada ao público contratado"
+ },
+ {
+  "t": "Proibir demissão em massa sem negociar com o sindicato",
+  "area": "trabalho e previdência",
+  "tema": [
+   "demissao|dispensa|sindicat"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "STF (Tema 638) exige negociação coletiva prévia; reforma de 2017 equiparou dispensa em massa à individual"
+ },
+ {
+  "t": "Deixar a empresa contratar só por hora trabalhada quando precisar",
+  "area": "trabalho e previdência",
+  "tema": [
+   "intermitente|hora|contrat"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 13.467/2017",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Trabalho intermitente criado pela reforma trabalhista (Lei 13.467/2017)"
+ },
+ {
+  "t": "Subir de 55 para 60 anos a idade de aposentadoria da mulher rural",
+  "area": "trabalho e previdência",
+  "tema": [
+   "rural|aposentadoria|idade"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   -35,
+   -0.3
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Idade rural em CF 201 §7º II (60/55); mudança exige PEC; economia gradual"
+ },
+ {
+  "t": "Criar licença menstrual remunerada",
+  "area": "trabalho e previdência",
+  "tema": [
+   "menstrua|licenca"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Sem previsão atual; custo repassado ao empregador ou INSS, pequeno"
+ },
+ {
+  "t": "Reajustar em 10% o valor do seguro-desemprego",
+  "area": "trabalho e previdência",
+  "tema": [
+   "seguro-?desemprego"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   1.5,
+   12
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Seguro-desemprego ~R$ 45-55 bi/ano; 10% ~R$ 5 bi"
+ },
+ {
+  "t": "Obrigar empresa com muita mulher a ter creche ou pagar auxílio-creche",
+  "area": "trabalho e previdência",
+  "tema": [
+   "creche"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CLT art. 389 já exige local para guarda ou reembolso-creche; ampliar exige lei"
+ },
+ {
+  "t": "Garantir seguro-desemprego mais longo para quem for demitido aos 55 anos ou mais",
+  "area": "trabalho e previdência",
+  "tema": [
+   "seguro-?desemprego|55 anos|demitid"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0.3,
+   8
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Extensão para público restrito; custo de poucos bi"
+ },
+ {
+  "t": "Acabar com a fila das cirurgias eletivas no SUS em 12 meses",
+  "area": "saúde",
+  "tema": [
+   "fila|cirurgia|eletiv|especialist"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "DEC",
+   "MP",
+   "PL",
+   "ADM"
+  ],
+  "custo": [
+   3,
+   30
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Mutirões e pagamento adicional por produção; ordem de R$ 5-20 bi/ano"
+ },
+ {
+  "t": "Obrigar plano de saúde a cobrir tratamento fora do rol da ANS",
+  "area": "saúde",
+  "tema": [
+   "plano|rol|ans|cobertura"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.454/2022",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 14.454/2022 tornou o rol da ANS exemplificativo com critérios"
+ },
+ {
+  "t": "Criar um piso salarial nacional para enfermeiros e técnicos",
+  "area": "saúde",
+  "tema": [
+   "piso|enfermeir|enfermagem"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   0,
+   20
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.434/2022",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 14.434/2022 e EC 127/2022 instituíram o piso; União assiste financeiramente"
+ },
+ {
+  "t": "Distribuir absorvente de graça para mulheres de baixa renda",
+  "area": "saúde",
+  "tema": [
+   "absorvente|menstrua|dignidade"
+  ],
+  "dir": "cria",
+  "inst": [
+   "DEC",
+   "ADM",
+   "PL"
+  ],
+  "custo": [
+   0,
+   2
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.214/2021",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Programa de Proteção e Promoção da Saúde Menstrual (Lei 14.214/2021); custo < R$ 1 bi"
+ },
+ {
+  "t": "Botar remédio de gripe e dor à venda no supermercado",
+  "area": "saúde",
+  "tema": [
+   "remedio|medicament|supermercad|mip|farmacia"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 13.021/2014 limita dispensação a farmácias; venda de MIP em mercados exige lei"
+ },
+ {
+  "t": "Aumentar em 50% o orçamento do Farmácia Popular",
+  "area": "saúde",
+  "tema": [
+   "farmacia popular"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "DEC",
+   "ADM",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   1,
+   6
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Farmácia Popular ~R$ 4-5 bi/ano; +50% ~R$ 2-3 bi"
+ },
+ {
+  "t": "Proibir a venda de cigarro eletrônico",
+  "area": "saúde",
+  "tema": [
+   "cigarros? eletronic|vape|dispositivo"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "ADM",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "RDC 46/2009",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Anvisa proíbe vapes desde a RDC 46/2009, reiterada em 2024"
+ },
+ {
+  "t": "Dobrar o número de dentistas do SUS",
+  "area": "saúde",
+  "tema": [
+   "dentista|bucal|odont|brasil sorridente"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "ADM",
+   "DEC",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.5,
+   8
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Brasil Sorridente; algumas dezenas de milhares de profissionais"
+ },
+ {
+  "t": "Estatizar todos os hospitais privados",
+  "area": "saúde",
+  "tema": [
+   "hospita|estatiza|saude"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PEC",
+   "PL"
+  ],
+  "custo": [
+   0,
+   300
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   1500
+  ],
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional",
+   "controverso"
+  ],
+  "nota": "CF 199 permite a iniciativa privada na saúde; desapropriação exige indenização prévia (CF 5º XXIV)"
+ },
+ {
+  "t": "Vacinar toda a população contra a dengue",
+  "area": "saúde",
+  "tema": [
+   "dengue|vacin"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   5,
+   50
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Vacina Butantan-DV aprovada; população inteira ~200 mi doses a R$ 60-150"
+ },
+ {
+  "t": "Descriminalizar o aborto até a 12ª semana",
+  "area": "saúde",
+  "tema": [
+   "aborto"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL",
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "CP 124-126; ADPF 442 pendente; CF 5º caput garante inviolabilidade do direito à vida"
+ },
+ {
+  "t": "Criar um piso salarial nacional para os professores da educação básica",
+  "area": "educação",
+  "tema": [
+   "piso|professor|magisterio|docente"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   0,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 11.738/2008",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Piso do magistério existe pela Lei 11.738/2008 (~R$ 5 mil em 2026)"
+ },
+ {
+  "t": "Pagar uma bolsa mensal de R$ 200 a aluno de ensino médio que não falta",
+  "area": "educação",
+  "tema": [
+   "pe-?de-?meia|bolsa|ensino medio|incentivo|estudante"
+  ],
+  "dir": "cria",
+  "inst": [
+   "DEC",
+   "MP",
+   "PL",
+   "ADM"
+  ],
+  "custo": [
+   4,
+   25
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.818/2024",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Pé-de-Meia (Lei 14.818/2024) custa ~R$ 12-13 bi/ano"
+ },
+ {
+  "t": "Elevar o investimento público em educação para 10% do PIB",
+  "area": "educação",
+  "tema": [
+   "educacao|investimento"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "PEC"
+  ],
+  "custo": [
+   50,
+   600
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Gasto público ~5-6% do PIB; +4 p.p. do PIB seria ~R$ 500 bi, parte de estados e municípios"
+ },
+ {
+  "t": "Instalar escola cívico-militar em todos os estados",
+  "area": "educação",
+  "tema": [
+   "militar|civico"
+  ],
+  "dir": "cria",
+  "inst": [
+   "DEC",
+   "ADM",
+   "PL"
+  ],
+  "custo": [
+   0.1,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Programa federal (Dec. 10.004/2019) foi revogado em 2023; ensino básico é competência estadual/municipal"
+ },
+ {
+  "t": "Proibir ideologia de gênero nas escolas",
+  "area": "educação",
+  "tema": [
+   "genero|ideologia|doutrina"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional",
+   "controverso"
+  ],
+  "nota": "STF (ADPF 457 e outras) derrubou leis municipais do tipo por violar a competência da União e a liberdade de ensinar (CF 206)"
+ },
+ {
+  "t": "Tornar obrigatória a educação financeira nas escolas",
+  "area": "educação",
+  "tema": [
+   "financeira|curriculo"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "ADM",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "BNCC já traz educação financeira como tema transversal"
+ },
+ {
+  "t": "Dobrar as vagas do Prouni",
+  "area": "educação",
+  "tema": [
+   "prouni|bolsa|vagas"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "ADM",
+   "DEC",
+   "MP"
+  ],
+  "custo": [
+   0,
+   5
+  ],
+  "receita": [
+   -6,
+   0
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Prouni é renúncia fiscal (Lei 11.096/2005) de ~R$ 1-3 bi"
+ },
+ {
+  "t": "Reservar metade das vagas das federais para alunos de escola pública",
+  "area": "educação",
+  "tema": [
+   "cota|vagas|escola publica"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 12.711/2012",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 12.711/2012 (alterada pela Lei 14.723/2023) reserva 50%"
+ },
+ {
+  "t": "Contratar 100 mil professores para zerar a falta de docentes",
+  "area": "educação",
+  "tema": [
+   "professor|docente|contrat"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   3,
+   20
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Educação básica é de estados e municípios; a União só complementa; 100 mil x ~R$ 90 mil = R$ 9 bi"
+ },
+ {
+  "t": "Colocar inglês obrigatório desde o 1º ano do fundamental",
+  "area": "educação",
+  "tema": [
+   "ingles|idioma|lingua"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "ADM",
+   "PL"
+  ],
+  "custo": [
+   0,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "BNCC prevê inglês a partir do 6º ano; ampliar via CNE/MEC ou LDB"
+ },
+ {
+  "t": "Proibir escola particular de cobrar mensalidade acima de R$ 1.500",
+  "area": "educação",
+  "tema": [
+   "mensalidade|escola particular|privad|preco"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Livre iniciativa (CF 170, 209); STF na ADI 319 admitiu controle de reajuste de mensalidades"
+ },
+ {
+  "t": "Endurecer a pena para quem agride policial",
+  "area": "segurança",
+  "tema": [
+   "pena|policial|agress"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Alteração do CP é por lei ordinária"
+ },
+ {
+  "t": "Manter preso quem for pego com fuzil",
+  "area": "segurança",
+  "tema": [
+   "fuzil|arma|prisao"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Pacote Anticrime (Lei 13.964/2019) já trata de armas de uso restrito"
+ },
+ {
+  "t": "Criar um cadastro nacional de pedófilos",
+  "area": "segurança",
+  "tema": [
+   "cadastro|pedofil|abuso"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 5º X e LGPD limitam divulgação pública; cadastro restrito é aceito"
+ },
+ {
+  "t": "Construir 20 novos presídios federais",
+  "area": "segurança",
+  "tema": [
+   "presidio|penitenciari|prisao|prisiona|carcer|presid"
+  ],
+  "dir": "cria",
+  "inst": [
+   "DEC",
+   "MP",
+   "PL",
+   "ADM"
+  ],
+  "custo": [
+   0,
+   5
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   20
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Cada unidade federal custa algumas centenas de milhões de reais"
+ },
+ {
+  "t": "Dar a saidinha de volta aos presos",
+  "area": "segurança",
+  "tema": [
+   "saidinha|saida temporaria"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 14.843/2024 restringiu saídas temporárias; revogar exige lei"
+ },
+ {
+  "t": "Pôr câmera no uniforme de todos os policiais",
+  "area": "segurança",
+  "tema": [
+   "camera|corporal|policia"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL"
+  ],
+  "custo": [
+   0.3,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Câmeras corporais ~R$ 2-5 mil por policial/ano de operação; polícias são estaduais"
+ },
+ {
+  "t": "Federalizar a segurança pública dos estados",
+  "area": "segurança",
+  "tema": [
+   "federaliza|seguranca|policia"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   0,
+   100
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional",
+   "controverso"
+  ],
+  "nota": "CF 144 §6º subordina PMs aos governadores; federalizar exige PEC e fere o pacto federativo"
+ },
+ {
+  "t": "Deixar CAC transportar arma carregada",
+  "area": "segurança",
+  "tema": [
+   "cac|arma|colecionador|atirador|porte"
+  ],
+  "dir": "libera",
+  "inst": [
+   "DEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Dec. 11.615/2023 restringiu; Estatuto do Desarmamento (Lei 10.826/2003)"
+ },
+ {
+  "t": "Instalar reconhecimento facial nas ruas de todo o país",
+  "area": "segurança",
+  "tema": [
+   "reconhecimento facial|camera|vigilancia|inteligencia artificial|biometri"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL"
+  ],
+  "custo": [
+   0.1,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "ok"
+  ],
+  "nota": "LGPD (Lei 13.709/2018) art. 4º III exige lei específica para segurança pública"
+ },
+ {
+  "t": "Tratar facção criminosa como terrorista",
+  "area": "segurança",
+  "tema": [
+   "terroris|faccao|crime organizado"
+  ],
+  "dir": "outro",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Lei 13.260/2016 exige motivação de xenofobia, discriminação ou religiosa; mudança por lei"
+ },
+ {
+  "t": "Acabar com a audiência de custódia",
+  "area": "segurança",
+  "tema": [
+   "custodia|audiencia"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Pacto de São José art. 7.5 (supralegal) e Lei 13.964/2019 art. 310"
+ },
+ {
+  "t": "Explodir as dragas do garimpo ilegal nas terras indígenas",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "garimpo|draga|mineracao ilegal"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL"
+  ],
+  "custo": [
+   0,
+   3
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 9.605/1998",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Garimpo em terra indígena é crime ambiental (Lei 9.605/1998, CF 231 §7º); destruição de equipamentos prevista no Dec. 6.514/2008"
+ },
+ {
+  "t": "Cobrar pela água usada na agricultura irrigada",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "agua|hidric|irrigac"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "DEC",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   3
+  ],
+  "unico": null,
+  "jaVigente": "Lei 9.433/1997",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Cobrança pelo uso de recursos hídricos já prevista na Lei 9.433/1997"
+ },
+ {
+  "t": "Plantar 1 bilhão de árvores até 2030",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "arvore|reflorestamento|plantio|restauracao"
+  ],
+  "dir": "cria",
+  "inst": [
+   "DEC",
+   "ADM",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.5,
+   8
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Restauração custa R$ 10-30 mil por hectare; 1 bi de árvores ~ 600 mil ha ao longo de 4 anos"
+ },
+ {
+  "t": "Liberar a exploração de petróleo na foz do Amazonas",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "petroleo|amazonas|margem equatorial|exploracao|foz"
+  ],
+  "dir": "libera",
+  "inst": [
+   "ADM"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   20
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Licença do Ibama; receita só após anos de produção; risco ambiental (CF 225)"
+ },
+ {
+  "t": "Dispensar licença ambiental para obra pequena",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "licenc|obra|ambiental"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Licenciamento por adesão e compromisso já em lei geral; dispensa total fere CF 225 §1º IV (estudo prévio)"
+ },
+ {
+  "t": "Proibir plástico descartável de uso único",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "plastico|descartavel|sacola|canudo"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Competência concorrente em meio ambiente (CF 24 VI); sem custo fiscal"
+ },
+ {
+  "t": "Dobrar a multa por desmatamento ilegal",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "desmat|multa"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "DEC"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   5
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Multas do Dec. 6.514/2008 (R$ 5 mil a R$ 50 mil por hectare) são fixadas por decreto"
+ },
+ {
+  "t": "Pagar quem mantém a floresta em pé",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "pagamento|servicos? ambientai|floresta|preserva|psa"
+  ],
+  "dir": "cria",
+  "inst": [
+   "DEC",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.5,
+   15
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.119/2021",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Política de Pagamento por Serviços Ambientais (Lei 14.119/2021)"
+ },
+ {
+  "t": "Reduzir a reserva legal na Amazônia de 80% para 50%",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "reserva legal|floresta|amazonia|codigo florestal"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Código Florestal (Lei 12.651/2012) art. 12; vedação de retrocesso ambiental e CF 225"
+ },
+ {
+  "t": "Construir sistemas de alerta e contenção de enchentes em cidades de risco",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "enchente|alerta|contencao|risco|desastre|adaptacao"
+  ],
+  "dir": "cria",
+  "inst": [
+   "DEC",
+   "MP",
+   "PL",
+   "ADM"
+  ],
+  "custo": [
+   1,
+   20
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Obras de adaptação climática: dezenas de bilhões no Novo PAC, em vários anos"
+ },
+ {
+  "t": "Tirar o Brasil do Acordo de Paris",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "paris|acordo|clima"
+  ],
+  "dir": "outro",
+  "inst": [
+   "DEC",
+   "AUT",
+   "PL",
+   "COM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Acordo ratificado por Decreto Legislativo; denúncia por ato do Executivo é questão controversa"
+ },
+ {
+  "t": "Dar conta de luz grátis para quem recebe Bolsa Família",
+  "area": "energia e mineração",
+  "tema": [
+   "luz|energia|tarifa social|conta"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   1,
+   40
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Tarifa social custa ~R$ 5-6 bi/ano via CDE; ampliar gratuidade é questão de bilhões"
+ },
+ {
+  "t": "Zerar o PIS/Cofins da gasolina",
+  "area": "energia e mineração",
+  "tema": [
+   "gasolina|combustiv|pis|cofins"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "DEC",
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": [
+   -45,
+   -15
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "PIS/Cofins da gasolina ~R$ 0,79/L sobre ~45 bi de litros; ~R$ 35 bi/ano; alíquotas ajustáveis por decreto"
+ },
+ {
+  "t": "Concluir Angra 3",
+  "area": "energia e mineração",
+  "tema": [
+   "angra|nuclear|usina"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0.5,
+   15
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Faltam cerca de R$ 20 bi para concluir; decisão do CNPE"
+ },
+ {
+  "t": "Criar imposto de exportação sobre minério de ferro",
+  "area": "energia e mineração",
+  "tema": [
+   "minerio|exportac|ferro"
+  ],
+  "dir": "cria",
+  "inst": [
+   "DEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   0.5,
+   25
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Imposto de exportação (CF 153 II) por decreto; exportações de minério ~US$ 30 bi"
+ },
+ {
+  "t": "Abrir as terras indígenas para mineração",
+  "area": "energia e mineração",
+  "tema": [
+   "mineracao|terra indigena|indigena|garimpo"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL",
+   "AUT",
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "CF 231 §3º exige autorização do Congresso, oitiva das comunidades e lei que ainda não existe"
+ },
+ {
+  "t": "Acabar com o horário de verão",
+  "area": "energia e mineração",
+  "tema": [
+   "horario de verao"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Decreto 9.772/2019",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Decreto 9.772/2019 extinguiu o horário de verão"
+ },
+ {
+  "t": "Dar painel solar de graça para família de baixa renda",
+  "area": "energia e mineração",
+  "tema": [
+   "solar|painel|fotovoltaic"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL",
+   "DEC",
+   "ADM"
+  ],
+  "custo": [
+   0.3,
+   8
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Subsídio de ~R$ 10-20 mil por casa; milhões de domicílios exigiria dezenas de bi"
+ },
+ {
+  "t": "Voltar a Eletrobras para o controle do Estado",
+  "area": "energia e mineração",
+  "tema": [
+   "eletrobras|reestatiza|estata(?:l|is)"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": [
+   0,
+   200
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Privatizada pela Lei 14.182/2021; União tem ~10% do capital; recomprar controle custa dezenas de bi"
+ },
+ {
+  "t": "Deixar qualquer consumidor escolher de quem compra energia",
+  "area": "energia e mineração",
+  "tema": [
+   "mercado livre|consumidor|fornecedor|energia|abertura"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Abertura do mercado livre a todos os consumidores está em curso na reforma do setor elétrico"
+ },
+ {
+  "t": "Mandar royalties do pré-sal para a educação",
+  "area": "energia e mineração",
+  "tema": [
+   "royalt|pre-?sal|petroleo|educacao"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 12.858/2013",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 12.858/2013 destina royalties e participações do pré-sal à educação e saúde"
+ },
+ {
+  "t": "Misturar mais etanol na gasolina",
+  "area": "energia e mineração",
+  "tema": [
+   "etanol|biocombust|mistura"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "DEC",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.993/2024",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei do Combustível do Futuro (14.993/2024) permite elevar a mistura até 35%; E30 em vigor"
+ },
+ {
+  "t": "Duplicar a BR-381 inteira",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "br-?381|duplica|rodovia"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.5,
+   8
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Obras rodoviárias federais custam de R$ 5-15 milhões por km"
+ },
+ {
+  "t": "Fazer o trem-bala Rio–São Paulo",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "trem|alta velocidade|ferrovia|trem-?bala"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "DEC",
+   "MP"
+  ],
+  "custo": [
+   0,
+   20
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   60
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Projeto de R$ 50 bi ou mais, em PPP; desembolso anual público limitado"
+ },
+ {
+  "t": "Passar 10 aeroportos regionais para a iniciativa privada",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "aeroporto|concess|privat"
+  ],
+  "dir": "libera",
+  "inst": [
+   "DEC",
+   "ADM",
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   2
+  ],
+  "unico": [
+   0,
+   10
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Concessões de aeroportos pagam outorga de centenas de milhões"
+ },
+ {
+  "t": "Acabar com o pedágio das rodovias federais",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "pedagio|concessao|rodovia"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0,
+   30
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "ok"
+  ],
+  "nota": "Contratos de concessão: rescisão exige indenização (Lei 8.987/1995); pedágio federal ~R$ 15 bi/ano"
+ },
+ {
+  "t": "Dobrar a frota de ônibus elétricos das capitais",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "onibus|eletric|frota"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "ADM",
+   "DEC",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.3,
+   10
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Financiamento do BNDES e subsídios; ônibus elétrico custa ~R$ 2,5 milhões"
+ },
+ {
+  "t": "Dragar os portos de Santos e Paranaguá",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "drag|porto"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0.2,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Dragagem de aprofundamento ~R$ 1-3 bi"
+ },
+ {
+  "t": "Criar uma companhia aérea estatal para voos regionais",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "aerea|companhia|aviac|estata(?:l|is)"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   0,
+   8
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   10
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Estatal exige lei autorizativa (CF 173 e 37 XIX); relevante interesse coletivo"
+ },
+ {
+  "t": "Tirar a Transnordestina do papel",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "transnordestina|ferrovia"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.5,
+   8
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Obra atrasada, já com mais de R$ 10 bi investidos"
+ },
+ {
+  "t": "Congelar o preço da passagem aérea",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "passagem|tarifa|aereo|preco|aviac"
+  ],
+  "dir": "regula",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Liberdade tarifária na Lei 11.182/2005; tabelamento fere livre iniciativa (CF 170)"
+ },
+ {
+  "t": "Trocar os ônibus escolares velhos do campo por novos",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "onibus|escolar|caminho da escola"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0.3,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Programa Caminho da Escola; algumas dezenas de milhares de veículos a R$ 400 mil"
+ },
+ {
+  "t": "Pavimentar as estradas vicinais do país",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "estrada|vicinal|pavimenta"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   1,
+   20
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Estradas vicinais são municipais; custo de pavimentação ~R$ 1 milhão por km"
+ },
+ {
+  "t": "Perdoar as dívidas dos pequenos produtores rurais",
+  "area": "agro",
+  "tema": [
+   "divida|rural|produtor|perdao|renegoci"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0,
+   20
+  ],
+  "receita": null,
+  "unico": [
+   1,
+   60
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Dívidas rurais do Pronaf somam algumas dezenas de bilhões"
+ },
+ {
+  "t": "Dobrar o dinheiro do Plano Safra da agricultura familiar",
+  "area": "agro",
+  "tema": [
+   "plano safra|pronaf|agricultura familiar"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "MP",
+   "PL",
+   "DEC",
+   "ADM"
+  ],
+  "custo": [
+   2,
+   50
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Pronaf libera ~R$ 80-90 bi em crédito com custo de equalização na casa de R$ 10 bi"
+ },
+ {
+  "t": "Desapropriar fazenda improdutiva para assentar famílias",
+  "area": "agro",
+  "tema": [
+   "desapropria|reforma agraria|fazenda|improdutiv|assentamento"
+  ],
+  "dir": "cria",
+  "inst": [
+   "DEC",
+   "ADM"
+  ],
+  "custo": [
+   0.5,
+   8
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 8.629/1993",
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 184-186 e Lei 8.629/1993 regulamentam a desapropriação para reforma agrária"
+ },
+ {
+  "t": "Vender soja transgênica sem aviso no rótulo",
+  "area": "agro",
+  "tema": [
+   "transgenic|rotulo|soja|gmo"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Dec. 4.680/2003 exige rotulagem acima de 1%; CDC art. 6º III garante informação"
+ },
+ {
+  "t": "Criar um imposto de exportação sobre a soja",
+  "area": "agro",
+  "tema": [
+   "soja|exportac"
+  ],
+  "dir": "cria",
+  "inst": [
+   "DEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   2,
+   40
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Exportação de soja ~R$ 250 bi; 5% ~R$ 12 bi; II é alterável por decreto"
+ },
+ {
+  "t": "Isentar o diesel do agricultor de tributos federais",
+  "area": "agro",
+  "tema": [
+   "diesel|isen|agricult|tribut"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "DEC",
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": [
+   -10,
+   -0.5
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "PIS/Cofins do diesel ~R$ 0,35/L; consumo agrícola ~10 bi de litros"
+ },
+ {
+  "t": "Garantir seguro rural para toda lavoura contra seca",
+  "area": "agro",
+  "tema": [
+   "seguro rural|seguro|seca|lavoura"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL",
+   "DEC"
+  ],
+  "custo": [
+   0.5,
+   10
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Subvenção do PSR ~R$ 1 bi; universalizar custa vários bi"
+ },
+ {
+  "t": "Deixar estrangeiro comprar terra sem limite",
+  "area": "agro",
+  "tema": [
+   "estrangeir|terra|imove(?:l|is) rural"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "ok"
+  ],
+  "nota": "Lei 5.709/1971 e CF 190 limitam; o STF considerou a Lei recepcionada em parte"
+ },
+ {
+  "t": "Subir o ITR das terras improdutivas",
+  "area": "agro",
+  "tema": [
+   "itr|improdutiv|terra|territorial"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   5
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "ITR rende ~R$ 3 bi; CF 153 §4º I admite alíquotas progressivas"
+ },
+ {
+  "t": "Zerar o juro do crédito para a agricultura familiar",
+  "area": "agro",
+  "tema": [
+   "juro|credito|agricultura familiar|pronaf"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "ADM",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   1,
+   25
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Pronaf cobra de 0,5% a 6%; equalização maior custaria bilhões"
+ },
+ {
+  "t": "Fazer toda a merenda escolar vir de agricultores familiares",
+  "area": "agro",
+  "tema": [
+   "merenda|alimentacao escolar|agricultura familiar|pnae"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   0,
+   3
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 11.947/2009 reserva mínimo de 30%; lei muda o percentual"
+ },
+ {
+  "t": "Criar um auxílio de R$ 300 para mães solo com filhos até 6 anos",
+  "area": "assistência social e renda",
+  "tema": [
+   "mae|auxilio|solo|crianca|filhos"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   2,
+   30
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Perfil de ~2 milhões de mães: R$ 3,6 mil por ano cada ~R$ 7 bi"
+ },
+ {
+  "t": "Pagar um 13º do Bolsa Família",
+  "area": "assistência social e renda",
+  "tema": [
+   "bolsa familia|13|decimo"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   6,
+   35
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Bolsa Família ~R$ 160 bi/ano; uma parcela a mais ~R$ 13 bi"
+ },
+ {
+  "t": "Dobrar o valor do BPC para dois salários mínimos",
+  "area": "assistência social e renda",
+  "tema": [
+   "bpc|prestacao continuada|beneficio"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   60,
+   150
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "BPC ~R$ 110 bi/ano; dobrar o valor soma outros R$ 110 bi"
+ },
+ {
+  "t": "Cortar o Bolsa Família de quem tem carro ou moto",
+  "area": "assistência social e renda",
+  "tema": [
+   "bolsa familia|carro|moto|fraude|cadastro"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   -5,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Regras de elegibilidade por portaria; economia de poucos bi"
+ },
+ {
+  "t": "Juntar todos os programas sociais num cadastro único",
+  "area": "assistência social e renda",
+  "tema": [
+   "cadastro|cadunico|programas"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Decreto 6.135/2007",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Cadastro Único regido pelo Dec. 6.135/2007"
+ },
+ {
+  "t": "Dar almoço a R$ 5 em restaurante popular de toda cidade grande",
+  "area": "assistência social e renda",
+  "tema": [
+   "restaurante|popular|refeicao|almoco|cozinha|fome|alimenta"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.3,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Subsídio de ~R$ 10-15 por refeição para milhões de refeições"
+ },
+ {
+  "t": "Dar botijão de gás de graça às famílias pobres",
+  "area": "assistência social e renda",
+  "tema": [
+   "gas|botijao|glp"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL",
+   "DEC"
+  ],
+  "custo": [
+   2,
+   12
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Auxílio Gás/Gás do Povo: ~R$ 3-5 bi; ampliação a todo o CadÚnico ~R$ 10 bi"
+ },
+ {
+  "t": "Abrir poupança de R$ 5 mil para jovem do CadÚnico ao fazer 18 anos",
+  "area": "assistência social e renda",
+  "tema": [
+   "poupanca|jovem|18 anos|cadunico"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   2,
+   20
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "~1,5-3 milhões de jovens por ano x R$ 5 mil = R$ 7-15 bi"
+ },
+ {
+  "t": "Limitar o Bolsa Família a dois anos com porta de saída",
+  "area": "assistência social e renda",
+  "tema": [
+   "bolsa familia|prazo|porta de saida|dois anos"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   -40,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Programa de ~R$ 160 bi; corte por prazo poupa parte"
+ },
+ {
+  "t": "Subir a renda de corte do BPC de um quarto para meio salário mínimo",
+  "area": "assistência social e renda",
+  "tema": [
+   "bpc|renda|corte|salario minimo"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   10,
+   60
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "LOAS art. 20 §3º usa 1/4; STF já aceitou outros critérios; custo de dezenas de bi"
+ },
+ {
+  "t": "Acabar com o auxílio-reclusão",
+  "area": "assistência social e renda",
+  "tema": [
+   "reclusao"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PEC",
+   "PL"
+  ],
+  "custo": [
+   -3,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Previsto na CF 201 IV; ~R$ 0,7 bi por ano"
+ },
+ {
+  "t": "Limitar os juros do rotativo do cartão",
+  "area": "economia e crédito",
+  "tema": [
+   "rotativo|cartao|juro"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.690/2023",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 14.690/2023 limitou os juros e encargos do rotativo e parcelado a 100% do principal"
+ },
+ {
+  "t": "Criar linha de crédito barato para micro e pequenos negócios",
+  "area": "economia e crédito",
+  "tema": [
+   "credito|micro|pequen|pronampe|empresa"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL",
+   "ADM"
+  ],
+  "custo": [
+   0.2,
+   8
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 13.999/2020",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Pronampe (Lei 13.999/2020) já existe; custo é a equalização e fundo garantidor"
+ },
+ {
+  "t": "Acabar com o teto de gastos e criar uma nova âncora fiscal",
+  "area": "economia e crédito",
+  "tema": [
+   "teto de gastos|ancora|arcabouco|fiscal"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PLP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "LC 200/2023",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Teto da EC 95/2016 foi substituído pelo arcabouço fiscal da LC 200/2023"
+ },
+ {
+  "t": "Lançar uma moeda digital do Banco Central",
+  "area": "economia e crédito",
+  "tema": [
+   "moeda digital|drex|real digital|banco central"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Emissão de moeda digital pelo BC via resolução; Drex em piloto"
+ },
+ {
+  "t": "Proibir banco de cobrar tarifa de conta corrente",
+  "area": "economia e crédito",
+  "tema": [
+   "tarifa|banco|conta"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Tarifas reguladas por resolução do CMN (Res. 3.919/2010); proibição total é decisão de política"
+ },
+ {
+  "t": "Zerar o IOF do crédito para pessoa física",
+  "area": "economia e crédito",
+  "tema": [
+   "iof|credito|pessoa fisica|emprestimo"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "DEC"
+  ],
+  "custo": null,
+  "receita": [
+   -30,
+   -3
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "IOF crédito arrecada ~R$ 40-50 bi/ano; PF é parte; alíquota por decreto (CF 153 §1º)"
+ },
+ {
+  "t": "Subir a CSLL dos bancos em 5 pontos",
+  "area": "economia e crédito",
+  "tema": [
+   "csll|banco|contribuicao"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": [
+   3,
+   20
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lucro de bancos ~R$ 150 bi; 5 pontos ~R$ 5-8 bi"
+ },
+ {
+  "t": "Vender reservas internacionais para baixar o dólar",
+  "area": "economia e crédito",
+  "tema": [
+   "reserva|dolar|cambio"
+  ],
+  "dir": "outro",
+  "inst": [
+   "ADM",
+   "COM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "ok"
+  ],
+  "nota": "Reservas (~US$ 350 bi) são geridas pelo BC (autonomia LC 179/2021); efeito pequeno"
+ },
+ {
+  "t": "Fazer um Refis com 90% de desconto em multa e juros",
+  "area": "economia e crédito",
+  "tema": [
+   "refis|parcelamento|divida|desconto|multa"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": [
+   -15,
+   10
+  ],
+  "unico": [
+   0,
+   80
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Parcelamentos especiais dependem de lei (CF 150 §6º); renúncia de multas e juros"
+ },
+ {
+  "t": "Trocar o real pelo dólar",
+  "area": "economia e crédito",
+  "tema": [
+   "dolariza|dolar|moeda|real"
+  ],
+  "dir": "outro",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional",
+   "controverso"
+  ],
+  "nota": "CF 164 dá à União a competência exclusiva de emitir moeda; exigiria PEC"
+ },
+ {
+  "t": "Subir o teto do MEI para R$ 130 mil por ano",
+  "area": "economia e crédito",
+  "tema": [
+   "mei|microempreendedor|teto|faturamento|limite"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PLP"
+  ],
+  "custo": null,
+  "receita": [
+   -8,
+   0
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "LC 123/2006 fixa o limite em R$ 81 mil; renúncia de alguns bi"
+ },
+ {
+  "t": "Privatizar o Banco do Brasil",
+  "area": "estatais e privatização",
+  "tema": [
+   "banco do brasil|privatiza|venda"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": [
+   15,
+   120
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "União tem ~50% do BB (valor de mercado ~R$ 80-100 bi); venda exige lei (CF 37 XIX)"
+ },
+ {
+  "t": "Colocar ações da Caixa na bolsa",
+  "area": "estatais e privatização",
+  "tema": [
+   "caixa|ipo|ofert|acoes|capital"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PL",
+   "DEC",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": [
+   3,
+   60
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Abertura de capital via lei autorizativa; Caixa vale ~R$ 60-100 bi"
+ },
+ {
+  "t": "Privatizar a Casa da Moeda",
+  "area": "estatais e privatização",
+  "tema": [
+   "casa da moeda|privatiza"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PL",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": [
+   0,
+   4
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Casa da Moeda foi incluída no PND; produz cédulas com monopólio constitucional de emissão (CF 164)"
+ },
+ {
+  "t": "Criar uma estatal de fertilizantes",
+  "area": "estatais e privatização",
+  "tema": [
+   "fertilizante|estata(?:l|is)|adubo"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   0,
+   10
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   15
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Estatal exige lei autorizativa (CF 37 XIX); Brasil importa ~85% dos fertilizantes"
+ },
+ {
+  "t": "Proibir por lei a venda da Petrobras e do Banco do Brasil",
+  "area": "estatais e privatização",
+  "tema": [
+   "petrobras|banco do brasil|privatiza|proibe"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL",
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Lei ordinária não vincula o legislador futuro; PEC daria blindagem"
+ },
+ {
+  "t": "Privatizar a Eletronuclear",
+  "area": "estatais e privatização",
+  "tema": [
+   "nuclear|eletronuclear|privatiza"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": [
+   0,
+   10
+  ],
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional",
+   "controverso"
+  ],
+  "nota": "CF 21 XXIII c monopólio da União sobre atividades nucleares; só PEC"
+ },
+ {
+  "t": "Vender os imóveis ociosos da União",
+  "area": "estatais e privatização",
+  "tema": [
+   "imove|patrimonio|venda|ocios"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PL",
+   "ADM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": [
+   0.5,
+   30
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "SPU tem dezenas de bilhões de imóveis; vendas anuais costumam ser de centenas de milhões"
+ },
+ {
+  "t": "Acabar com a Lei das Estatais para trocar diretores livremente",
+  "area": "estatais e privatização",
+  "tema": [
+   "lei das estatais|estata(?:l|is)|diretor|governanca|indicac"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Lei 13.303/2016 exige critérios técnicos e quarentena; revogação por lei"
+ },
+ {
+  "t": "Capitalizar os Correios com dinheiro do Tesouro",
+  "area": "estatais e privatização",
+  "tema": [
+   "correios|capitaliza|aporte|tesouro"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0,
+   15
+  ],
+  "receita": null,
+  "unico": [
+   1,
+   15
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Correios tiveram prejuízo de vários bilhões; aporte é despesa de capital"
+ },
+ {
+  "t": "Obrigar as estatais a distribuir todo o lucro em dividendos",
+  "area": "estatais e privatização",
+  "tema": [
+   "dividendo|estata(?:l|is)|lucro"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   25
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Lei 6.404/1976 art. 202 fixa mínimo; lucro das estatais ~R$ 100 bi, parte da União"
+ },
+ {
+  "t": "Vender as ações da Petrobras que estão com o BNDES",
+  "area": "estatais e privatização",
+  "tema": [
+   "bndes|petrobras|acoes|participacao"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": [
+   3,
+   70
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "BNDESPar tem ~7-8% da Petrobras, ~R$ 30-40 bi"
+ },
+ {
+  "t": "Criminalizar a homofobia",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "homofobia|lgbt|discrimina|racismo|preconceito|homo"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 7.716/1989",
+  "cf": [
+   "ok"
+  ],
+  "nota": "STF (ADO 26/MI 4733, 2019) equiparou a homotransfobia ao racismo da Lei 7.716/1989"
+ },
+ {
+  "t": "Garantir o casamento entre pessoas do mesmo sexo",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "casamento|mesmo sexo|homoafetiv|uniao"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Resolução 175/2013",
+  "cf": [
+   "ok"
+  ],
+  "nota": "STF (ADI 4277, 2011) e Resolução CNJ 175/2013 obrigam cartórios ao casamento"
+ },
+ {
+  "t": "Permitir o nome social em documentos federais",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "nome social|trans|documento"
+  ],
+  "dir": "libera",
+  "inst": [
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Decreto 8.727/2016",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Decreto 8.727/2016 regula uso do nome social na administração federal"
+ },
+ {
+  "t": "Proibir casamento de menores de 16 anos",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "casamento|menor|crianca"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 13.811/2019",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 13.811/2019 proíbe o casamento de menores de 16 anos"
+ },
+ {
+  "t": "Legalizar a eutanásia",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "eutanasia|morte assistida|suicidio"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "CP 122 criminaliza o auxílio ao suicídio; CF 5º caput protege a vida"
+ },
+ {
+  "t": "Voltar a prender quem fuma maconha",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "maconha|droga|usuario|porte"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "STF (RE 635.659, 2024) fixou que porte até 40 g não é crime; Lei 11.343/2006 art. 28"
+ },
+ {
+  "t": "Proibir adoção por casais do mesmo sexo",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "adocao|casal|mesmo sexo|homoafetiv"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL",
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "STF (ADI 4277 e RE 846.102) reconhece a adoção homoparental; princípio da igualdade"
+ },
+ {
+  "t": "Reservar vagas de concurso para pessoas trans",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "trans|cota|concurso|vagas"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Ações afirmativas exigem lei; discussão sobre critérios de identificação"
+ },
+ {
+  "t": "Fazer da Consciência Negra feriado nacional",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "consciencia negra|feriado|zumbi"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.759/2023",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 14.759/2023 instituiu o Dia Nacional de Zumbi e da Consciência Negra como feriado"
+ },
+ {
+  "t": "Ensinar religião específica nas escolas públicas",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "ensino religioso|religia|escola"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "STF (ADI 4439, 2017) admitiu o ensino religioso confessional facultativo"
+ },
+ {
+  "t": "Reservar 5% das vagas de concurso federal para pessoas com deficiência",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "deficien|pcd|concurso|vagas"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Decreto 9.508/2018",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Dec. 9.508/2018 e Lei 8.112/1990 art. 5º §2º reservam de 5% a 20%"
+ },
+ {
+  "t": "Acabar com o voto obrigatório",
+  "area": "política e eleições",
+  "tema": [
+   "voto|obrigatori|eleic"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Obrigatoriedade está na CF 14 §1º I; exige PEC; voto secreto e periódico são pétreos, mas a obrigatoriedade não"
+ },
+ {
+  "t": "Fazer a eleição municipal junto com a geral",
+  "area": "política e eleições",
+  "tema": [
+   "eleic|unific|mandato|calendario"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   -3,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Unificar eleições exige PEC; eleições custam ~R$ 8-10 bi a cada ciclo"
+ },
+ {
+  "t": "Proibir empresa de doar para campanha",
+  "area": "política e eleições",
+  "tema": [
+   "doacao|empresa|campanha|financiamento"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "STF (ADI 4650/2015) já vedou doações de empresas; Lei 9.504/1997 art. 24"
+ },
+ {
+  "t": "Acabar com o fundo eleitoral",
+  "area": "política e eleições",
+  "tema": [
+   "fundo eleitoral|fundo partidario|financiamento|campanha"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   -6,
+   -1
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "FEFC (Lei 9.504, art. 16-C) ~R$ 5 bi; o valor está na LOA, extinção por lei"
+ },
+ {
+  "t": "Adotar lista fechada para deputado",
+  "area": "política e eleições",
+  "tema": [
+   "lista|proporcional|deputado|voto"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PL",
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 45 manda sistema proporcional; lista fechada via lei ou PEC"
+ },
+ {
+  "t": "Permitir candidato sem partido",
+  "area": "política e eleições",
+  "tema": [
+   "avulsa|candidat|partido|filiacao"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional",
+   "controverso"
+  ],
+  "nota": "CF 14 §3º V exige filiação partidária; STF (Tema 974) negou candidatura avulsa sem PEC"
+ },
+ {
+  "t": "Cassar mandato de quem trocar de partido",
+  "area": "política e eleições",
+  "tema": [
+   "fidelidade|trocar|partido|mandato|infidelidade"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL",
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Resolução 22.610/2007",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Fidelidade partidária já aplicada pelo STF/TSE (Res. TSE 22.610/2007) aos cargos proporcionais"
+ },
+ {
+  "t": "Criar o recall para tirar político do cargo antes do fim do mandato",
+  "area": "política e eleições",
+  "tema": [
+   "recall|revocat|mandato|plebiscito"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 14 só prevê plebiscito, referendo e iniciativa popular; o recall exige PEC"
+ },
+ {
+  "t": "Impor quarentena de 4 anos a ex-ministro para trabalhar no setor que regulava",
+  "area": "política e eleições",
+  "tema": [
+   "quarentena|ex-?ministro|conflito|lobby"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Lei 12.813/2013 fixa 6 meses; ampliação por lei esbarra no direito ao trabalho (CF 5º XIII)"
+ },
+ {
+  "t": "Fazer plebiscito sobre parlamentarismo",
+  "area": "política e eleições",
+  "tema": [
+   "parlamentarismo|plebiscito|sistema de governo|consulta|reforma politica"
+  ],
+  "dir": "outro",
+  "inst": [
+   "AUT",
+   "PEC",
+   "PL"
+  ],
+  "custo": [
+   0,
+   12
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Plebiscito é convocado por decreto legislativo (CF 49 XV); novo plebiscito já ocorreu em 1993 (ADCT 2º)"
+ },
+ {
+  "t": "Barrar candidato condenado em segunda instância",
+  "area": "política e eleições",
+  "tema": [
+   "ficha limpa|condenad|candidat|inelegib"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PLP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "LC 135/2010",
+  "cf": [
+   "ok"
+  ],
+  "nota": "LC 135/2010 (Ficha Limpa) torna inelegível condenado por órgão colegiado"
+ },
+ {
+  "t": "Obrigar big techs a pagar os jornais pelo conteúdo",
+  "area": "digital e tecnologia",
+  "tema": [
+   "big tech|jorna(?:l|is)|conteudo|remunera|plataforma|imprensa"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Remuneração de jornalismo por plataformas depende de lei (modelo australiano)"
+ },
+ {
+  "t": "Banir o TikTok no Brasil",
+  "area": "digital e tecnologia",
+  "tema": [
+   "tiktok|rede social|plataforma|banir"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Bloqueio total de aplicativo fere liberdade de expressão (CF 5º IX) salvo ordem judicial pontual"
+ },
+ {
+  "t": "Proibir rede social para menor de 16 anos",
+  "area": "digital e tecnologia",
+  "tema": [
+   "menor|rede social|16 anos|crianca|adolescente"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "ECA Digital (Lei 15.211/2025) exige verificação de idade e vincula contas de menores de 16 a responsáveis"
+ },
+ {
+  "t": "Criar uma nuvem soberana para os dados do governo",
+  "area": "digital e tecnologia",
+  "tema": [
+   "nuvem|soberan|dados|cloud"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0.2,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Contratação de data centers via Serpro/Dataprev; custo de centenas de milhões"
+ },
+ {
+  "t": "Aprovar o marco legal da inteligência artificial",
+  "area": "digital e tecnologia",
+  "tema": [
+   "inteligencia artificial|\\bia\\b|marco"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "PL 2338/2023 aprovado no Senado; regula IA por classificação de risco"
+ },
+ {
+  "t": "Cobrar contribuição de streaming para financiar o cinema nacional",
+  "area": "digital e tecnologia",
+  "tema": [
+   "streaming|condecine|cinema|audiovisual"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   3
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Condecine incide sobre VOD; valores na casa de centenas de milhões"
+ },
+ {
+  "t": "Levar internet banda larga a todas as escolas públicas",
+  "area": "digital e tecnologia",
+  "tema": [
+   "internet|banda larga|escola|conectividade"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.3,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.172/2021",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 14.172/2021 (conectividade na educação) repassa recursos do Fust"
+ },
+ {
+  "t": "Usar o CPF como número único de identidade",
+  "area": "digital e tecnologia",
+  "tema": [
+   "cpf|identidade|documento|numero"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.534/2023",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 14.534/2023 fez do CPF o número único de identificação"
+ },
+ {
+  "t": "Proibir criptomoedas",
+  "area": "digital e tecnologia",
+  "tema": [
+   "cripto|bitcoin|moeda"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Lei 14.478/2022 regulou ativos virtuais; proibição fere livre iniciativa (CF 170)"
+ },
+ {
+  "t": "Criar uma CPMF sobre o Pix",
+  "area": "digital e tecnologia",
+  "tema": [
+   "cpmf|pix|transac|movimentacao"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PLP",
+   "PEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   15,
+   250
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "ok"
+  ],
+  "nota": "Imposto sobre movimentação financeira (nova CPMF); Pix movimenta ~R$ 25 tri/ano; 0,1% ~R$ 25 bi"
+ },
+ {
+  "t": "Zerar o imposto de importação de computador e celular",
+  "area": "digital e tecnologia",
+  "tema": [
+   "computador|celular|importacao|eletronico|notebook"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "DEC",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": [
+   -8,
+   -0.3
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "II de eletrônicos de consumo é de 16-20%; Gecex/Camex"
+ },
+ {
+  "t": "Fechar o acordo comercial entre Mercosul e União Europeia",
+  "area": "relações exteriores e comércio",
+  "tema": [
+   "mercosul|uniao europeia|acordo|comercial"
+  ],
+  "dir": "libera",
+  "inst": [
+   "AUT",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Tratado precisa de aprovação do Congresso por decreto legislativo (CF 49 I); assinado em janeiro de 2026, falta ratificação"
+ },
+ {
+  "t": "Sair do Mercosul",
+  "area": "relações exteriores e comércio",
+  "tema": [
+   "mercosul|bloco|tratado|saida"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "AUT",
+   "COM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "CF 4º parágrafo único manda buscar integração latino-americana; denúncia de tratado é debatida"
+ },
+ {
+  "t": "Aplicar tarifa de reciprocidade sobre produtos americanos",
+  "area": "relações exteriores e comércio",
+  "tema": [
+   "reciprocidade|tarifa|eua|estados unidos|americano|retaliacao"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "DEC",
+   "ADM",
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   10
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei da Reciprocidade Econômica permite contramedidas; tarifa de importação é do Executivo (CF 153 §1º)"
+ },
+ {
+  "t": "Baixar a tarifa externa comum do Mercosul",
+  "area": "relações exteriores e comércio",
+  "tema": [
+   "tarifa externa|tec|importacao|mercosul"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": [
+   -20,
+   -0.5
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "TEC é decidida no bloco; exceções nacionais pelo Gecex"
+ },
+ {
+  "t": "Enviar tropas brasileiras para missão de paz da ONU",
+  "area": "relações exteriores e comércio",
+  "tema": [
+   "tropas|forcas|onu|paz|missao|militar"
+  ],
+  "dir": "outro",
+  "inst": [
+   "AUT",
+   "PL",
+   "DEC"
+  ],
+  "custo": [
+   0.1,
+   3
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Saída de tropas depende de autorização do Congresso (CF 49 II; LC 90/1990)"
+ },
+ {
+  "t": "Dar visto humanitário a refugiados de guerra",
+  "area": "relações exteriores e comércio",
+  "tema": [
+   "visto|refugiad|humanitari|migra"
+  ],
+  "dir": "libera",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 13.445/2017",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei de Migração (Lei 13.445/2017) prevê visto temporário para acolhida humanitária"
+ },
+ {
+  "t": "Entrar na OCDE",
+  "area": "relações exteriores e comércio",
+  "tema": [
+   "ocde|adesao|organizacao"
+  ],
+  "dir": "outro",
+  "inst": [
+   "AUT",
+   "COM",
+   "PL"
+  ],
+  "custo": [
+   0,
+   1
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Adesão é ato internacional sujeito a aprovação do Congresso; custo é de contribuição pequena"
+ },
+ {
+  "t": "Perdoar a dívida de países pobres com o Brasil",
+  "area": "relações exteriores e comércio",
+  "tema": [
+   "divida|perdao|pais|africa|externa"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "AUT",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": [
+   0,
+   10
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Remissão de dívidas externas exige autorização do Senado e lei (LRF 35 e CF 52 V)"
+ },
+ {
+  "t": "Zerar o imposto de importação dos alimentos básicos",
+  "area": "relações exteriores e comércio",
+  "tema": [
+   "importacao|alimento|tarifa|cesta"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": [
+   -6,
+   0
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "II de alimentos arrecada pouco; zeragem feita por resolução do Gecex"
+ },
+ {
+  "t": "Barrar a importação de produtos feitos com trabalho escravo",
+  "area": "relações exteriores e comércio",
+  "tema": [
+   "trabalho escravo|importacao|produto|escravo"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "DEC",
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 243 e Lei 10.803/2003; barreiras comerciais devem respeitar a OMC"
+ },
+ {
+  "t": "Criar imposto de exportação sobre petróleo cru",
+  "area": "relações exteriores e comércio",
+  "tema": [
+   "petroleo|exportacao|oleo"
+  ],
+  "dir": "cria",
+  "inst": [
+   "DEC",
+   "MP",
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   1,
+   30
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Já houve taxa sobre óleo bruto em 2023 (MP 1.163/2023); exportação de petróleo ~US$ 45 bi"
+ },
+ {
+  "t": "Acabar com a Lei Rouanet",
+  "area": "cultura e esporte",
+  "tema": [
+   "rouanet|incentivo|cultura|mecenato"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   3
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 8.313/1991; renúncia de ~R$ 2 bi por ano"
+ },
+ {
+  "t": "Dar R$ 50 por mês de vale para o trabalhador gastar com cultura",
+  "area": "cultura e esporte",
+  "tema": [
+   "vale-?cultura|cultura|cinema|livro"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0,
+   3
+  ],
+  "receita": [
+   -1.5,
+   0
+  ],
+  "unico": null,
+  "jaVigente": "Lei 12.761/2012",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Vale-Cultura de R$ 50 criado pela Lei 12.761/2012"
+ },
+ {
+  "t": "Aumentar o Bolsa Atleta",
+  "area": "cultura e esporte",
+  "tema": [
+   "bolsa atleta|atleta|esporte"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "DEC",
+   "ADM",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.05,
+   2
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Programa regido pela Lei 10.891/2004; custo de ~R$ 150-250 milhões"
+ },
+ {
+  "t": "Proibir patrocínio de bets em camisa de time",
+  "area": "cultura e esporte",
+  "tema": [
+   "bet|patrocin|camisa|aposta|time"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Lei 14.790/2023 permite publicidade; restrição por lei é compatível com CF 220 §4º"
+ },
+ {
+  "t": "Deixar os museus federais de graça aos domingos",
+  "area": "cultura e esporte",
+  "tema": [
+   "museu|gratuit|entrada|cultura"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Gratuidade por portaria do Ibram; perda de bilheteria desprezível"
+ },
+ {
+  "t": "Obrigar canais de TV paga a passar conteúdo brasileiro",
+  "area": "cultura e esporte",
+  "tema": [
+   "conteudo|cota|televisao|tv paga|nacional|producao"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 12.485/2011",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei do SeAC (Lei 12.485/2011) fixa cotas de conteúdo nacional na TV paga"
+ },
+ {
+  "t": "Construir quadra esportiva em toda escola pública",
+  "area": "cultura e esporte",
+  "tema": [
+   "quadra|esporte|escola|ginasio"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.5,
+   8
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "~100 mil escolas; quadra de R$ 300-800 mil; programa em anos"
+ },
+ {
+  "t": "Liberar cassino e jogo do bicho",
+  "area": "cultura e esporte",
+  "tema": [
+   "cassino|jogo|azar|bicho"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   20
+  ],
+  "unico": [
+   0,
+   30
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Decreto-Lei 3.688/1941 (contravenções) proíbe; liberar é por lei; arrecadação potencial de bi"
+ },
+ {
+  "t": "Dar meia-entrada para estudante em cinema e show",
+  "area": "cultura e esporte",
+  "tema": [
+   "meia-?entrada|estudante|ingresso|cinema"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 12.933/2013",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 12.933/2013 garante meia-entrada a estudantes, idosos e PcD"
+ },
+ {
+  "t": "Reconhecer o carnaval de rua como patrimônio cultural",
+  "area": "cultura e esporte",
+  "tema": [
+   "carnaval|patrimonio|imaterial|cultura"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "COM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Registro pelo Iphan, sem custo relevante (Dec. 3.551/2000)"
+ },
+ {
+  "t": "Passar jogos do Brasileirão na TV pública",
+  "area": "cultura e esporte",
+  "tema": [
+   "brasileirao|futebol|tv publica|ebc|transmiss"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "COM"
+  ],
+  "custo": [
+   0.1,
+   3
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Direitos de transmissão são dos clubes (Lei 14.597/2023); compra custa centenas de milhões"
+ },
+ {
+  "t": "Pagar aluguel social de R$ 600 a famílias em área de risco",
+  "area": "habitação e cidades",
+  "tema": [
+   "alugue(?:l|is)|social|area de risco|moradia"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL",
+   "DEC"
+  ],
+  "custo": [
+   0.5,
+   10
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Cerca de 4 milhões de pessoas em áreas de risco; 500 mil famílias x R$ 7,2 mil = R$ 3,6 bi"
+ },
+ {
+  "t": "Congelar o aluguel por dois anos",
+  "area": "habitação e cidades",
+  "tema": [
+   "alugue|congela|locacao|inquilin"
+  ],
+  "dir": "regula",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Lei 8.245/1991; congelamento afeta contratos em curso (CF 5º XXXVI) e a livre iniciativa"
+ },
+ {
+  "t": "Financiar casa popular com juro de 2% ao ano",
+  "area": "habitação e cidades",
+  "tema": [
+   "juro|financiamento|casa|moradia|minha casa"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "MP",
+   "PL",
+   "ADM"
+  ],
+  "custo": [
+   1,
+   20
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Subsídio do MCMV (Lei 14.620/2023) ao FGTS e Tesouro; diferencial de juros em milhões de unidades"
+ },
+ {
+  "t": "Dar escritura de graça aos moradores de favela",
+  "area": "habitação e cidades",
+  "tema": [
+   "escritura|regulariza|titulo|reurb|favela|fundiaria"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0,
+   2
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 13.465/2017",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Reurb (Lei 13.465/2017) já regulariza a posse e títulos gratuitos"
+ },
+ {
+  "t": "Fazer 1 milhão de moradias rurais",
+  "area": "habitação e cidades",
+  "tema": [
+   "moradia|casa|rural|habitacao"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL",
+   "DEC",
+   "ADM"
+  ],
+  "custo": [
+   2,
+   30
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Casa rural no MCMV custa ~R$ 80 mil; 1 milhão exige R$ 80 bi em vários anos"
+ },
+ {
+  "t": "Proibir despejo de famílias sem moradia alternativa",
+  "area": "habitação e cidades",
+  "tema": [
+   "despejo|reintegracao|desocupa|moradia"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Lei 14.216/2021 e ADPF 828 suspenderam despejos na pandemia; limite permanente afeta propriedade (CF 5º XXII)"
+ },
+ {
+  "t": "Chegar a 99% de água tratada até 2033",
+  "area": "habitação e cidades",
+  "tema": [
+   "saneamento|agua|esgoto|tratad"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "ADM",
+   "DEC",
+   "MP"
+  ],
+  "custo": [
+   3,
+   60
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.026/2020",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Marco do Saneamento (Lei 14.026/2020) já fixa 99% de água e 90% de esgoto até 2033"
+ },
+ {
+  "t": "Proibir construção em encosta e beira de rio",
+  "area": "habitação e cidades",
+  "tema": [
+   "encosta|margem|rio|app|construc|area de risco"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 12.651/2012",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Código Florestal define APP em margens de rio e encostas"
+ },
+ {
+  "t": "Cobrar IPTU maior de imóvel vazio na cidade",
+  "area": "habitação e cidades",
+  "tema": [
+   "iptu|vazio|ocioso|imove(?:l|is)|progressiv"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 10.257/2001",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Estatuto da Cidade (Lei 10.257/2001) já prevê IPTU progressivo no tempo; IPTU é municipal"
+ },
+ {
+  "t": "Deixar usar o FGTS para comprar casa própria sem teto de preço",
+  "area": "habitação e cidades",
+  "tema": [
+   "fgts|casa propria|imove(?:l|is)|compra|teto"
+  ],
+  "dir": "libera",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Conselho Curador fixa teto do SFH; mudança por resolução"
+ },
+ {
+  "t": "Acabar com os lixões no país",
+  "area": "habitação e cidades",
+  "tema": [
+   "lixao|lixo|residuo|aterro"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "DEC",
+   "ADM",
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0.5,
+   10
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 12.305/2010",
+  "cf": [
+   "ok"
+  ],
+  "nota": "PNRS (Lei 12.305/2010) previa fim dos lixões e a Lei 14.026/2020 estendeu prazos"
+ },
+ {
+  "t": "Acabar com a mamata dos supersalários",
+  "area": "administração pública",
+  "tema": [
+   "supersalario|teto|penduricalho|remuneracao|salario"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PEC",
+   "PL",
+   "PLP"
+  ],
+  "custo": [
+   -25,
+   -1
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 37 XI fixa o teto; penduricalhos custam alguns bi por ano"
+ },
+ {
+  "t": "Cortar o número de ministérios para 20",
+  "area": "administração pública",
+  "tema": [
+   "ministerio|pasta|estrutura"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   -3,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Organização da administração federal por decreto/MP (CF 84 VI, 88)"
+ },
+ {
+  "t": "Fazer um concurso nacional unificado todo ano",
+  "area": "administração pública",
+  "tema": [
+   "concurso|unificad|nacional"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CPNU já teve edição em 2024; é ato administrativo"
+ },
+ {
+  "t": "Cortar 30% dos cargos comissionados",
+  "area": "administração pública",
+  "tema": [
+   "comissionad|cargo|confianca|das"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "DEC"
+  ],
+  "custo": [
+   -5,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Cargos em comissão são criados e extintos por lei/decreto (CF 84 XXV)"
+ },
+ {
+  "t": "Dar 4% de reajuste aos servidores federais",
+  "area": "administração pública",
+  "tema": [
+   "reajuste|servidor|aumento"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   8,
+   25
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Folha da União ~R$ 380 bi; 4% sobre a parte ativa e inativa fica em R$ 10-15 bi"
+ },
+ {
+  "t": "Demitir servidor com desempenho ruim",
+  "area": "administração pública",
+  "tema": [
+   "desempenho|demissao|servidor|estabilidade|avaliacao"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PLP"
+  ],
+  "custo": [
+   -5,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 41 §1º III prevê perda do cargo por insuficiência de desempenho via lei complementar, não regulamentada"
+ },
+ {
+  "t": "Cortar pela metade as emendas parlamentares",
+  "area": "administração pública",
+  "tema": [
+   "emenda|parlamentar|orcamento"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   -40,
+   -5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Emendas impositivas (EC 86/2015, 100/2019, 126/2022) somam ~R$ 50 bi; mudança exige PEC"
+ },
+ {
+  "t": "Acabar com as emendas Pix",
+  "area": "administração pública",
+  "tema": [
+   "emenda|pix|transferencia especial"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   -12,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Transferências especiais (EC 105/2019) movimentam ~R$ 8 bi"
+ },
+ {
+  "t": "Pôr todos os serviços públicos no gov.br",
+  "area": "administração pública",
+  "tema": [
+   "gov\\.?br|digital|servico|plataforma"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0.1,
+   3
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.129/2021",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei do Governo Digital (Lei 14.129/2021)"
+ },
+ {
+  "t": "Vender os carros oficiais e usar aplicativo de transporte",
+  "area": "administração pública",
+  "tema": [
+   "carro|oficial|frota|veiculo"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Economia de poucas centenas de milhões"
+ },
+ {
+  "t": "Cortar a verba de gabinete dos deputados pela metade",
+  "area": "administração pública",
+  "tema": [
+   "verba|gabinete|deputado|parlamentar|camara"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "COM",
+   "PL"
+  ],
+  "custo": [
+   -2,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Verba é fixada pela Mesa da Câmara; o presidente não pode impor por separação de poderes (CF 2º, 51 IV)"
+ },
+ {
+  "t": "Fixar mandato de 10 anos para ministro do STF",
+  "area": "Judiciário e Constituição",
+  "tema": [
+   "stf|supremo|mandato|ministro"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 101 prevê cargo vitalício até 75 anos (EC 88/2015); mandato exige PEC"
+ },
+ {
+  "t": "Subir para 15 o número de ministros do STF",
+  "area": "Judiciário e Constituição",
+  "tema": [
+   "stf|supremo|ministro|numero"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 101 fixa 11 ministros; mudança por PEC; risco de ser vista como aparelhamento"
+ },
+ {
+  "t": "Deixar o Congresso derrubar decisão do Supremo",
+  "area": "Judiciário e Constituição",
+  "tema": [
+   "stf|supremo|congresso|derrub|decisao|anular"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "Fere separação de poderes, cláusula pétrea (CF 60 §4º III)"
+ },
+ {
+  "t": "Proibir o ministro do STF de decidir sozinho",
+  "area": "Judiciário e Constituição",
+  "tema": [
+   "monocratica|stf|supremo|decisao|liminar"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "PEC 8/2021 aprovada no Senado em 2023; limites também por Lei 9.868/1999"
+ },
+ {
+  "t": "Criar o juiz de garantias",
+  "area": "Judiciário e Constituição",
+  "tema": [
+   "juiz de garantias|garantias"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 13.964/2019",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 13.964/2019 criou; STF (ADI 6298, 2023) determinou implantação"
+ },
+ {
+  "t": "Multar quem recorre só para empurrar o processo",
+  "area": "Judiciário e Constituição",
+  "tema": [
+   "recurso|protelat|multa|litigancia|processo"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 13.105/2015",
+  "cf": [
+   "ok"
+  ],
+  "nota": "CPC (Lei 13.105/2015) arts. 80-81 já punem litigância de má-fé"
+ },
+ {
+  "t": "Acabar com as férias de 60 dias dos juízes",
+  "area": "Judiciário e Constituição",
+  "tema": [
+   "ferias|juiz|magistrat|judiciario"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PLP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "LOMAN (LC 35/1979, art. 66); estatuto da magistratura é de iniciativa do STF (CF 93)"
+ },
+ {
+  "t": "Convocar uma Assembleia Constituinte exclusiva",
+  "area": "Judiciário e Constituição",
+  "tema": [
+   "constituinte|assembleia|constituicao"
+  ],
+  "dir": "outro",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   0,
+   15
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional",
+   "controverso"
+  ],
+  "nota": "Constituinte exclusiva sem emenda fere CF 60 e a soberania do poder constituído"
+ },
+ {
+  "t": "Instituir prisão perpétua",
+  "area": "Judiciário e Constituição",
+  "tema": [
+   "perpetu|prisao|pena"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "CF 5º XLVII b veda penas de caráter perpétuo, cláusula pétrea"
+ },
+ {
+  "t": "Criar um tribunal constitucional separado do STF",
+  "area": "Judiciário e Constituição",
+  "tema": [
+   "tribunal constitucional|corte constitucional|stf|supremo"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   0,
+   2
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Mudança estrutural de CF 101-103; exige PEC"
+ },
+ {
+  "t": "Permitir prender condenado depois da segunda instância",
+  "area": "Judiciário e Constituição",
+  "tema": [
+   "segunda instancia|prisao|condenad|transito"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "CF 5º LVII; STF (ADC 43, 2019) exige trânsito em julgado; PEC 199/2019 debatida"
+ }
+]
