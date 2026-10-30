@@ -853,5 +853,740 @@
     "just": "Medida popular entre policiais e classe média; a derrota no STF atenua o ganho."
    }
   ]
+ },
+ {
+  "id": "mp_converte_vs_pl",
+  "descricao": "Decisão de instrumento: a MP do Bolsa Família vale desde o mês 0 e é convertida no mês 3; a rota alternativa é um PL votado só no mês 3. A MP antecipa o gasto e o efeito; depois as duas rotas convergem.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "enviar",
+    "id": "mp",
+    "texto": "Por medida provisória, aumentar o Bolsa Família para R$ 800"
+   },
+   {
+    "mes": 3,
+    "tipo": "votar",
+    "ref": "mp",
+    "resultado": "aprovada"
+   }
+  ],
+  "controle": [
+   {
+    "mes": 3,
+    "tipo": "propor",
+    "texto": "Por projeto de lei, aumentar o Bolsa Família para R$ 800",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "custo",
+    "m3": "sobe",
+    "m12": "estavel",
+    "m24": "estavel",
+    "just": "No mês 3 só a MP já gasta; o PL ainda nem foi votado."
+   },
+   {
+    "ind": "prim",
+    "m3": "desce",
+    "just": "Mesmo raciocínio no resultado primário no mês 3. Depois da conversão o primário total ainda carrega diferenças de segunda ordem (PIB e juros da rota que gastou antes), por isso só o fluxo direto (custo) é cobrado como convergente."
+   },
+   {
+    "ind": "g_periferia",
+    "m3": "sobe",
+    "just": "Beneficiários recebem três meses antes."
+   }
+  ]
+ },
+ {
+  "id": "mp_caduca_vs_pl",
+  "descricao": "Decisão de instrumento: a mesma ampliação do Bolsa Família por MP abandonada (caduca em 4 meses, 70% desfeito) contra PL aprovado. Quem deixa a MP morrer perde o gasto e o benefício.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "enviar",
+    "texto": "Por medida provisória, aumentar o Bolsa Família para R$ 800"
+   }
+  ],
+  "controle": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Por projeto de lei, aumentar o Bolsa Família para R$ 800",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "custo",
+    "m12": "desce",
+    "m24": "desce",
+    "just": "Depois que a MP caduca, a despesa praticamente some; o PL mantém o gasto permanente."
+   },
+   {
+    "ind": "prim",
+    "m12": "sobe",
+    "m24": "sobe",
+    "just": "Menos despesa na rota da MP caducada."
+   },
+   {
+    "ind": "pob",
+    "m12": "sobe",
+    "m24": "sobe",
+    "just": "Sem o benefício, a pobreza cai menos que na rota do PL."
+   },
+   {
+    "ind": "g_periferia",
+    "m12": "desce",
+    "just": "Beneficiários perdem o aumento e reagem mal."
+   }
+  ]
+ },
+ {
+  "id": "emendas_custo",
+  "descricao": "Aprovar com emendas: negociar emendas com os partidos da base (botão do Parecer) custa despesa extra e piora o primário, sem mudar o efeito da política em si.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Por projeto de lei, aumentar o Bolsa Família para R$ 800",
+    "resultado": "aprovada",
+    "emendas": 3
+   }
+  ],
+  "controle": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Por projeto de lei, aumentar o Bolsa Família para R$ 800",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "extra",
+    "m3": "sobe",
+    "just": "Cada partido pago em emendas soma despesa extra (g.fiscal.extra)."
+   },
+   {
+    "ind": "prim",
+    "m3": "desce",
+    "just": "Despesa extra piora o primário no ano da negociação."
+   },
+   {
+    "ind": "extra",
+    "m12": "estavel",
+    "just": "No novo exercício fiscal (mês 12) as emendas do ano anterior saem da conta: o jogo zera g.fiscal.extra."
+   },
+   {
+    "ind": "prim",
+    "m12": "estavel",
+    "just": "Sem as emendas do ano anterior, o primário volta ao do controle."
+   },
+   {
+    "ind": "custo",
+    "m3": "estavel",
+    "m12": "estavel",
+    "just": "A política é a mesma: o fluxo direto das medidas (custo) não muda com as emendas."
+   },
+   {
+    "ind": "pob",
+    "m24": "estavel",
+    "just": "O efeito social da política é o mesmo."
+   }
+  ]
+ },
+ {
+  "id": "desidrata_vs_integral",
+  "descricao": "Aprovar desidratada (botão \"Desidratar o texto, -40% de impacto\") contra o texto integral: o gasto e o benefício do Bolsa Família ficam menores.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Por projeto de lei, aumentar o Bolsa Família para R$ 800",
+    "resultado": "aprovada",
+    "desidratar": 1
+   }
+  ],
+  "controle": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Por projeto de lei, aumentar o Bolsa Família para R$ 800",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "custo",
+    "m3": "desce",
+    "m12": "desce",
+    "m24": "desce",
+    "just": "Escala de 60%: a despesa direta é menor."
+   },
+   {
+    "ind": "prim",
+    "m12": "sobe",
+    "m24": "sobe",
+    "just": "Menos despesa melhora o primário em relação ao texto integral."
+   },
+   {
+    "ind": "pob",
+    "m12": "sobe",
+    "m24": "sobe",
+    "just": "Menos transferência, menos redução da pobreza."
+   },
+   {
+    "ind": "g_periferia",
+    "m3": "desce",
+    "just": "Beneficiários ganham menos que no texto integral."
+   }
+  ]
+ },
+ {
+  "id": "acelera_obra",
+  "descricao": "Acelerar a implantação no painel Medidas (botão \"Acelerar\", duas vezes, o limite do jogo): o programa habitacional chega ao efeito pleno antes, com custo ~6% maior por aceleração e mais risco de estouro.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "id": "mcmv",
+    "texto": "Construir 1 milhão de casas populares pelo Minha Casa Minha Vida, por projeto de lei",
+    "resultado": "aprovada"
+   },
+   {
+    "mes": 1,
+    "tipo": "acelerar",
+    "ref": "mcmv"
+   },
+   {
+    "mes": 2,
+    "tipo": "acelerar",
+    "ref": "mcmv"
+   }
+  ],
+  "controle": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Construir 1 milhão de casas populares pelo Minha Casa Minha Vida, por projeto de lei",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "custo",
+    "m12": "sobe",
+    "just": "A rampa de implantação termina antes: o gasto pleno chega mais cedo."
+   },
+   {
+    "ind": "custo",
+    "m24": "sobe",
+    "just": "No fim a conta é maior (+6% por aceleração e maior risco de estouro). O efeito é pequeno diante do ruído dos acontecimentos sorteados em cada medida."
+   },
+   {
+    "ind": "prim",
+    "m12": "desce",
+    "just": "Gasto antecipado piora o primário no mês 12."
+   },
+   {
+    "ind": "n_medidas",
+    "m12": "estavel",
+    "just": "Acelerar não cria nem apaga medidas."
+   }
+  ]
+ },
+ {
+  "id": "revoga_decreto_painel",
+  "descricao": "Revogar pelo painel Medidas (botão \"Revogar por decreto\"): o IPI zerado por decreto é restabelecido no mês 2; 85% do efeito é desfeito, o recuo custa capital político.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "id": "ipi",
+    "texto": "Zerar o IPI de carros por decreto",
+    "resultado": "aprovada"
+   },
+   {
+    "mes": 2,
+    "tipo": "revogar",
+    "ref": "ipi"
+   }
+  ],
+  "controle": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Zerar o IPI de carros por decreto",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "receita",
+    "m12": "sobe",
+    "m24": "sobe",
+    "just": "Com o IPI de volta, a renúncia some em grande parte (a renúncia é negativa: a diferença para o controle é positiva)."
+   },
+   {
+    "ind": "prim",
+    "m12": "sobe",
+    "just": "Arrecadação maior melhora o primário."
+   },
+   {
+    "ind": "n_revog",
+    "m3": "sobe",
+    "m12": "sobe",
+    "just": "A medida passa a constar como revogada."
+   },
+   {
+    "ind": "n_ativas",
+    "m3": "desce",
+    "just": "Uma medida em vigor a menos (o decreto do controle ainda está em implantação no mês 3)."
+   },
+   {
+    "ind": "ap",
+    "m3": "qualquer",
+    "just": "Recuo desgasta o governo (todos os grupos perdem 0,8)."
+   }
+  ]
+ },
+ {
+  "id": "revoga_lei_painel",
+  "descricao": "Revogar pelo painel Medidas uma medida que veio por lei (botão \"Propor revogação\"): o texto \"Revogar…\" vai à Mesa, é proposto e aprovado, e o gasto do Bolsa Família some.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "id": "bf",
+    "texto": "Por projeto de lei, aumentar o Bolsa Família para R$ 800",
+    "resultado": "aprovada"
+   },
+   {
+    "mes": 4,
+    "tipo": "revogar",
+    "ref": "bf",
+    "resultado": "aprovada"
+   }
+  ],
+  "controle": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Por projeto de lei, aumentar o Bolsa Família para R$ 800",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "custo",
+    "m12": "desce",
+    "m24": "desce",
+    "just": "Revogada a lei, a despesa deixa de existir."
+   },
+   {
+    "ind": "prim",
+    "m12": "sobe",
+    "m24": "sobe",
+    "just": "Menos despesa melhora o primário."
+   },
+   {
+    "ind": "n_revog",
+    "m12": "sobe",
+    "just": "A medida original passa a constar como revogada."
+   },
+   {
+    "ind": "pob",
+    "m24": "sobe",
+    "just": "Sem o benefício, a pobreza volta a subir em relação à rota que o manteve."
+   }
+  ]
+ },
+ {
+  "id": "liminar_retoma",
+  "descricao": "Medida suspensa por liminar do STF (ação contra o decreto do IPI, 4 meses) e depois julgada constitucional: cronograma e arrecadação congelados enquanto durar a liminar, retomada depois.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "id": "ipi",
+    "texto": "Zerar o IPI de carros por decreto",
+    "resultado": "aprovada"
+   },
+   {
+    "mes": 1,
+    "tipo": "adi",
+    "ref": "ipi",
+    "liminar": true,
+    "meses": 4,
+    "nivel": "ok"
+   }
+  ],
+  "controle": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Zerar o IPI de carros por decreto",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "n_susp",
+    "m3": "sobe",
+    "m12": "estavel",
+    "just": "Durante a liminar a medida consta como suspensa."
+   },
+   {
+    "ind": "receita",
+    "m3": "sobe",
+    "m24": "estavel",
+    "just": "Com a rampa congelada, a renúncia é menor que na rota sem liminar (diferença positiva); depois do julgamento as rotas convergem."
+   },
+   {
+    "ind": "stf",
+    "m12": "desce",
+    "just": "Ação rejeitada: a tensão com o Supremo cai."
+   }
+  ]
+ },
+ {
+  "id": "liminar_derruba",
+  "descricao": "Medida suspensa por liminar e depois derrubada no plenário do STF (decreto do IPI tratado como inconstitucional): os efeitos já produzidos são desfeitos e a tensão com o STF sobe.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "id": "ipi",
+    "texto": "Zerar o IPI de carros por decreto",
+    "resultado": "aprovada"
+   },
+   {
+    "mes": 1,
+    "tipo": "adi",
+    "ref": "ipi",
+    "liminar": true,
+    "meses": 4,
+    "nivel": "inconstitucional"
+   }
+  ],
+  "controle": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Zerar o IPI de carros por decreto",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "n_susp",
+    "m3": "sobe",
+    "just": "Durante a liminar a medida consta como suspensa."
+   },
+   {
+    "ind": "n_derr",
+    "m12": "sobe",
+    "just": "Depois do julgamento a medida consta como derrubada."
+   },
+   {
+    "ind": "receita",
+    "m12": "sobe",
+    "m24": "sobe",
+    "just": "Derrubado o decreto, a renúncia desaparece (diferença positiva para o controle)."
+   },
+   {
+    "ind": "stf",
+    "m12": "sobe",
+    "just": "Derrota da Presidência no STF eleva a tensão."
+   },
+   {
+    "ind": "ap",
+    "m12": "desce",
+    "just": "Derrota no STF desgasta o governo."
+   }
+  ]
+ },
+ {
+  "id": "bizarra_ilegal_vs_legal",
+  "descricao": "Proposta bizarra ilegal (dar o nome do presidente a uma avenida de Brasília enquanto ele está no cargo, por decreto: promoção pessoal, CF art. 37 §1º) contra bizarra legal (Dia Nacional do Pastel de Feira, por lei): a ilegal é suspensa pelo STF e desgasta; a legal passa sem custo.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Dar o nome do presidente a uma avenida de Brasília enquanto ele estiver no cargo, por decreto",
+    "resultado": "stf"
+   }
+  ],
+  "controle": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Criar o Dia Nacional do Pastel de Feira por lei kkk",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "stf",
+    "m3": "sobe",
+    "just": "A tensão com o STF sobe quando uma medida é suspensa; a proposta legal não mexe nisso."
+   },
+   {
+    "ind": "ap",
+    "m3": "desce",
+    "just": "A derrota perante o STF desgasta o presidente; a proposta legal é só uma notícia leve."
+   },
+   {
+    "ind": "custo",
+    "m3": "estavel",
+    "m12": "estavel",
+    "just": "Nenhuma das duas tem custo relevante."
+   }
+  ]
+ },
+ {
+  "id": "bets_creches",
+  "descricao": "Tributo com destino (\"taxar bets para financiar creches\"): a receita do tributo e o gasto das creches devem aparecer, e a receita só chega depois de cumpridas as regras de vigência.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Aumentar o imposto das bets em 10 pontos do faturamento, por projeto de lei, para financiar a construção de creches",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "receita",
+    "m12": "sobe",
+    "m24": "sobe",
+    "just": "O tributo novo só rende depois da vigência; no fim do período a receita é maior que a do controle."
+   },
+   {
+    "ind": "custo",
+    "m12": "sobe",
+    "m24": "sobe",
+    "just": "As creches são despesa nova (obra e custeio), crescente com a implantação."
+   },
+   {
+    "ind": "g_empresariado",
+    "m3": "desce",
+    "just": "Setor de apostas e empresários reagem mal ao tributo."
+   }
+  ]
+ },
+ {
+  "id": "varias_medidas",
+  "descricao": "Várias medidas no mesmo texto: ampliar o Bolsa Família e taxar dividendos num só projeto de lei, contra o texto só com o Bolsa Família. A segunda medida precisa ser executada (receita nova e mercado reagindo).",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Por projeto de lei, aumentar o Bolsa Família para R$ 800 e taxar dividendos em 15%",
+    "resultado": "aprovada"
+   }
+  ],
+  "controle": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Por projeto de lei, aumentar o Bolsa Família para R$ 800",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "receita",
+    "m24": "sobe",
+    "just": "A parte do imposto sobre dividendos soma receita (depois da anterioridade)."
+   },
+   {
+    "ind": "custo",
+    "m12": "estavel",
+    "just": "A parte do Bolsa Família é a mesma nas duas rotas."
+   },
+   {
+    "ind": "g_mercado",
+    "m3": "desce",
+    "just": "Tributar dividendos desagrada ao mercado."
+   }
+  ]
+ },
+ {
+  "id": "corte_servidores",
+  "descricao": "Corte de gasto que atinge servidores (congelar salários do funcionalismo federal por 3 anos, por lei): a folha para de crescer, o primário melhora e os servidores e os sindicatos reagem mal.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Congelar o salário dos servidores públicos federais por 3 anos, por projeto de lei",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "g_servidores",
+    "m3": "desce",
+    "just": "O funcionalismo é o alvo direto."
+   },
+   {
+    "ind": "g_sindicatos",
+    "m3": "desce",
+    "just": "Centrais e sindicatos do setor público se opõem."
+   },
+   {
+    "ind": "prim",
+    "m12": "sobe",
+    "m24": "sobe",
+    "just": "Folha menor que a trajetória sem o congelamento melhora o primário."
+   },
+   {
+    "ind": "custo",
+    "m12": "desce",
+    "m24": "desce",
+    "just": "Menos despesa de pessoal."
+   }
+  ]
+ },
+ {
+  "id": "fonte_vs_sem_fonte",
+  "descricao": "Mesma medida com e sem fonte de custeio: ampliar o Bolsa Família \"sem dizer de onde vem o dinheiro\" contra ampliá-lo compensado por remanejamento do orçamento atual. Sem fonte, a despesa líquida é maior e o risco fiscal sobe.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Por projeto de lei, aumentar o Bolsa Família para R$ 800, sem dizer de onde vem o dinheiro",
+    "resultado": "aprovada"
+   }
+  ],
+  "controle": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Por projeto de lei, aumentar o Bolsa Família para R$ 800, compensado com remanejamento de recursos do orçamento atual",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "custo",
+    "m3": "sobe",
+    "m12": "sobe",
+    "just": "O remanejamento cobre parte da conta; sem fonte, a despesa líquida é maior."
+   },
+   {
+    "ind": "prim",
+    "m3": "desce",
+    "just": "Mais despesa líquida piora o primário."
+   },
+   {
+    "ind": "risco",
+    "m12": "sobe",
+    "just": "Despesa permanente sem fonte eleva o prêmio de risco (LRF, art. 17)."
+   },
+   {
+    "ind": "conf",
+    "m3": "desce",
+    "just": "Investidores punem a ausência de fonte."
+   }
+  ]
+ },
+ {
+  "id": "podcast_recusa",
+  "descricao": "Convite de podcast recusado (Flow, público jovem): a recusa custa a vitrine, a credibilidade e a aprovação dos jovens.",
+  "acoes": [
+   {
+    "mes": 1,
+    "tipo": "podcast",
+    "veic": "flow",
+    "aceitar": false
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "cred",
+    "m3": "desce",
+    "just": "Recusar convite de entrevista tira 1 ponto de credibilidade."
+   },
+   {
+    "ind": "g_jovens",
+    "m3": "desce",
+    "just": "Recusar um podcast de jovens custa aprovação desse público (efeito pequeno)."
+   },
+   {
+    "ind": "recusas",
+    "m3": "sobe",
+    "just": "A recusa fica registrada."
+   }
+  ]
+ },
+ {
+  "id": "podcast_aceita_vs_recusa",
+  "descricao": "Convite de podcast aceito (respostas de ajuste, as mais seguras) contra o mesmo convite recusado: o programa gasta uma ação, mas dá credibilidade e evita a perda de vitrine.",
+  "acoes": [
+   {
+    "mes": 1,
+    "tipo": "podcast",
+    "veic": "flow",
+    "aceitar": true,
+    "resposta": "ajuste"
+   }
+  ],
+  "controle": [
+   {
+    "mes": 1,
+    "tipo": "podcast",
+    "veic": "flow",
+    "aceitar": false
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "cred",
+    "m3": "sobe",
+    "just": "A recusa tira 1 ponto; a entrevista com compromissos de ajuste soma credibilidade."
+   },
+   {
+    "ind": "feitas",
+    "m3": "sobe",
+    "just": "Uma entrevista concluída a mais."
+   },
+   {
+    "ind": "g_jovens",
+    "m3": "sobe",
+    "just": "O público do podcast reage melhor a quem comparece do que a quem recusa."
+   }
+  ]
+ },
+ {
+  "id": "famoso_ataca",
+  "descricao": "Famoso grande ataca a medida: PEC da maioridade penal aos 16 anos (punitiva) provoca posts de famosos de esquerda com milhões de seguidores, e os grupos que eles seguem (jovens, universitários) perdem um pouco de aprovação.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Reduzir a maioridade penal para 16 anos, por PEC",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "fam_neg",
+    "m3": "sobe",
+    "just": "Pelo menos um famoso critica a medida (posts simulados)."
+   },
+   {
+    "ind": "g_universitarios",
+    "m3": "desce",
+    "just": "Universitários seguem os críticos e rejeitam a medida."
+   },
+   {
+    "ind": "g_jovens",
+    "m3": "desce",
+    "just": "Jovens seguem os críticos e rejeitam a medida."
+   }
+  ]
  }
 ]

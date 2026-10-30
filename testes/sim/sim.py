@@ -15,6 +15,9 @@
 #  4. Cada rodada executa as ações em JS puro dentro da página (sem digitar na interface): propor = analisaLocal(g, texto) e depois
 #     executaProposta (decreto/ato) ou enviaParaPauta + votação forçada (PL/PEC) ou MP (vigora na hora; fechaMP converte ou
 #     retiraItem revoga). O resultado do voto é forçado ("aprovada"), ou decidido pelo STF do jogo ("stf"), ou todo pelo jogo ("auto").
+#     Ações do painel Medidas e de outras telas (v3.9 do teste): `acelerar`, `ajustar`, `revogar`, `adi` (liminar/julgamento no STF), `podcast`
+#     (aceitar ou recusar o convite) e `live` (convite a um famoso); e, em `propor`/`enviar`, `desidratar` e `emendas` (negociação do Parecer).
+#     Todas chamam as funções do próprio jogo (medAcelera, medRevoga, entAceita, famLive...), expostas pelo gancho. Ver testes/sim/LEIAME.md.
 #  5. Em cada mês-alvo (3, 12, 24 meses depois do início) lê os indicadores e compara tratamento x controle por repetição (pareado).
 #     diferença média D, erro-padrão se = dp(d)/sqrt(n); limiar = max(Z*se, materialidade do indicador).
 #     sobe/desce: ok se o sinal bate e |D| > limiar; falha se o sinal é oposto e |D| > limiar; senão inconclusivo.
@@ -38,7 +41,8 @@ MESES = [3, 12, 24]
 
 # materialidade: diferença mínima (na unidade do indicador) para contar como efeito, abaixo disso é ruído de arredondamento do jogo
 MAT = {'pib': .03, 'ipca': .03, 'selic': .05, 'des': .03, 'dol': .02, 'risco': 2, 'conf': .3, 'divida': .05, 'prim': .5, 'ap': .15, 'pob': .03,
-       'hom': .1, 'desm': 20, 'idh': .0005, 'stf': .3, 'esc': .3, 'imp': .5, 'receita': .3, 'custo': .3, 'extra': .3, 'n_medidas': .5}
+       'hom': .1, 'desm': 20, 'idh': .0005, 'stf': .3, 'esc': .3, 'imp': .5, 'receita': .3, 'custo': .3, 'extra': .3, 'n_medidas': .5,
+       'n_ativas': .5, 'n_susp': .5, 'n_derr': .5, 'n_revog': .5, 'cred': .3, 'feitas': .5, 'recusas': .5, 'fam_neg': .5, 'fam_pos': .5}
 MAT_GRUPO = .15
 
 cenarios = json.load(open(CEN, encoding='utf-8-sig'))
@@ -47,10 +51,14 @@ if opts.get('so'):
 
 # ---------------------------------------------------------------- gancho no HTML
 FUNCS_OBR = ['executaProposta', 'fimDoMes', 'analisaLocal', 'aprovacao', 'primario', 'enviaParaPauta']
-FUNCS_OPC = ['fechaMP', 'retiraItem', 'decideVotacao', 'quorum', 'minMarca', 'gvMarca', 'tbMarca', 'riscoImpeachment']
+FUNCS_OPC = ['fechaMP', 'retiraItem', 'decideVotacao', 'quorum', 'minMarca', 'gvMarca', 'tbMarca', 'riscoImpeachment',
+             # ações do jogador nas telas Medidas, Parecer, entrevistas e X (cenários da v3.9 do teste; opcionais para rodar versões antigas)
+             'custoEmenda', 'medL', 'medPodeAcelerar', 'medAcelera', 'medPodeAjustar', 'medAjusta', 'medPodeRevogar', 'medRevoga', 'medAddProb',
+             'entEnsure', 'entAceita', 'entRecusa', 'entRespondeEntrev', 'entAvancaEntrev', 'entConcluiEntrev', 'famLive']
+OBJ_OPC = ['PARTIDOS', 'ENT_VEIC', 'FAMOSOS']
 ANCORA = "ReactDOM.createRoot(document.getElementById('root'))"
 GANCHO = ("(function(){const S={};" +
-          ''.join("try{S.%s=%s}catch(e){}" % (n, n) for n in FUNCS_OBR + FUNCS_OPC) +
+          ''.join("try{S.%s=%s}catch(e){}" % (n, n) for n in FUNCS_OBR + FUNCS_OPC + OBJ_OPC) +
           "window.__SIM=S;try{window.__QV=QV}catch(e){window.__QV=null}})();\n")
 src = open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()
 if src.count(ANCORA) != 1:
@@ -71,6 +79,12 @@ const IND = (g) => {
     prim: S.primario(g), ap: S.aprovacao(g), pob: g.soc.pob, hom: g.soc.hom, desm: g.soc.desm, idh: g.soc.idh, stf: g.stf, esc: g.escandalo,
     imp: S.riscoImpeachment ? S.riscoImpeachment(g) : null, receita: g.fiscal.receita, custo: g.fiscal.custo, extra: g.fiscal.extra,
     n_medidas: Array.isArray(g.medidas) ? g.medidas.length : 0 };
+  const ML = Array.isArray(g.medidas) ? g.medidas : [];
+  o.n_ativas = ML.filter(m => m.estado === 'ativa').length; o.n_susp = ML.filter(m => m.estado === 'suspensa').length;
+  o.n_derr = ML.filter(m => m.estado === 'derrubada').length; o.n_revog = ML.filter(m => m.estado === 'revogada').length;
+  o.cred = g.ent && g.ent.cred != null ? g.ent.cred : 50; o.feitas = g.ent ? (g.ent.feitas || 0) : 0; o.recusas = g.ent ? (g.ent.recusas || 0) : 0;
+  const FP = g.x && g.x.fam && g.x.fam.posts ? g.x.fam.posts : [];
+  o.fam_neg = FP.filter(p => p.tom === 'neg').length; o.fam_pos = FP.filter(p => p.tom === 'pos').length;
   for (const k of Object.keys(g.groups)) o['g_' + k] = g.groups[k];
   return o;
 };
@@ -82,7 +96,22 @@ function monta(g, a) {
   try { S.gvMarca && S.gvMarca(g, p, a.texto); } catch (e) { }
   p.fromEvento = false;
   try { S.tbMarca && S.tbMarca(p, a.texto); } catch (e) { }
+  // negociação da tela Parecer (iguais aos botões do jogo): "Desidratar o texto (-40% de impacto)" e "Emendas p/ partido"
+  for (let i = 0; i < (a.desidratar || 0); i++) {
+    p.scale *= .6; p.iv = { eco: p.iv.eco * .5, soc: p.iv.soc * .5 }; p.desidratada = (p.desidratada || 0) + 1;
+    for (const P of (S.PARTIDOS || [])) p.bonus[P.id] = (p.bonus[P.id] || 0) + 6;
+  }
+  if (a.emendas) {
+    if (!S.custoEmenda || !S.PARTIDOS) throw new Error('custoEmenda/PARTIDOS indisponíveis (emendas)');
+    const ids = Array.isArray(a.emendas) ? a.emendas : S.PARTIDOS.filter(P => P.id !== g.cfg.partido).sort((x, y) => y.cam - x.cam).slice(0, a.emendas).map(P => P.id);
+    p.emendasCusto = 0; g.negMes = g.negMes || {};
+    for (const pid of ids) { const c = S.custoEmenda(g, pid); g.fiscal.extra += c; g.negMes[pid] = (g.negMes[pid] || 0) + 1; p.bonus[pid] = (p.bonus[pid] || 0) + 14; p.emendasCusto += c; }
+  }
   return p;
+}
+function medDe(g, refs, ref) {  // medida (g.medidas) criada pela proposta de uma ação anterior
+  const r = refs[ref]; if (!r || !r.prop) return null;
+  return (S.medL(g) || []).find(m => m.pid === r.prop.id) || null;
 }
 function resultado(g, p, modo, congresso) {
   if (modo === 'aprovada' || modo == null) return 'aprovada';
@@ -98,15 +127,67 @@ function aplica(g, a, refs) {
     if (p.inst === 'PL' || p.inst === 'PEC' || p.inst === 'MP') {
       const r = S.enviaParaPauta(g, p);
       if (!r.ok) { L.erro = 'não enviou: ' + (r.msg || '?'); return L; }
-      refs[a.id || ('#' + Object.keys(refs).length)] = { item: r.item }; L.destino = r.destino;
+      refs[a.id || ('#' + Object.keys(refs).length)] = { item: r.item, prop: p }; L.destino = r.destino;
       if (a.tipo === 'enviar') { L.res = 'tramitando'; return L; }
       if (r.destino !== 'pauta') { L.erro = 'ficou na gaveta'; return L; }
       L.res = votar(g, r.item, a.resultado, L);
     } else {
       L.res = resultado(g, p, a.resultado || 'stf', cong);
+      refs[a.id || ('#' + Object.keys(refs).length)] = { prop: p };
       const ex = S.executaProposta(g, p, L.res); L.agendados = ex && ex.agendados;
     }
+    if (p.emendasCusto) L.emendas_custo = Math.round(p.emendasCusto * 100) / 100;
+    if (p.desidratada) L.desidratada = p.desidratada;
+    const FM = g.x && g.x.fam && g.x.fam.posts ? g.x.fam.posts.filter(q => q.mes === g.mes) : [];
+    if (FM.length) L.famosos = FM.map(q => q.nome + ':' + q.tom);
+    const M0 = S.medL ? (S.medL(g) || []).find(m => m.pid === p.id) : null; if (M0) { L.medida = { tipo: M0.tipo, estado: M0.estado, dReg: M0.dReg, mPleno: M0.mPleno - g.mes }; }
     return L;
+  }
+  if (['acelerar', 'ajustar', 'revogar', 'adi'].includes(a.tipo)) {
+    if (!S.medL) { L.erro = 'o jogo não tem g.medidas (versão anterior à v3.6)'; return L; }
+    const M = medDe(g, refs, a.ref); if (!M) { L.erro = 'a medida de ' + a.ref + ' não existe (proposta não aprovada, ou sem ciclo de vida)'; return L; }
+    L.topic = M.topic; L.medida = { tipo: M.tipo, estado: M.estado };
+    if (a.tipo === 'acelerar') { const pa = S.medPodeAcelerar(g, M); if (!pa.ok) { L.erro = 'não pôde acelerar: ' + pa.t; return L; } S.medAcelera(g, M.id); L.res = 'acelerada'; return L; }
+    if (a.tipo === 'ajustar') { const pa = S.medPodeAjustar(g, M); if (!pa.ok) { L.erro = 'não pôde ajustar: ' + pa.t; return L; } S.medAjusta(g, M.id); L.res = 'ajustada'; return L; }
+    if (a.tipo === 'revogar') {
+      const pr = S.medPodeRevogar(g, M); if (!pr.ok) { L.erro = 'não pôde revogar: ' + pr.t; return L; }
+      const precisaLei = S.medRevoga(g, M.id);
+      if (!precisaLei) { L.res = 'revogada por ato próprio'; return L; }
+      // decreto/ato próprio: já revogou. MP/PL/PEC: o painel leva o texto "Revogar…" à Mesa e o jogador o propõe como qualquer proposta
+      const sub = aplica(g, { tipo: 'propor', texto: g.revogPend.texto, resultado: a.resultado || 'aprovada', id: (a.id || a.ref) + '_rev' }, refs);
+      L.res = 'revogação levada à Mesa: ' + (sub.res || sub.erro); L.inst_revogacao = sub.inst; if (sub.erro) L.erro = sub.erro; return L;
+    }
+    // adi: ação no STF contra a medida (liminar ou não); o julgamento sai em `meses` meses pelo próprio jogo (medProblemas). nivel força o nível de risco
+    // constitucional que o plenário enxerga ('ok' => rejeita; 'inconstitucional' => derruba na maioria das sementes).
+    if (a.nivel) M.stfNivel = a.nivel;
+    const fim = g.mes + (a.meses || 2), lim = a.liminar !== false;
+    S.medAddProb(M, 'adi', g.mes, fim, { lim, autor: 'um partido de oposição' });
+    if (lim) { M.estado = 'suspensa'; M.susp = g.mes; }
+    L.res = lim ? 'suspensa por liminar até o mês ' + fim : 'ação no STF sem liminar'; return L;
+  }
+  if (a.tipo === 'podcast') {  // convite de entrevista/podcast: aceitar (responde todas as perguntas) ou recusar
+    if (!S.entEnsure || !S.ENT_VEIC) { L.erro = 'o jogo não tem entrevistas (v3.8)'; return L; }
+    const E = S.entEnsure(g), vk = a.veic || 'flow', cid = 'sim' + g.mes + vk;
+    if (!S.ENT_VEIC[vk]) { L.erro = 'veículo desconhecido: ' + vk; return L; }
+    E.convites.push({ id: cid, veic: vk, mes: g.mes, estado: 'pendente' });
+    if (a.aceitar === false) { S.entRecusa(g, cid); L.res = 'recusado'; L.cred = E.cred; return L; }
+    if (!S.entAceita(g, cid)) { L.erro = 'não aceitou o convite (sem ação no mês?)'; return L; }
+    const R = E.entrev; const arq = a.resposta || 'ajuste'; let dap = 0;
+    for (let i = 0; i < R.qs.length; i++) {
+      const q = R.qs[i], op = (q.ops.find(o => o.k === arq) || q.ops[0]).k;
+      const res = S.entRespondeEntrev(g, op, ''); if (res) dap += res.dap; S.entAvancaEntrev(g);
+    }
+    S.entConcluiEntrev(g); L.res = 'aceito'; L.perguntas = R.qs.length; L.dap = Math.round(dap * 100) / 100; L.cred = E.cred; return L;
+  }
+  if (a.tipo === 'live') {  // convite a um famoso para uma live (suaviza o próximo ataque dele)
+    if (!S.famLive) { L.erro = 'o jogo não tem famLive (v3.8)'; return L; }
+    let nome = a.nome;
+    if (nome === 'auto') {  // o famoso que mais seguidores tem entre os que já criticaram alguma medida
+      const FP = (g.x && g.x.fam && g.x.fam.posts ? g.x.fam.posts : []).filter(q => q.tom === 'neg').sort((x, y) => y.s - x.s);
+      if (!FP.length) { L.erro = 'nenhum famoso criticou ainda'; return L; }
+      nome = FP[0].nome;
+    }
+    L.nome = nome; L.res = S.famLive(g, nome) ? 'live feita' : 'live não feita'; return L;
   }
   if (a.tipo === 'votar' || a.tipo === 'retirar') {
     const ref = refs[a.ref]; if (!ref) { L.erro = 'referência desconhecida ' + a.ref; return L; }
@@ -214,7 +295,7 @@ with sync_playwright() as p:
     faltam = pg.evaluate("(o)=>o.filter(n=>typeof (window.__SIM||{})[n]!=='function')", FUNCS_OBR)
     if faltam:
         print('ERRO: o gancho não achou funções obrigatórias do jogo: %s. A versão mudou os nomes? Ajuste FUNCS_OBR/ANCORA em sim.py.' % faltam); sys.exit(3)
-    ausentes_opc = pg.evaluate("(o)=>o.filter(n=>typeof (window.__SIM||{})[n]!=='function')", FUNCS_OPC)
+    ausentes_opc = pg.evaluate("(o)=>o.filter(n=>typeof (window.__SIM||{})[n]!=='function')", FUNCS_OPC) + pg.evaluate("(o)=>o.filter(n=>typeof (window.__SIM||{})[n]!=='object')", OBJ_OPC)
     ok = pg.evaluate("()=>{const q=window.__QV; if(!q||!q.gRef||!q.gRef.current) return false; window.__base=structuredClone(q.gRef.current); return true}")
     if not ok:
         print('ERRO: não consegui ler o estado do jogo (window.__QV.gRef.current). A partida não iniciou?'); sys.exit(3)
@@ -267,7 +348,7 @@ with sync_playwright() as p:
                                  'media_ctrl': media([a['snaps'][str(m)][ind] for a in ct if a['snaps'].get(str(m))]), 'n': len(d), 'just': e.get('just')},
                                 **{k: round(x, 4) if isinstance(x, float) else x for k, x in info.items()}))
         for k in cnt: tot[k] += cnt[k]
-        saida.append({'id': c['id'], 'descricao': c['descricao'], 'acoes_executadas': tr[0]['log'], 'over': [a['over'] for a in tr if a['over']], 'impeachment_evitado_tratamento': sum(1 for a in tr if a.get('impMes')), 'impeachment_evitado_controle': sum(1 for a in ct if a.get('impMes')),
+        saida.append({'id': c['id'], 'descricao': c['descricao'], 'acoes_executadas': tr[0]['log'], 'acoes_controle': ct[0]['log'], 'over': [a['over'] for a in tr if a['over']], 'impeachment_evitado_tratamento': sum(1 for a in tr if a.get('impMes')), 'impeachment_evitado_controle': sum(1 for a in ct if a.get('impMes')),
                       'erros': sorted({l['erro'] for a in tr for l in a['log'] if l.get('erro')}), 'resumo': cnt, 'resultados': res, 'segundos': round(time.time() - ts, 1)})
         print('%-22s ok=%-2d falha=%-2d inconcl=%-2d info=%-2d  (%.0fs)%s' % (c['id'], cnt['ok'], cnt['falha'], cnt['inconclusivo'], cnt['info'], time.time() - ts,
               ('  ERROS: ' + '; '.join(saida[-1]['erros'])) if saida[-1]['erros'] else ''))

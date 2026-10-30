@@ -13,7 +13,7 @@ python3 testes/sim/relatorio.py $S/sim_saida.json                  # tabela cen�
 python3 testes/sim/relatorio.py $S/sim_v35.json $S/sim_v36.json    # só o que mudou de veredito entre duas versões
 ```
 Opções de `sim.py`: `--so=id1,id2` roda só alguns cenários; `--z=2.3` (limiar em erros-padrão); `--com-impeachment` deixa o impeachment encerrar a rodada;
-`--traj=<id>[:ind1,ind2]` imprime a diferença tratamento-controle mês a mês (para depurar um cenário). 18 cenários x 8 repetições levam ~1,5 min.
+`--traj=<id>[:ind1,ind2]` imprime a diferença tratamento-controle mês a mês (para depurar um cenário). 39 cenários x 8 repetições levam ~3 min.
 
 ## Método
 1. Uma partida é criada pela interface (mesmo roteiro de `testes/regressao/batch3.py`) e o estado `g` logo após "Tomar posse" é guardado. Todas as rodadas partem de um clone dele.
@@ -41,6 +41,29 @@ Lista de objetos: `id`, `descricao`, `acoes` (lista de `{mes, tipo: propor|envia
 
 Indicadores: `pib ipca selic des dol risco conf divida prim ap pob hom desm idh stf esc imp receita custo extra n_medidas` (`receita`/`custo`/`extra` = `g.fiscal`, fluxo anual direto
 das medidas; `prim` inclui o efeito do PIB; `n_medidas` = `g.medidas.length`, 0 antes da Etapa 2) e `g_<grupo>` (aprovação de cada grupo: `g_servidores`, `g_mercado`, ...).
+
+## Ações do jogador no painel Medidas, na tela Parecer, em entrevistas e no X (v3.9 do teste)
+Além de `propor`, `enviar`, `votar` e `retirar`, o `sim.py` executa as decisões abaixo chamando as funções do próprio jogo (todas expostas no gancho `window.__SIM`;
+em versões sem a função, a ação registra `erro` em `acoes_executadas` em vez de derrubar o teste). Cada ação referencia, em `ref`, o `id` da proposta que criou a medida.
+
+| tipo | campos | o que faz no jogo |
+|---|---|---|
+| `acelerar` | `ref` | botão "Acelerar" do painel Medidas (`medAcelera`): antecipa o efeito pleno em ~30% do prazo restante, custa 1 ação e ~6% a mais de custo. Registra `erro` se o jogo não permitir (fase, limite de 2, menos de 2 meses). |
+| `ajustar` | `ref` | botão "Ajustar" (`medAjusta`): resolve o problema ativo da medida ou antecipa o regulamento. |
+| `revogar` | `ref`, `resultado` | botão "Revogar" (`medRevoga`). Decreto/ato próprio: revoga na hora (85% do efeito desfeito, grupos -0,8, escândalo +1). MP/PL/PEC: o painel leva "Revogar ..." à Mesa (`g.revogPend`) e o sim o propõe como qualquer proposta (`resultado`, padrão `aprovada`). |
+| `adi` | `ref`, `liminar` (padrão true), `meses` (padrão 2), `nivel` | simula uma ação no STF contra a medida: com liminar a medida fica `suspensa` (a rampa congela) até o julgamento, que o próprio jogo decide em `medProblemas` (`julgamentoSTF`). `nivel` (`ok`, `controverso`, `inconstitucional`) força o risco constitucional que o plenário enxerga: `ok` rejeita (cronograma retomado), `inconstitucional` derruba (efeitos desfeitos, tensão com o STF +8). Sem isso, a ADI só aparece por sorteio no jogo e não dá para testá-la. |
+| `podcast` | `veic` (padrão `flow`), `aceitar` (padrão true), `resposta` (arquétipo: `ajuste`, `defesa`, `ataque`, `pivo`) | cria um convite do veículo e o recusa (`entRecusa`: custo de vitrine) ou o aceita (`entAceita`), responde a todas as perguntas com o arquétipo e conclui (`entConcluiEntrev`). |
+| `live` | `nome` (ou `auto`: o famoso mais seguido entre os que já criticaram) | "Convidar para live" um famoso (`famLive`): gasta 1 ação e pode suavizar o próximo ataque dele. Sem cenário: o efeito (~0,1 ponto) fica abaixo do ruído, porque quem ataca cada medida é sorteado por texto e mês. |
+| `propor`/`enviar` + `desidratar` | número de vezes (0 a 2) | "Desidratar o texto (-40% de impacto)" da tela Parecer: `scale *= 0,6`. |
+| `propor`/`enviar` + `emendas` | número de partidos (os maiores fora o do jogador) ou lista de ids | "Emendas p/ partido": soma `custoEmenda` em `g.fiscal.extra` e o bônus de voto. Só o custo é testável aqui, porque o voto é forçado. |
+
+Indicadores novos: `n_ativas`, `n_susp`, `n_derr`, `n_revog` (medidas em cada estado), `cred`, `feitas`, `recusas` (credibilidade e contagem de entrevistas), `fam_neg`, `fam_pos`
+(posts de famosos contra e a favor das medidas, `g.x.fam.posts`). `acoes_executadas` também mostra `medida` (tipo, estado, prazo), `famosos` (quem comentou e o tom),
+`emendas_custo`, `desidratada`, `cred` e `dap` do podcast. O jogo zera `g.fiscal.extra` a cada novo exercício (mês 12), por isso as emendas só aparecem no mês 3.
+
+Cenários dessas decisões (17): `mp_converte_vs_pl`, `mp_caduca_vs_pl`, `emendas_custo`, `desidrata_vs_integral`, `acelera_obra`, `revoga_decreto_painel`, `revoga_lei_painel`,
+`liminar_retoma`, `liminar_derruba`, `bizarra_ilegal_vs_legal`, `bets_creches`, `varias_medidas`, `corte_servidores`, `fonte_vs_sem_fonte`, `podcast_recusa`,
+`podcast_aceita_vs_recusa`, `famoso_ataca` (o efeito do famoso vem misturado ao da própria medida; a prova de que ele atacou é o indicador `fam_neg`). Quase todos usam `controle` com a rota alternativa, para medir só o efeito da decisão.
 
 ## Veredito
 Por repetição: `d = tratamento - controle`; `D` = média, `se` = dp/raiz(n); limiar = max(Z*se, materialidade do indicador) (tabela `MAT` em `sim.py`).

@@ -1,0 +1,3838 @@
+[
+ {
+  "t": "Tributar em 1% ao ano o patrimônio de quem tem mais de R$ 50 milhões",
+  "area": "tributos",
+  "tema": [
+   "patrimonios?|fortunas?|riquezas?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PLP",
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   3,
+   60
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "IGF previsto no art. 153, VII, depende de lei complementar nunca editada; base de poucos milhares de contribuintes; arrecadação de dezenas de bi com muita incerteza.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Eliminar a tarifa de importação de tratores e colheitadeiras",
+  "area": "tributos",
+  "tema": [
+   "trator|colheitadeiras?|maquinas?|importac(?:ao|oes)|tarifas?|agrics?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "ADM",
+   "DEC",
+   "COM",
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": [
+   -4,
+   -0.1
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "II é alterável pelo Executivo (CF 153 §1º; Camex). Máquinas agrícolas importadas pagam poucos bilhões em II.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Dobrar as vagas do Fies com juros zero para estudantes de baixa renda",
+  "area": "educação",
+  "tema": [
+   "fies|financiamentos?|vagas?|estudantils?"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "MP",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0.5,
+   25
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Fies é regido pela Lei 10.260/2001; ampliar vagas é decisão de orçamento e de edital; custo de subsídio de alguns bi por ano.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Construir 2 mil escolas técnicas federais",
+  "area": "educação",
+  "tema": [
+   "escolas?|tecnics?|institutos? feder(?:al|ais)|profission(?:al|ais)"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0.5,
+   25
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   90
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Rede federal tem ~700 campi; 2 mil unidades a R$ 15-30 mi cada somam dezenas de bi em obra mais custeio.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Contratar 20 mil agentes comunitários de saúde para as equipes de saúde da família",
+  "area": "saúde",
+  "tema": [
+   "agentes?|comunitaris?|saudes?"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "MP",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0.3,
+   8
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Piso dos ACS definido pela EC 120/2022 e Lei 11.350/2006; 20 mil x ~R$ 3,5 mil x 13 = ~R$ 1 bi.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Zerar a fila de exames de ressonância e tomografia no SUS com mutirões",
+  "area": "saúde",
+  "tema": [
+   "filas?|exames?|imagem|mutir(?:ao|oes)|diagnostics?|ressonancias?|tomografias?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "ADM",
+   "DEC",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.5,
+   15
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Mutirão de diagnóstico é gasto de custeio do SUS; ordem de grandeza de alguns bi.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Instalar câmeras corporais em todos os agentes da Polícia Federal e da PRF",
+  "area": "segurança",
+  "tema": [
+   "cameras?|corpor(?:al|ais)|policias? feder(?:al|ais)|prf|polici(?:al|ais)"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0,
+   3
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   5
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Câmeras corporais já usadas em PMs estaduais; PF e PRF somam ~25 mil agentes; custo de alguns centenas de milhões.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Endurecer a pena de quem fraudar benefícios do INSS de aposentados e pensionistas",
+  "area": "segurança",
+  "tema": [
+   "fraudes?|inss|aposentads?|penas?|pensionistas?"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Alteração do Código Penal (estelionato previdenciário, art. 171 §3º) por lei ordinária; custo desprezível.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Criar um fundo para recuperar 10 milhões de hectares de pastagem degradada",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "pastagem|degradads?|recuper|restaur"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0.5,
+   30
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   40
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Plano ABC+ e restauração já têm linhas de crédito; fundo novo exige lei; ordem de grandeza R$ 2-10 bi/ano.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Proibir o uso de copos e canudos de plástico descartável nos órgãos públicos federais",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "plasticos?|descartav(?:el|eis)|copos?|canudos?"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "DEC",
+   "ADM",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Ato do Executivo sobre suas próprias compras; custo desprezível.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Instalar painéis solares em todos os prédios públicos federais",
+  "area": "energia e mineração",
+  "tema": [
+   "solar|pain(?:el|eis)|predios?|fotovoltaics?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0.1,
+   8
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   15
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Geração distribuída em prédios públicos (Lei 14.300/2022 regula a GD); investimento de alguns bi com economia na conta de luz.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Construir linhas de transmissão para escoar a energia eólica e solar do Nordeste",
+  "area": "energia e mineração",
+  "tema": [
+   "transmiss(?:ao|oes)|eolics?|solar|linhas?|energias?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "PL",
+   "DEC",
+   "MP"
+  ],
+  "custo": [
+   0,
+   5
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   70
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Transmissão é leiloada pela Aneel e paga na tarifa; efeito direto no Tesouro é pequeno.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Concluir a Ferrovia de Integração Oeste-Leste na Bahia",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "ferrovias?|fiols?|oestes?|integrac(?:ao|oes)"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0,
+   10
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   40
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Obra em andamento, com trecho concedido; investimento de dezenas de bi ao longo de anos.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Dragar os principais portos do Sul e do Nordeste",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "portos?|dragagem|dragar"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0,
+   5
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   15
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Dragagem de portos públicos é contratação da União/autoridades portuárias; poucos bi.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Taxar a exportação de soja em grão para estimular o processamento no país",
+  "area": "agro",
+  "tema": [
+   "sojas?|exportac(?:ao|oes)|graos?|processamentos?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "DEC",
+   "ADM",
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": [
+   1,
+   40
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Imposto de exportação (CF 153 II) tem alíquotas alteráveis pelo Executivo (153 §1º); exportação de soja ~US$ 50 bi; alíquota baixa já rende bilhões.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Dobrar a assistência técnica gratuita para a agricultura familiar",
+  "area": "agro",
+  "tema": [
+   "assistencias? tecnicas?|ater|extens(?:ao|oes)|rur(?:al|ais)|agriculturas? familiar"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "MP",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0.2,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Ater federal hoje na casa de centenas de milhões; dobrar custa de centenas de milhões a poucos bi.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Criar um cartão de R$ 200 por mês para comprar comida para quem tem renda de até meio salário mínimo por pessoa e não recebe Bolsa Família",
+  "area": "assistência social e renda",
+  "tema": [
+   "cart(?:ao|oes)|alimentas?|auxilios?|rendas?|comidas?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   5,
+   70
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Público potencial de milhões de famílias; R$ 200 x 12 x 5-15 milhões = R$ 12-36 bi.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Dar um complemento de renda para idosos informais sem aposentadoria",
+  "area": "assistência social e renda",
+  "tema": [
+   "idosos?|inform(?:al|ais)|complementos?|rendas?|aposentadorias?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   2,
+   60
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "BPC já cobre idosos de baixa renda a partir de 65 anos; complemento novo teria alguns milhões de beneficiários.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Zerar o IOF do crédito para microempreendedores e pequenas empresas",
+  "area": "economia e crédito",
+  "tema": [
+   "iof|creditos?|pequens?|micros?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "DEC",
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": [
+   -6,
+   -0.1
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "IOF é alterável por decreto (CF 153 §1º); IOF-crédito PJ rende poucos bi.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Criar um fundo garantidor para financiar startups de tecnologia",
+  "area": "economia e crédito",
+  "tema": [
+   "startups?|fundos?|garants?|inovac(?:ao|oes)|tecnologias?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Fundos garantidores (FGI/BNDES) existem; um novo exige lei ou aporte; poucos bi.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Vender as participações em empresas privadas que o BNDESPar tem",
+  "area": "estatais e privatização",
+  "tema": [
+   "bndespar|participac(?:ao|oes)|participacoes|acoes|vendas?"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL",
+   "COM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": [
+   5,
+   200
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Carteira do BNDESPar vale dezenas a ~R$ 100 bi (Petrobras, Vale, JBS, etc.).",
+  "tipo": "bem"
+ },
+ {
+  "t": "Abrir o capital dos Correios",
+  "area": "estatais e privatização",
+  "tema": [
+   "correios|capit(?:al|ais)|ipo|privatizs?|aberturas?"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": [
+   0,
+   30
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Serviço postal é monopólio da União (CF 21, X; ADPF 46); mudar exige lei; valor de mercado incerto.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Criar cota de 30% para mulheres nos conselhos de administração das estatais federais",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "cotas?|mulher|conselhos?|estat(?:al|ais)|administrac(?:ao|oes)"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 13.303/2016 (estatais) não traz cota; altera governança por lei ordinária; sem custo.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Obrigar os planos de saúde a cobrir a hormonioterapia de pessoas trans",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "hormons?|trans|planos?|saudes?|coberturas?"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "ANS define o rol; a obrigação pode vir por lei ou resolução da ANS; custo para as operadoras, não para a União.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Acabar com a reeleição de prefeitos e governadores",
+  "area": "política e eleições",
+  "tema": [
+   "reeleic(?:ao|oes)|prefeitos?|governador"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Reeleição é permitida por uma vez pelo art. 14, §5º (EC 16/1997); mudar exige PEC; não é cláusula pétrea em sentido estrito.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Adotar o voto em lista fechada para eleger deputados",
+  "area": "política e eleições",
+  "tema": [
+   "listas?|votos?|proporcion(?:al|ais)|deputads?|sistemas? eleitor(?:al|ais)"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Sistema proporcional do art. 45; lista fechada é possível por lei, embora muitos defendam PEC; sem custo.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Obrigar os aplicativos de entrega a mostrar ao entregador quanto cobram de comissão em cada corrida",
+  "area": "digital e tecnologia",
+  "tema": [
+   "aplicativos?|entregas?|comiss(?:ao|oes)|repasses?|transparencias?"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Regra de transparência por lei ordinária; sem custo fiscal.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Criar uma nuvem soberana do governo federal em data centers dentro do Brasil",
+  "area": "digital e tecnologia",
+  "tema": [
+   "nuvem|datas? center|soberans?|clouds?|dados"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0,
+   5
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   10
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Serpro e Dataprev já operam nuvem de governo; ampliar custa poucos bi.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Zerar a tarifa de importação de carros elétricos",
+  "area": "relações exteriores e comércio",
+  "tema": [
+   "eletrics?|carros?|veiculos?|importac(?:ao|oes)|tarifas?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "ADM",
+   "DEC",
+   "COM"
+  ],
+  "custo": null,
+  "receita": [
+   -4,
+   0
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "II de veículos elétricos foi retomado em escala (10% em 2024 até 35% em 2026) por ato da Gecex/Camex; zerar volta a renúncia de pouco bilhão.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Enviar militares brasileiros para uma missão de paz da ONU",
+  "area": "relações exteriores e comércio",
+  "tema": [
+   "onu|miss(?:ao|oes)|paz|tropas?|militar"
+  ],
+  "dir": "cria",
+  "inst": [
+   "AUT",
+   "COM",
+   "DEC",
+   "PL"
+  ],
+  "custo": [
+   0,
+   2
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Participação em missão da ONU exige autorização do Congresso (CF 49, I e 84, XIX); custo de centenas de milhões, em parte reembolsado pela ONU.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Construir uma biblioteca pública em cada município que não tem",
+  "area": "cultura e esporte",
+  "tema": [
+   "bibliotecas?|municipios?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0,
+   3
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   5
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Sistema Nacional de Bibliotecas Públicas; poucas centenas de municípios sem biblioteca; custo de centenas de milhões.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Reconhecer os terreiros de religiões de matriz africana como patrimônio cultural",
+  "area": "cultura e esporte",
+  "tema": [
+   "terreiros?|patrimonios?|candombles?|matrizs? africanas?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Tombamento e registro são atos do Iphan; sem custo relevante.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Financiar a reforma de 500 mil casas em favelas e periferias com recurso a fundo perdido",
+  "area": "habitação e cidades",
+  "tema": [
+   "reformas?|favelas?|casas?|moradias?|melhorias?|periferias?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   1,
+   40
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Reforma de casa a R$ 10-30 mil por unidade: R$ 5-15 bi no total.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Usar imóveis vazios da União para moradia popular",
+  "area": "habitação e cidades",
+  "tema": [
+   "imov(?:el|eis)|imoveis|vazios?|uniaos?|moradias?|minhas? casas?"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "SPU gerencia imóveis; cessão para HIS é prática; custo de reforma de poucos bi.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Contratar 10 mil servidores para zerar a fila de análise do INSS",
+  "area": "administração pública",
+  "tema": [
+   "inss|filas?|servidor|contrats?"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "ADM",
+   "MP",
+   "DEC"
+  ],
+  "custo": [
+   0.3,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Cargos criados por lei de iniciativa do presidente (CF 61 §1º, II, a); 10 mil x R$ 12 mil x 13 = ~R$ 1,5 bi.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Vender os imóveis ociosos do governo federal",
+  "area": "administração pública",
+  "tema": [
+   "imoveis|imov(?:el|eis)|ocios|vendas?|patrimonios?"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL",
+   "MP",
+   "COM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": [
+   1,
+   60
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Alienação de imóveis da União (SPU) é autorizada por Lei 9.636/1998; receita única de alguns bi.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Exigir oito dos onze votos no STF para derrubar uma lei federal",
+  "area": "Judiciário e Constituição",
+  "tema": [
+   "stf|maiorias?|votos|inconstitucion(?:al|ais)|supremos?|lei"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Art. 97 exige maioria absoluta (6 de 11); elevar o quórum exige PEC; controverso por reduzir o controle de constitucionalidade.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Limitar os pedidos de vista no STF a um prazo máximo de 30 dias",
+  "area": "Judiciário e Constituição",
+  "tema": [
+   "vistas?|stf|ministros?|supremos?|prazos?"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Vista é regra do Regimento do STF (hoje 90 dias, ER 58/2022); disciplinar por lei ou PEC é debatido.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Criar um seguro-desemprego de seis meses para motoristas de aplicativo",
+  "area": "trabalho e previdência",
+  "tema": [
+   "aplicativos?|seguro-desemprego|seguros? desempregos?|motoristas?|desempregos?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0.5,
+   20
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Seguro-desemprego exige vínculo e contribuição ao FAT; ampliar a autônomos exige lei; ~1,5 mi de motoristas.",
+  "tipo": "bem"
+ },
+ {
+  "t": "Dar ao pai trabalhador um mês de licença depois que o filho nasce",
+  "area": "trabalho e previdência",
+  "tema": [
+   "licencas?|paternidades?|pai"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "PEC"
+  ],
+  "custo": [
+   0,
+   8
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "ADCT art. 10, §1º fixa 5 dias até lei; STF (ADO 20) cobrou o Congresso; custo para empregadores e INSS, de centenas de milhões a poucos bi.",
+  "tipo": "bem"
+ },
+ {
+  "t": "aumentr o salario dos profesores pra no minimo 6 mil",
+  "area": "educação",
+  "tema": [
+   "professor|salarios?|pisos?|docentes?|magisterios?"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   0.5,
+   150
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Piso do magistério é lei federal (Lei 11.738/2008); elevar a R$ 6 mil pesa sobretudo em estados e municípios; custo federal via complementação, ordem de grandeza ampla.",
+  "tipo": "mal"
+ },
+ {
+  "t": "zera imposto de carro popular ai",
+  "area": "tributos",
+  "tema": [
+   "carros?|veiculos?|automoves?|ipi|popular|impostos?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "DEC",
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": [
+   -8,
+   -0.3
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "IPI de carros populares (alíquota 0-7%) é alterável por decreto; arrecadação de poucos bi.",
+  "tipo": "mal"
+ },
+ {
+  "t": "BOLSA FAMILIA TEM Q SER 1000 REAIS",
+  "area": "assistência social e renda",
+  "tema": [
+   "bolsas? familias?|bolsas?|beneficios?"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   30,
+   250
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Piso atual R$ 600 (Lei 14.601/2023), média ~R$ 670; subir para R$ 1.000 para ~20 mi de famílias soma dezenas a centenas de bi.",
+  "tipo": "mal"
+ },
+ {
+  "t": "pq nao taxam as bet mais pesado, é so dinheiro entrando",
+  "area": "tributos",
+  "tema": [
+   "bet|apostas?|jogos?"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": [
+   0.5,
+   25
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Bets pagam 12% do GGR (Lei 14.790/2023); mais alíquota rende bilhões.",
+  "tipo": "mal"
+ },
+ {
+  "t": "queria q o governo pagasse o aluguel de quem ganha pouco",
+  "area": "habitação e cidades",
+  "tema": [
+   "alugues?|moradias?|habitac(?:ao|oes)"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   2,
+   70
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Subsídio de aluguel para a baixa renda; milhões de famílias de aluguel; dezenas de bi.",
+  "tipo": "mal"
+ },
+ {
+  "t": "escola em tempo integral pra todas as criansas ate o fim do mandato",
+  "area": "educação",
+  "tema": [
+   "escolas?|tempos? integr(?:al|ais)|integr(?:al|ais)"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   3,
+   150
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Escola integral é meta do PNE (Lei 13.005/2014) e já tem programa federal; universalizar custaria dezenas a centenas de bi, sobretudo de estados e municípios.",
+  "tipo": "mal"
+ },
+ {
+  "t": "da pra baixar os juros por decreto ne? ta impossivel viver assim",
+  "area": "economia e crédito",
+  "tema": [
+   "juros?|selics?|bancos? centr(?:al|ais)"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "COM",
+   "ADM",
+   "DEC",
+   "MP",
+   "PL",
+   "PLP",
+   "PEC",
+   "AUT"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Selic é fixada pelo Copom; o BC tem autonomia (LC 179/2021); decreto não pode determinar juro básico. O motor deve apontar ao menos controvérsia ou inconstitucionalidade.",
+  "tipo": "mal"
+ },
+ {
+  "t": "liberar as arma pra todo mundo q qr",
+  "area": "segurança",
+  "tema": [
+   "armas?|portes?|posses?|desarmamentos?"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Estatuto do Desarmamento (Lei 10.826/2003); flexibilização por decreto foi contestada no STF; liberar geral é política polêmica.",
+  "tipo": "mal"
+ },
+ {
+  "t": "acaba com o imposto de renda de quem ganha ate 3 salarios",
+  "area": "tributos",
+  "tema": [
+   "impostos? de rendas?|ir|isenc(?:ao|oes)|salarios?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   -100,
+   0
+  ],
+  "unico": null,
+  "jaVigente": "Lei 15.270/2025",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Em 2027 quem ganha até R$ 5 mil (mais que 3 salários) já é isento (Lei 15.270/2025); a proposta repete a norma, custo bruto de dezenas de bi, nunca a extinção do IRPF inteiro (~R$ 300 bi).",
+  "tipo": "mal"
+ },
+ {
+  "t": "mais medico pro interior, o povo morre na fila",
+  "area": "saúde",
+  "tema": [
+   "medicos?|interior|saudes?|mais medicos"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "MP",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0.5,
+   15
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Mais Médicos (Lei 12.871/2013, retomado em 2023) já existe; ampliar custa alguns bi.",
+  "tipo": "mal"
+ },
+ {
+  "t": "cortar 20 por cento do salario de deputado e senador",
+  "area": "administração pública",
+  "tema": [
+   "salarios?|deputads?|senador|parlamentar|subsidios?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL",
+   "PEC"
+  ],
+  "custo": [
+   -1,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Subsídio parlamentar é fixado por decreto legislativo/lei de cada Casa (CF 49, VII e VIII; 37, X); iniciativa do presidente não vale; economia de dezenas de milhões.",
+  "tipo": "mal"
+ },
+ {
+  "t": "ISENTAR DE IMPOSTO QUEM VENDE DOCE NA RUA",
+  "area": "tributos",
+  "tema": [
+   "impostos?|isenc(?:ao|oes)|ambulantes?|doces?|mei|inform(?:al|ais)|pequens?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL",
+   "PLP"
+  ],
+  "custo": null,
+  "receita": [
+   -3,
+   0
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Tributação do pequeno comerciante informal é matéria do Simples/MEI (LC 123/2006); isenção por LC; custo baixo.",
+  "tipo": "mal"
+ },
+ {
+  "t": "vamo privatizar o porto de santos de uma vez",
+  "area": "estatais e privatização",
+  "tema": [
+   "portos?|santos|privatizas?|concess|desestatizas?"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PL",
+   "ADM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": [
+   2,
+   80
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Porto de Santos tem processo de desestatização em curso (Docas); outorga de dezenas de bi em jogo.",
+  "tipo": "mal"
+ },
+ {
+  "t": "quero muito q acabe com o foro privelegiado de vez",
+  "area": "Judiciário e Constituição",
+  "tema": [
+   "foros?|privilegiads?|prerrogativas?"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Foro por prerrogativa está na CF (arts. 53, §1º; 102, I, b e c); extinguir exige PEC; o STF já restringiu a abrangência em 2018 (AP 937).",
+  "tipo": "mal"
+ },
+ {
+  "t": "colocar mais 20 bilhao no sus pls",
+  "area": "saúde",
+  "tema": [
+   "sus|saudes?|orcamentos?|recursos?"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "MP",
+   "PEC",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   8,
+   50
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Piso constitucional da saúde é 15% da RCL (EC 86 e LC 141/2012); R$ 20 bi extras = ~+8% do orçamento do Ministério da Saúde (~R$ 250 bi).",
+  "tipo": "mal"
+ },
+ {
+  "t": "internet de graça nas escolas publicas do pais todo",
+  "area": "digital e tecnologia",
+  "tema": [
+   "internets?|escolas?|conectividades?|bandas? largas?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0,
+   8
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   10
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Programa de conectividade nas escolas existe (Lei 14.172/2021 trouxe R$ 3,5 bi); custo de bilhões.",
+  "tipo": "mal"
+ },
+ {
+  "t": "multar quem joga lixo na rua forte mesmo",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "lixos?|multas?|residuos?|descartes?"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   2
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Resíduos: Lei 12.305/2010 e Lei 9.605/1998; limpeza urbana é municipal; multa federal tem alcance limitado.",
+  "tipo": "mal"
+ },
+ {
+  "t": "baixa a conta de luz do povo q ta um absurdo",
+  "area": "energia e mineração",
+  "tema": [
+   "contas? de luz|energias?|tarifas?|luz"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "MP",
+   "PL",
+   "DEC",
+   "ADM"
+  ],
+  "custo": [
+   2,
+   60
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Redução tarifária por subsídio (CDE) ou corte de encargos; MP 579/2012 é o precedente; dezenas de bi.",
+  "tipo": "mal"
+ },
+ {
+  "t": "bora fazer metro em todas as capitais dps do mandato",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "metros?|capit(?:al|ais)|transportes?|mobilidades?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0,
+   20
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   300
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Metrô é obra municipal/estadual com financiamento federal; custo de centenas de bilhões no total.",
+  "tipo": "mal"
+ },
+ {
+  "t": "quem ta sem casa tem q ganhar uma do governo",
+  "area": "habitação e cidades",
+  "tema": [
+   "casas?|moradias?|habitacs?|sem tetos?|minhas? casas?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   3,
+   150
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Déficit habitacional de ~6 mi de moradias; Minha Casa Minha Vida (Lei 14.620/2023) já subsidia; universal custaria centenas de bi.",
+  "tipo": "mal"
+ },
+ {
+  "t": "quero o fim das emendas parlamentar de relator e das emendas pix",
+  "area": "política e eleições",
+  "tema": [
+   "emendas?|relator|pix|parlamentar"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PEC",
+   "PL"
+  ],
+  "custo": [
+   -60,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Emendas de relator (RP9) foram declaradas inconstitucionais pelo STF (ADPF 854); emendas Pix foram limitadas por EC 105/2019 e decisões do STF; dezenas de bi no orçamento.",
+  "tipo": "mal"
+ },
+ {
+  "t": "prender quem ta devendo pensao sem moleza",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "pens(?:ao|oes)|alimenticias?|pris(?:ao|oes)|devedor"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Prisão civil por pensão alimentícia já é admitida pelo art. 5º, LXVII e pelo CPC (art. 528); endurecimento por lei ordinária.",
+  "tipo": "mal"
+ },
+ {
+  "t": "taxa as grande fortuna e as heranca grande mt mais",
+  "area": "tributos",
+  "tema": [
+   "herancas?|itcmds?|fortunas?|patrimonios?|doac(?:ao|oes)"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PEC",
+   "PLP",
+   "PL",
+   "COM"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   40
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "ITCMD é estadual (CF 155, I): a União não pode aumentá-lo (por lei seria inconstitucional); o motor pode tratar como recomendação (COM). IGF (federal) depende de LC. Gabarito permissivo por ambiguidade.",
+  "tipo": "mal"
+ },
+ {
+  "t": "mudar a lei pra o MEI poder faturar 150 mil",
+  "area": "economia e crédito",
+  "tema": [
+   "mei|microempreendedor|faturamentos?|limites?"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PLP",
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   -8,
+   0
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Limite do MEI é R$ 81 mil/ano (LC 123/2006); alterar exige LC; renúncia do Simples de alguns bi.",
+  "tipo": "mal"
+ },
+ {
+  "t": "internacao compulsoria pra usuario de crack ja",
+  "area": "saúde",
+  "tema": [
+   "internac(?:ao|oes)|compulsorias?|cracks?|drogas?|dependentes?"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": [
+   0,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Lei 10.216/2001 (art. 6º, III) e Lei 13.840/2019 já admitem internação compulsória por ordem judicial e involuntária com laudo; universalizar sem processo é controverso.",
+  "tipo": "mal"
+ },
+ {
+  "t": "abrir o mercado de gas pra concorrencia pq ta carissimo",
+  "area": "energia e mineração",
+  "tema": [
+   "gas|mercados?|concorrencias?|petrobras"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL",
+   "ADM",
+   "DEC",
+   "MP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.134/2021",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Nova Lei do Gás (Lei 14.134/2021) já abriu o mercado; parte da proposta repete lei vigente.",
+  "tipo": "mal"
+ },
+ {
+  "t": "comprar trem pra ligar sao paulo e campinas e rio ne",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "trem|ferrovias?|campinas|passageiros?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0,
+   10
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   80
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Trens regionais de passageiros em concessão (TIC Trens) já foram licitados; custo estatal baixo se por concessão.",
+  "tipo": "mal"
+ },
+ {
+  "t": "cobrar imposto das igreja q ganha muito dinheiro",
+  "area": "tributos",
+  "tema": [
+   "igrejas?|templos?|impostos?|religios|imunidades?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   15
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "CF 150, VI, b veda imposto sobre templos de qualquer culto (e art. 19, I); cobrar é inconstitucional sem PEC, e a imunidade pode ser cláusula pétrea (art. 60 §4º IV).",
+  "tipo": "mal"
+ },
+ {
+  "t": "quero lei q obrigue o governo a falar quanto gasta com cada coisa no site",
+  "area": "administração pública",
+  "tema": [
+   "transparencias?|gastos?|port(?:al|ais)|sites?|despesas?"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 12.527/2011",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Portal da Transparência e LAI (Lei 12.527/2011) já obrigam; a proposta repete norma vigente em grande parte.",
+  "tipo": "mal"
+ },
+ {
+  "t": "prefeito q desvia verba da merenda tem q ser preso e ficar inelegivel",
+  "area": "política e eleições",
+  "tema": [
+   "merendas?|desvios?|prefeitos?|inelegibs?|corrupc(?:ao|oes)"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "PLP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Inelegibilidade é matéria de LC (CF 14 §9º; LC 64/1990); desvio de verba já é crime (Decreto-Lei 201/1967); endurecimento é possível por lei.",
+  "tipo": "mal"
+ },
+ {
+  "t": "Criar o Dia Nacional do Pastel de Feira 🥟",
+  "area": "cultura e esporte",
+  "tema": [
+   "past(?:el|eis)|dia nacion(?:al|ais)|datas?|feiras?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 12.345/2010: datas comemorativas por lei ordinária; honorífica, sem custo.",
+  "tipo": "zoeira",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "e se o forró virasse feriado nacional kkk",
+  "area": "cultura e esporte",
+  "tema": [
+   "forros?|feriados?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Feriado nacional é criado por lei federal (Lei 9.093/1995); custo econômico difuso, fiscal desprezível.",
+  "tipo": "zoeira",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "trocar o lobo-guará da nota de 200 pela capivara 🦫",
+  "area": "cultura e esporte",
+  "tema": [
+   "notas?|capivaras?|lobos?|cedulas?"
+  ],
+  "dir": "outro",
+  "inst": [
+   "ADM",
+   "COM",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Desenho de cédulas é do Banco Central/CMN; mudança custa pouco; bichos não violam nada.",
+  "tipo": "zoeira",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Criar o Ministério da Gambiarra pra acabar com a burocracia kkkk",
+  "area": "administração pública",
+  "tema": [
+   "ministerios?|gambiarras?|burocracias?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0,
+   2
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Ministérios são criados por lei (Lei 14.600/2023 organiza a Esplanada) ou MP; custo de pessoal e estrutura; nome é piada, mas é legal.",
+  "tipo": "zoeira",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "deixar levar pet na cabine de todos os voos nacionais sem pagar nada",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "pet|anim(?:al|ais)|voo|cabines?|aviaos?"
+  ],
+  "dir": "libera",
+  "inst": [
+   "ADM",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Transporte de animais é regulado pela ANAC; a gratuidade pesa nas companhias, não no Tesouro.",
+  "tipo": "zoeira",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Hino do Brasil tocando toda segunda de manhã nas repartições, só pra animar",
+  "area": "cultura e esporte",
+  "tema": [
+   "hinos?|repartic(?:ao|oes)|repartics?|segundas?"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 5.700/1971 trata dos símbolos nacionais; execução do hino em repartições é ato interno; custo zero.",
+  "tipo": "zoeira",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Tornar a pamonha patrimônio cultural imaterial do Brasil 🌽",
+  "area": "cultura e esporte",
+  "tema": [
+   "pamonhas?|patrimonios?|imateri(?:al|ais)"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL",
+   "COM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Registro imaterial é ato do Iphan (Decreto 3.551/2000); custo desprezível.",
+  "tipo": "zoeira",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Dar nome de Esplanada do Brigadeiro à Esplanada dos Ministérios por uns dias no carnaval",
+  "area": "cultura e esporte",
+  "tema": [
+   "esplanadas?|brigadeiros?|nomes?|carnav(?:al|ais)"
+  ],
+  "dir": "outro",
+  "inst": [
+   "PL",
+   "DEC",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Denominação de logradouros e bens públicos é feita por lei (Lei 6.454/1977 veda nome de pessoa viva; brigadeiro não é pessoa); custo zero.",
+  "tipo": "zoeira",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "liberar sunga e biquini como traje oficial das reparticoes federais do litoral no verão",
+  "area": "administração pública",
+  "tema": [
+   "sungas?|biquinis?|trajes?|repartic(?:ao|oes)|vestimentas?"
+  ],
+  "dir": "libera",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Código de vestimenta é ato administrativo de cada órgão; sem custo; polêmico, mas legal.",
+  "tipo": "zoeira",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Prender torcedor que gritar contra o time do presidente 😡",
+  "area": "segurança",
+  "tema": [
+   "prender|torcedor|pris(?:ao|oes)|times?"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL",
+   "DEC",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "CF 5º, II, XXXIX (legalidade e anterioridade penal), IX e LXI; liberdade de expressão e prisão só em flagrante ou por ordem judicial.",
+  "tipo": "zoeira",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Estampar a cara do presidente nos cadernos que o MEC distribui nas escolas",
+  "area": "educação",
+  "tema": [
+   "cadernos?|caras?|presidentes?|fotos?|imagem|mec"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "CF art. 37, §1º veda nomes, símbolos ou imagens que caracterizem promoção pessoal em publicidade oficial; improbidade.",
+  "tipo": "zoeira",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Proibir procissão da Igreja Católica nas ruas do país",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "prociss(?:ao|oes)|igrejas?|catolics?|religi(?:ao|oes)|cultos?"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "CF art. 5º, VI (liberdade de culto) e art. 19, I; proibir culto ou manifestação religiosa é inconstitucional.",
+  "tipo": "zoeira",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Cassar o mandato de deputado que votar contra o governo",
+  "area": "política e eleições",
+  "tema": [
+   "cassar|mandatos?|deputados?|votos?"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL",
+   "DEC",
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "Perda de mandato só nas hipóteses do art. 55; voto é imune (art. 53); PEC que viola separação de Poderes é vedada pelo art. 60, §4º, III.",
+  "tipo": "zoeira",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Fechar o Congresso por 30 dias pra economizar kkk",
+  "area": "política e eleições",
+  "tema": [
+   "congressos?|fechar|fechamentos?|poder|rupturas?|institucion(?:al|ais)"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "DEC",
+   "PEC",
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   -5,
+   0
+  ],
+  "receita": null,
+  "unico": [
+   -5,
+   5
+  ],
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "Fechamento do Legislativo viola o art. 2º e é crime contra o Estado Democrático (Lei 14.197/2021); cláusula pétrea da separação de Poderes.",
+  "tipo": "zoeira",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Passar uma lei dizendo que a capital do país agora é o Rio, por medida provisória",
+  "area": "Judiciário e Constituição",
+  "tema": [
+   "capit(?:al|ais)|rio|brasilias?|mudancas?"
+  ],
+  "dir": "regula",
+  "inst": [
+   "MP",
+   "PL",
+   "DEC",
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "Brasília é a capital federal por art. 18, §1º da CF; mudança exige emenda constitucional, e MP não pode versar sobre matéria constitucional (art. 62, §1º, I, a).",
+  "tipo": "zoeira",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Bloquear a poupança de todo mundo pra pagar a dívida pública",
+  "area": "economia e crédito",
+  "tema": [
+   "poupancas?|bloqueios?|confiscos?|dividas?"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "MP",
+   "PL",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "Confisco de poupança (Plano Collor) foi anulado; art. 5º, XXII e art. 62, §1º, II da CF vedam MP que detenha ativos financeiros.",
+  "tipo": "zoeira",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Fazer chover todo mês no sertão por decreto 🌧️",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "chuvas?|sert(?:ao|oes)|decretos?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "COM",
+   "ADM",
+   "DEC",
+   "MP",
+   "PL",
+   "PLP",
+   "PEC",
+   "AUT"
+  ],
+  "custo": [
+   -100000,
+   100000
+  ],
+  "receita": [
+   -100000,
+   100000
+  ],
+  "unico": [
+   -100000,
+   100000
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Impossibilidade física.",
+  "tipo": "zoeira",
+  "zoeira": "impossivel",
+  "absurdo_esperado": true
+ },
+ {
+  "t": "Dar um carro zero pra cada brasileiro maior de idade",
+  "area": "assistência social e renda",
+  "tema": [
+   "carros?|brasileiros?|veiculos?|zeros?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "COM",
+   "ADM",
+   "DEC",
+   "MP",
+   "PL",
+   "PLP",
+   "PEC",
+   "AUT"
+  ],
+  "custo": [
+   -100000,
+   100000
+  ],
+  "receita": [
+   -100000,
+   100000
+  ],
+  "unico": [
+   -100000,
+   100000
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "~160 milhões de adultos x R$ 80 mil = R$ 13 trilhões: impossível fiscalmente.",
+  "tipo": "zoeira",
+  "zoeira": "impossivel",
+  "absurdo_esperado": true
+ },
+ {
+  "t": "Zerar a inflação em 30 dias",
+  "area": "economia e crédito",
+  "tema": [
+   "inflac(?:ao|oes)|zerar|precos?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "COM",
+   "ADM",
+   "DEC",
+   "MP",
+   "PL",
+   "PLP",
+   "PEC",
+   "AUT"
+  ],
+  "custo": [
+   -100000,
+   100000
+  ],
+  "receita": [
+   -100000,
+   100000
+  ],
+  "unico": [
+   -100000,
+   100000
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Resultado macroeconômico por decreto e prazo irreal.",
+  "tipo": "zoeira",
+  "zoeira": "impossivel",
+  "absurdo_esperado": true
+ },
+ {
+  "t": "Fazer um túnel submarino ligando o Brasil à África",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "tun(?:el|eis)|africas?|submarinos?|atlanticos?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "COM",
+   "ADM",
+   "DEC",
+   "MP",
+   "PL",
+   "PLP",
+   "PEC",
+   "AUT"
+  ],
+  "custo": [
+   -100000,
+   100000
+  ],
+  "receita": [
+   -100000,
+   100000
+  ],
+  "unico": [
+   -100000,
+   100000
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Atlântico tem 5 mil km de profundidade média de 3,6 km; inviável.",
+  "tipo": "zoeira",
+  "zoeira": "impossivel",
+  "absurdo_esperado": true
+ },
+ {
+  "t": "Pagar a dívida pública inteira até dezembro",
+  "area": "economia e crédito",
+  "tema": [
+   "dividas?|pagar|quitar|publicas?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "COM",
+   "ADM",
+   "DEC",
+   "MP",
+   "PL",
+   "PLP",
+   "PEC",
+   "AUT"
+  ],
+  "custo": [
+   -100000,
+   100000
+  ],
+  "receita": [
+   -100000,
+   100000
+  ],
+  "unico": [
+   -100000,
+   100000
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Dívida bruta de ~R$ 9 tri em 2026; impossível quitar em meses.",
+  "tipo": "zoeira",
+  "zoeira": "impossivel",
+  "absurdo_esperado": true
+ },
+ {
+  "t": "Fazer o Brasil crescer 25% no ano que vem",
+  "area": "economia e crédito",
+  "tema": [
+   "pib|crescer|crescimentos?|economias?"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "COM",
+   "ADM",
+   "DEC",
+   "MP",
+   "PL",
+   "PLP",
+   "PEC",
+   "AUT"
+  ],
+  "custo": [
+   -100000,
+   100000
+  ],
+  "receita": [
+   -100000,
+   100000
+  ],
+  "unico": [
+   -100000,
+   100000
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Meta impossível; potencial de 2-3%.",
+  "tipo": "zoeira",
+  "zoeira": "impossivel",
+  "absurdo_esperado": true
+ },
+ {
+  "t": "Não quero criar imposto novo, só cortar 10% dos cargos comissionados",
+  "area": "administração pública",
+  "tema": [
+   "cargos?|comissionads?|confiancas?|cortes?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "DEC",
+   "PL",
+   "MP",
+   "ADM"
+  ],
+  "custo": [
+   -3,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "NEGAÇÃO: \"não criar imposto\" não pode gerar receita nem tema de tributo; a medida é o corte de cargos (economia de centenas de milhões a poucos bi).",
+  "tipo": "teor",
+  "teor": "negacao"
+ },
+ {
+  "t": "Não é aumentar o Bolsa Família, é só corrigir o valor pela inflação",
+  "area": "assistência social e renda",
+  "tema": [
+   "bolsas? familias?|reajustes?|correc(?:ao|oes)|inflac(?:ao|oes)"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "MP",
+   "PL",
+   "DEC",
+   "ADM"
+  ],
+  "custo": [
+   0.5,
+   30
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "NEGAÇÃO: o texto nega \"aumento\", mas o reajuste pela inflação (~4-5% de ~R$ 160 bi) custa alguns bi; não pode zerar o custo.",
+  "tipo": "teor",
+  "teor": "negacao"
+ },
+ {
+  "t": "Sem mexer na idade mínima, combater as fraudes e os pagamentos indevidos do INSS",
+  "area": "trabalho e previdência",
+  "tema": [
+   "fraudes?|inss|indevids?|pagamentos?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   -20,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "NEGAÇÃO: \"sem mexer na idade mínima\" não pode virar reforma da Previdência; trata de auditoria e pente-fino, economia de bilhões.",
+  "tipo": "teor",
+  "teor": "negacao"
+ },
+ {
+  "t": "Ninguém quer acabar com a Zona Franca de Manaus, só rever os incentivos de quem não gera emprego lá",
+  "area": "tributos",
+  "tema": [
+   "zonas? francas?|incentivos?|manaus"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL",
+   "PLP",
+   "PEC"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   30
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "NEGAÇÃO: não é fim da ZFM (protegida até 2073 pelo ADCT, art. 92-A); revisão de benefícios fiscais é possível, com limites constitucionais.",
+  "tipo": "teor",
+  "teor": "negacao"
+ },
+ {
+  "t": "Se a inflação passar de 6% ao ano, congelar o preço da gasolina e do diesel",
+  "area": "energia e mineração",
+  "tema": [
+   "gasolinas?|dies(?:el|eis)|combustivs?|precos?|cong(?:el|eis)"
+  ],
+  "dir": "regula",
+  "inst": [
+   "DEC",
+   "MP",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "CONDIÇÃO: efeito só com o gatilho (IPCA > 6%); custo imediato ~0. Tabelar preço fere a livre iniciativa (CF 170, IV; 173) e a Lei do Petróleo (9.478/1997).",
+  "tipo": "teor",
+  "teor": "condicao"
+ },
+ {
+  "t": "Caso o desemprego passe de 9%, estender o seguro-desemprego por mais dois meses",
+  "area": "trabalho e previdência",
+  "tema": [
+   "seguro-desemprego|seguros? desempregos?|desempregos?"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CONDIÇÃO: custo só se o gatilho disparar (hoje desemprego ~6%); custo imediato ~0; Lei 7.998/1990.",
+  "tipo": "teor",
+  "teor": "condicao"
+ },
+ {
+  "t": "Se a arrecadação superar a meta, devolver o excedente com imposto de renda menor para a classe média",
+  "area": "tributos",
+  "tema": [
+   "impostos? de rendas?|ir|excedentes?|arrecadac(?:ao|oes)|classes? medias?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CONDIÇÃO: receita cai só se houver excedente; efeito imediato ~0.",
+  "tipo": "teor",
+  "teor": "condicao"
+ },
+ {
+  "t": "Se a dívida bruta passar de 85% do PIB, travar o aumento das despesas obrigatórias",
+  "area": "economia e crédito",
+  "tema": [
+   "dividas?|despesas?|gastos?|travar|limites?|tetos?|obrigatorias?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PLP",
+   "PEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CONDIÇÃO: gatilho fiscal; regra de despesa por LC (CF 163, 165 §9º); a LC 200/2023 já tem gatilhos parecidos; custo imediato ~0.",
+  "tipo": "teor",
+  "teor": "condicao"
+ },
+ {
+  "t": "Claro, 38 ministérios é o ideal, né? Que tal cortar uns 15?",
+  "area": "administração pública",
+  "tema": [
+   "ministerios?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   -5,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "IRONIA: o texto ironiza o número atual; a medida é cortar ~15 ministérios (economia de poucos bi). Estrutura administrativa por MP/lei (Lei 14.600/2023).",
+  "tipo": "teor",
+  "teor": "ironia"
+ },
+ {
+  "t": "Será que não está na hora de o governo parar de gastar tanto com propaganda?",
+  "area": "administração pública",
+  "tema": [
+   "propagandas?|publicidades?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "DEC",
+   "ADM",
+   "PL",
+   "COM"
+  ],
+  "custo": [
+   -3,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "RETÓRICA: pergunta retórica a favor de cortar a publicidade oficial (R$ 1-3 bi/ano).",
+  "tipo": "teor",
+  "teor": "ironia"
+ },
+ {
+  "t": "Só quem odeia criança é contra aumentar a merenda escolar, não é mesmo?",
+  "area": "educação",
+  "tema": [
+   "merendas?|pnaes?|alimentac(?:ao|oes) escolar"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "MP",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0.2,
+   10
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "RETÓRICA: proposta real de ampliar a merenda (PNAE, Lei 11.947/2009; ~R$ 5,5 bi/ano); aumento de alguns bi.",
+  "tipo": "teor",
+  "teor": "ironia"
+ },
+ {
+  "t": "Cobrar mais imposto das bets e usar o dinheiro para construir creches",
+  "area": "tributos",
+  "tema": [
+   "bet|apostas?|creches?"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0.3,
+   15
+  ],
+  "receita": [
+   0.5,
+   20
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "FINALIDADE: fonte (receita das bets) e destino (gasto com creches) devem aparecer juntos: receita e custo positivos.",
+  "tipo": "teor",
+  "teor": "finalidade"
+ },
+ {
+  "t": "Cobrar uma contribuição extra das mineradoras para financiar a recuperação de áreas degradadas",
+  "area": "energia e mineração",
+  "tema": [
+   "mineras?|cfem|recuper|degradads?|compensac(?:ao|oes)"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0.3,
+   15
+  ],
+  "receita": [
+   0.3,
+   15
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "FINALIDADE: CFEM (Lei 7.990/1989, 13.540/2017) é a compensação; receita nova e gasto de recuperação.",
+  "tipo": "teor",
+  "teor": "finalidade"
+ },
+ {
+  "t": "Cortar a verba de propaganda do governo e passar o dinheiro para a merenda escolar",
+  "area": "educação",
+  "tema": [
+   "propagandas?|publicidades?|merendas?"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PL",
+   "DEC",
+   "ADM",
+   "MP"
+  ],
+  "custo": [
+   -3,
+   3
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "FINALIDADE: remanejamento, efeito líquido próximo de zero; corte e gasto de poucos bi.",
+  "tipo": "teor",
+  "teor": "finalidade"
+ },
+ {
+  "t": "Criar um pedágio para caminhões estrangeiros nas rodovias federais para pagar a manutenção",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "pedagios?|caminhs?|rodovias?|manutenc(?:ao|oes)"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "ADM",
+   "MP"
+  ],
+  "custo": [
+   0,
+   3
+  ],
+  "receita": [
+   0,
+   3
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "FINALIDADE: fonte e destino; tratamento discriminatório a estrangeiros esbarra em tratados do Mercosul (controverso).",
+  "tipo": "teor",
+  "teor": "finalidade"
+ },
+ {
+  "t": "Distribuir cestas de alimentos para famílias ribeirinhas do Amazonas",
+  "area": "assistência social e renda",
+  "tema": [
+   "ribeirinhs?|cestas?|amazonas|alimentos?|comunidades?|tradicions?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "MP",
+   "PL",
+   "DEC"
+  ],
+  "custo": [
+   0,
+   3
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "PÚBLICO/REGIÃO: público específico e pequeno (centenas de milhares de pessoas); custo menor que programa nacional.",
+  "tipo": "teor",
+  "teor": "publico"
+ },
+ {
+  "t": "Construir hospitais regionais no sertão de Pernambuco e da Paraíba",
+  "area": "saúde",
+  "tema": [
+   "hospit(?:al|ais)|sert(?:ao|oes)|region(?:al|ais)"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0,
+   4
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   12
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "PÚBLICO/REGIÃO: dois estados; obra de poucos bi.",
+  "tipo": "teor",
+  "teor": "publico"
+ },
+ {
+  "t": "Isentar de imposto de renda só os professores da rede pública de São Paulo",
+  "area": "tributos",
+  "tema": [
+   "professor|impostos? de rendas?|isenc(?:ao|oes)|sao paulos?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   -3,
+   0
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "PÚBLICO/REGIÃO: tratamento desigual por ocupação e por região fere o art. 150, II e o art. 151, I da CF.",
+  "tipo": "teor",
+  "teor": "publico"
+ },
+ {
+  "t": "Construir 100 mil casas populares até dezembro de 2028 com R$ 20 bilhões",
+  "area": "habitação e cidades",
+  "tema": [
+   "casas?|moradias?|habitas?|popular"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   1,
+   25
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   40
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "PRAZO E VALOR: R$ 20 bi no total ao longo de ~2 anos; custo anual de ~R$ 10 bi e/ou único de R$ 20 bi.",
+  "tipo": "teor",
+  "teor": "prazo"
+ },
+ {
+  "t": "Pagar um abono de R$ 5 mil a cada professor da rede pública em janeiro de 2028",
+  "area": "educação",
+  "tema": [
+   "abonos?|professor"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0,
+   40
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   40
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "PRAZO E VALOR: pagamento único (~2,2 mi de professores x R$ 5 mil = ~R$ 11 bi); folha de estados e municípios é da competência deles (controverso).",
+  "tipo": "teor",
+  "teor": "prazo"
+ },
+ {
+  "t": "Reduzir pela metade o IPI de eletrodomésticos durante seis meses",
+  "area": "tributos",
+  "tema": [
+   "ipi|eletrodomesticos?|linhas? brancas?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "DEC"
+  ],
+  "custo": null,
+  "receita": [
+   -3,
+   0
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "PRAZO E VALOR: renúncia temporária pequena; IPI por decreto (CF 153 §1º).",
+  "tipo": "teor",
+  "teor": "prazo"
+ },
+ {
+  "t": "Aumentar em 10% o salário dos policiais federais a partir de janeiro de 2029",
+  "area": "segurança",
+  "tema": [
+   "policias?|policiais?|salarios?|reajustes?"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0.3,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "PRAZO E VALOR: iniciativa privativa do presidente (CF 61 §1º, II, a); folha da PF e PRF de ~R$ 12 bi; 10% = ~R$ 1,2 bi.",
+  "tipo": "teor",
+  "teor": "prazo"
+ },
+ {
+  "t": "Construir 3 mil creches, dobrar a verba da merenda escolar e dar uniforme gratuito aos alunos",
+  "area": "educação",
+  "tema": [
+   "creches?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   1,
+   45
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   70
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "VÁRIAS: principal = creches (R$ 15-25 bi de obra); merenda +R$ 5 bi/ano e uniforme +R$ 1-3 bi: o custo deve somar as três partes.",
+  "tipo": "varias"
+ },
+ {
+  "t": "Cortar 15% dos cargos comissionados, vender os carros oficiais e acabar com o auxílio-moradia de deputados",
+  "area": "administração pública",
+  "tema": [
+   "cargos?|comissionads?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "DEC",
+   "PL",
+   "MP",
+   "ADM"
+  ],
+  "custo": [
+   -6,
+   0
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   2
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "VÁRIAS: principal = cargos; economia somada de poucos bi; auxílio-moradia de parlamentares é decisão de cada Casa.",
+  "tipo": "varias"
+ },
+ {
+  "t": "Zerar o IPI de geladeiras e fogões e cortar o imposto de importação de peças de eletrodomésticos",
+  "area": "tributos",
+  "tema": [
+   "ipi|geladeiras?|fogaos?|eletrodomesticos?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "DEC",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": [
+   -5,
+   -0.1
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "VÁRIAS: duas renúncias alteráveis pelo Executivo (CF 153 §1º); soma de poucos bi.",
+  "tipo": "varias"
+ },
+ {
+  "t": "Dar mais R$ 150 por mês no Bolsa Família para quem tem criança pequena, criar mil creches e contratar 10 mil professores",
+  "area": "assistência social e renda",
+  "tema": [
+   "bolsas? familias?|bolsas?|criancas?"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   8,
+   100
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   30
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "VÁRIAS: principal = adicional no Bolsa Família (já existe benefício parecido, Lei 14.601/2023); soma com creches e professores.",
+  "tipo": "varias"
+ },
+ {
+  "t": "Privatizar o Banco do Brasil, abrir o capital da Caixa e vender os Correios",
+  "area": "estatais e privatização",
+  "tema": [
+   "bancos? do brasils?|privatizas?"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": [
+   20,
+   300
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "VÁRIAS: BB vale ~R$ 80-150 bi na bolsa; Caixa e Correios acrescentam; receita única somada. Correios têm monopólio (CF 21, X).",
+  "tipo": "varias"
+ },
+ {
+  "t": "Aumentar a pena do roubo de celular, endurecer a progressão de regime em crimes violentos e criar 5 mil vagas em presídios federais",
+  "area": "segurança",
+  "tema": [
+   "roubos?|celular|penas?|progress(?:ao|oes)"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   0,
+   5
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   10
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "VÁRIAS: principal = pena do roubo; presídios federais custam ~R$ 0,5 mi por vaga (R$ 2,5 bi).",
+  "tipo": "varias"
+ },
+ {
+  "t": "Criar o Dia do Cordel, tombar a feira de São Cristóvão e pagar bolsa a mestres da cultura popular",
+  "area": "cultura e esporte",
+  "tema": [
+   "cord(?:el|eis)|dia|feiras?|culturas?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0,
+   2
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "VÁRIAS: principal = data comemorativa (Lei 12.345/2010); as bolsas somam centenas de milhões.",
+  "tipo": "varias"
+ },
+ {
+  "t": "Proibir queimadas na Amazônia, dobrar a fiscalização do Ibama e pagar quem preserva a floresta em pé",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "queimadas?|amazonias?|fiscalizac(?:ao|oes)|ibamas?"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL",
+   "DEC",
+   "ADM"
+  ],
+  "custo": [
+   0.5,
+   15
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "VÁRIAS: queimada já é restrita (Código Florestal, art. 38); fiscalização e pagamento por serviços ambientais (Lei 14.119/2021) somam bilhões.",
+  "tipo": "varias"
+ },
+ {
+  "t": "Baixar o preço do botijão de gás, dar vale-gás para 10 milhões de famílias e zerar o PIS/Cofins do GLP",
+  "area": "energia e mineração",
+  "tema": [
+   "gas|glp|botij(?:ao|oes)|vales?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "MP",
+   "PL",
+   "DEC"
+  ],
+  "custo": [
+   3,
+   40
+  ],
+  "receita": [
+   -5,
+   0
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "VÁRIAS: vale-gás de ~R$ 100 a 300/ano por família = R$ 1-4 bi; renúncia de PIS/Cofins do GLP já é parcialmente zero.",
+  "tipo": "varias"
+ },
+ {
+  "t": "Cortar o fundo eleitoral pela metade, reduzir para 400 o número de deputados e acabar com a verba de gabinete",
+  "area": "política e eleições",
+  "tema": [
+   "fundos? eleitor(?:al|ais)|fundos? partidarios?|fundos?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL",
+   "PEC",
+   "PLP"
+  ],
+  "custo": [
+   -8,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "VÁRIAS: fundo eleitoral de ~R$ 5 bi (metade = R$ 2,5 bi); número de deputados é fixado por LC (CF 45 §1º); soma até ~R$ 5 bi.",
+  "tipo": "varias"
+ },
+ {
+  "t": "Elevar a CSLL dos bancos para 25%, cobrar imposto sobre remessa de lucros ao exterior e criar uma taxa sobre grandes patrimônios",
+  "area": "tributos",
+  "tema": [
+   "cslls?|bancos?|financeir"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "MP",
+   "PLP"
+  ],
+  "custo": null,
+  "receita": [
+   3,
+   60
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "VÁRIAS: principal = CSLL dos bancos (alíquota 20%; +5 pp rende ~R$ 5-10 bi); soma com as demais.",
+  "tipo": "varias"
+ },
+ {
+  "t": "Construir uma ferrovia ligando o sertão do Piauí ao porto de Pecém, duplicar a BR-135 e recuperar os portos do Maranhão",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "ferrovias?|trem|piauis?|pecem"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "ADM",
+   "DEC",
+   "MP"
+  ],
+  "custo": [
+   0,
+   40
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   150
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "VÁRIAS: ferrovia de centenas de km (dezenas de bi) mais obras rodoviárias e portuárias.",
+  "tipo": "varias"
+ },
+ {
+  "t": "Abrir 50 UPAs 24 horas, ampliar o Farmácia Popular e contratar 5 mil médicos para o interior",
+  "area": "saúde",
+  "tema": [
+   "upa|prontos?|atendimentos?|saudes?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   1,
+   20
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   10
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "VÁRIAS: principal = UPAs (R$ 10 mi cada + custeio); soma com médicos (~R$ 1,6 bi/ano) e remédios.",
+  "tipo": "varias"
+ },
+ {
+  "t": "Dobrar a pena de crimes ambientais, criar a polícia ambiental federal e proibir o garimpo em terras indígenas",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "crimes?|ambients?|penas?|multas?"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   0,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "VÁRIAS: principal = pena (Lei 9.605/1998); polícia federal ambiental custa poucos bi; garimpo em terra indígena já é proibido.",
+  "tipo": "varias"
+ },
+ {
+  "t": "Aumentar o salário mínimo em 5% acima da inflação, dar 13º ao Bolsa Família e reajustar em 10% o piso dos professores",
+  "area": "trabalho e previdência",
+  "tema": [
+   "salarios? minimos?"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "MP",
+   "DEC"
+  ],
+  "custo": [
+   15,
+   150
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "VÁRIAS: salário mínimo +5% real = ~R$ 25-30 bi; 13º do Bolsa Família ~R$ 15 bi; piso dos professores tem custo adicional.",
+  "tipo": "varias"
+ },
+ {
+  "t": "Liberar o porte de armas para caçadores e colecionadores, revogar parte do desarmamento e baixar o imposto de armas",
+  "area": "segurança",
+  "tema": [
+   "armas?|portes?|desarmamentos?"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": [
+   -2,
+   0
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "VÁRIAS: Estatuto do Desarmamento (Lei 10.826/2003) altera-se por lei; decretos do tema foram contestados no STF; efeito fiscal pequeno.",
+  "tipo": "varias"
+ },
+ {
+  "t": "Criar um banco digital público para pequenos negócios, zerar a tarifa do Pix para comércio pequeno e dar crédito de R$ 5 mil a cada MEI",
+  "area": "economia e crédito",
+  "tema": [
+   "creditos?|mei|microempreendedor|bancos?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0.3,
+   12
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "VÁRIAS: crédito de R$ 5 mil para ~15 mi de MEI = R$ 75 bi de crédito, com subsídio/risco de poucos bi.",
+  "tipo": "varias"
+ },
+ {
+  "t": "Acabar com a taxa das blusinhas, zerar o imposto de importação de livros e reduzir o IPI de computadores",
+  "area": "relações exteriores e comércio",
+  "tema": [
+   "blusinhas?|remessas?|compras internacionais|importac(?:ao|oes)|taxas?"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": [
+   -25,
+   -0.5
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "VÁRIAS: principal = taxa de 20% sobre remessas de até US$ 50 (fixada em lei em 2024); arrecadação de alguns bi.",
+  "tipo": "varias"
+ },
+ {
+  "t": "Dar passe livre para estudantes, subsidiar a tarifa de ônibus e comprar 10 mil ônibus elétricos",
+  "area": "habitação e cidades",
+  "tema": [
+   "passes? livres?|estudantes?|tarifas?|onibus"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   1,
+   40
+  ],
+  "receita": null,
+  "unico": [
+   0,
+   20
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "VÁRIAS: transporte público é competência municipal; apoio federal de bilhões; ônibus elétricos ~R$ 3-5 bi.",
+  "tipo": "varias"
+ },
+ {
+  "t": "Proibir celular nos presídios, instalar bloqueadores de sinal e punir o agente que facilitar a entrada",
+  "area": "segurança",
+  "tema": [
+   "celular|presidios?|bloqueador|sin(?:al|ais)"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL",
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0,
+   3
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "VÁRIAS: o ingresso de celular em presídios já é crime/falta grave; bloqueadores custam centenas de milhões.",
+  "tipo": "varias"
+ },
+ {
+  "t": "Criar um programa de renda para jovens que não estudam nem trabalham, oferecer curso técnico gratuito e dar subsídio ao primeiro emprego",
+  "area": "assistência social e renda",
+  "tema": [
+   "jovem|nem-nem|rendas?|cursos?|empregos?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   2,
+   50
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "VÁRIAS: ~9 mi de jovens \"nem-nem\"; renda de R$ 300 para uma parte = dezenas de bi.",
+  "tipo": "varias"
+ },
+ {
+  "t": "Quem recebe até cinco mil reais por mês não deve pagar imposto de renda",
+  "area": "tributos",
+  "tema": [
+   "impostos? de rendas?|ir|isenc(?:ao|oes)|isentar"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL",
+   "COM"
+  ],
+  "custo": null,
+  "receita": [
+   -70,
+   0
+  ],
+  "unico": null,
+  "jaVigente": "Lei 15.270/2025",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Isenção até R$ 5 mil em vigor desde 2026 (compensada por tributação mínima de altas rendas); custo bruto de ~R$ 25-35 bi.",
+  "tipo": "ja_lei"
+ },
+ {
+  "t": "Criar o Cadastro Único para identificar as famílias pobres e organizar os programas sociais",
+  "area": "assistência social e renda",
+  "tema": [
+   "cadastros? unicos?|cadunicos?|cadastros?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "DEC",
+   "ADM",
+   "PL",
+   "COM"
+  ],
+  "custo": [
+   0,
+   2
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Decreto 6.135/2007",
+  "cf": [
+   "ok"
+  ],
+  "nota": "CadÚnico existe desde 2001 e foi regulado pelo Decreto 6.135/2007.",
+  "tipo": "ja_lei"
+ },
+ {
+  "t": "Obrigar todo ocupante de carro a usar cinto de segurança",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "cintos?|segurancas?|transitos?"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL",
+   "DEC",
+   "ADM",
+   "COM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 9.503/1997",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Cinto obrigatório pelo CTB (art. 167).",
+  "tipo": "ja_lei"
+ },
+ {
+  "t": "Dar pena de 20 a 40 anos de prisão para o feminicídio",
+  "area": "segurança",
+  "tema": [
+   "feminicidios?|penas?|homicidios?"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "COM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.994/2024",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Pacote antifeminicídio de 2024 criou crime autônomo com pena de 20 a 40 anos.",
+  "tipo": "ja_lei"
+ },
+ {
+  "t": "Acabar com a saída temporária dos presos nos feriados",
+  "area": "segurança",
+  "tema": [
+   "saidinhas?|saidas? temporarias?|presos?|saidas?"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL",
+   "COM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.843/2024",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei de 2024 extinguiu a saída temporária para visitas à família.",
+  "tipo": "ja_lei"
+ },
+ {
+  "t": "Estabelecer metas para universalizar água tratada e esgoto até 2033",
+  "area": "habitação e cidades",
+  "tema": [
+   "saneamentos?|aguas?|esgotos?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "COM"
+  ],
+  "custo": [
+   0,
+   10
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.026/2020",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Novo Marco do Saneamento: 99% de água e 90% de esgoto até 2033.",
+  "tipo": "ja_lei"
+ },
+ {
+  "t": "Criar uma regra para limitar o aumento das despesas a 70% do crescimento da receita",
+  "area": "economia e crédito",
+  "tema": [
+   "arcaboucos?|despesas?|tetos?|regras? fisc(?:al|ais)|limites?|gastos?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PLP",
+   "COM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "LC 200/2023",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Regime Fiscal Sustentável (arcabouço) em vigor desde 2023.",
+  "tipo": "ja_lei"
+ },
+ {
+  "t": "Dar autonomia ao Banco Central, com mandato fixo para o presidente da instituição",
+  "area": "economia e crédito",
+  "tema": [
+   "bancos? centr(?:al|ais)|autonomias?|mandatos?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PLP",
+   "COM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "LC 179/2021",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Autonomia formal do BC, mandatos de 4 anos não coincidentes com o do presidente da República.",
+  "tipo": "ja_lei"
+ },
+ {
+  "t": "Reservar 20% das vagas dos concursos federais para candidatos negros",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "cotas?|vagas?|concursos?|negros?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "COM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 12.990/2014",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 12.990/2014 reserva 20% das vagas; STF confirmou a constitucionalidade (ADC 41).",
+  "tipo": "ja_lei"
+ },
+ {
+  "t": "Proibir os alunos de usarem celular durante as aulas",
+  "area": "educação",
+  "tema": [
+   "celular|aulas?|escolas?|alunos?"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL",
+   "ADM",
+   "COM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 15.100/2025",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei de 2025 proíbe o uso de celular por alunos na escola.",
+  "tipo": "ja_lei"
+ },
+ {
+  "t": "Garantir remédio de graça para quem tem pressão alta e diabetes",
+  "area": "saúde",
+  "tema": [
+   "farmacias? popular|remedios?|medicamentos?|hipertens(?:ao|oes)|diabetes"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL",
+   "ADM",
+   "DEC",
+   "COM"
+  ],
+  "custo": [
+   0,
+   10
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 10.858/2004",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Farmácia Popular entrega gratuitamente anti-hipertensivos e antidiabéticos; custo de ~R$ 3-5 bi/ano.",
+  "tipo": "ja_lei"
+ },
+ {
+  "t": "Tornar obrigatório o ensino da história e da cultura afro-brasileira e indígena nas escolas",
+  "area": "educação",
+  "tema": [
+   "historias?|culturas?|afros?|indigenas?|escolas?"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL",
+   "COM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 11.645/2008",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 10.639/2003 e 11.645/2008 alteraram o art. 26-A da LDB.",
+  "tipo": "ja_lei"
+ },
+ {
+  "t": "Permitir que o empregado trabalhe de casa com regras de teletrabalho na CLT",
+  "area": "trabalho e previdência",
+  "tema": [
+   "teletrabalhos?|homes? offices?|remotos?|trabalhos?"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL",
+   "COM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 13.467/2017",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Teletrabalho regulado nos arts. 75-A a 75-E da CLT (2017) e Lei 14.442/2022.",
+  "tipo": "ja_lei"
+ },
+ {
+  "t": "Criar um programa de renda para famílias pobres com um valor a mais por criança",
+  "area": "assistência social e renda",
+  "tema": [
+   "bolsas? familias?|rendas?|transferencias?|criancas?"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL",
+   "COM"
+  ],
+  "custo": [
+   0,
+   300
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.601/2023",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Bolsa Família (Lei 14.601/2023): R$ 600 e adicional de R$ 150 por criança até 6 anos; ~R$ 160 bi/ano.",
+  "tipo": "ja_lei"
+ },
+ {
+  "t": "Permitir que o microempreendedor individual fature até R$ 81 mil por ano pagando um imposto fixo mensal",
+  "area": "economia e crédito",
+  "tema": [
+   "mei|microempreendedor|faturamentos?"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PLP",
+   "COM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "LC 123/2006",
+  "cf": [
+   "ok"
+  ],
+  "nota": "MEI existe desde 2008 (LC 128/2008, alterando a LC 123/2006); limite de R$ 81 mil.",
+  "tipo": "ja_lei"
+ }
+]

@@ -66,3 +66,17 @@ Placar antes da v3.8 (motor v3.7): 26,0% totalmente certos, `absurdo` 3/13, 1 fa
 python3 testes/motor/run_sandbox.py testes/motor/probe.py $S/cur testes/bench/zoeira_dev2.json $S/zoeira_dev2.json 8883
 python3 testes/bench/score.py testes/bench/zoeira_dev2.json $S/zoeira_dev2.json
 ```
+
+## Bateria `final_dev.json` (teste final, v3.8)
+150 propostas novas escritas para o teste final do motor, no mesmo formato e com o mesmo corretor, mais o campo `tipo` (e `teor` / `zoeira`) para separar o placar:
+- `bem` (40, duas por área), `mal` (30, digitadas como no celular: sem acento, abreviação, CAPS, gíria, frase corrida), `zoeira` (22: 9 legais, 7 ilegais, 6 impossíveis),
+  `teor` (22: negação, condição, ironia/retórica, finalidade fonte+destino, público e região, prazo e valor; campo `teor`), `varias` (21: várias medidas no mesmo texto; o `tema` avalia a medida
+  principal, a primeira e maior, e o custo/receita devem somar as partes) e `ja_lei` (15: norma já em vigor, com `jaVigente`).
+- Convenções do gabarito: em `condicao` o efeito imediato esperado é ~0 (o gatilho não disparou); em `ja_lei` aceita-se `COM` como instrumento e custo a partir de 0 (a norma já vale); em obras o `unico`
+  aceita 0 quando há `custo` (o motor pode contar como custo anual ou gasto único); as regex de `tema` toleram plural (`concess` pega `concessões`).
+- Nos `impossivel`, o corretor exige `absurdo`, mas o campo `tema` falha quando o motor marca a frase como `vago` (convenção herdada de `zoeira_dev.json`).
+```
+python3 testes/motor/run_sandbox.py testes/motor/probe.py $S/cur testes/bench/final_dev.json $S/final_dev.json 8951
+python3 testes/bench/score.py testes/bench/final_dev.json $S/final_dev.json
+```
+O holdout correspondente (150 propostas, mesma composição) fica fora do repositório.
