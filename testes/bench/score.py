@@ -57,7 +57,7 @@ def score_item(g, r):
     vig = None
     if g.get('jaVigente'):
         m = re.search(r'\d+\.?\d*/\d{4}', g['jaVigente'])
-        vig = int(bool(VIG.search(blob)) or (m and m.group(0) in blob))
+        vig = int(bool(VIG.search(blob)) or bool(m and m.group(0) in blob))
         if not vig: why.append('jaVigente: não reconheceu %s' % g['jaVigente'])
     return s, why, vig
 
@@ -102,4 +102,4 @@ def main():
                    'totalmente_certos': full / n, 'certos_5_criterios': full5 / n, 'falso_ja_vigente': fp, 'absurdo': (tot['absurdo'] / an if an else None), 'falsos_positivos_absurdo': fpa, 'falsos_negativos_absurdo': fna,
                    'areas': {k: {'n': c, 'certos': f, 'media': ps / c} for k, (c, f, ps) in area.items()},
                    'erros': [{'area': a_, 't': t, 'motivos': w} for a_, t, w in errs]}, open(jout, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
-main()
+if __name__ == '__main__': main()

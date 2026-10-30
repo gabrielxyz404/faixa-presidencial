@@ -233,7 +233,7 @@ const norm = (s) => (s || '').toLowerCase().normalize('NFD').replace(/\p{M}/gu, 
 const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 const dataMes = (m) => `${MESES[(m - 1) % 12]} de ${2027 + Math.floor((m - 1) / 12)}`;
 const dataCurta = (m) => `${MESES[(m - 1) % 12].slice(0, 3)}/${String(27 + Math.floor((m - 1) / 12))}`;
-const bi = (v) => 'R$ ' + fmt(Math.abs(v), Math.abs(v) < 10 ? 1 : 0) + ' bi';
+const bi = (v) => Math.abs(v) > 0 && Math.abs(v) < .095 ? 'R$ ' + fmt(Math.abs(v) * 1000, Math.abs(v) < .0095 ? 1 : 0) + ' mi' : 'R$ ' + fmt(Math.abs(v), Math.abs(v) < 10 ? 1 : 0) + ' bi'; // v4: valores abaixo de R$ 95 mi aparecem em milhões (R$ 30 mi, não R$ 0,0 bi)
 function hashStr(s) { let x = 2166136261; for (let i = 0; i < s.length; i++) { x ^= s.charCodeAt(i); x = Math.imul(x, 16777619); } return (x >>> 0) / 4294967295; }
 function deepAdd(t, s, k = 1) {
   for (const key in s) {
@@ -2817,7 +2817,7 @@ const ESC_ACENTO = { eletricos: 'elétricos', eletrico: 'elétrico', eletrica: '
 const BC_REAL = /\bindependencia (?:financeira|orcamentaria)|\bautonomia (?:financeira|orcamentaria)|\bempresa publica\b|\bpec 65\b|\borcamento proprio\b/;
 const TXT_BC_VIGENTE = 'A autonomia do Banco Central já está em vigor desde a LC 179/2021: mandatos fixos de 4 anos para o presidente e os diretores, não coincidentes com o do Presidente da República, nomeação com sabatina no Senado e demissão só nas hipóteses da lei. A medida é redundante e não gera efeito novo; mudar o quadro exigiria a independência financeira e orçamentária (PEC 65/2023, transformação em empresa pública) ou, no sentido contrário, uma lei complementar que revogue a autonomia.';
 const TXT_DIV_VIGENTE = 'A Lei 15.270/2025 já tributa os dividendos: retenção de 10% na fonte sobre o que passar de R$ 50 mil por mês pago por uma mesma empresa a uma mesma pessoa física (e sobre as remessas ao exterior), além da tributação mínima de altas rendas. Taxar dividendos sem alíquota nova é redundante e não gera efeito novo; elevar a alíquota ou baixar o piso de R$ 50 mil exigiria nova lei.';
-function escProduto(s, it) {
+function escProduto(s, it, orig) {
   const mt = /^(?:iof|ipi|imposto sobre produtos industrializados|imposto de importacao|tarifa de importacao)\b/.exec(it.t || ''), t0 = mt && it.t.length > mt[0].length ? it.i + mt[0].length : it.e; // o sinônimo do objeto pode já embutir o produto ("iof sobre seguros")
   const tail = s.slice(t0, it.e + 70), off0 = Math.max(0, it.i - 50), head = s.slice(off0, it.i);
   const corta = (str) => { const tk = str.split(' '), out = []; for (const t of tk) { if (out.length && /^(?:e|ou|para|por|com|sem|ate|que|mas|durante|em|no|na|nos|nas|ao|pelo|pela|financiad\w+|compensand\w+|cortando)$/.test(t)) break; out.push(t); } while (out.length > 1 && /^(?:de|da|do|a|e)$/.test(out[out.length - 1])) out.pop(); return out; };
@@ -2831,7 +2831,7 @@ function escProduto(s, it) {
   if (!toks) return null;
   const ph = toks.join(' '); let share = .05;
   for (const r of ESC_PROD) if (r[0].test(ph)) { share = r[1]; break; }
-  const disp = toks.map(t => ESC_ACENTO[t] || t).join(' ');
+  const disp = toks.map(t => ESC_ACENTO[t] || v4Acento(t, orig)).join(' '); // v4: o acento digitado (ou o do vocabulário) volta ao tópico
   return { share: share, txt: 'de ' + disp, nome: disp, i: from, e: from + ph.length };
 }
 function fiscPos(A) {
@@ -2840,7 +2840,7 @@ function fiscPos(A) {
   for (const it of A.items.slice()) {
     if (it.o.k !== 'T' || ESC_IDS.indexOf(it.o.id) < 0 || it.pledge || it.escProd) continue;
     if (it.q && it.q.money && it.q.money.unit) continue;
-    const ep = escProduto(s, it); if (!ep) continue;
+    const ep = escProduto(s, it, A.orig); if (!ep) continue;
     it.escProd = ep;
     A.items = A.items.filter(j => j === it || !(j.i >= ep.i && j.e <= ep.e && j.o.k !== 'C' && j.o.k !== 'T'));
   }
@@ -2994,7 +2994,7 @@ const SPELL = [
   [/\baumetar\b/g, 'aumentar'], [/\bdiminuir\b/g, 'diminuir'], [/\bprivatisar\b/g, 'privatizar'], [/\bprivatisacao\b/g, 'privatizacao'], [/\bpetrobras\b/g, 'petrobras'], [/\bcriar\b/g, 'criar'],
   [/\bgasolinha\b/g, 'gasolina'], [/\bdiesell?\b/g, 'diesel'], [/\bsalaraio\b/g, 'salario'], [/\bprefeitura\b/g, 'prefeitura'], [/\bpresidiu\b/g, 'presidio'], [/\bsaude publica\b/g, 'saude publica'],
   [/\b(isent\w+|desoner\w+|zer\w+|cobr\w+|taxa\w+|tribut\w+|aument\w+|reduz\w+|cort\w+|baix\w+|elev\w+) (?:de |do )?ir\b(?= (?:a|o|as|os|aos|nas|nos|na|no|dos|das|quem|aqueles|pessoas|trabalhadores|contribuintes)\b)/g, '$1 imposto de renda'],
-  [/\bdolares\b/g, 'dolar'], [/\bpq\b/g, 'porque'], [/\bvc\b/g, 'voce'], [/\bgov\b/g, 'governo'], [/,\s*(?:bora|simbora|partiu)\b[^.;!?]*/g, ' '], [/\bq\b/g, 'que'], [/\btb\b/g, 'tambem'], [/\bn\b(?= (vou|vamos|quero))/g, 'nao'], [/\bnao vou\b/g, 'nao vou']
+  [/\bdolares\b/g, 'dolar'], [/\b(?:forro|foru|forum|fouro)\b(?= (?:privil\w+|privel\w+|especial|por prerrogativa|de prerrogativa)\b)/g, 'foro'], [/\bprivelegi(\w+)/g, 'privilegi$1'], /* v4: forro/foro privilegiado */ [/\bpq\b/g, 'porque'], [/\bvc\b/g, 'voce'], [/\bgov\b/g, 'governo'], [/,\s*(?:bora|simbora|partiu)\b[^.;!?]*/g, ' '], [/\bq\b/g, 'que'], [/\btb\b/g, 'tambem'], [/\bn\b(?= (vou|vamos|quero))/g, 'nao'], [/\bnao vou\b/g, 'nao vou']
 ];
 /* v3.9: linguagem informal (celular, gíria, abreviação, alongamento de letras, emoji) normalizada ANTES da leitura; o texto original só serve de exibição */
 const V39_INF = [ // v3.9
@@ -3237,7 +3237,7 @@ const FM = [
   { re: /\b(?:para|pra|com o objetivo de|com o intuito de|a fim de) (?:financiar|bancar|custear|pagar|cobrir|arcar com)\b/g, rev: 1 },
   { re: /\b(?:que vai|que ira|que vao|que irao|cujo dinheiro (?:vai|ira)|cuja arrecadacao (?:vai|ira)|cujos recursos (?:vao|irao)) (?:financiar|bancar|custear|pagar|pra pagar|para pagar|servir para|ser usad\w+ (?:em|para|na|no))\b/g, rev: 1 },
   { re: /\b(?:destinando|destinar|revertendo|reverter|direcionando|direcionar|usando|usar|utilizando|utilizar|aplicando|repassando) (?:a |o |os |as |toda a |todo o )?(?:arrecadacao|receita|recursos?|dinheiro|verba|economia|valor|montante|ganho)(?: (?:arrecadad[oa]|obtid[oa]|extra|dis[a-z]+|ganh[oa]))? (?:para|a|ao|na|no|em|pra)\b/g, rev: 1 },
-  { re: /\b(?:financiad[oa]s?|financiando|custead[oa]s?|custeando|bancad[oa]s?|bancando|pag[oa]s? (?:com|pel[oa]s?|por)|pagando (?:com|pel[oa]s?)|compensad[oa]s?|compensando|compensacao|compensar(?: a perda| o custo| a renuncia)?(?= (?:com|por|usando|via)\b)|cobrir (?:a |o )?(?:perda|custo|despesa|rombo|renuncia)(?= (?:com|por|usando|via)\b)|cobrindo|(?:financiar|bancar|custear|pagar) (?:com|pel[oa]s?|por)|a custa d[aeo]s?|custa d[aeo]s?|mediante|em troca d[aeo]s?|(?:com|usando|utilizando|aproveitando) (?:os |as |o |a )?recursos?|com (?:o |a )?(?:dinheiro|receita|arrecadacao|economia|verba) (?:d[aeo]s?|obtid[ao]|gerad[ao])|com a venda d[aeo]s?|com o produto d[aeo]s?|a partir d[aeo]s? (?:recursos|receitas?|arrecadacao|economia|cortes?|taxacao)|tirando (?:dinheiro |recursos |verba )?d[aeo]s?|retirando (?:recursos )?d[aeo]s?|por meio d[aeo]s? (?:cortes?|receitas?|arrecadacao|taxacao|impostos?|privatiz\w+|venda|economia|dividendos|bets|tributo)|atraves d[aeo]s? (?:cortes?|taxacao|arrecadacao|impostos?|privatiz\w+|venda|economia|dividendos)|via (?:cortes?|taxacao|impostos?|privatiz\w+|venda))/g, rev: 0 },
+  { re: /\b(?:financiad[oa]s?|financiando|custead[oa]s?|custeando|bancad[oa]s?|bancando|pag[oa]s? (?:com|pel[oa]s?|por)|pagando (?:com|pel[oa]s?)|compensad[oa]s?|compensando|compensacao|compensar(?: a perda| o custo| a renuncia)?(?= (?:com|por|usando|via)\b)|cobrir (?:a |o )?(?:perda|custo|despesa|rombo|renuncia)(?= (?:com|por|usando|via)\b)|cobrindo|(?:financiar|bancar|custear|pagar) (?:com|pel[oa]s?|por)|a custa d[aeo]s?|custa d[aeo]s?|mediante|em troca d[aeo]s?|(?:com|usando|utilizando|aproveitando) (?:os |as |o |a )?recursos?|com (?:o |a )?(?:dinheiro|receita|arrecadacao|economia|verba(?! de gabinete)) (?:d[aeo]s?|obtid[ao]|gerad[ao])|com a venda d[aeo]s?|com o produto d[aeo]s?|a partir d[aeo]s? (?:recursos|receitas?|arrecadacao|economia|cortes?|taxacao)|tirando (?:dinheiro |recursos |verba )?d[aeo]s?|retirando (?:recursos )?d[aeo]s?|por meio d[aeo]s? (?:cortes?|receitas?|arrecadacao|taxacao|impostos?|privatiz\w+|venda|economia|dividendos|bets|tributo)|atraves d[aeo]s? (?:cortes?|taxacao|arrecadacao|impostos?|privatiz\w+|venda|economia|dividendos)|via (?:cortes?|taxacao|impostos?|privatiz\w+|venda))/g, rev: 0 },
   { re: /\b(?:cortando|reduzindo|taxando|tributando|vendendo|privatizando|economizando|aumentando (?:os |o |as |a )?(?:impostos?|tributos?|aliquotas?)|elevando (?:os |o |as |a )?(?:impostos?|tributos?)|cobrando|remanejando|revogando|eliminando|extinguindo|zerando|enxugando|acabando com)\b/g, rev: 0, ger: 1 }
 ];
 const SEM_FONTE = /\b(?:sem (?:fonte|compensacao|contrapartida|saber de onde|dizer de onde|pensar (?:de onde|no custo)|se preocupar com (?:o )?(?:custo|conta))|nao importa (?:de onde|o custo)|custe o que custar|doa a quem doer|sem (?:ter )?(?:de )?onde tirar|na faixa|no fiado|no cheque especial|na marra)\b/;
@@ -3846,6 +3846,83 @@ addSyn('antecipacao_13', 'adiant\\w+ (?:o |a )?(?:13\\S{0,2}|decimo terceiro)(?:
 addSyn('igrejas_imunidade', '(?:cobrar|tributar|taxar|criar)(?: [a-z]+){0,3}? (?:imposto|ir|tributos?)(?: de renda)? (?:das|de|dos) (?:igrejas|templos)');
 addSyn('redes_regulacao', '(?:banir|bloquear|proibir|suspender)(?: o| a)? (?:tiktok|telegram|twitter|instagram|whatsapp)\\b|(?:obrigar|fazer)(?: [a-z]+){0,4}? (?:big techs?|plataformas)(?: [a-z]+){0,3}? (?:pagar|remunerar)(?: [a-z]+){0,3}? (?:jornais|imprensa|jornalismo|conteudo)');
 addSyn('mistura_biocombustiveis', '(?:misturar|mistura de) (?:mais |maior )?(?:etanol|biodiesel)(?: (?:na|no) (?:gasolina|diesel))?');
+/*V4-BEGIN*/
+/* ---------- v4: privilégios dos Poderes (Legislativo, Executivo, Judiciário e MP), foro, Polícia Federal e sigilo ---------- */ // v4
+/* Ordens de grandeza em R$ bi/ano (estimativa do jogo): auxílio-moradia e imóvel funcional da Câmara e do Senado ~0,03; CEAP ~0,2 (R$ 36,5 a 51,4 mil por mês por deputado, conforme o estado,
+   e a CEAPS do Senado); combustível ~0,03; verba de gabinete ~0,9; carros e motoristas ~0,05; auxílio-paletó ~0,014 ao ano (um subsídio por parlamentar a cada início e fim de legislatura);
+   subsídio de 594 parlamentares ~0,45; verbas indenizatórias do Judiciário e do MP ~9,8 (2025). Campos novos: mesa4 (benefício fixado por ato interno de uma Casa: PL do presidente é controverso, decreto é inconstitucional),
+   cfOk (fato jurídico acrescentado ao parecer da AGU quando o veredito é ok). */
+const MESA4 = 'A Câmara e o Senado fixam por ato próprio (Ato da Mesa) a CEAP, o auxílio-moradia, a verba de gabinete, os carros e as demais despesas das Casas, com base na autonomia administrativa e financeira do Legislativo (CF, arts. 51, IV e 52, XIII, e separação dos Poderes, art. 2º): um projeto de lei do presidente que corte esses benefícios invade a organização interna das Casas e, na prática, depende da Mesa de cada uma. Uma PEC com limites gerais de despesa não tem esse problema.';
+const V4_LEG = { k: 'G', v3: 1, mesa4: 1, priv4: 1, semRecorte: 1, ch: 'custeio', b: 'serv', rg: 'se', lag: 3, pa: 'casacivil', pn: 'Relações Institucionais', inst: 'PL', val: { classemedia: -2.5, gamers: -1.5, universitarios: -1, mercado: -.3 }, ap: -.2, iv: [-.1, 0], cat: 'corte_gastos', cred: .9 };
+const V4_PAR = '(?:parlamentares|deputad\\w+|senador\\w*|congressistas|politicos|legislativ\\w+|camara|senado|congresso)';
+P('moradia_parl', 'o auxílio-moradia dos parlamentares', 'auxilio.?moradia (?:d[eoa]s? |para |na |no |pel[oa] )?(?:os |as )?' + V4_PAR + '|(?:imoveis?|apartamentos?|residencias?) funcionais? (?:d[eoa]s? |para )?(?:os |as )?' + V4_PAR + '|(?:' + V4_PAR + ') (?:com|que (?:recebem|ganham|tem)) auxilio.?moradia',
+  Object.assign({}, V4_LEG, { base: .03, def: .03, cap: .08, nota: 'O auxílio-moradia (cerca de R$ 4 a 5 mil por mês) ou o imóvel funcional da Câmara e do Senado custa algumas dezenas de milhões por ano: o corte é pequeno no orçamento e dependente das Mesas.', info: 'O auxílio-moradia dos parlamentares (ou o imóvel funcional) custa à Câmara e ao Senado algo como R$ 20 a 50 milhões por ano, e é regulado por Ato da Mesa de cada Casa. É bem diferente do Minha Casa Minha Vida, que é o programa habitacional do Executivo.' }));
+P('ceap', 'a cota parlamentar (CEAP)', 'cota parlamentar|cotas parlamentares|ceaps?\\b|cota para o exercicio da atividade parlamentar|cota d[eoa]s? (?:deputad\\w+|senador\\w*|parlamentares)|verba indenizatoria d[eoa]s? (?:deputad\\w+|senador\\w*|parlamentares)|passagens? aereas? d[eoa]s? (?:deputad\\w+|senador\\w*|parlamentares)',
+  Object.assign({}, V4_LEG, { base: .2, def: .1, cap: .5, nota: 'A CEAP vai de R$ 36,5 mil a R$ 51,4 mil por mês por deputado, conforme o estado.', info: 'A Cota para o Exercício da Atividade Parlamentar (CEAP) vai de R$ 36,5 mil a R$ 51,4 mil por mês por deputado, conforme o estado (passagens, combustível, escritório, divulgação). Somada, a da Câmara custa algo como R$ 0,1 a 0,25 bi por ano e a do Senado (CEAPS) acrescenta um valor menor; os limites são fixados por Ato da Mesa.' }));
+P('ceap_combustivel', 'a cota de combustível dos parlamentares', 'cota (?:de |do |para )?combustivel|cotas? (?:de |do )?combustiveis|auxilio.?combustivel (?:d[eoa]s? )?' + V4_PAR + '|combustivel (?:d[eoa]s? |pago pel[oa] )?(?:' + V4_PAR + ')|vale.?combustivel (?:d[eoa]s? )?' + V4_PAR,
+  Object.assign({}, V4_LEG, { base: .03, def: .03, cap: .08, nota: 'O combustível é uma rubrica da CEAP.', info: 'O combustível é uma rubrica da cota parlamentar (CEAP): algumas dezenas de milhões por ano na Câmara e no Senado, fixadas por Ato da Mesa.' }));
+P('verba_gabinete', 'a verba de gabinete dos parlamentares', 'verbas? de gabinete|verba do gabinete|verba para (?:contratar )?assessores|verba de pessoal d[eoa]s? (?:deputad\\w+|senador\\w*|parlamentares)|assessores parlamentares|secretarios parlamentares|cargos de gabinete|pessoal de gabinete|cota de gabinete|gabinetes? d[eoa]s? (?:deputad\\w+|senador\\w*|parlamentares)',
+  Object.assign({}, V4_LEG, { base: .9, def: .45, cap: 2, ch: 'folha', nota: 'A verba de gabinete paga os secretários parlamentares de cada deputado e senador.', info: 'A verba de gabinete paga a equipe de cada parlamentar (cerca de R$ 110 mil por mês por gabinete na Câmara) e custa em torno de R$ 0,8 a 1 bi por ano só na Câmara, mais a do Senado; é definida por Ato da Mesa. É um dos itens mais pesados dos privilégios do Legislativo.' }));
+P('paleto', 'o auxílio-paletó dos parlamentares', 'auxilio.?paleto|ajuda de custo d[eoa]s? (?:deputad\\w+|senador\\w*|parlamentares|congressistas)|paleto d[eoa]s? (?:deputad\\w+|senador\\w*|parlamentares)|ajuda de custo (?:de|no) (?:inicio|fim) (?:de|do) mandato',
+  Object.assign({}, V4_LEG, { base: .014, def: .014, cap: .05, nota: 'Pago no início e no fim de cada legislatura.', info: 'O "auxílio-paletó" é a ajuda de custo paga no início e no fim de cada legislatura (um subsídio por parlamentar, cerca de R$ 46 mil): dezenas de milhões a cada quatro anos, ou pouco mais de R$ 10 milhões por ano. O efeito é simbólico; o valor depende de Decreto Legislativo ou Ato da Mesa.' }));
+P('carro_parl', 'os carros oficiais e motoristas do Legislativo', '(?:carros?|veiculos?|viaturas?) oficia(?:l|is)[a-z, ]{0,60}? (?:para |d[eoa]s? )?(?:os |as )?' + V4_PAR + '|(?:motoristas?|chofer\\w*) (?:particular(?:es)? |oficia(?:l|is) |pagos? pel[oa] (?:governo|estado|uniao|camara|senado)? ?)?(?:d[eoa]s? |para )?(?:os |as )?' + V4_PAR + '|motoristas? particular(?:es)? pagos? pel[oa] (?:governo|estado|uniao|camara|senado)|carros? (?:oficiais? )?(?:e|com) motoristas? (?:pagos? pel[oa] (?:governo|estado|uniao)|particular(?:es)?)|(?:carros?|veiculos?) oficia(?:l|is) (?:para |d[eoa]s? )?(?:minist\\w+ e )?' + V4_PAR,
+  Object.assign({}, V4_LEG, { base: .05, def: .05, cap: .15, nota: 'Carros, combustível e motoristas do Congresso e do Executivo somam dezenas de milhões por ano.', info: 'A frota, o combustível e os motoristas do Congresso (e dos gabinetes do Executivo) somam dezenas de milhões de reais por ano. No Legislativo, quem decide é a Mesa de cada Casa; no Executivo, um decreto basta.' }));
+P('salario_parl', 'o salário dos parlamentares', 'salarios? d[eoa]s? (?:deputad\\w+|senador\\w*|parlamentares|congressistas|politicos)|subsidios? d[eoa]s? (?:deputad\\w+|senador\\w*|parlamentares|congressistas|politicos)|remuneracao d[eoa]s? (?:deputad\\w+|senador\\w*|parlamentares|congressistas)|(?:deputad\\w+|senador\\w*|parlamentares) ganham (?:demais|muito)',
+  Object.assign({}, V4_LEG, { base: .45, def: .2, cap: 1, ch: 'folha', nota: 'O subsídio é de cerca de R$ 46 mil por mês para deputados e senadores.', info: 'O subsídio de deputados e senadores é de cerca de R$ 46 mil por mês: com 513 deputados, 81 senadores e encargos, são R$ 0,4 a 0,5 bi por ano. É fixado pelo próprio Congresso por decreto legislativo (CF, art. 49, VII), e a irredutibilidade de vencimentos (art. 37, XV) pesa em qualquer corte.' }));
+// Executivo: decreto ou ato basta
+P('carro_exec', 'os carros oficiais do Executivo', '(?:carros?|veiculos?|viaturas?) oficia(?:l|is)(?: [a-z]+){0,3}? (?:para |d[eoa]s? )?(?:os |as )?(?:minist\\w+|secretari\\w+|autoridades|governo federal|executivo|esplanada)|frota oficial|(?:motoristas?|chofer\\w*) (?:oficia(?:l|is) )?(?:d[eoa]s? |para )?(?:os |as )?(?:minist\\w+|secretari\\w+|autoridades)|carros? oficia(?:l|is)',
+  { k: 'G', v3: 1, priv4: 1, semRecorte: 1, ch: 'custeio', b: 'serv', rg: 'se', lag: 2, pa: 'casacivil', pn: 'Gestão e Inovação', inst: 'ADM', base: .03, def: .03, cap: .08, val: { classemedia: -2, gamers: -1, universitarios: -.8 }, ap: -.1, iv: [-.1, 0], cat: 'corte_gastos', cred: .9,
+    nota: 'A frota oficial do Executivo é regulada por decreto e por normas do Ministério da Gestão.', info: 'A frota oficial do Executivo federal (carros de ministros e autoridades, combustível e motoristas) custa algumas dezenas de milhões por ano e é regulada por decreto e por normas do Ministério da Gestão: um ato do Executivo basta.' });
+P('cartao_corp', 'o cartão corporativo do governo federal', 'cart(?:ao|oes) corporativ(?:o|os)|cartao de pagamento do governo(?: federal)?|\\bcpgf\\b|suprimento de fundos',
+  { k: 'G', v3: 1, priv4: 1, semRecorte: 1, ch: 'custeio', b: 'serv', rg: 'se', lag: 1, pa: 'casacivil', pn: 'Gestão e Inovação', inst: 'ADM', base: .1, def: .05, cap: .3, val: { classemedia: -1, universitarios: -.6 }, ap: -.1, iv: [-.1, 0], cat: 'corte_gastos', cred: .9,
+    nota: 'O Cartão de Pagamento do Governo Federal (CPGF) movimenta pouco mais de R$ 0,1 bi por ano.', info: 'O Cartão de Pagamento do Governo Federal (CPGF) movimenta pouco mais de R$ 0,1 bi por ano em despesas de pequeno valor e sigilosas; o corte é simbólico e cabe a decreto ou ato do Executivo.' });
+// Judiciário e Ministério Público: Loman (LC 35/1979), LC 75/1993, CF art. 93 e 95
+P('moradia_jud', 'o auxílio-moradia de magistrados e membros do MP', 'auxilio.?moradia (?:d[eoa]s? |para |pel[oa] )?(?:os |as )?(?:juiz\\w*|magistrad\\w+|promotor\\w+|procurador\\w+|desembargador\\w+|membros d[oa] (?:judiciario|ministerio publico|mp)|ministerio publico|judiciario|tribunais)|(?:juiz\\w*|magistrad\\w+|promotor\\w+|desembargador\\w+) (?:e (?:juiz\\w*|promotor\\w+|procurador\\w+) )?(?:com|que (?:recebem|ganham)) auxilio.?moradia',
+  { k: 'G', v3: 1, priv4: 1, semRecorte: 1, ch: 'folha', b: 'serv', rg: 'se', lag: 6, pa: 'casacivil', pn: 'Casa Civil', inst: 'PL', lc: 1, base: .3, def: .2, cap: 1, val: { classemedia: -2, universitarios: -1, mercado: -.3, sindicatos: 1 }, ap: -.2, iv: [-.1, 0], cat: 'corte_gastos', cred: .7, stf: 1,
+    nota: 'Matéria da Loman (LC 35/1979, art. 65) e da LC 75/1993.', info: 'O auxílio-moradia da magistratura e do Ministério Público vem da Loman (LC 35/1979, art. 65) e da LC 75/1993. O pagamento generalizado acabou em 2018 (o STF revogou a liminar que o sustentava e o CNJ passou a restringi-lo), e hoje restam casos pontuais, na casa de centenas de milhões por ano. Mudar a regra exige lei complementar de iniciativa do Judiciário e do MP; o presidente não consegue impor isso sozinho.' });
+P('apos_punicao', 'a aposentadoria compulsória como punição de magistrados', 'aposentadoria (?:compulsoria )?(?:como |a titulo de |por )?(?:punicao|pena|sancao|castigo|punitiva)|aposentadoria compulsoria (?:com vencimentos proporcionais )?(?:d[eoa]s? |para )?(?:juiz\\w*|magistrad\\w+|desembargador\\w+|promotor\\w+)(?: punid\\w+)?|(?:punir|punid\\w+|punicao|sancionar|castigar) (?:juiz\\w*|magistrad\\w+|promotor\\w+|desembargador\\w+)? ?com (?:a )?aposentadoria|aposentar (?:juiz\\w*|magistrad\\w+|promotor\\w+) (?:como|por) (?:punicao|pena|castigo)',
+  { k: 'R', v3: 1, pa: 'casacivil', pn: 'Casa Civil', inst: 'PEC', val: { classemedia: 3, universitarios: 2, mercado: 1, sindicatos: -1 }, ap: .2, stf: 2, iv: [0, 0], lag: 12, cat: 'anticorrupcao',
+    nota: 'A aposentadoria compulsória é a pena máxima administrativa para magistrado vitalício.', info: 'A aposentadoria compulsória, com vencimentos proporcionais, é a pena disciplinar mais grave que o CNJ e os tribunais podem aplicar a um magistrado vitalício (Loman, LC 35/1979, art. 42, V; CF, arts. 93, VIII e 95, I): a perda do cargo só sai por sentença judicial transitada em julgado. Acabar com a punição exige PEC (ou, se mudar só a Loman, lei complementar), e a economia é pequena.' });
+// Polícia Federal e sigilo
+P('pf_direcao', 'a troca do diretor-geral da Polícia Federal', 'diretor.?geral d[aeo] (?:pf|policia federal)|diretor d[aeo] (?:pf|policia federal)|chefe d[aeo] (?:pf|policia federal)|comandante d[aeo] (?:pf|policia federal)|comando d[aeo] (?:pf|policia federal)|direcao.?geral d[aeo] (?:pf|policia federal)|diretoria.?geral d[aeo] (?:pf|policia federal)|dirigente (?:maximo )?d[aeo] (?:pf|policia federal)|novo diretor (?:d[aeo] )?(?:pf|policia federal)|diretor da policia federal|chefia d[aeo] (?:pf|policia federal)',
+  { k: 'R', v3: 1, pa: 'justica', pn: 'Justiça e Segurança Pública', inst: 'ADM', val: { classemedia: -1, universitarios: -2, policiais: -1, mercado: -.3 }, ap: -.3, stf: 1, e: { conf: -.3 }, iv: [0, 0], lag: 1, cat: 'ataque',
+    nota: 'Nomeação de livre escolha do Presidente, mas com risco de questionamento.', info: 'O diretor-geral da PF é nomeado pelo Presidente entre delegados de classe especial (Lei 13.047/2014, art. 2º-A): a troca é um ato do Executivo e não custa nada. O risco é político e jurídico: com investigações em andamento, a troca é lida como interferência (CF, art. 37, caput: impessoalidade e moralidade), a oposição pede explicações ou CPI e o STF já suspendeu, em 2020, uma nomeação para a direção da PF por desvio de finalidade (MS 37.097); um inquérito no Supremo é possível.' });
+P('pf_autonomia', 'a autonomia da Polícia Federal e o mandato do diretor-geral', 'autonomia (?:funcional |administrativa |orcamentaria |financeira |institucional )?(?:da |para a |a |para |na )?(?:pf|policia federal)|(?:pf|policia federal) (?:com |tera |ter |autonoma|independente)(?: autonomia)?|mandato (?:fixo |de \\d+ anos? )?(?:para |do |ao |de )?(?:o )?(?:diretor|chefe|comandante)(?:.?geral)?(?: d[aeo] (?:pf|policia federal))?|(?:diretor|chefe)(?:.?geral)? d[aeo] (?:pf|policia federal) (?:com|tera|ter) mandato|independencia d[aeo] (?:pf|policia federal)|blindar a (?:pf|policia federal)',
+  { k: 'R', v3: 1, pa: 'justica', pn: 'Justiça e Segurança Pública', inst: 'PEC', val: { classemedia: 3, universitarios: 2, mercado: 1, policiais: 1 }, ap: .2, stf: 0, iv: [0, 0], lag: 12, cat: 'anticorrupcao',
+    nota: 'Debatido: parte dos juristas vê necessidade de PEC; outra, apenas de lei.', info: 'Hoje o diretor-geral é de livre nomeação e exoneração do Presidente (Lei 13.047/2014, art. 2º-A). Dar mandato fixo e autonomia à PF é debatido: parte dos juristas entende que exige PEC (a PF é órgão do Executivo, CF, art. 144, §1º, e o art. 84, XXV dá ao Presidente o provimento dos cargos federais); outra, que bastaria lei de iniciativa do Presidente (art. 61, §1º, II). O custo direto é próximo de zero; o ganho é blindar investigações da interferência política, o risco é uma polícia sem controle externo.' });
+P('pf_verba', 'a verba da Polícia Federal', 'verbas? d[aeo] (?:pf|policia federal)|orcamento d[aeo] (?:pf|policia federal)|recursos d[aeo] (?:pf|policia federal)|dinheiro d[aeo] (?:pf|policia federal)|custeio d[aeo] (?:pf|policia federal)|(?:pf|policia federal) com (?:mais|menos) (?:verba|dinheiro|recursos)|financiamento d[aeo] (?:pf|policia federal)',
+  { k: 'G', v3: 1, ch: 'seg', base: 8, def: 2, cap: 10, b: 'pol', rg: 'pop', pa: 'justica', inst: 'ADM', hom: -.3, val: { policiais: 3, classemedia: 2 }, iv: [0, .2], cat: 'seguranca_plano', lag: 8,
+    nota: 'O orçamento de custeio e investimento da PF é de cerca de R$ 8 bi por ano, fora a folha.' });
+P('sigilo_lai', 'o sigilo de 100 anos', 'sigilos? de (?:100|cem) anos|sigilo centenario|sigilo de um seculo|sigilo (?:de|por) (?:25|50|vinte e cinco|cinquenta) anos|sigilos? (?:eternos?|secretos?) (?:dos|de) documentos|sigilo (?:dos|de|em) documentos (?:publicos|oficiais|do governo)|desclassificar (?:documentos|arquivos)(?: secretos| sigilosos)?|abrir (?:os )?(?:arquivos|documentos) (?:secretos|sigilosos)(?: do governo)?|documentos? (?:ultra)?secretos?|prazo (?:do |de )?sigilo',
+  { k: 'R', v3: 1, pa: 'casacivil', pn: 'Controladoria-Geral da União', inst: 'PL', val: { classemedia: 3, universitarios: 3, mercado: 1 }, ap: .3, iv: [0, -.1], lag: 6, cat: 'anticorrupcao', esc: -2,
+    nota: 'A restrição de até 100 anos vale para informações pessoais (LAI, art. 31).', info: 'O "sigilo de 100 anos" é o prazo máximo de restrição de acesso às informações pessoais (intimidade, vida privada, honra e imagem) previsto no art. 31, §1º, I da Lei de Acesso à Informação (Lei 12.527/2011); documentos classificados como ultrassecretos ficam em sigilo por até 25 anos, renováveis uma vez (art. 24). O prazo está na lei: mudar exige PL, e a regulamentação (Decreto 7.724/2012) e a classificação de cada documento cabem ao Executivo. Encurtar o sigilo não custa nada e pode ser lido como mais transparência; o limite é a proteção de dados pessoais (CF, art. 5º, X).' });
+ABSORVE.moradia_parl = ['minha_casa', 'salario_politicos', 'auxilio_generico', 'aposentadoria_politicos'];
+ABSORVE.moradia_jud = ['minha_casa', 'supersalarios', 'auxilio_generico'];
+ABSORVE.pf_direcao = ['policia_federal', 'aparelhamento', 'demissao_ministro'];
+ABSORVE.pf_autonomia = ['policia_federal', 'reforma_politica'];
+ABSORVE.pf_verba = ['policia_federal'];
+ABSORVE.verba_gabinete = ['salario_politicos', 'servidores', 'concurso'];
+ABSORVE.ceap = ['salario_politicos', 'diarias_passagens'];
+ABSORVE.ceap_combustivel = ['salario_politicos', 'subsidio_diesel', 'tributos_gasolina'];
+ABSORVE.carro_parl = ['salario_politicos', 'diarias_passagens'];
+ABSORVE.carro_exec = ['salario_politicos', 'diarias_passagens'];
+ABSORVE.paleto = ['salario_politicos', 'aposentadoria_politicos'];
+ABSORVE.salario_parl = ['salario_politicos', 'servidores'];
+ABSORVE.sigilo_lai = ['anticorrupcao'];
+ABSORVE.apos_punicao = ['aposentadoria', 'aposentadoria_politicos', 'supersalarios'];
+// objetos existentes: o genérico de regalias passa a ser só o "pacote" (sem os itens agora separados); supersalários = penduricalhos acima do teto
+replSyn('diarias_passagens', '|cartao corporativo', ''); // v4: o cartão corporativo tem objeto próprio
+setSyn('salario_politicos', 'salarios? d[eo]s? (?:vereadores|ministros|juizes)|regalias dos politicos|mordomias|privilegios dos politicos|regalias d[eo]s? (?:parlamentares|congressistas|deputad\\w+|senador\\w*)|privilegios d[eo]s? (?:parlamentares|congressistas|deputad\\w+|senador\\w*)');
+setProp('salario_politicos', { base: 1.5, def: .6, cap: 3, mesa4: 1, nota: 'Mordomias e regalias do Legislativo (CEAP, gabinete, moradia, carros) somam algo como R$ 1,5 bi por ano; a remuneração do Congresso é fixada pelo próprio Legislativo.' });
+replSyn('supersalarios', '|auxilio.?moradia de juiz', '');
+setProp('supersalarios', { base: 9.8, def: 8, cap: 15, info: 'As verbas indenizatórias e os demais pagamentos acima do teto constitucional (CF, art. 37, XI, hoje R$ 46.366 por mês) somaram cerca de R$ 9,8 bi em 2025 no Judiciário e no Ministério Público. Cada tribunal e cada ramo do MP regula as suas por resolução, apoiado na Loman (LC 35/1979), então o corte passa por lei complementar de iniciativa do Judiciário, por decisão do CNJ/STF ou por PEC, e a reação das carreiras é forte.' });
+addSyn('supersalarios', 'verbas? indenizatorias? (?:acima do teto|do judiciario|d[eoa]s? (?:juizes|magistrad\\w+|promotor\\w+))|acima do teto (?:constitucional|remuneratorio)|(?:penduricalhos?|supersalarios?) (?:d[eoa]s? )?(?:juizes|magistrad\\w+|promotor\\w+|procurador\\w+|judiciario)');
+// foro: leitura de "perder o foro", spelling e fato jurídico recente
+addSyn('foro', '(?:perd\\w+|perc\\w+|tir\\w+|retir\\w+|mant\\w+|tenham|tenha|ter) (?:o |seu |esse )?foro(?: (?:d[eoa]s?|para) (?:ex.?\\w+|politicos|parlamentares|deputad\\w+|senador\\w*|ministros|autoridades|governador\\w*))?|foro (?:d[eoa]s? |para )?(?:ex.?\\w+|politicos|parlamentares|deputad\\w+|senador\\w*|ministros de estado|autoridades|governador\\w*)|foro (?:apos|depois d[eoa]) (?:o )?(?:fim d[oa] )?(?:mandato|cargo)|(?:fim|perda) do foro');
+setProp('foro', {
+  info: 'O foro por prerrogativa de função está na Constituição (arts. 53, §1º, 102, I, b e c, e 105, I, a): acabar com ele ou restringi-lo no texto constitucional exige PEC. O STF já o limitou por interpretação (AP 937-QO, 2018: só crimes cometidos no cargo e em razão dele) e, em março de 2025, decidiu por 7 votos a 4 que o foro continua depois que a autoridade deixa o cargo, para crimes cometidos no exercício da função; reverter essa tese também exige emenda. O custo fiscal é próximo de zero.',
+  cfOk: 'O foro por prerrogativa de função está na Constituição (arts. 53, §1º, 102, I, b e c, e 105, I, a) e só PEC o altera. Em março de 2025 o STF decidiu, por 7 votos a 4, que o foro se mantém depois que a autoridade deixa o cargo, para crimes cometidos no exercício da função.' });
+/*V4-END*/
 /*V35-BEGIN*/
 /* ---------- v3.5: leituras corrigidas, objetos novos e leitura genérica ---------- */ // v3.5
 /* Campos novos: info (aviso/fato jurídico exibido no parecer; string ou função (it, A)), restr (o objeto é uma restrição: verbo de liberar/manter inverte o sinal),
@@ -4087,6 +4164,25 @@ const GEN_FINAIS = /^(?:e|ou|de|do|da|dos|das|em|no|na|nos|nas|para|por|com|a|o|
 const GEN_NOMES_PES = /medic|enfermeir|professor|policial|agente|servidor|militar|delegad|soldad|bombeir|engenheir|tecnic|analist|pesquisador|funcionari|profission|fiscal|inspetor|auditor|juiz|defensor|promotor|cuidador|psicolog|assistentes? social|guardas|vigilante|monitor|instrutor|orientador|especialist|trabalhador|empregad|cargos|dentist|auxiliar|atendente|motorista/;
 const GEN_NOMES_BEN = /familia|alunos|estudantes|criancas|idosos|jovens|mulheres|pessoas|brasileiros|moradores|pacientes|beneficiarios|aposentados|desempregados|agricultores|produtores|empresas|microempreendedores|vagas|domicilios|cidadaos|adolescentes|mulheres/;
 function foldTxt(x) { x = String(x).normalize('NFC'); let o = ''; for (let i = 0; i < x.length; i++) o += x[i].normalize('NFD')[0].toLowerCase(); return o; }
+/* v4: acentos. O texto lido é dobrado (sem acento) para casar com o catálogo, e palavras copiadas dele para o tópico perdiam o acento ("remedios").
+   v4Acento devolve a palavra com o acento que o usuário digitou ou, se ele não digitou, o do vocabulário do jogo (KNOWN9.acc); v4Acentos refaz um tópico inteiro a partir do texto original. */
+const V4_AMBIG = /^(?:esta|este|pais|pode|nos|para|pela|duvida)$/;
+function v4Acento(w, orig) {
+  try {
+    if (!w || !/^[a-z]{4,}$/.test(w)) return w;
+    if (orig) { const o = String(orig).normalize('NFC'); const re = /[A-Za-zÀ-ÿ]+/g; let m; while ((m = re.exec(o))) { if (m[0].length === w.length && /[À-ÿ]/.test(m[0]) && foldTxt(m[0]) === w) return m[0].toLowerCase(); } }
+    if (V4_AMBIG.test(w)) return w;
+    if (!KNOWN9) v39Known();
+    const a = KNOWN9 && KNOWN9.acc && KNOWN9.acc[w];
+    return a || w;
+  } catch (e) { return w; }
+}
+function v4Acentos(t, orig) {
+  try {
+    const acc = {}; String(orig || '').normalize('NFC').replace(/[A-Za-zÀ-ÿ]+/g, (w) => { const lw = w.toLowerCase(), f = foldTxt(lw); if (f !== lw && !acc[f]) acc[f] = lw; return w; });
+    return String(t).replace(/(?<![A-Za-zÀ-ÿ])[a-z]{4,}(?![A-Za-zÀ-ÿ])/g, (w) => acc[w] || w);
+  } catch (e) { return t; }
+}
 function origTrecho(A, t) { const o = String(A.orig || '').normalize('NFC'), f = foldTxt(o), i = f.indexOf(String(t || '')); return i >= 0 ? o.slice(i, i + t.length) : String(t || ''); }
 function genPrep(prep, comp) {
   if (/^(?:para|em|de|do|da|dos|das|no|na|nos|nas|ao|aos|à|às|com|por|sobre|entre) /i.test(comp)) return comp; // v3.7: o complemento já traz a preposição
@@ -4306,7 +4402,7 @@ function leituraV35(A) {
   const en = byId('estatal_nova');
   if (en && en.sg > 0) en.topicoFixo = 'a criação de ' + origTrecho(A, en.t).replace(/^(?:criar|criacao d[ae]|instituir|fundar|constituir|montar|implantar|lancar) /i, '').replace(/^(?:estatal|empresa|companhia|banco|sociedade)/, (x) => 'uma ' + x);
   for (const it of its) { // v3.5: objeto amplo + recorte do texto ("a reforma política (voto distrital)")
-    if (it.topicoFixo || it.pledge || !it.sg || !it.t || it.o.gen || it.o.ger || (AMPLOS_R.indexOf(it.o.id) < 0 && (it.t.split(' ').length > 4 || it.o.k === 'E')) || GV35.some(v => v.re.test(foldTxt(it.t).split(' ')[0]))) continue; // v3.9: o recorte vale para qualquer objeto cujo trecho citado traz palavra que o nome do objeto não tem
+    if (it.o.semRecorte || it.topicoFixo || it.pledge || !it.sg || !it.t || it.o.gen || it.o.ger || (AMPLOS_R.indexOf(it.o.id) < 0 && (it.t.split(' ').length > 4 || it.o.k === 'E')) || GV35.some(v => v.re.test(foldTxt(it.t).split(' ')[0]))) continue; // v3.9: o recorte vale para qualquer objeto cujo trecho citado traz palavra que o nome do objeto não tem
     const nm = foldTxt(it.o.n), ws = it.t.split(/[^a-z0-9]+/).filter(w => w.length >= 6 && nm.indexOf(w.slice(0, 5)) < 0 && !GEN_FRACAS.test(w) && !GEN_STOP.test(w));
     if (ws.length) it.recorte = origTrecho(A, it.t).replace(/^(?:proibir|acabar com|extinguir|reduzir|aumentar|criar|ampliar|reconhecer|adotar|instituir|cortar|fim d[aeo]|zerar) /i, '');
   }
@@ -4627,7 +4723,7 @@ function v37Normas(A) {
   return out;
 }
 /* itens do catálogo que já tratam da matéria como texto constitucional: não são trocados pela leitura de norma */
-const V37_PROT = ['reeleicao', 'foro', 'reforma_politica', 'voto_facultativo', 'aposentadoria_idade', 'previdencia_reforma', 'reforma_adm', 'desvinculacao', 'precatorios', 'zona_franca', 'mudar_capital', 'maioridade_penal', 'mensalidade_universidades', 'planos_saude_fim', 'igrejas_imunidade', 'prisao_segunda_instancia', 'cotas_mulheres_congresso', 'limite_mandatos_parl', 'guarda_nacional', 'pena_morte', 'estado_excecao'];
+const V37_PROT = ['reeleicao', 'foro', 'reforma_politica', 'voto_facultativo', 'aposentadoria_idade', 'previdencia_reforma', 'reforma_adm', 'desvinculacao', 'precatorios', 'zona_franca', 'mudar_capital', 'maioridade_penal', 'mensalidade_universidades', 'planos_saude_fim', 'igrejas_imunidade', 'prisao_segunda_instancia', 'cotas_mulheres_congresso', 'limite_mandatos_parl', 'guarda_nacional', 'pena_morte', 'estado_excecao', 'apos_punicao', 'pf_autonomia', 'pf_direcao', 'sigilo_lai', 'foro']; // v4: objetos da v4 (aposentadoria como punição, PF, sigilo) não são trocados pela leitura de norma
 function v37Fallback(A) {
   const orig = String(A.orig || '').normalize('NFC').replace(/[.!?\s]+$/, '');
   return { v: { nom: 'a mudança', prep: 'em', inf: 'mudar', cls: 'norm', sg: 1 }, comp: orig.charAt(0).toLowerCase() + orig.slice(1), cf: foldTxt(orig), fAll: foldTxt(orig), vagoCab: false };
@@ -4654,6 +4750,7 @@ const JN37 = [
   { id: 'lei5889', rx: /\btrabalhador(?:es)? rura(?:l|is)\b|\bempregados? (?:do campo|rura(?:l|is))\b|\bprodutor rural\b[^.;]{0,60}\b(?:descont\w+|moradia|alimentacao)/, ex: /\bdescont\w+\b[^.;]{0,40}\b(?:moradia|alimentacao)\b[^.;]{0,60}\b(?:salario|empregad\w+)|\b(?:moradia|alimentacao)\b[^.;]{0,40}\bdescont\w+\b[^.;]{0,30}\bsalario/, txt: 'Lei 5.889/1973 (art. 9º): regula o trabalho rural e já autoriza descontar do salário, dentro de limites, a moradia (até 20%) e a alimentação (até 25%).' },
   { id: 'lei10101', rx: /\bplr\b|\bparticipacao nos (?:lucros|resultados)\b|\blucros ou resultados\b|\bdistribu\w+ (?:de )?lucros? (?:aos|a) (?:empregados|trabalhadores)\b/, ex: /\b(?:distribu\w+|pagar|dividir)\b[^.;]{0,30}\blucros?\b[^.;]{0,40}\b(?:empregados|trabalhadores)\b|\bplr\b[^.;]{0,40}\bsem encargos\b/, txt: 'Lei 10.101/2000: a participação dos trabalhadores nos lucros ou resultados (PLR) já é regulada, negociada com o sindicato ou comissão e sem natureza salarial.' },
   { id: 'lei7998', rx: /\bseguro.desemprego\b/, ex: /\bseguro.desemprego\b[^.;]{0,40}\b(?:3 a 5|tres a cinco)\s+parcelas\b|\b(?:3 a 5|tres a cinco)\s+parcelas\b[^.;]{0,40}\bseguro.desemprego\b/, txt: 'Lei 7.998/1990: o seguro-desemprego já é pago em 3 a 5 parcelas, conforme o tempo de trabalho, e financiado pelo FAT.' },
+  { id: 'lei8429', rx: /\bimprobidade\b/, txt: 'Lei 8.429/1992 (alterada pela Lei 14.230/2021): já pune a improbidade administrativa (enriquecimento ilícito, dano ao erário e violação de princípios), mas desde 2021 exige dolo e o STF fixou limites à retroatividade das mudanças (Tema 1.199).' }, // v4: norma relacionada quando o pedido muda a lei
   { id: 'lei8036', rx: /\bdeposito\w* (?:mensal )?(?:no |ao |do |de )?(?:fgts|fundo de garantia)\b|\baliquota do fgts\b/, ex: /\b(?:pagar|depositar|recolher)\b[^.;]{0,30}\b8%[^.;]{0,30}\b(?:fgts|fundo de garantia)\b/, txt: 'Lei 8.036/1990 (art. 15): o empregador deposita todo mês 8% do salário na conta do FGTS do empregado.' },
   { id: 'lei605', rx: /\brepouso semanal\b|\bdescanso semanal\b|\b(?:domingos?|feriados?)\b[^.;]{0,40}\bdobro\b|\bdobro\b[^.;]{0,40}\b(?:domingos?|feriados?)\b/, ex: /\b(?:domingos?|feriados?)\b[^.;]{0,40}\bdobro\b[^.;]{0,40}\b(?:folga compensatoria|sem folga)|\bdobro\b[^.;]{0,40}\b(?:domingos?|feriados?)\b/, txt: 'Lei 605/1949: o repouso semanal remunerado é garantido, e o trabalho em domingo ou feriado sem folga compensatória é pago em dobro (art. 9º).' },
   { id: 'lei12997', rx: /\bpericulosidade\b[^.;]{0,40}\b(?:moto\w*|motociclista|motoboy)\b|\b(?:moto\w*|motociclista|motoboy)\b[^.;]{0,40}\bpericulosidade\b/, ex: /\badicional de periculosidade\b[^.;]{0,40}\b(?:moto\w*|motociclista|motoboy)|\b(?:moto\w*|motociclista|motoboy)\b[^.;]{0,40}\badicional de periculosidade\b/, txt: 'Lei 12.997/2014 (CLT, art. 193, §4º): o trabalhador que usa moto no serviço já recebe adicional de periculosidade de 30% sobre o salário-base.' },
@@ -5596,6 +5693,13 @@ function v39Teor(orig) {
   } catch (e) { R.txt = orig; R.cond = null; if (typeof console !== 'undefined') console.warn('v39Teor', e); }
   return R;
 }
+/* v4: proibir/vedar um privilégio é cortá-lo por inteiro; a troca do diretor-geral da PF é ato adotado (não corte) */
+function leituraV4(A) {
+  for (const it of A.items) {
+    if (it.o.priv4 && it.sg < 0 && it.verbo && it.verbo.cls === 'BAN' && /^(?:proib|ved|imped|coib)/.test(it.verbo.t)) it.tot = true;
+    if (it.o.id === 'pf_direcao' && !it.pledge) { it.dir = it.sg = 1; it.topicoFixo = /\b(?:nome\w+|indic\w+|escolh\w+|colocar)\b/.test(A.s) && !/\b(?:troc\w+|substitu\w+|mud\w+)\b/.test(A.s) ? 'a nomeação do diretor-geral da Polícia Federal' : 'a troca do diretor-geral da Polícia Federal'; }
+  }
+}
 function parse(orig) {
   const s = corrige(prep(orig));
   const A = { orig: orig, s: s, items: [], flags: [], notas: [], corrigidas: NCORR };
@@ -5746,6 +5850,7 @@ function parse(orig) {
     A.items = A.items.filter(it => {
       const o = it.o;
       if ((o.k !== 'G' && o.k !== 'T') || o.sav || it.q.has || it.pledge || it.neg || o.id === 'calamidade') return true;
+      if (o.priv4 && /\b(?:proib\w+|vedar|vedacao|restring\w+|limitar|imped\w+|coib\w+)\b/.test(s)) return true; // v4: proibir um privilégio é cortar a despesa, não uma norma sem custo
       let lo = -1, hi = s.length;
       for (let b = 0; b < breaks.length; b++) { if (breaks[b] < it.i) lo = breaks[b]; else if (breaks[b] >= it.e) { hi = breaks[b]; break; } }
       const cl = s.slice(lo + 1, hi).replace(it.t, ' ');
@@ -5764,6 +5869,7 @@ function parse(orig) {
   leituraV35(A); // v3.5
   leituraV37(A); // v3.7
   leituraV38(A); // v3.8
+  leituraV4(A); // v4
   return A;
 }
 
@@ -5915,7 +6021,8 @@ function calcFiscal(A, g) {
   F.Nnom = F.cost + F.extra - F.rev - F.once;
   F.cov = S > 0 ? clamp(offEff / S, 0, 1) : 1;
   F.covNom = S > 0 ? clamp(offNom / S, 0, 1.5) : 1;
-  F.cost = r2(F.cost); F.rev = r2(F.rev); F.extra = r2(F.extra); F.once = r2(F.once);
+  const rF = (v) => Math.abs(v) < 1 ? Math.round(v * 1000) / 1000 : r2(v); // v4: valores abaixo de R$ 1 bi guardam 3 casas (R$ 14 mi não vira zero)
+  F.cost = rF(F.cost); F.rev = rF(F.rev); F.extra = rF(F.extra); F.once = rF(F.once);
   return F;
 }
 function fm_or_any(A) { return true; }
@@ -6169,6 +6276,13 @@ CF_BASE.push( // v3.7
   { id: 'a95_vital', art: 'CF, art. 95, I e art. 52, II', tema: 'Vitaliciedade dos magistrados', regra: 'Os magistrados são vitalícios e só perdem o cargo por sentença judicial transitada em julgado; os ministros do STF respondem por crime de responsabilidade perante o Senado.', muda: 'pec' },
   { id: 'a5_xxxv_lxxiv', art: 'CF, art. 5º, XXXV e LXXIV', tema: 'Acesso à Justiça e assistência jurídica gratuita', regra: 'A lei não exclui da apreciação do Judiciário lesão ou ameaça a direito, e o Estado presta assistência jurídica integral e gratuita a quem comprovar insuficiência de recursos.', muda: 'lei' }
 );
+CF_BASE.push( // v4
+  { id: 'a51_52', art: 'CF, arts. 51, IV, 52, XIII e 2º', tema: 'Autonomia administrativa do Congresso', regra: 'Cada Casa dispõe sobre sua organização, polícia, criação de cargos e fixação da remuneração de seus serviços por ato próprio (resolução ou Ato da Mesa).', muda: 'mesa' },
+  { id: 'a37_xi', art: 'CF, art. 37, XI', tema: 'Teto remuneratório', regra: 'A remuneração e o subsídio dos agentes públicos não podem passar do subsídio mensal dos ministros do STF; as verbas indenizatórias ficam fora do teto, nos termos de lei.', muda: 'pec' },
+  { id: 'a37_caput', art: 'CF, art. 37, caput', tema: 'Impessoalidade e moralidade', regra: 'A administração pública obedece aos princípios de legalidade, impessoalidade, moralidade, publicidade e eficiência; o ato com desvio de finalidade é nulo.', muda: 'lei' },
+  { id: 'a144_pf', art: 'CF, art. 144, §1º; Lei 13.047/2014', tema: 'Polícia Federal', regra: 'A PF é órgão permanente do Executivo, estruturado em carreira; o diretor-geral é nomeado pelo Presidente entre delegados de classe especial.', muda: 'lei' },
+  { id: 'a5_x_lai', art: 'CF, art. 5º, X e XXXIII; Lei 12.527/2011, arts. 24 e 31', tema: 'Acesso à informação e sigilo', regra: 'Todos têm direito a receber informações dos órgãos públicos, ressalvado o sigilo imprescindível à segurança; informações pessoais ficam restritas por até 100 anos.', muda: 'lei' }
+);
 const CF_IDX = {}; CF_BASE.forEach(d => { CF_IDX[d.id] = d; });
 const CF_RANK = { COM: 0, ADM: 1, DEC: 2, PL: 3, MP: 3, DL: 3.5, LC: 4, PEC: 5, IMPOSSIVEL: 9 };
 const CF_INST_NOME = { COM: 'ato político', ADM: 'ato administrativo', DEC: 'decreto', PL: 'lei ordinária (PL)', MP: 'medida provisória', DL: 'decreto legislativo (aprovação do Congresso)', LC: 'lei complementar (PLP)', PEC: 'emenda constitucional (PEC)', IMPOSSIVEL: 'nenhum (cláusula pétrea)' };
@@ -6330,7 +6444,7 @@ const CF_PEC = [
   { id: 'ensino', rx: /\b(?:cobrar mensalidade|fim da gratuidade|mensalidade (?:nas|nos|em) universidades? publicas?)\b/, d: ['a206_iv'], ef: 'A gratuidade do ensino público está no art. 206, IV: cobrar mensalidade exige PEC.' },
   { id: 'sindical', rx: /\b(?:unicidade sindical|pluralidade sindical|convencao 87)\b/, d: ['a8'], ef: 'A unicidade sindical está no art. 8º, II: mudá-la exige PEC.' },
   { id: 'infantil', rx: /\b(?:trabalho infantil|(?:reduzir|baixar) a idade minima (?:para|de) trabalh\w+|(?:legalizar|liberar) (?:o )?trabalho (?:de )?(?:criancas|menores))\b/, d: ['a7_xxxiii'], petreaDisc: true, ef: 'A idade mínima para trabalhar está no art. 7º, XXXIII, e a proteção da criança é tratada como direito fundamental (art. 227): só PEC, com forte risco de ser vista como cláusula pétrea.' },
-  { id: 'sociais_supressao', rx: /\b(?:acab\w+ com|extingu\w+|elimin\w+|suprim\w+|abol\w+|cort\w+|revog\w+) (?:o |as |os |a )?(?:13[ºo]?(?: salario)?|decimo terceiro|ferias|adicional noturno|fgts|licenca.?maternidade|aviso previo|repouso semanal remunerado|salario minimo|seguro.?desemprego|salario.?familia)\b/, d: ['a6_7'], petreaDisc: true, ef: 'Os direitos do art. 7º estão na Constituição e há forte corrente que os protege pelo art. 60, §4º, IV: só PEC, com risco de ser derrubada no STF.' },
+  { id: 'sociais_supressao', rx: /\b(?:acab\w+ com|extingu\w+|elimin\w+|suprim\w+|abol\w+|cort\w+|revog\w+) (?:o |as |os |a )?(?:13[ºo]?(?: salario)?|decimo terceiro|ferias(?! (?:de )?(?:60|sessenta) dias| d[eo]s? (?:juizes|magistrad\w+|promotor\w+|procurador\w*|desembargador\w*|membros))|adicional noturno|fgts|licenca.?maternidade|aviso previo|repouso semanal remunerado|salario minimo|seguro.?desemprego|salario.?familia)\b/, d: ['a6_7'], petreaDisc: true, ef: 'Os direitos do art. 7º estão na Constituição e há forte corrente que os protege pelo art. 60, §4º, IV: só PEC, com risco de ser derrubada no STF.' },
   { id: 'guarda', rx: /\b(?:guarda nacional|policia nacional|nova (?:forca|policia|guarda) (?:federal|nacional)|(?:forca|policia|guarda) (?:federal|nacional) permanente)\b/, d: ['a144'], ef: 'O art. 144 lista os órgãos de segurança pública e a jurisprudência do STF trata o rol como taxativo: um órgão novo e permanente, como uma guarda nacional, só entra por emenda constitucional. A Força Nacional hoje é um programa de cooperação entre União e estados, sem quadro próprio.' } // v3.5
 ];
 CF_RULES.push(C => {
@@ -6583,7 +6697,7 @@ const CF35 = [
   { id: 'constituinte', rx: /\bassembleia constituinte\b|\bconstituinte exclusiva\b|\bnova constituicao\b/, nivel: 'controverso', exige: 'PEC', force: 1, d: ['a60', 'a60_4_i_iii'], ef: 'A Constituição só se muda por emenda (art. 60) e não prevê assembleia constituinte exclusiva: convocá-la seria ruptura da ordem constitucional, com risco para as cláusulas pétreas.' },
   { id: 'congresso_stf', rx: /\b(?:congresso|parlamento|legislativo)\b[^.;]{0,25}\b(?:derrub\w+|anul\w+|reverter|sustar|rever|revogar)\b[^.;]{0,25}\b(?:decis\w+|julgad\w+|sentenc\w+)\b[^.;]{0,15}\b(?:stf|supremo)\b/, nivel: 'inconstitucional', exige: 'PEC', force: 1, d: ['a60_4_i_iii'], ef: 'Dar ao Congresso o poder de derrubar decisão do STF fere a separação dos Poderes (art. 2º), cláusula pétrea (art. 60, §4º, III): nem emenda constitucional pode fazê-lo.' },
   { id: 'tribunal_const', rx: /\b(?:tribunal|corte) constitucional\b/, nivel: 'ok', exige: 'PEC', force: 1, d: ['a101'], ef: 'A criação de um tribunal constitucional separado do STF muda a estrutura do Judiciário e a competência de guarda da Constituição (arts. 92 e 102): só por emenda constitucional.' },
-  { id: 'ferias_juizes', rx: /\bferias\b[^.;]{0,20}\b(?:60|sessenta) dias\b|\bferias dos? (?:juizes|magistrados)\b/, nivel: 'ok', exige: 'LC', d: ['loman'], ef: 'As férias de 60 dias dos magistrados vêm do estatuto da magistratura (LC 35/1979, Loman): mudá-las exige lei complementar de iniciativa do STF (CF, art. 93).' },
+  { id: 'ferias_juizes', rx: /\bferias\b[^.;]{0,20}\b(?:60|sessenta) dias\b|\bferias d[eo]s? (?:juizes|magistrados|promotores|procuradores|desembargadores|membros do (?:ministerio publico|judiciario))\b/, nivel: 'ok', exige: 'LC', d: ['loman'], ef: 'As férias de 60 dias dos magistrados vêm do estatuto da magistratura (LC 35/1979, Loman, art. 66): mudá-las exige lei complementar de iniciativa do STF (CF, art. 93); as dos membros do Ministério Público estão na LC 75/1993 e na Lei 8.625/1993.' }, // v4: inclui promotores e procuradores
   { id: 'demitir_servidor', rx: /\b(?:demitir|exonerar|desligar|dispensar)\b[^.;]{0,20}\bservidor\w*\b[^.;]{0,25}\b(?:desempenho|insuficiencia|avaliacao)\b/, nivel: 'ok', exige: 'LC', d: ['a41'], ef: 'A perda do cargo por insuficiência de desempenho depende de avaliação periódica na forma de lei complementar (CF, art. 41, §1º, III), ainda não editada.' },
   { id: 'eleicoes_juntas', rx: /\beleic\w+ municipa\w+[^.;]{0,25}\b(?:junt\w+|unific\w+|coincid\w+|mesma data)\b|\b(?:unific\w+|coincid\w+|coincidencia d)\w* (?:d?as |as )?eleic\w+|\bmandato\b[^.;]{0,15}\b(?:prorrog\w+ de|de) (?:vereador|prefeito)s?\b[^.;]{0,20}\bate\b/, nivel: 'ok', exige: 'PEC', force: 1, d: ['a14_16'], ef: 'A data das eleições e a duração dos mandatos estão na Constituição (arts. 14, 28, 29 e 77): unificar as eleições exige PEC e só vale para eleição realizada mais de um ano depois (art. 16).' },
   { id: 'recall', rx: /\brecall\b|\brevogacao de mandato\b|\breferendo revogatorio\b/, nivel: 'ok', exige: 'PEC', force: 1, d: ['a14_16'], ef: 'A perda de mandato só ocorre nos casos da Constituição (arts. 55 e 15); o recall de eleitos exige emenda constitucional.' },
@@ -6607,6 +6721,37 @@ CF_RULES.push(C => {
   }
   return out.length ? out : null;
 }); // v3.5
+/* v4: regras jurídicas (Legislativo, Polícia Federal, sigilo, Judiciário) */
+CF_RULES.push(C => { // Legislativo: benefícios fixados por ato interno das Casas
+  const its = C.act.filter(i => i.o.mesa4 && i.sg);
+  if (!its.length || C.E === 'PEC' || C.A.talk || C.A.pledgeOnly) return null;
+  const fraco = C.E === 'DEC' || C.E === 'MP' || C.E === 'ADM';
+  return [cfHit({ id: 'mesa4', d: ['a51_52'], vicio: fraco ? 'forma' : 'materia', nivel: fraco ? 'inconstitucional' : 'controverso', exige: null,
+    efeito: fraco ? 'Decreto, medida provisória ou ato do Executivo não alcança as despesas internas da Câmara e do Senado: ' + MESA4 : MESA4,
+    sug: [cfSugInst('mesa4_pec', 'PEC', 'Transformar em PEC que fixe limites gerais para as despesas do Legislativo, ou pedir às Mesas o ato interno', false)] })];
+});
+CF_RULES.push(C => { // Polícia Federal: troca do diretor-geral, autonomia, sigilo da LAI
+  const out = [], E = C.E;
+  const d = C.act.find(i => i.o.id === 'pf_direcao');
+  if (d && !C.A.talk) {
+    const sBruto = foldTxt(C.A.orig0 || C.s), motivo = /\b(?:amigo|amiga|filho|filha|parente|familia|compadre|aliado|blind\w+|proteg\w+|livr\w+|abaf\w+|acobert\w+|salvar|barrar|travar|frear|engavet\w+)\b/.test(sBruto), invest = /\b(?:investig\w+|inquerito|operacao|operacoes|lava jato|apuracao|apurando|mandado)\b/.test(sBruto);
+    if (motivo && invest) out.push(cfHit({ id: 'pf_desvio', d: ['a37_caput'].filter(x => CF_IDX[x]), vicio: 'materia', nivel: 'inconstitucional', efeito: 'Trocar o comando da Polícia Federal para atingir ou proteger alguém investigado é desvio de finalidade, ofende a impessoalidade e a moralidade (CF, art. 37, caput) e pode configurar crime de responsabilidade (Lei 1.079/1950, art. 9º): o STF já suspendeu, em 2020, uma nomeação para a direção da PF por esse motivo (MS 37.097).' }));
+    else if (invest) out.push(cfHit({ id: 'pf_suspeita', d: ['a37_caput'].filter(x => CF_IDX[x]), vicio: 'materia', nivel: 'controverso', efeito: 'A nomeação do diretor-geral é livre (Lei 13.047/2014, art. 2º-A), mas trocá-lo com investigações em andamento levanta suspeita de interferência e de desvio de finalidade (CF, art. 37, caput); o STF já suspendeu uma nomeação assim em 2020 (MS 37.097).' }));
+  }
+  const au = C.act.find(i => i.o.id === 'pf_autonomia' && i.sg > 0);
+  if (au && !C.A.talk) {
+    if (E === 'DEC' || E === 'MP' || E === 'ADM') out.push(cfHit({ id: 'pf_aut_fraca', d: ['a144_pf'], vicio: 'forma', nivel: 'inconstitucional', efeito: 'O mandato do diretor-geral e a autonomia da PF mudam a estrutura do órgão (CF, art. 144, §1º) e a regra de nomeação em lei: decreto, MP ou ato do Executivo não bastam; é preciso lei ou PEC.', sug: [cfSugInst('pf_aut_pec', 'PEC', 'Enviar PEC que dê autonomia e mandato à PF (ou, no mínimo, projeto de lei)')] }));
+    else if (E === 'PL') out.push(cfHit({ id: 'pf_aut_pl', d: ['a144_pf'], vicio: 'materia', nivel: 'controverso', efeito: 'Dar mandato fixo ao diretor da PF por lei ordinária é debatido: limita o poder do Presidente de nomear e exonerar (CF, art. 84, XXV) e a organização de órgão do Executivo (art. 61, §1º, II); parte dos juristas exige PEC.', sug: [cfSugInst('pf_aut_pec2', 'PEC', 'Transformar em PEC, que afasta a dúvida sobre iniciativa e competência')] }));
+  }
+  const sg = C.act.find(i => i.o.id === 'sigilo_lai' && i.sg);
+  if (sg && !C.A.talk && (E === 'DEC' || E === 'MP' || E === 'ADM')) out.push(cfHit({ id: 'sigilo_decreto', d: ['a5_x_lai'], vicio: 'forma', nivel: 'controverso', exige: 'PL', efeito: 'O prazo de até 100 anos é da Lei de Acesso à Informação (Lei 12.527/2011, art. 31, §1º, I) e protege a intimidade (CF, art. 5º, X): decreto só regulamenta a lei (art. 84, IV) e não pode encurtar o prazo legal; o caminho é projeto de lei.', sug: [cfSugInst('sigilo_pl', 'PL', 'Enviar projeto de lei que altere o art. 31 da Lei de Acesso à Informação')] }));
+  return out.length ? out : null;
+});
+CF35.push(
+  { id: 'penduricalho_jud', rx: /\b(?:penduricalh\w+|supersalari\w+|verbas? indenizatorias?|acima do teto)\b[^.;]{0,60}\b(?:judiciario|magistrad\w+|juizes|juiz|promotor\w+|procurador\w*|ministerio publico|tribunais|desembargador\w*)\b|\b(?:judiciario|magistrad\w+|juizes|promotor\w+|tribunais|ministerio publico|desembargador\w*)\b[^.;]{0,60}\b(?:penduricalh\w+|supersalari\w+|verbas? indenizatorias?|acima do teto)\b/, nivel: 'ok', exige: 'LC', d: ['loman', 'a37_xi'], ef: 'O estatuto da magistratura e as verbas dos juízes são matéria de lei complementar de iniciativa do Judiciário (Loman, LC 35/1979; CF, art. 93), e o teto está no art. 37, XI; o Ministério Público segue a LC 75/1993. O corte pode vir por lei complementar, por PEC ou por decisão do CNJ e do STF.' },
+  { id: 'moradia_jud', rx: /\bauxilio.?moradia\b[^.;]{0,40}\b(?:juiz\w*|magistrad\w+|promotor\w+|procurador\w*|desembargador\w*|judiciario|ministerio publico)\b|\b(?:juiz\w*|magistrad\w+|promotor\w+|desembargador\w*)\b[^.;]{0,30}\bauxilio.?moradia\b/, nivel: 'ok', exige: 'LC', d: ['loman'], ef: 'O auxílio-moradia da magistratura está na Loman (LC 35/1979, art. 65, II) e o do Ministério Público na LC 75/1993: mudar a regra exige lei complementar, de iniciativa do Judiciário e do MP.' },
+  { id: 'apos_punicao', rx: /\baposentadoria (?:compulsoria )?(?:como |a titulo de |por )?(?:punicao|pena|sancao|castigo|punitiva)\b|\b(?:punir|punid\w+|punicao|sancionar|castigar)\b[^.;]{0,25}\bcom (?:a )?aposentadoria\b/, nivel: 'ok', exige: 'PEC', force: 1, d: ['a95_vital', 'loman'], ef: 'A aposentadoria compulsória como pena disciplinar vem da Loman (LC 35/1979, art. 42) e da vitaliciedade (CF, arts. 93, VIII e 95, I): o magistrado só perde o cargo por sentença transitada em julgado. Acabar com a punição, ou criar a demissão administrativa, exige PEC.' }
+);
 function cfPecTravada(C, exigePec) {
   const pec = C.E === 'PEC' || exigePec;
   if (!pec) return null;
@@ -6850,6 +6995,7 @@ function checarLegal(A) {
     if (A.F && A.F.Nnom > 10 && act.some(i => i.o.k === 'G' && i.tipo === 'perm' && i.spend > 0)) lrf.push('despesa obrigatória de caráter continuado exige estimativa de impacto e compensação (LRF, art. 17)');
     if (A.F && act.some(i => i.o.k === 'T' && i.sg < 0 && i.tipo === 'perm' && !i.fora)) lrf.push('renúncia de receita exige estimativa de impacto e medida de compensação (LRF, art. 14)');
     res.parecer = A.vago ? 'Sem vícios aparentes no que foi escrito, mas o texto é genérico: a AGU só consegue avaliar a medida depois que ela for detalhada (objeto, instrumento, alvo e fonte).' : 'Sem vícios aparentes. A AGU considera a medida compatível com a Constituição' + (lrf.length ? ', ressalvando que ' + lrf.join('; ') + '.' : '.');
+    { const ok4 = A.vago ? [] : act.map(i => typeof i.o.cfOk === 'function' ? i.o.cfOk(i, A) : i.o.cfOk).filter((x, n, arr) => x && arr.indexOf(x) === n); if (ok4.length) res.parecer += ' ' + ok4.join(' '); } // v4: fato jurídico do objeto no parecer da AGU (foro: tese do STF de março de 2025)
   }
   return res;
 }
@@ -6859,7 +7005,7 @@ function checarLegal(A) {
    VIABILIDADE, QUALIDADE, TEXTOS, SAIDA (F, G, H)
    ===================================================================================== */
 const PL_NOUN = { familia: 'famílias', familias: 'famílias', pessoa: 'pessoas', pessoas: 'pessoas', brasileiros: 'brasileiros', alunos: 'alunos', estudantes: 'estudantes', professores: 'professores', servidores: 'servidores', policiais: 'policiais', agricultores: 'agricultores', trabalhadores: 'trabalhadores', idosos: 'idosos', criancas: 'crianças', jovens: 'jovens', mulheres: 'mulheres', aposentados: 'aposentados', beneficiarios: 'beneficiários', domicilios: 'domicílios', casas: 'casas', moradias: 'moradias', unidades: 'unidades', leitos: 'leitos', medicos: 'médicos', vagas: 'vagas', escolas: 'escolas', creches: 'creches', cidades: 'cidades', municipios: 'municípios', empregos: 'empregos', militares: 'militares', habitantes: 'habitantes', cidadaos: 'cidadãos', desempregados: 'desempregados', motoristas: 'motoristas', caminhoneiros: 'caminhoneiros', pescadores: 'pescadores', produtores: 'produtores', empresas: 'empresas', hospitais: 'hospitais', obras: 'obras', km: 'km' };
-function nounPt(n) { return PL_NOUN[n] || n; }
+function nounPt(n) { return PL_NOUN[n] || v4Acento(n); } // v4: acento do vocabulário (presídios)
 function extPessoas(n) { if (n >= 1e6) { const v = n / 1e6; return fmtNum(v, v % 1 ? 1 : 0) + (v === 1 ? ' milhão' : ' milhões'); } if (n >= 1e3) return fmtNum(n / 1e3, 0) + ' mil'; return fmtNum(n, 0); }
 function durTxt(m) { if (m == null) return ''; if (m < 1.5) return fmtNum(Math.round(m * 30), 0) + ' dias'; if (m >= 12 && Math.abs(m / 12 - Math.round(m / 12)) < .2) { const a = Math.round(m / 12); return a + (a === 1 ? ' ano' : ' anos'); } return fmtNum(Math.round(m), 0) + ' meses'; }
 const POL_RE = /^(a taxação|a taxa das|o imposto sobre grandes|o imposto seletivo|o imposto sobre transa|a desoneração|a reforma|o fim|a isenção|a desonera)/;
@@ -7164,7 +7310,7 @@ function analisar(g, texto, ctx) {
   const orig0 = v39Limpa(String(texto == null ? '' : texto).trim()); // v3.9
   const T39 = v39Teor(orig0); const orig = T39.txt; // v3.9: a medida é a ação afirmativa; gatilho, restrição e retórica saem do texto lido
   const A = parse(orig);
-  A.T39 = T39;
+  A.T39 = T39; A.orig0 = orig0; // v4: texto completo, antes de a justificativa ("porque...") ser cortada
   const s = A.s;
   A.instExpl = null; A.instDet = null;
   const sIE = s.replace(/\bsem (?:a |uma |nova |qualquer |necessidade de |precisar de )?(?:lei complementar|plp|pec|emenda constitucional|emenda a constituicao|decreto|medida provisoria|projeto de lei|lei)\b/g, ' '); // v3.7: "sem lei complementar" nega o instrumento
@@ -7303,6 +7449,7 @@ function analisar(g, texto, ctx) {
   if (A.items.some(i => i.escProd && i.sg < 0 && i.o.id === 'ipi')) notas.push('As alíquotas do IPI mudam por decreto (CF, art. 153, §1º) e a redução vale já na publicação: a noventena (art. 150, III, c) só vale para aumento.'); // v3.4
   // topico
   let topic = montaTopico(A, F);
+  if (topic) topic = v4Acentos(topic, orig0); // v4: palavras do tópico que o usuário digitou com acento voltam acentuadas
   if (!topic) {
     const pal = orig.split(/\s+/);
     topic = '"' + pal.slice(0, 7).join(' ').replace(/[.!?]+$/, '') + (pal.length > 7 ? '…' : '') + '"';
@@ -7546,7 +7693,7 @@ function axesBase(o) {
       if (o.ch === 'subs') a.economia = -1;
     }
   } else if (o.k === 'R' || o.k === 'C') {
-    if (Math.abs(iv[1]) >= .3) a.costumes = iv[1] > 0 ? 1 : -1;
+    if (Math.abs(iv[1]) >= .3 && (o.legal || o.fq || /^(?:conservador|progressista|garantista|religiao|negacionismo|armas|seguranca_dura|proibir_bets|familia)/.test(o.cat || ''))) a.costumes = iv[1] > 0 ? 1 : -1; // v4: o rótulo social (iv) só vira eixo de costumes em objeto de valores (cat, legal ou frame); mudar a capital ou desbloquear rodovia não é pauta de costumes
     if (Math.abs(iv[0]) >= .3) a.economia = iv[0] > 0 ? 1 : -1;
   } else if (o.k === 'D' && o.d) {
     if (o.d.china || o.d.brics) a.soberania_externa = -1; else if (o.d.eua) a.soberania_externa = o.d.eua > 0 ? 1 : -1;
@@ -9198,7 +9345,7 @@ const XR_GRUPO = {
   carteira: ['E quem trabalha de carteira assinada?', 'Hora extra não paga a conta.'], catolicos: ['Que isso sirva ao bem comum.'], sindicatos: ['Trabalhador organizado vai cobrar.'], empresariado: ['Quem gera emprego precisa de segurança jurídica.'], militares: ['Disciplina e previsibilidade, por favor.'], negro: ['Igualdade não é favor.']
 };
 function hashtag(t) {
-  const pal = semArtigo(t).normalize('NFD').replace(/\p{M}/gu, '').replace(/[^A-Za-z0-9 ]/g, ' ').split(/\s+/).filter(w => w.length > 2 && !/^(de|da|do|das|dos|para|com|sem|por|que|aos|nas|nos|uma|ate|mais|menos|sobre|todos)$/i.test(w)).slice(0, 3);
+  const pal = semArtigo(t).normalize('NFC').replace(/[^\p{L}0-9 ]/gu, ' ').split(/\s+/).filter(w => w.length > 2 && !/^(de|da|do|das|dos|para|com|sem|por|que|aos|nas|nos|uma|ate|até|mais|menos|sobre|todos)$/i.test(w)).slice(0, 3); // v4: a hashtag mantém os acentos do tópico
   return '#' + (pal.length ? pal.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('') : 'Governo');
 }
 function contaPres(g) {
@@ -19345,7 +19492,7 @@ function FaixaCF({ prop }) { // v3.8
 // custo anual em destaque (ou ganho), com receita e valor único quando houver
 function BlocoCusto({ prop, congresso }) { // v3.8
   const k = prop.scale, custo = (prop.cost || 0) * k, rec = (prop.rev || 0) * k, net = custo - rec;
-  const ganho = net < -.05, custoNet = net > .05;
+  const ganho = net < -.005, custoNet = net > .005; // v4: economia pequena (R$ 14 mi) não vira traço
   const unico = prop.extra ? bi(prop.extra * k) + ' de despesa única' : prop.once ? '+' + bi(prop.once) + ' de receita única' : null;
   const rot = ganho ? 'Ganho anual' : custoNet ? (rec > 0 ? 'Custo anual líquido' : 'Custo anual') : 'Impacto fiscal anual';
   const tram = congresso ? (prop.inst === 'PEC' ? 'PEC: 308 deputados e 49 senadores' : prop.instDetalhe === 'LC' ? 'PLP: 257 deputados e 41 senadores' : prop.instDetalhe === 'AUT' ? 'Autorização: 257 deputados e 41 senadores' : INST_NOME[prop.inst] + ': 257 deputados e 41 senadores') : 'Sem votação no Congresso';
@@ -24172,7 +24319,7 @@ const MIN_TIPO = { tecnico: 'técnico', partidario: 'indicação partidária', o
 function minQualBand(q) { return q >= 72 ? 'alta' : q >= 50 ? 'media' : 'baixa'; }
 function minFiscal(c) {
   const L = [];
-  if (c.cost > .05) L.push(['Custo', bi(c.cost) + '/ano', 'var(--rubro)']); else if (c.cost < -.05) L.push(['Economia', bi(c.cost) + '/ano', 'var(--verde)']);
+  if (c.cost > .005) L.push(['Custo', bi(c.cost) + '/ano', 'var(--rubro)']); else if (c.cost < -.005) L.push(['Economia', bi(c.cost) + '/ano', 'var(--verde)']); // v4
   if (c.rev > .05) L.push(['Receita', bi(c.rev) + '/ano', 'var(--verde)']); else if (c.rev < -.05) L.push(['Renúncia', bi(c.rev) + '/ano', 'var(--rubro)']);
   if (c.once > .05) L.push(['Receita única', bi(c.once), 'var(--verde)']);
   if (c.extra > .05) L.push(['Gasto extra', bi(c.extra), 'var(--rubro)']);

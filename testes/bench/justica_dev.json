@@ -1,0 +1,898 @@
+[
+ {
+  "t": "Acabar com o foro privilegiado para deputados e senadores",
+  "area": "foro",
+  "tema": [
+   "foro"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Foro por prerrogativa está na CF (arts. 53 §1º, 102 I b/c, 105 I a): só PEC. Em março de 2025 o STF (7x4) manteve o foro após a saída do cargo para crimes cometidos no cargo. Custo ~0."
+ },
+ {
+  "t": "PEC para extinguir o foro por prerrogativa de função",
+  "area": "foro",
+  "tema": [
+   "foro"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Mesma matéria, instrumento citado."
+ },
+ {
+  "t": "acabar c/ o forro privilegiado dos politicos",
+  "area": "foro",
+  "tema": [
+   "foro",
+   "^(?!.*forro)"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Digitação ruim: 'forro' = foro. Deve ser PEC e não PL.",
+  "tipo": "mal"
+ },
+ {
+  "t": "Restringir o foro privilegiado só a crimes cometidos no mandato",
+  "area": "foro",
+  "tema": [
+   "foro"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PEC",
+   "COM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "AP 937-QO (2018) já limitou o foro a crimes no cargo e em razão dele; consolidar no texto constitucional exige PEC."
+ },
+ {
+  "t": "Fim do foro privilegiado por decreto",
+  "area": "foro",
+  "tema": [
+   "foro"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "Decreto não altera a CF: inconstitucional."
+ },
+ {
+  "t": "quero q ex-deputado e ex-senador percam o foro quando saem do cargo",
+  "area": "foro",
+  "tema": [
+   "foro|prerrogativa"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Março/2025: STF decidiu (7x4) que o foro persiste após a saída para crimes no cargo; reverter exige PEC.",
+  "tipo": "mal"
+ },
+ {
+  "t": "Acabar com o auxílio-moradia de deputados e senadores",
+  "area": "legislativo",
+  "tema": [
+   "moradia",
+   "parlament|deputad|senador|legislativ"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL",
+   "PEC",
+   "COM"
+  ],
+  "custo": [
+   -0.2,
+   -0.003
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso"
+  ],
+  "nota": "Auxílio-moradia/imóvel funcional da Câmara e do Senado: ~R$ 0,02-0,05 bi/ano; fixado por Ato da Mesa (CF 51 IV e 52 XIII): PL do presidente é controverso. Não é o Minha Casa Minha Vida."
+ },
+ {
+  "t": "tirar o auxilio moradia dos deputados",
+  "area": "legislativo",
+  "tema": [
+   "moradia"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL",
+   "PEC",
+   "COM"
+  ],
+  "custo": [
+   -0.2,
+   -0.003
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso"
+  ],
+  "nota": "Variante mal escrita; mesma matéria.",
+  "tipo": "mal"
+ },
+ {
+  "t": "Reduzir a cota parlamentar (CEAP) pela metade",
+  "area": "legislativo",
+  "tema": [
+   "cota|ceap"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL",
+   "PEC"
+  ],
+  "custo": [
+   -0.4,
+   -0.01
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso"
+  ],
+  "nota": "CEAP: R$ 36,5-51,4 mil/mês por deputado conforme o estado; Câmara ~R$ 0,1-0,25 bi/ano mais o Senado. Ato da Mesa."
+ },
+ {
+  "t": "Acabar com a cota de combustível dos deputados",
+  "area": "legislativo",
+  "tema": [
+   "combustivel|cota"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL",
+   "PEC",
+   "COM"
+  ],
+  "custo": [
+   -0.3,
+   -0.002
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso"
+  ],
+  "nota": "Combustível é rubrica da CEAP: dezenas de milhões; Ato da Mesa."
+ },
+ {
+  "t": "Acabar com a verba de gabinete dos deputados",
+  "area": "legislativo",
+  "tema": [
+   "gabinete|verba"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL",
+   "PEC"
+  ],
+  "custo": [
+   -2,
+   -0.3
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso"
+  ],
+  "nota": "Verba de gabinete (pessoal) da Câmara: ~R$ 0,8-1 bi/ano; Ato da Mesa."
+ },
+ {
+  "t": "Acabar com o auxílio-paletó dos parlamentares",
+  "area": "legislativo",
+  "tema": [
+   "paleto"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL",
+   "PEC",
+   "COM"
+  ],
+  "custo": [
+   -0.1,
+   -0.001
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso"
+  ],
+  "nota": "Ajuda de custo no início e no fim da legislatura (~um subsídio por parlamentar): poucas dezenas de milhões a cada quatro anos."
+ },
+ {
+  "t": "Cortar o salário dos deputados pela metade",
+  "area": "legislativo",
+  "tema": [
+   "salario|subsidio|deputad|parlament"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL",
+   "PEC"
+  ],
+  "custo": [
+   -0.6,
+   -0.02
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso"
+  ],
+  "nota": "Subsídio de ~R$ 46 mil: 513 deputados e 81 senadores somam ~R$ 0,4 bi/ano com encargos; é fixado por decreto legislativo (CF 49 VII), por isso PL do presidente é controverso."
+ },
+ {
+  "t": "Proibir carro oficial, motorista e combustível pagos pelo governo para parlamentares",
+  "area": "legislativo",
+  "tema": [
+   "carro|motorista|oficial"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL",
+   "PEC",
+   "COM"
+  ],
+  "custo": [
+   -0.3,
+   -0.005
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso"
+  ],
+  "nota": "Frota e motoristas da Câmara e do Senado: dezenas de milhões; Ato da Mesa."
+ },
+ {
+  "t": "cortar motorista particular pago pelo governo pros politico",
+  "area": "legislativo",
+  "tema": [
+   "motorista"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL",
+   "PEC",
+   "DEC",
+   "ADM",
+   "COM"
+  ],
+  "custo": [
+   -0.3,
+   -0.003
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "ok"
+  ],
+  "nota": "Mistura Executivo (decreto) e Legislativo (Mesa); dezenas de milhões.",
+  "tipo": "mal"
+ },
+ {
+  "t": "PEC para limitar a verba de gabinete e as cotas dos parlamentares",
+  "area": "legislativo",
+  "tema": [
+   "gabinete|cota|verba|parlament"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   -2,
+   -0.01
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "A PEC pode fixar limites gerais às despesas das Casas (CF 51 IV e 52 XIII): vício nenhum."
+ },
+ {
+  "t": "Acabar com o fundo eleitoral",
+  "area": "legislativo",
+  "tema": [
+   "fundo"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL",
+   "PEC",
+   "PLP"
+  ],
+  "custo": [
+   -8,
+   -3
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "FEFC ~R$ 4,9 bi/ano (Lei 9.504/1997, art. 16-C)."
+ },
+ {
+  "t": "Proibir carro oficial para ministros",
+  "area": "executivo",
+  "tema": [
+   "carro"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "DEC",
+   "ADM"
+  ],
+  "custo": [
+   -0.2,
+   -0.002
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Frota do Executivo é matéria de decreto (Decreto 9.287/2018 e normas do Planejamento): dezenas de milhões."
+ },
+ {
+  "t": "Cortar pela metade as diárias e passagens do governo federal",
+  "area": "executivo",
+  "tema": [
+   "diaria|passagem"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "DEC",
+   "ADM"
+  ],
+  "custo": [
+   -3,
+   -0.05
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Diárias e passagens federais: alguns bilhões por ano; ato do Executivo."
+ },
+ {
+  "t": "Acabar com o cartão corporativo do governo",
+  "area": "executivo",
+  "tema": [
+   "cartao"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "DEC",
+   "ADM"
+  ],
+  "custo": [
+   -1,
+   -0.003
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Cartão de Pagamento do Governo Federal (CPGF): ~R$ 0,1 bi/ano; decreto."
+ },
+ {
+  "t": "Acabar com os penduricalhos acima do teto no Judiciário",
+  "area": "judiciario",
+  "tema": [
+   "penduricalho|supersalario|teto"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL",
+   "PLP",
+   "PEC"
+  ],
+  "custo": [
+   -15,
+   -2
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Verbas indenizatórias do Judiciário somaram ~R$ 9,8 bi em 2025; estatuto da magistratura é LC (CF 93)."
+ },
+ {
+  "t": "Cortar o auxílio-moradia de juízes e promotores",
+  "area": "judiciario",
+  "tema": [
+   "moradia"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PLP",
+   "PEC"
+  ],
+  "custo": [
+   -1,
+   -0.01
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "LOMAN (LC 35/1979, art. 65) e LC 75/1993: PLP; o auxílio generalizado acabou em 2018, restam casos pontuais."
+ },
+ {
+  "t": "Acabar com as férias de 60 dias dos juízes",
+  "area": "judiciario",
+  "tema": [
+   "ferias"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PLP",
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "LOMAN art. 66 (LC 35/1979): lei complementar."
+ },
+ {
+  "t": "Acabar com as férias de 60 dias dos promotores",
+  "area": "judiciario",
+  "tema": [
+   "ferias"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PLP",
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "LC 75/1993 e Lei 8.625/1993: lei complementar/PEC."
+ },
+ {
+  "t": "Fim da aposentadoria compulsória como punição para juiz",
+  "area": "judiciario",
+  "tema": [
+   "aposentadoria",
+   "compulsoria"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PEC",
+   "PLP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "LOMAN art. 42 e CF art. 93 VIII / 95 I: PEC ou PLP."
+ },
+ {
+  "t": "acabar com os supersalarios dos juizes e promotores kkk",
+  "area": "judiciario",
+  "tema": [
+   "supersalario|penduricalho|teto"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL",
+   "PLP",
+   "PEC"
+  ],
+  "custo": [
+   -15,
+   -2
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Variante informal.",
+  "tipo": "mal"
+ },
+ {
+  "t": "Trocar o diretor-geral da Polícia Federal",
+  "area": "pf",
+  "tema": [
+   "direcao|diretor",
+   "policia federal|\\bpf\\b"
+  ],
+  "dir": "outro",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Nomeação do diretor-geral é ato do Presidente (Lei 13.047/2014, art. 2º-A): custo 0; risco político e de inquérito no STF se houver investigações em curso."
+ },
+ {
+  "t": "Dar autonomia à Polícia Federal com mandato para o diretor",
+  "area": "pf",
+  "tema": [
+   "autonomia|mandato",
+   "policia federal|\\bpf\\b"
+  ],
+  "dir": "outro",
+  "inst": [
+   "PEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Debatido: PEC (art. 144 §1º) ou PL; custo ~0."
+ },
+ {
+  "t": "trocar o chefe da PF pq ele ta investigando amigo meu",
+  "area": "pf",
+  "tema": [
+   "diretor|direcao|chefe|policia federal|\\bpf\\b"
+  ],
+  "dir": "outro",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Desvio de finalidade (STF já suspendeu nomeação assim em 2020, MS 37.097).",
+  "tipo": "mal"
+ },
+ {
+  "t": "Cortar a verba da PF",
+  "area": "pf",
+  "tema": [
+   "verba|policia federal|\\bpf\\b"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "ADM",
+   "PL",
+   "DEC",
+   "MP"
+  ],
+  "custo": [
+   -6,
+   -0.3
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Orçamento da PF ~R$ 8-9 bi/ano fora pessoal."
+ },
+ {
+  "t": "aumentar verba da PF",
+  "area": "pf",
+  "tema": [
+   "verba|policia federal|\\bpf\\b"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "ADM",
+   "PL",
+   "MP",
+   "DEC"
+  ],
+  "custo": [
+   0.3,
+   6
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Reforço de custeio e investimento da PF.",
+  "tipo": "mal"
+ },
+ {
+  "t": "Criar uma força-tarefa contra a corrupção",
+  "area": "pf",
+  "tema": [
+   "forca.?tarefa|corrupcao"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Ato do Executivo (PF, CGU, AGU); custo de poucos milhões a ~R$ 2 bi."
+ },
+ {
+  "t": "Acabar com o sigilo de 100 anos",
+  "area": "sigilo",
+  "tema": [
+   "sigilo"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL",
+   "DEC",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "LAI (Lei 12.527/2011) art. 31 §1º, I: informações pessoais ficam restritas por até 100 anos; mudar é lei."
+ },
+ {
+  "t": "Reduzir o sigilo de 100 anos para 25 por decreto",
+  "area": "sigilo",
+  "tema": [
+   "sigilo"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Decreto 7.724/2012 só regulamenta; o prazo está na lei."
+ },
+ {
+  "t": "Criar uma lei de acesso à informação para o governo abrir seus documentos e dados",
+  "area": "sigilo",
+  "tema": [
+   "acesso|informac|transparencia|dados|documentos"
+  ],
+  "dir": "cria",
+  "inst": [
+   "COM",
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 12.527/2011",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 12.527/2011 (LAI) já está em vigor."
+ },
+ {
+  "t": "Aprovar a Lei da Ficha Limpa para barrar candidatos condenados",
+  "area": "leis",
+  "tema": [
+   "ficha limpa|inelegib|candidat"
+  ],
+  "dir": "cria",
+  "inst": [
+   "COM",
+   "PL",
+   "PLP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "LC 135/2010",
+  "cf": [
+   "ok"
+  ],
+  "nota": "LC 135/2010 já vale e o STF a validou em 2012."
+ },
+ {
+  "t": "Criar uma lei anticorrupção que responsabilize as empresas corruptoras",
+  "area": "leis",
+  "tema": [
+   "anticorrupcao|corrup|empresa"
+  ],
+  "dir": "cria",
+  "inst": [
+   "COM",
+   "PL",
+   "PLP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 12.846/2013",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 12.846/2013 já vale (responsabilização objetiva e acordo de leniência)."
+ },
+ {
+  "t": "Criar uma lei de improbidade para punir agente público que desvia dinheiro",
+  "area": "leis",
+  "tema": [
+   "improbidade"
+  ],
+  "dir": "cria",
+  "inst": [
+   "COM",
+   "PL",
+   "PLP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 8.429/1992",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 8.429/1992, alterada pela Lei 14.230/2021, já vale."
+ },
+ {
+  "t": "Regulamentar a delação premiada e definir organização criminosa em lei",
+  "area": "leis",
+  "tema": [
+   "delacao|colaboracao|organizac"
+  ],
+  "dir": "cria",
+  "inst": [
+   "COM",
+   "PL",
+   "PLP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 12.850/2013",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 12.850/2013 já vale."
+ },
+ {
+  "t": "Endurecer a Lei de Improbidade para punir também quem agiu sem dolo",
+  "area": "leis",
+  "tema": [
+   "improbidade"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.230/2021",
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "A Lei 14.230/2021 exigiu dolo e o STF fixou limites de retroatividade (Tema 1.199); voltar a punir a culpa é mudança real de lei."
+ }
+]
