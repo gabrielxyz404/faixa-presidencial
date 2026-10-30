@@ -40,3 +40,13 @@ O holdout correspondente (45 propostas, 15 por área) fica fora do repositório.
 python3 testes/motor/run_sandbox.py testes/motor/probe.py $S/cur testes/bench/cft_dev.json $S/cft_dev.json 8841
 python3 testes/bench/score.py testes/bench/cft_dev.json $S/cft_dev.json
 ```
+
+## Bateria `zoeira_dev.json` (propostas bizarras / de zoeira)
+80 propostas informais (gírias, "kkk", emoji) como as de um vídeo de youtuber jogando: 36 `legal`, 24 `ilegal`, 20 `impossivel`. Mesmo formato e corretor, mais dois campos:
+- `zoeira`: `legal` (bizarra mas permitida: deve ser processada normalmente e NÃO marcada como absurda, ex. Dia Nacional do Meme, mascote, hino por PL, feriado por lei, ministério por lei/MP), `ilegal` (fere lei ou CF, ex. promoção pessoal art. 37 §1º, capital por decreto art. 18 §1º, religião art. 5º VI; o motor deve apontar o veredito `cf`), `impossivel` (física ou fiscalmente impossível, ou resultado por decreto: o motor deve continuar marcando como absurda).
+- `absurdo_esperado`: true só para `impossivel`. Nesses itens o corretor soma o critério `absurdo` (o campo `absurdo` do probe tem de ser verdadeiro). Nos itens `legal` soma `nao_absurdo` (o campo tem de ser falso). O relatório mostra os falsos positivos (legal marcado como absurda) e falsos negativos (impossível não marcada). Nos impossíveis as faixas de valor e instrumento são largas de propósito; o que vale é `absurdo`.
+O probe passou a exportar `absurdo` e `generica`. O holdout correspondente (40 propostas: 18/12/10) fica fora do repositório.
+```
+python3 testes/motor/run_sandbox.py testes/motor/probe.py $S/cur testes/bench/zoeira_dev.json $S/zoeira_dev.json 8881
+python3 testes/bench/score.py testes/bench/zoeira_dev.json $S/zoeira_dev.json
+```

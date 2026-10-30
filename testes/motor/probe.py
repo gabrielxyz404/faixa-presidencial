@@ -28,7 +28,7 @@ with sync_playwright() as p:
     click(pg, 'Assinar e enviar'); pg.wait_for_timeout(1500)
     res = pg.evaluate("""(PH)=>PH.map(t=>{try{const p=__AL(window.__g,t); const j=(p.juridico||{});
       return {t, topic:p.topic, inst:p.inst, instDet:p.instDetalhe||null, cost:p.cost, rev:p.rev, once:p.once, extra:p.extra,
-        cf:(p.stf||{}).nivel, cfTxt:String((p.stf||{}).parecer||'').slice(0,260), vago:!!(p.qualidade||{}).vago, conf:(p.viabilidade||{}).confianca??null,
+        cf:(p.stf||{}).nivel, cfTxt:String((p.stf||{}).parecer||'').slice(0,260), vago:!!(p.qualidade||{}).vago, absurdo:!!p.absurdo, generica:!!(p.qualidade||{}).generica, conf:(p.viabilidade||{}).confianca??null,
         pasta:p.pastaNome, gan:((p.imp||{}).gan||[]).map(x=>x.nome).slice(0,4), per:((p.imp||{}).per||[]).map(x=>x.nome).slice(0,4),
         tecnico:String(p.tecnico||'').slice(0,600)}}catch(e){return {t, err:String(e)}}})""", PH)
     json.dump(res, open(OUT, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)

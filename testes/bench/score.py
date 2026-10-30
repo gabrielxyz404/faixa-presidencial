@@ -26,7 +26,7 @@ def score_item(g, r):
     """devolve (dict criterio->0/1, lista de motivos, vig 0/1/None)"""
     s, why = {}, []
     if r is None or r.get('err'):
-        return {c: 0 for c in CRIT}, ['sem resposta do motor' + (': ' + str(r.get('err')) if r else '')], (0 if g.get('jaVigente') else None)
+        return {c: 0 for c in CRIT + (['absurdo'] if g.get('absurdo_esperado') else [])}, ['sem resposta do motor' + (': ' + str(r.get('err')) if r else '')], (0 if g.get('jaVigente') else None)
     topic = norm(r.get('topic'))
     ok = bool(topic) and not r.get('vago') and all(re.search(rx, topic) for rx in g.get('tema', []))
     s['tema'] = int(ok)
@@ -47,6 +47,12 @@ def score_item(g, r):
     if vp: why.append('valor: ' + '; '.join(vp))
     s['cf'] = int(r.get('cf') in g.get('cf', ['ok']))
     if not s['cf']: why.append('cf: motor %s, aceitos %s' % (r.get('cf'), g.get('cf')))
+    if g.get('absurdo_esperado'):  # item impossível: o motor deve marcar como absurda
+        s['absurdo'] = int(bool(r.get('absurdo')))
+        if not s['absurdo']: why.append('absurdo: impossível, mas o motor NÃO marcou como absurda')
+    elif g.get('zoeira') == 'legal':  # bizarra mas permitida: não pode ser tratada como piada
+        s['nao_absurdo'] = int(not r.get('absurdo'))
+        if not s['nao_absurdo']: why.append('nao_absurdo: proposta legal marcada como absurda/piada')
     blob = norm(' '.join(str(r.get(k) or '') for k in ('topic', 'cfTxt', 'tecnico')))
     vig = None
     if g.get('jaVigente'):
@@ -62,12 +68,14 @@ def main():
         i = sys.argv.index('--json'); jout = sys.argv[i + 1]; a = [x for x in a if x != jout]
     gab = json.load(open(a[0], encoding='utf-8-sig')); out = json.load(open(a[1], encoding='utf-8-sig'))
     byt = {x['t']: x for x in out if isinstance(x, dict) and 't' in x}
-    tot = collections.Counter(); n = 0; full = 0; full5 = 0; vn = vs = 0; fp = []
+    tot = collections.Counter(); n = 0; an = 0; fpa = []; fna = []; full = 0; full5 = 0; vn = vs = 0; fp = []
     area = collections.defaultdict(lambda: [0, 0, 0.0]); errs = []; pct_sum = 0.0
     for g in gab:
         r = byt.get(g['t']); s, why, vig = score_item(g, r); n += 1
         crit = list(s.values()) + ([vig] if vig is not None else [])
         for c in CRIT: tot[c] += s[c]
+        if 'absurdo' in s: an += 1; tot['absurdo'] += s['absurdo']; (fna.append(g['t']) if not s['absurdo'] else None)
+        if s.get('nao_absurdo') == 0 and r and not r.get('err'): fpa.append(g['t'])
         if vig is not None: vn += 1; vs += vig
         elif r and not r.get('err') and VIG.search(norm(' '.join(str(r.get(k) or '') for k in ('topic', 'cfTxt', 'tecnico')))):
             fp.append(g['t'])
@@ -77,6 +85,9 @@ def main():
     print('Itens: %d  (sem resposta: %d)' % (n, sum(1 for g in gab if g['t'] not in byt)))
     for c in CRIT: print('  %-8s %5.1f%%' % (c, 100 * tot[c] / n))
     if vn: print('  %-8s %5.1f%%  (%d itens)' % ('jaVigente', 100 * vs / vn, vn))
+    if an: print('  %-8s %5.1f%%  (%d itens impossíveis marcados como absurda; falsos negativos: %d)' % ('absurdo', 100 * tot['absurdo'] / an, an, len(fna)))
+    nl = sum(1 for g in gab if g.get('zoeira') == 'legal')
+    if nl: print('Falsos positivos de absurdo (legal marcado como absurda): %d/%d' % (len(fpa), nl)); [print('   - ' + t) for t in fpa]
     print('Média por item: %.1f%%   Totalmente certos: %d/%d = %.1f%%' % (100 * pct_sum / n, full, n, 100 * full / n))
     print('Certos nos 5 critérios (ignorando jaVigente): %d/%d = %.1f%%' % (full5, n, 100 * full5 / n))
     print('Falso "já vigente" (gabarito null, motor alega): %d' % len(fp))
@@ -88,7 +99,7 @@ def main():
         for w in why: print('     ' + w)
     if jout:
         json.dump({'n': n, 'criterios': {c: tot[c] / n for c in CRIT}, 'jaVigente': (vs / vn if vn else None), 'media': pct_sum / n,
-                   'totalmente_certos': full / n, 'certos_5_criterios': full5 / n, 'falso_ja_vigente': fp,
+                   'totalmente_certos': full / n, 'certos_5_criterios': full5 / n, 'falso_ja_vigente': fp, 'absurdo': (tot['absurdo'] / an if an else None), 'falsos_positivos_absurdo': fpa, 'falsos_negativos_absurdo': fna,
                    'areas': {k: {'n': c, 'certos': f, 'media': ps / c} for k, (c, f, ps) in area.items()},
                    'erros': [{'area': a_, 't': t, 'motivos': w} for a_, t, w in errs]}, open(jout, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 main()
