@@ -1,0 +1,486 @@
+{
+ "n": "Partido Missão",
+ "fonte": "O Futuro é Glorioso — Resumo executivo do Livro Amarelo (Partido Missão, 2026)",
+ "e": {
+  "economia": [
+   1,
+   "o teor do texto ainda é marcado pela adesão a pilares do pensamento liberal, em especial no aspecto econômico",
+   5
+  ],
+  "gasto_social": [
+   1,
+   "a desindexação de benefícios previdenciários e assistenciais do salário mínimo (corrigindo-os apenas pela inflação), a desvinculação dos pisos de saúde e educação da receita",
+   10
+  ],
+  "tributacao": [
+   1,
+   "liberam espaço fiscal para investimentos e redução de impostos",
+   6
+  ],
+  "trabalho": [
+   1,
+   "de reforma trabalhista para flexibilizar relações de trabalho",
+   5
+  ],
+  "privatizacao": [
+   0,
+   "mobilização do capital privado por concessões, PPPs e o novo regime de autorização ferroviária",
+   24
+  ],
+  "seguranca": [
+   2,
+   "vai declarar no primeiro dia de mandato uma grande Guerra ao Crime, visando à adoção imediata do Direito Penal do Inimigo (DPI)",
+   12
+  ],
+  "costumes": [
+   1,
+   "eliminação de um vício da cultura brasileira atual, o excesso de indisciplina, desordem, desrespeito à hierarquia",
+   31
+  ],
+  "ambiente": [
+   1,
+   "construir, no Congresso, o marco da exploração mineral controlada em terras indígenas, que abrigam reservas estratégicas de fosfato e potássio",
+   42
+  ],
+  "soberania_externa": [
+   0,
+   "rejeita tanto o alinhamento ideológico automático com os EUA quanto o ideologismo de esquerda",
+   46
+  ]
+ },
+ "b": [
+  "Guerra ao Crime e Direito Penal do Inimigo",
+  "Ajuste fiscal: PEC de Transição (R$ 1,1 tri até 2031)",
+  "Consolidação municipal e Lei de Responsabilidade Gerencial",
+  "Frentes Cidadãs no lugar do Bolsa Família",
+  "Missão Rondon: infraestrutura de 2% a 4% do PIB",
+  "SUS Fila Zero (fila por risco e IA)",
+  "ZEEs no Nordeste e terras raras",
+  "Celeiro do Mundo: agro e inteligência artificial",
+  "Escola com disciplina e fim das cotas",
+  "Desfavelização em dez anos"
+ ],
+ "propostas": [
+  {
+   "cap": "I Ajuste fiscal",
+   "pag": 10,
+   "proposta": "PEC de Transição antes da posse, com base na PEC do Equilíbrio Fiscal (economia de R$ 1,1 trilhão até 2031)",
+   "eixo": "gasto_social",
+   "sentido": "+1"
+  },
+  {
+   "cap": "I Ajuste fiscal",
+   "pag": 10,
+   "proposta": "Desindexar benefícios previdenciários e BPC do salário mínimo, corrigindo só pela inflação",
+   "eixo": "gasto_social",
+   "sentido": "+1"
+  },
+  {
+   "cap": "I Ajuste fiscal",
+   "pag": 10,
+   "proposta": "Desvincular pisos de saúde e educação da receita (Fundeb incluído)",
+   "eixo": "gasto_social",
+   "sentido": "+1"
+  },
+  {
+   "cap": "I Ajuste fiscal",
+   "pag": 10,
+   "proposta": "Revisar o abono salarial",
+   "eixo": "gasto_social",
+   "sentido": "+1"
+  },
+  {
+   "cap": "I Ajuste fiscal",
+   "pag": 10,
+   "proposta": "Reduzir renúncias fiscais (gastos tributários)",
+   "eixo": "tributacao",
+   "sentido": "-1"
+  },
+  {
+   "cap": "I Ajuste fiscal",
+   "pag": 10,
+   "proposta": "Reforma do funcionalismo com fim dos supersalários já na PEC",
+   "eixo": "gasto_social",
+   "sentido": "+1"
+  },
+  {
+   "cap": "I Ajuste fiscal",
+   "pag": 10,
+   "proposta": "Substituir o arcabouço fiscal por novo modelo e nova lei complementar das finanças públicas",
+   "eixo": "gasto_social",
+   "sentido": "+1"
+  },
+  {
+   "cap": "II Segurança pública",
+   "pag": 12,
+   "proposta": "Guerra ao Crime declarada no primeiro dia de mandato, com Direito Penal do Inimigo",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "II Segurança pública",
+   "pag": 12,
+   "proposta": "Estado de Defesa em áreas sob comando de facções para retomada territorial",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "II Segurança pública",
+   "pag": 12,
+   "proposta": "Lei Antifacção: banimento de organizações, perda de direitos políticos e inversão do ônus da prova no confisco de bens",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "II Segurança pública",
+   "pag": 13,
+   "proposta": "Intervenção federal e GLO com uso de força pesada em territórios dominados",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "II Segurança pública",
+   "pag": 13,
+   "proposta": "Superpresídios de segurança máxima em regiões remotas, no modelo do CECOT salvadorenho",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "III Pacto federativo",
+   "pag": 15,
+   "proposta": "Grande Consolidação Municipal: reduzir de 5.570 para cerca de 1.656 municípios",
+   "eixo": "gasto_social",
+   "sentido": "+1"
+  },
+  {
+   "cap": "III Pacto federativo",
+   "pag": 15,
+   "proposta": "Município viável só com arrecadação própria de pelo menos 10% da receita (PEC 188/2019)",
+   "eixo": "gasto_social",
+   "sentido": "+1"
+  },
+  {
+   "cap": "IV Lei de Responsabilidade Gerencial",
+   "pag": 18,
+   "proposta": "Comissariado Federal de Gestão Pública com comissários fiscalizando recursos nos municípios",
+   "eixo": "gasto_social",
+   "sentido": "+1"
+  },
+  {
+   "cap": "IV Lei de Responsabilidade Gerencial",
+   "pag": 18,
+   "proposta": "Cláusula Antimáfia: dissolução de administrações capturadas pelo crime, com gestão federal por até 24 meses",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "IV Lei de Responsabilidade Gerencial",
+   "pag": 18,
+   "proposta": "Fundo Partidário e Eleitoral calculados pela qualidade da gestão",
+   "eixo": "gasto_social",
+   "sentido": "+1"
+  },
+  {
+   "cap": "V Produtividade pela cidadania",
+   "pag": 21,
+   "proposta": "Frentes Cidadãs: trabalho remunerado em projetos públicos no lugar do Bolsa Família",
+   "eixo": "gasto_social",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Introdução",
+   "pag": 5,
+   "proposta": "Reforma trabalhista para flexibilizar relações de trabalho",
+   "eixo": "trabalho",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Introdução",
+   "pag": 6,
+   "proposta": "Elevar o investimento em infraestrutura de 2% para pelo menos 4% do PIB",
+   "eixo": "economia",
+   "sentido": "-1"
+  },
+  {
+   "cap": "VI Missão Rondon",
+   "pag": 24,
+   "proposta": "Concessões, PPPs e novo regime de autorização ferroviária",
+   "eixo": "privatizacao",
+   "sentido": "+1"
+  },
+  {
+   "cap": "VI Missão Rondon",
+   "pag": 24,
+   "proposta": "Ferrovias: malha de pelo menos 40 mil km, Ferrogrão, FIOL e Transoceânica",
+   "eixo": "ambiente",
+   "sentido": "+1"
+  },
+  {
+   "cap": "VI Missão Rondon",
+   "pag": 24,
+   "proposta": "Uso ostensivo da Licença Ambiental Especial (LAE) para acelerar projetos estratégicos",
+   "eixo": "ambiente",
+   "sentido": "+1"
+  },
+  {
+   "cap": "VII SUS Fila Zero",
+   "pag": 25,
+   "proposta": "ENER: fila viva por grau de risco, no lugar da ordem cronológica",
+   "eixo": "gasto_social",
+   "sentido": "-1"
+  },
+  {
+   "cap": "VII SUS Fila Zero",
+   "pag": 26,
+   "proposta": "Sistema digital de saúde com telemedicina e diagnóstico por IA, nos moldes do DoctorSV",
+   "eixo": "gasto_social",
+   "sentido": "-1"
+  },
+  {
+   "cap": "VII SUS Fila Zero",
+   "pag": 26,
+   "proposta": "Meta de 80% de resolução na atenção primária",
+   "eixo": "gasto_social",
+   "sentido": "-1"
+  },
+  {
+   "cap": "VII SUS Fila Zero",
+   "pag": 26,
+   "proposta": "FNMA: repasses aos municípios condicionados a desempenho",
+   "eixo": "gasto_social",
+   "sentido": "+1"
+  },
+  {
+   "cap": "VII SUS Fila Zero",
+   "pag": 26,
+   "proposta": "Isenções fiscais para atividades esportivas",
+   "eixo": "tributacao",
+   "sentido": "+1"
+  },
+  {
+   "cap": "VIII Cultura",
+   "pag": 28,
+   "proposta": "Lei Rouanet com critérios objetivos, teto progressivo de captação e reserva para novos talentos",
+   "eixo": "gasto_social",
+   "sentido": "+1"
+  },
+  {
+   "cap": "VIII Cultura",
+   "pag": 29,
+   "proposta": "Fusão do Ministério da Cultura com o da Educação",
+   "eixo": "gasto_social",
+   "sentido": "+1"
+  },
+  {
+   "cap": "VIII Cultura",
+   "pag": 29,
+   "proposta": "Oposição a regulação da mídia e da internet que reduza a liberdade de expressão; novo código de imprensa",
+   "eixo": "costumes",
+   "sentido": "+1"
+  },
+  {
+   "cap": "IX Educação",
+   "pag": 32,
+   "proposta": "Código de conduta nacional do estudante, com sanções objetivas",
+   "eixo": "costumes",
+   "sentido": "+1"
+  },
+  {
+   "cap": "IX Educação",
+   "pag": 32,
+   "proposta": "Abolir o sistema de cotas e criar bolsas por mérito",
+   "eixo": "costumes",
+   "sentido": "+1"
+  },
+  {
+   "cap": "IX Educação",
+   "pag": 32,
+   "proposta": "Escolas civis-militares em áreas críticas, como medida provisória",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "IX Educação",
+   "pag": 32,
+   "proposta": "Modelo do Ceará e alfabetização pelo método fônico em escala nacional",
+   "eixo": "gasto_social",
+   "sentido": "-1"
+  },
+  {
+   "cap": "IX Educação",
+   "pag": 32,
+   "proposta": "Alinhamento estratégico no lugar da autonomia universitária; recursos para STEM",
+   "eixo": "economia",
+   "sentido": "-1"
+  },
+  {
+   "cap": "X Zonas Econômicas Especiais",
+   "pag": 35,
+   "proposta": "ZEEs com suspensão de direitos aduaneiros, regime próprio de IBS/CBS e licenças em até 15 dias",
+   "eixo": "tributacao",
+   "sentido": "+1"
+  },
+  {
+   "cap": "X Zonas Econômicas Especiais",
+   "pag": 35,
+   "proposta": "Polos de Suape (hidrogênio verde), Pecém-Araripe (aço de baixo carbono) e Aratu-Camaçari (baterias e chips)",
+   "eixo": "economia",
+   "sentido": "+1"
+  },
+  {
+   "cap": "X Zonas Econômicas Especiais",
+   "pag": 36,
+   "proposta": "ZEE de Defesa no eixo Vale do Paraíba-Itajubá para reduzir importações estratégicas (R$ 70 bi por ano)",
+   "eixo": "soberania_externa",
+   "sentido": "-1"
+  },
+  {
+   "cap": "X Zonas Econômicas Especiais",
+   "pag": 36,
+   "proposta": "ZEE de Terras Raras com oito estágios da cadeia, do minério ao semicondutor",
+   "eixo": "economia",
+   "sentido": "-1"
+  },
+  {
+   "cap": "XI Terras raras e indústria",
+   "pag": 39,
+   "proposta": "Acordos com EUA e União Europeia de compra de longo prazo e transferência de tecnologia em terras raras",
+   "eixo": "soberania_externa",
+   "sentido": "+1"
+  },
+  {
+   "cap": "XI Terras raras e indústria",
+   "pag": 39,
+   "proposta": "Planta-piloto de separação e refino de terras raras em 2029-2030",
+   "eixo": "economia",
+   "sentido": "-1"
+  },
+  {
+   "cap": "XI Terras raras e indústria",
+   "pag": 40,
+   "proposta": "PEC que declara as terras raras questão de segurança nacional",
+   "eixo": "soberania_externa",
+   "sentido": "-1"
+  },
+  {
+   "cap": "XI Terras raras e indústria",
+   "pag": 40,
+   "proposta": "Cerca de R$ 20 bilhões em uma década, 50% via BNDES",
+   "eixo": "economia",
+   "sentido": "-1"
+  },
+  {
+   "cap": "XII Celeiro do Mundo",
+   "pag": 42,
+   "proposta": "Revogar a Nota Técnica 4/2025 do MDA e reprimir invasões de propriedade rural",
+   "eixo": "economia",
+   "sentido": "+1"
+  },
+  {
+   "cap": "XII Celeiro do Mundo",
+   "pag": 42,
+   "proposta": "Nenhum novo assentamento até os existentes atingirem produtividade compatível",
+   "eixo": "economia",
+   "sentido": "+1"
+  },
+  {
+   "cap": "XII Celeiro do Mundo",
+   "pag": 41,
+   "proposta": "Reduzir a importação de fertilizantes de 85% para 50% até 2035",
+   "eixo": "soberania_externa",
+   "sentido": "-1"
+  },
+  {
+   "cap": "XII Celeiro do Mundo",
+   "pag": 42,
+   "proposta": "Marco da exploração mineral controlada em terras indígenas",
+   "eixo": "ambiente",
+   "sentido": "+1"
+  },
+  {
+   "cap": "XII Celeiro do Mundo",
+   "pag": 43,
+   "proposta": "Marco Brasileiro da IA: menos impostos para tecnologia e facilitar stock options",
+   "eixo": "tributacao",
+   "sentido": "+1"
+  },
+  {
+   "cap": "XII Celeiro do Mundo",
+   "pag": 43,
+   "proposta": "Datacenters e exportação de inferência computacional, com o Nordeste como polo",
+   "eixo": "economia",
+   "sentido": "+1"
+  },
+  {
+   "cap": "XIII Política externa",
+   "pag": 45,
+   "proposta": "Brasil como Árbitro do Sul Global (África, Ásia e América Latina)",
+   "eixo": "soberania_externa",
+   "sentido": "-1"
+  },
+  {
+   "cap": "XIII Política externa",
+   "pag": 45,
+   "proposta": "Pacto Interamericano contra o crime organizado, liderado pelo Brasil",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "XIII Política externa",
+   "pag": 46,
+   "proposta": "Pragmatismo na política externa, sem alinhamento automático aos EUA",
+   "eixo": "soberania_externa",
+   "sentido": "-1"
+  },
+  {
+   "cap": "XIII Política externa",
+   "pag": 46,
+   "proposta": "Cesta de moedas sul-americana liderada pelo real e linhas de swap",
+   "eixo": "soberania_externa",
+   "sentido": "-1"
+  },
+  {
+   "cap": "XIII Política externa",
+   "pag": 46,
+   "proposta": "Estratégia pragmática no BRICS+, sem subordinação a Pequim",
+   "eixo": "soberania_externa",
+   "sentido": "+1"
+  },
+  {
+   "cap": "XIII Política externa",
+   "pag": 46,
+   "proposta": "Fronteiras vigiadas com o SISFRON completo",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "XIII Política externa",
+   "pag": 46,
+   "proposta": "Fortalecer a Base Industrial de Defesa e dominar o ciclo nuclear completo",
+   "eixo": "soberania_externa",
+   "sentido": "-1"
+  },
+  {
+   "cap": "XIV Desfavelização",
+   "pag": 49,
+   "proposta": "Desfavelização integral em dez anos, de 12.348 favelas, com custo de R$ 1,2 a R$ 1,5 trilhão",
+   "eixo": "gasto_social",
+   "sentido": "-1"
+  },
+  {
+   "cap": "XIV Desfavelização",
+   "pag": 49,
+   "proposta": "Crime de favelização, com demolição administrativa em 48 horas de construções não habitadas",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "XIV Desfavelização",
+   "pag": 49,
+   "proposta": "Título de desfavelização: financiamento de 50 anos com parcelas de R$ 200 a R$ 500",
+   "eixo": "economia",
+   "sentido": "+1"
+  }
+ ],
+ "obs": "Fonte: resumo executivo de 51 páginas; as caixas 'O problema em números' e 'A resposta da Missão' foram lidas no PDF, pois o pdftotext as omite. Páginas = numeração do rodapé. O resumo NÃO traz meta de Selic nem de superávit nominal: trata de PEC de Transição, desindexação, desvinculação e novo arcabouço fiscal, sem meta de juros (se existir, estará no livro integral, de mais de 500 páginas). Números citados: PEC R$ 1,1 tri até 2031 (texto, p.10; o gráfico da p.10 soma R$ 973 bi), ajuste de cerca de R$ 250 bi/ano, infraestrutura de 2% a 4% do PIB, ferrovias de 30 mil a 40 mil km, municípios de 5.570 a 1.656, licenças de ZEE em 15 dias, 80% de resolução na atenção primária, fertilizantes importados de 85% a 50% até 2035, desfavelização em 10 anos, terras raras R$ 20 bi em uma década. Posições: economia +1 (liberalismo declarado, mas com política industrial forte: ZEEs, BNDES, terras raras, investimento estatal em infraestrutura; o texto rejeita 'privatizar tudo'). gasto_social +1 (a austeridade pesa mais: desindexação, desvinculação, fim do Bolsa Família, fusão de municípios, apesar de SUS e desfavelização). tributacao +1 (reduzir impostos, ZEEs e incentivos a tecnologia, mas corta renúncias fiscais; sem proposta de tributar renda ou patrimônio). trabalho +1 (flexibilização citada como pilar, sem detalhar; Frentes Cidadãs exigem contrapartida de trabalho). privatizacao 0 (concessões e PPPs, sem agenda de privatizar estatais; Angra 3 e BNDES com papel central). seguranca +2 (Guerra ao Crime, Direito Penal do Inimigo, GLO, superpresídios). costumes +1 (disciplina, fim das cotas, oposição à regulação da mídia; o texto NÃO trata de aborto, drogas, armas, LGBT ou família). ambiente +1 (licenciamento acelerado, mineração em terras indígenas, Ferrogrão; contrapeso: matriz limpa, hidrogênio verde, mineração de baixo carbono). soberania_externa 0 (misto: parcerias prioritárias com EUA e UE e crítica à influência chinesa no BRICS, versus soberanismo: desdolarização regional, ciclo nuclear, indústria de defesa, liderança no Sul Global). Mistura de lados: ZEEs e industrialização dirigida, BNDES, saúde universal com IA, desfavelização com custo líquido de R$ 50 a 85 bi/ano e corte de gastos tributários lembram agendas da esquerda; pela ênfase (cap. I, II, V) o texto fica liberal na economia e duro na segurança. Citações de economia, tributacao e trabalho vêm da Introdução (pp.5-6). Sentidos das propostas: + = direita/liberal/conservador (ambiente: + = exploração). Pessoas reais citadas no texto foram omitidas."
+}
