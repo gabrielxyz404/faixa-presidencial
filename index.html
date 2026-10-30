@@ -2539,7 +2539,8 @@ P('policia_federal', 'a Polícia Federal', 'policia federal|\\bpf\\b|\\bprf\\b|p
 P('presidios', 'o sistema prisional', 'presidios?|penitenciarias?|sistema prisional|sistema carcerario|vagas no sistema prisional|lideres de faccao|isolamento de lideres|transferir (os )?lideres', { ch: 'seg', base: 2, def: 2, cap: 10, b: 'pol', rg: 'pop', pa: 'justica', inst: 'ADM', hom: -.2, val: { policiais: 3, classemedia: 3, universitarios: -2 }, iv: [0, .4], cat: 'seguranca_dura', lag: 10 });
 P('faccoes', 'o combate às facções e ao crime organizado', 'faccoes?|crime organizado|\\bpcc\\b|\\bcv\\b|milicias?|trafico( de drogas)?|narcotrafico|terrorismo|lavagem de dinheiro|terroristas|organizacoes criminosas|lei antifaccao|domi?nio territorial', { mal: 1, ch: 'seg', base: 3, def: 4, cap: 20, b: 'pol', rg: 'urb', pa: 'justica', inst: 'ADM', hom: -.7, stf: 3, val: { policiais: 8, evangelicos: 3, classemedia: 4, universitarios: -5 }, iv: [0, .6], cat: 'seguranca_dura', lag: 8, nota: 'Operações em favelas elevam o risco de letalidade policial e questionamento no STF.' });
 P('penas', 'o endurecimento das penas', 'endurecer (as )?penas|aumentar (as )?penas|penas mais (duras|severas|rigorosas)|fim das saidinhas|saidinha|prisao em segunda instancia|reduzir beneficios penais|regime fechado|cumprimento integral da pena|lei do abate|bandido bom|linha dura|tolerancia zero|lei e ordem|endurecimento|endurecer', { k: 'R', penal: 1, pa: 'justica', inst: 'PL', val: { policiais: 8, evangelicos: 3, classemedia: 4, universitarios: -7, indigenas: -1 }, hom: -.2, stf: 3, iv: [0, .7], cat: 'seguranca_dura', lag: 6 });
-P('maioridade_penal', 'a redução da maioridade penal', 'maioridade penal|reduzir a maioridade|imputabilidade penal|prender menores|menor infrator|16 anos', { k: 'R', penal: 1, pa: 'justica', inst: 'PEC', val: { policiais: 7, evangelicos: 6, classemedia: 5, universitarios: -9, periferia: -1, catolicos: -1 }, stf: 4, iv: [0, .8], cat: 'seguranca_dura', lag: 12, legal: 'maioridade' });
+P('maioridade_penal', 'a redução da maioridade penal', 'maioridade penal|reduzir a maioridade|imputabilidade penal|prender menores|menor infrator|(?<!casamento de menores de )(?<!rede social para menor de )(?<!redes sociais para menor de )(?<!menores de )(?<!menor de )16 anos(?= .{0,30}(?:crime|penal|prisao|pena|infrat|cadeia|presidio)|$)|maioridade', { // v3.5: "16 anos" sem contexto penal nao e maioridade
+   k: 'R', penal: 1, pa: 'justica', inst: 'PEC', val: { policiais: 7, evangelicos: 6, classemedia: 5, universitarios: -9, periferia: -1, catolicos: -1 }, stf: 4, iv: [0, .8], cat: 'seguranca_dura', lag: 12, legal: 'maioridade' });
 P('armas', 'a flexibilização do porte de armas', 'porte de armas?|posse de armas?|\\barmas\\b|armar (a )?populacao|armar o cidadao|armar (os )?cidadaos|liberar armas?|arma de fogo|armas e municoes|cacadores e atiradores|\\bcacs?\\b|armamento civil|flexibilizar (o )?(porte|armas)|decreto de armas', { k: 'R', perm: 1, pa: 'justica', inst: 'DEC', val: { policiais: 4, agro: 4, evangelicos: 2, classemedia: 1, universitarios: -8, indigenas: -1, periferia: -1 }, hom: .6, stf: 4, iv: [.1, .8], cat: 'armas', at: [{ em: 8, fx: { s: { hom: .35 }, g: { universitarios: -1, periferia: -.5 } }, txt: 'Mais armas em circulação: mortes por arma de fogo em brigas, feminicídios e acidentes sobem nos indicadores dos estados', bom: false }], lag: 3, legal: 'armas', nota: 'A evidência brasileira (Cerqueira, Atlas da Violência; Anuário do FBSP) associa mais armas em circulação a mais homicídios, feminicídios e mortes em brigas; não há efeito dissuasor demonstrado.' });
 P('glo', 'a GLO e as Forças Armadas na segurança', '(?:enviar|usar|empregar|convocar|acionar|mobilizar) (?:as )?forcas armadas|\\bglo\\b|garantia da lei e da ordem|forcas armadas nas ruas|exercito nas ruas|exercito (na|nas) (seguranca|favelas)|intervencao (federal )?(no|na) (rio|estado|seguranca)|tropas federais|fuzileiros|militarizar', { ch: 'seg', base: 0, def: 1.5, cap: 8, b: 'pol', rg: 'urb', pa: 'defesa', inst: 'DEC', hom: -.4, stf: 3, val: { policiais: 6, classemedia: 4, evangelicos: 2, universitarios: -6, periferia: -1 }, iv: [0, .6], cat: 'seguranca_dura', lag: 2, ext: 1 });
 P('cameras_corporais', 'as câmeras corporais nas polícias', 'cameras? corporais?|body cams?|cameras? nas fardas|tornozeleiras?|monitoramento eletronico', { ch: 'seg', base: 0, def: .5, cap: 3, b: 'pol', rg: 'urb', pa: 'justica', inst: 'ADM', hom: -.1, val: { universitarios: 3, policiais: -2, classemedia: 1 }, iv: [0, -.2], cat: 'garantista', lag: 6 });
@@ -3060,7 +3061,7 @@ V('desist\\w+|renunci\\w+|romper com|rompimento|voltar atras d[eoa]|recuar d[eoa
 V('subsidi\\w+|incentiv\\w+', 'ADD', { inf: 'subsidiar', sub4T: 1 });
 V('mex(?:er|eremos)|mud(?:ar|aremos)|alter(?:ar|aremos)|toc(?:ar|aremos)|modific\\w+', 'CHG', { inf: 'mexer' });
 V('desoner\\w+|desoneracao|isent\\w+|isenc\\w+|isencao', 'SUB', { inf: 'desonerar' });
-V('metade|pela metade', 'SUB', { mag: .5, inf: 'cortar pela metade' });
+V('pela metade|(?<=\\b(?:cort\\w+|reduz\\w+|diminu\\w+|baix\\w+|enxug\\w+|zer\\w+|corte|reducao|reduzindo|cortando) (?:(?:em|a|de|para|ate) )?(?:a |pela )?)metade', 'SUB', { mag: .5, inf: 'cortar pela metade' }); // v3.5: "metade das vagas" e proporcao, nao corte
 V('dobr\\w+|duplic\\w+|dobro', 'ADD', { mag: 1, inf: 'dobrar' });
 V('triplic\\w+', 'ADD', { mag: 2, inf: 'triplicar' });
 V('proib\\w+|ban(?:ir|indo|imos)\\b|vedar|vedacao|imped\\w+|criminaliz\\w+|restring\\w+|limit(?:ar|ando|acao)\\b|coib\\w+|combat\\w+|reprim\\w+|inib\\w+|lutar contra|enfrent\\w+|erradic\\w+|controlar', 'BAN', { inf: 'proibir' });
@@ -3069,6 +3070,7 @@ V('estatiz\\w+|reestatiz\\w+|nacionaliz\\w+|encamp\\w+|comprar', 'BUY', { inf: '
 V('cri(?:ar|a|e|ando|acao|amos|aremos|ei)\\b|institu\\w+|recri\\w+|implant\\w+|implement\\w+|lanc(?:ar|ando|amos|aremos|amento)\\b|reintroduz\\w+|abrir|iniciar|estabelec\\w+', 'ADD', { inf: 'criar', novo: 1 });
 V('ampli\\w+|expand\\w+|expans\\w+|aument\\w+|elev\\w+|subir|reajust\\w+|invest\\w+|contrat\\w+|conced\\w+|\\bdar\\b|\\bdou\\b|damos|\\bpag(?:ar|a|ando|amento)\\b|garant\\w+|fortalec\\w+|reforc\\w+|universaliz\\w+|constru\\w+|asfalt\\w+|pavimentar|reform(?:ar|ando|aremos)\\b|adot\\w+|retom\\w+|restabelec\\w+|restaur\\w+|ofere\\w+|distribu\\w+|subsidi\\w+|liber(?:ar|ando|aremos|acao)\\b|legaliz\\w+|regulament\\w+|incentiv\\w+|apoi(?:ar|o|ando)|promov\\w+|\\bimpor\\b|decretar|decretando|autoriz\\w+|permit\\w+|flexibiliz\\w+|aprov(?:ar|ando)|execut\\w+|realiz\\w+|ofertar|priori(?:zar|zando)|intensific\\w+|acelerar|moderniz\\w+|destin\\w+|repass\\w+|transfer\\w+|aplicar|\\bmelhor\\w*|revitaliz\\w+|endurec\\w+|fazer|faremos|vou fazer|implanto|ofereco|conceder|reajuste|aumento|ampliacao|criacao', 'ADD', { inf: 'ampliar' });
 V('reoner\\w+', 'SUB', { inf: 'reonerar' });
+V('tir(?:ar|e|ando) (?:[a-z]+ ){1,4}do papel', 'ADD', { inf: 'criar', novo: 1 }); // v3.5
 V('tribut(?:ar|ando|acao)\\b|tax(?:ar|ando|acao)\\b|cobr(?:ar|ando|anca)\\b|impor impostos', 'ADD', { inf: 'taxar', taxv: 1 });
 /* v3: mais verbos, nominalizacoes e formas de instruir ("que se acabe", "majorar", "mandar embora") */
 V('acab(?:e|em|asse)\\b', 'SUB', { tot: 1, inf: 'acabar com' });
@@ -3279,6 +3281,7 @@ function dimensionarBase(it, Q, S) {
   const o = it.o, q = it.q, calc = it.calc = [], nome = semArt(o.n);
   let B = null;
   it.B = 0;
+  if (o.gen) { dimensionarGen(it, Q); return; } // v3.5: leitura genérica
   // v3.4: dividendos acima de 10% (Lei 15.270/2025 já cobra 10%): só o incremento, ~R$ 0,55 bi por ponto percentual
   if (it.divInc) {
     B = Math.min(8, .55 * (it.divInc.to - it.divInc.from)); it.dir = 1;
@@ -3307,6 +3310,8 @@ function dimensionarBase(it, Q, S) {
   if (o.k === 'R' || o.k === 'C' || o.k === 'D') { it.B = 0; if (o.fix) calc.push('Efeito fiscal estimado do instrumento: ' + (o.fix.rev ? 'perda de arrecadação de ' + fmtBi(Math.abs(o.fix.rev)) + '/ano' : '') + (o.fix.cost ? 'despesa de ' + fmtBi(Math.abs(o.fix.cost)) + '/ano' : '') + ' (estimativa do jogo)'); return; }
   if (o.k === 'E') {
     let val = o['val$'] || 0;
+    { const c0 = it.ctxTxt || '', pq = EMP_PEQ.find(x => c0.indexOf(x[0]) >= 0); if (o.id === 'est_outras' && pq) val = pq[1]; // v3.5: estatal pequena vale bem menos que o padrão
+      if (!(pct && !pct.pib) && !(money && money.unit)) { if (/\bacoes\b/.test(c0) && /\b(?:do |com o |no )bndes(?:par)?\b|\bbndespar\b/.test(c0)) { val *= .07; calc.push('Só a fatia de ações em poder do BNDES (cerca de 7%) entra na conta'); } else if (/\b(?:colocar|listar|lancar)\b[^.;]{0,25}\bacoes\b|\bbolsa\b|\bipo\b|abrir (?:o )?capital|follow.?on|oferta (?:publica )?(?:inicial|de acoes)/.test(c0)) { val *= .3; calc.push('Oferta de ações sem percentual informado: assumida a venda de 30% do capital da União'); } } }
     if (pct && !pct.pib && pct.v <= 100) { val = val * pct.v / 100; calc.push('Venda de ' + fmtNum(pct.v, 0) + '% ' + de(o.n) + ' (valor estimado ' + fmtBi(o['val$']) + ') = ' + fmtBi(val) + ' de receita não recorrente'); }
     else if (money && money.unit) { val = money.v / 1e9; calc.push('Valor informado da operação: ' + fmtBi(val) + ' de receita não recorrente'); }
     else calc.push('Valor estimado ' + de(o.n) + ': ' + fmtBi(val) + ' (' + (it.own > 0 ? 'receita não recorrente' : 'indenização, gasto extraordinário') + ')');
@@ -3419,6 +3424,7 @@ function dimensionarBase(it, Q, S) {
   if (money && !money.unit && !o.vu && money.v >= 1e5) { it.B = money.v / 1e9; calc.push('Valor informado: ' + fmtBi(it.B)); return; }
   if (it.mag && o.base > 0 && o.ex !== 0) { B = o.base * it.mag; calc.push(fmtNum(it.mag * 100, 0) + '% da base de ' + fmtBi(o.base) + ' = ' + fmtBi(B) + '/ano'); it.B = B; return; }
   // padrao
+  if (it.dir < 0 && o.rn != null && o.k === 'T' && !it.tot && !(pct && !pct.pib)) { B = o.rn; calc.push('Renúncia de receita estimada pelo jogo em ' + fmtBi(B) + '/ano para ' + semArt(o.n) + ' (ordem de grandeza; o texto não traz número)'); it.B = B; return; } // v3.5
   if (it.dir < 0) {
     if ((o.ex === 0 || !(o.base > 0)) && o.k === 'T' && o.def > 0 && RECENTE_RE.test(it.ctxTxt || '')) { B = o.def; calc.push('Tributo recente: a reversão devolve a arrecadação que ' + semArt(o.n) + ' passou a render (estimativa ' + fmtBi(B) + '/ano)'); it.B = B; return; }
     if (o.ex === 0 || !(o.base > 0)) { it.B = 0; calc.push(nome.charAt(0).toUpperCase() + nome.slice(1) + ' ainda não existe ou não tem arrecadação/despesa relevante: nada a desfazer, efeito apenas político'); it.inexist = true; return; }
@@ -3439,7 +3445,9 @@ function dimensionarBase(it, Q, S) {
    ===================================================================================== */
 const V3N = OBJ.length;
 const MUN_IDS = ['infra_geral', 'minha_casa', 'creches', 'educacao_geral', 'sus_geral', 'transporte_publico', 'saneamento', 'ubs', 'seguranca_geral', 'cultura', 'esporte', 'turismo', 'merenda', 'obras_paradas', 'ensino_integral'];
+const EMP_PEQ = [['casa da moeda', 2], ['eletronuclear', 5], ['serpro', 4], ['dataprev', 3], ['infraero', 3], ['telebras', 1], ['ebc', .5], ['banco do nordeste', 8]]; // v3.5
 function setProp(id, p) { const o = OBJ.find(x => x.id === id); if (o) Object.assign(o, p); }
+function setSyn(id, syn) { const o = OBJ.find(x => x.id === id); if (!o) return; o.syn = syn; o.re = new RegExp('\\b(?:' + syn + ')', 'g'); } // v3.5
 P('fim_autonomia_bc', 'o fim da autonomia do Banco Central', 'acabar com a autonomia do (?:banco central|bc)|fim da autonomia do (?:banco central|bc)|revogar (?:a )?(?:lei (?:da|de) )?autonomia do (?:banco central|bc)|derrubar (?:a )?(?:lei (?:da|de) )?autonomia do (?:banco central|bc)|(?:retirar|tirar|suprimir|extinguir) a autonomia do (?:banco central|bc)|revogar a lc 179|autonomia do (?:banco central|bc) (?:acabou|e revogada)|(?:demitir|destituir|exonerar|afastar|trocar|derrubar|tirar|mandar embora) (?:o |os |todos os )?(?:presidente|diretores|diretoria|presidentes) d[oa] (?:banco central|bc|bacen)\\b|(?:fim|acabar com|extinguir|revogar) (?:o |os )?mandatos? fixos? d[oa]s? (?:presidente|diretores|diretoria|banco central|bc)', { k: 'R', lc: 1, pa: 'fazenda', inst: 'PL', val: { mercado: -14, empresariado: -3, classemedia: -2, sindicatos: 2, periferia: 1 }, e: { conf: -8, risco: 15, dol: .15, ipca: .08 }, iv: [-.6, 0], lag: 1, cat: 'juros', ax: { economia: -1 }, nota: 'A autonomia do Banco Central está na LC 179/2021: desfazê-la exige lei complementar (maioria absoluta) e o mercado reage com prêmio de risco imediato.' });
 /* v3.4: autonomia do BC já vigente (LC 179/2021); só independência financeira/orçamentária ou empresa pública (PEC 65/2023) é mudança real */
 P('autonomia_bc', 'a autonomia do Banco Central', 'autonomia (?:total |plena |completa |operacional |institucional )?(?:ao|do|para o|d[ao]) (?:banco central|bc|bacen)\\b|(?:banco central|bc|bacen) (?:totalmente |plenamente )?(?:independente|autonomo)\\b|independencia (?:total |plena )?(?:do|ao|para o|d[ao]) (?:banco central|bc|bacen)\\b|independencia (?:financeira|orcamentaria)(?: e (?:financeira|orcamentaria))?[^.;]{0,25}(?:banco central|bc|bacen)\\b|(?:banco central|bc|bacen) com (?:independencia|autonomia) (?:financeira|orcamentaria)|autonomia (?:financeira|orcamentaria)(?: e (?:financeira|orcamentaria))? (?:ao|do|para o|d[ao]) (?:banco central|bc|bacen)\\b|mandatos? fixos? (?:de \\d+ anos )?(?:ao|aos|para o|para os|do|dos) (?:(?:presidente|diretores|diretoria|presidentes) (?:do |da |de )?)?(?:banco central|bc|bacen)\\b|(?:transformar|tornar) o (?:banco central|bc|bacen) (?:em )?(?:uma )?empresa publica|banco central (?:como )?empresa publica|\\bpec 65\\b', { k: 'R', pa: 'fazenda', pn: 'Fazenda / Banco Central', inst: 'COM', ri: [[/independencia (?:financeira|orcamentaria)|autonomia (?:financeira|orcamentaria)|empresa publica|\bpec 65\b|orcamento proprio/, 'PEC']], val: { mercado: 2, empresariado: 1, sindicatos: -2 }, e: { conf: .5, risco: -1 }, iv: [.4, 0], lag: 12, nota: 'A LC 179/2021 já garante autonomia operacional, mandatos fixos de 4 anos não coincidentes com o do Presidente e vedação de demissão ad nutum; só a independência financeira e orçamentária (PEC 65/2023, que o transforma em empresa pública de natureza especial) muda o quadro.' });
@@ -3622,7 +3630,7 @@ addSyn('auxilio_generico', 'beneficio(?: mensal)?(?= (?:de |no valor de )?r\\$)|
 addSyn('condicionalidade_trabalho', '(?:exigir|exigencia de|condicionar|obrigar|cobrar)[^.;]{0,30}?(?:bolsa familia|bpc|auxilio brasil|beneficios? sociais|programas? sociais|auxilios?)[^.;]{0,50}?(?:trabalh\\w+|emprego|capacitacao|qualificacao|ocupacao|contrapartida)');
 addSyn('mensalidade_universidades', '(?:cobrar|cobranca d[eao]|instituir cobranca d[eao]|instituir mensalidades?)[^.;]{0,40}?mensalidades?[^.;]{0,40}?(?:federais|universidades?|faculdades?|ensino superior)|mensalidades?[^.;]{0,40}?(?:nas federais|na universidade publica|nas universidades)');
 addSyn('filas_sus', 'filas? (?:de |d[aeo]s? )(?:consultas?|cirurgias?|exames?|atendimentos?|especialistas|espera)(?: eletivas?| especializadas?)?(?: d[aeo]s? (?:sus|saude)| no sus)?');
-addSyn('desmatamento', 'uso (?:do |de )?fogo|fogo no campo|queimas? (?:controladas?|de (?:pastagens|palha|cana))|fogo em (?:areas rurais|pastagens)|proibir o fogo');
+addSyn('desmatamento', 'uso (?:do |de )?fogo(?!s)|fogo no campo|queimas? (?:controladas?|de (?:pastagens|palha|cana))|fogo em (?:areas rurais|pastagens)|proibir o fogo');
 setProp('governanca_estatais', { instNeg: 'PL' });
 /* ---- v3.1 (rodada 2): generalizacao de redacao ---- */
 addSyn('fim_autonomia_bc', '(?:acabar com|encerrar|eliminar|abolir|cancelar|extinguir|revogar|derrubar|suprimir|retirar|tirar|desfazer|anular|acabar de vez com|por fim a|pôr fim a|dar fim a|rever|reverter|desistir d[ae]|abrir mao d[ae]) (?:a |de vez a )?(?:lei (?:da|de) )?autonomia (?:d[oa]|do) (?:banco central|bc|bacen)|autonomia (?:d[oa]|do) (?:banco central|bc|bacen) (?:acabou|e revogada|deixa de existir)', true);
@@ -3663,6 +3671,503 @@ addSyn('beneficio_absurdo', '(?:dar|doar|entregar|distribuir|presentear)(?: um| 
 addSyn('minha_casa', 'constru\\w+ (?:\\d+ )?(?:mil |milhoes? )?(?:de )?(?:casas|moradias|apartamentos|unidades habitacionais)');
 setProp('cpmf', { val: { classemedia: -6, empresariado: -6, mercado: -9, gamers: -4, periferia: -2 } });
 addSyn('abertura_comercial', 'entrar na ocde|aderir a ocde|adesao a ocde|ingressar na ocde|acordo (?:de livre.?comercio )?(?:mercosul.?ue|mercosul.?uniao europeia)');
+addSyn('redes_regulacao', '(?:regulament\\w+|regul(?:ar|acao)) (?:as |a |os )?(?:big techs?|plataformas(?: digitais)?) e (?:as |a |os )?(?:redes sociais|plataformas|big techs?)', true);
+addSyn('conta_luz', 'conta de energia(?: eletrica)?|tarifa de luz|conta de eletricidade|tarifa de energia eletrica', true);
+addSyn('antecipacao_13', 'adiant\\w+ (?:o |a )?(?:13\\S{0,2}|decimo terceiro)(?: salario)?(?: d[eao]s? (?:aposentad\\w+|inss|pensionistas))?|(?:pagar|liberar|receber) (?:o )?(?:13\\S{0,2}|decimo terceiro)(?: salario)?(?: d[eao]s? (?:aposentad\\w+|inss|pensionistas))? (?:mais cedo|antes|adiantad\\w+)');
+addSyn('igrejas_imunidade', '(?:cobrar|tributar|taxar|criar)(?: [a-z]+){0,3}? (?:imposto|ir|tributos?)(?: de renda)? (?:das|de|dos) (?:igrejas|templos)');
+addSyn('redes_regulacao', '(?:banir|bloquear|proibir|suspender)(?: o| a)? (?:tiktok|telegram|twitter|instagram|whatsapp)\\b|(?:obrigar|fazer)(?: [a-z]+){0,4}? (?:big techs?|plataformas)(?: [a-z]+){0,3}? (?:pagar|remunerar)(?: [a-z]+){0,3}? (?:jornais|imprensa|jornalismo|conteudo)');
+addSyn('mistura_biocombustiveis', '(?:misturar|mistura de) (?:mais |maior )?(?:etanol|biodiesel)(?: (?:na|no) (?:gasolina|diesel))?');
+/*V35-BEGIN*/
+/* ---------- v3.5: leituras corrigidas, objetos novos e leitura genérica ---------- */ // v3.5
+/* Campos novos: info (aviso/fato jurídico exibido no parecer; string ou função (it, A)), restr (o objeto é uma restrição: verbo de liberar/manter inverte o sinal),
+   nomeMal (o nome é o problema, "a conta de luz": reduzir = ganho), rn (renúncia padrão R$ bi/ano quando o tributo é isentado sem número no texto), gen (objeto sintético da leitura genérica) */
+const INFO_LIB = /\b(?:liber\w+|permit\w+|autoriz\w+|manter|mantenha\w*|preserv\w+|ampliar|facilit\w+|incentiv\w+|volta\w*)\b/;
+setSyn('celular_escola', '(?:celular(?:es)?|smartphones?|aparelhos? (?:eletronicos|celulares|moveis|portateis)|telefones? (?:celular(?:es)?|moveis))(?: pessoais?)?(?: (?:dos?|por) (?:alunos|estudantes))?(?: durante (?:as? )?(?:aulas?|recreio))?,? (?:d[ea]ntro d[aeo]s?|n[ao]s?|em)(?: a| o)? (?:sala de aula|salas de aula|aulas|escolas?|colegios?|ensino (?:basico|fundamental|medio)|rede (?:publica|escolar|de ensino)|estabelecimentos? de ensino|universidades?|faculdades?|ensino superior)(?: publicas?| privadas?| federais?)?|(?:escolas?|salas? de aula|colegios?) sem (?:celular(?:es)?|smartphones?)|(?:uso|usar|proibir|banir|vedar|restringir|limitar) (?:o |de |do )?(?:uso )?(?:de )?(?:celular(?:es)?|smartphones?) (?:por|dos|pelos) (?:alunos|estudantes)|(?:usar|uso d[eo]) (?:celular(?:es)?|smartphones?) durante (?:as? )?(?:aulas?|recreio)|telefone na escola');
+setProp('celular_escola', { v3: 1, cat: 'educacao', ax: { costumes: 1 } });
+P('fies_anistia', 'o perdão das dívidas do Fies', '(?:perdo\\w+|anisti\\w+|renegocia\\w+|quita\\w+|zera\\w+|cancela\\w+|limpa\\w+|refinancia\\w+|perdao d[aeo]s?|anistia d[aeo]s?)(?: [a-z]+){0,4}? (?:dividas?|debitos?|saldo devedor|financiamentos?|inadimplencia|devedores?)(?: [a-z]+){0,4}? (?:fies|financiamento estudantil)\\b|(?:dividas?|debitos?) (?:d[oa]s? )?(?:estudantes|alunos|universitarios|jovens)(?: (?:do|no|com o|pelo))? fies\\b|inadimplencia (?:do|no|com o) (?:fies|financiamento estudantil)|devedores d[oa] (?:fies|financiamento estudantil)|dividas? (?:estudantis|estudantil|d[oa]s? (?:estudantes|alunos|universitarios))|divida estudantil', { v3: 1, mal: 1, ch: 'subs', ext: 1, def: 20, cap: 40, b: 'jov', rg: 'urb', pob: .3, lag: 3, pa: 'educacao', inst: 'MP', val: { universitarios: 5, classemedia: 2, periferia: 1.5, mercado: -3, empresariado: -.5 }, e: { conf: -1 }, iv: [-.3, 0], cat: 'educacao', ax: { gasto_social: -1 }, st: { bancos: -1 },
+  info: 'Os financiamentos do Fies são crédito da União e de agentes financeiros: perdoar a dívida é remissão, renúncia que exige estimativa de impacto e compensação (LRF, art. 14, §1º). O custo é o saldo devedor perdoado, de uma vez só, e não uma despesa anual.' });
+P('demissao_justa_causa', 'a proteção contra a demissão sem justa causa', '(?:demissao|demissoes|despedida|despedidas|dispensa|dispensas|demitir) (?:de (?:empregados|trabalhadores|funcionarios) )?(?:sem justa causa|imotivad\\w+|arbitrari\\w+|sem motivo)|(?:estabilidade|garantia) (?:no |de |do )emprego|protecao contra (?:a )?(?:demissao|despedida)(?: arbitraria| imotivada| sem justa causa)?|convencao 158(?: da oit)?|justa causa obrigatoria', { v3: 1, k: 'R', protecao: 1, restr: 1, lc: 1, pa: 'casacivil', pn: 'Trabalho e Emprego', inst: 'PL', val: { sindicatos: 8, periferia: 3, classemedia: 1, empresariado: -10, mercado: -6, agro: -3 }, e: { des: .06, pib: -.05, conf: -4, risco: 8 }, iv: [-.6, 0], lag: 6, cat: 'trabalho', ax: { trabalho: -1 },
+  info: 'O art. 7º, I protege a relação de emprego contra despedida arbitrária ou sem justa causa nos termos de lei complementar, que prevê indenização compensatória e ainda não foi editada; até lá vale a multa de 40% sobre o FGTS (ADCT, art. 10, I). Proibir a demissão sem justa causa encarece e trava a contratação formal: o empresariado e o mercado reagem mal.' });
+P('carteira_verde_amarela', 'a carteira verde e amarela (menos encargos para contratar)', 'carteira (?:de trabalho )?verde.?e.?amarela|contrato (?:de trabalho )?verde.?e.?amarelo|programa verde.?e.?amarelo|regime verde.?e.?amarelo|carteira verde amarela|(?:menos|reduzir|reducao d[eo]s?|cortar|baixar|diminuir) (?:os )?encargos (?:para|na|de|sobre) (?:a )?(?:contratar|contratacao|primeiro emprego|jovens|novos empregos)(?: de jovens)?', { v3: 1, k: 'T', exo: 1, ch: 'tfolha', base: 20, def: 6, cap: 12, rn: 6, pg: 'folha', rg: 'urb', pa: 'fazenda', inst: 'PL', emp: 1.6, val: { empresariado: 3, mercado: 1, periferia: 1, sindicatos: -4, universitarios: -1 }, iv: [.5, .1], lag: 6, cred: .7, e: { des: .04 }, cat: 'trabalho', ax: { trabalho: 1 },
+  info: 'O precedente é o Contrato Verde e Amarelo, criado pela MP 905/2019, que deixou de valer em 2020. Reduzir encargos de contratação é renúncia de receita da Previdência e do FGTS: exige estimativa de impacto e compensação (LRF, art. 14) e, em tributo, lei específica (art. 150, §6º).' });
+P('guarda_nacional', 'a Guarda Nacional permanente', 'guarda nacional(?: permanente)?|policia nacional(?: permanente)?|forca nacional permanente|nova (?:forca|policia|guarda) (?:federal|nacional)(?: permanente)?|(?:forca|policia|guarda) (?:federal|nacional) permanente', { v3: 1, ch: 'seg', ex: 0, base: 0, def: 6, cap: 10, b: 'pol', rg: 'pop', pob: .05, lag: 18, pa: 'justica', inst: 'PEC', val: { policiais: 5, classemedia: 2, evangelicos: 1.5, universitarios: -3, indigenas: -1, periferia: -.5 }, iv: [0, .4], cat: 'seguranca_plano', hom: -.15, ax: { seguranca: 1 }, ent: { estados: .5 } });
+P('cotas_mulheres_congresso', 'a reserva de cadeiras para mulheres no Legislativo', 'cotas? (?:para |de |das? )?(?:mulheres|femininas?|genero)(?: n[ao]s?| em| para o| no| na)? ?(?:congresso|camara|senado|parlamento|legislativo|cadeiras|vagas|assembleias|politica)(?: nacional| federal)?|reserva (?:de )?(?:cadeiras|vagas|assentos) (?:para |d[ao]s? )?mulheres(?: n[ao]s? (?:congresso|camara|senado|parlamento|legislativo))?|(?:cadeiras|vagas|assentos) (?:reservad\\w+ )?(?:para|d[ao]s?) mulheres(?: n[ao]s? (?:congresso|camara|senado|parlamento|legislativo))?|paridade de genero n[ao]s? (?:congresso|politica|parlamento|legislativo)|cota de genero n[ao] (?:congresso|politica|parlamento|legislativo)|cotas? (?:femininas?|de genero) (?:n[ao]|no) (?:congresso|parlamento|legislativo)', { v3: 1, k: 'R', perm: 1, pa: 'casacivil', pn: 'Relações Institucionais', inst: 'PEC', val: { universitarios: 5, periferia: 1.5, classemedia: 1, evangelicos: -3, catolicos: -1 }, iv: [-.1, -.5], lag: 24, cat: 'progressista', ax: { costumes: -1 },
+  info: 'A Lei 9.504/1997 (art. 10, §3º) já exige que cada partido preencha no mínimo 30% das candidaturas com cada sexo, mas isso é cota de candidaturas, não de cadeiras. Reservar vagas no Congresso muda a composição das Casas e o sistema eleitoral: exige PEC e só vale para eleição realizada mais de um ano depois (CF, art. 16).' });
+P('limite_mandatos_parl', 'o limite de mandatos de parlamentares', '(?:acabar com|extinguir|proibir|vedar|limitar|restringir|eliminar|impedir|terminar com|fim d[ae]|chega de) (?:a )?reeleicao (?:ilimitada )?(?:d[eoa]s? |para )?(?:deputad\\w+|senador\\w*|vereador\\w*|parlamentares|congressistas|legisladores|legislativo)|reeleicao (?:ilimitada )?(?:d[eoa]s? |para )?(?:deputad\\w+|senador\\w*|vereador\\w*|parlamentares|congressistas|legisladores)|(?:limite|limitar|limitacao d[eo]s?|teto de|numero maximo de|restringir) (?:de )?mandatos? (?:d[eo]s? |para )?(?:deputad\\w+|senador\\w*|vereador\\w*|parlamentares|congressistas)|(?:deputad\\w+|senador\\w*|parlamentares) (?:com )?limite de mandatos?|(?:deputad\\w+|senador\\w*|parlamentares) so (?:podem|poderao) (?:se )?reeleger', { v3: 1, k: 'R', restr: 1, pa: 'casacivil', pn: 'Relações Institucionais', inst: 'PEC', val: { classemedia: 3, universitarios: 2, periferia: 1 }, iv: [0, 0], lag: 24, cat: 'comunicacao',
+  info: 'Hoje só o Executivo tem limite de reeleição (um mandato subsequente, CF, art. 14, §5º); deputados, senadores e vereadores podem se reeleger sem limite. Limitar mandatos legislativos exige PEC, que o próprio Congresso teria de aprovar, e só vale para eleição realizada mais de um ano depois (art. 16).' });
+addSyn('igualdade_salarial', 'equipar\\w+ (?:o |os )?(?:salarios?|remuneracao|vencimentos|ganhos|pagamento)(?: [a-z]+){0,5}? (?:homens e mulheres|mulheres e homens|entre os generos|entre generos|das mulheres|de genero)|igualdade (?:de remuneracao|de salarios)(?: entre homens e mulheres| de genero)?|(?:salario|remuneracao) igual (?:para|entre)(?: [a-z]+){0,4}? (?:mulheres|homens)|(?:mesmo|igual) (?:salario|pagamento|remuneracao) (?:para|entre) (?:homens e mulheres|mulheres e homens|mulheres)|desigualdade salarial(?: entre homens e mulheres| de genero)?|paridade salarial|multa(?: [a-z]+){0,3}? (?:desigualdade|diferenca) salarial|lei da igualdade salarial', true);
+P('salario_professores', 'o salário dos professores da rede pública', '(?:aumento|reajuste|aumento salarial|reajuste salarial|ganho real|recomposicao salarial|valorizacao salarial)(?: salarial)?(?: de \\d+(?:\\.\\d+)?%)? (?:para|aos?|dos?|das?|de) (?:todos )?(?:os |as )?(?:professor\\w*|docentes|magisterio|educadores|profissionais da educacao|trabalhadores da educacao)\\b(?! federa\\w+| das? universidades| dos institutos)(?: da rede publica| da educacao basica| publicos)?|\\d+(?:\\.\\d+)?% de (?:aumento|reajuste)(?: salarial)? (?:para|aos?|dos?) (?:os )?(?:professor\\w*|docentes|magisterio)\\b(?! federa\\w+)|(?:aumentar|reajustar|elevar|valorizar) (?:o )?(?:salario|remuneracao|vencimentos?|piso) d[eao]s? (?:professor\\w*|docentes|magisterio)\\b(?! federa\\w+)(?: em \\d+(?:\\.\\d+)?%)?', { v3: 1, ch: 'folha', base: 40, def: 4, cap: 12, b: 'serv', rg: 'urb', pob: .05, lag: 3, pa: 'educacao', inst: 'PL', val: { sindicatos: 4, universitarios: 2, classemedia: .5, mercado: -1 }, iv: [-.4, -.1], cat: 'educacao', ax: { gasto_social: -1 }, ent: { estados: -1.5, municipios: -2 },
+  info: 'A União paga diretamente só os professores federais e complementa o Fundeb; o piso nacional (Lei 11.738/2008) obriga estados e municípios, que arcam com a maior parte de qualquer reajuste da rede pública. O custo federal estimado considera a folha federal e a complementação da União.' });
+P('selic_meta', 'a meta da taxa Selic', '(?:taxa )?selic(?: (?:para|a|em|ate|de|abaixo de|acima de) \\d+(?:\\.\\d+)?%?)?|taxa basica de juros|juros basicos|meta d[ae] (?:taxa )?selic', { v3: 1, k: 'R', mal: 1, pa: 'fazenda', pn: 'Fazenda / Banco Central', inst: 'COM', val: { mercado: -9, empresariado: 1.5, periferia: 1, classemedia: .5 }, e: { conf: -6, risco: 12, dol: .12 }, iv: [-.5, 0], lag: 3, cat: 'juros', ax: { economia: -1 },
+  info: 'Aviso: a Selic não é definida pelo presidente. A meta é fixada pelo Copom, do Banco Central autônomo (LC 179/2021; Constituição, art. 164, §2º), e o Executivo só pode pedir ou pressionar. O ato é de comunicação, sem despesa nem receita: o mercado tende a ler a pressão como ameaça à autonomia, com risco de juros futuros, câmbio e confiança.' });
+P('export_minerio', 'a restrição à exportação de minério bruto', '(?:exportacao|exportacoes|exportar|exportado|venda ao exterior) (?:de |do |dos |das )?(?:o |os )?(?:minerio|minerios|minerais|minerio de ferro|ferro|niobio|litio|terras raras|bauxita|manganes)(?: bruto| in natura| sem beneficiamento| sem processamento)?|(?:minerio|minerios|minerais|litio|niobio|terras raras|bauxita|petroleo cru) (?:bruto|brutos|in natura|sem beneficiamento|sem processamento)', { v3: 1, k: 'R', restr: 1, fix: { rev: -3 }, pa: 'infra', pn: 'Minas e Energia', inst: 'PL', ri: [[/imposto de exportacao|taxar|tributar|aliquota/, 'DEC']], val: { empresariado: -4, mercado: -3, agro: -.5, sindicatos: 3, universitarios: 1 }, d: { china: -8 }, e: { pib: -.06, risco: 2 }, iv: [-.5, 0], lag: 12, cat: 'comercio', ax: { economia: -1 }, st: { mineracao: -3, industria: 1 },
+  info: 'Restringir a exportação de minério bruto é política de comércio exterior: pode ser feita por lei ou, pelo imposto de exportação (CF, art. 153, II), por alteração de alíquota por decreto (art. 153, §1º). Minério de ferro e outros minerais pesam na pauta exportadora e a China é a grande compradora: retaliação e perda de receita de exportação vêm antes de qualquer ganho de industrialização.' });
+P('zona_franca_nova', 'a criação de nova zona franca ou ZPE', '(?:zonas? francas?|zpes?|zonas? de processamento de exportacao)(?! de manaus)(?: (?:no|na|nos|nas|em|do|da|dos|das|de|para o|para a|para|ao|a)(?: o| a| os| as)?)? (?:nordeste|norte|sul|sudeste|centro.?oeste|semiarido|interior|estados? do nordeste|regiao (?:nordeste|norte|sul|sudeste|centro.?oeste)|acre|alagoas|amapa|bahia|ceara|goias|maranhao|mato grosso(?: do sul)?|minas gerais|paraiba|parana|pernambuco|piaui|rio grande do (?:norte|sul)|rondonia|roraima|santa catarina|sergipe|tocantins|espirito santo|distrito federal|sao paulo|rio de janeiro)\\b|(?:nordeste|semiarido|interior)(?: [a-z]+){0,2}? (?:zonas? francas?|zpes?)', { v3: 1, k: 'T', exo: 1, ch: 'tcons', base: 20, def: 6, cap: 15, rn: 6, pg: 'emp', rg: 'ne', pa: 'fazenda', inst: 'PL', val: { empresariado: 2, sindicatos: 1, mercado: -.5 }, iv: [-.3, 0], lag: 12, cred: .75, ax: { economia: -1 }, st: { industria: -2 },
+  info: 'Zona franca com isenções exige lei específica (CF, art. 150, §6º) e estimativa de impacto e compensação (LRF, art. 14). As ZPEs da Lei 11.508/2007 são criadas por decreto, mas só com benefícios já previstos em lei; a Zona Franca de Manaus segue protegida pelo ADCT até 2073 e a bancada amazonense reage à concorrência.' });
+P('plr_ir', 'o Imposto de Renda sobre a PLR', '\\bplr\\b|participacao nos (?:lucros|resultados)(?: ou resultados| e resultados)?|participacao dos trabalhadores nos lucros', { v3: 1, k: 'T', ch: 'trenda', base: 15, def: 5, cap: 10, rn: 5, pg: 'trab', rg: 'urb', pa: 'fazenda', inst: 'PL', val: { classemedia: 2, sindicatos: 2, periferia: 1.5, mercado: -.5 }, iv: [-.2, 0], lag: 6, cred: .8, ax: { tributacao: -1 },
+  info: 'A PLR (Lei 10.101/2000) já tem tributação separada e uma faixa isenta; a proposta amplia a isenção só sobre a PLR. É renúncia de receita: exige estimativa de impacto e compensação (LRF, art. 14).' });
+P('trabalho_infantil_artistico', 'o trabalho artístico de crianças e adolescentes', 'trabalho (?:infantil )?artistic\\w+(?: infantil| de (?:criancas|menores))?|trabalho infantil (?:artistico|na televisao|em novelas|na publicidade)|(?:criancas?|menores) (?:atores|atrizes|artistas|modelos|influenciadores?|youtubers?)|(?:atores|atrizes|artistas|modelos|influenciadores|youtubers) mirins?|criancas? (?:na|em|nas) (?:televisao|tv|novelas?|publicidade|propaganda|cinema|teatro|comerciais)|trabalho de criancas (?:na|em|nas) (?:televisao|tv|novelas?|publicidade|propaganda)', { v3: 1, k: 'R', restr: 1, pa: 'casacivil', pn: 'Trabalho e Emprego', inst: 'PL', val: { catolicos: 2, evangelicos: 2, classemedia: 1, universitarios: 1, empresariado: -1, gamers: -1 }, iv: [0, .2], lag: 6, cat: 'conservador',
+  info: 'A Constituição (art. 7º, XXXIII) proíbe qualquer trabalho a menores de 16 anos, salvo como aprendiz a partir de 14; a participação artística de crianças é admitida hoje caso a caso, mediante alvará judicial. Proibir de vez reforça a proteção e atinge elencos, publicidade e produção cultural.' });
+P('cannabis_regulacao', 'a legalização e a regulação do comércio de cannabis', '(?:maconha|cannabis|canabis)(?: para| de| no| com)? ?(?:uso )?(?:recreativ\\w+|adulto|lazer|social)|(?:uso|consumo|comercio|venda|mercado|producao|cultivo|plantio) (?:legal |regulado )?(?:recreativ\\w+ )?(?:de |da |d[ao]s? )?(?:maconha|cannabis|canabis)(?! medicinal)(?: recreativ\\w+)?|maconha legal|mercado (?:legal|regulado) de (?:maconha|cannabis)|(?:legalizar|liberar|regulamentar|regular|legalizacao d[aeo]|regulacao d[aeo]|liberacao d[aeo]) (?:o |a |as |os )?(?:uso (?:recreativo )?(?:de |da )?|comercio (?:de |da )?|venda (?:de |da )?)?(?:maconha|cannabis|canabis)(?! medicinal| para fins medicinais| terapeutic\\w+)', { v3: 1, k: 'R', penal: 1, perm: 1, fix: { rev: 2 }, pa: 'justica', inst: 'PL', val: { universitarios: 8, evangelicos: -11, catolicos: -6, policiais: -5, classemedia: -2, gamers: 1 }, hom: -.1, stf: -2, iv: [-.1, -.8], cat: 'progressista', lag: 18, legal: 'drogas',
+  info: 'O STF (RE 635.659, 2024) já descriminalizou o porte de maconha para uso pessoal, mas a produção e a venda continuam crime pela Lei 11.343/2006: legalizar o mercado exige lei federal. Um mercado regulado poderia ser tributado, inclusive pelo Imposto Seletivo (CF, art. 153, VIII), mas a receita depende de lei e do tempo de formação do mercado.' });
+P('fgts_dividas', 'o saque do FGTS para quitar dívidas', '(?:sac\\w+|liber\\w+|usar|utiliz\\w+|retir\\w+|mov\\w+) (?:o |os |parte d[oa] )?(?:saldo d[oa] )?fgts(?: [a-z]+){0,4}? (?:pagar|quitar|pagamento d[ae]|amortizar|renegociar|abater)(?: [a-z]+){0,3}? (?:dividas?|debitos?|emprestimos?|cartao|financiamentos?|contas atrasadas|negativad\\w+)|fgts (?:para|pra) (?:pagar|quitar|amortizar)(?: [a-z]+){0,3}? (?:dividas?|debitos?|emprestimos?|cartao|financiamentos?)|(?:pagar|quitar) (?:as |suas )?dividas? com (?:o )?(?:fgts|saldo do fgts)|fgts (?:para )?(?:quitacao|quitar) d[eo] dividas', { v3: 1, k: 'R', pa: 'casacivil', pn: 'Trabalho e Emprego', inst: 'MP', val: { periferia: 4, classemedia: 3, mercado: -.5, empresariado: .5, sindicatos: -.5 }, e: { pib: .05, ipca: .02 }, iv: [-.3, 0], lag: 2, cat: 'programa_social', ax: { gasto_social: -1 }, st: { bancos: 1.5, varejo: 1.5, construcao: -1.5 },
+  info: 'O saldo do FGTS é patrimônio do trabalhador: sacá-lo não custa ao Tesouro, mas o fundo financia habitação popular e saneamento, e quem saca perde a reserva para a demissão. O efeito vem pelo crédito: menos inadimplência para os bancos e mais consumo no curto prazo.' });
+P('estatal_nova', 'a criação de uma nova estatal', '(?:criar|criacao d[ae]|instituir|fundar|constituir|montar|implantar|lancar)(?: uma| um| a| o)?(?: nova| novo)? (?:estatal|empresa (?:publica|estatal)|companhia (?:estatal|publica)|empresa nacional|sociedade de economia mista|banco publico)(?: (?:de|d[aoe]s?|para) [a-z]+(?: (?!com |para |e |ou |que |no |na |em |ate |por )[a-z]+)?)?', { v3: 1, ch: 'invest', ext: 1, def: 8, cap: 20, b: 'serv', rg: 'se', pob: .05, lag: 24, pa: 'fazenda', inst: 'PL', val: { sindicatos: 3, universitarios: 3, empresariado: -1, mercado: -4 }, e: { conf: -1.5, risco: 2 }, iv: [-.7, 0], cat: 'desenvolvimento', ax: { economia: -1, privatizacao: -1 },
+  info: (it) => 'A empresa pública só nasce com lei específica (CF, art. 37, XIX) e a atuação direta do Estado na economia exige relevante interesse coletivo ou imperativo de segurança nacional (art. 173).' + (/semicondutor|\\bchips?\\b|microeletron/.test(it.ctxTxt || '') ? ' O Ceitec, empresa pública federal de semicondutores, já existe: o debate é recapitalizá-lo ou criar outra empresa.' : '') + ' A conta é o aporte de capital inicial, de uma vez só; o custo de operação depois depende de a empresa se pagar.' });
+P('imposto_exportacao', 'o imposto de exportação', 'imposto de exportacao(?: (?:sobre|de|do|da|dos|das) (?:[a-z]+ ){0,2}?(?:soja|minerio|petroleo cru|petroleo|carne|graos|commodities|ferro|cafe|milho|algodao))?|taxar (?:as )?exportacoes(?: d[eao]s? [a-z]+)?|taxa sobre exportac\\w+|tarifa de exportacao', { v3: 1, k: 'T', ch: 'tcomex', base: 2, ex: 0, def: 4, cap: 20, pg: 'agro', rg: 'agro', pa: 'fazenda', inst: 'DEC', dec: 1, pr: 0, val: { agro: -4, empresariado: -3, mercado: -1.5 }, iv: [-.4, 0], lag: 3, cred: .7, ax: { tributacao: -1 }, d: { china: -2 },
+  info: 'O imposto de exportação é federal (CF, art. 153, II) e o Executivo pode mudar a alíquota por decreto (art. 153, §1º), sem anterioridade; taxar commodities encarece a venda externa, reduz o preço pago ao produtor e tende a render menos do que o previsto.' });
+ABSORVE.imposto_exportacao = ['itr_agro', 'imposto_geral', 'mineracao_petroleo', 'minerais_criticos', 'tributos_gasolina', 'export_minerio'];
+ABSORVE.fies_anistia = ['fies', 'desenrola', 'auxilio_generico', 'educacao_geral'];
+ABSORVE.demissao_justa_causa = ['clt_reforma', 'direitos_trab'];
+ABSORVE.fgts_multa = (ABSORVE.fgts_multa || []).concat(['demissao_justa_causa']);
+ABSORVE.carteira_verde_amarela = ['desoneracao_folha', 'custo_contratacao', 'primeiro_emprego', 'contrib_patronal', 'clt_reforma'];
+ABSORVE.guarda_nacional = ['plano_seguranca', 'seguranca_geral', 'glo', 'penas'];
+ABSORVE.cotas_mulheres_congresso = ['cotas_igualdade', 'reforma_politica'];
+ABSORVE.limite_mandatos_parl = ['reforma_politica', 'foro'];
+ABSORVE.igualdade_salarial = ['cotas_igualdade'];
+ABSORVE.salario_professores = ['educacao_geral', 'piso_professores', 'servidores', 'auxilio_generico'];
+ABSORVE.selic_meta = ['juros_selic'];
+ABSORVE.pedido_bc = (ABSORVE.pedido_bc || []).concat(['selic_meta']);
+ABSORVE.pressao_bc = (ABSORVE.pressao_bc || []).concat(['selic_meta']);
+ABSORVE.fim_autonomia_bc = (ABSORVE.fim_autonomia_bc || []).concat(['selic_meta']);
+ABSORVE.demissao_fazenda = (ABSORVE.demissao_fazenda || []).concat(['selic_meta']);
+ABSORVE.export_minerio = ['mineracao_petroleo', 'minerais_criticos', 'abertura_comercial', 'protecionismo'];
+ABSORVE.zona_franca_nova = ['zona_franca'];
+ABSORVE.plr_ir = ['ir_pf', 'imposto_geral', 'trabalho_geral'];
+ABSORVE.trabalho_infantil_artistico = ['primeira_infancia', 'cultura'];
+ABSORVE.cannabis_regulacao = ['drogas_legalizar'];
+ABSORVE.fgts_dividas = ['fgts', 'desenrola', 'auxilio_generico'];
+ABSORVE.estatal_nova = ['reestatizacao_geral', 'est_outras', 'minerais_criticos', 'data_centers', 'ciencia_tec'];
+ABSORVE.celular_escola = ['educacao_geral'];
+replSyn('reforma_adm', 'fim da estabilidade|', 'fim da estabilidade(?: d[eo]s? (?:servidor\\w*|funcionalismo|funcionarios publicos))?|');
+replSyn('reforma_adm', 'acabar com a estabilidade|', 'acabar com a estabilidade(?: d[eo]s? (?:servidor\\w*|funcionalismo|funcionarios publicos))?|');
+setProp('reforma_adm', { def: 8, pn: 'Gestão e Inovação', info: 'A estabilidade está no art. 41 da Constituição: acabar com ela exige PEC, e uma regra só para os novos servidores (a saída que respeita o direito adquirido, art. 5º, XXXVI) economiza pouco nos primeiros anos; a conta cheia só aparece em décadas, com a renovação do quadro.' }); // v3.5: a regra vale só para novos servidores; a economia dos primeiros anos é pequena (a faixa de R$ 25 bi/ano era do regime pleno)
+setProp('conta_luz', { base: 200, nomeMal: 1, info: (it) => it.sg > 0 ? 'A redução geral da conta de luz sai de subsídio, pela CDE (Conta de Desenvolvimento Energético, paga pelos consumidores e em parte pelo Tesouro), ou de corte de encargos e tributos na tarifa. O precedente é a MP 579/2012 (Lei 12.783/2013), que prometeu baixar a conta em cerca de 20% em média.' : null });
+setProp('preco_gas', { nomeMal: 1 });
+addSyn('redes_regulacao', '(?:regulament\\w+|regul(?:ar|acao)|disciplin\\w+|normatiz\\w+) (?:as |a |os |o |d[aeo]s? )?(?:redes sociais|redes|plataformas(?: digitais)?|big techs?|internet|empresas de tecnologia|aplicativos? de mensagem)|responsabiliz\\w+ (?:as |a |os )?(?:big techs?|plataformas(?: digitais)?|redes sociais|empresas de tecnologia|redes)|responsabilidade d[aeo]s? (?:big techs?|plataformas(?: digitais)?|redes sociais)|moderacao de conteudo|obrigar (?:as )?(?:plataformas|big techs?|redes sociais) a|(?:regulament\\w+|regul(?:ar|acao)) (?:as |a |os )?(?:big techs?|plataformas(?: digitais)?) e (?:as |a |os )?(?:redes sociais|plataformas|big techs?)');
+setProp('redes_regulacao', { lg: [{ sg: 1, n: 'controverso', re: /respons|moderac|remov|big techs?|obrig/, t: 'Regular as plataformas e responsabilizá-las pelo conteúdo toca a liberdade de expressão (art. 5º, IX e art. 220 da Constituição) e o Marco Civil da Internet; o STF já ampliou a responsabilidade das plataformas ao julgar o art. 19 (Tema 987), mas a lei nova será contestada se induzir moderação prévia de conteúdo.' }] });
+/* leitura "já em vigor" (mesmo idioma da 6x1 e da Lei 15.270): o ato é de comunicação, redundante, sem efeito novo */
+const JA_VIG = [
+  { id: 'lei15100', obj: 'celular_escola', disp: 'lei15100', novo: /\b(?:universidades?|faculdades?|ensino superior|ampli\w+|endurec\w+|estend\w+|reforc\w+|agrav\w+|expand\w+|aument\w+|punic\w+|sancao|sancoes)\b/, topico: 'o uso de celular nas escolas, já restrito pela Lei 15.100/2025',
+    txt: 'O uso de celular nas escolas já é restrito pela Lei 15.100/2025: os estudantes da educação básica, pública e privada, não podem usar aparelhos eletrônicos portáteis pessoais durante as aulas, o recreio e os intervalos, salvo fins pedagógicos, de acessibilidade, saúde ou necessidade individual. A medida é redundante e não gera efeito novo; ampliar a regra ao ensino superior ou endurecer as sanções seria uma mudança real.' },
+  { id: 'lei14611', obj: 'igualdade_salarial', disp: 'lei14611', novo: /\b(?:aument\w+|elev\w+|ampli\w+|endurec\w+|dobr\w+|agrav\w+|reforc\w+|empresas? (?:com|de) (?:menos|ate) \d+|\d)/, topico: 'a igualdade salarial entre mulheres e homens, já garantida pela Lei 14.611/2023',
+    txt: 'A igualdade salarial entre mulheres e homens já é lei: a Lei 14.611/2023 garante igual remuneração para trabalho de igual valor, prevê multa administrativa contra a empresa que discriminar e exige relatório semestral de transparência salarial das empresas com 100 ou mais empregados. A medida é redundante e não gera efeito novo; endurecer a multa ou estender a exigência a empresas menores seria uma mudança real.' }
+];
+const VAGO_CABECA = /^(?:o |a |os |as |um |uma )?(?:brasil|pais|economia|inflacao|desemprego|pobreza|violencia|crime|corrupcao|desigualdade\w*|crescimento|tudo|todos|vida|povo|futuro|situacao|coisas?|problemas?|gente|nacao|governo|estado|sociedade|felicidade|qualidade de vida)\b/;
+const RIGHT_RE = /\b(?:direitos?|liberdade|igualdade|isonomia|privacidade|transparencia|prioridade|respeito|acessibilidade|licenca|estabilidade|protecao de dados|seguranca juridica)\b/;
+const NORM_NOUN_RE = /\b(?:leis?|regras?|normas?|marco (?:legal|regulatorio)|codigo|estatuto|regulamento|politica nacional|cotas?|selo|certificacao|registro|cadastro nacional|obrigatoriedade|dia nacional|feriado|protocolo|diretrizes?|multas?|sancoes|penalidades?|licencas?|pisos?|juiz de garantias|direitos?|prioridade|gratuidade|meia.?entrada|recall|candidaturas?|reserva de vagas|vagas reservadas)\b/;
+const PROB_RE = /\b(?:evasao|desperdicio|filas?|violencia|desmatamento|poluicao|mortes?|acidentes?|doencas?|analfabetismo|desigualdades?|pobreza|fome|miseria|crimes?|roubos?|furtos?|homicidios?|feminicidios?|assedio|abusos?|exploracao|trafico|corrupcao|fraudes?|sonegacao|desemprego|inflacao|burocracia|queimadas?|enchentes?|desastres?|epidemias?|dengue|obesidade|tabagismo|vicios?|preconceito|discriminacao|racismo|machismo|bullying|lixo|congestionamentos?|apagoes?|trabalho escravo|trabalho infantil|informalidade|endividamento|inadimplencia|superlotacao|sucateamento|abandono)\b/;
+const PROG_RE = /\b(?:programas?|auxilios?|beneficios?|bolsas?|subsidios?|incentivos?|verbas?|gastos?|orcamento|investimentos?|fundo|fundos|repasses?|isencoes?|creditos?|financiamentos?|pensoes?|pensao|projetos?|obras?|vagas|servicos?|atendimento|assistencia)\b/;
+const TAX_RE = /\b(?:impostos?|tributos?|tributacao|taxas?(?! de (?:juros|desemprego|mortalidade|homicidios?|natalidade|criminalidade|evasao|analfabetismo|inflacao|crescimento|violencia|escolaridade|ocupacao|informalidade))|contribuicao|contribuicoes|aliquotas?|tarifas?(?! social)|iss|icms|ipva|iptu|royalties|pedagios?)\b/;
+const GEN_DEC = /\b(?:ipi|iof|imposto de importacao|imposto de exportacao|tarifa externa)\b/;
+/* verbos de ação: [regex sobre o texto sem acento, classe, nominalização, preposição do complemento, infinitivo, sinal] */
+const GV35 = [
+  ['proib(?:ir|iremos|e|a|am|indo|icao)|ved(?:ar|e|a|ando|acao)|banir|banindo', 'norm', 'a proibição', 'de', 'proibir', 1],
+  ['obrig(?:ar|ue|ando|acao)|tornar obrigatori[oa]s?', 'norm', 'a obrigatoriedade', 'de', 'obrigar', 1],
+  ['exig(?:ir|e|indo|encia)', 'norm', 'a exigência', 'de', 'exigir', 1],
+  ['determin(?:ar|e|ando)', 'norm', 'a determinação', 'de', 'determinar', 1],
+  ['limit(?:ar|e|ando|acao)|restring(?:ir|e|indo)', 'norm', 'a limitação', 'de', 'limitar', 1],
+  ['regulament(?:ar|e|ando|acao)', 'norm', 'a regulamentação', 'de', 'regulamentar', 1],
+  ['regul(?:ar|e|ando|acao)', 'norm', 'a regulação', 'de', 'regular', 1],
+  ['normatiz(?:ar|e|ando)', 'norm', 'a normatização', 'de', 'normatizar', 1],
+  ['puni(?:r|ndo)|punicao|penaliz(?:ar|e|ando)', 'norm', 'a punição', 'de', 'punir', 1],
+  ['multar|multe|multando', 'norm', 'a multa', 'a', 'multar', 1],
+  ['criminaliz(?:ar|e|ando|acao)|tipific(?:ar|e|ando|acao)', 'norm', 'a criminalização', 'de', 'criminalizar', 1],
+  ['equipar(?:ar|e|ando|acao)|igualar', 'norm', 'a equiparação', 'de', 'equiparar', 1],
+  ['padroniz(?:ar|e|ando|acao)|unific(?:ar|e|ando|acao)', 'norm', 'a padronização', 'de', 'padronizar', 1],
+  ['simplific(?:ar|e|ando|acao)|desburocratiz(?:ar|e|ando|acao)', 'norm', 'a simplificação', 'de', 'simplificar', 1],
+  ['flexibiliz(?:ar|e|ando|acao)', 'lib', 'a flexibilização', 'de', 'flexibilizar', 1],
+  ['liber(?:ar|e|ando|acao)', 'lib', 'a liberação', 'de', 'liberar', 1],
+  ['permit(?:ir|e|indo)|permissao', 'lib', 'a permissão', 'de', 'permitir', 1],
+  ['autoriz(?:ar|e|ando|acao)', 'lib', 'a autorização', 'de', 'autorizar', 1],
+  ['legaliz(?:ar|e|ando|acao)', 'lib', 'a legalização', 'de', 'legalizar', 1],
+  ['desregulament(?:ar|e|ando|acao)', 'lib', 'a desregulamentação', 'de', 'desregulamentar', 1],
+  ['facilit(?:ar|e|ando)', 'lib', 'a facilitação', 'de', 'facilitar', 1],
+  ['cri(?:ar|e|ando|acao)', 'prog', 'a criação', 'de', 'criar', 1],
+  ['institu(?:ir|a|indo|icao)', 'prog', 'a instituição', 'de', 'instituir', 1],
+  ['implant(?:ar|e|ando|acao)', 'prog', 'a implantação', 'de', 'implantar', 1],
+  ['implement(?:ar|e|ando|acao)', 'prog', 'a implementação', 'de', 'implementar', 1],
+  ['lanc(?:ar|e|ando|amento)', 'prog', 'o lançamento', 'de', 'lançar', 1],
+  ['constru(?:ir|a|indo|cao)', 'prog', 'a construção', 'de', 'construir', 1],
+  ['contrat(?:ar|e|ando|acao)', 'prog', 'a contratação', 'de', 'contratar', 1],
+  ['ampli(?:ar|e|ando|acao)|expand(?:ir|a|indo)|expansao', 'prog', 'a ampliação', 'de', 'ampliar', 1],
+  ['aument(?:ar|e|ando)', 'prog', 'o aumento', 'de', 'aumentar', 1],
+  ['fortalec(?:er|a|endo|imento)|reforc(?:ar|e|ando)', 'prog', 'o fortalecimento', 'de', 'fortalecer', 1],
+  ['garant(?:ir|a|indo)|assegur(?:ar|e|ando)', 'prog', 'a garantia', 'de', 'garantir', 1],
+  ['ofere(?:cer|ca|cendo)|ofertar', 'prog', 'a oferta', 'de', 'oferecer', 1],
+  ['universaliz(?:ar|e|ando|acao)', 'prog', 'a universalização', 'de', 'universalizar', 1],
+  ['invest(?:ir|a|indo|imento)', 'prog', 'o investimento', 'em', 'investir', 1],
+  ['subsidi(?:ar|e|ando)', 'prog', 'o subsídio', 'a', 'subsidiar', 1],
+  ['financi(?:ar|e|ando)', 'prog', 'o financiamento', 'de', 'financiar', 1],
+  ['distribu(?:ir|a|indo|icao)|fornec(?:er|a|endo)', 'prog', 'a distribuição', 'de', 'distribuir', 1],
+  ['moderniz(?:ar|e|ando|acao)', 'prog', 'a modernização', 'de', 'modernizar', 1],
+  ['reform(?:ar|e|ando)', 'prog', 'a reforma', 'de', 'reformar', 1],
+  ['conced(?:er|a|endo)', 'prog', 'a concessão', 'de', 'conceder', 1],
+  ['dobr(?:ar|e|ando)|duplic(?:ar|e|ando)', 'prog', 'a duplicação', 'de', 'dobrar', 1],
+  ['incentiv(?:ar|e|ando)|estimul(?:ar|e|ando)|foment(?:ar|e|ando)', 'prog', 'o incentivo', 'a', 'incentivar', 1],
+  ['promov(?:er|a|endo)', 'prog', 'a promoção', 'de', 'promover', 1],
+  ['apoi(?:ar|e|ando)', 'prog', 'o apoio', 'a', 'apoiar', 1],
+  ['proteg(?:er|a|endo)', 'prog', 'a proteção', 'de', 'proteger', 1],
+  ['combat(?:er|a|endo)|enfrent(?:ar|e|ando)', 'prog', 'o combate', 'a', 'combater', 1],
+  ['erradic(?:ar|e|ando|acao)', 'prog', 'a erradicação', 'de', 'erradicar', 1],
+  ['abr(?:ir|a|indo)', 'prog', 'a abertura', 'de', 'abrir', 1],
+  ['melhor(?:ar|e|ando)', 'prog', 'a melhoria', 'de', 'melhorar', 1],
+  ['fiscaliz(?:ar|e|ando|acao)', 'prog', 'a fiscalização', 'de', 'fiscalizar', 1],
+  ['bot(?:ar|e|ando)|coloc(?:ar|e|ando)', 'lib', 'a colocação', 'de', 'colocar', 1],
+  ['manter|mantenha|mantendo|manutencao', 'norm', 'a manutenção', 'de', 'manter', 1],
+  ['dar|dou|damos|dando', 'prog', 'a concessão', 'de', 'dar', 1],
+  ['deix(?:ar|e|ando)', 'lib', 'a liberação', 'de', 'deixar', 1],
+  ['trat(?:ar|e|ando)', 'norm', 'o tratamento', 'de', 'tratar', 1],
+  ['faz(?:er|endo)|fac(?:a|amos)', 'prog', 'a realização', 'de', 'fazer', 1],
+  ['adot(?:ar|e|ando)', 'norm', 'a adoção', 'de', 'adotar', 1],
+  ['vend(?:er|a|endo)', 'venda', 'a venda', 'de', 'vender', -1],
+  ['perdo(?:ar|e|ando)|anisti(?:ar|e|ando)', 'perdao', 'o perdão', 'de', 'perdoar', 1],
+  ['us(?:ar|e|ando)', 'norm', 'o uso', 'de', 'usar', 1],
+  ['imp(?:or|onha|ondo)', 'norm', 'a imposição', 'de', 'impor', 1],
+  ['cass(?:ar|e|ando)', 'norm', 'a cassação', 'de', 'cassar', 1],
+  ['troc(?:ar|ando)|substitu(?:ir|indo)', 'prog', 'a troca', 'de', 'trocar', 1],
+  ['pag(?:ar|a|ando)', 'prog', 'o pagamento', 'de', 'pagar', 1],
+  ['tir(?:ar|e|ando)', 'fim', 'a retirada', 'de', 'tirar', -1],
+  ['conclu(?:ir|a|indo)|termin(?:ar|e|ando)', 'prog', 'a conclusão', 'de', 'concluir', 1],
+  ['federaliz(?:ar|e|ando)', 'norm', 'a federalização', 'de', 'federalizar', 1],
+  ['instal(?:ar|e|ando)', 'prog', 'a instalação', 'de', 'instalar', 1],
+  ['devolv(?:er|a|endo)', 'prog', 'a devolução', 'de', 'devolver', 1],
+  ['junt(?:ar|e|ando)', 'norm', 'a unificação', 'de', 'juntar', 1],
+  ['lev(?:ar|e|ando)', 'prog', 'a oferta', 'de', 'levar', 1],
+  ['reserv(?:ar|e|ando)', 'norm', 'a reserva', 'de', 'reservar', 1],
+  ['explod(?:ir|a|indo)|destru(?:ir|a|indo)', 'norm', 'a destruição', 'de', 'destruir', 1],
+  ['desapropri(?:ar|e|ando)', 'norm', 'a desapropriação', 'de', 'desapropriar', 1],
+  ['pavimentar|asfaltar', 'prog', 'a pavimentação', 'de', 'pavimentar', 1],
+  ['barr(?:ar|e|ando)', 'norm', 'o veto', 'a', 'barrar', 1],
+  ['congel(?:ar|e|ando)', 'norm', 'o congelamento', 'de', 'congelar', 1],
+  ['ensin(?:ar|e|ando)', 'prog', 'o ensino', 'de', 'ensinar', 1],
+  ['volt(?:ar|e|ando) a', 'norm', 'a volta', 'de', 'voltar a', 1],
+  ['sub(?:ir|a|indo)|elev(?:ar|e|ando)', 'prog', 'o aumento', 'de', 'subir', 1],
+  ['baix(?:ar|e|ando)', 'fim', 'a redução', 'de', 'baixar', -1],
+  ['envi(?:ar|e|ando)', 'prog', 'o envio', 'de', 'enviar', 1],
+  ['fech(?:ar|e|ando)', 'prog', 'o fechamento', 'de', 'fechar', 1],
+  ['reconhec(?:er|a|endo)', 'norm', 'o reconhecimento', 'de', 'reconhecer', 1],
+  ['aprov(?:ar|e|ando)', 'norm', 'a aprovação', 'de', 'aprovar', 1],
+  ['inclu(?:ir|a|indo)', 'norm', 'a inclusão', 'de', 'incluir', 1],
+  ['estabelec(?:er|a|endo)', 'norm', 'o estabelecimento', 'de', 'estabelecer', 1],
+  ['transform(?:ar|e|ando)', 'norm', 'a transformação', 'de', 'transformar', 1],
+  ['transfer(?:ir|a|indo)', 'prog', 'a transferência', 'de', 'transferir', 1],
+  ['cumpr(?:ir|a|indo)|respeit(?:ar|e|ando)', 'norm', 'o cumprimento', 'de', 'cumprir', 1],
+  ['proporcion(?:ar|e)|priori(?:zar|ze)', 'prog', 'a priorização', 'de', 'priorizar', 1],
+  ['acabar com|acabando com|acabe com', 'fim', 'o fim', 'de', 'acabar com', -1],
+  ['extin(?:guir|ga|guindo|cao)', 'fim', 'a extinção', 'de', 'extinguir', -1],
+  ['revog(?:ar|ue|ando|acao)', 'fim', 'a revogação', 'de', 'revogar', -1],
+  ['elimin(?:ar|e|ando|acao)|abol(?:ir|a|indo|icao)', 'fim', 'a eliminação', 'de', 'eliminar', -1],
+  ['suspend(?:er|a|endo)|suspensao', 'fim', 'a suspensão', 'de', 'suspender', -1],
+  ['cancel(?:ar|e|ando)|encerr(?:ar|e|ando)', 'fim', 'o encerramento', 'de', 'encerrar', -1],
+  ['reduz(?:ir|a|indo)|diminu(?:ir|a|indo)', 'fim', 'a redução', 'de', 'reduzir', -1],
+  ['cort(?:ar|e|ando)', 'fim', 'o corte', 'de', 'cortar', -1],
+  ['zer(?:ar|e|ando)', 'fim', 'a zeragem', 'de', 'zerar', -1],
+  ['tax(?:ar|e|ando|acao)|tribut(?:ar|e|ando|acao)|sobretax(?:ar|e|ando)', 'trib', 'a taxação', 'de', 'taxar', 1],
+  ['cobr(?:ar|e|ando|anca)', 'trib', 'a cobrança', 'de', 'cobrar', 1],
+  ['isent(?:ar|e|ando)|isencao', 'trib', 'a isenção', 'de', 'isentar', -1],
+  ['desoner(?:ar|e|ando|acao)', 'trib', 'a desoneração', 'de', 'desonerar', -1]
+].map(v => ({ re: new RegExp('\\b(?:' + v[0] + ')\\b'), cls: v[1], nom: v[2], prep: v[3], inf: v[4], sg: v[5] }));
+/* áreas: léxico -> pasta executora, canal de gasto, beneficiários, reação de grupos (vG programa; vN norma), custo padrão modesto (def, R$ bi/ano), valor unitário */
+const AREAS35 = [
+  { id: 'saude', n: 'saúde', rx: /\b(?:saude|sus|hospita\w+|medic\w+|remedios?|farmac\w+|vacin\w+|doencas?|cancer|enfermeir\w+|ubs|upa|leitos?|clinicas?|dengue|epidemi\w+|anvisa|psiquiatr\w+|psicolog\w+|odontolog\w+|dentist\w+|cirurgi\w+|exames?|pacientes?|gestantes?|parto|obesidade|tabagismo|dependen\w+|alcool|nutricao|plano de saude|planos de saude)\b/, pa: 'saude', ch: 'saude', b: 'saude', pg: 'emp', cat: 'saude', vG: { periferia: 2, classemedia: 1.5, catolicos: .5, evangelicos: .5, sindicatos: .5 }, vN: { empresariado: -1.5, classemedia: .5, periferia: .5, mercado: -.5 }, iv: [-.2, 0], def: 3, cap: 25, vu: 1500, uc: 6e6, lag: 6 },
+  { id: 'educacao', n: 'educação', rx: /\b(?:educacao|escolas?|ensino|alunos?|estudantes?|professor\w*|universidad\w+|creches?|faculdades?|vestibular|enem|merenda|alfabetiz\w+|bolsas? de estudo|sala de aula|salas de aula|pre.?escola|colegios?|escolar\w*|curriculo|formacao)\b/, pa: 'educacao', ch: 'educ', b: 'jov', pg: 'emp', cat: 'educacao', vG: { universitarios: 2, periferia: 1.5, classemedia: 1.5, sindicatos: 1 }, vN: { universitarios: 1.5, classemedia: .5, sindicatos: .5, evangelicos: -.5 }, iv: [-.1, -.1], def: 3, cap: 20, vu: 2000, uc: 8e6, lag: 8 },
+  { id: 'seguranca', n: 'segurança pública', rx: /\b(?:policia\w*|policiais?|seguranca publica|crimes?|criminos\w+|trafic\w+|facc\w+|armas?|presidios?|penitenciar\w+|prisao|presos?|delegacias?|violencia|homicidios?|bombeir\w+|patrulh\w+|fronteiras?|roubos?|furtos?|milicias?|latrocinio|feminicidio|crime organizado|lavagem de dinheiro)\b/, pa: 'justica', ch: 'seg', b: 'todos', pg: 'emp', cat: 'seguranca_plano', vG: { policiais: 3, classemedia: 1.5, evangelicos: 1, universitarios: -1 }, vN: { policiais: 2, classemedia: 1.5, evangelicos: 1, universitarios: -2, periferia: -.5 }, iv: [0, .4], def: 2, cap: 15, vu: 12000, uc: 30e6, lag: 8 },
+  { id: 'justica', n: 'justiça', rx: /\b(?:tribunal|tribunais|juizes?|juiz|judiciario|processos? judicia(?:l|is)|defensoria|ministerio publico|advogad\w+|cartorios?|codigo (?:civil|penal|de processo)|justica|inquerito|sentencas?|recursos judiciais|foro|stf|stj)\b/, pa: 'justica', ch: 'custeio', b: 'todos', pg: 'emp', cat: 'garantista', vG: { classemedia: 1, universitarios: .5 }, vN: { classemedia: .5, universitarios: 1, policiais: -.5 }, iv: [0, -.1], def: 1, cap: 10, vu: 800, uc: 15e6, lag: 8 },
+  { id: 'trabalho', n: 'trabalho', rx: /\b(?:trabalh\w+|empregos?|salarios?|empregad\w+|patroes|patrao|clt|sindicat\w+|jornada|ferias|demiss\w+|carteira assinada|aprendiz\w*|estagi\w+|terceiriz\w+|informa(?:l|is)|autonomos?|mei|hora extra|horas extras|desemprego|desempregad\w+|vagas de emprego|empregadores?|licenca (?:maternidade|paternidade))\b/, pa: 'casacivil', pn: 'Trabalho e Emprego', ch: 'subs', b: 'trab', pg: 'folha', cat: 'trabalho', vG: { sindicatos: 2, periferia: 1.5, classemedia: 1 }, vN: { sindicatos: 3, periferia: 1.5, empresariado: -3, mercado: -1 }, iv: [-.4, 0], def: 2, cap: 20, vu: 1800, uc: 5e6, lag: 6 },
+  { id: 'ambiente', n: 'meio ambiente', rx: /\b(?:ambient\w+|florestas?|florestal|desmat\w+|amazon\w+|clima\w*|carbono|poluic\w+|reciclag\w+|lixo|residuos|rios?|biodivers\w+|fauna|flora|animais|queimad\w+|ibama|unidades de conservacao|sustentab\w+|plastico\w*|emissoes|mata atlantica|cerrado|pantanal|oceanos?|mares?|agrotox\w+|energia limpa|aquecimento global)\b/, pa: 'ambiente', ch: 'amb', b: 'todos', pg: 'emp', cat: 'ambiente', vG: { universitarios: 2, indigenas: 1.5, agro: -.5 }, vN: { universitarios: 3, indigenas: 2, agro: -2.5, empresariado: -1 }, iv: [-.3, -.2], def: 1.5, cap: 15, vu: 500, uc: 10e6, lag: 10 },
+  { id: 'energia', n: 'energia', rx: /\b(?:energia|eletric\w+|luz|solar|eolic\w+|hidreletric\w+|petroleo|gas natural|combustiv\w+|gasolina|diesel|etanol|biocombust\w+|usinas?|nuclear|apagoes?|transmissao|distribuidoras?)\b/, pa: 'infra', pn: 'Minas e Energia', ch: 'invest', b: 'cons', pg: 'comb', cat: 'infra', vG: { empresariado: 1, classemedia: 1, periferia: .5 }, vN: { empresariado: -1.5, classemedia: .5, universitarios: 1 }, iv: [0, 0], def: 3, cap: 25, vu: 300, uc: 200e6, lag: 12 },
+  { id: 'transporte', n: 'transporte', rx: /\b(?:rodovias?|ferrovias?|portos?|aeroportos?|transporte\w*|onibus|metro|trens?|estradas?|pontes?|mobilidade|frete|caminhoes|caminhao|caminhoneir\w+|hidrovias?|transito|motoristas?|bicicletas?|ciclovias?|aviacao|navegacao|carros?|veiculos?)\b/, pa: 'infra', pn: 'Transportes', ch: 'invest', b: 'todos', pg: 'comb', cat: 'infra', vG: { caminhoneiros: 1.5, classemedia: 1.5, empresariado: 1, periferia: 1 }, vN: { caminhoneiros: -2, empresariado: -1.5, classemedia: .5 }, iv: [.1, 0], def: 4, cap: 30, vu: 400, uc: 50e6, lag: 14 },
+  { id: 'agro', n: 'agropecuária', rx: /\b(?:agro\w*|agricult\w+|pecuari\w+|rural|rurais|lavouras?|safras?|fertiliz\w+|defensivos?|irrigacao|gado|soja|milho|cafe|leite|pesca\w*|reforma agraria|assentamentos?|sem terra|produtores? rurais?|sementes?|fazendeir\w+)\b/, pa: 'fazenda', pn: 'Agricultura', ch: 'subs', b: 'agro', pg: 'agro', cat: 'desenvolvimento', rg: 'agro', vG: { agro: 3, periferia: .5 }, vN: { agro: -3, universitarios: 2, indigenas: 1.5 }, iv: [.2, .1], def: 3, cap: 25, vu: 6000, uc: 5e6, lag: 8 },
+  { id: 'digital', n: 'o setor digital', rx: /\b(?:internet|digital\w*|plataformas?|aplicativos?|redes sociais|big techs?|dados pessoais|privacidade|lgpd|algoritm\w+|inteligencia artificial|cibern\w+|hackers?|software|streaming|games?|jogos eletronicos|telecom\w*|5g|telefonia|celulares?|smartphones?|televisao|radio|imprensa|jornal|jornais|comunicacao|midia|sites?|online|on.?line|virtual)\b/, pa: 'infra', pn: 'Comunicações', ch: 'invest', b: 'techs', pg: 'techs', cat: 'redes', vG: { gamers: 1.5, universitarios: 1, empresariado: 1 }, vN: { gamers: -3, empresariado: -2, universitarios: 1.5, mercado: -.5 }, iv: [-.1, -.1], def: 1.5, cap: 15, vu: 200, uc: 20e6, lag: 8 },
+  { id: 'cultura', n: 'cultura', rx: /\b(?:cultur\w+|artistas?|cinema|teatros?|musicas?|museus?|patrimonio|livros?|bibliotecas?|leitura|festiva(?:l|is)|shows?|audiovisual|rouanet|carnaval|folclore|literatura|dancas?)\b/, pa: 'casacivil', pn: 'Cultura', ch: 'subs', b: 'jov', pg: 'emp', cat: 'cultura', vG: { universitarios: 3, classemedia: 1 }, vN: { universitarios: 1.5, evangelicos: -.5 }, iv: [-.2, -.2], def: 1, cap: 8, vu: 300, uc: 10e6, lag: 6 },
+  { id: 'assistencia', n: 'assistência social', rx: /\b(?:pobres?|pobreza|fome|assistencia|beneficios?|auxilios?|renda|familias?|criancas?|idosos?|deficien\w+|pcd|mulheres|maes|situacao de rua|abrigos?|cras|cadunico|vulnerab\w+|infancia|adolescen\w+|juventude|jovens|orfaos|violencia domestica)\b/, pa: 'casacivil', pn: 'Desenvolvimento e Assistência Social', ch: 'transf', b: 'pobres', pg: 'emp', cat: 'programa_social', rg: 'pobre', pob: .7, vG: { periferia: 3, catolicos: 1.5, evangelicos: 1.5, classemedia: .5 }, vN: { periferia: 1.5, catolicos: 1, evangelicos: 1 }, iv: [-.4, 0], def: 3, cap: 30, vu: 1800, uc: 4e6, lag: 4 },
+  { id: 'habitacao', n: 'habitação e cidades', rx: /\b(?:moradias?|habitac\w+|casas? populares?|casa propria|imoveis|imovel|alugue\w+|despejos?|favelas?|urbaniz\w+|saneamento|esgoto|agua tratada|cidades?|urbano|urbana|regularizacao fundiaria|loteamentos?|condominios?|inquilin\w+)\b/, pa: 'infra', pn: 'Cidades', ch: 'invest', b: 'pobres', pg: 'emp', cat: 'infra', rg: 'pobre', vG: { periferia: 3, classemedia: 1, empresariado: 1 }, vN: { periferia: 1.5, empresariado: -1.5, classemedia: -.5 }, iv: [-.2, 0], def: 4, cap: 30, vu: 1500, uc: 100e3, lag: 12 },
+  { id: 'previdencia', n: 'previdência', rx: /\b(?:aposentad\w+|previdenc\w+|inss|pensao|pensoes|pensionistas?)\b/, pa: 'casacivil', pn: 'Previdência Social', ch: 'transf', b: 'idosos', pg: 'folha', cat: 'previdencia', vG: { classemedia: 2, periferia: 1.5, sindicatos: 1.5, catolicos: 1 }, vN: { sindicatos: -1 }, iv: [-.3, 0], def: 3, cap: 30, vu: 2300, uc: 2e6, lag: 6 },
+  { id: 'defesa', n: 'defesa', rx: /\b(?:forcas armadas|exercito|marinha|aeronautica|militares?|defesa nacional|soberania|armamentos?|submarinos?|caca|blindados?)\b/, pa: 'defesa', ch: 'seg', b: 'pol', pg: 'emp', cat: 'seguranca_plano', vG: { policiais: 2, classemedia: .5, evangelicos: .5 }, vN: { policiais: 1.5 }, iv: [.1, .2], def: 3, cap: 25, vu: 15000, uc: 100e6, lag: 12 },
+  { id: 'exterior', n: 'relações exteriores', rx: /\b(?:diplomac\w+|embaixadas?|acordos? (?:internacionais?|comerciais?)|tratados?|onu|brics|mercosul|exporta\w+|importa\w+|comercio exterior|vistos?|imigra\w+|refugiad\w+|estrangeir\w+|cooperacao internacional)\b/, pa: 'itamaraty', ch: 'custeio', b: 'emp', pg: 'emp', cat: 'comercio', vG: { empresariado: 1, universitarios: .5 }, vN: { empresariado: -1, universitarios: 1 }, iv: [0, 0], def: 1, cap: 10, vu: 500, uc: 10e6, lag: 8 },
+  { id: 'esporte', n: 'esporte', rx: /\b(?:esportes?|esportiv\w+|atletas?|futebol|olimpiad\w+|copa do mundo|estadios?|quadras?|ginasios?)\b/, pa: 'casacivil', pn: 'Esporte', ch: 'subs', b: 'jov', pg: 'emp', cat: 'futebol', vG: { periferia: 2, gamers: 1.5, classemedia: 1 }, vN: { periferia: .5 }, iv: [-.1, 0], def: 1, cap: 8, vu: 300, uc: 5e6, lag: 8 },
+  { id: 'turismo', n: 'turismo', rx: /\b(?:turismo|turistas?|hoteis|hotel|viagens?|pousadas?|pontos turisticos|parques nacionais)\b/, pa: 'casacivil', pn: 'Turismo', ch: 'subs', b: 'emp', pg: 'emp', cat: 'desenvolvimento', vG: { empresariado: 1.5, classemedia: 1, mercado: .5 }, vN: { empresariado: -.5 }, iv: [.1, 0], def: 1, cap: 8, vu: 300, uc: 10e6, lag: 8 },
+  { id: 'ciencia', n: 'ciência e tecnologia', rx: /\b(?:ciencia|cientific\w+|pesquisa\w*|pesquisadores?|inovacao|laboratorios?|startups?|tecnolog\w+|semicondutores|nanotecnologia|biotecnologia)\b/, pa: 'educacao', pn: 'Ciência e Tecnologia', ch: 'invest', b: 'jov', pg: 'emp', cat: 'educacao', vG: { universitarios: 3, empresariado: 1 }, vN: { universitarios: 1, empresariado: -.5 }, iv: [0, -.1], def: 2, cap: 15, vu: 5000, uc: 20e6, lag: 14 },
+  { id: 'consumo', n: 'consumo e finanças', rx: /\b(?:consumidor\w*|precos?|bancos?|credito|juros|emprestimos?|cartao|cartoes|dividas?|seguros?|empresas?|empresari\w+|comercio|industria|negocios?|concorrencia|monopolio\w*|cartel|cartorio|mercado|financeir\w+|boletos?|tarifas bancarias)\b/, pa: 'fazenda', ch: 'subs', b: 'cons', pg: 'cons', cat: 'comercio', vG: { classemedia: 1.5, periferia: 1, empresariado: .5 }, vN: { classemedia: 1.5, periferia: 1, empresariado: -2.5, mercado: -1.5 }, iv: [-.2, 0], def: 2, cap: 20, vu: 500, uc: 10e6, lag: 6 },
+  { id: 'institucional', n: 'instituições', rx: /\b(?:eleic\w+|votos?|partidos?|congress\w+|deputad\w+|senador\w*|vereador\w*|mandatos?|transparencia|lobby|servidores?|funcionalismo|concursos?|ministerios?|agencias?|orgaos?|gestao publica|administracao publica|licitac\w+|compras publicas|ouvidoria|dados abertos)\b/, pa: 'casacivil', pn: 'Relações Institucionais', ch: 'custeio', b: 'todos', pg: 'emp', cat: 'anticorrupcao', vG: { classemedia: 1, universitarios: .5 }, vN: { classemedia: 2, universitarios: 1.5, mercado: .5 }, iv: [0, 0], def: 1, cap: 10, vu: 600, uc: 8e6, lag: 8 }
+];
+const AREA_GERAL = { id: 'geral', n: 'administração geral', pa: 'casacivil', ch: 'custeio', b: 'todos', pg: 'emp', cat: 'desenvolvimento', vG: {}, vN: {}, iv: [0, 0], def: 1.5, cap: 10, vu: 600, uc: 8e6, lag: 8 };
+const GEN_PARAR = /[.;!?\n]|\s(?:para financiar|para bancar|para custear|para pagar|financiad[oa]s?|custead[oa]s?|bancad[oa]s?|pago com|pagando com|com recursos|usando recursos|sem aumentar|mas|porem)\b/;
+const GEN_FINAIS = /^(?:e|ou|de|do|da|dos|das|em|no|na|nos|nas|para|por|com|a|o|as|os|que|ao|aos|um|uma)$/;
+const GEN_NOMES_PES = /medic|enfermeir|professor|policial|agente|servidor|militar|delegad|soldad|bombeir|engenheir|tecnic|analist|pesquisador|funcionari|profission|fiscal|inspetor|auditor|juiz|defensor|promotor|cuidador|psicolog|assistentes? social|guardas|vigilante|monitor|instrutor|orientador|especialist|trabalhador|empregad|cargos|dentist|auxiliar|atendente|motorista/;
+const GEN_NOMES_BEN = /familia|alunos|estudantes|criancas|idosos|jovens|mulheres|pessoas|brasileiros|moradores|pacientes|beneficiarios|aposentados|desempregados|agricultores|produtores|empresas|microempreendedores|vagas|domicilios|cidadaos|adolescentes|mulheres/;
+function foldTxt(x) { x = String(x).normalize('NFC'); let o = ''; for (let i = 0; i < x.length; i++) o += x[i].normalize('NFD')[0].toLowerCase(); return o; }
+function origTrecho(A, t) { const o = String(A.orig || '').normalize('NFC'), f = foldTxt(o), i = f.indexOf(String(t || '')); return i >= 0 ? o.slice(i, i + t.length) : String(t || ''); }
+function genPrep(prep, comp) {
+  const m = /^(o|a|os|as) (.+)$/i.exec(comp), k = m ? m[1].toLowerCase() : null;
+  if (prep === 'de') return m ? ({ o: 'do', a: 'da', os: 'dos', as: 'das' })[k] + ' ' + m[2] : 'de ' + comp;
+  if (prep === 'a') return m ? ({ o: 'ao', a: 'à', os: 'aos', as: 'às' })[k] + ' ' + m[2] : 'a ' + comp;
+  if (prep === 'em') return m ? ({ o: 'no', a: 'na', os: 'nos', as: 'nas' })[k] + ' ' + m[2] : 'em ' + comp;
+  return comp;
+}
+/* extrai verbo + complemento do texto original; devolve null se o texto não tiver objeto (continua "vago") */
+function genLer(A) {
+  const orig = String(A.orig || '').normalize('NFC'), f = foldTxt(orig);
+  if (!orig || /\?\s*$/.test(orig)) return null;
+  let best = null;
+  for (const v of GV35) { const m = v.re.exec(f); if (m && m.index <= 90 && (!best || m.index < best.m.index || (m.index === best.m.index && m[0].length > best.m[0].length))) best = { v: v, m: m }; }
+  if (!best) return null;
+  const i0 = best.m.index, e0 = i0 + best.m[0].length;
+  if (/\b(?:nao|nunca|jamais|sem|nem)\b(?: [a-z]+){0,2} $/.test(f.slice(Math.max(0, i0 - 28), i0))) return null;
+  let rest = orig.slice(e0), fr = f.slice(e0);
+  const cut = fr.search(GEN_PARAR); if (cut >= 0) { rest = rest.slice(0, cut); fr = fr.slice(0, cut); }
+  rest = rest.replace(/^[\s,:]+/, '').replace(/^que\s+/i, ''); fr = foldTxt(rest);
+  let ws = rest.split(/\s+/).filter(Boolean);
+  if (ws.length > 12) ws = ws.slice(0, 12);
+  while (ws.length && GEN_FINAIS.test(foldTxt(ws[ws.length - 1]).replace(/[^a-z]/g, ''))) ws.pop();
+  if (!ws.length) return null;
+  let comp = ws.join(' ').replace(/[,;:]+$/, '');
+  const cf = foldTxt(comp);
+  const vagoCab = VAGO_CABECA.test(cf);
+  if (vagoCab && ws.length <= 3) return null;
+  if (comp.replace(/[^A-Za-zÀ-ú]/g, '').length < 4) return null;
+  return { v: best.v, comp: comp, cf: cf, fAll: f, vagoCab: vagoCab };
+}
+function genArea(L, A) {
+  const conta = (rx, t) => { const m = t.match(new RegExp(rx.source, 'g')); return m ? m.length : 0; };
+  let best = null, bs = 0;
+  for (const ar of AREAS35) { const sc = conta(ar.rx, L.cf) * 3 + conta(ar.rx, L.fAll); if (sc > bs) { bs = sc; best = ar; } }
+  return best;
+}
+function genTopico(L, cls) {
+  const v = L.v;
+  let comp = L.comp.replace(/^(O|A|Os|As) /, (m) => m.toLowerCase()), prep = v.prep, nom = v.nom;
+  const mo = /^(.+?) (?:a|de|para) ([a-zà-ú]+(?:ar|er|ir|or)\b.*)$/i.exec(comp);
+  if ((v.inf === 'obrigar' || v.inf === 'exigir' || v.inf === 'determinar' || v.inf === 'proibir') && mo && mo[1].split(' ').length <= 6) return nom + ' de ' + mo[2] + ', imposta ' + genPrep('a', mo[1]);
+  if (cls === 'combate') { nom = 'o combate'; prep = 'a'; }
+  const mi = /^(R\$ ?[\d.,]+(?: (?:mil|milhões|milhão|bilhões|bilhão|trilhões|trilhão))?) (?:em|para|no|na|nos|nas) (.+)$/i.exec(comp);
+  let t = mi && v.inf === 'investir' ? nom + ' de ' + mi[1] + ' ' + genPrep('em', mi[2]) : nom + ' ' + genPrep(prep, comp);
+  if (t.length > 120) t = t.slice(0, 117).replace(/\s+\S*$/, '') + '…';
+  return t;
+}
+function genItem(A) {
+  const L = genLer(A); if (!L) return null;
+  const v = L.v, s = A.s;
+  const ar = genArea(L, A);
+  const q = A.Q;
+  const temQtd = q.money.some(x => x.unit) || q.count.length;
+  if (!ar && !temQtd && (L.vagoCab || L.comp.split(' ').length < 2)) return null; // sem área nem número e com complemento de meta genérica ("a felicidade do povo"): continua vago
+  const area = ar || AREA_GERAL;
+  const taxa = TAX_RE.test(L.cf) || v.cls === 'trib';
+  const problema = PROB_RE.test(L.cf);
+  let k, sg = v.sg, cls = v.cls, kind = 'prog', topCls = null;
+  if (taxa && v.cls !== 'norm' && v.cls !== 'lib') { k = 'T'; kind = 'trib'; if (v.cls === 'trib' || v.cls === 'prog' || v.cls === 'fim') sg = v.sg; }
+  else if (v.cls === 'norm' || v.cls === 'lib') { k = 'R'; kind = v.cls; }
+  else if (v.cls === 'venda') { k = 'G'; kind = 'venda'; sg = -1; }
+  else if (v.cls === 'perdao') { k = 'G'; kind = 'perdao'; sg = 1; }
+  else if (v.cls === 'fim') {
+    if (problema && !PROG_RE.test(L.cf) && !NORM_NOUN_RE.test(L.cf)) { k = 'G'; sg = 1; kind = 'combate'; topCls = 'combate'; }
+    else if (PROG_RE.test(L.cf)) { k = 'G'; kind = 'corte'; }
+    else { k = 'R'; kind = 'revoga'; }
+  }
+  else { // prog
+    if (RIGHT_RE.test(L.cf) && /^(?:garantir|proteger|combater|oferecer)$/.test(v.inf)) { k = 'R'; kind = 'norm'; }
+    else if (/^(?:criar|instituir|fazer|dar|adotar|reconhecer)$/.test(v.inf) && NORM_NOUN_RE.test(L.cf) && !PROG_RE.test(L.cf)) { k = 'R'; kind = 'norm'; }
+    else if (v.inf === 'combater' && problema) { k = 'G'; kind = 'combate'; topCls = 'combate'; }
+    else if (v.inf === 'fiscalizar') { k = 'G'; kind = 'prog'; }
+    else { k = 'G'; kind = 'prog'; }
+  }
+  if (k === 'G' && kind === 'prog' && problema && (v.inf === 'combater')) topCls = 'combate';
+  const novo = /^(?:criar|instituir|implantar|implementar|lançar|construir|contratar|abrir)$/.test(v.inf);
+  const o = {
+    id: 'gen_' + area.id, n: genTopico(L, topCls), k: k, gen: { area: area.n, verbo: v.inf, kind: kind, cls: v.cls, novo: novo, areaId: area.id },
+    pa: area.pa, pn: area.pn, cat: area.cat, lag: area.lag, iv: area.iv || [0, 0], v3: 1
+  };
+  if (k === 'R') {
+    const vv = {}; const base = area.vN || {};
+    for (const g in base) vv[g] = (v.cls === 'lib' ? -1 : 1) * base[g];
+    o.val = vv; o.inst = 'PL';
+  } else if (k === 'T') {
+    o.ch = 'tcons'; o.pg = area.pg || 'emp'; o.base = 6; o.tbase = 6; o.def = Math.max(1.5, area.def * .6); o.cap = area.cap; o.rg = 'pop'; o.inst = 'PL'; o.pa = 'fazenda'; o.pn = undefined;
+    o.dec = GEN_DEC.test(L.cf); o.val = { empresariado: -1.5, classemedia: -1 };
+    if (o.dec) o.inst = 'DEC';
+  } else {
+    o.ch = area.ch; o.b = area.b; o.rg = area.rg || 'pop'; o.def = kind === 'corte' ? Math.max(1, area.def * .6) : area.def; o.cap = area.cap; o.pob = area.pob || .2;
+    o.val = area.vG || {}; o.inst = 'ADM'; o.ex = novo ? 0 : undefined;
+    if (kind === 'venda' || kind === 'perdao') { o.def = kind === 'venda' ? 4 : 10; o.cap = 60; o.ext = 1; o.inst = 'PL'; }
+    if (kind === 'corte') o.sav = 0;
+  }
+  const it = { o: o, i: 0, e: 0, t: L.comp, unit: 0, q: {}, calc: [], tipo: 'perm', role: 'main', own: 1, neg: false, ctxTxt: s, ctxOff: 0, dir: sg, sg: sg, verbo: null, mag: null, tot: v.cls === 'fim' && v.sg < 0 && /^(?:acabar com|extinguir|revogar|eliminar)$/.test(v.inf), topicoFixo: o.n, gen: true };
+  const bm = q.money.filter(x => x.unit && x.v >= 1e6)[0] || q.money[0];
+  if (bm) it.q.money = bm;
+  if (q.count.length) it.q.count = q.count[0];
+  else { // número + substantivo qualquer ("5 mil engenheiros", "300 hospitais"), fora da lista de substantivos conhecidos
+    const rx = /(?:^|[^\d.])(\d{1,3}(?:\.\d+)?|\d{4,9}) ?(mil|milhoes|milhao)? (?:de )?(?:novos |novas )?([a-z]{4,})/g; let m;
+    while ((m = rx.exec(s))) { const n0 = parseFloat(m[1]); if (!m[2] && n0 >= 1900 && n0 <= 2100) continue; if (/^(?:anos|ano|meses|mes|dias|reais|real|vezes|horas|semanas|bilhoes|milhoes|por|para|durante|ate|porcento)$/.test(m[3])) continue; it.q.count = { n: n0 * (m[2] ? UNIT[m[2]] : 1), noun: m[3], i: m.index, e: m.index + m[0].length }; break; }
+  }
+  if (q.pct.length) it.q.pct = q.pct[0];
+  if (q.dur.length) it.q.durq = q.dur[0];
+  it.q.has = !!(it.q.money || it.q.count || it.q.pct);
+  if (kind === 'venda' || kind === 'perdao') it.unica = true;
+  let d = it.q.durq ? it.q.durq.meses : null; if (d == null && q.tmp && !q.perm) d = 6; if (q.perm) d = null; it.dur = d;
+  return it;
+}
+function dimensionarGen(it, Q) {
+  const o = it.o, g = o.gen, q = it.q, calc = it.calc, money = q.money, count = q.count, pct = q.pct;
+  const rot = 'Leitura genérica (' + g.area + '): ';
+  let B = 0;
+  if (o.k === 'R') { it.B = 0; calc.push(rot + 'medida normativa sem dotação própria; custo fiscal direto desprezível'); return; }
+  if (o.k === 'T') {
+    if (money && money.unit && money.v >= 1e6) { B = money.v / 1e9; calc.push(rot + 'valor informado de ' + fmtBi(B) + '/ano'); }
+    else if (pct && !pct.pib && pct.v <= 100) { B = Math.min(o.cap, o.tbase * pct.v / 100); calc.push(rot + fmtNum(pct.v, pct.v % 1 ? 1 : 0) + '% sobre uma base estimada de ' + fmtBi(o.tbase) + ' = ' + fmtBi(B) + '/ano'); }
+    else { B = o.def; calc.push(rot + (it.sg < 0 ? 'renúncia' : 'arrecadação') + ' de ordem de grandeza de ' + fmtBi(B) + '/ano, sem número no texto'); }
+    it.B = B; return;
+  }
+  const yrs = Q.hor ? Q.hor / 12 : 4;
+  if (money && money.unit && money.v >= 1e6) {
+    let T = money.v / 1e9;
+    if (money.freq && money.freq !== 'unica') { T *= FREQ[money.freq]; calc.push(rot + 'R$ ' + fmtNum(money.v / 1e9, 2) + ' bi × ' + FREQ[money.freq] + ' períodos = ' + fmtBi(T) + '/ano'); }
+    else if (money.freq === 'unica') { it.unica = true; calc.push(rot + 'valor informado de ' + fmtBi(T) + ' (desembolso único)'); }
+    else calc.push(rot + 'valor informado de ' + fmtBi(T) + '/ano');
+    it.B = T; return;
+  }
+  if (count && money && (money.per || !money.unit || money.freq)) {
+    const f = money.freq === 'unica' ? 1 : (money.freq ? FREQ[money.freq] : 12);
+    B = count.n * money.v * f / 1e9; if (money.freq === 'unica') it.unica = true;
+    calc.push(rot + fmtPessoas(count.n) + ' ' + count.noun + ' × R$ ' + fmtNum(money.v, money.v < 10 ? 2 : 0) + ' × ' + (money.freq === 'unica' ? 'parcela única' : f + ' pagamentos/ano') + ' = ' + fmtBi(B));
+    it.B = Math.min(B, 400); return;
+  }
+  if (count && GEN_NOMES_PES.test(count.noun) && /^(?:contratar|ampliar|aumentar|garantir|oferecer|criar|instituir|dobrar|expandir)$/.test(g.verbo)) {
+    B = count.n * 140000 / 1e9; calc.push(rot + fmtPessoas(count.n) + ' ' + count.noun + ' × R$ 140 mil por ano (salário e encargos, estimativa) = ' + fmtBi(B) + '/ano');
+    it.B = Math.min(B, 400); return;
+  }
+  if (count && !GEN_NOMES_BEN.test(count.noun) && /^(?:construir|criar|instituir|implantar|implementar|abrir|lançar|ampliar|expandir)$/.test(g.verbo)) {
+    const tot = count.n * (o.uc || 8e6) / 1e9; B = tot / yrs; calc.push(rot + fmtPessoas(count.n) + ' ' + count.noun + ' × R$ ' + fmtNum((o.uc || 8e6) / 1e6, 1) + ' mi (custo por unidade, estimativa) = ' + fmtBi(tot) + ', diluídos em ' + fmtNum(yrs, 0) + ' anos = ' + fmtBi(B) + '/ano');
+    it.B = Math.min(B, 400); return;
+  }
+  if (count) {
+    const vu = AREAS35.concat([AREA_GERAL]).find(a => a.id === g.areaId).vu || 600;
+    B = count.n * vu / 1e9; calc.push(rot + fmtPessoas(count.n) + ' ' + count.noun + ' × R$ ' + fmtNum(vu, 0) + ' por ano (custo médio da área, estimativa) = ' + fmtBi(B) + '/ano');
+    it.B = Math.min(B, 400); return;
+  }
+  if (pct && !pct.pib && pct.v <= 300) { B = Math.min(o.cap * 3, o.def * 4 * pct.v / 100); calc.push(rot + fmtNum(pct.v, pct.v % 1 ? 1 : 0) + '% sobre uma base estimada de ' + fmtBi(o.def * 4) + ' = ' + fmtBi(B) + '/ano'); it.B = B; return; }
+  B = Math.min(o.def, o.cap);
+  calc.push(rot + (it.sg < 0 ? 'economia' : 'custo') + ' padrão da área, ordem de grandeza de ' + fmtBi(B) + '/ano (sem número no texto)');
+  it.B = B;
+}
+const GEN_PL = /\b(?:piso salarial|licenca|estatal|empresa publica|companhia|agencia|autarquia|fundacao|tribunal|juiz|aposentadoria|pensao|beneficio permanente|direito a|obrigatori\w+)\b/;
+function genInst(it) {
+  const o = it.o, g = o.gen, tx = it.ctxTxt || '';
+  if (o.k === 'R' || o.k === 'T') return o.inst || 'PL';
+  if (GEN_PL.test(tx) && g.novo) return 'PL';
+  if (g.areaId === 'institucional' && /\bministerios?\b/.test(it.ctxTxt || '') && g.novo) return 'MP';
+  if (it.sg < 0) return it.B > 5 ? 'PL' : 'ADM';
+  return (it.B || 0) >= 2 ? 'MP' : 'ADM';
+}
+/* gancho de leitura (depois de trabPos e fiscPos): vigente, inversões por verbo, tópicos fixos e leitura genérica */
+function leituraV35(A) {
+  const s = A.s, its = A.items;
+  const byId = (id) => its.find(i => i.o.id === id && !i.pledge);
+  // (2) objeto-restrição: verbo de liberar/manter/ampliar a restrição inverte (ex.: "permitir trabalho infantil artístico")
+  for (const it of its) {
+    if (!it.o.restr || it.pledge || !it.sg) continue;
+    const pre = s.slice(Math.max(0, it.i - 30), it.i) + ' ' + (it.t || '');
+    if (INFO_LIB.test(pre) && !/\b(?:proib\w+|vet\w+|veda\w*|ban\w+|restring\w+|limit\w+|coib\w+|impe\w+|acabar com|fim d[ae])\b/.test(pre)) { it.dir = -Math.abs(it.dir || 1); it.sg = it.dir; }
+  }
+  const ig = byId('igualdade_salarial');
+  if (ig && ig.sg > 0 && /\b(?:proib\w+|vet(?:ar|o)|veda\w*|banir|acabar com|fim d[ae]|extinguir|revogar)\b[^.;]{0,15}\b(?:igualdade|equiparacao|paridade|transparencia) salarial/.test(s)) { ig.dir = ig.sg = -1; }
+  // (1) já em vigor
+  for (const J of JA_VIG) {
+    const it = byId(J.obj); if (!it || it.sg <= 0 || A.jaVigente || it.q.has) continue;
+    if (J.novo.test(s) || its.some(j => j !== it && j.sg && j.o.k !== 'C')) continue;
+    it.sg = 0; it.dir = 0; it.jaVigente = true;
+    A.jaVigente = { id: J.id, txt: J.txt, disp: J.disp };
+    A.topicoFixo = J.topico;
+  }
+  // (3) tópicos específicos
+  const sel = byId('selic_meta');
+  if (sel && sel.sg) {
+    const sobe = /\b(?:aument\w+|elev\w+|subir|sobe|majorar|alta d[ao])\b/.test(s), mm = s.match(/selic[^.;]{0,12}?(\d+(?:\.\d+)?)/), pv = sel.q.pct ? sel.q.pct.v : (mm ? +mm[1] : null);
+    sel.topicoFixo = (sobe ? 'a elevação' : 'a redução') + ' da Selic' + (pv ? ' para ' + fmtNum(pv, pv % 1 ? 1 : 0) + '%' : '') + ', que cabe ao Copom';
+    if (sobe && sel.sg > 0) { sel.dir = sel.sg = -1; }
+    if (!sobe && sel.sg < 0) { sel.dir = sel.sg = 1; }
+  }
+  const ce = byId('celular_escola');
+  if (ce && ce.sg) { const tr = origTrecho(A, ce.t).replace(/^(?:proibir|banir|vedar|restringir|limitar|usar|uso de|uso|o uso de) /i, '').replace(/^(?:o uso de) /i, ''); ce.topicoFixo = (ce.sg > 0 ? 'a proibição de ' : 'o fim da proibição de ') + tr.replace(/^(?:celular|celulares)/i, (x) => x.toLowerCase()); }
+  const ti = byId('trabalho_infantil_artistico');
+  if (ti && ti.sg) ti.topicoFixo = ti.sg > 0 ? 'a proibição do trabalho artístico de crianças e adolescentes' : 'a liberação do trabalho artístico de crianças e adolescentes';
+  const ra = byId('reforma_adm');
+  if (ra && ra.sg > 0 && /\bestabilidade\b/.test(s)) ra.topicoFixo = 'a reforma administrativa com o fim da estabilidade dos servidores';
+  const plr = byId('plr_ir');
+  if (plr && plr.sg) plr.topicoFixo = plr.sg < 0 ? 'a isenção do Imposto de Renda sobre a PLR dos trabalhadores' : 'a tributação da PLR dos trabalhadores';
+  const dj = byId('demissao_justa_causa');
+  if (dj && dj.sg > 0 && /\b(?:facilit\w+|simplific\w+|liberar|livre)\b/.test(s) && !/\b(?:proib\w+|vedar|vet\w+|garant\w+|obrig\w+)\b/.test(s)) { dj.dir = dj.sg = -1; }
+  const lm = byId('limite_mandatos_parl');
+  if (lm && lm.sg) { const so = /\bdeputad\w+/.test(s) && !/\bsenador|\bvereador|\bparlamentar/.test(s) ? 'de deputados' : /\bsenador\w*/.test(s) && !/\bdeputad|\bvereador|\bparlamentar/.test(s) ? 'de senadores' : /\bvereador\w*/.test(s) && !/\bdeputad|\bsenador|\bparlamentar/.test(s) ? 'de vereadores' : null; if (so) lm.topicoFixo = (lm.sg > 0 ? 'o limite de mandatos ' : 'o fim do limite de mandatos ') + so; }
+  const en = byId('estatal_nova');
+  if (en && en.sg > 0) en.topicoFixo = 'a criação de ' + origTrecho(A, en.t).replace(/^(?:criar|criacao d[ae]|instituir|fundar|constituir|montar|implantar|lancar) /i, '').replace(/^(?:estatal|empresa|companhia|banco|sociedade)/, (x) => 'uma ' + x);
+  // norma vigente (nota): o tema já é regulado por uma norma em vigor; o que passar do texto vigente é mudança real
+  if (!A.jaVigente) for (const J of JN35) if (J.rx.test(s)) { A.normaVigente = J; break; } // v3.5
+  // (4) leitura genérica: nenhum objeto do catálogo, mas verbo de ação e complemento
+  const soGer = its.length > 0 && its.every(i => i.o.ger && !i.pledge && !(i.q && i.q.has) && i.o.k !== 'C' && ['corte_gastos', 'gastos_governo', 'imposto_geral', 'tributos_gasolina', 'arcabouco', 'divida'].indexOf(i.o.id) < 0);
+  if ((!its.length || soGer) && !A.pledgeOnly) {
+    let it = null; try { it = genItem(A); } catch (e) { it = null; }
+    if (it && soGer) { const cob = its.map(i => i.t).join(' '); const proprias = foldTxt(it.t).split(/[^a-z0-9]+/).filter(w => w.length >= 4 && !GEN_STOP.test(w) && cob.indexOf(w.slice(0, 5)) < 0); if (proprias.length < 2) it = null; else A.items = []; }
+    if (it) { A.items.push(it); A.generica = { area: it.o.gen.area, verbo: it.o.gen.verbo, tipo: it.o.gen.kind }; }
+  }
+  return A;
+}
+const GEN_STOP = /^(?:para|pelo|pela|pelos|pelas|como|sobre|entre|todo|toda|todos|todas|mais|menos|dessa|desse|esta|este|quem|cada|ainda|quando|onde|qual|todo)$/;
+/* normas que já valem em 2026: tabela [id, regex do tema (texto sem acento), o que a norma já faz]. Só entram normas de que se tem certeza; a nota avisa que o que for além do texto vigente é mudança real */
+const JN35 = [
+  ['lei14754', /paraiso fiscal|offshores?|investimentos? no exterior|dinheiro (?:la )?fora|fundos? exclusivos?/, 'Lei 14.754/2023: já tributa pelo Imposto de Renda os fundos exclusivos e os rendimentos de aplicações e controladas no exterior (offshore).'],
+  ['lei13467', /trabalho intermitente|contrato intermitente|contratar (?:so )?por hora|por hora trabalhada|pagar por hora/, 'Lei 13.467/2017 (reforma trabalhista): já criou o contrato de trabalho intermitente, pago por hora ou período trabalhado.'],
+  ['lei14454', /rol da ans|(?:tratamento|procedimento)s? fora do rol|rol taxativo/, 'Lei 14.454/2022: já tornou o rol da ANS exemplificativo e obriga o plano a cobrir tratamento fora dele em hipóteses previstas.'],
+  ['lei14434', /piso (?:salarial )?(?:nacional )?(?:d[eao]s? )?(?:enfermeir\w*|enfermagem|tecnicos de enfermagem)/, 'Lei 14.434/2022: já instituiu o piso salarial nacional da enfermagem (a aplicação foi condicionada pelo STF à fonte de custeio e à negociação).'],
+  ['lei14214', /absorvent\w+|dignidade menstrual/, 'Lei 14.214/2021: já instituiu o Programa de Proteção e Promoção da Saúde Menstrual, com distribuição gratuita de absorventes a estudantes e mulheres de baixa renda.'],
+  ['rdc46', /cigarros? eletronicos?|\bvapes?\b|vaporizador\w*|\bpods?\b/, 'RDC 46/2009 da Anvisa: já proíbe a venda, a importação e a propaganda de cigarros eletrônicos no país.'],
+  ['lei11738', /piso (?:salarial )?(?:nacional )?(?:d[eao]s? )?(?:professor\w*|magisterio)/, 'Lei 11.738/2008: já instituiu o piso salarial profissional nacional do magistério público da educação básica.'],
+  ['lei14818', /pe.?de.?meia|bolsa[^.;]{0,30}(?:ensino medio|nao falta)/, 'Lei 14.818/2024: já instituiu o incentivo financeiro-educacional Pé-de-Meia para estudantes do ensino médio público.'],
+  ['lei12711', /vagas das? (?:universidades )?federais|cotas? (?:nas|para|em) (?:universidades|federais|institutos)|reserv\w+ (?:metade|50%)[^.;]{0,25}vagas|escola publica[^.;]{0,30}(?:vagas|cotas)/, 'Lei 12.711/2012 (alterada pela Lei 14.723/2023): já reserva 50% das vagas das instituições federais a estudantes de escola pública, com subcotas.'],
+  ['lei9605', /\bdragas?\b|garimpo ilegal|equipamentos? d[eo] garimpo/, 'Lei 9.605/1998 (crimes ambientais): já pune o garimpo ilegal e a inutilização de equipamentos apreendidos é prevista em norma de fiscalização ambiental.'],
+  ['lei9433', /cobr\w+ pel[ao]s? (?:uso d[ae] )?agua|cobranca pel[ao] uso d[ae] (?:agua|recursos hidricos)|agua (?:usada|utilizada) na (?:agricultura|irrigacao)|irrigacao[^.;]{0,20}cobr/, 'Lei 9.433/1997 (Política Nacional de Recursos Hídricos): já prevê a cobrança pelo uso da água, definida bacia a bacia pelos comitês.'],
+  ['lei14119', /pagamentos? por servicos ambientais|\bpsa\b|pagar (?:quem|para quem|a quem|pel[ao])[^.;]{0,30}(?:floresta|mata|nascentes?|vegetacao)/, 'Lei 14.119/2021: já instituiu a Política Nacional de Pagamento por Serviços Ambientais.'],
+  ['dec9772', /horario de verao/, 'Decreto 9.772/2019: já revogou o horário de verão; desde então ele não vigora no país.'],
+  ['lei12858', /royalties[^.;]{0,40}(?:educacao|saude)|pre.?sal[^.;]{0,30}(?:educacao|saude)/, 'Lei 12.858/2013: já destina parte dos royalties e da participação especial do petróleo e do pré-sal à educação e à saúde.'],
+  ['lei14993', /(?:misturar|mistura|percentual|teor) (?:mais |de |do )?etanol|mistura obrigatoria|biodiesel na (?:mistura|diesel)|combustivel do futuro/, 'Lei 14.993/2024 (Combustível do Futuro): já fixa a mistura obrigatória de etanol na gasolina e de biodiesel no diesel, com aumento gradual.'],
+  ['lei8629', /desapropri\w+[^.;]{0,40}(?:improdutiv|reforma agraria)|improdutiv\w+[^.;]{0,30}assent\w+/, 'Lei 8.629/1993: já regulamenta a desapropriação de imóvel rural improdutivo para a reforma agrária (CF, art. 184).'],
+  ['dec6135', /cadastro unico|juntar[^.;]{0,25}programas? sociais|unificar[^.;]{0,25}programas? sociais/, 'Decreto 6.135/2007: já instituiu o Cadastro Único para Programas Sociais, que reúne as famílias de baixa renda.'],
+  ['lei14690', /juros do rotativo|rotativo do cartao|juros[^.;]{0,25}rotativo/, 'Lei 14.690/2023 (Desenrola): já limitou os juros do rotativo do cartão de crédito a 100% do valor da dívida.'],
+  ['lei13999', /credito[^.;]{0,25}(?:micro|pequen)\w* (?:e pequen\w+ )?(?:negocios|empresas|empresarios)|linha de credito[^.;]{0,30}(?:micro|pequen)|\bpronampe\b/, 'Lei 13.999/2020: já instituiu o Pronampe, linha de crédito com garantia da União para micro e pequenas empresas.'],
+  ['lc200', /teto de gastos|ancora fiscal|novo arcabouco|regra fiscal/, 'LC 200/2023: já substituiu o teto de gastos pelo arcabouço fiscal, com meta de primário e limite de crescimento da despesa.'],
+  ['lei7716', /criminaliz\w+ (?:a )?(?:homofobia|transfobia|lgbtfobia)|crime de (?:homofobia|transfobia)/, 'Lei 7.716/1989: já pune a discriminação; o STF (ADO 26, 2019) enquadrou a homofobia e a transfobia nessa lei até que o Congresso legisle.'],
+  ['res175', /casamento (?:civil )?(?:entre )?(?:pessoas )?do mesmo sexo|casamento homoafetivo|casamento igualitario|uniao homoafetiva/, 'Resolução CNJ 175/2013: já obriga os cartórios a celebrar casamento civil entre pessoas do mesmo sexo, após a ADI 4277 e a ADPF 132 do STF (2011).'],
+  ['dec8727', /nome social/, 'Decreto 8.727/2016: já assegura o uso do nome social e o reconhecimento da identidade de gênero de pessoas travestis e transexuais na administração federal.'],
+  ['lei13811', /casamento de menores|casar menores|casamento infantil|casamento de criancas/, 'Lei 13.811/2019: já proíbe o casamento de menores de 16 anos, sem exceções.'],
+  ['lei14759', /consciencia negra/, 'Lei 14.759/2023: já tornou o Dia Nacional de Zumbi e da Consciência Negra (20 de novembro) feriado nacional.'],
+  ['dec9508', /vagas? (?:de |em |nos? )?concursos?[^.;]{0,50}(?:deficiencia|pcd)|concursos?[^.;]{0,40}pessoas? com deficiencia/, 'Decreto 9.508/2018 (e Lei 8.112/1990, art. 5º, §2º): já reserva ao menos 5% das vagas de concursos federais a pessoas com deficiência.'],
+  ['res22610', /trocar de partido|infidelidade partidaria|fidelidade partidaria|troca de partido/, 'Resolução TSE 22.610/2007: já prevê a perda do mandato de quem deixa o partido sem justa causa, após decisões do STF e do TSE de 2007.'],
+  ['lc135', /ficha limpa|candidat\w+ condenad\w+|inelegib\w+/, 'LC 135/2010 (Ficha Limpa): já torna inelegível quem tem condenação por órgão colegiado, por prazo definido.'],
+  ['lei14172', /internet[^.;]{0,30}escolas|escolas?[^.;]{0,25}internet|banda larga[^.;]{0,25}escolas?/, 'Lei 14.172/2021: já prevê repasse da União para garantir internet com fins educacionais a alunos e professores da educação básica pública.'],
+  ['lei14534', /cpf como (?:numero )?unico|cpf[^.;]{0,25}(?:unico|identidade|documento)/, 'Lei 14.534/2023: já adotou o CPF como número único de identificação nos cadastros e documentos públicos.'],
+  ['lei13445', /visto humanitario|acolhida humanitaria|refugiad\w+/, 'Lei 13.445/2017 (Lei de Migração): já prevê o visto temporário e a autorização de residência para acolhida humanitária.'],
+  ['lei12761', /vale.?cultura|vale[^.;]{0,25}cultura/, 'Lei 12.761/2012: já instituiu o Vale-Cultura de R$ 50 por mês para trabalhadores de menor renda.'],
+  ['lei12485', /conteudo brasileiro|conteudo nacional|cota de conteudo|tv paga[^.;]{0,25}(?:brasileir|nacional)/, 'Lei 12.485/2011 (SeAC): já obriga os canais de TV paga a exibir um mínimo de conteúdo brasileiro, inclusive independente.'],
+  ['lei12933', /meia.?entrada/, 'Lei 12.933/2013 (Estatuto da Juventude e lei da meia-entrada): já garante meia-entrada a estudantes, jovens de baixa renda e pessoas com deficiência.'],
+  ['lei13465', /escritura[^.;]{0,25}(?:favela|morador|casa)|\breurb\b|regulariza\w+ fundiaria urbana|titulo de propriedade[^.;]{0,25}favela|favela[^.;]{0,25}(?:escritura|titulo)/, 'Lei 13.465/2017: já instituiu a Reurb, regularização fundiária urbana com titulação gratuita para população de baixa renda.'],
+  ['lei14026', /99% d[ea] agua|saneamento (?:universal|basico)|universaliz\w+ (?:o )?saneamento|marco do saneamento|90% d[eo] esgoto/, 'Lei 14.026/2020 (Marco do Saneamento): já fixa a meta de 99% da população com água potável e 90% com coleta e tratamento de esgoto até 2033.'],
+  ['lei12651', /beira de rio|margens? de rios?|encostas?|topos? de morro|area de preservacao permanente/, 'Lei 12.651/2012 (Código Florestal): já proíbe, em regra, ocupar e construir em áreas de preservação permanente como margens de rios, encostas e topos de morro.'],
+  ['lei10257', /iptu (?:maior|progressivo)[^.;]{0,30}(?:vazio|ocioso|abandonad)|imovel (?:vazio|ocioso|abandonado)[^.;]{0,30}iptu|iptu[^.;]{0,25}imovel (?:vazio|ocioso)/, 'Lei 10.257/2001 (Estatuto da Cidade): já permite ao município cobrar IPTU progressivo no tempo de imóvel urbano não edificado, subutilizado ou vazio.'],
+  ['lei12305', /\blixoes?\b|\blixao\b|residuos solidos|logistica reversa/, 'Lei 12.305/2010 (Política Nacional de Resíduos Sólidos): já determinou o fim dos lixões, com prazos hoje escalonados até 2024.'],
+  ['lei14129', /\bgov\.?br\b|servicos publicos digitais|governo digital|servicos publicos[^.;]{0,25}(?:digital|online|internet)/, 'Lei 14.129/2021 (Lei do Governo Digital): já organiza a prestação digital dos serviços públicos e o portal gov.br.'],
+  ['lei13964', /juiz de garantias/, 'Lei 13.964/2019 (pacote anticrime): já criou o juiz de garantias; o STF validou o instituto em 2023 e fixou prazo para implantação.'],
+  ['lei13105', /litigancia de ma.?fe|recorre[^.;]{0,30}(?:empurrar|protelar|adiar)|protelat\w+|recursos? (?:so )?para (?:empurrar|protelar|atrasar)/, 'Lei 13.105/2015 (Código de Processo Civil): já multa a litigância de má-fé e o recurso protelatório.'],
+  ['lc214', /devolv\w+[^.;]{0,35}impostos?[^.;]{0,50}(?:cesta|cadunico|baixa renda|gas)|cashback/, 'LC 214/2025 (regulamentação da reforma tributária): já prevê a devolução (cashback) de CBS e IBS a famílias de baixa renda, inclusive no gás de cozinha.'],
+  ['lei13303', /lei das estatais/, 'Lei 13.303/2016 (Lei das Estatais): já fixa governança, transparência e regras de nomeação para empresas públicas e sociedades de economia mista.'],
+  ['lei14133', /lei de licitacoes|nova lei de licitacoes/, 'Lei 14.133/2021: já é a lei geral de licitações e contratos da administração pública.'],
+  ['lei13709', /\blgpd\b|lei geral de protecao de dados|lei de protecao de dados/, 'Lei 13.709/2018 (LGPD): já regula o tratamento de dados pessoais e criou a ANPD.'],
+  ['lei13104', /feminicidio/, 'Lei 13.104/2015: já tipificou o feminicídio como homicídio qualificado.'],
+  ['lei12990', /cotas? (?:raciais )?(?:em|nos|para) concursos?|concursos? [^.;]{0,25}(?:negros|pretos e pardos)|reservar[^.;]{0,30}vagas[^.;]{0,30}concursos?[^.;]{0,30}(?:negros|pretos)/, 'Lei 12.990/2014: já reserva 20% das vagas de concursos federais a candidatos negros (prorrogada e ampliada pela Lei 15.142/2025).'],
+  ['lei11340', /maria da penha/, 'Lei 11.340/2006 (Lei Maria da Penha): já cria mecanismos para coibir a violência doméstica e familiar contra a mulher.']
+].map(x => ({ id: x[0], rx: x[1], txt: x[2] }));
+const TXT_GENERICA = 'Leitura genérica: o motor não tem um modelo específico para este tema; valores são estimativa de ordem de grandeza.';
+/*V35-END*/
 /* ---------- v3: tolerancia a erros de digitacao (distancia de edicao em tokens-chave) ---------- */
 let VOC = null; const VOCB = {}; const TYPO_CACHE = {};
 function construirVoc() {
@@ -3883,6 +4388,7 @@ function parse(orig) {
   for (const a of ALVO_G) if (a[0].test(s)) { A.alvoG = a[1]; break; }
   trabPos(A);
   fiscPos(A); // v3.4
+  leituraV35(A); // v3.5
   return A;
 }
 
@@ -4193,6 +4699,15 @@ const CF_BASE = [
   { id: 'a228', art: 'CF, art. 228', tema: 'Maioridade penal', regra: 'São penalmente inimputáveis os menores de 18 anos; parte da doutrina a vê como cláusula pétrea.', muda: 'pec' },
   { id: 'a239_3', art: 'CF, art. 239, §3º', tema: 'Abono salarial', regra: 'Assegura um salário mínimo anual de abono a quem ganha até o teto fixado na Constituição: dois mínimos do ano-base de 2025, corrigido a partir de 2026 pela inflação, e não mais pelo mínimo do ano.', muda: 'pec' },
   { id: 'lei15270', art: 'Lei 15.270/2025', tema: 'Isenção do IR até R$ 5 mil e tributação mínima de altas rendas', regra: 'Em vigor desde janeiro de 2026: isenção para rendimentos mensais até R$ 5 mil, redução gradual até R$ 7.350, tributação mínima de altas rendas e retenção de 10% na fonte sobre dividendos acima de R$ 50 mil por mês pagos por uma mesma empresa a uma mesma pessoa física (e sobre remessas ao exterior).', muda: 'lei' },
+  { id: 'lei15100', art: 'Lei 15.100/2025', tema: 'Uso de celulares nas escolas', regra: 'Em vigor desde janeiro de 2025: proíbe o uso de aparelhos eletrônicos portáteis pessoais pelos estudantes da educação básica, pública e privada, durante as aulas, o recreio e os intervalos, salvo para fins pedagógicos, de acessibilidade, de saúde ou de necessidade individual.', muda: 'lei' }, // v3.5
+  { id: 'lei14611', art: 'Lei 14.611/2023', tema: 'Igualdade salarial entre mulheres e homens', regra: 'Em vigor desde julho de 2023: garante igual remuneração para trabalho de igual valor, prevê multa administrativa contra a empresa que discriminar e exige relatório semestral de transparência salarial das empresas com 100 ou mais empregados.', muda: 'lei' }, // v3.5
+  { id: 'a155_156', art: 'CF, arts. 155 e 156', tema: 'Impostos estaduais e municipais', regra: 'ICMS, IPVA e ITCMD são dos estados e do DF; ISS, IPTU e ITBI são dos municípios: a União não os cria, não os extingue nem os isenta (art. 151, III).', muda: 'pec' }, // v3.5
+  { id: 'a21_164', art: 'CF, arts. 21, VII e 164', tema: 'Moeda e Banco Central', regra: 'A emissão de moeda é competência da União, exercida exclusivamente pelo Banco Central.', muda: 'pec' }, // v3.5
+  { id: 'cpp310', art: 'Pacto de São José, art. 7.5; CPP, art. 310', tema: 'Audiência de custódia', regra: 'Todo preso deve ser apresentado sem demora a um juiz; o Pacto de São José da Costa Rica foi ratificado pelo Brasil e a audiência de custódia está no Código de Processo Penal (art. 310, incluído em 2019).', muda: 'lei' }, // v3.5
+  { id: 'a14_3', art: 'CF, art. 14, §3º, V', tema: 'Filiação partidária', regra: 'A filiação partidária é condição de elegibilidade: candidatura sem partido exige emenda constitucional.', muda: 'pec' }, // v3.5
+  { id: 'loman', art: 'LC 35/1979 (Loman); CF, art. 93', tema: 'Estatuto da Magistratura', regra: 'O estatuto dos juízes (férias, vitaliciedade, promoções) é matéria de lei complementar de iniciativa do STF (art. 93, caput).', muda: 'lc' }, // v3.5
+  { id: 'rotulo', art: 'CDC, art. 6º, III; Decreto 4.680/2003', tema: 'Rotulagem de transgênicos', regra: 'Alimentos com mais de 1% de ingrediente transgênico devem trazer o símbolo T no rótulo; o consumidor tem direito à informação adequada.', muda: 'lei' }, // v3.5
+  { id: 'a37_xix', art: 'CF, art. 37, XIX e art. 173', tema: 'Criação de estatais', regra: 'Empresa pública e sociedade de economia mista só se criam com autorização de lei específica; a exploração direta de atividade econômica pelo Estado só cabe quando necessária aos imperativos da segurança nacional ou a relevante interesse coletivo.', muda: 'lei' }, // v3.5
   { id: 'lc179', art: 'LC 179/2021; CF, art. 192', tema: 'Autonomia do Banco Central', regra: 'Em vigor desde 2021: mandatos de 4 anos para o presidente e os diretores, não coincidentes com o do Presidente da República, e demissão só nas hipóteses da lei; alterar a autonomia exige lei complementar e a independência financeira e orçamentária depende de emenda (PEC 65/2023).', muda: 'lc' },
   { id: 'a34_136', art: 'CF, arts. 34, III, 136 e 142', tema: 'Intervenção federal, estado de defesa e GLO', regra: 'Violência localizada se enfrenta com intervenção federal para pôr termo a grave comprometimento da ordem pública (art. 34, III), estado de defesa em locais restritos e determinados (art. 136) ou garantia da lei e da ordem (art. 142; LC 97/1999); o estado de sítio fica para comoção grave de repercussão nacional, guerra ou ineficácia do estado de defesa (art. 137).', muda: 'dec' },
   { id: 'a5_xxxvii', art: 'CF, art. 5º, XXXVII e LIII', tema: 'Juiz natural e tribunais de exceção', regra: 'Não haverá juízo ou tribunal de exceção; ninguém será processado nem sentenciado senão pela autoridade competente.', muda: 'petrea' },
@@ -4342,12 +4857,12 @@ CF_RULES.push(C => {
 CF_RULES.push(C => {
   const lcItems = C.act.filter(i => (i.o.lc || i.lcDyn) && !i.fora);
   const txt = C.m(/\b(?:arcabouco fiscal|regra fiscal|teto de gastos|limite de despesa)\b/) && C.m(/\b(?:acabar com|revogar|extinguir|suspender|mudar|alterar|flexibilizar|zerar|substituir|derrubar)\b/);
-  const dem = C.m(/\b(?:demissao arbitraria|protecao contra (?:a )?despedida|estabilidade no emprego|convencao 158)\b/);
+  const dem = C.m(/\b(?:demissao arbitraria|protecao contra (?:a )?despedida|estabilidade no emprego|convencao 158)\b/) || C.has('demissao_justa_causa'); // v3.5
   const gen = C.m(/\b(?:normas gerais (?:de direito )?tributari\w+|codigo tributario nacional|obrigacao tributaria|credito tributario)\b/);
   if (!lcItems.length && !txt && !dem && !gen) return null;
   const E = C.E;
   const d = lcItems.some(i => i.o.id === 'grandes_fortunas') ? ['a153_vii', 'a69'] : txt ? ['a163_165', 'a69'] : dem ? ['a7_i', 'a69'] : lcItems.some(i => /mei|simples/.test(i.o.id)) ? ['a146', 'a69'] : lcItems.some(i => i.o.id === 'fgts_multa') ? ['adct10', 'a7_i', 'a69'] : ['a146', 'a69'];
-  const ef = lcItems.some(i => i.o.id === 'fgts_multa') ? 'Qualquer mudança na multa do FGTS mexe na indenização do art. 7º, I e do ADCT, art. 10, II: depende de lei complementar, aprovada por maioria absoluta (257 deputados e 41 senadores).' : 'Matéria reservada a lei complementar (art. 69): aprovação por maioria absoluta nas duas Casas, 257 deputados e 41 senadores. Decreto e medida provisória não servem (art. 62, §1º, III).';
+  const ef = lcItems.some(i => i.o.id === 'fgts_multa') ? 'Qualquer mudança na multa do FGTS mexe na indenização do art. 7º, I e do ADCT, art. 10, II: depende de lei complementar, aprovada por maioria absoluta (257 deputados e 41 senadores).' : (dem ? 'A proteção contra despedida arbitrária ou sem justa causa depende de lei complementar (art. 7º, I), que fixará a indenização compensatória (por ora, a multa de 40% do FGTS, ADCT, art. 10, I): proibir a demissão sem justa causa exige lei complementar, por maioria absoluta (257 deputados e 41 senadores). Decreto e medida provisória não servem (art. 62, §1º, III).' : 'Matéria reservada a lei complementar (art. 69): aprovação por maioria absoluta nas duas Casas, 257 deputados e 41 senadores. Decreto e medida provisória não servem (art. 62, §1º, III).'); // v3.5
   if (!E || E === 'LC' || E === 'PEC') return cfHit({ id: 'lc_reservada', d: d, exige: 'LC', efeito: ef });
   if (E === 'DEC' || E === 'MP' || E === 'ADM') return cfHit({ id: 'lc_reservada', d: d, vicio: 'forma', nivel: 'inconstitucional', exige: 'LC', mpVedada: E === 'MP', efeito: ef,
     sug: [cfSugInst('lc_plp', 'LC', 'Trocar ' + (E === 'MP' ? 'a medida provisória' : 'o decreto') + ' por projeto de lei complementar (PLP, maioria absoluta)')] });
@@ -4366,7 +4881,8 @@ const CF_PEC = [
   { id: 'ensino', rx: /\b(?:cobrar mensalidade|fim da gratuidade|mensalidade (?:nas|nos|em) universidades? publicas?)\b/, d: ['a206_iv'], ef: 'A gratuidade do ensino público está no art. 206, IV: cobrar mensalidade exige PEC.' },
   { id: 'sindical', rx: /\b(?:unicidade sindical|pluralidade sindical|convencao 87)\b/, d: ['a8'], ef: 'A unicidade sindical está no art. 8º, II: mudá-la exige PEC.' },
   { id: 'infantil', rx: /\b(?:trabalho infantil|(?:reduzir|baixar) a idade minima (?:para|de) trabalh\w+|(?:legalizar|liberar) (?:o )?trabalho (?:de )?(?:criancas|menores))\b/, d: ['a7_xxxiii'], petreaDisc: true, ef: 'A idade mínima para trabalhar está no art. 7º, XXXIII, e a proteção da criança é tratada como direito fundamental (art. 227): só PEC, com forte risco de ser vista como cláusula pétrea.' },
-  { id: 'sociais_supressao', rx: /\b(?:acab\w+ com|extingu\w+|elimin\w+|suprim\w+|abol\w+|cort\w+|revog\w+) (?:o |as |os |a )?(?:13[ºo]?(?: salario)?|decimo terceiro|ferias|adicional noturno|fgts|licenca.?maternidade|aviso previo|repouso semanal remunerado|salario minimo|seguro.?desemprego|salario.?familia)\b/, d: ['a6_7'], petreaDisc: true, ef: 'Os direitos do art. 7º estão na Constituição e há forte corrente que os protege pelo art. 60, §4º, IV: só PEC, com risco de ser derrubada no STF.' }
+  { id: 'sociais_supressao', rx: /\b(?:acab\w+ com|extingu\w+|elimin\w+|suprim\w+|abol\w+|cort\w+|revog\w+) (?:o |as |os |a )?(?:13[ºo]?(?: salario)?|decimo terceiro|ferias|adicional noturno|fgts|licenca.?maternidade|aviso previo|repouso semanal remunerado|salario minimo|seguro.?desemprego|salario.?familia)\b/, d: ['a6_7'], petreaDisc: true, ef: 'Os direitos do art. 7º estão na Constituição e há forte corrente que os protege pelo art. 60, §4º, IV: só PEC, com risco de ser derrubada no STF.' },
+  { id: 'guarda', rx: /\b(?:guarda nacional|policia nacional|nova (?:forca|policia|guarda) (?:federal|nacional)|(?:forca|policia|guarda) (?:federal|nacional) permanente)\b/, d: ['a144'], ef: 'O art. 144 lista os órgãos de segurança pública e a jurisprudência do STF trata o rol como taxativo: um órgão novo e permanente, como uma guarda nacional, só entra por emenda constitucional. A Força Nacional hoje é um programa de cooperação entre União e estados, sem quadro próprio.' } // v3.5
 ];
 CF_RULES.push(C => {
   const out = [];
@@ -4387,11 +4903,11 @@ CF_RULES.push(C => {
   else if (j && j.sg > 0) addPec('jornada', ['a7_xiii', 'ec141'], 'O limite semanal da jornada está no art. 7º, XIII, já alterado pela EC 141/2026 (42 horas em dez/2026 e 40 horas em dez/2027): qualquer redução adicional exige nova PEC.', false);
   else if (j && j.sg < 0) addPec('jornada', ['a7_xiii', 'ec141'], 'Voltar a uma jornada maior desfaz a EC 141/2026 e exige PEC, com risco de ser vista como retrocesso social.', true);
   // objetos cujo texto já é constitucional (inst PEC): classificam o dispositivo e o instrumento exigido
-  const OBJ_PEC = { foro: ['a53', false], reforma_politica: ['a14_16', false], voto_facultativo: ['a14_16', false], aposentadoria_idade: ['a201_7', false], previdencia_reforma: ['a201_7', false], reforma_adm: ['a41', false], desvinculacao: ['a198_212', false], precatorios: ['a100', false], zona_franca: ['adct40', false], mudar_capital: ['a18_19', false], maioridade_penal: ['a228', true], ampliar_stf: ['a101', false], mensalidade_universidades: ['a206_iv', false], planos_saude_fim: ['a196', false], igrejas_imunidade: ['a150_vi_b', true], prisao_segunda_instancia: ['a5_lvii', true] };
+  const OBJ_PEC = { foro: ['a53', false], reforma_politica: ['a14_16', false], voto_facultativo: ['a14_16', false], aposentadoria_idade: ['a201_7', false], previdencia_reforma: ['a201_7', false], reforma_adm: ['a41', false], desvinculacao: ['a198_212', false], precatorios: ['a100', false], zona_franca: ['adct40', false], mudar_capital: ['a18_19', false], maioridade_penal: ['a228', true], ampliar_stf: ['a101', false], mensalidade_universidades: ['a206_iv', false], planos_saude_fim: ['a196', false], igrejas_imunidade: ['a150_vi_b', true], prisao_segunda_instancia: ['a5_lvii', true], cotas_mulheres_congresso: ['a14_16', false, 'A composição do Congresso e o sistema eleitoral estão na Constituição (arts. 14, 44 a 46): reservar cadeiras para mulheres exige PEC e só vale para eleição realizada mais de um ano depois da emenda (art. 16).'], limite_mandatos_parl: ['a14_16', false, 'Mandato e reeleição estão no texto constitucional (art. 14, §5º e arts. 44 a 46): limitar os mandatos de deputados, senadores ou vereadores exige PEC e só vale para eleição realizada mais de um ano depois (art. 16).'] }; // v3.5
   for (const it of C.act) {
     const O = OBJ_PEC[it.o.id]; if (!O || it.sg <= 0) continue;
     if (out.some(h => h.d.indexOf(O[0]) >= 0)) continue;
-    addPec('obj_' + it.o.id, [O[0]], 'O assunto está no texto constitucional (' + CF_IDX[O[0]].art + '): só emenda constitucional o altera.' + (O[1] ? ' Há corrente forte que o vê protegido pelo art. 60, §4º, o que leva a medida ao STF.' : ''), O[1]);
+    addPec('obj_' + it.o.id, [O[0]], O[2] || 'O assunto está no texto constitucional (' + CF_IDX[O[0]].art + '): só emenda constitucional o altera.' + (O[1] ? ' Há corrente forte que o vê protegido pelo art. 60, §4º, o que leva a medida ao STF.' : ''), O[1]);
   }
   // pisos de saúde e educação
   if (C.act.some(i => (i.o.id === 'sus_geral' || i.o.id === 'educacao_geral' || i.o.id === 'fundeb') && i.sg < 0) || C.m(/\b(?:desvincul\w+)[^.;]{0,30}(?:saude|educacao)\b/)) addPec('pisos', ['a198_212'], 'Saúde e educação têm pisos de aplicação (art. 198 e art. 212): reduzi-los abaixo do mínimo exige PEC, como a desvinculação de receitas.', false);
@@ -4565,6 +5081,57 @@ CF_RULES.push(C => {
   return out;
 });
 /* R12: PEC travada por intervenção federal, estado de defesa ou de sítio (art. 60, §1º): roda depois das demais, quando já se sabe se o texto exige PEC */
+/* v3.5: norma já vigente (JA_VIG), criação de estatal por lei específica e ato geral que obriga ou proíbe particulares por decreto */
+CF_RULES.push(C => {
+  const out = [], J = C.A.jaVigente, E = C.E;
+  if (J && J.disp && CF_IDX[J.disp]) out.push(cfHit({ id: 'vigente_' + J.id, d: [J.disp], efeito: J.txt }));
+  if (C.act.some(i => i.o.id === 'estatal_nova' && i.sg > 0)) {
+    const fraco = E && E !== 'PL' && E !== 'PEC';
+    out.push(cfHit({ id: 'estatal_lei', d: ['a37_xix'], vicio: fraco ? 'forma' : null, nivel: fraco ? cfInstNivel(E) : 'ok', exige: 'PL', efeito: 'A empresa pública só nasce com autorização de lei específica (art. 37, XIX), e a atuação direta do Estado na economia exige relevante interesse coletivo ou imperativo de segurança nacional (art. 173): decreto ou medida provisória não bastam.',
+      sug: fraco ? [cfSugInst('estatal_pl', 'PL', 'Enviar projeto de lei que autorize a criação da empresa pública, com a justificativa de relevante interesse coletivo')] : [] }));
+  }
+  const gen = C.act.find(i => i.o.gen && (i.o.k === 'R'));
+  if (gen && (E === 'DEC' || E === 'ADM')) out.push(cfHit({ id: 'gen_legalidade', d: ['a84_vi'], vicio: 'forma', nivel: 'inconstitucional', exige: 'PL', efeito: 'Obrigar, proibir ou liberar condutas de particulares é matéria de lei (art. 5º, II: ninguém é obrigado a fazer ou deixar de fazer algo senão em virtude de lei); o decreto presidencial só organiza a administração (art. 84, VI).',
+    sug: [cfSugInst('gen_pl', 'PL', 'Transformar em projeto de lei, já que a norma alcança particulares')] }));
+  return out.length ? out : null;
+}); // v3.5
+
+/* v3.5: gatilhos constitucionais por tema (competência estadual, tratados, moeda, eleições, direitos já reconhecidos pelo STF) */
+const CF35 = [
+  { id: 'ipva_uniao', rx: /\b(?:ipva|itcmd|icms|iss)\b[^.;]{0,30}\b(?:federal|da uniao|pela uniao|nacional)\b|\b(?:cobrar|criar|instituir) ipva (?:federal )?(?:de|sobre|dos|das)|\b(?:acabar com|extinguir|zerar|isentar|abolir)\b[^.;]{0,25}\b(?:imposto (?:sobre|de) (?:heranca|doacao|doacoes)|itcmd|ipva|icms)\b/, nivel: 'controverso', exige: 'PEC', force: 1, d: ['a155_156', 'a151_iii'], ef: 'IPVA, ITCMD (herança e doação) e ICMS são impostos estaduais (CF, art. 155): a União não pode criá-los, extingui-los nem isentá-los (art. 151, III); só emenda constitucional mudaria a repartição, e há quem veja nisso ofensa à forma federativa (cláusula pétrea).' },
+  { id: 'igrejas_ir', rx: /\b(?:cobrar|tributar|taxar|criar)\b[^.;]{0,30}\b(?:imposto|ir|tributos?)\b[^.;]{0,20}\b(?:igrejas|templos|dizimo|entidades religiosas)\b|\b(?:igrejas|templos)\b[^.;]{0,20}\bpagar(?:em)? (?:imposto|ir)\b/, nivel: 'controverso', exige: 'PEC', force: 1, d: ['a150_vi_b', 'a5_vi'], ef: 'A imunidade dos templos de qualquer culto é cláusula constitucional (art. 150, VI, b) ligada à liberdade de crença (art. 5º, VI): tributar igrejas exige PEC e enfrentaria a tese de cláusula pétrea.' },
+  { id: 'patrimonio_unico', rx: /\b(?:contribuicao|imposto|taxa)\b[^.;]{0,25}\b(?:unic\w+|extraordinari\w+|especial)\b[^.;]{0,25}\bpatrimonio\b|\bpatrimonio\b[^.;]{0,30}\bbilionari\w+/, nivel: 'controverso', exige: 'LC', d: ['a153_vii', 'a150_iv'], ef: 'Imposto sobre patrimônio de grandes fortunas depende de lei complementar (art. 153, VII) nunca editada, e uma cobrança única de 5% sobre o patrimônio será contestada como confisco (art. 150, IV) e como imposto novo fora da competência (art. 154, I).' },
+  { id: 'custodia', rx: /\baudiencias? de custodia\b/, nivel: 'controverso', d: ['cpp310', 'a5_lxi'], ef: 'A audiência de custódia decorre do Pacto de São José da Costa Rica, ratificado pelo Brasil, e está no Código de Processo Penal (art. 310): acabar com ela contraria tratado de direitos humanos e será judicializado, inclusive à luz da ADPF 347.', neg: /\b(?:criar|ampliar|garantir|manter)\b/ },
+  { id: 'adocao_homo', rx: /\b(?:proib\w+|veda\w*|barr\w+|impe\w+|acab\w+ com)\b[^.;]{0,30}\badocao\b[^.;]{0,30}\b(?:mesmo sexo|homoafetiv\w+|gays?|lgbt\w*)\b/, nivel: 'inconstitucional', d: ['a5_caput'], ef: 'O STF reconheceu a união homoafetiva (ADI 4277 e ADPF 132, 2011) e a adoção por casais do mesmo sexo (RE 846.102, 2015): proibi-la fere a igualdade e a dignidade da pessoa humana (art. 1º, III e art. 5º, caput), com eficácia vinculante.' },
+  { id: 'maconha_prisao', rx: /\b(?:prender|voltar a prender|criminaliz\w+|penaliz\w+|punir)\b[^.;]{0,25}\b(?:fuma\w*|usuario\w*|consum\w+|porte|maconha)\b/, nivel: 'controverso', d: ['a5_caput'], ef: 'O STF (RE 635.659, 2024) decidiu que o porte de maconha para uso pessoal não é crime, e sim ilícito administrativo; voltar a prender o usuário contraria a decisão e deve ser contestado.' },
+  { id: 'cripto_proib', rx: /\bproib\w+\b[^.;]{0,15}\b(?:criptomoedas?|bitcoins?|criptoativos?)\b/, nivel: 'controverso', d: ['a170_177'], ef: 'Proibir criptoativos restringe a livre iniciativa (art. 170) e contraria o marco legal dos criptoativos (Lei 14.478/2022), que os regulamenta e não os proíbe; será contestado.' },
+  { id: 'dolarizacao', rx: /\b(?:trocar|substituir|adotar)\b[^.;]{0,20}\b(?:real|moeda)\b[^.;]{0,20}\bdolar\b|\bdolariz\w+/, nivel: 'controverso', exige: 'PEC', force: 1, d: ['a21_164'], ef: 'A emissão de moeda é competência da União, exercida pelo Banco Central (CF, arts. 21, VII e 164): trocar o real por moeda estrangeira exige emenda constitucional e abre mão da soberania monetária.' },
+  { id: 'candidato_avulso', rx: /\bcandidat\w+ (?:sem partido|avuls\w+|independente\w*)\b|\bcandidaturas? (?:sem partido|avuls\w+|independente\w*)\b/, nivel: 'controverso', exige: 'PEC', force: 1, d: ['a14_3'], ef: 'A filiação partidária é condição de elegibilidade (CF, art. 14, §3º, V): a candidatura avulsa exige PEC, e o tema chegou ao STF sem decisão final.' },
+  { id: 'constituinte', rx: /\bassembleia constituinte\b|\bconstituinte exclusiva\b|\bnova constituicao\b/, nivel: 'controverso', exige: 'PEC', force: 1, d: ['a60', 'a60_4_i_iii'], ef: 'A Constituição só se muda por emenda (art. 60) e não prevê assembleia constituinte exclusiva: convocá-la seria ruptura da ordem constitucional, com risco para as cláusulas pétreas.' },
+  { id: 'congresso_stf', rx: /\b(?:congresso|parlamento|legislativo)\b[^.;]{0,25}\b(?:derrub\w+|anul\w+|reverter|sustar|rever|revogar)\b[^.;]{0,25}\b(?:decis\w+|julgad\w+|sentenc\w+)\b[^.;]{0,15}\b(?:stf|supremo)\b/, nivel: 'inconstitucional', exige: 'PEC', force: 1, d: ['a60_4_i_iii'], ef: 'Dar ao Congresso o poder de derrubar decisão do STF fere a separação dos Poderes (art. 2º), cláusula pétrea (art. 60, §4º, III): nem emenda constitucional pode fazê-lo.' },
+  { id: 'tribunal_const', rx: /\b(?:tribunal|corte) constitucional\b/, nivel: 'ok', exige: 'PEC', force: 1, d: ['a101'], ef: 'A criação de um tribunal constitucional separado do STF muda a estrutura do Judiciário e a competência de guarda da Constituição (arts. 92 e 102): só por emenda constitucional.' },
+  { id: 'ferias_juizes', rx: /\bferias\b[^.;]{0,20}\b(?:60|sessenta) dias\b|\bferias dos? (?:juizes|magistrados)\b/, nivel: 'ok', exige: 'LC', d: ['loman'], ef: 'As férias de 60 dias dos magistrados vêm do estatuto da magistratura (LC 35/1979, Loman): mudá-las exige lei complementar de iniciativa do STF (CF, art. 93).' },
+  { id: 'demitir_servidor', rx: /\b(?:demitir|exonerar|desligar|dispensar)\b[^.;]{0,20}\bservidor\w*\b[^.;]{0,25}\b(?:desempenho|insuficiencia|avaliacao)\b/, nivel: 'ok', exige: 'LC', d: ['a41'], ef: 'A perda do cargo por insuficiência de desempenho depende de avaliação periódica na forma de lei complementar (CF, art. 41, §1º, III), ainda não editada.' },
+  { id: 'eleicoes_juntas', rx: /\beleic\w+ municipa\w+[^.;]{0,25}\b(?:junt\w+|unific\w+|coincid\w+|mesma data)\b|\b(?:unificar|coincidencia d)\w* (?:das )?eleic\w+|\bmandato\b[^.;]{0,15}\b(?:prorrog\w+ de|de) (?:vereador|prefeito)s?\b[^.;]{0,20}\bate\b/, nivel: 'ok', exige: 'PEC', force: 1, d: ['a14_16'], ef: 'A data das eleições e a duração dos mandatos estão na Constituição (arts. 14, 28, 29 e 77): unificar as eleições exige PEC e só vale para eleição realizada mais de um ano depois (art. 16).' },
+  { id: 'recall', rx: /\brecall\b|\brevogacao de mandato\b|\breferendo revogatorio\b/, nivel: 'ok', exige: 'PEC', force: 1, d: ['a14_16'], ef: 'A perda de mandato só ocorre nos casos da Constituição (arts. 55 e 15); o recall de eleitos exige emenda constitucional.' },
+  { id: 'passagem_aerea', rx: /\b(?:congelar|tabelar|limitar|fixar|controlar|teto)\b[^.;]{0,25}\b(?:passagens?|tarifas?|precos?)\b[^.;]{0,15}\b(?:aere\w+|aviacao|voos?)\b/, nivel: 'controverso', d: ['a170_177'], ef: 'As tarifas aéreas são livres desde a abertura do setor (Lei 11.182/2005); tabelar ou congelar o preço fere a livre iniciativa e a livre concorrência (art. 170) e será contestado por ADI das companhias.' },
+  { id: 'transgenico', rx: /\b(?:transgenic\w+|ogm|geneticamente modificad\w+)\b[^.;]{0,30}\b(?:sem|retirar|acabar com|dispensar)\b[^.;]{0,20}\b(?:rotulo|aviso|simbolo|informacao|identificacao)\b|\bsem (?:aviso|simbolo|rotulo|informacao)\b[^.;]{0,30}\btransgenic\w+/, nivel: 'controverso', d: ['rotulo'], ef: 'O consumidor tem direito à informação adequada (CDC, art. 6º, III) e o rótulo de transgênicos é exigido por decreto (Decreto 4.680/2003): dispensar o aviso será contestado como violação do direito do consumidor.' },
+  { id: 'tiktok', rx: /\b(?:banir|bloquear|proibir)\b[^.;]{0,10}\b(?:o )?(?:tiktok|x|twitter|telegram|instagram|whatsapp|redes? sociais)\b/, nivel: 'controverso', d: ['a5_ix'], ef: 'Bloquear uma rede social inteira atinge a liberdade de expressão (art. 5º, IX e art. 220) e o Marco Civil da Internet, que só admite suspensão em hipóteses legais e por ordem judicial; a medida será judicializada.' },
+  { id: 'saida_tratado', rx: /\b(?:sair|saida|retirar o brasil|tirar o brasil|deixar|abandonar|denunciar|romper com|sair fora)\b[^.;]{0,20}\b(?:acordo de paris|mercosul|omc|oms|onu|oea|tratado|acordo (?:internacional|do clima))\b|\bacordo de paris\b[^.;]{0,15}\b(?:sair|saida|tirar|deixar)\b/, nivel: 'controverso', d: ['a49_84'], aut: 1, ef: 'A denúncia de tratado internacional é debatida no STF (ADI 1625): a corrente majoritária exige a autorização do Congresso (art. 49, I), que referendou a entrada; fazê-lo por decreto será contestado.' },
+  { id: 'entrada_tratado', rx: /\b(?:entrar|aderir|ingressar|adesao|aprovar|fechar|assinar)\b[^.;]{0,15}\b(?:na |a |o |no )?(?:ocde|omc|acordo mercosul|acordo (?:comercial|de livre.?comercio|entre o mercosul)|acordo com a (?:ue|uniao europeia))\b|\bacordo mercosul.?(?:uniao europeia|ue)\b|\badesao (?:a|da) ocde\b/, nivel: 'ok', d: ['a49_84'], aut: 1, ef: 'Tratados e acordos internacionais são assinados pelo Presidente, mas só valem depois da aprovação do Congresso por decreto legislativo (CF, art. 49, I e art. 84, VIII).' },
+  { id: 'missao_paz', rx: /\b(?:enviar|mandar|deslocar)\b[^.;]{0,20}\btropas?\b[^.;]{0,30}\b(?:onu|missao|paz|exterior)\b|\bmissao de paz\b/, nivel: 'ok', d: ['a49_84'], aut: 1, ef: 'O envio de tropas ao exterior depende de autorização do Congresso (CF, art. 49, II e art. 84, XIX) e do respeito à solução pacífica dos conflitos (art. 4º, VI).' }
+];
+CF_RULES.push(C => {
+  const out = [];
+  for (const R of CF35) {
+    if (R.neg && R.neg.test(C.s)) continue;
+    if (!C.m(R.rx)) continue;
+    if (R.aut) { C.A.autInst = true; }
+    const fraco = C.E && (C.E === 'DEC' || C.E === 'MP' || C.E === 'ADM') && R.exige === 'PEC';
+    out.push(cfHit({ id: 'cf35_' + R.id, d: R.d.filter(x => CF_IDX[x]), vicio: R.nivel !== 'ok' ? 'materia' : null, nivel: R.nivel === 'ok' && fraco ? 'inconstitucional' : R.nivel, exige: R.exige || null, forcaPec: !!R.force, efeito: R.ef }));
+  }
+  return out.length ? out : null;
+}); // v3.5
 function cfPecTravada(C, exigePec) {
   const pec = C.E === 'PEC' || exigePec;
   if (!pec) return null;
@@ -4594,7 +5161,7 @@ function cfEngine(A, legal, g) {
   for (const r of CF_RULES) { let h = null; try { h = r(C); } catch (e) { h = null; } if (h) hits = hits.concat(h); }
   hits = hits.filter(Boolean);
   // PEC implícita: o motor passa a recomendar PEC quando o texto toca a Constituição e o instrumento não foi citado
-  const exigePec = hits.some(h => h.exige === 'PEC' && !h.petrea && h.nivel !== 'inconstitucional');
+  const exigePec = hits.some(h => (h.exige === 'PEC' && !h.petrea && h.nivel !== 'inconstitucional') || h.forcaPec); // v3.5
   if (exigePec && !A.instExpl) A.cfExigePec = true;
   if (!A.instExpl && !A.vago && hits.some(h => h.exige === 'LC' && !h.vicio) && !hits.some(h => h.exige === 'PEC' || h.petrea)) A.instDet = 'LC';
   { const tr = cfPecTravada(C, exigePec); if (tr) hits.push(tr); }
@@ -4707,7 +5274,7 @@ const CF_API = { BASE: CF_BASE, IDX: CF_IDX, RANK: CF_RANK, INST_NOME: CF_INST_N
 
 const GOLPE_RE = /(fechar (o )?(congresso|stf|supremo)|dissolver o (congresso|stf)|intervencao militar|\bai.?5\b|cancelar (as )?eleic|adiar (as )?eleic|terceiro mandato|reeleicao ilimitada|prorrogar (o )?mandato|golpe)/;
 const CENSURA_RE = /(censur|prender jornalista|fechar (jornal|emissora|a globo)|calar a imprensa|cassar (a )?concessao)/;
-const PETREA_RE = /(pena de morte|prisao perpetua|castracao|tortura|trabalhos forcados|banir partido)/;
+const PETREA_RE = /(pena de morte|prisao perpetua|castracao(?! gratuita| de (?:caes|gatos|animais|cachorros)| animal)|tortura|trabalhos forcados|banir partido)/;
 const CONFISCO_RE = /confisc|(bloquear|congelar|sequestrar|reter) (a |as |os |o )?(poupanca|contas? (bancarias?|correntes?)|saldos?)/;
 function checarLegal(A) {
   const s = A.s, its = A.items.filter(i => !i.pledge || true);
@@ -4776,7 +5343,7 @@ function checarLegal(A) {
   if (has('zona_franca')) raise('controverso', 'O modelo da Zona Franca de Manaus é protegido pelo ADCT (arts. 40 e 92-A, com vigência até 2073); reduzir incentivos exige emenda e sofre reação da bancada amazonense.');
   if (has('precatorios')) raise('controverso', 'O STF já limitou o parcelamento de precatórios (ADIs contra as ECs 113 e 114/2021) por violar a coisa julgada e o direito adquirido (art. 5º, XXXVI).');
   if (has('aposentadoria_idade') && explicit === 'PL') raise('controverso', 'A idade mínima de aposentadoria está no art. 201, §7º da Constituição; alterar por lei ordinária é questionável, o caminho é PEC.');
-  if (act.some(i => (i.o.id === 'juros_selic' || i.o.id === 'pressao_bc' || i.o.id === 'meta_inflacao') && !i.fora) && /(decreto|canetada|na marra|por lei|medida provisoria|\bmp\b|determinar|ordenar|mandar)/.test(s) && /(reduz|baix|cort|diminu|fixar|tabel|zerar|congel|cravar|cair|caia|caiam|descer|desca|cedam|despenc)/.test(s) && /selic|juros/.test(s)) raise('controverso', 'A Selic é fixada pelo Copom, do Banco Central autônomo (LC 179/2021, art. 164, §2º da Constituição); o Executivo não pode defini-la por decreto ou lei ordinária.');
+  if (act.some(i => (i.o.id === 'juros_selic' || i.o.id === 'selic_meta' || i.o.id === 'pressao_bc' || i.o.id === 'meta_inflacao') && !i.fora) && /(decreto|canetada|na marra|por lei|medida provisoria|\bmp\b|determinar|ordenar|mandar)/.test(s) && /(reduz|baix|cort|diminu|fixar|tabel|zerar|congel|cravar|cair|caia|caiam|descer|desca|cedam|despenc)/.test(s) && /selic|juros/.test(s)) raise('controverso', 'A Selic é fixada pelo Copom, do Banco Central autônomo (LC 179/2021, art. 164, §2º da Constituição); o Executivo não pode defini-la por decreto ou lei ordinária.');
   if (has('sair_paris') && hasDEC) raise('controverso', 'A denúncia de tratados sem aval do Congresso é debatida no STF (ADI 1625).');
   // ---- v3.1: regras juridicas declarativas (campo lg do objeto) e casos de competencia federativa/tratados ----
   for (const it of act) { const Ls = it.o.lg; if (!Ls) continue; for (const L of [].concat(Ls)) if ((L.sg == null || Math.sign(it.sg) === L.sg) && (!L.re || L.re.test(s)) && !(L.notRe && L.notRe.test(s))) raise(L.n, L.t); }
@@ -4842,6 +5409,7 @@ function topicoItem(it, A, comEscopo) {
     if (comp && !/^o fim|^a revogação/.test(t)) t += (o.k === 'G' && !pc ? comp.replace(/^ de /, ' de ') : '');
   } else if (it.mag === 1 && it.sg > 0) t = 'a duplicação ' + de(n);
   else if (it.mag === 2) t = 'a triplicação ' + de(n);
+  else if (o.nomeMal && it.sg > 0 && !it.tot && it.verbo && (it.verbo.cls === 'SUB' || it.verbo.cls === 'BAN')) t = 'a redução ' + (pc ? 'de ' + pc + ' ' : '') + de(n); // v3.5: o nome é o problema (conta de luz, preço do gás): reduzir é o ganho
   else if (o.k === 'T' && (o.nm !== 0) && !POL_RE.test(n) && !(o.ex === 0)) t = 'o aumento ' + de(n) + (pc ? ' em ' + pc : '');
   else if (pc && o.k !== 'R') t = 'o aumento de ' + pc + ' ' + de(n);
   else if (o.sav) t = n + comp;
@@ -4859,6 +5427,7 @@ function topicoItem(it, A, comEscopo) {
 function acaoLabel(it) {
   const o = it.o;
   if (!it) return 'comunicar';
+  if (it.gen) return o.gen.verbo; // v3.5
   if (it.pledge) return 'prometer não ' + (it.pledge.dir > 0 ? (o.k === 'T' ? 'aumentar' : 'ampliar') : 'cortar');
   if (o.k === 'C') return 'comunicar';
   if (o.local) return 'tratar de';
@@ -4918,7 +5487,7 @@ function escolheInst(A) {
   const up = (x) => { if (INST_ORDEM.indexOf(x) > INST_ORDEM.indexOf(inst)) inst = x; };
   for (const i of sig) {
     if (i.fora) continue;
-    const o = i.o; let x = o.inst || 'PL';
+    const o = i.o; let x = o.gen ? genInst(i) : (o.inst || 'PL'); // v3.5
     if (i.sg < 0 && x === 'MP') x = 'PL';
     if (o.k === 'T') x = o.inst === 'PEC' ? 'PEC' : o.dec ? 'DEC' : 'PL';
     if (o.lc) x = 'PL';
@@ -4928,8 +5497,10 @@ function escolheInst(A) {
     if (i.sg < 0 && o.k === 'G' && x === 'ADM' && i.B > 5) x = 'PL';
     up(x);
   }
+  if (!A.instExpl && sig.some(i => !i.fora && (i.o.k === 'G' || i.o.k === 'R') && i.sg > 0) && RX_PL35.test(A.s)) up('PL'); // v3.5
   return inst;
 }
+const RX_PL35 = /\bpiso salarial\b|\blicenca (?:menstrual|maternidade|paternidade|remunerada)\b|\bobrig\w+ (?:as |os |a |o )?(?:empresas?|bancos?|planos?|operadoras?|estatais|escolas?|hospitais|plataformas|empregadores)|\bjuiz de garantias\b|\bcompanhia (?:aerea )?estatal\b|\bestatal\b[^.;]{0,20}\bvoos?\b/;
 function montaTopico(A, F) {
   if (A.topicoFixo) return A.topicoFixo;
   const main = A.items.filter(i => i.role === 'main' && (i.sg || i.pledge || i.o.k === 'C'));
@@ -5145,6 +5716,7 @@ function analisar(g, texto, ctx) {
   if (A.vago) inst = A.instExpl ? (A.instExpl === 'LC' ? 'PL' : A.instExpl) : 'COM';
   if (A.instExpl === 'LC') A.instDet = 'LC';
   else if (!A.instExpl && A.items.some(i => i.sg && (i.o.lc || i.lcDyn) && !i.fora)) A.instDet = 'LC';
+  if (A.autInst && !A.instExpl && !A.vago && !A.talk) { if (INST_ORDEM.indexOf(inst) < INST_ORDEM.indexOf('PL')) inst = 'PL'; if (inst === 'PL') A.instDet = 'AUT'; } // v3.5: tratado = autorização do Congresso
   if (!A.instExpl && !A.vago && !A.talk && inst === 'PL' && /\bestado de sitio\b/.test(s) && A.items.some(i => i.sg && i.o.id === 'estado_excecao')) A.instDet = 'AUT'; // v3.4: sítio = autorização do Congresso (257/41)
   // pasta
   const dom = A.items.filter(i => i.sg && i.o.k !== 'C').sort((a, b) => (b.B || 0) - (a.B || 0))[0] || A.items[0];
@@ -5198,6 +5770,7 @@ function analisar(g, texto, ctx) {
   if (legal.golpe) A.golpe = true;
   if (A.jaVigente) notas.push(A.jaVigente.txt);
   if (A.notaLei) notas.push(A.notaLei); // v3.4
+  if (!A.talk) for (const it of A.items) { if (!it.sg || it.fora || !it.o.info) continue; const inf = typeof it.o.info === 'function' ? it.o.info(it, A) : it.o.info; if (inf && notas.indexOf(inf) < 0) notas.push(inf); } // v3.5: fato jurídico ou aviso do objeto
   if (A.items.some(i => i.escProd && i.sg < 0 && i.o.id === 'ipi')) notas.push('As alíquotas do IPI mudam por decreto (CF, art. 153, §1º) e a redução vale já na publicação: a noventena (art. 150, III, c) só vale para aumento.'); // v3.4
   // topico
   let topic = montaTopico(A, F);
@@ -5260,7 +5833,7 @@ function analisar(g, texto, ctx) {
     cost: F.cost, rev: F.rev, once: F.once, extra: F.extra, iv: iv, fx: fx, flags: flags,
     stf: { nivel: legal.nivel, parecer: legal.parecer }, tecnico: tecnico, bonus: {}, scale: 1, transiente: (() => { const ia = A.items.filter(i => i.sg || i.pledge); return ia.length > 0 && ia.every(i => i.o.id === 'fala'); })(), desidratada: 0, ai: false, vago: A.vago, privAlvo: privAlvo,
     entendimento: entend, calculo: calculo, viabilidade: via,
-    qualidade: { especificidade: A.espec, vago: A.vago, bonus: A.bonus || null, absurdo: !!A.absurdo },
+    qualidade: { especificidade: A.espec, vago: A.vago, bonus: A.bonus || null, absurdo: !!A.absurdo, generica: !!A.generica },
     pasta: pasta, pastaNome: pastaNome, atrasos: atrasos, absurdo: !!A.absurdo, instDetalhe: A.instDet || null, motor: 'v2'
   };
   if (legal.golpe) prop.stf.golpe = true;
@@ -5865,7 +6438,7 @@ function famDeItem(it) {
   if (id === 'imposto_bets') return 'bets';
   if (['tabelamento', 'preco_petrobras', 'preco_remedios', 'controle_alugueis', 'preco_gas'].indexOf(id) >= 0) return 'preco';
   if (id === 'salario_minimo') return 'salario_minimo';
-  if (['pressao_bc', 'juros_selic', 'respeitar_bc', 'meta_inflacao', 'meta_primario'].indexOf(id) >= 0) return 'bc';
+  if (['pressao_bc', 'juros_selic', 'selic_meta', 'respeitar_bc', 'meta_inflacao', 'meta_primario'].indexOf(id) >= 0) return 'bc';
   if (['arcabouco', 'corte_gastos', 'aposentadoria_idade', 'previdencia_reforma', 'desvinculacao', 'reforma_adm', 'precatorios'].indexOf(id) >= 0) return 'ajuste';
   if (o.k === 'E') return it.own > 0 ? 'privatizacao' : 'estatizacao';
   if (o.k === 'T') return s > 0 ? 'imposto_sobe' : 'imposto_cai';
@@ -5962,7 +6535,7 @@ function montaRiscos(X) {
   { const n = Math.max(0, e.risco || 0) * 2.6 + Math.max(0, -(e.conf || 0)) * 3 + Math.max(0, e.dol || 0) * 60 + Math.max(0, e.ipca || 0) * 20;
     const bom = (e.risco || 0) < 0 && (e.conf || 0) > 0;
     const d = bom ? 'O mercado tende a reagir bem: risco-país ' + sinalNum(e.risco, 1) + ' pt e confiança ' + sinalNum(e.conf, 1) + '; o risco é a medida ser vista como insuficiente ou reversível.' : (Math.abs(e.risco || 0) < .3 && Math.abs(e.conf || 0) < .3 && Math.abs(e.dol || 0) < .005 ? 'Sem reação relevante esperada de juros, câmbio ou bolsa.' : 'Risco-país ' + sinalNum(e.risco || 0, 1) + ' pt, confiança ' + sinalNum(e.conf || 0, 1) + ', dólar ' + sinalNum(e.dol || 0, 2) + ' e inflação ' + sinalNum(e.ipca || 0, 2) + ' pp: curva de juros e câmbio devem reagir antes de qualquer efeito real.');
-    const m = n < 15 ? 'Nenhuma ação específica; monitorar a curva de juros.' : ativos.some(i => ['pressao_bc', 'juros_selic', 'meta_inflacao', 'meta_primario', 'tabelamento', 'preco_petrobras'].indexOf(i.o.id) >= 0) ? 'Reafirmar a autonomia do Banco Central e o compromisso com a meta de primário antes do anúncio; não interferir no Copom.' : 'Sinalizar compromisso fiscal junto com a medida (indicar fonte) e comunicar o cronograma ao mercado.';
+    const m = n < 15 ? 'Nenhuma ação específica; monitorar a curva de juros.' : ativos.some(i => ['pressao_bc', 'juros_selic', 'selic_meta', 'meta_inflacao', 'meta_primario', 'tabelamento', 'preco_petrobras'].indexOf(i.o.id) >= 0) ? 'Reafirmar a autonomia do Banco Central e o compromisso com a meta de primário antes do anúncio; não interferir no Copom.' : 'Sinalizar compromisso fiscal junto com a medida (indicar fonte) e comunicar o cronograma ao mercado.';
     rk('mercado', bom ? 4 : n, d, m); }
   // juridico
   { const base = { ok: 8, controverso: 52, inconstitucional: 86 }[legal.nivel] || 8;
@@ -6095,6 +6668,8 @@ function montaParecerV3(X) {
   const { A, F, fx, prop, inst, legal, riscos, ganh, perd, votos, part, cal, pastaNome, lagMax } = X;
   const S = [];
   S.push('A proposta (' + prop.topic + ') seria editada como ' + INST_NOME[inst] + ' e executada pela pasta ' + pastaNome + '.');
+  if (A.generica) S.push(TXT_GENERICA); // v3.5
+  if (A.normaVigente) S.push('Já em vigor: ' + A.normaVigente.txt + ' O que passar do texto vigente é mudança real; o que repetir é redundante.'); // v3.5
   if (A.talk) S.push('É um ato de comunicação, sem despesa nem receita: o efeito se limita à percepção pública.');
   else if (F.S > 0) S.push('Custo e financiamento: despesa ou renúncia de ' + fmtBi(F.S) + ' no primeiro ano, com fonte cobrindo ' + fmtNum(F.cov * 100, 0) + '% da conta, resultado líquido de ' + fmtBi(Math.abs(F.Neff || 0)) + (F.Neff > 0 ? ' de pressão sobre o primário.' : ' favorável ao primário.'));
   else if ((F.Neff || 0) < 0) S.push('Custo e financiamento: melhora o primário em ' + fmtBi(-F.Neff) + '.');
@@ -6124,6 +6699,7 @@ function montaRecomendacao(X) {
   if (A.absurdo) return 'não recomendado: a proposta não tem base técnica ou jurídica plausível e será tratada como factoide.';
   if (legal.nivel === 'inconstitucional') return 'não recomendado: ' + (legal.parecer || '').split(PRIM)[0].replace(/\.$/, '') + '. ' + rj.mitigacao;
   if (A.vago) return 'ajustar: detalhar valor, público-alvo, fonte de custeio e prazo antes de assinar (texto vago).';
+  if (A.generica) return 'ajustar: o tema não tem modelo específico no motor; detalhar objeto, valor, público-alvo e fonte de custeio para uma leitura mais precisa (confiança baixa).'; // v3.5
   if (part.partido.sigla && ps <= -70) return 'não recomendado: a medida contradiz o programa do ' + part.partido.sigla + cohTxt + ' e arrisca a base; ' + (rc ? rc.mitigacao.charAt(0).toLowerCase() + rc.mitigacao.slice(1) : 'negociar com a bancada antes');
   const bl = cal.filter(c => c.gravidade === 'bloqueia' && c.aplica)[0];
   if (bl) return 'ajustar: ' + bl.base + ' veda a medida em 2030; adiar para 2031 ou limitar a programas já em execução.';
@@ -6138,6 +6714,7 @@ function confiancaLeitura(A, F) {
   if (!sig.length) c = .15;
   else { if (!A.vago) c += .12; else c -= .25; if (sig.some(i => !i.o.ger)) c += .1; else c -= .12; if (A.hasNum) c += .1; if (A.instExpl) c += .04; if (sig.some(i => i.o.k !== 'C' && i.B > 0 && i.q && i.q.has)) c += .06; }
   c -= .03 * Math.min(3, A.corrigidas || 0); if (A.absurdo) c -= .2; if (A.talk) c -= .04; if (F && F.cov < .3 && F.S > 10) c -= .03;
+  if (A.generica) c = Math.min(c, .3); // v3.5: leitura genérica = confiança baixa
   return Math.round(clamp(c, .1, .97) * 100) / 100;
 }
 function perguntasDe(A, F, inst, ativos) {
@@ -7584,7 +8161,9 @@ function propDeIA(g, texto, j) {
 Object.assign(OBJ_GRUPOS, {
   fgts_deposito: [['carteira', .5], ['mei', -.4]], fgts_multa: [['carteira', .6], ['mei', -.4]], saque_aniversario: [['carteira', .4]], fgts_correcao: [['carteira', .6]], fgts_habitacao: [['carteira', .4], ['jovens', .3]],
   hora_extra: [['carteira', .8], ['mei', -.4]], licenca_paternidade: [['mulheres', .4], ['carteira', .5]], abono_salarial: [['carteira', .7]], custo_contratacao: [['carteira', -.4], ['mei', .2]], contrib_patronal: [['mei', .3]]
-});
+,
+  salario_professores: [['servidores', .8], ['mulheres', .3]], fies_anistia: [['jovens', 1]], demissao_justa_causa: [['carteira', 1], ['mei', -.5]], carteira_verde_amarela: [['jovens', .6], ['carteira', -.3], ['mei', .3]], igualdade_salarial: [['mulheres', 1]], cotas_mulheres_congresso: [['mulheres', 1]], plr_ir: [['carteira', .8]], fgts_dividas: [['carteira', .6]]
+}); // v3.5
 function ensureCf(g) {
   if (!g.emendas) g.emendas = [];
   if (!g.cf) g.cf = { excecao: null };
@@ -8911,7 +9490,7 @@ function fase3Pos(g, prop, s) {
   if (nl > 0) { hit += clamp(nl / 45, 0, 3); }
   if (prop.cost > 0 && prop.rev >= prop.cost * .8) { hit -= 1; motivos.push('custeio crível'); }
   if (prop.cost < 0) { hit -= Math.min(3, -prop.cost / 15); motivos.push('revisão de gastos'); }
-  if (ids.includes('pressao_bc') || ids.includes('juros_selic') && (prop.entendimento || {}).polaridade > 0 && /baix|pression|demit|interv|forc/.test(s)) { hit += 4; seg += 1; prop.bcAtaque = true; motivos.push('pressão sobre o BC'); }
+  if (ids.includes('pressao_bc') || (ids.includes('juros_selic') || ids.includes('selic_meta')) && (prop.entendimento || {}).polaridade > 0 && /baix|pression|demit|interv|forc/.test(s)) { hit += 4; seg += 1; prop.bcAtaque = true; motivos.push('pressão sobre o BC'); }
   if (ids.includes('respeitar_bc')) { hit -= 2; motivos.push('respeito ao BC'); }
   const interv = (prop.cats || []).filter(c => SO_INTERV.includes(c)).length;
   if (interv) { hit += 3 * interv; seg += 2 * interv; motivos.push('leitura de intervenção'); }
