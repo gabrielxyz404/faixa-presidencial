@@ -22,3 +22,9 @@ Ver dados/famosos_politicos_rascunho.json (chave "stf").
 
 ## 4. Modo zoeira
 Aceitar propostas bizarras legais (instrumento certo, custo pequeno, efeito de viralização/imprensa zoando), barrar ilegais (impessoalidade art. 37 §1º, liberdades do art. 5º, símbolos por lei) e manter "absurdo" só para o impossível. "kkk", emoji e gíria não tornam proposta absurda. Bateria: testes/bench/zoeira_dev.json (+ reservado fora do repo).
+
+## 5. Programa do Missão (Livro Amarelo)
+Hoje PROGRAMAS.MISSAO só tem o eixo economia (estatuto). Preencher os 9 eixos com base no Livro Amarelo (versão final lançada em 01/08/2026; 3 tomos, 14 capítulos: "Estado Novo", "Reformas de Base", "País do Futuro"). Sem texto integral público: usar resumos de imprensa, marcados como "resumo de imprensa" (sem número de página), até Gabriel enviar trechos do livro.
+Pontos reportados: ajuste fiscal amplo e superávit nominal; economia liberal com Estado regulador; Selic abaixo de 6% (conflita com autonomia do BC); linha dura contra facções; combate a privilégios/anti-oligarquia; desdolarizar a América do Sul e "exportar o real"; parte da imprensa vê propostas parecidas com bandeiras da esquerda.
+Fontes: bahianoticias.com.br/noticia/319085; fpabramo.org.br (convenção do Missão); jornaldebrasilia.com.br; correiodamanha.com.br/politica/2026/08/307261; infomoney.com.br/?p=3434705.
+Danilo Gentili e Léo Lins (afinidade Missão) reagem segundo esse programa.
