@@ -76,3 +76,7 @@ Por repetição: `d = tratamento - controle`; `D` = média, `se` = dp/raiz(n); l
 - O voto é forçado; a probabilidade de aprovar no Congresso e a articulação não são testadas aqui. A interface (modais, botões) não é exercitada: veja `testes/regressao/batch3.py`.
 - O texto é lido pelo motor; se ele entender mal (ex.: capitalização lida como "reforma da Previdência" com economia), o cenário falha por erro do motor, não do efeito. Veja `acoes_executadas` na saída.
 - Quem ignora todas as crises acumula penalidades nos dois braços; o controle é "governo omisso", não "governo ótimo".
+
+## Medida condicional e finalidade (v3.9)
+Ação nova `choque` (`{mes, tipo: "choque", ind: "dol", valor: 6.5}`): força um indicador de `g.eco` (ou `soc.` + nome para `g.soc`) para disparar o gatilho de uma medida condicional ("se o dólar passar de R$ 6, ..."). Coloque o choque nos dois braços (`acoes` e `controle`).
+Cenários novos: `cond_nao_dispara` (a medida fica "aguardando gatilho": nada entra no fiscal), `cond_dispara` (choque no mês 2: a receita cai e a inflação alivia depois do disparo) e `fin_fonte_destino` (taxar a fonte para pagar o destino: receita e custo juntos).

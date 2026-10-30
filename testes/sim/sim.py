@@ -165,6 +165,9 @@ function aplica(g, a, refs) {
     if (lim) { M.estado = 'suspensa'; M.susp = g.mes; }
     L.res = lim ? 'suspensa por liminar até o mês ' + fim : 'ação no STF sem liminar'; return L;
   }
+  if (a.tipo === 'choque') {  // v3.9: força um indicador (ex.: {ind: 'dol', valor: 7.5}) para disparar o gatilho de uma medida condicional; vai nos dois braços
+    const o = a.ind.startsWith('soc.') ? g.soc : g.eco, k = a.ind.replace(/^(?:soc|eco)\./, ''); o[k] = a.valor; L.res = 'choque ' + a.ind + '=' + a.valor; return L;
+  }
   if (a.tipo === 'podcast') {  // convite de entrevista/podcast: aceitar (responde todas as perguntas) ou recusar
     if (!S.entEnsure || !S.ENT_VEIC) { L.erro = 'o jogo não tem entrevistas (v3.8)'; return L; }
     const E = S.entEnsure(g), vk = a.veic || 'flow', cid = 'sim' + g.mes + vk;

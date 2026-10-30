@@ -2601,7 +2601,7 @@ P('gastos_tributarios', 'os subsídios e benefícios fiscais', 'beneficios fisca
 P('corte_gastos', 'o pacote de corte de gastos', 'corte de gastos|cortar gastos|corte nas despesas|cortar despesas|reduzir (os )?gastos|reduzir despesas|ajuste fiscal|austeridade|equilibrio fiscal|pente.?fino nos gastos|enxugar a maquina|enxugamento da maquina|reducao da maquina|reduzir a maquina|economizar', { k: 'G', sav: 1, ger: 1, ch: 'custeio', base: 900, def: 30, cap: 200, b: 'serv', rg: 'se', pob: .3, pa: 'fazenda', inst: 'PL', val: { mercado: 4, empresariado: 2, sindicatos: -3, universitarios: -1 }, e: { conf: 3, risco: -4 }, iv: [.8, 0], lag: 6, cred: .6, cat: 'corte_gastos', nota: 'Economia efetiva depende de mexer em despesas obrigatórias, o que exige votos.' });
 P('gastos_governo', 'os gastos do governo', 'gastos (do governo|publicos|do governo federal|da uniao)|despesas (publicas|do governo|da uniao)|despesa primaria|maquina publica|custeio da maquina', { k: 'G', ger: 1, ch: 'custeio', base: 900, def: 30, cap: 200, b: 'serv', rg: 'se', pob: .3, pa: 'fazenda', inst: 'PL', val: { mercado: -3, empresariado: -1 }, iv: [-.5, 0], lag: 6, cred: .85, cat: 'corte_gastos' });
 P('previdencia_reforma', 'a reforma da Previdência', 'reforma da previdencia|idade minima|regra de aposentadoria|tempo de contribuicao|aposentadoria rural|capitalizacao|regime de capitalizacao|aposentar(-se)? (mais tarde|aos)', { k: 'G', sav: 1, ch: 'transf', base: 1000, def: 40, cap: 120, b: 'idosos', rg: 'urb', pob: .1, pa: 'fazenda', pn: 'Previdência', inst: 'PEC', val: { mercado: 4, empresariado: 2, sindicatos: -9, periferia: -2, catolicos: -1 }, e: { conf: 4, risco: -8 }, iv: [.8, 0], lag: 18, cred: .8, cat: 'previdencia', nota: 'A economia se acumula ao longo de anos e a PEC exige 308 votos.' });
-P('arcabouco', 'o arcabouço fiscal', 'arcabouco( fiscal)?|teto de gastos|meta fiscal|meta de superavit|meta de resultado primario|responsabilidade fiscal|regra fiscal|lrf\\b|lei de responsabilidade fiscal|superavit primario|compromisso fiscal|equilibrar as contas|zerar o deficit|zeragem do deficit', { k: 'R', pa: 'fazenda', inst: 'ADM', val: { mercado: 6, empresariado: 3, classemedia: 1, sindicatos: -3, periferia: -1 }, e: { conf: 6, risco: -12, dol: -.08, ipca: -.04 }, iv: [.8, 0], lag: 3, cat: 'corte_gastos', nota: 'Credibilidade da regra depende de cumprimento efetivo nos próximos orçamentos.' });
+P('arcabouco', 'o arcabouço fiscal', 'arcabouco( fiscal)?|teto de gastos|meta fiscal|meta de superavit|meta de resultado primario|responsabilidade fiscal|regra fiscal|lrf\\b|lei de responsabilidade fiscal|superavit primario|compromisso fiscal|equilibrar as contas|zerar o deficit|zeragem do deficit', { k: 'R', lc: 1, pa: 'fazenda', inst: 'ADM', val: { mercado: 6, empresariado: 3, classemedia: 1, sindicatos: -3, periferia: -1 }, e: { conf: 6, risco: -12, dol: -.08, ipca: -.04 }, iv: [.8, 0], lag: 3, cat: 'corte_gastos', nota: 'Credibilidade da regra depende de cumprimento efetivo nos próximos orçamentos.' });
 P('juros_selic', 'a política de juros', 'selic|taxa de juros|juros( altos| basicos)?|copom|(banco central|\\bbc\\b|bacen)', { k: 'R', ger: 1, mal: 1, pa: 'fazenda', inst: 'COM', val: { periferia: 1, mercado: -3, empresariado: 1 }, e: { conf: -1.5, risco: 5 }, iv: [-.3, 0], lag: 3, cat: 'juros', nota: 'O Banco Central é autônomo (LC 179/2021); o Executivo só pode pressionar.' });
 P('pressao_bc', 'a pressão sobre o Banco Central', '(?:aumentar|elevar|subir|baixar|reduzir|cortar|derrubar|manipular|mexer na) (?:a )?(?:selic|taxa de juros|juros) (?:via|por|com|na|pela|a base de) (?:pressao|marra|canetada|decreto|ameaca|forca)|pressionar (o )?(banco central|bc|copom)|intervir no (banco central|bc)|demitir o presidente do (banco central|bc)|acabar com a autonomia do (banco central|bc)|fim da autonomia do (banco central|bc)|baixar a selic (na marra|por decreto|na canetada)|decretar (a )?queda (dos|da) (juros|selic)|tirar o campos neto|trocar o presidente do (banco central|bc)', { k: 'R', pa: 'fazenda', inst: 'COM', val: { mercado: -12, empresariado: 2, periferia: 1, classemedia: -2 }, e: { conf: -8, risco: 15, dol: .15 }, iv: [-.5, 0], lag: 1, cat: 'juros', stf: 2, nota: 'Ações de interferência abalam a credibilidade da autonomia do BC.' });
 P('respeitar_bc', 'o respeito à autonomia do Banco Central', 'respeitar a autonomia do (banco central|bc)|manter a autonomia do (banco central|bc)|autonomia do (banco central|bc)|nao interferir no (banco central|bc)', { k: 'R', pa: 'fazenda', inst: 'COM', val: { mercado: 5, empresariado: 1 }, e: { conf: 4, risco: -6 }, iv: [.5, 0], lag: 1, cat: 'respeitar_governanca' });
@@ -2938,6 +2938,7 @@ P('ia_regulacao', 'a regulação da inteligência artificial', 'inteligencia art
 P('vapes', 'os cigarros eletrônicos', 'vapes?|cigarros? eletronicos?|vaping|dispositivos? eletronicos? para fumar|cigarros?|tabaco|fumo|tabagismo', { k: 'R', perm: 1, pa: 'saude', inst: 'ADM', val: { classemedia: 1, universitarios: -1.5, gamers: -1, evangelicos: 1 }, iv: [.1, .1], lag: 4, cat: 'saude', ax: { costumes: -1 }, nota: 'A Anvisa proíbe a venda de cigarros eletrônicos desde 2009 (RDC 46) e reafirmou a proibição em 2024.' });
 P('data_centers', 'os data centers e a soberania digital', 'data centers?|datacenters?|nuvem soberana|redata|soberania digital|semicondutores|chips\\b|big data|computacao em nuvem', { k: 'R', pa: 'casacivil', pn: 'Ciência e Tecnologia', inst: 'PL', val: { empresariado: 3, gamers: 2, universitarios: 1, mercado: 1 }, e: { pib: .02 }, iv: [.2, 0], lag: 12, cat: 'desenvolvimento', ax: { soberania_externa: -1, economia: -1 }, st: { tecnologia: 3, energia: 1 } });
 P('publicidade_governo', 'a publicidade oficial', 'publicidade oficial|propaganda do governo|verba publicitaria|verbas publicitarias|secom|publicidade institucional|campanhas publicitarias|midia do governo|tv publica', { ch: 'custeio', base: 2, def: 1, cap: 5, b: 'nada', rg: 'pop', lag: 1, pa: 'casacivil', pn: 'Comunicação Social', inst: 'ADM', val: { classemedia: -1, universitarios: -1 }, iv: [0, 0], cat: 'comunicacao', pf: 'publicidade', nota: 'A propaganda oficial é vedada em período eleitoral (Lei 9.504/97, art. 73, VI, b).' });
+P('diarias_passagens', 'as diárias, passagens e regalias do governo', 'diarias?(?: de viagem| e passagens)?|passagens aereas (?:do governo|de (?:servidores|ministros|deputados|autoridades))|viagens (?:oficiais|de ministros|de servidores)|cartao corporativo|jatinhos? (?:do governo|da fab|oficial)', { ch: 'custeio', base: 3, def: 1.5, cap: 6, b: 'nada', rg: 'se', lag: 1, pa: 'casacivil', pn: 'Gestão e Inovação', inst: 'ADM', val: { classemedia: .6, universitarios: .4, servidores: -.4 }, iv: [.1, 0], cat: 'corte_gastos', cred: .9, nota: 'Diárias, passagens e cartão corporativo são despesa de custeio de pequena monta no orçamento federal; o ganho é sobretudo simbólico.' }); // v3.9
 P('desburocratizacao', 'a desburocratização e o governo digital', 'desburocratiza\\w+|burocracia|simplificacao|simplificar|governo digital|gov\\.?br|marco regulatorio|agencias? reguladoras?|licencas? simplificadas|abrir empresa em|sandbox regulatorio|reducao de formularios|liberdade economica', { k: 'R', pa: 'fazenda', inst: 'MP', val: { empresariado: 4, mercado: 2, classemedia: 1.5, sindicatos: -1 }, e: { pib: .03, conf: .5 }, iv: [.6, 0], lag: 6, cat: 'desenvolvimento', ax: { economia: 1 }, st: { servicos: 2, industria: 1 }, pf: 'liberdade_economica', nota: 'A Lei da Liberdade Econômica (Lei 13.874/2019) é o marco recente da agenda.' });
 P('defesa_equip', 'o reequipamento das Forças Armadas', 'reequipamento|submarinos?|cacas? gripen|\\bgripen\\b|blindados?|defesa nacional|orcamento da defesa|industria de defesa|programa espacial|servico militar|alistamento|fronteiras? (secas|amazonicas)|vigilancia de fronteiras|sisfron', { ch: 'seg', base: 20, def: 6, cap: 40, b: 'pol', rg: 'co', pob: .02, lag: 18, pa: 'defesa', inst: 'ADM', emp: 1.2, val: { policiais: 3, empresariado: 1, universitarios: -2 }, iv: [.2, .4], cat: 'seguranca_plano', ax: { seguranca: 1 }, st: { industria: 2 }, fq: { bala: 1 } });
 P('piso_enfermagem', 'o piso da enfermagem', 'piso (da )?enfermagem|piso salarial (da|dos) enfermag\\w+|enfermeiros? piso|tecnicos de enfermagem|parteiras', { ch: 'folha', base: 7, def: 3, cap: 12, ben: 2.5, b: 'saude', rg: 'pop', pob: .2, lag: 3, pa: 'saude', inst: 'PL', val: { sindicatos: 5, periferia: 2, classemedia: 1 }, iv: [-.4, 0], cat: 'servidores', ax: { gasto_social: -1, trabalho: -1 }, ent: { municipios: -2, estados: -1 }, nota: 'O piso da enfermagem (Lei 14.434/2022) foi suspenso pelo STF (ADI 7222) até definir a fonte de custeio; municípios e hospitais filantrópicos pressionam.', pf: 'piso_enfermagem' });
@@ -2995,10 +2996,31 @@ const SPELL = [
   [/\b(isent\w+|desoner\w+|zer\w+|cobr\w+|taxa\w+|tribut\w+|aument\w+|reduz\w+|cort\w+|baix\w+|elev\w+) (?:de |do )?ir\b(?= (?:a|o|as|os|aos|nas|nos|na|no|dos|das|quem|aqueles|pessoas|trabalhadores|contribuintes)\b)/g, '$1 imposto de renda'],
   [/\bdolares\b/g, 'dolar'], [/\bpq\b/g, 'porque'], [/\bvc\b/g, 'voce'], [/\bgov\b/g, 'governo'], [/,\s*(?:bora|simbora|partiu)\b[^.;!?]*/g, ' '], [/\bq\b/g, 'que'], [/\btb\b/g, 'tambem'], [/\bn\b(?= (vou|vamos|quero))/g, 'nao'], [/\bnao vou\b/g, 'nao vou']
 ];
+/* v3.9: linguagem informal (celular, gíria, abreviação, alongamento de letras, emoji) normalizada ANTES da leitura; o texto original só serve de exibição */
+const V39_INF = [ // v3.9
+  [/[\u{1F000}-\u{1FFFF}☀-➿️‍]/gu, ' '],
+  [/\b(?:k{3,}\w*|ha(?:ha)+h?|rs(?:rs)+|kk+|hehe+|rsrs+|lol|mds|pqp|kct)\b/g, ' '],
+  [/\b(?:pfv|pfvr|pls|plz|por favor|por gentileza|valeu|vlw|obg|brigado|blz)\b/g, ' '],
+  [/([a-z])\1{2,}/g, '$1'],
+  [/\bp\/(?= ?[a-z0-9])/g, 'para '], [/\bc\/(?= ?[a-z0-9])/g, 'com '], [/\bs\/(?= ?[a-z0-9])/g, 'sem '], [/\bn\/(?= ?[a-z0-9])/g, 'nao '], [/\bd\/(?= ?[a-z0-9])/g, 'de '],
+  [/\b(?:dev\w+|atras\w+|calote d\w+|nao pag\w+|deixa de pagar|inadimplen\w+ d\w+)\s+(?:a |na |de |da |as )?pensao(?: alimenticia)?\b/g, (m) => m.replace(/pensao(?: alimenticia)?$/, 'pensao_alimenticia')], [/\bpensao alimenticia\b/g, 'pensao_alimenticia'],
+  [/\bpras\b/g, 'para as'], [/\bpro\b/g, 'para o'], [/\bpra\b/g, 'para'],
+  [/\b(?:tbm|tb|tmb|tambm)\b/g, 'tambem'], [/\b(?:mto|mt|mtoo)\b/g, 'muito'], [/\bmtos\b/g, 'muitos'], [/\bmtas\b/g, 'muitas'], [/\b(?:qdo|qnd|qndo)\b/g, 'quando'], [/\bqm\b/g, 'quem'], [/\boq\b/g, 'o que'],
+  [/\bhj\b/g, 'hoje'], [/\bdps\b/g, 'depois'], [/\bmsm\b/g, 'mesmo'], [/\bngm\b/g, 'ninguem'], [/\bnd\b/g, 'nada'], [/\btds\b/g, 'todos'], [/\btd\b/g, 'tudo'], [/\bvcs\b/g, 'voces'], [/\bq\b/g, 'que'], [/\bqr\b/g, 'quer'], [/\bqro\b/g, 'quero'], [/\bqria\b/g, 'queria'],
+  [/\bpres\b/g, 'presidente'], [/\bgovs\b/g, 'governos'], [/\bprof\b/g, 'professor'],
+  [/\bnn\b/g, 'nao'], [/\bn\b(?= (?:deve|devem|pode|podem|pagar|cobrar|ter|haver|ha|seja|sera|e|eh|precisa|precisam|quer|tem|existir|fazer|usar|aumentar|reduzir|cortar|vai|vao|ser|tenha|pague|paguem|cobre|fique|mexer|criar|acabar|mudar|dar|da|deixar|aceitar|vale|tinha|teria|faz)\b)/g, 'nao'],
+  [/\bta\b/g, 'esta'], [/\bmo\b(?= (?:caro|cara|barato|barata|bom|boa|ruim|grande|pequeno|pouco|alto|alta|baixo|baixa|dificil|facil|perigoso|lento|rapido|longe|perto|injusto|errado)\b)/g, 'muito'],
+  [/(\d(?:\.\d+)?(?: ?(?:mil|milhoes|milhao|mi|bi|bilhoes))?) (?:contos?|pilas?|paus?)\b/g, '$1 reais'],
+  [/\b(?:bota|botar|botando|botem|bote|botamos)\b/g, 'colocar'], [/\b(?:tira|tirem|tire)\b(?= (?:o|a|os|as|todo|toda|esse|essa|esses|essas|um|uma|de|do|da|dos|das)\b)/g, 'retirar'],
+  [/\b(?:bancar|bancando|bancado)\b/g, 'financiar'], [/\b(?:botar na cadeia|meter na cadeia|por na cadeia|mandar para a cadeia)\b/g, 'prender'],
+  [/(^|[.;!?,] ?)da (?=(?:r\$|um |uma |\d|mais |dinheiro|bolsa|auxilio|casa|comida|terra|credito|desconto|isencao|aumento|reajuste))/g, '$1dar ']
+];
+function v39Informal(t) { for (let i = 0; i < V39_INF.length; i++) t = t.replace(V39_INF[i][0], V39_INF[i][1]); return t.replace(/\s+/g, ' ').trim(); }
 function prep(t) {
   t = String(t).toLowerCase();
   if (t.normalize) t = t.normalize('NFD').replace(/[̀-ͯ]/g, '');
   t = t.replace(/ /g, ' ').replace(/[“”"]/g, ' ').replace(/\br\s*\$\s*/g, 'r$ ').replace(/(\d)\s+%/g, '$1%');
+  t = v39Informal(t); // v3.9
   for (let i = 0; i < SPELL.length; i++) t = t.replace(SPELL[i][0], SPELL[i][1]);
   t = t.replace(/(\d{1,3})(\.\d{3})+(?!\d)/g, (m) => m.replace(/\./g, ''));
   t = t.replace(/(\d),(\d)/g, '$1.$2');
@@ -3611,6 +3633,7 @@ P('reflorestamento', 'o reflorestamento e a restauração florestal', 'reflorest
 ABSORVE.leilao_petroleo = ['mineracao_petroleo', 'licenciamento'];
 ABSORVE.cashback_tributario = ['cbs_ibs', 'reforma_tributaria', 'imposto_geral'];
 ABSORVE.cpi = ['aposentadoria', 'imposto_bets', 'imposto_geral', 'cpi_blindagem', 'emendas'];
+ABSORVE.diarias_passagens = ['servidores', 'professores_fed', 'militares', 'gastos_governo']; // v3.9
 ABSORVE.condicionalidade_trabalho = ['bolsa_familia', 'educacao_geral', 'auxilio_generico', 'bpc', 'seguro_desemprego'];
 ABSORVE.fim_autonomia_bc = ['pressao_bc', 'juros_selic', 'respeitar_bc'];
 ABSORVE.desvinc_sm = ['salario_minimo', 'aposentadoria', 'bpc', 'desvinculacao', 'previdencia_reforma'];
@@ -3686,6 +3709,7 @@ P('demissao_fazenda', 'a troca no comando da economia', 'demitir (?:o |a )?(?:mi
 ABSORVE.pedido_bc = ['juros_selic', 'pressao_bc'];
 ABSORVE.demissao_fazenda = ['demissao_ministro', 'juros_selic', 'pressao_bc'];
 addSyn('gastos_governo', '(?<=a menos d[eo] )(?:despesas?|gastos?)\\b');
+addSyn('publicidade_governo', 'gast\\w+ (?:[a-z]+ ){0,3}(?:com|em|de) (?:propagandas?|publicidades?)\\b(?! (?:eleitoral|politica|partidaria|de (?:cigarros?|bebidas?|bets?|apostas?|remedios?)))|verbas? (?:de|para|com) (?:propagandas?|publicidades?)\\b(?! (?:eleitoral|politica))|(?:propagandas?|publicidades?) (?:do|da|dos|das) (?:governo|uniao|planalto|estatais|ministerios)'); // v3.9
 replSyn('zerar_impostos', '|nenhum imposto|', '|(?<!(?:aumentar|criar|cobrar|instituir|elevar|subir|novo|mais) )nenhum imposto|');
 replSyn('celular_escola', 'proibir (?:o )?(?:uso de )?(?:celulares?|smartphones?|telefones?)(?: (?:d[ea]ntro d[ea]|n[ao]s?|em)', 'proibir (?:o )?(?:uso de )?(?:celulares?|smartphones?|telefones?)\\b(?! (?:em|n[ao]s?|durante|ao|a) (?:presidios?|carceres|penitenciarias?|voos?|avioes|cinemas?|teatros?|igrejas?|hospitais|carros|volante|dirigir))(?: (?:d[ea]ntro d[ea]|n[ao]s?|em)');
 setProp('calamidade', { uc: 60000 });
@@ -3992,6 +4016,12 @@ const GV35 = [
   ['instal(?:ar|e|ando)', 'prog', 'a instalação', 'de', 'instalar', 1],
   ['devolv(?:er|a|endo)', 'prog', 'a devolução', 'de', 'devolver', 1],
   ['junt(?:ar|e|ando)', 'norm', 'a unificação', 'de', 'juntar', 1],
+  ['compr(?:ar|a|e|ando)|adquir(?:ir|a|indo)', 'prog', 'a compra', 'de', 'comprar', 1], // v3.9
+  ['prend(?:er|a|endo)', 'norm', 'a prisão', 'de', 'prender', 1],
+  ['intern(?:ar|e|ando|acao)', 'norm', 'a internação', 'de', 'internar', 1],
+  ['endurec(?:er|a|endo)', 'norm', 'o endurecimento', 'de', 'endurecer', 1],
+  ['import(?:ar|e|ando)', 'prog', 'a importação', 'de', 'importar', 1],
+  ['lig(?:ar|ando)|conect(?:ar|ando)', 'prog', 'a ligação', 'de', 'ligar', 1],
   ['lev(?:ar|e|ando)', 'prog', 'a oferta', 'de', 'levar', 1],
   ['reserv(?:ar|e|ando)', 'norm', 'a reserva', 'de', 'reservar', 1],
   ['explod(?:ir|a|indo)|destru(?:ir|a|indo)', 'norm', 'a destruição', 'de', 'destruir', 1],
@@ -4109,7 +4139,8 @@ function genTopico(L, cls) {
 }
 function genItem(A, force) {
   let L = genLer(A); if (!L && force) L = v37Fallback(A); if (!L) return null; // v3.7
-  const v = L.v, s = A.s;
+  let v = L.v; const s = A.s;
+  if (v.inf === 'colocar' && /\b(?:internet|wi.?fi|banda larga|ar.?condicionado|computadores?|tablets?|cameras?|catracas?|paineis? solares?|placas? solares?|merenda|livros?|bibliotecas?|laboratorios?)\b/.test(L.cf)) v = Object.assign({}, v, { cls: 'prog', nom: 'a instalação', sg: 1 }); // v3.9: colocar internet/câmera/ar-condicionado é obra ou compra (gasto), não norma
   const ar = genArea(L, A);
   const q = A.Q;
   const temQtd = q.money.some(x => x.unit) || q.count.length;
@@ -4275,9 +4306,14 @@ function leituraV35(A) {
   const en = byId('estatal_nova');
   if (en && en.sg > 0) en.topicoFixo = 'a criação de ' + origTrecho(A, en.t).replace(/^(?:criar|criacao d[ae]|instituir|fundar|constituir|montar|implantar|lancar) /i, '').replace(/^(?:estatal|empresa|companhia|banco|sociedade)/, (x) => 'uma ' + x);
   for (const it of its) { // v3.5: objeto amplo + recorte do texto ("a reforma política (voto distrital)")
-    if (it.topicoFixo || it.pledge || !it.sg || !it.t || it.o.gen || it.o.ger || AMPLOS_R.indexOf(it.o.id) < 0 || GV35.some(v => v.re.test(foldTxt(it.t).split(' ')[0]))) continue;
+    if (it.topicoFixo || it.pledge || !it.sg || !it.t || it.o.gen || it.o.ger || (AMPLOS_R.indexOf(it.o.id) < 0 && (it.t.split(' ').length > 4 || it.o.k === 'E')) || GV35.some(v => v.re.test(foldTxt(it.t).split(' ')[0]))) continue; // v3.9: o recorte vale para qualquer objeto cujo trecho citado traz palavra que o nome do objeto não tem
     const nm = foldTxt(it.o.n), ws = it.t.split(/[^a-z0-9]+/).filter(w => w.length >= 6 && nm.indexOf(w.slice(0, 5)) < 0 && !GEN_FRACAS.test(w) && !GEN_STOP.test(w));
     if (ws.length) it.recorte = origTrecho(A, it.t).replace(/^(?:proibir|acabar com|extinguir|reduzir|aumentar|criar|ampliar|reconhecer|adotar|instituir|cortar|fim d[aeo]|zerar) /i, '');
+  }
+  for (const it of its) { // v3.9: tributo sem base conhecida ("taxar a exportação de soja"): o recorte é o complemento do verbo
+    if (it.o.id !== 'imposto_geral' || it.topicoFixo || it.recorte || it.pledge || !it.sg) continue;
+    const mm = /\b(?:tax\w+|tribut\w+|cobr\w+|criar (?:um |uma )?(?:imposto|taxa|tributo|contribuicao)|impor (?:um |uma )?(?:imposto|taxa|tributo)|tirar|retirar|zerar|acabar com|cortar|reduzir|baixar|isentar|desonerar|eliminar|extinguir)\s+(?:sobre |de |d[aoe]s? |em |nas? |nos? )?(?:uma |um |o |a |os |as )?(?:contribuicao extra |imposto |taxa |tributo |impostos |taxas |tributos )?(?:d[aoe]s? |sobre |nas? |nos? )?([a-z0-9][a-z0-9 ]{3,60}?)(?= para | pra | com | que | e | ou |,|;|\.|$)/.exec(s.slice(Math.max(0, it.i - 14)));
+    if (mm && !/^(?:todos?|toda|quem|ricos?|bilionarios?|imposto|mais|menos|mais impostos)$/.test(mm[1].trim()) && mm[1].trim().length > 3) it.recorte = origTrecho(A, mm[1].trim());
   }
   // norma vigente (nota): o tema já é regulado por uma norma em vigor; o que passar do texto vigente é mudança real
   if (!A.jaVigente) for (const J of JN35) if (J.rx.test(s) && !(J.nao && J.nao.test(s)) && !(JN_VETO.test(s) && !J.a)) { A.normaVigente = J; break; } // v3.5: endurecer, ampliar, liberar ou revogar uma norma existente não é redundante
@@ -4670,7 +4706,27 @@ const JN37 = [
   { id: 'lc78', lc: 1, rx: /\bnumero de deputados\b|\bbancadas? (?:estaduais|por estado)\b/, ex: /\bnumero de deputados\b[^.;]{0,60}\b(?:populacao|estado)/, txt: 'LC 78/1993: disciplina a fixação do número de deputados federais, hoje 513, com mínimo de 8 e máximo de 70 por estado (CF, art. 45, §1º).' },
   { id: 'ec111', pec: 1, rx: /\bposse d[oa] president\w*\b|\bdata da posse\b/, ex: /\bposse\b[^.;]{0,40}\b5 de janeiro\b/, txt: 'EC 111/2021 (CF, art. 82): a posse do presidente da República passou de 1º para 5 de janeiro, a partir de 2027.' },
   { id: 'ec26', pec: 1, rx: /\bmoradia\b[^.;]{0,60}\b(?:direitos? sociais|constituicao)\b/, ex: /\bmoradia\b[^.;]{0,60}\bdireitos? sociais\b/, txt: 'EC 26/2000: a moradia já está entre os direitos sociais do art. 6º da Constituição (a EC 90/2015 incluiu o transporte).' },
-  { id: 'ec66', pec: 1, rx: /\bdivorcio\b/, txt: 'EC 66/2010: extinguiu a separação judicial como requisito prévio do divórcio (CF, art. 226, §6º).' }
+  { id: 'ec66', pec: 1, rx: /\bdivorcio\b/, txt: 'EC 66/2010: extinguiu a separação judicial como requisito prévio do divórcio (CF, art. 226, §6º).' },
+  /* v3.9: normas gerais conhecidas (só com certeza): rx = o tema (norma relacionada); ex = o pedido repete a norma (redundante: COM, sem custo); nex = passa do texto vigente */
+  { id: 'lei14994', rx: /\bfeminicidio/, ex: /(?:pena|prisao|reclusao|crime)[^.;]{0,50}(?:20|vinte)\s*(?:a|e)\s*(?:40|quarenta)[^.;]{0,40}feminicidio|feminicidio[^.;]{0,50}(?:20|vinte)\s*(?:a|e)\s*(?:40|quarenta)|feminicidio[^.;]{0,30}(?:crime hediondo|crime autonomo)|(?:tipificar|criar|tornar)[^.;]{0,20}feminicidio/, nex: /\b(?:prisao perpetua|pena de morte|(?:30|50|60) anos|perpetu\w+)\b/, txt: 'Lei 14.994/2024 (pacote antifeminicídio): o feminicídio já é crime autônomo e hediondo, com pena de 20 a 40 anos de reclusão (a Lei 13.104/2015 o havia tipificado).' },
+  { id: 'lei14843', rx: /\bsaidinhas?\b|\bsaidas? temporarias?\b/, ex: /(?:acab|fim|extin|elimin|proib|suspend|revog|encerr)\w*[^.;]{0,30}(?:saidinhas?|saidas? temporarias?)|(?:saidinhas?|saidas? temporarias?)[^.;]{0,30}(?:acab|fim|extin|proib|revog)/, nex: /\b(?:estud\w+|curso|escola|educacao|trabalh\w+|restabelec\w+|volta\w*|reinstit\w+|ampli\w+)\b/, txt: 'Lei 14.843/2024: já acabou com a saída temporária (saidinha) dos presos para visitar a família; só permanece a saída para frequentar curso.' },
+  { id: 'lc200', lc: 1, rx: /\barcabouco fiscal\b|\bnovo regime fiscal\b|\bregra fiscal\b|limit\w+[^.;]{0,25}(?:crescimento|aumento)[^.;]{0,20}(?:das? )?(?:despesas?|gastos?)/, ex: /(?:limit\w+|regra|criar|instituir|estabelec\w+)[^.;]{0,60}(?:aumento|crescimento)[^.;]{0,20}(?:das? )?(?:despesas?|gastos?)[^.;]{0,50}(?:70%|setenta|crescimento da receita)|70%[^.;]{0,40}(?:crescimento|aumento)[^.;]{0,20}receita|\barcabouco fiscal\b(?! (?:novo|mais|proprio))/, nex: /\b(?:acab\w+|revog\w+|extingu\w+|substitu\w+|teto de gastos|80%|50%|60%|90%|100%)\b/, txt: 'LC 200/2023 (arcabouço fiscal): já limita o crescimento real da despesa a 70% do crescimento da receita, numa banda de 0,6% a 2,5% ao ano, com metas de resultado primário; mudar a regra exige lei complementar.' },
+  { id: 'lei12990', rx: /concursos?[^.;]{0,50}(?:negros?|pretos|pardos)|(?:negros?|pretos|pardos)[^.;]{0,50}concursos?/, ex: /(?:reserv\w+|cotas?)[^.;]{0,50}(?:vagas|concursos?)[^.;]{0,50}(?:negros?|pretos|pardos)|(?:negros?|pretos|pardos)[^.;]{0,50}(?:reserv\w+|cotas?)[^.;]{0,30}(?:concursos?|vagas)/, nex: /\b(?:50%|metade|ampli\w+|aument\w+|estend\w+|indigen\w+|quilomb\w+|privad\w+|estad\w+|municip\w+)\b/, txt: 'Lei 12.990/2014: já reserva vagas dos concursos públicos federais a candidatos negros (a política foi renovada depois).' },
+  { id: 'lei11645', rx: /(?:historia|cultura)[^.;]{0,40}(?:afro|indigena)|(?:afro|indigena)[^.;]{0,40}(?:curriculo|escolas?|ensino)/, ex: /(?:ensino|estud\w+|conteudo|obrigatori\w+|curriculo|incluir)[^.;]{0,60}(?:historia|cultura)[^.;]{0,50}(?:afro|indigena)|(?:historia|cultura)[^.;]{0,30}(?:afro|indigena)[^.;]{0,40}(?:escolas?|curriculo|ensino|obrigatori\w+)/, txt: 'Lei 10.639/2003 e Lei 11.645/2008: já tornam obrigatório o ensino de história e cultura afro-brasileira e indígena na educação básica.' },
+  { id: 'lei14601', rx: /bolsa familia[^.;]{0,60}(?:crianca|primeira infancia|filhos?)|programa de renda[^.;]{0,60}(?:familias? (?:pobres|de baixa renda)|crianca)[^.;]{0,60}crianca/, ex: /(?:programa de renda|bolsa familia|beneficio)[^.;]{0,80}(?:a mais|extra|adicional|por)[^.;]{0,20}crianca|r\$ ?150[^.;]{0,60}crianca|crianca[^.;]{0,30}(?:pequena|primeira infancia)[^.;]{0,50}(?:bolsa familia|beneficio)/, nex: /\b(?:r\$ ?(?!150\b)\d+|dobr\w+|aument\w+|ampli\w+|elev\w+|\d{3,})/, txt: 'Lei 14.601/2023: o Bolsa Família já paga o Benefício Primeira Infância (R$ 150 por criança pequena) e valores adicionais por criança, gestante e adolescente.' },
+  { id: 'lei13467tele', rx: /\bteletrabalho\b|\btrabalho remoto\b|\bhome office\b|trabalh\w+ (?:de|em) casa/, ex: /teletrabalho[^.;]{0,40}\bclt\b|\bclt\b[^.;]{0,40}teletrabalho|(?:regras?|regulament\w+)[^.;]{0,30}teletrabalho|trabalh\w+ (?:de|em) casa[^.;]{0,40}(?:regras|clt|lei)|(?:permit\w+|autoriz\w+|liber\w+)[^.;]{0,30}(?:teletrabalho|trabalh\w+ (?:de|em) casa)/, nex: /\b(?:obrig\w+|ajuda de custo|pagar (?:a )?(?:luz|internet)|direito de desconectar|desconexao|aument\w+|proib\w+)\b/, txt: 'Lei 13.467/2017 (reforma trabalhista, CLT arts. 75-A a 75-E) e Lei 14.442/2022: o teletrabalho já é regulado (contrato escrito, equipamentos, controle de jornada e trabalho por tarefa).' },
+  { id: 'lc123mei', lc: 1, rx: /microempreendedor individual|\bmei\b/, ex: /(?:microempreendedor individual|\bmei\b)[^.;]{0,60}(?:fatur\w+|limite)[^.;]{0,40}(?:81|oitenta)|imposto fixo mensal[^.;]{0,50}(?:mei|microempreendedor)|(?:microempreendedor individual|\bmei\b)[^.;]{0,50}imposto fixo mensal/, nex: /\b(?:ampli\w+|aument\w+|eleva\w+|dobr\w+|150|130|[2-9]\d\d mil|acab\w+|extingu\w+)\b/, txt: 'LC 123/2006 (com as LC 128/2008 e LC 155/2016): o MEI já existe, com faturamento de até R$ 81 mil por ano e imposto fixo mensal (DAS); mudar o limite ou as regras exige lei complementar.' },
+  { id: 'dec6135', rx: /(?:criar|instituir|unificar|juntar|centralizar|montar|fazer)[^.;]{0,40}cadastro unico|cadastro unico[^.;]{0,70}(?:identificar|organizar)/, ex: /(?:criar|instituir|unificar|juntar|centralizar|montar|fazer)[^.;]{0,40}cadastro unico|cadastro unico[^.;]{0,70}(?:identificar|organizar|familias? (?:pobres|de baixa renda)|programas? sociais)/, nex: /\b(?:ampli\w+|aument\w+|auditor\w+|pente.?fino|cruz\w+|biometr\w+)\b/, txt: 'Decreto 6.135/2007: o Cadastro Único para Programas Sociais já existe e identifica as famílias de baixa renda para os programas do governo federal.' },
+  { id: 'lei10858', rx: /(?:remedios?|medicamentos?)[^.;]{0,30}(?:de graca|gratis|gratuit\w+)|(?:de graca|gratis|gratuit\w+)[^.;]{0,20}(?:remedios?|medicamentos?)/, ex: /(?:garant\w+|dar|oferec\w+|distribu\w+|fornec\w+)[^.;]{0,30}(?:remedios?|medicamentos?)[^.;]{0,30}(?:de graca|gratis|gratuit\w+)[^.;]{0,60}(?:hipertens\w+|pressao alta|diabet\w+|asma)|(?:hipertens\w+|pressao alta|diabet\w+|asma)[^.;]{0,60}(?:remedios?|medicamentos?)[^.;]{0,20}(?:de graca|gratis|gratuit\w+)/, nex: /\b(?:todos os|qualquer|toda|ampli\w+|dobr\w+)\b/, txt: 'Programa Farmácia Popular do Brasil (Lei 10.858/2004 e Decreto 5.090/2004): já oferece de graça medicamentos para hipertensão, diabetes e asma, entre outros.' },
+  { id: 'lei14026', rx: /agua tratada|saneamento|\besgoto\b/, ex: /(?:estabelec\w+|fix\w+|defin\w+|criar|instituir|aprovar|lei|marco|regra)[^.;]{0,40}(?:metas?|universaliz\w+)[^.;]{0,50}(?:agua tratada|agua potavel|esgoto|saneamento)|\buniversaliz\w+[^.;]{0,30}(?:agua tratada|agua potavel|esgoto|saneamento)/, nex: /\b(?:2030|2028|2029|2031|2032|2035|2040|100%|antecip\w+|estatiz\w+|revog\w+)\b/, txt: 'Lei 14.026/2020 (Marco do Saneamento): já fixa a meta de 99% da população com água potável e 90% com coleta e tratamento de esgoto até 2033.' },
+  { id: 'lei13709b', rx: /\blgpd\b|protecao de dados|dados pessoais/, ex: /(?:lei|regra|norma|marco)[^.;]{0,30}protecao de dados|protecao de dados pessoais|(?:consentimento|autorizacao)[^.;]{0,40}(?:dados pessoais|coletar dados|uso de dados)|(?:autoridade|orgao)[^.;]{0,30}protecao de dados|\blgpd\b/, nex: /\b(?:endurec\w+|multa de \d|ampli\w+|aument\w+|proib\w+|dobr\w+|crime)\b/, txt: 'Lei 13.709/2018 (LGPD): já regula o tratamento de dados pessoais, exige base legal e consentimento, garante direitos aos titulares e criou a Autoridade Nacional de Proteção de Dados.' },
+  { id: 'lei12527b', rx: /transparencia|acesso a informac\w+|(?:divulg\w+|falar|mostrar|publicar|informar)[^.;]{0,40}(?:gast\w+|despes\w+)|gast\w+[^.;]{0,30}no site|portal da transparencia/, ex: /(?:obrig\w+|exig\w+|determin\w+|criar|garantir|instituir|aprovar|quero lei)[^.;]{0,60}(?:divulg\w+|publicar|informar|falar|mostrar|transparencia|acesso a informac\w+)[^.;]{0,60}(?:gast\w+|despesas?|contas?|salarios?|dados|informacoes)|transparencia (?:publica|ativa|passiva)|portal da transparencia|lei de acesso a informacao/, nex: /\b(?:sigilo|secreto|ampli\w+|municipi\w+|empresas? privad\w+|partidos?|igrejas?|ongs?|tempo real|dobr\w+)\b/, txt: 'Lei 12.527/2011 (Lei de Acesso à Informação): já obriga os órgãos públicos a divulgar suas despesas e remunerações e permite que qualquer cidadão peça informações.' },
+  { id: 'lei12965b', rx: /marco civil|neutralidade|provedores?|plataformas?[^.;]{0,30}responsab\w+|guarda de (?:logs|registros)/, ex: /neutralidade (?:da|de) rede|marco civil|(?:direitos|principios)[^.;]{0,30}internet|(?:retirada|remocao)[^.;]{0,30}conteudo[^.;]{0,40}ordem judicial|guarda de (?:logs|registros)/, nex: /\b(?:acab\w+|revog\w+|responsabiliz\w+|multa\w*|moderacao|notificacao extrajudicial)\b/, txt: 'Lei 12.965/2014 (Marco Civil da Internet): já fixa direitos e deveres na rede, com neutralidade, guarda de registros e remoção de conteúdo por ordem judicial.' },
+  { id: 'lei8069b', rx: /\beca\b|estatuto da crianca|conselhos? tutelar|castigos? fisicos?|palmada|trabalho infantil|bebidas?[^.;]{0,25}menores/, ex: /conselhos? tutelar(?:es)?[^.;]{0,30}(?:todo|cada|em todos)[^.;]{0,15}municip|(?:proib\w+|vedar|acabar com)[^.;]{0,30}(?:castigos? fisicos?|palmada|punicao fisica)[^.;]{0,30}(?:criancas?|filhos)|(?:proib\w+|vedar)[^.;]{0,25}(?:venda|vender)[^.;]{0,25}(?:bebidas?|cigarros?|alcool)[^.;]{0,20}(?:menores|criancas|adolescentes)|prioridade absoluta[^.;]{0,30}criancas?|estatuto da crianca e do adolescente|proib\w+[^.;]{0,20}trabalho infantil[^.;]{0,30}(?:abaixo de|menores de) 14/, nex: /\b(?:acab\w+|revog\w+|reduz\w+|baix\w+|maioridade penal|16 anos)\b/, txt: 'Lei 8.069/1990 (ECA) e Lei 13.010/2014: já garantem prioridade absoluta à infância, proíbem castigo físico, a venda de bebida alcoólica e cigarro a menores e preveem conselho tutelar em cada município.' },
+  { id: 'lei8078b', rx: /codigo de defesa do consumidor|\bcdc\b|arrependimento|propaganda enganosa|venda casada|cobranca abusiva/, ex: /direito de arrependimento|(?:proib\w+|vedar)[^.;]{0,20}(?:propaganda enganosa|venda casada|cobranca abusiva)|(?:7|sete) dias[^.;]{0,40}(?:arrepend\w+|desist\w+)|(?:garantia|troca)[^.;]{0,30}(?:30|90) dias|codigo de defesa do consumidor/, nex: /\b(?:ampli\w+|dobr\w+|15 dias|30 dias de arrependimento|multa de \d|acab\w+)\b/, txt: 'Lei 8.078/1990 (Código de Defesa do Consumidor): já garante direito de arrependimento em 7 dias nas compras fora da loja, proíbe propaganda enganosa, venda casada e cobrança abusiva.' },
+  { id: 'lei10741b', rx: /estatuto do idoso|idos\w+[^.;]{0,30}(?:transporte|onibus|fila|prioridade|atendimento)|(?:transporte|onibus|fila|atendimento)[^.;]{0,30}idos\w+/, ex: /gratuidade[^.;]{0,30}(?:transporte|onibus)[^.;]{0,20}(?:65|idos\w+)|(?:transporte|onibus)[^.;]{0,20}gratuit\w+[^.;]{0,20}(?:65|idos\w+)|(?:atendimento|fila)[^.;]{0,5}prioritari\w+[^.;]{0,20}(?:idos\w+|60|65)|prioridade[^.;]{0,20}(?:no atendimento|na fila)[^.;]{0,10}idos\w+|estatuto do idoso/, nex: /\b(?:60 anos|ampli\w+|aument\w+|trem|metro|aviao|aereo|barcas?|interestadual)\b/, txt: 'Lei 10.741/2003 (Estatuto do Idoso): já garante prioridade de atendimento a quem tem 60 anos ou mais e gratuidade no transporte coletivo urbano a partir dos 65.' },
+  { id: 'lei11340b', rx: /maria da penha|violencia domestica|medidas? protetivas?|afastamento do agressor/, ex: /medidas? protetivas?[^.;]{0,50}(?:urgencia|mulher|vitima|violencia)|afastamento do agressor|violencia domestica[^.;]{0,40}(?:crime|punir|lei)|maria da penha|(?:delegacias?|juizados?)[^.;]{0,15}(?:da mulher|especializad\w+)/, nex: /\b(?:ampli\w+|aument\w+|endurec\w+|pena de|monitoramento|tornozeleira|crime hediondo|sem boletim)\b/, txt: 'Lei 11.340/2006 (Lei Maria da Penha): já prevê medidas protetivas de urgência, afastamento do agressor, juizados e delegacias especializadas para a violência doméstica e familiar.' },
+  { id: 'lei12711b', rx: /cotas?[^.;]{0,30}(?:escola publica|universidades? federais|institutos federais)|(?:vagas|reserv\w+)[^.;]{0,40}(?:escola publica|universidades? federais)/, ex: /(?:reserv\w+|cotas?)[^.;]{0,40}(?:50%|metade)[^.;]{0,30}vagas[^.;]{0,40}(?:escola publica|universidades? federais|institutos federais)|cotas?[^.;]{0,30}(?:escola publica|universidades? federais|institutos federais)/, nex: /\b(?:acab\w+|revog\w+|ampli\w+|aument\w+|privad\w+|60%|70%|100%|estad\w+)\b/, txt: 'Lei 12.711/2012 (alterada pela Lei 14.723/2023): já reserva 50% das vagas das instituições federais a estudantes de escola pública, com subcotas por renda, raça, deficiência.' }
 ].map(x => Object.assign({ v: true }, x));
 function v37Vigente(A) {
   if (A.jaVigente) return;
@@ -4679,7 +4735,7 @@ function v37Vigente(A) {
   if (!hit.length) return;
   hit.sort((a, b) => (b.exato ? 1 : 0) - (a.exato ? 1 : 0));
   const b = hit[0];
-  if (!b.exato && A.normaVigente && A.normaVigente.exato) return;
+  if (!b.exato && A.normaVigente && (A.normaVigente.exato || A.normaVigente.txt)) return; // v3.9: a norma relacionada já achada (JN35) não é trocada por outra relacionada
   const lab = (J) => { const k = J.txt.indexOf(':'); return k > 0 && k < 70 ? J.txt.slice(0, k) : J.txt.slice(0, 40); };
   const outros = hit.slice(1, 3).map(x => lab(x.J));
   const txt = (outros.length ? 'Normas vigentes: ' + [lab(b.J)].concat(outros).join('; ') + '. ' : '') + b.J.txt;
@@ -4943,6 +4999,7 @@ function leituraV37(A) {
     V.red = true;
     return A;
   }
+  if (!A.jaVigente && v39Absurdo(s) && !A.items.some(i => i.sg && i.o.k !== 'C' && !i.o.ger)) { let it0 = null; try { it0 = genItem(A, { k: 'G', kind: 'prog', inst: 'PL' }); } catch (e) { it0 = null; } if (it0) { A.items = [it0]; A.generica = null; } } // v3.9: impossibilidade dita em frase curta continua sendo lida (e marcada como absurda), não vira texto vago
   v37Vigente(A);
   const exato0 = !!(A.normaVigente && A.normaVigente.exato);
   const dinheiro = A.Q.money.some(q => q.unit && q.v >= 1e6);
@@ -5231,26 +5288,313 @@ function dlDist(a, b, mx) { // Damerau-Levenshtein limitado
   return p1[m];
 }
 let NCORR = 0;
-function corrige(s) {
-  if (!VOC) construirVoc();
-  NCORR = 0;
-  return s.split(' ').map(t => {
-    if (t.length < 6 || !/^[a-z]+$/.test(t) || VOC.has(t) || PROT.has(t) || temRadical(t)) return t;
-    if (TYPO_CACHE[t] !== undefined) { if (TYPO_CACHE[t] !== t) NCORR++; return TYPO_CACHE[t]; }
-    const mx = t.length >= 10 ? 2 : 1; let best = null, bd = 9, tie = false;
-    for (let L = t.length - 1; L <= t.length + 1; L++) {
-      const arr = VOCB[L]; if (!arr) continue;
+/* v3.9: guarda e alvo do corretor: palavras do próprio texto do jogo (o vocabulário do catálogo fica em VOC) */
+let KNOWN9 = null, KNOWB9 = null; // v3.9
+function v39Known() {
+  KNOWN9 = new Map(); KNOWB9 = {};
+  try {
+    if (typeof document !== 'undefined') {
+      let src = ''; document.querySelectorAll('script:not([src])').forEach(sc => { src += ' ' + sc.textContent; });
+      src = src.replace(/\\[a-zA-Z]/g, ' '); // escapes de regex (\b, \w, \n) não colam nas palavras
+      const srcA = src.normalize('NFC').toLowerCase();
+      src = src.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+      src.replace(/[a-z]{4,14}/g, w => { KNOWN9.set(w, (KNOWN9.get(w) || 0) + 1); return w; });
+      KNOWN9.forEach((c, w) => { if (c >= 1) (KNOWB9[w.length] = KNOWB9[w.length] || []).push(w); });
+      const acc = {}, cnt = {}; // forma acentuada mais comum de cada palavra
+      srcA.replace(/[a-zà-ÿ]{4,14}/g, w => { if (/[à-ÿ]/.test(w)) { const f = w.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); const k = f + '|' + w; cnt[k] = (cnt[k] || 0) + 1; if (!acc[f] || cnt[k] > (cnt[f + '|' + acc[f]] || 0)) acc[f] = w; } return w; });
+      KNOWN9.acc = acc;
+    }
+  } catch (e) { }
+}
+const V39_ROWS = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
+function v39Adj(x, y) { if ('eiououjgszcsck'.length && /^(?:ei|ie|ou|uo|gj|jg|sz|zs|cs|sc|ck|kc|mn|nm)$/.test(x + y)) return true; for (let r = 0; r < 3; r++) { const i = V39_ROWS[r].indexOf(x); if (i >= 0) { if (V39_ROWS[r][i - 1] === y || V39_ROWS[r][i + 1] === y) return true; for (const q of [r - 1, r + 1]) if (q >= 0 && q < 3) { const row = V39_ROWS[q]; const j = Math.round(i * row.length / V39_ROWS[r].length); if (row[j] === y || row[j - 1] === y || row[j + 1] === y) return true; } } } return false; }
+function v39SubOk(t, w) { let d = -1; for (let i = 0; i < t.length; i++) if (t[i] !== w[i]) { if (d >= 0) return false; d = i; } return d >= 0 && v39Adj(t[d], w[d]); } // substituição só por tecla vizinha
+function v39Transp(a, b) { if (a.length !== b.length) return false; let i = 0; while (i < a.length && a[i] === b[i]) i++; return i < a.length - 1 && a[i] === b[i + 1] && a[i + 1] === b[i] && a.slice(i + 2) === b.slice(i + 2); }
+function corrigeTok(t) { // v3.9: corrige UMA palavra já minúscula e sem acento; candidatos pontuados por tipo de erro (transposição, letra dobrada, letra faltando) e por frequência no jogo
+  if (t.length < 4 || !/^[a-z]+$/.test(t) || VOC.has(t) || PROT.has(t) || KNOWN9.has(t) || (t.length >= 6 && temRadical(t))) return t;
+  if (TYPO_CACHE[t] !== undefined) return TYPO_CACHE[t];
+  { // erro de ouvido: s/c/ss/z/x trocados ("crianssa", "mansao" etc.): a variante tem de ser uma palavra conhecida
+    const fon = [], add = (v) => { if (v !== t && (VOC.has(v) || (KNOWN9.get(v) || 0) >= 2) && fon.indexOf(v) < 0) fon.push(v); };
+    for (let i = 0; i < t.length; i++) {
+      const c = t[i];
+      if (c === 's' && t[i + 1] === 's') add(t.slice(0, i) + 'c' + t.slice(i + 2)); // ss -> c
+      if (c === 's') { add(t.slice(0, i) + 'c' + t.slice(i + 1)); add(t.slice(0, i) + 'ss' + t.slice(i + 1)); add(t.slice(0, i) + 'z' + t.slice(i + 1)); }
+      if (c === 'c') add(t.slice(0, i) + 's' + t.slice(i + 1));
+      if (c === 'z') add(t.slice(0, i) + 's' + t.slice(i + 1));
+      if (c === 'x') add(t.slice(0, i) + 'ch' + t.slice(i + 1));
+    }
+    if (fon.length === 1) { TYPO_CACHE[t] = fon[0]; return fon[0]; }
+  }
+  const curto = t.length <= 5, mx = t.length >= 10 ? 2 : 1, cand = [];
+  for (let L = t.length - 1; L <= t.length + 1; L++) {
+    for (const [arr, isV] of [[VOCB[L], true], [KNOWB9[L], false]]) {
+      if (!arr) continue;
       for (const w of arr) {
-        if (w[0] !== t[0] || w.startsWith(t) || t.startsWith(w)) continue; // flexoes (parcela/parcelar) nao sao erro
-        if (w.length === t.length && w.slice(0, -1) === t.slice(0, -1)) continue;
+        const tr = v39Transp(t, w);
+        if (w[0] !== t[0] && !tr) continue;
+        if (w.startsWith(t) || t.startsWith(w)) continue; // flexoes (parcela/parcelar) nao sao erro
+        if (w.length === t.length && !tr && w.slice(0, -1) === t.slice(0, -1)) continue;
+        if (curto && w.length === t.length && !tr) continue;
+        if (w.length === t.length && !tr && !v39SubOk(t, w)) continue;
         const d = dlDist(t, w, mx);
-        if (d <= mx) { if (d < bd) { bd = d; best = w; tie = false; } else if (d === bd && w !== best) tie = true; }
+        if (d > mx) continue;
+        let kind = tr ? 0 : t.length === w.length ? 2 : t.length > w.length ? (/(.)\1/.test(t) ? 0 : 1) : 1;
+        const f = isV ? 400 : (KNOWN9.get(w) || 1);
+        if (t.length <= 4 && kind !== 0 && f < 25) continue; // v3.9: palavra de 4 letras só vira outra se for transposição, letra dobrada ou palavra muito frequente no jogo ("fura" não é "furia")
+        if (t.length === 5 && kind === 1 && f < 8) continue;
+        if (kind === 2 && f < 12) continue; // substituição de letra só vira palavra bem frequente no jogo ("devendo" não é "defendo")
+        cand.push({ w, sc: Math.log(f + 1) - 1.1 * kind - 1.5 * (d - 1) + (V39_INFS.has(w) ? 1.3 : 0) });
       }
     }
-    const out = best && !tie && !VOC.has(t + 's') && !(t.endsWith('s') && VOC.has(t.slice(0, -1))) ? best : t;
-    TYPO_CACHE[t] = out; if (out !== t) NCORR++;
-    return out;
-  }).join(' ');
+  }
+  cand.sort((x, y) => y.sc - x.sc);
+  const ok = cand.length && (cand.length === 1 || cand[0].sc - cand[1].sc >= .7 || cand[1].w === cand[0].w);
+  const best = ok ? cand[0].w : null;
+  const out = best && !VOC.has(t + 's') && !KNOWN9.has(t + 's') && !(t.endsWith('s') && (VOC.has(t.slice(0, -1)) || KNOWN9.has(t.slice(0, -1)))) ? best : t;
+  TYPO_CACHE[t] = out; return out;
+}
+function corrige(s) {
+  if (!VOC) construirVoc();
+  if (!KNOWN9) v39Known();
+  NCORR = 0;
+  return s.split(' ').map(t => { const o = corrigeTok(t); if (o !== t) NCORR++; return o; }).join(' ');
+}
+/* v3.9: limpeza do TEXTO ORIGINAL (leitores genéricos, tópico e parecer usam o original): expande abreviações e gírias, tira emoji e risada,
+   desfaz alongamento ("muuuito"), baixa a CAIXA ALTA e corrige erros de digitação preservando maiúsculas e acentos */
+const V39_TOK = { vc: 'você', vcs: 'vocês', q: 'que', pq: 'porque', tbm: 'também', tb: 'também', tmb: 'também', mto: 'muito', mt: 'muito', mtos: 'muitos', mtas: 'muitas', qdo: 'quando', qnd: 'quando', qm: 'quem', oq: 'o que', gov: 'governo', govs: 'governos', pres: 'presidente',
+  hj: 'hoje', dps: 'depois', msm: 'mesmo', ngm: 'ninguém', nd: 'nada', td: 'tudo', tds: 'todos', pra: 'para', pras: 'para as', pro: 'para o', ta: 'está', qr: 'quer', qro: 'quero', nn: 'não', bota: 'colocar', botar: 'colocar', botem: 'colocar', bote: 'colocar', botando: 'colocando', bancar: 'financiar', bancando: 'financiando', pfv: '', pfvr: '', pls: '', kkk: '', kkkk: '', kkkkk: '', rs: '', rsrs: '', haha: '', hahaha: '', mds: '', vlw: '', blz: '' };
+const V39_ACR = /^(?:stf|inss|ir|irpf|irpj|ipi|icms|iss|iof|ipva|iptu|itr|pix|sus|mei|clt|fgts|bndes|pec|pl|plp|mp|oab|onu|eua|ue|fmi|pib|ipca|bc|tcu|cpi|stj|tse|mec|pac|enem|fies|prouni|selic|cnpj|cpf|tv|ia|pm|upa|upas|cnh|bpc|loas|ldb|lgpd|lai|cdc|eca|ong|ongs|otan|brics|mercosul|anvisa|anatel|aneel|anp|cade|ibama|incra|funai|embrapa|petrobras|pf|prf|cnj|cnmp|df|sp|rj|mg|ba|pr|rs|sc|ce|pe|go|pa|am|ma|mt|ms|es|pb|rn|al|se|pi|ro|ac|ap|rr|to)$/;
+function v39Caso(w, base) { if (w === w.toUpperCase() && w.length > 1 && base.length > 1) return base.toUpperCase(); if (w[0] === w[0].toUpperCase() && w[0] !== w[0].toLowerCase()) return base.charAt(0).toUpperCase() + base.slice(1); return base; }
+const V39_NOME0 = /^(?:reforma|taxa|cota|meta|verba|obra|troca|compra|venda|pena|multa|ajuda|entrega|fala|base|regra|lei|sobe|doa|paga|cobra|ata|vale)$/; // v3.9: substantivos que parecem verbo no começo da frase
+function v39Limpa(o) {
+  try {
+    if (!VOC) construirVoc();
+    if (!KNOWN9) v39Known();
+    let s = String(o).normalize('NFC');
+    s = s.replace(/[\u{1F000}-\u{1FFFF}☀-➿️‍]/gu, ' ');
+    s = s.replace(/\b(?:p|c|s|n|d)\/(?=\s?[A-Za-zÀ-ÿ0-9])/gi, (m) => ({ p: 'para ', c: 'com ', s: 'sem ', n: 'não ', d: 'de ' })[m[0].toLowerCase()]);
+    s = s.replace(/\b(?:k{3,}\w*|(?:ha){2,}h?|(?:rs){2,}|hehe+|lol)\b/gi, ' ').replace(/([A-Za-zÀ-ÿ])\1{2,}/g, '$1');
+    const letras = s.replace(/[^A-Za-zÀ-ÿ]/g, ''), caps = letras.length >= 8 && letras.replace(/[^A-ZÀ-Ý]/g, '').length / letras.length > .7;
+    s = s.replace(/[\s,]+(?:aí|ai|né|ne|neh|já|ja|agora|entendeu|viu|hein|sabe|certo|ok|tá|ta|pelo amor de deus|de uma vez)\s*([?!.]*)$/i, '$1');
+    s = s.replace(/[A-Za-zÀ-ÿ]+/g, (w, off, whole) => {
+      const lw = w.toLowerCase(), f = foldTxt(lw);
+      if (f.length >= 4 && /(?:a|e)$/.test(f) && !V39_INFS.has(f) && (off === 0 || /(?:[.;!?,]\s*|\be\s+|\bentao\s+|\bai\s+)$/i.test(whole.slice(Math.max(0, off - 12), off)))) { // verbo no imperativo informal no começo da cláusula: "zera", "corta", "acaba com"
+        const nx = /^\s+(\S+)/.exec(whole.slice(off + w.length)), nxt = nx ? foldTxt(nx[1]).replace(/[^a-z0-9%]/g, '') : '';
+        if (!(V39_NOME0.test(f) && /^(?:de|do|da|dos|das|em|no|na|nos|nas|\d.*)$/.test(nxt))) { const lm = v39Lema(f); if (lm && lm !== f) return caps ? lm : v39Caso(w, lm); }
+      }
+      if (V39_TOK[f] !== undefined && (f !== 'q' || true) && !(f === 'ta' && /^[A-Z]/.test(w) && !caps) && !(f === 'pro' && false)) return V39_TOK[f] === '' ? '' : caps ? V39_TOK[f] : v39Caso(w, V39_TOK[f]);
+      if (caps) { if (V39_ACR.test(f)) return w.toUpperCase(); }
+      let base = lw;
+      if (f.length >= 4 && /^[a-z]+$/.test(f) && !(w.length > 1 && w === w.toUpperCase() && !caps && f.length <= 5) && !(off > 0 && !caps && /^[A-ZÀ-Ý]/.test(w) && !/[.!?]\s*$/.test(whole.slice(0, off)))) { // nome próprio (Capes, Embraer) no meio da frase fica como está // sigla em caixa alta no meio de texto normal não é corrigida
+        const c = corrigeTok(f);
+        if (c !== f) base = KNOWN9.acc && KNOWN9.acc[c] ? KNOWN9.acc[c] : c;
+      }
+      if (caps) return base;
+      return v39Caso(w, base);
+    });
+    s = s.replace(/\s+([,.;!?])/g, '$1').replace(/\s{2,}/g, ' ').trim();
+    if (caps) s = s.replace(/(^|[.!?]\s+)([a-zà-ÿ])/g, (m, a, b) => a + b.toUpperCase());
+    return s || String(o);
+  } catch (e) { return String(o); }
+}
+/* ===== v3.9: TEOR da proposta (ironia/retórica, condição, negação/contraste) lido ANTES do parse =====
+   A ação afirmativa é a medida. O gatilho ("se o dólar passar de 7"), a restrição ("sem mexer no teto") e a pergunta retórica ("será que não é hora de...") NÃO são medidas. */
+const V39_INFS = new Set(('zerar reduzir aumentar cortar congelar criar dar conceder estender prorrogar suspender liberar proibir taxar tributar isentar desonerar baixar subir elevar ampliar extinguir acabar abrir fechar vender privatizar importar exportar travar limitar tabelar subsidiar contratar demitir convocar decretar autorizar permitir instituir implantar distribuir pagar cobrar devolver antecipar adiar reajustar corrigir renegociar estatizar nacionalizar intervir racionar reforcar garantir investir construir reformar multar punir prender endurecer expandir diminuir enxugar economizar reter bloquear retirar colocar instalar obrigar exigir aplicar adotar implementar lancar fazer ter manter repassar transferir destinar usar reverter revogar rever renovar ajustar compensar financiar custear aprovar legalizar descriminalizar regulamentar regular fiscalizar combater reprimir coibir erradicar fortalecer modernizar digitalizar unificar simplificar desburocratizar priorizar redistribuir federalizar municipalizar terceirizar concessionar licitar leiloar parar deixar gastar poupar emitir imprimir comprar doar oferecer fornecer entregar premiar bonificar descontar parcelar perdoar anistiar indultar nomear exonerar aposentar majorar fixar definir estabelecer abolir eliminar barrar vetar mandar enviar levar trazer receber acolher expulsar deportar ceder abater cancelar anular substituir trocar migrar mudar mexer tocar revisar auditar investigar apurar julgar condenar absolver soltar libertar internar tratar vacinar curar atender educar ensinar formar capacitar treinar alfabetizar matricular tirar derrubar dobrar duplicar triplicar incentivar estimular fomentar promover proteger apoiar ajudar acelerar prender endurecer legalizar proibir').split(/\s+/));
+function v39Lema(w) { // forma finita informal/subjuntivo -> infinitivo (só verbos de política conhecidos)
+  if (V39_INFS.has(w)) return w;
+  const c = [];
+  let m = /^(.{3,}?)(asse|assem|aria|ariam|ava|avam|ou|ando|ado|ada|ados|adas|am|a|e|em|o)$/.exec(w);
+  if (m) { c.push(m[1] + 'ar'); c.push(m[1] + 'er'); c.push(m[1] + 'ir'); }
+  m = /^(.{3,}?)(esse|essem|eria|eriam|ia|iam|eu|endo|ido|ida|idos|idas|em|e|o)$/.exec(w); if (m) { c.push(m[1] + 'er'); c.push(m[1] + 'ir'); }
+  m = /^(.{3,}?)(isse|issem|iria|iriam|iu|indo|e|em|o)$/.exec(w); if (m) c.push(m[1] + 'ir');
+  for (const x of c) if (V39_INFS.has(x)) return x;
+  return null;
+}
+const V39_SUJ = /^(?:o governo(?: federal)?|a gente|nos|voces?|o presidente|a uniao|o congresso|o planalto|o estado|a presidencia|o executivo)\s+/;
+// ---- 1) ironia, pergunta retórica e sugestão ----
+const V39_WRAP = /^(?:(?:e|mas|entao|olha|ah|bom|bem|pois|tipo|gente|pessoal|escuta|veja|olhe)[,!]?\s+)*(?:que tal|e que tal|e se|por que nao|porque nao|pq nao|por que o governo nao|por que a gente nao|por que ninguem|sera que nao (?:e|esta|seria|ta|devia|deveria|podia|poderia)(?: a| o| na| no)?(?: hora| momento| melhor| caso| ideal)?(?: de| para| se)?|sera que (?:nao )?(?:da|dava|daria|devia|deveria|podia|poderia|vale|valeria|compensa)(?: a pena)?(?: de| para)?|sera que|nao (?:esta|ta|seria|e|era) (?:na|a|o|hora|melhor|bom|legal|justo|ideal)(?: hora| momento| melhor)?(?: de| para| se)?|(?:ja )?(?:esta|ta|passou|e) (?:mais que )?(?:na |da )?(?:hora|momento) de|ja passou da hora de|bem que (?:o governo |a gente |alguem )?(?:podia|poderia|devia|deveria)|quem sabe|alguem (?:precisa|devia|deveria|podia|poderia|tinha que|tem que)|(?:o governo|a gente|nos|o congresso|o presidente) (?:devia|deveria|podia|poderia|bem que podia|bem que devia|tinha que|ia)|seria (?:melhor|bom|otimo|justo|ideal|legal|interessante)(?: se)?|era (?:melhor|bom|so)|imagina|pensa so|ja pensou em|nao daria para|nao da para|nao dava para|ninguem pensou em)\s+(.+)$/;
+function v39Retorica(s, R) {
+  const parts = s.split(/(?<=[.!?])\s+/);
+  const temAcao = (f) => f.split(/[^a-z]+/).some(w => w.length > 3 && (V39_INFS.has(w) || !!v39Lema(w)));
+  const out = []; let achou = false;
+  parts.forEach((p) => {
+    let f = foldTxt(p), q = p;
+    const f2 = f.replace(/,?\s*\b(?:ne|neh|nao e|ne nao)\s*([?!.]*)$/, '$1'); if (f2.length !== f.length) { q = q.slice(0, f2.length); f = f2; }
+    const m = V39_WRAP.exec(f);
+    if (m) {
+      let rest = q.slice(f.length - m[1].length).replace(/[?!.]+$/, ''), fr = m[1].replace(/[?!.]+$/, '');
+      const ms = V39_SUJ.exec(fr);
+      if (ms) { rest = rest.slice(ms[0].length); fr = fr.slice(ms[0].length); }
+      const mn = /^(?:nao|nunca)\s+/.exec(fr); if (mn && /^(?:por que|porque|pq)/.test(f)) { rest = rest.slice(mn[0].length); fr = fr.slice(mn[0].length); }
+      const w0 = /^[a-z]+/.exec(fr);
+      if (w0) { const lm = v39Lema(w0[0]); if (lm && lm !== w0[0]) rest = lm + rest.slice(w0[0].length); }
+      if (rest.trim().split(/\s+/).length >= 2) { out.push(rest.trim()); achou = true; R.ironia = true; return; }
+    }
+    const pq = /^(?:por que|porque|pq|como|quando|quem)\s+(?:o governo\s+|a gente\s+|ninguem\s+)?(?:ainda\s+)?nao\s+([a-z]+)\s+(.*?)\?+$/.exec(f);
+    if (pq) { const lm = v39Lema(pq[1]); if (lm) { const k = f.length - 1 - pq[2].length; out.push(lm + ' ' + q.slice(k, f.length - 1)); achou = true; R.ironia = true; return; } }
+    out.push(q);
+  });
+  if (!achou) return s;
+  const keep = out.filter(x => temAcao(foldTxt(x)));
+  let res = (keep.length ? keep : out).join(' ');
+  // coreferência: "38 ministérios é o ideal, né? Que tal cortar uns 15?" -> a sugestão herda o substantivo da frase irônica
+  if (keep.length && keep.length < out.length) {
+    const rs = foldTxt(res).split(/[^a-z]+/).filter(w => w.length > 4 && !V39_INFS.has(w) && !v39Lema(w) && !/^(?:todos|todas|alguns|algumas|tanto|tanta|muito|muita|pouco|pouca|mesmo|mesma|outros|outras)$/.test(w));
+    if (!rs.length) { const nm = out.filter(x => !keep.includes(x)).join(' ').match(/\d+\s+([A-Za-zÀ-ÿ]{4,})/); if (nm) res += ' ' + nm[1]; }
+  }
+  return res;
+}
+// ---- 2) condição ----
+const V39_IND = [ // indicador do jogo: leitura, desvio padrão anual (para a chance de a condição valer), unidade
+  { id: 'dolar', rx: /\b(?:dolar|cambio|cotacao do dolar|moeda americana)\b/, nome: 'dólar', get: g => g.eco.dol, sd: .8, un: 'R$', dec: 2 },
+  { id: 'ipca', rx: /\b(?:inflacao|ipca|alta (?:dos )?precos|carestia)\b/, nome: 'inflação', get: g => g.eco.ipca, sd: 1.4, un: '%', dec: 1 },
+  { id: 'des', rx: /\b(?:desemprego|desocupacao|taxa de desemprego|falta de emprego)\b/, nome: 'desemprego', get: g => g.eco.des, sd: 1.1, un: '%', dec: 1 },
+  { id: 'selic', rx: /\b(?:selic|juros basicos|taxa basica de juros)\b/, nome: 'Selic', get: g => g.eco.selic, sd: 2.2, un: '%', dec: 2 },
+  { id: 'divida', rx: /\b(?:divida (?:bruta|publica|liquida)|divida\/pib|endividamento)\b/, nome: 'dívida bruta', get: g => g.eco.divida, sd: 4, un: '% do PIB', dec: 1 },
+  { id: 'risco', rx: /\brisco.?pais\b/, nome: 'risco-país', get: g => g.eco.risco, sd: 45, un: 'pts', dec: 0 },
+  { id: 'pib', rx: /\b(?:recessao|pib|crescimento|economia (?:cair|parar|encolher))\b/, nome: 'PIB', get: g => g.eco.pib, sd: 1.7, un: '%', dec: 1 },
+  { id: 'ap', rx: /\b(?:aprovacao|popularidade)\b/, nome: 'aprovação', get: g => (typeof aprovacao === 'function' ? aprovacao(g) : 50), sd: 9, un: '%', dec: 0 },
+  { id: 'pob', rx: /\bpobreza\b/, nome: 'pobreza', get: g => g.soc.pob, sd: 2.2, un: '%', dec: 1 },
+  { id: 'hom', rx: /\bhomicidios\b/, nome: 'homicídios', get: g => g.soc.hom, sd: 2.5, un: '/100 mil', dec: 1 },
+  { id: 'desm', rx: /\bdesmatamento\b/, nome: 'desmatamento', get: g => g.soc.desm, sd: 900, un: 'km²', dec: 0 }
+];
+const V39_UP = /\b(?:passar|passe|passa|passou|superar|supere|supera|ultrapassar|ultrapasse|ultrapassa|exceder|exceda|acima|maior|mais de|subir|suba|sobe|disparar|dispare|dispara|estourar|estoure|estoura|crescer|cresca|alta|elevar|romper)\b/;
+const V39_DN = /\b(?:cair|caia|cai|abaixo|menor|menos de|descer|desca|desce|baixar|baixe|baixa|recuar|recue|recua|despencar|despenque|diminuir|diminua|encolher|encolha|queda|recessao)\b/;
+const V39_TRIG = '(?:se|caso|quando|sempre que|toda vez que|assim que|desde que|na hipotese de|no caso de|em caso de|a partir do momento em que|se e quando|uma vez que)';
+function v39Cond(c, fc) { // c: cláusula da condição (original), fc: dobrada
+  let best = null;
+  for (const I of V39_IND) { const m = I.rx.exec(fc); if (m && (!best || m.index < best.i)) best = { I, i: m.index, e: m.index + m[0].length }; }
+  let num = null;
+  { const t = fc.replace(/(\d),(\d)/g, '$1.$2'), re = /(?:r\$ ?)?(\d+(?:\.\d+)?)\s*(%|por cento|pontos|pts|bi\b|bilhoes|km)?/g; re.lastIndex = best ? best.e : 0; const m = re.exec(t); if (m) num = { v: parseFloat(m[1]), u: m[2] || '' }; }
+  const up = V39_UP.exec(fc), dn = V39_DN.exec(fc);
+  const op = up && (!dn || up.index < dn.index) ? '>' : dn ? '<' : null;
+  if (best && best.I.id === 'pib' && /\brecessao\b/.test(fc)) return { ind: best.I, op: '<', lim: 0, txt: c.trim(), q: false };
+  if (best && (num || op)) return { ind: best.I, op: op, lim: num ? num.v : null, txt: c.trim(), q: !num };
+  return { ind: null, op: null, lim: null, txt: c.trim(), q: true };
+}
+function v39Condicao(s, R) {
+  const f = foldTxt(s);
+  const sepVirg = (t) => { for (let i = 0; i < t.length; i++) if ((t[i] === ',' || t[i] === ';') && !(/\d/.test(t[i - 1] || '') && /\d/.test(t[i + 1] || ''))) return i; return -1; };
+  let m = new RegExp('^(?:(?:e|mas|entao|olha|bom|ai|ah)[,!]?\\s+)*' + V39_TRIG + '\\s+(.+)$').exec(f);
+  if (m) {
+    const off = f.length - m[1].length, rest = m[1];
+    let k = sepVirg(rest), ke = k + 1;
+    const mt = /\s(?:entao|ai|nesse caso|neste caso)\s/.exec(rest);
+    if (k < 0 && mt) { k = mt.index; ke = mt.index + mt[0].length; }
+    if (k < 0) { // sem vírgula ("se o dolar passar de 7 zerar tarifa"): corta no primeiro verbo de política depois do comparador
+      const cm = rest.search(/\b\d|\b(?:passar|passe|superar|ultrapassar|exceder|cair|subir|disparar|estourar|houver|for|estiver|ficar|chegar|atingir|bater|aprovar|vencer|ganhar|perder|ocorrer|acontecer|surgir|faltar|sobrar)\b/);
+      const vs = acharVerbos(rest, []).filter(v => cm >= 0 && v.i > cm + 2 && !/^(?:passar|superar|ultrapass|exceder|subir|cair|disparar|estourar)/.test(v.t));
+      if (vs.length) { k = vs[0].i - 1; ke = vs[0].i; }
+      else if (cm >= 0) { // v3.9: verbo que o catálogo não tem em VB (estender, prorrogar...): primeira palavra conhecida da lista de verbos de política
+        const rg = /[a-z]+/g; let mw; rg.lastIndex = cm + 2;
+        while ((mw = rg.exec(rest))) { if (mw.index > cm + 2 && mw[0].length > 3 && V39_INFS.has(mw[0]) && !/^(?:passar|superar|ultrapassar|exceder|subir|cair|disparar|estourar|ficar|chegar|atingir|bater|aprovar|vencer|ganhar|perder|faltar|sobrar|ocorrer)$/.test(mw[0])) { k = mw.index - 1; ke = mw.index; break; } }
+      }
+    }
+    if (k > 0 && rest.slice(ke).trim().length > 3) {
+      R.cond = v39Cond(s.slice(off, off + k), rest.slice(0, k));
+      return s.slice(off + ke).trim().replace(/^(?:e|entao|ai)\s+/i, '');
+    }
+  }
+  const mb = new RegExp('^(.{8,}?)[,;]?\\s+' + V39_TRIG + '\\s+((?:o|a|os|as|houver|for|estiver|aprovar|um|uma|ocorrer|surgir)\\b.+)$').exec(f);
+  if (mb && !/^(?:que|nao)\b/.test(mb[2])) {
+    const cl = mb[2], ck = v39Cond(s.slice(f.length - cl.length), cl);
+    if (ck.ind || /\b(?:passar|superar|ultrapassar|exceder|cair|subir|disparar|estourar|houver|aprovar|for|estiver|ocorrer)\b/.test(cl)) { R.cond = ck; return s.slice(0, mb[1].length).trim().replace(/[,;]$/, ''); }
+  }
+  return s;
+}
+// ---- 3) negação e contraste ----
+const V39_TAXNEG = /\b(?:aument|elev|cri|nov|subi|major)\w*\s+(?:o |a |os |as )?(?:impost|tribut|carga|taxa|aliquot|gasto|despesa|divida|deficit|conta)|\b(?:impost|tribut)\w*\s+(?:novo|nova)/;
+function v39Contraste(s, R) {
+  const f = foldTxt(s);
+  let m = /^nao e\s+(.+?),\s*(?:e |mas |e sim |mas sim )?(?:so |apenas |somente |simplesmente )?(.+)$/.exec(f) || /^nao (?:quero|vou|precisa|e para|se trata de)\s+(.+?),\s*(?:quero |vou |e |mas |e sim )?(?:so |apenas |somente |simplesmente )?(.+)$/.exec(f);
+  if (m && !V39_TAXNEG.test(m[1]) && !SEM_IMPOSTO.test(f)) { // restrição de imposto fica com a leitura de fonte
+    const iA = f.indexOf(m[1]), A = s.slice(iA, iA + m[1].length), B = s.slice(f.length - m[2].length);
+    R.neg.push(A.trim());
+    const vA = /^(?:aumentar|ampliar|criar|cortar|reduzir|acabar com|elevar|mexer em|mexer no|mexer na|mudar|tocar em|aprovar|fazer)\s+/.exec(foldTxt(A));
+    const obj = vA ? A.slice(vA[0].length).trim() : '';
+    let Bn = B.replace(/\b(?:corrigir|atualizar)\b/i, 'reajustar');
+    const vB = foldTxt(Bn).split(/[^a-z]+/).find(w => w && !V39_INFS.has(w) && v39Lema(w));
+    if (vB) Bn = Bn.replace(new RegExp('\\b' + vB + '\\b', 'i'), v39Lema(vB));
+    return obj ? Bn + ' (' + obj + ')' : Bn;
+  }
+  m = /^(?:sem|nao)\s+([^,;]{4,80}?)\s*[,;]\s*(.{8,})$/.exec(f);
+  if (m) {
+    const neg = f.slice(0, f.length - m[2].length).replace(/[,;]\s*$/, ''), rest = s.slice(f.length - m[2].length);
+    const w0 = /^(?:sem|nao)\s+([a-z]+)/.exec(neg), fr = foldTxt(rest);
+    if (w0 && /(?:ar|er|ir|or|ando|endo|indo)$/.test(w0[1]) && !V39_TAXNEG.test(neg) && !SEM_IMPOSTO.test(neg) && fr.split(/[^a-z]+/).some(w => w.length > 3 && (V39_INFS.has(w) || !!v39Lema(w)))) { R.neg.push(s.slice(0, neg.length).trim()); return rest.trim(); }
+  }
+  m = /^(.{8,}?)[,;]?\s+(?:mas |porem |so que |e )?(?:nao|sem)\s+((?:mexer|alterar|tocar|aumentar|elevar|criar|cortar|reduzir|reajustar|diminuir|retirar|acabar|prejudicar|afetar|tirar|mudar)\b.*)$/.exec(f);
+  if (m && !V39_TAXNEG.test(m[2]) && !SEM_IMPOSTO.test(f) && (/^[,;]?\s*(?:mas|porem|so que)\b/.test(f.slice(m[1].length)) || /^[,;]?\s+sem\b/.test(f.slice(m[1].length))) && foldTxt(m[1]).split(/[^a-z]+/).some(w => w.length > 3 && (V39_INFS.has(w) || !!v39Lema(w)))) { R.neg.push(s.slice(m[1].length).replace(/^[,;]?\s+(?:mas |porem |so que )?/i, '').trim()); return s.slice(0, m[1].length); }
+  return s;
+}
+const v39Cdf = (z) => { const t = 1 / (1 + .2316419 * Math.abs(z)), d = .3989423 * Math.exp(-z * z / 2), p = d * t * (.3193815 + t * (-.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274)))); return z > 0 ? 1 - p : p; };
+function v39Fmt(v, dec) { return fmtNum(v, dec == null ? 1 : dec); }
+function v39CondRotulo(c) { // "dólar > R$ 7" / "inflação > 6%"
+  if (!c.ind) return c.txt.charAt(0).toLowerCase() + c.txt.slice(1);
+  const I = V39_IND.find(x => x.id === c.ind) || {}, v = c.lim == null ? '' : (I.un === 'R$' ? 'R$ ' + v39Fmt(c.lim, I.dec) : v39Fmt(c.lim, I.dec) + (I.un === '%' || I.un === '% do PIB' ? '%' + (I.un === '% do PIB' ? ' do PIB' : '') : ' ' + I.un));
+  return (I.nome || c.ind) + ' ' + (c.op === '<' ? '<' : '>') + ' ' + v;
+}
+/* chance de a condição valer: o indicador do jogo segue um passeio com reversão à média (desvio anual do indicador, meia-vida de ~1 ano); p = fração esperada dos meses restantes em que o gatilho vale */
+function v39CondProb(g, c) {
+  const I = c.ind ? (typeof c.ind === 'object' ? c.ind : V39_IND.find(x => x.id === c.ind)) : null;
+  if (!I || !g || !g.eco) return { p: .3, gen: true };
+  let x0; try { x0 = I.get(g); } catch (e) { x0 = null; }
+  if (x0 == null || isNaN(x0)) return { p: .3, gen: true };
+  let lim = c.lim, op = c.op;
+  if (lim == null) lim = x0 + (op === '<' ? -1 : 1) * I.sd * .9; // qualitativo ("dispare", "estoure"): cerca de um desvio
+  if (!op) op = lim >= x0 ? '>' : '<';
+  if (op === '>' ? x0 > lim : x0 < lim) return { p: 1, jaVale: true, atual: x0, lim: lim, op: op };
+  const H = Math.max(6, 49 - (g.mes || 1)); let acc = 0;
+  for (let t = 1; t <= H; t++) { const sd = I.sd * Math.sqrt(1 - Math.exp(-2 * t / 18)), z = (lim - x0) / sd; acc += op === '>' ? 1 - v39Cdf(z) : v39Cdf(z); }
+  return { p: clamp(acc / H, .02, .95), atual: x0, lim: lim, op: op };
+}
+function v39AplicaCond(g, prop, A, c) {
+  const P = v39CondProb(g, c);
+  const rot = v39CondRotulo({ ind: c.ind ? c.ind.id : null, op: P.op || c.op, lim: P.lim != null ? P.lim : c.lim, txt: c.txt });
+  const co = { ind: c.ind ? c.ind.id : null, op: P.op || c.op, lim: P.lim != null ? P.lim : c.lim, txt: c.txt, rotulo: rot, p: r2(P.p), atual: P.atual != null ? r2(P.atual) : null, gen: !!P.gen, jaVale: !!P.jaVale };
+  prop.cond = co; prop.flags.push('condicional');
+  const I = c.ind;
+  if (P.jaVale) { A.calculo.push('Condição "' + rot + '" já vale hoje (' + (I ? I.nome + ' em ' + v39Fmt(P.atual, I.dec) : '') + '): a medida produz efeito imediato.'); prop.calculo = A.calculo; return; }
+  co.pleno = { cost: prop.cost, rev: prop.rev, once: prop.once, extra: prop.extra };
+  for (const k of ['cost', 'rev', 'once', 'extra']) prop[k] = r2((prop[k] || 0) * P.p);
+  const pct = fmtNum(P.p * 100, 0);
+  const linha = P.gen
+    ? 'Medida condicional ("' + c.txt + '"): o gatilho não é um indicador acompanhado pelo jogo; estimativa de ' + pct + '% de chance de valer. Custo e receita esperados = valor pleno × ' + pct + '%; o efeito só entra quando a condição ocorrer (aguardando gatilho).'
+    : 'Medida condicional (' + rot + '): hoje ' + I.nome + ' está em ' + v39Fmt(P.atual, I.dec) + (I.un === 'R$' ? '' : ' ' + I.un.replace('%', '%').trim()) + '; chance estimada de o gatilho valer ' + pct + '% do tempo até o fim do mandato. Custo e receita esperados = valor pleno × ' + pct + '%; o efeito real só entra quando a condição dispara (aguardando: ' + rot + ').';
+  A.calculo.unshift(linha); prop.calculo = A.calculo;
+  const pleno = [co.pleno.cost ? 'despesa plena ' + fmtBi(co.pleno.cost) + '/ano' : '', co.pleno.rev ? 'receita plena ' + fmtBi(co.pleno.rev) + '/ano' : '', co.pleno.once ? 'receita única plena ' + fmtBi(co.pleno.once) : '', co.pleno.extra ? 'gasto único pleno ' + fmtBi(co.pleno.extra) : ''].filter(Boolean).join('; ');
+  prop.tecnico = 'Medida condicional: só vale quando ' + (P.gen ? c.txt : rot) + '. ' + (pleno ? 'Se disparar: ' + pleno + '. ' : '') + 'Valores deste parecer = pleno × ' + pct + '% (chance do gatilho). ' + prop.tecnico;
+  prop.topic = prop.topic + ' (se ' + (P.gen ? c.txt.charAt(0).toLowerCase() + c.txt.slice(1) : rot) + ')';
+  try { if (prop.analise) { prop.analise.parecer = prop.tecnico; } } catch (e) { }
+}
+// ---- 4) acabamento: justificativa no fim, "mais/menos X" sem verbo e "quem ganha até X não deve pagar imposto" ----
+function v39Extras(s, R) {
+  let f = foldTxt(s);
+  const temVerbo = (x) => x.split(/[^a-z]+/).some(w => w.length > 3 && (V39_INFS.has(w) || !!v39Lema(w)));
+  let m = /[,;]?\s+(?:porque|pois|ja que|visto que|afinal|uma vez que|pq)\s+.+$/.exec(f);
+  if (m && m.index > 10 && temVerbo(f.slice(0, m.index))) { s = s.slice(0, m.index); f = f.slice(0, m.index); R.just = true; }
+  m = /,\s+(?:o|a|os|as)\s+\w+\s+(?:morre|morrem|sofre|sofrem|esta|estao|fica|ficam|vive|vivem|nao tem|nao aguenta|ta|tao|passa|passam)\b.*$/.exec(f);
+  if (m && m.index > 8 && f.slice(0, m.index).split(' ').length >= 2) { s = s.slice(0, m.index); f = f.slice(0, m.index); R.just = true; }
+  m = /\s+(?:que|q)\s+(?:esta|ta|e|ficou|virou)\s+(?:um|uma|muito|tao|mais|bem)?\s*(?:absurd\w+|caro\w*|ruim|pessim\w+|horrivel|vergonha|insuportavel|abusiv\w+|impossivel|demais)\s*$/.exec(f);
+  if (m && m.index > 8) { s = s.slice(0, m.index); f = f.slice(0, m.index); R.just = true; }
+  m = /^(.+?)\s+(?:nao|n)\s+(?:deve|devia|deveria|precisa|precisaria|tem que|pode|podia|devem|precisam)\s+(?:ter que\s+)?pagar\s+((?:mais\s+)?(?:imposto|tributo|taxa|iof|iss|ipi|icms|iptu|ipva)[^,;.]*)(.*)$/.exec(f) || /^(.+?)\s+(?:nao|n)\s+paga(?:r|m)?\s+((?:mais\s+)?(?:imposto|tributo|taxa|iof|iss|ipi|icms|iptu|ipva)[^,;.]*)(.*)$/.exec(f);
+  if (m && !/^(?:o governo|a gente|nos)$/.test(m[1])) { s = 'isentar de ' + s.slice(f.indexOf(m[2], m[1].length), f.indexOf(m[2], m[1].length) + m[2].length).replace(/^mais\s+/i, '') + ' ' + s.slice(0, m[1].length) + s.slice(f.length - m[3].length); f = foldTxt(s); }
+  m = /^ninguem\s+(?:deve|devia|deveria|precisa|tem que)\s+pagar\s+(.+)$/.exec(f);
+  if (m) { s = 'isentar de ' + s.slice(f.length - m[1].length); f = foldTxt(s); }
+  if (/^(?:mais|menos)\s+/.test(f) && !temVerbo(f)) s = (f.startsWith('mais') ? 'ampliar ' : 'reduzir ') + s.replace(/^(?:mais|menos)\s+/i, '');
+  return s;
+}
+function v39Teor(orig) {
+  const R = { txt: orig, cond: null, neg: [], ironia: false };
+  try {
+    let s = orig;
+    s = v39Retorica(s, R);
+    s = v39Condicao(s, R);
+    s = v39Contraste(s, R);
+    s = v39Extras(s, R);
+    R.txt = s.trim().replace(/\?+\s*$/, '') || orig; // '?' solto no fim (ruído de digitação) não faz da frase uma pergunta
+  } catch (e) { R.txt = orig; R.cond = null; if (typeof console !== 'undefined') console.warn('v39Teor', e); }
+  return R;
 }
 function parse(orig) {
   const s = corrige(prep(orig));
@@ -5262,6 +5606,10 @@ function parse(orig) {
   if (!objs.length) { const mq = A.Q.money.find(q => q.unit && q.v >= 1e6), cv = /\b(?:cort\w+|reduz\w+|economiz\w+|poup\w+|enxug\w+|tesourad\w+|diminu\w+)\b/.exec(s), og = OBJ.find(x => x.id === 'gastos_governo'); if (mq && cv && og && cv.index < mq.i) objs.push({ o: og, i: mq.e, e: mq.e, t: 'gastos' }); }
   const fm = achaMarcadorFonte(s, objs);
   A.fm = fm;
+  if (fm && fm.rev && !objs.some(m => m.i < fm.e && (m.o.k === 'T' || m.o.k === 'G' || m.o.k === 'E'))) { // v3.9: finalidade com fonte de base desconhecida ("cobrar uma contribuição extra das mineradoras para financiar X"): a fonte é um tributo genérico
+    const left = s.slice(0, fm.i), mt = /\b(?:cobrar|taxar|tributar|instituir (?:um |uma )?(?:imposto|taxa|contribuicao|tributo)|criar (?:um |uma )?(?:imposto|taxa|contribuicao|tributo|adicional))\b[^.;]*$/.exec(left), og = OBJ.find(x => x.id === 'imposto_geral');
+    if (mt && og) { objs.push({ o: og, i: mt.index, e: mt.index + mt[0].length, t: mt[0] }); objs.sort((a, b) => a.i - b.i); }
+  }
   const bloq = objs.map(m => ({ i: m.i, e: m.e }));
   if (fm) bloq.push({ i: fm.i, e: fm.e });
   let vs = acharVerbos(s, bloq);
@@ -5454,10 +5802,66 @@ function contabiliza(it, F) {
   F.once += it.sale; F.extra += it.buy;
   it.w = it.y1spend - it.y1rev + it.buy - it.sale * (it.tipo === 'once' ? .5 : .3);
 }
+/* v3.9: obra ou compra com quantidade citada ("construir 2 mil escolas", "comprar 10 mil ônibus elétricos"): piso de custo = quantidade × custo unitário típico, diluído no horizonte (4 anos).
+   Corrige leituras que davam custo ~0 (objeto regulatório ou programa sem unidade). Valores em R$ mil por unidade, estimativas de ordem de grandeza. */
+const V39_UNID = [ // [regex do substantivo, R$ mil por unidade, rótulo]
+  [/^(?:escolas?|colegios?)$/, 12000, 'escola'], [/^creches?$/, 5000, 'creche'], [/^(?:hospitais|hospital)$/, 150000, 'hospital'], [/^upas?$/, 10000, 'UPA'], [/^(?:ubs|postos? de saude|unidades basicas)$/, 3000, 'posto de saúde'],
+  [/^(?:casas|moradias|habitacoes|unidades habitacionais|apartamentos)$/, 100, 'moradia'], [/^(?:onibus|micro-?onibus)$/, 1000, 'ônibus'], [/^(?:viaturas?|carros? de policia)$/, 250, 'viatura'], [/^ambulancias?$/, 400, 'ambulância'],
+  [/^(?:leitos?)$/, 400, 'leito'], [/^(?:cameras?)$/, 5, 'câmera'], [/^(?:drones?)$/, 100, 'drone'], [/^(?:radares?)$/, 2000, 'radar'], [/^(?:computadores|notebooks|laptops)$/, 3, 'computador'], [/^(?:tablets?)$/, 1.5, 'tablet'],
+  [/^(?:cisternas?)$/, 4, 'cisterna'], [/^(?:presidios|penitenciarias|prisoes)$/, 60000, 'presídio'], [/^(?:delegacias?)$/, 6000, 'delegacia'], [/^(?:bibliotecas?)$/, 3000, 'biblioteca'], [/^(?:quadras?)$/, 1500, 'quadra'],
+  [/^(?:laboratorios?)$/, 5000, 'laboratório'], [/^(?:universidades?)$/, 800000, 'universidade'], [/^(?:institutos?|campus)$/, 80000, 'instituto federal'], [/^(?:pontes?)$/, 300000, 'ponte'], [/^(?:aeroportos?)$/, 500000, 'aeroporto'], [/^(?:portos?)$/, 1000000, 'porto'],
+  [/^(?:navios?|submarinos?|fragatas?)$/, 1500000, 'navio'], [/^(?:avioes|cacas?|helicopteros?)$/, 300000, 'aeronave'], [/^(?:usinas?)$/, 1500000, 'usina'], [/^(?:km|quilometros)$/, 12000, 'km de obra']
+];
+function v39Pisos(A) {
+  const s = A.s, out = [], rx = /(?:^|[^\d.])(\d{1,3}(?:\.\d+)?|\d{4,9})(?: ?(mil|milhoes|milhao))? (?:de )?(?:novos |novas |novo |nova )?(?:km de |quilometros de )?([a-z]+(?: de [a-z]+)?)/g;
+  let m;
+  while ((m = rx.exec(s))) {
+    const n0 = parseFloat(m[1]) * (m[2] ? UNIT[m[2]] : 1), i0 = m.index + (m[0].length - m[0].replace(/^[^\d]/, '').length), e0 = m.index + m[0].length;
+    let noun = m[3]; if (/^km de |quilometros de /.test(m[0].replace(/^[^\d]*[\d.]+(?: ?(?:mil|milhoes|milhao))? (?:de )?(?:novos |novas |novo |nova )?/, ''))) noun = 'km';
+    if (/\bkm de |quilometros de /.test(m[0])) noun = 'km';
+    const first = noun.split(' ')[0];
+    const u = V39_UNID.find(x => x[0].test(noun) || x[0].test(first)); if (!u || !(n0 > 0)) continue;
+    if (/^(?:anos|ano|meses|mes|dias|reais|real|vezes|por|para)$/.test(first)) continue;
+    const pre = s.slice(Math.max(0, i0 - 34), i0), pos = s.slice(e0, e0 + 24);
+    const refor = /\b(?:reform\w+|reparar|recuperar|melhorar|requalific\w+|retrofit)\b/.test(pre + ' ' + pos);
+    const obra = refor || /\b(?:constru\w+|ergu\w+|edific\w+|implant\w+|instal\w+|compr\w+|adquir\w+|abr(?:ir|a|e)|equip\w+|doar|distribu\w+|entreg\w+|criar|cria|colocar|fazer|fabric\w+|financi\w+|ampli\w+)\b/.test(pre) || /\b(?:novos?|novas?)\b/.test(m[0]);
+    if (!obra) continue;
+    let unit = u[1];
+    if (u[2] === 'km de obra') { if (/\bferrovi\w+|trilho|trem/.test(s)) unit = 25000; else if (/\bmetro\b/.test(s)) unit = 400000; else if (/\brodovi\w+|estrada|asfalt\w+|pavimenta\w+/.test(s)) unit = /\bvicinal|vicinais/.test(s) ? 600 : 8000; else unit = 4000; }
+    if (u[2] === 'ônibus' && /\beletric\w+/.test(s)) unit = 2200;
+    if (u[2] === 'moradia' && /\brura(?:l|is)\b|\bcampo\b/.test(s)) unit = 60;
+    if (u[2] === 'hospital' && /\b(?:campanha|pequeno|regional)\b/.test(s)) unit = 40000;
+    if (refor) unit *= .25;
+    out.push({ n: n0, noun: u[2], unit: unit, tot: n0 * unit / 1e6, i: i0, e: e0 }); // total em R$ bi
+  }
+  return out;
+}
+function v39Piso(A) {
+  for (const it of A.items) if (it.role === 'main' && it.o.id === 'imposto_geral' && it.recorte && !it.q.has && it.B > 4) { it.B = 4; it.calc = (it.calc || []).concat(['Tributo sobre base específica (' + it.recorte + ') sem número no texto: ordem de grandeza de R$ 4 bi/ano (estimativa), bem abaixo do tributo genérico']); } // v3.9
+  let pisos; try { pisos = v39Pisos(A); } catch (e) { return; }
+  if (!pisos.length || A.talk || A.pledgeOnly) return;
+  const tot = pisos.reduce((a, x) => a + x.tot, 0), yrs = 4, perYear = Math.min(400, tot / yrs);
+  if (perYear < .05) return;
+  const main = A.items.filter(i => i.role === 'main' && i.o.k === 'G' && i.sg > 0 && !i.fora && !i.jaVigente);
+  const cur = main.reduce((a, i) => a + (i.B || 0), 0);
+  if (cur >= perYear * .5) return;
+  const nota = 'Piso por quantidade: ' + pisos.map(x => fmtPessoas(x.n) + ' ' + x.noun + (x.noun === 'km de obra' ? '' : '') + ' × R$ ' + fmtNum(x.unit >= 1000 ? x.unit / 1000 : x.unit, x.unit >= 1000 ? 1 : 2) + (x.unit >= 1000 ? ' mi' : ' mil')).join(' + ') + ' = ' + fmtBi(tot) + ', diluídos em ' + yrs + ' anos = ' + fmtBi(perYear) + '/ano (custo unitário típico, estimativa)';
+  if (main.length) { const it = main.slice().sort((a, b) => (b.B || 0) - (a.B || 0))[0]; it.B = perYear; it.v39piso = true; it.calc = (it.calc || []).concat([nota]); const w = it; w.w = null; contabilizaRefaz(it); return; }
+  // sem item de gasto: troca o item regulatório que cobre a quantidade por um item genérico de obra com o custo do piso
+  let g0 = null; try { g0 = genItem(A, { k: 'G', kind: 'prog', inst: 'ADM', B: perYear }); } catch (e) { g0 = null; }
+  if (!g0) return;
+  g0.calc = (g0.calc || []).concat([nota]);
+  const sob = (i) => pisos.some(x => i.i < x.e + 40 && i.e > x.i - 40);
+  A.items = A.items.filter(i => !(i.role === 'main' && i.o.k === 'R' && !i.o.lc && !i.o.pec && sob(i))).concat([g0]);
+  A.generica = null;
+}
+function contabilizaRefaz(it) { /* o piso muda B depois de dimensionar: contabiliza() relê B */ }
 function calcFiscal(A, g) {
   const F = { cost: 0, rev: 0, extra: 0, once: 0, S: 0, offsetNom: 0, offsetEff: 0, cov: 1, fonte: null, fonteDesc: [], credPond: 1 };
   const main = A.items.filter(i => i.role === 'main'), fon = A.items.filter(i => i.role === 'fonte');
   for (const it of main) if (it.o.k !== 'C') { dimensionar(it, A.Q, null); }
+  try { v39Piso(A); for (const it of A.items) if (it.role === 'main' && it.o.k !== 'C' && it.B == null) dimensionar(it, A.Q, null); } catch (e) { } // v3.9
+  const main2 = A.items.filter(i => i.role === 'main'); main.length = 0; main2.forEach(i => main.push(i));
   for (const it of main) if (it.o.k !== 'C') contabiliza(it, F);
   // necessidade a financiar (ano 1)
   let S = 0; for (const it of main) if (it.w > 0) S += it.w;
@@ -6506,7 +6910,7 @@ function topicoItem(it, A, comEscopo) {
   else if (inf === 'ampliar' && o.ex !== 0 && o.base > 0 && o.k === 'G') t = 'a ampliação ' + de(n) + (comp && !/^ de R\$ [\d.]+$/.test(comp) ? comp : (comp || ''));
   else t = n + comp;
   if (it.escProd && o.k === 'T') { if (it.sg < 0 && (it.tot || it.mag === 1) && !pc) t = 'a isenção ' + de(n) + ' ' + it.escProd.txt; else t += ' ' + it.escProd.txt; } // v3.4
-  if (it.recorte && !it.topicoFixo) t += ' (' + it.recorte + ')'; // v3.5: objeto + recorte
+  if (it.recorte && !it.topicoFixo && !foldTxt(it.recorte).split(/[^a-z0-9]+/).filter(w => w.length >= 5).every(w => foldTxt(t).indexOf(w.slice(0, 5)) >= 0)) t += ' (' + it.recorte + ')'; // v3.5: objeto + recorte (v3.9: só quando traz palavra que o tópico ainda não tem)
   if (it.dur != null && it.dur <= 48) t += ' por ' + durTxt(it.dur);
   if (comEscopo && A.escopo.nivel !== 'nacional') {
     const e = A.escopo; let loc = '';
@@ -6721,6 +7125,22 @@ const ABS_RES = [
   /\b(?:ponte|tunel|ferrovia|rodovia|estrada|metro|trem)\b[^.]{0,25}\b(?:ligando|conectando|ate|para|entre|ligar|conectar|que liga)\b[^.]{0,25}\b(?:africa|europa|asia|oceania|japao|china|eua|estados unidos|lua|marte|portugal|australia|antartida)\b/
 ];
 const ABS_CAP = { casas: 80000, moradias: 80000, unidades: 80000, escolas: 150, creches: 150, hospitais: 8, postos: 400, ubs: 400, km: 600, quilometros: 600, rodovias: 600, leitos: 4000, aeroportos: 2, portos: 2, obras: 3000, empregos: 1500000, vagas: 1500000 };
+/* v3.9: impossibilidades de ordem de grandeza ou de física, ditas em frase curta ou informal */
+const V39_ABS = [
+  /\b(?:pagar|quitar|liquidar|zerar|acabar com|eliminar)\b[^.;]{0,25}\bdivida (?:publica|externa|interna|bruta|do pais|do brasil|do governo|da uniao)\b[^.;]{0,20}\b(?:inteira|toda|total|por completo|de uma vez)\b/,
+  /\b(?:quitar|liquidar)\b[^.;]{0,25}\bdivida (?:publica|externa|interna|bruta|do pais|do brasil|do governo|da uniao)\b/,
+  /\b(?:pagar|zerar|eliminar)\b[^.;]{0,25}\bdivida (?:publica|externa|interna|bruta|do pais|do brasil|do governo|da uniao)\b[^.;]{0,25}\b(?:ate (?:dezembro|o fim do ano|o fim do mandato|ano que vem|\d{4})|em \d+ (?:dias|semanas|meses|anos)|neste ano|esse ano)\b/,
+  /\b(?:zerar|acabar com|eliminar|erradicar|extinguir)\b[^.;]{0,15}\b(?:a |o )?(?:inflacao|desemprego|pobreza|fome|miseria|violencia|crime|corrupcao|homicidios|desigualdade|analfabetismo)\b[^.;]{0,25}\b(?:em|ate|dentro de|nos proximos|num|em um|em uma) (?:\d+ (?:dias|semanas|meses)|um mes|uma semana|tres meses|seis meses|este ano|esse ano|amanha|hoje)\b/,
+  /\bligar\w*\b[^.;]{0,15}\bbrasil\b[^.;]{0,15}\b(?:africa|europa|asia|eua|estados unidos|portugal|china|japao|oceania|antartida)\b/,
+  /\b(?:tunel|ponte|ferrovia|trem|rodovia|estrada)\b[^.;]{0,20}\bsubmarin\w+\b|\btunel submarino\b/,
+  /\b(?:ponte|tunel|estrada|ferrovia)\b[^.;]{0,30}\b(?:brasil|america do sul)\b[^.;]{0,25}\b(?:africa|europa|asia|oceania|antartida)\b/
+];
+function v39Absurdo(s) {
+  for (const r of V39_ABS) if (r.test(s)) return true;
+  const m = /\b(?:fazer|faz|deixar|levar)?\s*(?:o )?(?:brasil|pib|economia|pais)\b[^.;]{0,25}\b(?:crescer|cresca|crescendo|crescimento)\b[^.;]{0,20}?(\d{1,3}(?:\.\d+)?) ?(?:%|por cento)/.exec(s) || /\b(?:crescer|crescimento)\b[^.;]{0,25}?(\d{1,3}(?:\.\d+)?) ?(?:%|por cento)[^.;]{0,25}\b(?:ao ano|por ano|no ano|ano que vem|este ano|esse ano|em um ano)\b/.exec(s);
+  if (m && parseFloat(m[1]) >= 12 && /\b(?:brasil|pib|economia|pais)\b/.test(s)) return true;
+  return false;
+}
 function absurdoGeral(s, orig, Q) {
   if (ABS_RE.test(s)) return true;
   for (const r of ABS_RES) if (r.test(s)) return true;
@@ -6729,17 +7149,22 @@ function absurdoGeral(s, orig, Q) {
     if (/\b(?:por decreto|por lei|por canetada|na canetada|por medida provisoria)\b/.test(sent) && /\b(?:dolar|selic|inflacao|ipca|desemprego)\b/.test(sent) && /\b(?:zer\w+|elimin\w+|acab\w+ com|fix\w+|tabel\w+|reduz\w+|baix\w+|cair|caia|caiam|subir|aument\w+|dobr\w+|congel\w+|derrub\w+|manter|mantenha|obrig\w+|determin\w+|ordenar?|decret\w+|crav\w+|trav\w+)\b/.test(sent) && !/\bmeta (?:de|da|do) (?:inflacao|ipca)\b|\bbanda\b|\bbanco central\b[^.]{0,30}\bindependen/.test(sent)) return true;
   }
   if (z38Absurdo(s, Q)) return true; // v3.8
+  if (v39Absurdo(s)) return true; // v3.9
   // promessa fisicamente impossivel: N unidades em poucos meses acima da capacidade de execucao
   if (Q && Q.hor != null && Q.count.length) {
     for (const c of Q.count) { const cap = ABS_CAP[c.noun]; if (cap && c.n / Math.max(Q.hor, 1) > cap * 1.5) return true; }
   }
   return false;
 }
+const V39_PEC_RX = /\b(?:stf|supremo|tribunal constitucional)\b[^.;]{0,70}\b(?:votos|quorum|maioria|composicao|numero de ministros|idade|aposentadoria compulsoria|onze ministros|11 ministros|mandato (?:fixo|de))\b|\b(?:votos|quorum|maioria qualificada)\b[^.;]{0,50}\b(?:stf|supremo)\b|\bmandato (?:fixo )?(?:de|para) (?:os )?ministros\b|\b(?:oito|8|seis|6|nove|9) (?:dos|de) (?:onze|11)\b[^.;]{0,30}\b(?:votos|ministros)\b/;
+const V39_CARGOS_RX = /\b(?:criar|criacao de|abrir|criando|instituir)\b[^.;]{0,20}\b(?:\d+(?:\.\d+)? ?(?:mil)? )?(?:novos? |novas? )?(?:cargos|carreiras?|funcoes de confianca|funcoes comissionadas|cargos comissionados)\b/;
 function analisar(g, texto, ctx) {
   ctx = ctx || {};
   SM_BASE = ctx.sm > 0 ? ctx.sm : 1621;
-  const orig = String(texto == null ? '' : texto).trim();
+  const orig0 = v39Limpa(String(texto == null ? '' : texto).trim()); // v3.9
+  const T39 = v39Teor(orig0); const orig = T39.txt; // v3.9: a medida é a ação afirmativa; gatilho, restrição e retórica saem do texto lido
   const A = parse(orig);
+  A.T39 = T39;
   const s = A.s;
   A.instExpl = null; A.instDet = null;
   const sIE = s.replace(/\bsem (?:a |uma |nova |qualquer |necessidade de |precisar de )?(?:lei complementar|plp|pec|emenda constitucional|emenda a constituicao|decreto|medida provisoria|projeto de lei|lei)\b/g, ' '); // v3.7: "sem lei complementar" nega o instrumento
@@ -6799,6 +7224,7 @@ function analisar(g, texto, ctx) {
   if (sig.some(i => i.pledge)) esp += 12;
   A.espec = Math.min(100, esp);
   A.vago = sig.length === 0 || (!nonGer && !A.hasNum && !A.pledgeOnly && !A.talk && A.espec < 45);
+  if (A.vago && sig.some(i => i.o.id === 'imposto_geral' && i.recorte && i.sg) && !A.pledgeOnly) A.vago = false; // v3.9: tributo com base nomeada ('exportação de soja') não é vago
   if (!A.vago && sig.every(i => i.o.k === 'C' && i.o.id === 'fala') && !A.hasNum && s.split(' ').length < 4) A.vago = false;
   A.qual = A.vago ? .35 : 1;
   if (A.jaVigente) { A.vago = false; A.talk = true; A.qual = 1; if (A.jaVigente.id === 'lei15270') A.items = A.items.filter(i => i.o.id === 'ir_pf'); } // a compensação (tributação de altas rendas e dividendos) é da mesma lei
@@ -6815,6 +7241,7 @@ function analisar(g, texto, ctx) {
   // instrumento
   let inst = cfInstrumento(A, escolheInst(A));
   if (A.vago) inst = A.instExpl ? (A.instExpl === 'LC' ? 'PL' : A.instExpl) : 'COM';
+  if (!A.instExpl && !A.vago && !A.talk && !A.pledgeOnly && !A.jaVigente) { if (V39_PEC_RX.test(s)) { inst = 'PEC'; A.instDet = null; } else if (inst === 'MP' && V39_CARGOS_RX.test(s)) inst = 'PL'; } // v3.9: quórum/composição do STF é PEC; criação de cargos é lei
   if (A.instExpl === 'LC') A.instDet = 'LC';
   else if (!A.instExpl && A.items.some(i => i.sg && (i.o.lc || i.lcDyn) && !i.fora)) A.instDet = 'LC';
   if (A.instDet === 'LC' && !A.instExpl && !A.vago && !A.talk && (inst === 'MP' || INST_ORDEM.indexOf(inst) < INST_ORDEM.indexOf('PL'))) inst = 'PL'; // v3.7: matéria de lei complementar não vai por MP, decreto ou ato
@@ -6931,7 +7358,7 @@ function analisar(g, texto, ctx) {
   // saida compativel
   const idN = (g && g.mes != null ? g.mes : 0);
   const prop = {
-    id: 'm2-' + Math.floor(hashStr(s + '|' + idN) * 1e9).toString(36) + '-' + idN, texto: orig, topic: topic, cats: cats, inst: inst,
+    id: 'm2-' + Math.floor(hashStr(s + '|' + idN) * 1e9).toString(36) + '-' + idN, texto: String(texto == null ? '' : texto).trim(), topic: topic, cats: cats, inst: inst,
     cost: F.cost, rev: F.rev, once: F.once, extra: F.extra, iv: iv, fx: fx, flags: flags,
     stf: { nivel: legal.nivel, parecer: legal.parecer }, tecnico: tecnico, bonus: {}, scale: 1, transiente: (() => { const ia = A.items.filter(i => i.sg || i.pledge); return ia.length > 0 && ia.every(i => i.o.id === 'fala'); })(), desidratada: 0, ai: false, vago: A.vago, privAlvo: privAlvo,
     entendimento: entend, calculo: calculo, viabilidade: via,
@@ -6957,6 +7384,8 @@ function analisar(g, texto, ctx) {
   prop.motor = 'v3';
   prop.analise = montaAnaliseV3(g, ctx, A, F, fx, prop, legal, via, inst, comp, pasta, pastaNome, atrasos, iv, !!A.vago);
   prop.tecnico = prop.analise.parecer + (flowBits.length ? ' ' + flowBits.join(' ') : '');
+  if (A.T39 && A.T39.neg.length && !A.talk) { A.calculo.push('Restrição declarada (não é medida): ' + A.T39.neg.join('; ')); prop.restricoes = A.T39.neg.slice(); } // v3.9
+  if (A.T39 && A.T39.cond && !A.vago && !A.talk && !A.pledgeOnly) v39AplicaCond(g, prop, A, A.T39.cond); // v3.9: o gatilho não é medida; a medida é condicional
   cfSync(prop);
   return prop;
 }
@@ -7796,8 +8225,8 @@ function montaParecerV3(X) {
   const { A, F, fx, prop, inst, legal, riscos, ganh, perd, votos, part, cal, pastaNome, lagMax } = X;
   const S = [];
   S.push('A proposta (' + prop.topic + ') seria editada como ' + INST_NOME[inst] + ' e executada pela pasta ' + pastaNome + '.');
-  if (A.generica) S.push(TXT_GENERICA); // v3.5
   if (A.normaVigente) S.push(A.normaVigente.rel ? 'Norma relacionada: ' + A.normaVigente.txt + ' O que passar do texto vigente é mudança real.' : 'Já em vigor: ' + A.normaVigente.txt + ' O que passar do texto vigente é mudança real; o que repetir é redundante.'); // v3.5 v3.7
+  if (A.generica) S.push(TXT_GENERICA); // v3.5 (v3.9: a norma vigente vem antes)
   if (A.talk) S.push('É um ato de comunicação, sem despesa nem receita: o efeito se limita à percepção pública.');
   else if (F.S > 0) S.push('Custo e financiamento: despesa ou renúncia de ' + fmtBi(F.S) + ' no primeiro ano, com fonte cobrindo ' + fmtNum(F.cov * 100, 0) + '% da conta, resultado líquido de ' + fmtBi(Math.abs(F.Neff || 0)) + (F.Neff > 0 ? ' de pressão sobre o primário.' : ' favorável ao primário.'));
   else if ((F.Neff || 0) < 0) S.push('Custo e financiamento: melhora o primário em ' + fmtBi(-F.Neff) + '.');
@@ -7900,7 +8329,7 @@ function montaAnaliseV3(g, ctx, A, F, fx, prop, legal, via, inst, comp, pasta, p
 /*V3-END*/
 /* aquecimento: compila regex e vocabulario na carga, para o primeiro texto nao pagar a inicializacao */
 try { for (let w = 0; w < 12; w++) analisar(null, 'aquecimento do motor com bolsa familia'); analisar(null, 'aquecimento do motor com bolsa familia'); analisar({ mes: 12 }, 'Pagar R$ 300 por mes para todos os adultos, financiado por imposto sobre dividendos'); analisar(null, 'Acabar com a autonomia do banco central por decreto'); } catch (e) { }
-return { CF: CF_API, versao: '3.1', OBJETOS: OBJ, analisar: analisar, prep: prep, extrairQuantidades: extrairQuantidades, detectarEscopo: detectarEscopo, fmtBi: fmtBi, INST_NOME: INST_NOME, frenteDe: frenteDe, FRENTES: FRENTES, BLOCOS: BLOCOS_DEF, EIXOS: EIXOS, EIXO_TXT: EIXO_TXT };
+return { CF: CF_API, versao: '3.1', OBJETOS: OBJ, analisar: analisar, prep: prep, extrairQuantidades: extrairQuantidades, detectarEscopo: detectarEscopo, fmtBi: fmtBi, INST_NOME: INST_NOME, frenteDe: frenteDe, FRENTES: FRENTES, BLOCOS: BLOCOS_DEF, EIXOS: EIXOS, EIXO_TXT: EIXO_TXT, V39_IND: V39_IND };
 })();
 
 /* ---- bancadas suprapartidárias: pertencimento estimado de cada legislador (partido + UF + ocupação TSE), calculado uma vez na carga ---- */
@@ -9604,7 +10033,7 @@ const MED_TIPOS = { // v3.6
   estatal:   { nome: 'Estatal ou privatização',   ic: 'Building2',     imp: [6, 15],  mat: [12, 18], antE: .45, antG: .7,  antF: .7 }
 };
 const MED_FASES = [['pub', 'Publicação'], ['reg', 'Regulamentação'], ['imp', 'Implantação'], ['pleno', 'Efeito pleno'], ['mat', 'Maturação']];
-const MED_ESTADOS = { ativa: ['em vigor', 'var(--verde)'], suspensa: ['suspensa por liminar', 'var(--ambar)'], consolidada: ['consolidada', 'var(--muted)'], revogada: ['revogada', 'var(--muted)'], caducada: ['MP caducou', 'var(--rubro)'], derrubada: ['derrubada no STF', 'var(--rubro)'] };
+const MED_ESTADOS = { aguardando: ['aguardando gatilho', 'var(--ambar)'], ativa: ['em vigor', 'var(--verde)'], suspensa: ['suspensa por liminar', 'var(--ambar)'], consolidada: ['consolidada', 'var(--muted)'], revogada: ['revogada', 'var(--muted)'], caducada: ['MP caducou', 'var(--rubro)'], derrubada: ['derrubada no STF', 'var(--rubro)'] };
 const MED_PROB = { // problemas ativos: rótulo curto, cor, ícone
   atraso: ['Atraso', 'var(--ambar)', 'Hourglass'], estouro: ['Custo acima do previsto', 'var(--rubro)', 'TriangleAlert'], contingenciamento: ['Contingenciada', 'var(--ambar)', 'Hourglass'],
   tcu: ['TCU aponta falhas', 'var(--rubro)', 'Gavel'], lobby: ['Lobby dos atingidos', 'var(--ambar)', 'Users'], protesto: ['Protesto', 'var(--rubro)', 'Siren'], greve: ['Greve', 'var(--rubro)', 'Siren'],
@@ -9625,7 +10054,7 @@ function medidasDe(g) { if (!Array.isArray(g.medidas)) g.medidas = []; return g.
 const medU = (g, M, tag) => hashStr(String(g.seed) + '|med|' + M.id + '|' + tag);
 const medNomeG = (k) => { const G = GRUPOS.find(x => x.k === k); return G ? G.nome : k; };
 const medMesTxt = (m) => dataCurta(Math.max(1, Math.round(m)));
-const medAtivo = (M) => M.estado === 'ativa' || M.estado === 'suspensa';
+const medAtivo = (M) => M.estado === 'ativa' || M.estado === 'suspensa' || M.estado === 'aguardando'; // v3.9: aguardando gatilho (medida condicional) também é medida viva
 
 // classifica a medida pelo objeto principal que o motor leu (prop.objs) ou, na falta, pelas categorias; null = sem ciclo de vida (fala, promessa, vago)
 function medTipo(prop) {
@@ -9692,6 +10121,7 @@ function medPrazos(g, prop, tipo, k) {
 function medidaCria(g, prop, k, ato) {
   const tipo = medTipo(prop); if (!tipo) return null;
   const T = MED_TIPOS[tipo], P = medPrazos(g, prop, tipo, k), sp = medSplit(prop, tipo);
+  const pc = prop.cond && !prop.cond.jaVale && prop.cond.pleno ? prop.cond.pleno : prop; // v3.9: medida condicional guarda o valor PLENO; o esperado só serve para o parecer
   const gr = (L) => (L || []).filter(x => x.tipo === 'grupo').slice(0, 4).map(x => ({ q: x.quem, n: x.nome }));
   const m0 = g.mes;
   const M = {
@@ -9699,7 +10129,7 @@ function medidaCria(g, prop, k, ato) {
     dReg: P.dReg, mReg: m0 + P.dReg, dImp: P.dImp, mPleno: m0 + P.dReg + P.dImp, dPl: P.dPl, mMat: m0 + P.dReg + P.dImp + P.dMat,
     pasta: prop.pastaExec || null, comp: Math.round(P.comp * 100) / 100, stfNivel: (prop.stf && prop.stf.nivel) || 'ok', cats: (prop.cats || []).slice(0, 4), eixos38: prop.eixos38 || null,
     ag: sp.ag, ra: sp.ra, aplic: 0, efAp: 0, mEf: 1, mCusto: 1, mRec: 1, fAnt: T.antF,
-    fis: { custo: (prop.cost || 0) * k, extra: (prop.extra || 0) * k, receita: ((prop.rev || 0) - vigRev(prop)) * k }, fisAp: { custo: 0, extra: 0, receita: 0 }, once: prop.once || 0,
+    fis: { custo: (pc.cost || 0) * k, extra: (pc.extra || 0) * k, receita: ((pc.rev || 0) - vigRev(prop)) * k }, fisAp: { custo: 0, extra: 0, receita: 0 }, once: pc.once || 0, dMat: P.dMat,
     estado: 'ativa', mp: prop.inst === 'MP', probs: [], not: [], ultEv: 0, cont: {}, acel: 0, congelaAte: 0, sz: Math.round(P.sz * 100) / 100,
     pol: prop.entendimento ? prop.entendimento.polaridade : 0, objIds: (prop.objs || []).filter(o => o.sg).map(o => o.id),
     per: gr((prop.imp || {}).per), gan: gr((prop.imp || {}).gan), priv: !!prop.privAlvo || (prop.cats || []).includes('privatizacao'), estat: (prop.cats || []).includes('estatizacao'),
@@ -9708,6 +10138,7 @@ function medidaCria(g, prop, k, ato) {
   };
   if (M.vigMes) { const d = Math.max(0, M.vigMes - M.mPleno); M.mPleno += d; M.mMat += d; }
   const pr = (m) => medMesTxt(m);
+  if (prop.cond && !prop.cond.jaVale) { M.estado = 'aguardando'; M.cond = Object.assign({}, prop.cond); delete M.cond.pleno; M.flags = (prop.flags || []).slice(); M.not.push({ mes: m0, t: 'neu', x: `${M.ato} publicado, mas só vale quando a condição ocorrer. Aguardando: ${prop.cond.rotulo}.` }); } else // v3.9
   M.not.push({ mes: m0, t: 'neu', x: `${M.ato} publicado. ${P.dReg > 0 ? 'Regulamentação até ' + pr(M.mReg) + '; ' : ''}implantação até ${pr(M.mPleno)}; efeito pleno de ${pr(M.mPleno)} a ${pr(M.mPleno + P.dPl)}.` });
   medidasDe(g).push(M);
   const L = medidasDe(g);
@@ -9722,6 +10153,7 @@ function medSyncFiscal(g, M, r) {
 }
 function medFase(g, M) {
   if (!medAtivo(M)) return 'fim';
+  if (M.estado === 'aguardando') return 'agu'; // v3.9
   const t = g.mes;
   if (t < M.mReg) return t === M.m0 ? 'pub' : 'reg';
   if (t < M.mPleno) return 'imp';
@@ -9732,6 +10164,7 @@ function medFase(g, M) {
 const medDoProp = (g, prop) => medL(g).find(m => m.pid === prop.id) || null;
 // desfaz o que já entrou (anúncio + rampa + fiscal). frac: parte desfeita
 function medidaReverte(g, M, frac, estado) {
+  if (M.estado === 'aguardando') { M.estado = estado; M.fim = g.mes; M.probs = []; if (g.pendentes) g.pendentes = g.pendentes.filter(p => p.pid !== M.pid); applyFx(g, M.ag, -M.k * .1); return; } // v3.9: nada entrou ainda, só o eco do anúncio
   const k = M.k;
   applyFx(g, M.ag, -k * frac);
   applyFx(g, M.ra, -k * M.efAp * frac);
@@ -9883,6 +10316,21 @@ function medProblemas(g, M, notas) {
     if (p.k === 'atraso' && t >= M.mPleno) M.probs = M.probs.filter(x => x !== p);
   }
 }
+/* v3.9: medida condicional ("se o dólar passar de 7, zerar a tarifa"): fica em "aguardando gatilho" até o indicador do jogo cruzar o limiar; só então entram o efeito e o fiscal */
+function medCondVale(g, M) {
+  const c = M.cond; if (!c) return true;
+  if (c.ind) { const I = MOTOR.V39_IND.find(x => x.id === c.ind); let x = null; try { x = I.get(g); } catch (e) { x = null; } if (x == null || isNaN(x)) return false; return c.op === '<' ? x < c.lim : x > c.lim; }
+  return medU(g, M, g.mes + 'cond') < .03; // gatilho que o jogo não mede: chance fixa por mês, sorteada de forma estável por partida
+}
+function medDispara(g, M, notas) {
+  const t = g.mes, d = t - M.m0;
+  M.estado = 'ativa'; M.mDisp = t; M.mReg += d; M.mPleno += d; M.mMat += d; if (M.vigMes) M.vigMes += d; (M.vigIt || []).forEach(v => { v.mes += d; });
+  applyFx(g, M.ag, M.k * .9); // o anúncio já tinha entrado com 10%
+  medSyncFiscal(g, M, 0);
+  if (M.once > 0) g.eco.divida = Math.max(20, g.eco.divida - M.once / ((g.eco.pibNom || 12000) / 100));
+  for (const f of (M.flags || [])) { if (f.startsWith('priv_')) g.estatais[f.slice(5)] = false; else if (!FLAGS_META.includes(f) && !g.flags.includes(f) && f !== 'condicional') g.flags.push(f); }
+  medNoticia(g, M, 'pos', `Gatilho dispara (${M.cond.rotulo}): ${medCap(M.nm)} passa a valer${M.dReg > 0 ? '; regulamentação até ' + medMesTxt(M.mReg) : ''} e a implantação vai até ${medMesTxt(M.mPleno)}`, notas);
+}
 function medidasMensal(g, notas) {
   const L = medidasDe(g); if (!L.length) return;
   const t = g.mes; let nEv = 0;
@@ -9890,6 +10338,7 @@ function medidasMensal(g, notas) {
   const ordem = L.map((m, i) => i).sort((a, b) => medU(g, L[a], 'o' + t) - medU(g, L[b], 'o' + t)); // ordem embaralhada por mês (o teto de acontecimentos não favorece as mais antigas)
   for (const i of ordem) {
     const M = L[i]; if (!medAtivo(M)) continue;
+    if (M.estado === 'aguardando') { if (medCondVale(g, M)) medDispara(g, M, notas); continue; } // v3.9
     medProblemas(g, M, notas);
     if (!medAtivo(M)) continue;
     const fase = medFase(g, M);
@@ -9985,10 +10434,11 @@ function medRevoga(g, id) {
 function medMPConvertida(g, prop) { const M = medDoProp(g, prop); if (M) { M.mp = false; M.not.unshift({ mes: g.mes, t: 'pos', x: 'MP convertida em lei pelo Congresso: a medida deixa de ter prazo de caducidade' }); } }
 // resumo para a Mesa e o painel
 function medResumo(g) {
-  const L = medL(g).filter(medAtivo);
+  const agu = medL(g).filter(m => m.estado === 'aguardando').length; // v3.9
+  const L = medL(g).filter(m => medAtivo(m) && m.estado !== 'aguardando');
   const prob = L.filter(m => m.probs.length || m.estado === 'suspensa').length;
   const imp = L.filter(m => ['pub', 'reg', 'imp'].includes(medFase(g, m))).length;
-  return { n: L.length, imp, prob, susp: L.filter(m => m.estado === 'suspensa').length, pleno: L.filter(m => ['pleno', 'mat'].includes(medFase(g, m))).length };
+  return { agu, n: L.length, imp, prob, susp: L.filter(m => m.estado === 'suspensa').length, pleno: L.filter(m => ['pleno', 'mat'].includes(medFase(g, m))).length };
 }
 function medResumoMesa(g) {
   const r = medResumo(g); if (!r.n) return null;
@@ -10013,6 +10463,7 @@ function medIndicadores(M) {
 function medPassos(g, M) {
   const t = g.mes, L = [];
   const it = (g.pauta || []).find(x => x.prop && x.prop.id === M.pid);
+  if (M.estado === 'aguardando') { L.push({ mes: g.mes, x: 'Aguardando gatilho: ' + (M.cond && M.cond.rotulo) + (M.cond && M.cond.atual != null ? ' (na aprovação: ' + fmt(M.cond.atual, 2) + ')' : '') }); return L; } // v3.9
   if (M.mp && it) L.push({ mes: it.mesEnvio + MP_PRAZO, x: 'Prazo da MP: perde a eficácia se o Congresso não votar' });
   const adi = medProb(M, 'adi'); if (adi) L.push({ mes: adi.fim, x: 'Julgamento da ação no STF' });
   if (M.vigMes && M.vigMes > t) L.push({ mes: M.vigMes, x: 'Anterioridade cumprida: arrecadação do aumento começa' });
@@ -10051,7 +10502,8 @@ function MedCartao({ g, M, upd, irPara }) {
       const quando = f[0] === 'reg' ? (pulada ? 'dispensada' : 'até ' + medMesTxt(datas.reg)) : (f[0] === 'pub' ? medMesTxt(datas.pub) : 'a partir de ' + medMesTxt(datas[f[0]]));
       return html`<li key=${f[0]} className="med-fase" data-st=${pulada ? 'pulada' : st} aria-current=${st === 'atual' ? 'step' : undefined}><span className="med-dot">${st === 'feito' || pulada ? html`<${Icon} n="Check" s=${10} sw=${3} />` : ''}</span><b>${f[1]}</b><small className="num">${quando}</small></li>`;
     })}</ol>
-    ${ativo && html`<div className="med-prog" role="img" aria-label=${'Rampa de implantação: ' + pct + '%'}><div className="med-prog-t"><span>Efeito real já aplicado</span><span className="num">${pct}%${M.mEf !== 1 ? ' · rendimento ' + Math.round(M.mEf * 100) + '%' : ''}</span></div><div className="bar-track" style=${{ height: '6px' }}><i style=${{ display: 'block', height: '100%', width: pct + '%', background: M.mEf < .95 ? 'var(--ambar)' : 'var(--verde)' }}></i></div></div>`}
+    ${M.estado === 'aguardando' && html`<div className="med-prog" data-testid="med-gatilho"><div className="med-prog-t"><span>Aguardando: ${M.cond.rotulo}</span><span className="num">chance estimada ${Math.round((M.cond.p || 0) * 100)}%</span></div></div>`}
+    ${ativo && M.estado !== 'aguardando' && html`<div className="med-prog" role="img" aria-label=${'Rampa de implantação: ' + pct + '%'}><div className="med-prog-t"><span>Efeito real já aplicado</span><span className="num">${pct}%${M.mEf !== 1 ? ' · rendimento ' + Math.round(M.mEf * 100) + '%' : ''}</span></div><div className="bar-track" style=${{ height: '6px' }}><i style=${{ display: 'block', height: '100%', width: pct + '%', background: M.mEf < .95 ? 'var(--ambar)' : 'var(--verde)' }}></i></div></div>`}
     ${linhas.length > 0 && html`<div className="med-pr"><div className="eyebrow">Previsto × realizado</div><table><thead><tr><th></th><th>Previsto</th><th>Realizado</th><th></th></tr></thead><tbody>${linhas.map(l => {
       const r = Math.abs(l.prev) > 1e-9 ? clamp(l.real / l.prev, 0, 1.5) : 0;
       return html`<tr key=${l.nome}><td>${l.nome}</td><td className="num">${sgn(l.prev, l.d)}${l.un}</td><td className="num" style=${{ color: l.ruim ? 'var(--rubro)' : 'var(--fg)' }}>${sgn(l.real, l.d)}${l.un}</td><td className="med-mini"><i style=${{ width: Math.min(100, r * 100) + '%', background: l.ruim ? 'var(--rubro)' : 'var(--ouro)' }}></i></td></tr>`;
@@ -10069,7 +10521,7 @@ function MedCartao({ g, M, upd, irPara }) {
 function MedidasVigor({ g, upd, irPara }) {
   const L = medL(g), vivas = L.filter(medAtivo).slice().reverse(), fim = L.filter(m => !medAtivo(m)).slice().reverse();
   const R = medResumo(g);
-  const tot = vivas.reduce((a, m) => ({ c: a.c + m.fis.custo + m.fis.extra, ca: a.ca + m.fisAp.custo + m.fisAp.extra, r: a.r + m.fis.receita + (m.vigIt || []).reduce((x, v) => x + v.rev, 0), ra: a.ra + m.fisAp.receita + (m.vigIt || []).reduce((x, v) => x + (v.mes < g.mes ? v.rev : 0), 0) }), { c: 0, ca: 0, r: 0, ra: 0 });
+  const tot = vivas.filter(m => m.estado !== 'aguardando').reduce((a, m) => ({ c: a.c + m.fis.custo + m.fis.extra, ca: a.ca + m.fisAp.custo + m.fisAp.extra, r: a.r + m.fis.receita + (m.vigIt || []).reduce((x, v) => x + v.rev, 0), ra: a.ra + m.fisAp.receita + (m.vigIt || []).reduce((x, v) => x + (v.mes < g.mes ? v.rev : 0), 0) }), { c: 0, ca: 0, r: 0, ra: 0 });
   return html`<div className="flex flex-col gap-6" data-secao-medidas="1">
     <${CabecaSecao} eyebrow="Governo" titulo="Medidas em vigor" />
     <section className="sec med-resumo" aria-label="Resumo das medidas">
@@ -10078,6 +10530,7 @@ function MedidasVigor({ g, upd, irPara }) {
         <div><div className="eyebrow">Em vigor</div><div className="num med-kpi">${R.n}</div></div>
         <div><div className="eyebrow">Em implantação</div><div className="num med-kpi">${R.imp}</div></div>
         <div><div className="eyebrow">Efeito pleno ou maturação</div><div className="num med-kpi">${R.pleno}</div></div>
+        ${R.agu > 0 && html`<div><div className="eyebrow">Aguardando gatilho</div><div className="num med-kpi">${R.agu}</div></div>`}
         <div><div className="eyebrow">Com problema</div><div className="num med-kpi" style=${{ color: R.prob ? 'var(--rubro)' : 'var(--fg)' }}>${R.prob}</div></div>
         <div><div className="eyebrow">Despesa prevista × realizada</div><div className="num med-kpi">${fmt(tot.c, 1)} × ${fmt(tot.ca, 1)}<small> bi/ano</small></div></div>
         <div><div className="eyebrow">Receita prevista × realizada</div><div className="num med-kpi">${fmt(tot.r, 1)} × ${fmt(tot.ra, 1)}<small> bi/ano</small></div></div>
@@ -10113,21 +10566,22 @@ function executaProposta(g, prop, resultado) {
     if (!medRev) medRev = medAchaRevogada(g, prop); // v3.6: proposta que reverte uma medida em vigor (texto livre) desfaz a original
     if (medRev) { medidaReverte(g, medRev, 1, 'revogada'); estOf(g).revogacoes = (estOf(g).revogacoes || 0) + 1; medNoticia(g, medRev, 'neu', `Revogação aprovada (${ato}): ${medRev.ato} deixa de valer e os efeitos já produzidos são em grande parte desfeitos`); }
     else { try { medM = medidaCria(g, prop, k, ato); } catch (e) { medM = null; if (typeof console !== 'undefined') console.warn('medidaCria', e); } } // v3.6
+    const espera = !!(medM && medM.estado === 'aguardando'); // v3.9: medida condicional ainda não disparou
     if (!medRev) {
-    applyFx(g, medM ? medM.ag : prop.fx, k);
-    segNota = segAplicaMedida(g, prop, k);
-    if (medM) medSyncFiscal(g, medM, 0); // v3.6: custo e receita entram pela rampa (fração inicial conforme o tipo)
+    applyFx(g, medM ? medM.ag : prop.fx, k * (espera ? .1 : 1));
+    segNota = espera ? null : segAplicaMedida(g, prop, k);
+    if (medM) { if (!espera) medSyncFiscal(g, medM, 0); } // v3.6: custo e receita entram pela rampa (fração inicial conforme o tipo)
     else { g.fiscal.custo += (prop.cost || 0) * k; g.fiscal.receita += ((prop.rev || 0) - vigRev(prop)) * k; g.fiscal.extra += (prop.extra || 0) * k; }
-    if (prop.once > 0) g.eco.divida = Math.max(20, g.eco.divida - prop.once / ((g.eco.pibNom || 12000) / 100));
+    if (prop.once > 0 && !espera) g.eco.divida = Math.max(20, g.eco.divida - prop.once / ((g.eco.pibNom || 12000) / 100));
     }
-    for (const f of prop.flags) {
+    for (const f of (espera ? [] : prop.flags)) {
       if (f.startsWith('priv_')) g.estatais[f.slice(5)] = false;
       else if (!FLAGS_META.includes(f) && !g.flags.includes(f)) g.flags.push(f);
     }
     if (!medRev) {
-    fase3Aprovada(g, prop, k);
-    agendados = agendaAtrasos(g, prop) + agendaVigencia(g, prop);
-    if ((prop.bloqueio || []).length) bloqNota = aplicaBloqueio(g, prop);
+    if (!espera) fase3Aprovada(g, prop, k);
+    if (!espera) agendados = agendaAtrasos(g, prop) + agendaVigencia(g, prop);
+    if (!espera && (prop.bloqueio || []).length) bloqNota = aplicaBloqueio(g, prop);
     }
     if (prop.inst === 'PEC') est.pec = (est.pec || 0) + 1;
     cfPosAprovada(g, prop);
@@ -10178,7 +10632,7 @@ function executaProposta(g, prop, resultado) {
   consomeCompromissos(g, prop);
   if (resultado === 'aprovada') {
     if (prop.fromProtesto && g.protesto) { fimProtesto(g); est.concessoes = (est.concessoes || 0) + 1; }
-    else novoProt = checaProtestoMedida(g, prop);
+    else if (!(medM && medM.estado === 'aguardando')) novoProt = checaProtestoMedida(g, prop);
   }
   if (!prop.jaPaga) {
     g.acoes = Math.max(0, g.acoes - 1);
@@ -11401,6 +11855,16 @@ function fase3Venda(g, prop, s) {
   if (perda > 0) calc.push(`Dividendos que a União deixa de receber: ${bi(perda)}/ano (${DIV_ATIVOS[k].inf != null ? 'dado da fonte' : 'estimativa do jogo'}).`);
   if (k === 'cxse') calc.push('A fatia da Caixa Seguridade já está dentro do patrimônio da Caixa: o jogo não soma os dois valores.');
   if (k === 'correios') aviso('Os Correios têm patrimônio líquido negativo: a venda não gera receita e a União pode ter de absorver passivos.');
+  // v3.9: várias vendas no mesmo texto ("privatizar o BB, abrir o capital da Caixa e vender os Correios"): soma as demais alienações à principal
+  { const outros = [['cxse', /caixa seguridade|cxse/], ['bndespar', /bndespar|carteira (?:de participacoes )?do bndes|participacoes do bndes/], ['eletrobras', /eletrobras|axia/], ['serpro', /serpro/], ['dataprev', /dataprev/], ['correios', /correios|\bect\b/], ['caixa', /caixa econ|\bcef\b|\ba caixa\b|\bda caixa\b/], ['bb', /banco do brasil|\bbb\b/], ['petrobras', /petrobras/]];
+    for (const [k2, rx] of outros) {
+      if (k2 === k || !rx.test(s) || (k2 === 'caixa' && /caixa seguridade|cxse/.test(s))) continue;
+      const A2 = ativoCfg(k2), fr2 = frAtivo(g, k2); if (!A2 || fr2 <= 0) continue;
+      const vb2 = valorBase(k2), sold2 = fr2 * pct / 100, v2 = vb2 == null ? 0 : Math.max(0, vb2 * sold2 * (A2.cotada ? g.eco.ibov / 100 : 1));
+      prop.once = Math.round((prop.once + v2) * 10) / 10; if (prop.venda) prop.venda.valor = prop.once;
+      if (sold2 >= fr2 - 1e-9 && A2.estatal && prop.flags.indexOf('priv_' + A2.estatal) < 0) prop.flags.push('priv_' + A2.estatal);
+      calc.push(`${A2.nome}: venda de ${fmt(pct, 0)}% da participação atual = ${bi(v2)} (somada à operação principal)`);
+    } }
   return prop.venda;
 }
 
@@ -18668,7 +19132,7 @@ function Documento({ prop, g, children }) {
     <div className="px-5 sm:px-8 pt-5 pb-3 border-b border-black/10 text-center">
       <div className="text-[11px] tracking-[.2em] uppercase font-semibold" style=${{ fontFamily: 'var(--f-mono)' }}>Presidência da República · Casa Civil · Subchefia para Assuntos Jurídicos</div>
       <div className="disp text-2xl sm:text-3xl font-black uppercase mt-2">${prop.instDetalhe === 'AUT' ? 'Pedido de autorização ao Congresso' : INST_NOME[prop.inst]}</div>
-      <div className="text-xs mt-1" style=${{ fontFamily: 'var(--f-mono)' }}>Brasília, ${MESES[(g.mes - 1) % 12]} de ${ano} · ${prop.ai ? 'parecer gerado por IA' : prop.motor === 'v3' ? 'parecer do motor v3.8' : prop.motor === 'v2' ? 'parecer do motor v2' : 'parecer do motor local'}</div>
+      <div className="text-xs mt-1" style=${{ fontFamily: 'var(--f-mono)' }}>Brasília, ${MESES[(g.mes - 1) % 12]} de ${ano} · ${prop.ai ? 'parecer gerado por IA' : prop.motor === 'v3' ? 'parecer do motor v3.9' : prop.motor === 'v2' ? 'parecer do motor v2' : 'parecer do motor local'}</div>
     </div>
     <div className="px-5 sm:px-8 py-5 flex flex-col gap-4">${children}</div>
   </div>`;

@@ -1588,5 +1588,111 @@
     "just": "Jovens seguem os críticos e rejeitam a medida."
    }
   ]
+ },
+ {
+  "id": "cond_nao_dispara",
+  "descricao": "Medida condicional que não dispara (v3.9): 'se o dólar passar de R$ 12, zerar o imposto de importação'. A medida fica 'aguardando gatilho': nenhuma receita perdida entra e a aprovação não muda.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Se o dólar passar de R$ 12, zerar o imposto de importação por decreto",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "receita",
+    "m3": "estavel",
+    "m12": "estavel",
+    "m24": "estavel",
+    "just": "O gatilho (dólar acima de R$ 12) não ocorre: a renúncia de tarifa não entra no fiscal."
+   },
+   {
+    "ind": "n_medidas",
+    "m3": "sobe",
+    "m12": "sobe",
+    "m24": "sobe",
+    "just": "A medida existe no painel (aguardando gatilho)."
+   },
+   {
+    "ind": "ipca",
+    "m12": "estavel",
+    "m24": "estavel",
+    "just": "Sem disparo, nenhum efeito real sobre preços."
+   }
+  ]
+ },
+ {
+  "id": "cond_dispara",
+  "descricao": "Medida condicional que dispara (v3.9): 'se o dólar passar de R$ 6, zerar o imposto de importação'; um choque leva o dólar a R$ 6,5 no mês 2 (nos dois braços). Depois do disparo a receita cai e os preços de importados aliviam.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Se o dólar passar de R$ 6, zerar o imposto de importação por decreto",
+    "resultado": "aprovada"
+   },
+   {
+    "mes": 2,
+    "tipo": "choque",
+    "ind": "dol",
+    "valor": 6.5
+   }
+  ],
+  "controle": [
+   {
+    "mes": 2,
+    "tipo": "choque",
+    "ind": "dol",
+    "valor": 6.5
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "receita",
+    "m3": "desce",
+    "m12": "desce",
+    "m24": "desce",
+    "just": "O gatilho dispara no mês 2: a renúncia do imposto de importação já aparece na receita em poucos meses (rampa do decreto) e se firma depois."
+   },
+   {
+    "ind": "ipca",
+    "m12": "desce",
+    "m24": "qualquer",
+    "just": "Importados mais baratos aliviam preços depois do disparo."
+   }
+  ]
+ },
+ {
+  "id": "fin_fonte_destino",
+  "descricao": "Finalidade (v3.9): 'taxar cassino online para pagar a merenda' = receita da fonte E custo do destino, com a fonte cobrindo o destino. O primário não piora de forma relevante e a aprovação dos mais pobres sobe.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Taxar cassino online para pagar a merenda escolar, por projeto de lei",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "custo",
+    "m12": "sobe",
+    "m24": "sobe",
+    "just": "O destino (merenda) é despesa nova."
+   },
+   {
+    "ind": "receita",
+    "m12": "sobe",
+    "m24": "sobe",
+    "just": "A fonte (imposto sobre apostas) entra pela rampa tributária."
+   },
+   {
+    "ind": "g_periferia",
+    "m3": "sobe",
+    "just": "Mais merenda para a rede pública."
+   }
+  ]
  }
 ]
