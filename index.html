@@ -8732,7 +8732,7 @@ function vozesFatos(g, prop, resultado) {
       motivo = !rej ? (/^(Sou|Eu)/.test(fm) ? fm : ini + minus1(fm)) + '.' : m.lado === 'gan' ? fm + ', e derrubaram.' : fm + '. Ainda bem que barraram.';
     }
     const Gd = GRUPOS.find(z => z.k === x.k);
-    return { nome: P.nome, papel: `${P.ocup}, ${P.idade} anos, ${P.cidade}${P.uf ? ' (' + P.uf + ')' : ''}`, emoji: Gd ? Gd.em : '🗣️', fala: falaDe(F, P, tom, motivo), tom, g: x.k };
+    return { nome: P.nome, papel: `${P.ocup}, ${P.idade} anos, ${P.cidade}${P.uf ? ' (' + P.uf + ')' : ''}`, emoji: Gd ? Gd.em : '🗣️', fala: falaDe(F, P, tom, motivo), tom, g: x.k, idade: P.idade, estado: P.uf && UF_INFO[P.uf] ? UF_INFO[P.uf].nome : null }; // v3.8: idade e estado
   });
 }
 
@@ -8841,7 +8841,7 @@ function textoPol(F, p, seed) {
   return `Sobre ${F.T}: votei ${sim ? 'SIM' : 'NÃO'} ${p.casa === 'sen' ? 'no Senado' : 'na Câmara'} (${placar(c)}). ${razao}`;
 }
 
-function xRegistra(g, prop, resultado, manchetes) {
+function xRegistra(g, prop, resultado, manchetes, lim) { // v3.8: lim = teto de saliência da executaProposta
   const X = ensureX(g); const F = fatosImprensa(g, prop, resultado); const seed = F.seed;
   const P = popMedida(prop); const ap = aprovacao(g);
   const novos = [], tag = hashtag(prop.topic), ok = resultado === 'aprovada';
@@ -8881,6 +8881,7 @@ function xRegistra(g, prop, resultado, manchetes) {
     const fato = gm ? ` ${fraseGrupo(gm)}.` : F.net > 5 ? ` São ${bi(F.net)} por ano.` : '';
     novos.push({ a: { nome: p[0], handle: p[1], tipo: p[3], em: p[4] }, txt: `${escolhe(bk[tom], s)}${fato} ${hashStr(s + 't') < .5 ? tag : ''}`.trim(), likes: eng(1800, tom === 'neu' ? .5 : 1), rts: eng(300, 1), resp: respostas(s + 'r', 2, tomR, null, bk), tom, kind: 'perfil' });
   }
+  if (ok) xFamosos(g, X, prop, F, seed, novos, { efeito: true, lim: lim }); // v3.8
   empilha(g, X, novos, seed);
   const vol = Math.round((20000 + Math.abs(P.pop) * 6000 + hashStr(seed + 'v') * 40000) * (F.congresso ? 1.4 : 1));
   poeTrend(X, g, tag, vol, P.pos >= .55 ? 'pos' : P.pos <= .45 ? 'neg' : 'neu');
@@ -8892,6 +8893,7 @@ function xRegistra(g, prop, resultado, manchetes) {
 function xPauta(g, prop) {
   try {
     const X = ensureX(g); const P = popMedida(prop), tag = hashtag(prop.topic), seed = 'pauta|' + prop.id;
+    { const nf = []; xFamosos(g, X, prop, { T: prop.topic, net: (prop.cost || 0) + (prop.extra || 0) - (prop.rev || 0) }, seed, nf, { efeito: false, max: 1 }); if (nf.length) empilha(g, X, nf, seed + 'fam'); } // v3.8
     if (Math.abs(P.pop) < .25) return;
     const tom = P.pop > 0 ? 'pos' : 'neg';
     const G = (prop.fx && prop.fx.g) || {};
@@ -8900,6 +8902,167 @@ function xPauta(g, prop) {
     empilha(g, X, novos, seed);
     poeTrend(X, g, tag, 24000 + Math.abs(P.pop) * 14000 + hashStr(seed) * 20000, tom);
   } catch (e) { }
+}
+
+/* ============================== v3.8: FAMOSOS COM VIÉS NO X ============================== */
+/* Pessoas reais, posição SIMULADA e só sobre a medida (nada de xingamento, acusação, vida pessoal nem @ inventado). // v3.8
+   p = viés nos 9 eixos na ordem de POS_EIXOS (economia, tributacao, gasto_social, trabalho, privatizacao, costumes, seguranca, ambiente, soberania_externa),
+   de −2 (esquerda) a +2 (direita), no mesmo sinal que o motor usa para a medida; s = seguidores em milhões (ordem de grandeza, não conferido);
+   g = grupos do jogo que os seguem. Estilos: alinhado (elogia/critica pelo viés), humor (ironia leve), critico_geral (critica governos de qualquer lado). */
+const FAMOSOS = [ // v3.8
+  { n: 'Felipe Neto', a: 'youtuber', e: 'alinhado', p: [-1, -1.5, -1.5, -1.5, -1, -2, -1.5, -2, -1], s: 15, g: ['jovens', 'gamers', 'universitarios', 'classemedia'] },
+  { n: 'Caetano Veloso', a: 'cantor', e: 'alinhado', p: [-1, -1, -1.5, -1.5, -1, -2, -1.5, -2, -1.5], s: 3, g: ['universitarios', 'negro', 'classemedia', 'mulheres'] },
+  { n: 'Chico Buarque', a: 'cantor e escritor', e: 'alinhado', p: [-1.5, -1.5, -2, -2, -1.5, -2, -1.5, -2, -2], s: 2, g: ['universitarios', 'sindicatos', 'servidores', 'classemedia'] },
+  { n: 'Gilberto Gil', a: 'cantor', e: 'alinhado', p: [-1, -1, -1.5, -1.5, -1, -1.5, -1, -2, -1.5], s: 3, g: ['universitarios', 'negro', 'classemedia', 'catolicos'] },
+  { n: 'Gregório Duvivier', a: 'humorista', e: 'humor', p: [-1.5, -1.5, -2, -2, -1.5, -2, -1.5, -2, -1.5], s: 3, g: ['universitarios', 'jovens', 'classemedia'] },
+  { n: 'Marcelo Adnet', a: 'humorista', e: 'humor', p: [-1, -1, -1.5, -1.5, -1, -1.5, -1, -1.5, -1], s: 4, g: ['classemedia', 'jovens', 'universitarios'] },
+  { n: 'Fábio Porchat', a: 'humorista', e: 'humor', p: [-.5, -.5, -1, -1, -.5, -1, -.5, -1, -.5], s: 8, g: ['classemedia', 'jovens', 'mulheres'] },
+  { n: 'Wagner Moura', a: 'ator', e: 'alinhado', p: [-1.5, -1.5, -2, -2, -1.5, -2, -1.5, -2, -2], s: 3, g: ['universitarios', 'classemedia', 'jovens'] },
+  { n: 'Paulo Betti', a: 'ator', e: 'alinhado', p: [-1.5, -1.5, -2, -2, -1.5, -2, -1.5, -1.5, -2], s: .3, g: ['universitarios', 'servidores', 'classemedia'] },
+  { n: 'Bruno Gagliasso', a: 'ator', e: 'alinhado', p: [-1, -1, -1.5, -1.5, -1, -2, -1.5, -2, -1], s: 7, g: ['classemedia', 'mulheres', 'jovens', 'negro'] },
+  { n: 'Daniela Mercury', a: 'cantora', e: 'alinhado', p: [-1, -1, -1.5, -1.5, -1, -2, -1, -2, -1], s: 2, g: ['mulheres', 'negro', 'universitarios', 'catolicos'] },
+  { n: 'Pabllo Vittar', a: 'cantora', e: 'alinhado', p: [-1, -1, -1.5, -1.5, -1, -2, -1, -2, -1], s: 6, g: ['jovens', 'mulheres', 'universitarios'] },
+  { n: 'Sabrina Fernandes', a: 'youtuber', e: 'alinhado', p: [-2, -2, -2, -2, -2, -2, -2, -2, -2], s: 1, g: ['universitarios', 'sindicatos', 'servidores', 'jovens'] },
+  { n: 'Thiago Torres (Chavoso da USP)', a: 'youtuber', e: 'alinhado', p: [-1.5, -1.5, -2, -2, -1.5, -1.5, -2, -1.5, -1.5], s: .6, g: ['periferia', 'negro', 'universitarios', 'jovens'] },
+  { n: 'Nando Moura', a: 'youtuber', e: 'critico_geral', p: [1.5, 2, 1.5, 1.5, 2, 2, 2, 1, 1.5], s: 3, g: ['gamers', 'jovens', 'classemedia', 'empresariado'] },
+  { n: 'Danilo Gentili', a: 'humorista', e: 'humor', p: [2, 2, 1.5, 1.5, 2, .5, 1, 1, 1.5], s: 10, g: ['classemedia', 'jovens', 'gamers', 'mercado'], af: 'MISSAO' },
+  { n: 'Léo Lins', a: 'humorista', e: 'humor', p: [1.5, 2, 1, 1, 1.5, .5, 1, .5, 1], s: 3, g: ['jovens', 'gamers', 'classemedia'], af: 'MISSAO' },
+  { n: 'Regina Duarte', a: 'atriz', e: 'alinhado', p: [1, 1.5, 1, 1, 1.5, 2, 2, 1.5, 1.5], s: 2, g: ['catolicos', 'evangelicos', 'aposentados', 'classemedia'] },
+  { n: 'Zezé Di Camargo', a: 'cantor', e: 'alinhado', p: [1.5, 1.5, 1, 1, 1.5, 1.5, 1.5, 1.5, 1.5], s: 4, g: ['agro', 'evangelicos', 'catolicos', 'caminhoneiros'] },
+  { n: 'Gusttavo Lima', a: 'cantor', e: 'alinhado', p: [1.5, 1.5, 1, 1, 1.5, 1.5, 1.5, 2, 1], s: 6, g: ['agro', 'jovens', 'periferia', 'evangelicos'] },
+  { n: 'Sérgio Reis', a: 'cantor', e: 'alinhado', p: [1.5, 1.5, 1, 1, 1, 2, 2, 2, 1.5], s: 1, g: ['agro', 'caminhoneiros', 'aposentados'] },
+  { n: 'Roger Moreira', a: 'músico', e: 'alinhado', p: [2, 2, 1.5, 1.5, 2, 1.5, 1.5, 1, 1.5], s: 1, g: ['classemedia', 'jovens', 'empresariado'] },
+  { n: 'Antonia Fontenelle', a: 'atriz e youtuber', e: 'alinhado', p: [1, 1, 1, 1, 1, 2, 2, 1, 1], s: 5, g: ['evangelicos', 'mulheres', 'classemedia'] },
+  { n: 'Ratinho', a: 'apresentador', e: 'alinhado', p: [1, 1, .5, 1, 1, 1.5, 2, 1, 1], s: 5, g: ['periferia', 'aposentados', 'policiais', 'caminhoneiros'] },
+  { n: 'Silas Malafaia', a: 'pastor', e: 'alinhado', p: [1.5, 1.5, 1.5, 1, 1.5, 2, 2, 1.5, 2], s: 3, g: ['evangelicos', 'aposentados', 'classemedia'] },
+  { n: 'Luciano Hang', a: 'empresário', e: 'alinhado', p: [2, 2, 2, 2, 2, 1.5, 1.5, 1.5, 2], s: 3, g: ['empresariado', 'mei', 'classemedia', 'evangelicos'] },
+  { n: 'Ana Paula Henkel', a: 'ex-atleta e comentarista', e: 'alinhado', p: [1.5, 2, 1.5, 1.5, 2, 2, 2, 1.5, 2], s: 2, g: ['evangelicos', 'classemedia', 'policiais', 'militares'] },
+  { n: 'Bárbara (Te Atualizei)', a: 'youtuber', e: 'alinhado', p: [1.5, 2, 1.5, 1.5, 2, 2, 2, 1.5, 2], s: 2, g: ['jovens', 'classemedia', 'evangelicos', 'mulheres'] }
+];
+const FAM_EM = { youtuber: '🎥', cantor: '🎤', cantora: '🎤', humorista: '🎭', ator: '🎬', atriz: '🎬', pastor: '🎙️', 'empresário': '💼', apresentador: '📺', 'músico': '🎸' };
+const famEm = (f) => FAM_EM[f.a.split(' ')[0]] || '🎙️'; // v3.8
+// pauta do Missão (dados/programa_missao.json, campo "e"), na ordem de POS_EIXOS; serve só para a afinidade de Gentili e Léo Lins
+const FAM_MISSAO = [1, 1, 1, 1, 0, 1, 2, 1, 0]; // v3.8
+const famLean = (f) => f.p.reduce((a, b) => a + b, 0) / f.p.length / 2; // −1 (esquerda) … +1 (direita) // v3.8
+function ensureFam(X) { // v3.8
+  if (!X.fam || typeof X.fam !== 'object') X.fam = { posts: [], suav: {}, lives: {}, ult: null };
+  const F = X.fam; if (!Array.isArray(F.posts)) F.posts = []; if (!F.suav) F.suav = {}; if (!F.lives) F.lives = {};
+  return F;
+}
+function famTexto(f, tom, ctx) { // v3.8
+  const T = ctx.T, tema = ctx.tema, cap1 = cap(T), s = ctx.seed + f.n;
+  const custo = ctx.net > 3 ? ` São ${bi(ctx.net)} por ano.` : ctx.net < -3 ? ` Economia de ${bi(-ctx.net)} por ano.` : '';
+  const raz = (pos) => tema ? (pos ? `a medida avança em ${tema}, e é isso que defendo` : `o texto aposta em ${tema}, e minha posição é outra`) : (pos ? 'vejo mais benefício do que problema' : 'tenho reservas sobre o desenho e a execução');
+  const M = {
+    alinhado: {
+      pos: [`Sobre ${T}: ${raz(true)}.${custo}`, `${cap1} saiu do papel. Política pública se avalia por resultado; por ora, ${raz(true)}.`, `Apoio ${T}. ${cap(raz(true))}. Agora é acompanhar a execução.`],
+      neg: [`Sobre ${T}: ${raz(false)}.${custo}`, `${cap1}: discordo. ${cap(raz(false))}.`, `Respeito o debate, mas não concordo com ${T}: ${raz(false)}.`]
+    },
+    humor: {
+      pos: [`${cap1} foi aprovada e eu aqui sem piada pronta. Aplauso tímido, mas aplauso.`, `Anotem a data: ${T}. O governo acertou um pouco, e olha que eu estava preparado pro contrário.`, `${cap1}: fiz questão de ler o texto antes de ironizar. Não achei motivo. Por enquanto.`],
+      neg: [`${cap1}. Se fosse piada, eu dizia que o texto está bom. Mas o assunto é sério e a execução é outra história.${custo}`, `Aprovaram ${T}. Vou esperar o resultado para rir, porque agora o saldo não me convence.`, `Quando ${T} chegar na ponta, me avisem. Até lá fico com a minha desconfiança.`]
+    },
+    critico_geral: {
+      pos: [`Reconheço: ${T} é um passo na direção certa. É raro, então faço questão de registrar.`],
+      neg: [`Mais uma medida, ${T}, e a pergunta de sempre: quem acompanha o dinheiro e o resultado?${custo}`, `${cap1}: governo vai, governo vem, e o debate é o mesmo. Quero ver a execução, não o anúncio.${custo}`, `Qualquer governo gosta de anunciar. ${cap1} só vale se sair do papel e prestar contas.`]
+    }
+  };
+  const b = M[f.e][tom] || M[f.e].neg;
+  if (ctx.suav && tom === 'neg') return `Tenho ressalvas a ${T}, mas reconheço que o governo abriu o diálogo e vou acompanhar a execução.`;
+  return escolhe(b, s + 'tx');
+}
+// concordância (−100…+100) do famoso com a medida; sem eixos mensuráveis, cai para o efeito da medida nos grupos que o seguem
+function famConc(f, eixos, G, usaMissao) { // v3.8
+  const vec = usaMissao && f.af === 'MISSAO' ? FAM_MISSAO : f.p;
+  if (Object.keys(eixos).length) return concordancia(eixos, vec);
+  let s = 0; for (const k of f.g) s += G[k] || 0;
+  return clamp(s * 10, -100, 100);
+}
+// Escolhe 1–3 famosos mais afetados pela medida, monta os posts e (se `efeito`) mexe de leve nos grupos que os seguem.
+// lim = { g0, a0 } da executaProposta: respeita o teto de saliência (limitaImpactoAprovacao). modo 'pauta': só pressão de rede, sem mexer em grupos.
+function xFamosos(g, X, prop, F, seed, novos, opt) { // v3.8
+  opt = opt || {};
+  try {
+    const FM = ensureFam(X); const eixos = eixosDaProp(prop); const G = (prop.fx && prop.fx.g) || {}; const sal = Object.keys(eixos).length ? salienciaProp(eixos) : .35;
+    const mqtd = Math.min(opt.max || 3, sal > .75 ? 3 : sal > .45 ? 2 : 1);
+    const cand = [];
+    for (const f of FAMOSOS) {
+      let conc = famConc(f, eixos, G, true);
+      const lim = f.e === 'humor' ? 14 : f.e === 'critico_geral' ? 6 : 24;
+      if (Math.abs(conc) < lim) continue;
+      const alc = clamp(Math.log10(f.s * 1e6 / 2e5) / 2, .1, 1);
+      cand.push({ f, conc, sc: Math.abs(conc) * (.5 + .5 * alc) + hashStr(seed + 'fm' + f.n) * 22 });
+    }
+    cand.sort((a, b) => b.sc - a.sc);
+    const usados = new Set(); const esc = [];
+    for (const c of cand) { if (esc.length >= mqtd) break; if (c.f.e === 'humor' && esc.some(x => x.f.e === 'humor')) continue; esc.push(c); usados.add(c.f.n); }
+    const tema = eixoPrincipal(eixos); let fim = 1; const acumFam = {};
+    if (opt.lim && opt.efeito) { const d = Math.abs(aprovacao(g) - opt.lim.a0); fim = clamp((4.7 - d) / 1.2, 0, 1); }
+    for (const { f, conc } of esc) {
+      let tom = conc > 0 ? 'pos' : 'neg';
+      if (f.e === 'critico_geral' && !(conc >= 60 && hashStr(seed + 'raro' + f.n) < .15)) tom = 'neg';
+      const sv = FM.suav[f.n]; const suav = !!(sv && tom === 'neg' && g.mes <= sv.ate);
+      if (suav) delete FM.suav[f.n];
+      const ctx = { T: F.T, net: F.net || 0, tema: tema ? EIXO_FRASE[tema[0]][tema[1] > 0 ? 1 : 0] : null, seed, suav };
+      const txt = famTexto(f, tom, ctx);
+      const mult = (f.e === 'humor' ? .6 : 1) * (suav ? .35 : 1);
+      const alc = clamp(Math.log10(f.s * 1e6 / 2e5) / 2, .1, 1.2);
+      // efeito: pequeno e proporcional ao alcance; grupos que seguem o famoso
+      const fx = [];
+      if (opt.efeito) {
+        const d0 = (tom === 'pos' ? 1 : -1) * .42 * alc * (.4 + .6 * Math.min(1, Math.abs(conc) / 100)) * mult * fim;
+        for (const k of f.g) {
+          if (g.groups[k] == null || Math.abs(d0) < .005) continue;
+          // teto: no máximo ±0,6 por grupo nesta medida e ±0,8 de deriva líquida no mês; nunca desfaz o que já foi aplicado
+          const ja = FM.posts.filter(p => p.mes === g.mes && p.gr.includes(k)).reduce((a, p) => a + (p.d || 0), 0); const acc = acumFam[k] || 0;
+          const sgn1 = d0 > 0 ? 1 : -1; const sala = Math.min(.6 - sgn1 * acc, .8 - sgn1 * ja);
+          const dd = sgn1 * Math.max(0, Math.min(Math.abs(d0), .45, sala)); if (!dd) continue;
+          acumFam[k] = acc + dd; g.groups[k] = clamp(g.groups[k] + dd, 1, 99); fx.push({ k, d: dd });
+        }
+      }
+      const post = { a: { nome: f.n, tipo: 'famoso', em: famEm(f), sim: true, fam: true, area: f.a, seg: f.s, af: f.af || null }, txt, likes: Math.round(engaj(X, seed + f.n, 2600, 1) * clamp(f.s / 2, .6, 4)), rts: Math.round(engaj(X, seed + f.n + 'r', 500, 1) * clamp(f.s / 2, .6, 4)),
+        resp: respostas(seed + 'fr' + f.n, 2, () => (tom === 'pos' ? (f.e === 'critico_geral' ? 'neu' : 'pos') : 'neg'), null, XR), tom, kind: 'famoso', fx: fx.filter(x => Math.abs(x.d) >= .01) };
+      novos.push(post);
+      FM.posts.unshift({ mes: g.mes, nome: f.n, tom, conc: Math.round(conc), tag: hashtag(prop.topic), topic: prop.topic, s: f.s, gr: f.g.slice(), d: fx.length ? fx[0].d : 0, mult, suav });
+    }
+    FM.posts = FM.posts.slice(0, 40);
+  } catch (e) { if (typeof console !== 'undefined') console.warn('xFamosos', e); }
+}
+// pressão dos famosos sobre o voto da medida (mesma hashtag, até 3 meses): entra em pressaoRede
+function pressaoFam(g, tag) { // v3.8
+  const FM = g.x && g.x.fam; if (!FM || !FM.posts.length) return 0;
+  let s = 0;
+  for (const p of FM.posts) {
+    if (p.tag !== tag) continue; const idade = g.mes - p.mes; const dec = [1, .6, .3][idade]; if (!dec) continue;
+    s += (p.tom === 'pos' ? 1 : -1) * clamp(Math.log10(p.s * 1e6 / 1e5) * .7, .5, 2.4) * (p.mult || 1) * dec;
+  }
+  return clamp(s, -4, 4);
+}
+// "Convidar para live": gasta 1 ação; pode suavizar o próximo ataque do famoso (se o viés não for oposto demais ao seu)
+function famLivePode(g, f) { // v3.8
+  const pl = entPlayerLean(g), fl = famLean(f);
+  if (fl * pl < -.1 && Math.abs(fl - pl) > 1.2) return { ok: false, motivo: 'viés oposto demais ao seu' };
+  if (g.acoes <= 0) return { ok: false, motivo: 'sem ações neste mês' };
+  const FM = g.x && g.x.fam; if (FM && FM.lives[f.n] === g.mes) return { ok: false, motivo: 'já convidado neste mês' };
+  return { ok: true, chance: clamp(.85 - Math.abs(fl - pl) * .3, .2, .85) };
+}
+function famLive(g, nome) { // v3.8
+  const f = FAMOSOS.find(x => x.n === nome); if (!f) return false;
+  const X = ensureX(g), FM = ensureFam(X); const p = famLivePode(g, f); if (!p.ok) return false;
+  g.acoes = Math.max(0, g.acoes - 1); g.pes.energia = clamp(g.pes.energia - 6, 0, 100); FM.lives[f.n] = g.mes;
+  const ok = hashStr('live' + g.seed + g.mes + f.n) < p.chance; const seed = 'live|' + g.mes + f.n;
+  const ult = (g.log || []).find(l => l.res === 'aprovada' && l.topic); const T = ult ? ult.topic : 'as medidas do governo';
+  const pres = contaPres(g);
+  const novos = [{ a: pres, txt: `Live com ${f.n} para conversar sobre ${T}. Divergir faz parte; o diálogo é o caminho.`, likes: engaj(X, seed, 18000, 1), rts: engaj(X, seed + 'r', 3500, 1), resp: [], tom: 'pos', kind: 'pres' }];
+  if (ok) {
+    FM.suav[f.n] = { ate: g.mes + 4 };
+    const alc = clamp(Math.log10(f.s * 1e6 / 2e5) / 2, .1, 1.2);
+    for (const k of f.g) if (g.groups[k] != null) g.groups[k] = clamp(g.groups[k] + .2 * alc, 1, 99);
+    novos.push({ a: { nome: f.n, tipo: 'famoso', em: famEm(f), sim: true, fam: true, area: f.a, seg: f.s }, txt: `Conversei com o presidente sobre ${T}. Tenho divergências, mas o debate precisa acontecer.`, likes: Math.round(engaj(X, seed + 'f', 2200, 1) * clamp(f.s / 2, .6, 4)), rts: Math.round(engaj(X, seed + 'fr', 400, 1) * clamp(f.s / 2, .6, 4)), resp: [], tom: 'neu', kind: 'famoso', fx: [] });
+    FM.ult = { mes: g.mes, ok: true, txt: `${f.n} topou a live: o próximo ataque tende a sair mais brando e o público dele reagiu um pouco melhor.` };
+  } else FM.ult = { mes: g.mes, ok: false, txt: `${f.n} não topou a live desta vez (agenda e posição). A ação foi gasta e nada mudou.` };
+  empilha(g, X, novos, seed);
+  return true;
 }
 
 /* ---- gatilhos: crise do mês, balanço mensal, escândalos, protestos e diplomacia ---- */
@@ -9076,6 +9239,7 @@ function pressaoRede(g, prop) {
     const idade = g.mes - t.mes, dec = [1, .6, .3][idade] || 0, sg = t.tom === 'pos' ? 1 : t.tom === 'neg' ? -1 : 0;
     a = sg * clamp(t.vol / 30000, .6, 4.5) * dec * 1.1; if (a) { fonte.push('tendência orgânica'); tagUsada = t.tag; vol = t.vol; }
   }
+  { const pf = pressaoFam(g, tag0); if (pf) { a += pf; fonte.push('famosos'); if (!tagUsada) tagUsada = tag0; vol = Math.max(vol, 30000); } } // v3.8: famosos com viés
   const c = prop.campanha;
   if (c) { const idade = g.mes - c.mes; b = c.forca * ([1, .85, .6, .35][idade] || .15); if (b) { fonte.push(b < 0 ? 'campanha do presidente (efeito contrário)' : 'campanha do presidente'); tagUsada = c.tag; vol = Math.max(vol, 40000 + Math.abs(c.forca) * 12000); } }
   // contracampanha: blocos de oposição fortemente contra os eixos da medida
@@ -9194,7 +9358,8 @@ function vozesLocal(g, prop, resultado) {
     const pool = s > 1.2 ? c.pos : s < -1.2 ? c.neg : c.neu;
     let fala = pick(pool).replace('{T}', prop.topic);
     if (resultado === 'rejeitada') fala = (s > 0 ? 'O Congresso barrou ' + prop.topic + '. ' : '') + fala;
-    return { nome: c.nome, papel: c.papel, emoji: c.em, fala: cap(fala), tom: s > 1.2 ? 'pos' : s < -1.2 ? 'neg' : 'neu' };
+    const ufs = Object.keys(UF_INFO); // v3.8: idade e estado (pessoa inventada)
+    return { nome: c.nome, papel: c.papel, emoji: c.em, fala: cap(fala), tom: s > 1.2 ? 'pos' : s < -1.2 ? 'neg' : 'neu', idade: 22 + Math.floor(hashStr(prop.id + c.nome + 'id') * 50), estado: UF_INFO[ufs[Math.floor(hashStr(prop.id + c.nome + 'uf') * ufs.length)]].nome };
   });
 }
 
@@ -9365,7 +9530,7 @@ function cfConselho(g, prop, jur) {
   }
   return { pk: pk, pasta: P.nome, ministro: N ? N.nome : null, comp: comp, nivel: nivelCons, transv: transv, sugestoes: sug, semReparos: semReparos, resumo: resumo, dicas: dicas.slice(0, 2), falso: perdeu && vicioReal && sug.length === 0 };
 }
-function CfAnaliseMinistro({ dec, setDec, g, upd, onClose }) {
+function CfAnaliseMinistro({ dec, setDec, g, upd, onClose, semBase }) { // v3.8: semBase = a base jurídica fica fora (tela do parecer a mostra à parte)
   const prop = dec.prop;
   const [base, setBase] = useState(false);
   const jur = useMemo(() => { if (prop.juridico) return prop.juridico; try { const p2 = analisaLocal(g, prop.texto); return p2 && p2.juridico ? p2.juridico : null; } catch (e) { return null; } }, [prop]);
@@ -9386,7 +9551,7 @@ function CfAnaliseMinistro({ dec, setDec, g, upd, onClose }) {
   const quem = cons.ministro ? cons.ministro + ' (' + cargo + ')' : cargo + ' (titular a definir)';
   const cab = html`<div className="flex flex-wrap items-center gap-2"><${Icon} n="Gavel" s=${16} /><b className="text-sm">Análise do ministro</b><${Tag} cor="#7aa2ff">simulado</${Tag}>
       <span className="text-xs opacity-70">${quem} · competência ${fmt(cons.comp * 100, 0)}</span></div>`;
-  const dispo = jur.dispositivos && jur.dispositivos.length > 0 && html`<div className="mt-2"><button type="button" className="text-xs underline opacity-80" onClick=${() => setBase(!base)} aria-expanded=${base}>${base ? 'Ocultar' : 'Ver'} base jurídica (${jur.dispositivos.length})</button>
+  const dispo = !semBase && jur.dispositivos && jur.dispositivos.length > 0 && html`<div className="mt-2"><button type="button" className="text-xs underline opacity-80" onClick=${() => setBase(!base)} aria-expanded=${base}>${base ? 'Ocultar' : 'Ver'} base jurídica (${jur.dispositivos.length})</button>
       ${base && html`<ul className="mt-1 flex flex-col gap-1" title=${MOTOR.CF.FONTE}>${jur.dispositivos.map((d, i) => html`<li key=${i} className="text-xs"><b>${d.art}</b> · ${d.tema}: ${d.efeito}</li>`)}</ul>`}</div>`;
   const hist = prop.cfOrigem && html`<div className="text-xs mt-2 p-2 rounded bg-black/5">Texto ajustado a partir do original. <button type="button" className="underline font-semibold" onClick=${voltar}>Voltar ao texto original</button><div className="opacity-70 mt-1">Ajustes aplicados: ${(prop.cfAplicadas || []).join(' · ')}</div></div>`;
   if (dec.cfIgnorou && !cons.semReparos) return html`<div className="p-2 rounded border text-sm flex flex-wrap items-center gap-2" data-secao="cf-ministro" style=${{ borderColor: nivelCor }}>
@@ -10006,7 +10171,7 @@ function executaProposta(g, prop, resultado) {
   const sb = manchetes.sub || {};
   g.feed.unshift({ mes: g.mes, src: 'globo', txt: manchetes.globo, sub: sb.globo }, { mes: g.mes, src: 'carta', txt: manchetes.carta, sub: sb.carta }, { mes: g.mes, src: 'antag', txt: manchetes.antag, sub: sb.antag });
   g.feed = g.feed.slice(0, 40);
-  xRegistra(g, prop, resultado, manchetes);
+  xRegistra(g, prop, resultado, manchetes, { g0: g0Cap, a0: a0Cap }); // v3.8
   if (precisaCongresso(prop.inst) || resultado !== 'aprovada') g.ultVoto = { mes: g.mes, derrota: resultado !== 'aprovada' };
   qvSomRes(resultado, prop); g.log.unshift({ mes: g.mes, ato, texto: prop.texto, res: resultado, topic: prop.topic });
   linhaAdd(g, resultado === 'derrubada' ? 'STF' : precisaCongresso(prop.inst) ? 'CONGRESSO' : 'AÇÃO', `${ato}: ${prop.topic} (${resultado === 'aprovada' ? 'aprovada' : resultado === 'derrubada' ? 'suspensa pelo STF' : 'derrotada'})`);
@@ -10026,7 +10191,8 @@ function executaProposta(g, prop, resultado) {
   if (resultado === 'aprovada') medidaTratado(g, prop);
   if (resultado === 'aprovada' && prop.absurdo) est.absurdos = (est.absurdos || 0) + 1;
   const marcos = checaMarcos(g);
-  return { ato, manchetes, vozes, antes, depois, resolveu, protesto: novoProt, agendados, marcos: marcos.map(m => m.nome), seg: segNota,
+  const gd = GKEYS.map(k => ({ k, d: g.groups[k] - g0Cap[k] })).filter(x => Math.abs(x.d) >= .05).sort((a, b) => Math.abs(b.d) - Math.abs(a.d)); // v3.8: efeito por grupo da população, para a tela de resultado
+  return { ato, manchetes, vozes, gd, antes, depois, resolveu, protesto: novoProt, agendados, marcos: marcos.map(m => m.nome), seg: segNota,
     coer: resultado === 'aprovada' && prop.coerP ? prop.coerP : null, bloqueio: bloqNota, vigencia: resultado === 'aprovada' && prop.vig ? prop.vig.itens.map(v => ({ em: v.em, alvo: v.alvo, rev: v.rev })) : null,
     medida: medM ? { tipo: MED_TIPOS[medM.tipo].nome, reg: medM.dReg > 0 ? medMesTxt(medM.mReg) : null, pleno: medMesTxt(medM.mPleno), mat: medMesTxt(medM.mPleno + medM.dPl) } : null, revogou: medRev ? medRev.topic : null };
 }
@@ -14371,7 +14537,7 @@ function Eu({ g, upd }) {
 }
 
 /* ============================== ABA X (rede social simulada) ============================== */
-const X_CAT = (p) => (p.kind === 'pres' || p.kind === 'lider' || p.kind === 'pol' || p.kind === 'jogador' ? 'pol' : p.kind === 'jornal' || p.kind === 'imprensa' ? 'imp' : 'pes');
+const X_CAT = (p) => (p.kind === 'famoso' ? 'fam' : p.kind === 'pres' || p.kind === 'lider' || p.kind === 'pol' || p.kind === 'jogador' ? 'pol' : p.kind === 'jornal' || p.kind === 'imprensa' ? 'imp' : 'pes');
 const X_COR = { pos: 'var(--verde)', neg: 'var(--rubro)', neu: 'var(--muted)' };
 function LinhaRede({ g, prop }) {
   const r = resumoRede(g, prop); if (!r) return null;
@@ -14386,13 +14552,16 @@ function PostX({ p, mini }) {
     ${html`<${AvatarX} a=${a} />`}
     <div className="min-w-0 flex-1">
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm" style=${{ minWidth: 0 }}>
-        <b style=${{ overflowWrap: 'anywhere' }}>${a.nome}${a.sim ? ' · ' + a.sigla + '-' + a.uf : ''}</b>
+        <b style=${{ overflowWrap: 'anywhere' }}>${a.nome}${a.sim && !a.fam ? ' · ' + [a.sigla, a.uf].filter(Boolean).join('-') : ''}</b>
+        ${a.fam && html`<span className="text-muted text-xs">${a.area}${a.seg ? ' · ' + (a.seg >= 1 ? fmt(a.seg, 0) + ' mi' : fmt(a.seg * 1000, 0) + ' mil') + ' seguidores (aprox.)' : ''}</span>`}
         ${a.verif && html`<span style=${{ color: 'var(--anil)' }} title="Conta verificada (simulada)"><${Icon} n="BadgeCheck" s=${14} /></span>`}
-        ${a.sim && html`<span className="chip" style=${{ color: 'var(--ouro)', borderColor: 'var(--ouro)' }} title="Parlamentar real; o post é simulado pelo jogo e só reflete o voto simulado dele">simulado</span>`}
+        ${a.sim && html`<span className="chip" style=${{ color: 'var(--ouro)', borderColor: 'var(--ouro)' }} title=${a.fam ? 'Pessoa real; o post é simulado pelo jogo e só trata da medida, a partir do viés público declarado' : a.pol ? 'Político real; o trecho é simulado pelo jogo e só trata de política' : 'Parlamentar real; o post é simulado pelo jogo e só reflete o voto simulado dele'}>simulado</span>`}
+        ${a.af && html`<span className="chip" style=${{ color: 'var(--anil)', borderColor: 'var(--anil)' }} title="Afinidade informada com o Missão; a reação segue a pauta do partido, de forma simulada">afinidade Missão</span>`}
         ${a.handle && html`<span className="text-muted text-xs" style=${{ overflowWrap: 'anywhere' }}>@${a.handle}</span>`}
         ${p.mes != null && html`<span className="text-muted text-xs">· ${dataCurta(p.mes)}</span>`}
       </div>
       <div className="text-sm mt-1 leading-snug" style=${{ overflowWrap: 'anywhere' }}>${p.txt}</div>
+      ${!mini && p.fx && p.fx.length > 0 && html`<div className="text-xs text-muted mt-1" data-fam-efeito="1">Público que o segue: ${p.fx.slice(0, 4).map(x => (GRUPOS.find(z => z.k === x.k) || { nome: x.k }).nome + ' ' + sgn(x.d, 1)).join(' · ')} p.p. de aprovação</div>`}
       ${!mini && html`<div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs text-muted num">
         <span className="inline-flex items-center gap-1"><${Icon} n="MessageCircle" s=${13} /> ${resp.length}</span>
         <span className="inline-flex items-center gap-1"><${Icon} n="Repeat2" s=${13} /> ${fmtK(p.rts || 0)}</span>
@@ -14414,6 +14583,23 @@ function GraficoHumor({ hist, ap }) {
     ${L.map((e, i) => html`<circle key=${i} cx=${px(i)} cy=${py(e.pos)} r="3.5" fill=${e.pos >= 55 ? 'var(--verde)' : e.pos <= 45 ? 'var(--rubro)' : 'var(--muted)'}><title>${dataCurta(e.mes)} · ${e.topic}: ${e.pos}% positivo</title></circle>`)}
   </svg>`;
 }
+// v3.8: famosos com viés: quem comentou as suas medidas e o convite para live
+function FamososX({ g, upd }) { // v3.8
+  const FM = g.x && g.x.fam; const rec = []; const vistos = new Set();
+  if (FM) for (const p of FM.posts) { if (g.mes - p.mes > 4 || vistos.has(p.nome)) continue; vistos.add(p.nome); rec.push(p); }
+  rec.sort((a, b) => (a.tom === 'neg' ? 0 : 1) - (b.tom === 'neg' ? 0 : 1) || b.mes - a.mes);
+  return html`<section className="card p-4 flex flex-col gap-3" data-secao="x-famosos">
+    <div className="flex flex-wrap items-center gap-2"><b className="text-sm">Famosos e as suas medidas</b><${Tag} cor="var(--ouro)">simulado</${Tag}></div>
+    <p className="text-xs text-muted">Pessoas reais com viés público declarado comentam as medidas que você publica; os posts são simulados e tratam só da medida. Ataque ou apoio de famoso grande mexe de leve na aprovação do público que o segue. Convidar para live gasta 1 ação e pode suavizar o próximo ataque, se o viés dele não for oposto demais ao seu.</p>
+    ${FM && FM.ult && FM.ult.mes === g.mes && html`<div className="text-sm p-3 rounded" role="status" data-fam-ult="1" style=${{ background: 'var(--panel2)' }}>${FM.ult.txt}</div>`}
+    ${rec.length === 0 ? html`<p className="text-sm text-muted">Ninguém comentou ainda. Publique medidas para ver quem reage.</p>` : html`<ul className="grid gap-2 sm:grid-cols-2">${rec.slice(0, 6).map(p => { const f = FAMOSOS.find(x => x.n === p.nome); if (!f) return null; const pode = famLivePode(g, f);
+      return html`<li key=${p.nome} className="rounded-lg border border-line p-3 flex flex-col gap-2" data-fam=${p.nome}>
+        <div className="flex flex-wrap items-center gap-2 min-w-0"><span aria-hidden="true">${famEm(f)}</span><b className="text-sm" style=${{ overflowWrap: 'anywhere' }}>${f.n}</b><${Tag} cor=${p.tom === 'pos' ? 'var(--verde)' : 'var(--rubro)'}>${p.tom === 'pos' ? 'apoiou' : p.suav ? 'ressalvas' : 'criticou'}</${Tag}>${f.af && html`<${Tag} cor="var(--anil)">afinidade Missão</${Tag}>`}</div>
+        <div className="text-xs text-muted">${f.a} · ${f.s >= 1 ? fmt(f.s, 0) + ' mi' : fmt(f.s * 1000, 0) + ' mil'} seguidores (aprox.) · ${p.topic} · ${dataCurta(p.mes)}</div>
+        <div className="flex flex-wrap items-center gap-2"><button type="button" className="btn btn-ghost text-xs" data-fam-live=${f.n} disabled=${!pode.ok} onClick=${() => upd(n => { famLive(n, f.n); })}><${Icon} n="Video" s=${13} /> Convidar para live (1 ação)</button>${!pode.ok && html`<span className="text-xs text-muted">${pode.motivo}</span>`}${pode.ok && html`<span className="text-xs text-muted">chance de topar ${fmt(pode.chance * 100, 0)}%</span>`}</div>
+      </li>`; })}</ul>`}
+  </section>`;
+}
 function RedeX({ g, upd }) {
   const X = g.x || { posts: [], hist: [], trend: [], seg: 0 };
   const [fil, setFil] = useState('todos');
@@ -14434,7 +14620,7 @@ function RedeX({ g, upd }) {
   const gr = GRUPOS.slice().sort((a, b) => b.w - a.w);
   return html`<div className="flex flex-col gap-6" style=${{ minWidth: 0 }}>
     <${CabecaSecao} eyebrow="Rede social" titulo="X" />
-    <p className="text-xs text-muted" data-secao="aviso-x">Simulação do jogo: perfis, posts e números são fictícios; parlamentares reais aparecem com selo 'simulado' e só comentam a posição política coerente com o voto simulado deles.</p>
+    <p className="text-xs text-muted" data-secao="aviso-x">Simulação do jogo: perfis, posts e números são fictícios; parlamentares, famosos e políticos reais aparecem com selo 'simulado' e só comentam a posição política coerente com o voto simulado deles ou o viés público declarado (famosos e podcasts: v3.8).</p>
 
     <section className="card p-4 flex flex-col gap-3" data-secao="x-postar">
       <div className="flex items-center justify-between gap-2"><b className="text-sm">Postar como presidente</b><span className="text-xs text-muted num">${rest > 0 ? rest + ' de ' + POST_LIM + ' posts neste mês' : 'limite de ' + POST_LIM + ' posts neste mês atingido'}</span></div>
@@ -14482,8 +14668,10 @@ function RedeX({ g, upd }) {
       })}</ul>
     </section>
 
+    <${FamososX} g=${g} upd=${upd} />
+
     <section className="flex flex-col gap-3" data-secao="x-feed">
-      <div className="chipnav" role="group" aria-label="Filtrar posts">${[['todos', 'Todos'], ['pol', 'Políticos'], ['imp', 'Imprensa'], ['pes', 'Pessoas']].map(([k, n]) => html`<button key=${k} type="button" aria-selected=${fil === k} onClick=${() => setFil(k)}>${n}</button>`)}</div>
+      <div className="chipnav" role="group" aria-label="Filtrar posts">${[['todos', 'Todos'], ['pol', 'Políticos'], ['fam', 'Famosos'], ['imp', 'Imprensa'], ['pes', 'Pessoas']].map(([k, n]) => html`<button key=${k} type="button" aria-selected=${fil === k} onClick=${() => setFil(k)}>${n}</button>`)}</div>
       ${posts.length === 0 ? html`<p className="text-sm text-muted">Nenhum post aqui ainda. A rede reage às votações, às crises, aos protestos e ao que você postar.</p>` : html`<ul className="flex flex-col gap-3">${posts.slice(0, 40).map(p => html`<${PostX} key=${p.id} p=${p} />`)}</ul>`}
     </section>
   </div>`;
@@ -18565,7 +18753,7 @@ function ResumoAnalista({ prop }) {
     </div>
   </div>`;
 }
-function ParecerEspecialista({ prop, g, votos, q, congresso }) {
+function ParecerEspecialista({ prop, g, votos, q, congresso, so }) { // v3.8: so = só a coerência com o partido
   const an = prop.analise; if (!an || prop.ai) return null;
   const cp = an.coerencia.partido, pr = an.coerencia.presidente, bloc = g.cfg.partido, P = bloc ? PMAP[bloc] : null;
   const efeitoJogo = prop.coerP && prop.coerP.efeito;
@@ -18582,7 +18770,7 @@ function ParecerEspecialista({ prop, g, votos, q, congresso }) {
       <div className="flex flex-wrap items-baseline gap-2"><span className="px-1.5 py-0.5 rounded text-white text-[10px] font-bold tracking-wide" style=${{ background: gr[1] }}>${gr[0]}</span><b>${c.regra}</b><span className="text-xs opacity-60">${c.base}</span>${c.aplica === false && html`<span className="text-xs opacity-60">· não se aplica agora</span>`}</div>
       <div className="text-xs opacity-80">${cap(c.alvo)}: ${c.efeito}</div></li>`; };
   return html`<div className="flex flex-col gap-2" data-secao="parecer-especialista">
-    <${Rotulo}>Parecer do especialista</${Rotulo}>
+    <${Rotulo}>${so ? 'Coerência com o partido' : 'Parecer do especialista'}</${Rotulo}>
 
     <${PBloco} id="coerencia" titulo="Coerência com o seu partido" resumo=${rotTit} aberto=${Math.abs(cp.score) >= 40 || Math.abs(pr.score) >= 40}>
       ${cp.sigla ? html`<div className="flex flex-col gap-2">
@@ -18613,6 +18801,7 @@ function ParecerEspecialista({ prop, g, votos, q, congresso }) {
         </ul></div>` : null}
     </${PBloco}>
 
+    ${so ? null : html`<div className="flex flex-col gap-2">
     <${PBloco} id="ganha-perde" titulo="Quem ganha e quem perde" resumo=${an.ganhadores.length + ' ganham · ' + an.perdedores.length + ' perdem'} aberto=${true}>
       <div className="grid sm:grid-cols-2 gap-4">${[['Quem ganha', an.ganhadores, '#22c55e'], ['Quem perde', an.perdedores, '#e2553f']].map(([t, l, cor]) => html`<div key=${t} data-coluna=${t}>
         <div className="text-xs font-bold mb-1.5" style=${{ color: cor }}>${t}</div>
@@ -18672,7 +18861,86 @@ function ParecerEspecialista({ prop, g, votos, q, congresso }) {
     <${PBloco} id="precedentes" titulo="Precedentes" resumo=${(an.precedentes || []).length ? (an.precedentes || []).map(p => p.ano).join(', ') : 'nenhum'}>
       ${(an.precedentes || []).length === 0 ? html`<p className="text-xs opacity-70">O analista não encontrou precedente histórico direto para esta medida.</p>` : html`<ul className="flex flex-col gap-2">${an.precedentes.map((p, i) => html`<li key=${i}><b>${p.nome}</b> <span className="num opacity-60">(${p.ano})</span><div className="text-xs opacity-80">${p.licao}</div></li>`)}</ul>`}
     </${PBloco}>
+    </div>`}
 
+  </div>`;
+}
+// v3.8: peças da tela de proposta simplificada
+function useJuridico(g, prop) { // v3.8
+  return useMemo(() => { if (prop.juridico) return prop.juridico; try { const p2 = analisaLocal(g, prop.texto); return p2 && p2.juridico ? p2.juridico : null; } catch (e) { return null; } }, [prop]);
+}
+// faixa curta no topo: vermelha (inconstitucional) ou âmbar (controverso)
+function FaixaCF({ prop }) { // v3.8
+  const nivel = prop.stf && prop.stf.nivel; if (!nivel || nivel === 'ok') return null;
+  const jur = prop.juridico; const d = jur && jur.dispositivos && jur.dispositivos[0]; const art = d ? d.art : null;
+  const inc = nivel === 'inconstitucional'; const cor = inc ? '#b23a26' : '#c7771c';
+  return html`<div className="p-3 rounded flex flex-wrap items-center gap-2 text-white font-semibold text-sm" data-secao="faixa-cf" data-nivel=${nivel} role="alert" style=${{ background: cor }}>
+    <${Icon} n="Scale" s=${16} /><span>${inc ? 'Inconstitucional: o STF deve derrubar' : 'Controverso: o STF pode derrubar'}${art ? ' (' + art + ')' : ''}</span>
+    <details className="ml-auto text-xs font-normal"><summary className="cursor-pointer select-none underline">por quê</summary><p className="mt-1 max-w-xl">${prop.stf.parecer}</p></details></div>`;
+}
+// custo anual em destaque (ou ganho), com receita e valor único quando houver
+function BlocoCusto({ prop, congresso }) { // v3.8
+  const k = prop.scale, custo = (prop.cost || 0) * k, rec = (prop.rev || 0) * k, net = custo - rec;
+  const ganho = net < -.05, custoNet = net > .05;
+  const unico = prop.extra ? bi(prop.extra * k) + ' de despesa única' : prop.once ? '+' + bi(prop.once) + ' de receita única' : null;
+  const rot = ganho ? 'Ganho anual' : custoNet ? (rec > 0 ? 'Custo anual líquido' : 'Custo anual') : 'Impacto fiscal anual';
+  const tram = congresso ? (prop.inst === 'PEC' ? 'PEC: 308 deputados e 49 senadores' : prop.instDetalhe === 'LC' ? 'PLP: 257 deputados e 41 senadores' : prop.instDetalhe === 'AUT' ? 'Autorização: 257 deputados e 41 senadores' : INST_NOME[prop.inst] + ': 257 deputados e 41 senadores') : 'Sem votação no Congresso';
+  return html`<div className="p-4 rounded bg-black/5 flex flex-wrap items-end gap-x-8 gap-y-2" data-secao="bloco-custo">
+    <div><div className="text-[10px] uppercase tracking-widest opacity-60">${rot}</div>
+      <div className="num text-3xl font-extrabold" style=${{ color: ganho ? '#16a34a' : custoNet ? '#b23a26' : 'inherit' }}>${ganho ? bi(-net) : custoNet ? bi(net) : '—'}</div></div>
+    <div className="text-sm flex flex-col gap-0.5">
+      ${rec > 0 && html`<span>Receita anual: <b className="num">${bi(rec)}</b>${custo > 0 ? html` · custo bruto <b className="num">${bi(custo)}</b>` : ''}</span>`}
+      ${unico && html`<span className="num">${unico}</span>`}
+      <span className="text-xs opacity-70">${tram}</span></div>
+  </div>`;
+}
+const cdfNorm = (z) => { const t = 1 / (1 + .2316419 * Math.abs(z)); const d = .3989423 * Math.exp(-z * z / 2); const p = d * t * (.3193815 + t * (-.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274)))); return z > 0 ? 1 - p : p; }; // v3.8
+// chance de aprovar: a projeção das lideranças tem ruído de ±5% na hora H; o desvio vem daí (≈4,5 votos na Câmara e ≈1,7 no Senado)
+const chanceVotos = (tot, min, sg) => cdfNorm((tot + .5 - min) / sg); // v3.8
+const fmtChance = (p) => (p >= .995 ? '>99%' : p <= .005 ? '<1%' : Math.round(p * 100) + '%'); // v3.8
+function ChanceAprovar({ votos, q }) { // v3.8
+  const L = [['Câmara', votos.totC, q.c, 513, 4.5], ['Senado', votos.totS, q.s, 81, 1.7]].map(([nome, tot, min, max, sg]) => ({ nome, tot, min, max, ch: chanceVotos(tot, min, sg) }));
+  const geral = L[0].ch * L[1].ch;
+  return html`<div className="flex flex-col gap-2">
+    <div className="flex flex-wrap items-baseline gap-x-3"><div className="text-[11px] uppercase tracking-widest opacity-60" style=${{ fontFamily: 'var(--f-mono)' }}>Chance de aprovar</div><span className="text-sm">nas duas Casas: <b className="num" data-chance-geral="1" style=${{ color: geral >= .6 ? '#16a34a' : geral >= .3 ? '#c7771c' : '#b23a26' }}>${fmtChance(geral)}</b></span></div>
+    <div className="grid sm:grid-cols-2 gap-3">${L.map(x => html`<div key=${x.nome} className="p-3 rounded bg-black/5" data-chance=${x.nome}>
+      <div className="flex items-baseline justify-between"><b>${x.nome}</b><span className="num text-2xl font-extrabold" style=${{ color: x.ch >= .6 ? '#16a34a' : x.ch >= .3 ? '#c7771c' : '#b23a26' }}>${fmtChance(x.ch)}</span></div>
+      <div className="text-sm num">${x.tot} votos projetados × ${x.min} necessários</div>
+      <div className="relative h-2.5 rounded-full bg-black/10 overflow-hidden mt-1.5"><div className="h-full" style=${{ width: x.tot / x.max * 100 + '%', background: x.tot >= x.min ? '#22c55e' : '#e2553f' }}></div><div className="absolute top-0 h-full w-0.5 bg-black" style=${{ left: x.min / x.max * 100 + '%' }}></div></div></div>`)}</div>
+  </div>`;
+}
+// "Pedir opinião do ministro": a análise do ministro (com Aplicar e Aceitar sugestões) abre sob demanda
+function MinistroSobDemanda({ dec, setDec, g, upd, onClose }) { // v3.8
+  const prop = dec.prop; const [aberto, setAberto] = useState(false);
+  const jur = useJuridico(g, prop);
+  const cons = useMemo(() => (jur ? cfConselho(g, prop, jur) : null), [prop, jur, g.cfg.nomeados]);
+  if (!jur || !cons || prop.trHook || prop.fromProtesto) return null;
+  const pasta = cons.transv ? 'Casa Civil, com a AGU' : 'Ministério ' + (PASTA_DE[cons.pk] || 'da') + ' ' + cons.pasta;
+  if (!aberto) return html`<div className="flex flex-wrap items-center gap-3" data-secao="ministro-demanda">
+    <button type="button" className="text-sm px-3 py-2 rounded border border-black/25 font-semibold hover:bg-black/5 flex items-center gap-2" data-pedir-ministro="1" onClick=${() => setAberto(true)}><${Icon} n="Gavel" s=${15} /> Pedir opinião do ministro</button>
+    <span className="text-xs opacity-60">${cons.ministro ? cons.ministro + ' · ' : ''}${pasta}</span></div>`;
+  return html`<${CfAnaliseMinistro} dec=${dec} setDec=${setDec} g=${g} upd=${upd} onClose=${onClose} semBase=${true} />`;
+}
+function BaseJuridica({ prop, g }) { // v3.8
+  const jur = useJuridico(g, prop); const L = jur && jur.dispositivos ? jur.dispositivos : [];
+  if (!L.length) return null;
+  return html`<details data-secao="base-juridica" className="rounded border border-black/15 bg-white/50">
+    <summary className="cursor-pointer select-none px-3 py-2 text-sm font-semibold">Ver base jurídica (${L.length})</summary>
+    <ul className="px-3 pb-3 pt-1 flex flex-col gap-1" title=${MOTOR.CF.FONTE}>${L.map((d, i) => html`<li key=${i} className="text-xs"><b>${d.art}</b> · ${d.tema}: ${d.efeito}</li>`)}</ul></details>`;
+}
+// v3.8: efeito da medida na aprovação de cada grupo da população, ordenado pelo tamanho do efeito
+function GruposResultado({ gd }) { // v3.8
+  const [todos, setTodos] = useState(false);
+  const mx = Math.max(.5, ...gd.map(x => Math.abs(x.d)));
+  const lista = todos ? gd : gd.slice(0, 9);
+  return html`<div data-secao="grupos-resultado">
+    <div className="text-[11px] uppercase tracking-widest opacity-60 mb-2" style=${{ fontFamily: 'var(--f-mono)' }}>Aprovação por grupo da população (p.p.)</div>
+    <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-1.5">${lista.map(x => { const G = GRUPOS.find(z => z.k === x.k) || { nome: x.k, em: '' }; const cor = x.d > 0 ? '#22c55e' : '#e2553f';
+      return html`<li key=${x.k} className="flex items-center gap-2 text-sm min-w-0" data-grupo=${x.k}>
+        <span className="shrink-0" aria-hidden="true">${G.em}</span><span className="flex-1 min-w-0 truncate" title=${G.nome}>${G.nome}</span>
+        <span className="relative shrink-0 h-2 rounded bg-black/10" style=${{ width: 56 }}><span className="absolute top-0 h-full rounded" style=${{ background: cor, width: Math.max(4, Math.abs(x.d) / mx * 100) + '%', left: 0 }}></span></span>
+        <span className="num font-bold w-12 text-right" style=${{ color: cor }}>${sgn(x.d, 1)}</span></li>`; })}</ul>
+    ${gd.length > 9 && html`<button type="button" className="text-xs underline opacity-70 mt-2" onClick=${() => setTodos(!todos)}>${todos ? 'Mostrar só os maiores efeitos' : 'Ver os demais ' + (gd.length - 9) + ' grupos'}</button>`}
   </div>`;
 }
 function ModalDecisao({ dec, g, upd, setDec, onClose }) {
@@ -18703,28 +18971,14 @@ function ModalDecisao({ dec, g, upd, setDec, onClose }) {
     const encomendar = () => { if (prop.poll) return; prop.poll = pesquisaDe(g, prop); prop.pesquisa = prop.poll.favor; upd(n => { n.fiscal.extra += 0.002; }); force(x => x + 1); };
     const PQ = prop.poll;
     return html`<${Modal} wide label="Parecer da medida" onClose=${onClose}><${Documento} prop=${prop} g=${g}>
+      <${FaixaCF} prop=${prop} />
       <div><div className="text-[11px] uppercase tracking-widest opacity-60" style=${{ fontFamily: 'var(--f-mono)' }}>Ementa</div>
         <div className="text-lg font-semibold leading-snug">${prop.texto}</div>
         ${prop.resumo && html`<div className="text-sm mt-1 opacity-80">${prop.resumo}</div>`}</div>
-      <div className="grid sm:grid-cols-4 gap-3 text-sm">
-        <div className="p-3 rounded bg-black/5"><div className="text-[10px] uppercase tracking-widest opacity-60">Custo anual</div><div className="num text-lg">${prop.cost * prop.scale > 0 ? bi(prop.cost * prop.scale) : prop.cost < 0 ? '−' + bi(prop.cost * prop.scale) : '—'}</div></div>
-        <div className="p-3 rounded bg-black/5"><div className="text-[10px] uppercase tracking-widest opacity-60">Receita anual</div><div className="num text-lg">${prop.rev ? bi(prop.rev * prop.scale) : '—'}</div></div>
-        <div className="p-3 rounded bg-black/5"><div className="text-[10px] uppercase tracking-widest opacity-60">Único / extra</div><div className="num text-lg">${prop.extra ? bi(prop.extra * prop.scale) : prop.once ? '+' + bi(prop.once) : '—'}</div></div>
-        <div className="p-3 rounded bg-black/5"><div className="text-[10px] uppercase tracking-widest opacity-60">Tramitação</div><div className="num text-lg">${congresso ? (prop.inst === 'PEC' ? '308 / 49' : prop.instDetalhe === 'LC' ? '257 / 41 · PLP' : prop.instDetalhe === 'AUT' ? '257 / 41 · autorização' : '257 / 41') : 'Sem Congresso'}</div></div>
-      </div>
-      <${ResumoAnalista} prop=${prop} />
+      <${BlocoCusto} prop=${prop} congresso=${congresso} />
       ${dec.aviso && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(178,58,38,.08)' }} role="alert">${dec.aviso}</div>`}
-      <div><div className="text-[11px] uppercase tracking-widest opacity-60 mb-1" style=${{ fontFamily: 'var(--f-mono)' }}>Parecer técnico</div><p className="text-sm leading-relaxed">${prop.tecnico}</p></div>
-      <${CfAnaliseMinistro} dec=${dec} setDec=${setDec} g=${g} upd=${upd} onClose=${onClose} />
-      <div className="p-3 rounded border-2" style=${{ borderColor: stfCor }}>
-        <div className="flex items-center gap-2 font-bold" style=${{ color: stfCor }}><${Icon} n="Scale" /> Controle de constitucionalidade: ${prop.stf.nivel === 'ok' ? 'CONSTITUCIONAL' : prop.stf.nivel === 'controverso' ? 'CONTROVERSO' : 'INCONSTITUCIONAL'}</div>
-        <p className="text-sm mt-1">${prop.stf.parecer}</p>
-      </div>
-      <${ParecerEspecialista} prop=${prop} g=${g} votos=${votos} q=${q} congresso=${congresso} />
-      ${futuros.length > 0 && html`<div><div className="text-sm font-semibold mb-1">Efeitos futuros previstos:</div>
-        <ul className="flex flex-col gap-1">${futuros.map((a, i) => html`<li key=${i} className="text-sm flex gap-2"><span className="font-bold shrink-0" style=${{ color: a.bom ? '#22c55e' : '#e2553f' }}>${a.bom ? '▲' : '▼'}</span><span>${a.txt} <span className="num opacity-60">· em ${a.em} meses</span></span></li>`)}</ul></div>`}
       <div className="flex flex-col gap-2">
-        ${!PQ ? html`<div className="flex flex-wrap items-center gap-3"><button onClick=${encomendar} className="text-sm px-3 py-2 rounded border border-black/25 font-semibold hover:bg-black/5 flex items-center gap-2"><${Icon} n="ClipboardList" s=${15} /> Encomendar pesquisa (Instituto Bússola · R$ 2 mi)</button><span className="text-xs opacity-60">Uma pesquisa por proposta. Deputados tendem a seguir o que o povo apoia.</span></div>` :
+        ${!PQ ? html`<div className="flex flex-wrap items-center gap-3"><button onClick=${encomendar} className="text-sm px-3 py-2 rounded border border-black/25 font-semibold hover:bg-black/5 flex items-center gap-2"><${Icon} n="ClipboardList" s=${15} /> Fazer pesquisa popular (Instituto Bússola · R$ 2 mi)</button><span className="text-xs opacity-60">Uma pesquisa por proposta. Deputados tendem a seguir o que o povo apoia.</span></div>` :
         html`<div className="p-3 rounded bg-black/5 flex flex-col gap-3">
           <div className="text-[11px] uppercase tracking-widest opacity-60" style=${{ fontFamily: 'var(--f-mono)' }}>Instituto Bússola · pesquisa sobre o rascunho · margem de erro ±${PQ.margem} p.p.</div>
           <div className="flex h-5 rounded overflow-hidden"><div style=${{ width: PQ.favor + '%', background: '#22c55e' }}></div><div style=${{ width: PQ.contra + '%', background: '#e2553f' }}></div><div style=${{ width: PQ.nsei + '%', background: '#a9a796' }}></div></div>
@@ -18736,16 +18990,25 @@ function ModalDecisao({ dec, g, upd, setDec, onClose }) {
           <div className="text-xs opacity-70">${PQ.favor >= 60 ? 'Medida popular: os deputados tendem a embarcar no mapa de votos.' : PQ.favor <= 40 ? 'Medida impopular: parlamentares vão pensar duas vezes antes de votar com o governo.' : 'Opinião dividida: o plenário não se mexe por causa disso.'}</div>
         </div>`}
       </div>
-      ${congresso && html`<div className="flex flex-col gap-3">
-        <div className="text-[11px] uppercase tracking-widest opacity-60" style=${{ fontFamily: 'var(--f-mono)' }}>Mapa de votos (projeção das lideranças)</div>
-        <${VotacaoTabela} votos=${votos} casa="cam" q=${q} />
-        <${VotacaoTabela} votos=${votos} casa="sen" q=${q} />
+      ${congresso ? html`<div className="flex flex-col gap-3" data-secao="chance-aprovar">
+        <${ChanceAprovar} votos=${votos} q=${q} />
+        <${LinhaRede} g=${g} prop=${prop} />
+        <details data-secao="mapa-votos" className="rounded border border-black/15 bg-white/50">
+          <summary className="cursor-pointer select-none px-3 py-2 text-sm font-semibold">Ver detalhe por partido</summary>
+          <div className="px-3 pb-3 pt-1 flex flex-col gap-3"><div className="text-[11px] uppercase tracking-widest opacity-60" style=${{ fontFamily: 'var(--f-mono)' }}>Mapa de votos (projeção das lideranças)</div>
+            <${VotacaoTabela} votos=${votos} casa="cam" q=${q} />
+            <${VotacaoTabela} votos=${votos} casa="sen" q=${q} /></div>
+        </details>
         ${!passa && html`<div className="p-3 rounded bg-black/5">
           <div className="font-semibold text-sm mb-2">Faltam votos. Negocie antes de pautar:</div>
           <div className="flex flex-wrap gap-1.5">${indecisos.map(v => html`<button key=${v.id} onClick=${() => emenda(v.id)} className="text-xs px-2 py-1 rounded border border-black/25 hover:bg-black/5">Emendas p/ ${PMAP[v.id].nome} · ${bi(custoEmenda(g, v.id))}</button>`)}
           <button disabled=${prop.desidratada >= 2} onClick=${desidratar} className="text-xs px-2 py-1 rounded border border-black/25 hover:bg-black/5 disabled:opacity-40">Desidratar o texto (−40% de impacto)</button></div>
         </div>`}
-      </div>`}
+
+      </div>` : html`<div className="p-3 rounded bg-black/5 text-sm" data-secao="chance-aprovar">Esta medida não passa pelo Congresso: vale com a assinatura. As bancadas reagem na opinião pública e nas relações com o governo.</div>`}
+      <${MinistroSobDemanda} dec=${dec} setDec=${setDec} g=${g} upd=${upd} onClose=${onClose} />
+      <${ParecerEspecialista} prop=${prop} g=${g} votos=${votos} q=${q} congresso=${congresso} so=${true} />
+      <${BaseJuridica} prop=${prop} g=${g} />
       <div className="flex flex-wrap justify-end gap-2 pt-3 border-t border-black/10">
         <button className="px-3 py-2 rounded border border-black/25 text-sm font-semibold hover:bg-black/5" onClick=${() => { upd(n => { n.log.unshift({ mes: n.mes, ato: 'Proposta retirada', texto: prop.texto, res: 'retirada' }); }); onClose(); }}>Retirar proposta</button>
         ${congresso && !prop.jaPaga && html`<button className="px-3 py-2 rounded border border-black/25 text-sm font-semibold hover:bg-black/5 disabled:opacity-40" disabled=${!podeEnviar(g, prop).ok || g.acoes <= 0 || cfTravada(prop)} title="Vai para a Pauta do Congresso e gasta 1 ação" onClick=${tramitar}>Enviar e tramitar</button>`}
@@ -18791,8 +19054,9 @@ function ModalDecisao({ dec, g, upd, setDec, onClose }) {
     ${R.ex.revogou && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,255,255,.06)' }}>Revogação aprovada: ${R.ex.revogou} deixa de valer.</div>`}
     ${R.ex.agendados > 0 && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,255,255,.06)' }}>${R.ex.agendados} ${R.ex.agendados === 1 ? 'efeito futuro agendado' : 'efeitos futuros agendados'} em Contas a vencer.</div>`}
     ${R.ex.marcos && R.ex.marcos.length > 0 && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(250,204,21,.14)' }}>Marco do mandato: <b>${R.ex.marcos.join(' · ')}</b></div>`}
+    ${R.ex.gd && R.ex.gd.length > 0 && html`<${GruposResultado} gd=${R.ex.gd} />`}
     <div>
-      <div className="text-[11px] uppercase tracking-widest opacity-60 mb-2" style=${{ fontFamily: 'var(--f-mono)' }}>Manchetes de amanhã</div>
+      <div className="text-[11px] uppercase tracking-widest opacity-60 mb-2" style=${{ fontFamily: 'var(--f-mono)' }}>Reação dos jornais · manchetes de amanhã</div>
       <div className="grid md:grid-cols-3 gap-3">
         <div className="p-3 rounded border-t-4" style=${{ borderColor: '#1d3f8f', background: 'rgba(255,255,255,.05)' }}><div className="text-[10px] uppercase tracking-widest font-bold" style=${{ color: '#7aa2ff' }}>O Globo / Estadão</div><div className="font-semibold mt-1 leading-snug" style=${{ fontFamily: 'Georgia, serif' }}>${R.ex.manchetes.globo}</div>
           ${R.ex.manchetes.sub && R.ex.manchetes.sub.globo && html`<div className="text-xs mt-1 opacity-70 leading-snug">${R.ex.manchetes.sub.globo}</div>`}</div>
@@ -18802,11 +19066,11 @@ function ModalDecisao({ dec, g, upd, setDec, onClose }) {
           ${R.ex.manchetes.sub && R.ex.manchetes.sub.antag && html`<div className="text-xs mt-1 opacity-70 leading-snug">${R.ex.manchetes.sub.antag}</div>`}</div>
       </div>
     </div>
-    <div>
-      <div className="text-[11px] uppercase tracking-widest opacity-60 mb-2" style=${{ fontFamily: 'var(--f-mono)' }}>Voz das ruas</div>
-      <div className="grid md:grid-cols-3 gap-3">${R.ex.vozes.map((v, i) => html`<div key=${i} className="p-3 rounded bg-white border border-black/10 flex flex-col gap-2">
-        <div className="flex items-center gap-2"><span className="text-2xl">${v.emoji}</span><div><div className="font-bold text-sm leading-tight">${v.nome}</div><div className="text-[11px] opacity-60">${v.papel}</div></div></div>
-        <div className="text-sm leading-snug">“${v.fala}”</div></div>`)}</div>
+    <div data-secao="vozes-resultado">
+      <div className="text-[11px] uppercase tracking-widest opacity-60 mb-2" style=${{ fontFamily: 'var(--f-mono)' }}>Voz das ruas · pessoas comentando <span className="normal-case tracking-normal">(personagens inventados)</span></div>
+      <div className="grid md:grid-cols-3 gap-3">${R.ex.vozes.map((v, i) => html`<div key=${i} className="p-3 rounded bg-white border border-black/10 flex flex-col gap-1.5" data-voz="1">
+        <div className="flex items-start gap-2"><span className="text-2xl leading-none">${v.emoji}</span><div className="text-sm leading-snug"><b>${v.idade ? v.nome + ', ' + v.idade + ' anos' + (v.estado ? ', ' + v.estado : '') : v.nome}:</b> “${v.fala}”</div></div>
+        ${v.idade && v.papel && html`<div className="text-[11px] opacity-60">${v.papel.split(',')[0]}</div>`}</div>`)}</div>
     </div>
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
       <div className="p-3 rounded bg-black/5"><div className="text-[10px] uppercase tracking-widest opacity-60">Aprovação</div>${delta(R.ex.antes.ap, R.ex.depois.ap)} p.p.</div>
@@ -19261,6 +19525,12 @@ const ENT_REP = {
   iara: { nome: 'Iara Benevides', veic: 'Repórter de rádio' }, tulio: { nome: 'Túlio Marques', veic: 'Repórter de TV' }
 };
 const ENT_REP_K = Object.keys(ENT_REP);
+// v3.8: apresentadores de podcasts reais (fora de ENT_REP_K, para não entrarem na coletiva). Falas e réplicas deles são SIMULADAS pelo jogo.
+Object.assign(ENT_REP, {
+  igor3k: { nome: 'Igor 3K', veic: 'Apresentador do Flow Podcast', pod: true }, rogerio: { nome: 'Rogério Vilela', veic: 'Apresentador do Inteligência Ltda.', pod: true },
+  cestaro: { nome: 'Felipe Cestaro', veic: 'Apresentador do IronTalks', pod: true }, tresirmaos: { nome: 'Os apresentadores', veic: 'Apresentadores do 3 Irmãos Podcast', pod: true, prim: 'Os apresentadores' },
+  podpah: { nome: 'Igão e Mítico', veic: 'Apresentadores do Podpah', pod: true, prim: 'Igão e Mítico' }
+});
 
 /* Veículos de entrevista. lean: −1 (esquerda) … +1 (direita); alc = alcance (peso do efeito); tem = temas preferidos; imp = ícone/rótulo; src = manchete no jogo */
 const ENT_VEIC = {
@@ -19270,6 +19540,11 @@ const ENT_VEIC = {
   jesq: { k: 'jesq', nome: 'Jornal de linha de esquerda', tipo: 'Jornal de esquerda', lean: -0.8, alc: 0.7, src: 'carta', ic: 'Newspaper', g: ['sindicatos', 'universitarios', 'servidores', 'negro', 'mulheres'], tem: ['emprego', 'ambiente', 'costumes', 'medidas', 'fiscal', 'protesto'], ap: 'Entrevista exclusiva, sem pressa, com foco em desigualdade e direitos.', rep: 'telma' },
   jdir: { k: 'jdir', nome: 'Jornal de linha de direita', tipo: 'Jornal de direita', lean: 0.8, alc: 0.75, src: 'antag', ic: 'Newspaper', g: ['empresariado', 'mercado', 'agro', 'militares', 'policiais'], tem: ['fiscal', 'escandalo', 'seguranca', 'economia', 'congresso', 'stf'], ap: 'Entrevista dura sobre gastos, escândalos e segurança.', rep: 'claudio' },
   sabat: { k: 'sabat', nome: 'Sabatina de entidades (CNI, centrais sindicais e igrejas)', tipo: 'Sabatina de entidades', lean: 0, alc: 0.85, src: 'globo', ic: 'Landmark', g: ['empresariado', 'sindicatos', 'evangelicos', 'catolicos'], tem: ['economia', 'emprego', 'costumes', 'fiscal', 'educacao', 'congresso'], ap: 'Plateia de lideranças empresariais, sindicais e religiosas, com perguntas por escrito.', rep: 'nelson' },
+  flow: { k: 'flow', pod: true, nome: 'Flow Podcast', tipo: 'Podcast Flow', lean: 0, alc: 1.2, src: 'antag', ic: 'Mic', g: ['jovens', 'gamers', 'universitarios', 'classemedia', 'app'], tem: ['redes', 'costumes', 'eleicao', 'ambiente', 'economia', 'medidas'], ap: 'Papo de horas com Igor 3K, perguntas abertas e cortes que viralizam. Recebe candidatos de vários lados.', rep: 'igor3k', pub: 'jovens, gamers e universitários' }, // v3.8
+  inteligencia: { k: 'inteligencia', pod: true, nome: 'Inteligência Ltda.', tipo: 'Podcast Inteligência Ltda.', lean: 0, alc: .65, src: 'globo', ic: 'Mic', g: ['classemedia', 'empresariado', 'mercado', 'universitarios'], tem: ['economia', 'fiscal', 'congresso', 'stf', 'medidas', 'exterior'], ap: 'Conversa longa e calma com Rogério Vilela sobre economia, política e as decisões do governo.', rep: 'rogerio', pub: 'classe média, empresariado e mercado' }, // v3.8
+  irontalks: { k: 'irontalks', pod: true, nome: 'IronTalks', tipo: 'Podcast IronTalks', lean: .7, alc: .7, src: 'antag', ic: 'Mic', g: ['jovens', 'empresariado', 'mei', 'classemedia', 'evangelicos'], tem: ['fiscal', 'economia', 'seguranca', 'escandalo', 'medidas', 'promessas'], ap: 'Papo direto com Felipe Cestaro, com foco em gasto público, empreendedorismo e segurança.', rep: 'cestaro', pub: 'jovens, empreendedores e classe média' }, // v3.8
+  tresirmaos: { k: 'tresirmaos', pod: true, nome: '3 Irmãos Podcast', tipo: 'Podcast 3 Irmãos', lean: -.7, alc: .8, src: 'carta', ic: 'Mic', g: ['jovens', 'periferia', 'universitarios', 'classemedia'], tem: ['emprego', 'costumes', 'ambiente', 'medidas', 'protesto', 'saude'], ap: 'Conversa longa e descontraída com os apresentadores, com olhar para desigualdade, trabalho e direitos.', rep: 'tresirmaos', pub: 'jovens, periferia e universitários' }, // v3.8
+  podpah: { k: 'podpah', pod: true, nome: 'Podpah', tipo: 'Podcast Podpah', lean: -.6, alc: 1.15, src: 'carta', ic: 'Mic', g: ['periferia', 'jovens', 'app', 'carteira', 'classemedia'], tem: ['emprego', 'saude', 'seguranca', 'medidas', 'redes', 'educacao'], ap: 'Bate-papo descontraído com Igão e Mítico, com perguntas diretas sobre o dia a dia de quem trabalha.', rep: 'podpah', pub: 'periferia, jovens e trabalhadores' }, // v3.8
   intl: { k: 'intl', nome: 'Imprensa internacional', tipo: 'Imprensa internacional', lean: -0.1, alc: 0.7, src: 'globo', ic: 'Globe', g: ['mercado', 'universitarios', 'indigenas', 'empresariado'], tem: ['exterior', 'ambiente', 'terras_raras', 'stf', 'economia', 'eleicao'], ap: 'Entrevista para um grande jornal estrangeiro, com foco em clima, comércio e democracia.', rep: 'helga' }
 };
 const ENT_VEIC_K = Object.keys(ENT_VEIC);
@@ -20771,7 +21046,7 @@ function entEscolhe(g, n, opt) {
   for (const x of L) { if (out.length >= n) break; if (!out.includes(x.q)) out.push(x.q); }
   return out.map((q, i) => entSnap(g, q, v, opt.rep ? opt.rep : ENT_REP_K[Math.floor(hashStr(String(g.seed) + 'rp' + g.mes + q.id + i) * ENT_REP_K.length) % ENT_REP_K.length]));
 }
-const entPrimNome = (k) => (ENT_REP[k] ? ENT_REP[k].nome.split(' ')[0] : 'O repórter');
+const entPrimNome = (k) => (ENT_REP[k] ? (ENT_REP[k].prim || ENT_REP[k].nome.split(' ')[0]) : 'O repórter');
 // uma pergunta "congelada": texto, quatro opções por posição e contexto
 function entSnap(g, q, v, rep) {
   const T = ENT_TEMAS[q.tema];
@@ -20811,7 +21086,7 @@ function entSnapCobranca(g, p, rep) {
 function entGeraMes(g) {
   if (!g || g.over) return;
   const E = entEnsure(g);
-  if (E.colet && E.colet.mes === g.mes) { entRenovaConvites(g, E); return; }
+  if (E.colet && E.colet.mes === g.mes) { entRenovaConvites(g, E); entRivalMes(g, E); return; }
   // o que ficou pendente no mês anterior expira
   for (const c of E.convites) if (c.estado === 'pendente' && c.mes < g.mes) { c.estado = 'expirada'; entCustoRecusa(g, c, true); }
   if (E.entrev && E.entrev.mes < g.mes && !E.entrev.fim) entConcluiEntrev(g);
@@ -20825,6 +21100,7 @@ function entGeraMes(g) {
   for (const q of qs) E.usadas.push(q.id);
   if (E.usadas.length > 120) E.usadas = E.usadas.slice(-120);
   entRenovaConvites(g, E);
+  entRivalMes(g, E); // v3.8
 }
 function entRenovaConvites(g, E) {
   E.convites = E.convites.filter(c => c.estado === 'pendente' || g.mes - c.mes < 6);
@@ -20835,15 +21111,22 @@ function entRenovaConvites(g, E) {
   const nInv = hashStr(String(g.seed) + 'inv' + g.mes) < p ? (g.mes >= 44 && hashStr(String(g.seed) + 'inv2' + g.mes) < .6 ? 2 : 1) : 0;
   const ult = E.convites.length ? E.convites[E.convites.length - 1].veic : null;
   const usados = [];
+  // v3.8: quem respondeu a um rival no podcast ganha o convite do mesmo programa (aceitar custa a ação de sempre)
+  if (E.prefPod && g.mes <= E.prefPod.ate && !E.convites.some(c => c.veic === E.prefPod.k && c.mes === g.mes)) { E.convites.push({ id: 'cv' + g.mes + E.prefPod.k, veic: E.prefPod.k, mes: g.mes, estado: 'pendente', resposta: true }); usados.push(E.prefPod.k); E.prefPod = null; }
   for (let i = 0; i < nInv; i++) {
-    const ks = ENT_VEIC_K.filter(k => k !== ult && !usados.includes(k));
+    const ks = ENT_VEIC_K.filter(k => k !== ult && !usados.includes(k) && !E.convites.some(c => c.veic === k && c.mes === g.mes));
     // veículos com temas atuais pesam mais
-    const w = ks.map(k => 1 + (crise && /escandalo|crise/.test(ENT_VEIC[k].tem.join()) ? .5 : 0) + (camp && ['tv', 'sabat', 'podcast', 'jdir'].includes(k) ? .8 : 0));
+    const w = ks.map(k => 1 + (crise && /escandalo|crise/.test(ENT_VEIC[k].tem.join()) ? .5 : 0) + (camp && ['tv', 'sabat', 'podcast', 'jdir'].includes(k) ? .8 : 0) + (ENT_VEIC[k].pod ? entPesoPod(g, camp) : 0)); // v3.8: podcasts reais
     const tot = w.reduce((a, b) => a + b, 0); let r = hashStr(String(g.seed) + 'vv' + g.mes + i) * tot; let k = ks[ks.length - 1];
     for (let j = 0; j < ks.length; j++) { r -= w[j]; if (r < 0) { k = ks[j]; break; } }
     usados.push(k);
     E.convites.push({ id: 'cv' + g.mes + k, veic: k, mes: g.mes, estado: 'pendente' });
   }
+}
+// peso extra de um podcast real entre os convites: sobe em ano eleitoral e quando o tema do presidente está em alta (boa aprovação ou hashtag positiva)
+function entPesoPod(g, camp) { // v3.8
+  const X = g.x; const alta = aprovacao(g) >= 52 || !!(X && (X.trend || []).some(t => t.tom === 'pos' && t.vol >= 40000 && g.mes - t.mes <= 2));
+  return -.35 + (camp ? 1.1 : 0) + (alta ? .6 : 0);
 }
 function entPlayerLean(g) { const i = elPJ(g).ideo; return clamp((i.eco + i.soc) / 200, -1, 1); }
 function entHostil(g, vk) { const V = ENT_VEIC[vk]; const pl = entPlayerLean(g); return V.lean * pl < -.12 && Math.abs(V.lean - pl) > .9; }
@@ -20851,9 +21134,10 @@ function entCustoRecusa(g, c, tacita) {
   const V = ENT_VEIC[c.veic]; const E = g.ent; const f = tacita ? .5 : 1;
   if (entHostil(g, c.veic)) { applyFx(g, { ap: -.1 * f }); c.nota = 'Veículo hostil: a recusa custou pouco.'; }
   else {
-    const fx = {}; V.g.forEach(k => { fx[k] = -.4 * V.alc * f; }); ajustaGrupos(g, fx); E.cred = clamp(E.cred - 1 * f, 0, 100);
+    const fx = {}; V.g.forEach(k => { fx[k] = -.4 * V.alc * f * (V.pod ? 1.5 : 1); }); ajustaGrupos(g, fx); E.cred = clamp(E.cred - 1 * f, 0, 100);
     c.nota = 'Você perdeu a vitrine junto ao público de ' + V.tipo.toLowerCase() + '.';
   }
+  if (V.pod) { try { entPodComenta(g, V, c); } catch (e) { if (typeof console !== 'undefined') console.warn('entPodComenta', e); } } // v3.8
 }
 function entRecusa(n, id) {
   const E = entEnsure(n); const c = E.convites.find(x => x.id === id); if (!c || c.estado !== 'pendente') return;
@@ -20865,12 +21149,122 @@ function entAceita(n, id) {
   if (n.acoes <= 0) return false;
   n.acoes--; n.pes.energia = clamp(n.pes.energia - 6, 0, 100);
   const V = ENT_VEIC[c.veic]; const hostil = entHostil(n, c.veic);
-  const tam = clamp(3 + (aprovacao(n) < 40 ? 1 : 0) + (hostil ? 1 : 0) + (n.mes >= 44 ? 0 : 0), 3, 5);
-  const qs = entEscolhe(n, tam, { tem: V.tem, rep: V.rep, salt: 'ev' + c.veic });
+  const tam = clamp(3 + (aprovacao(n) < 40 ? 1 : 0) + (hostil ? 1 : 0) + (V.pod ? 1 : 0) + (n.mes >= 44 ? 0 : 0), 3, 5);
+  const qs = V.pod ? entPodQs(n, V, tam, c) : entEscolhe(n, tam, { tem: V.tem, rep: V.rep, salt: 'ev' + c.veic }); // v3.8
   for (const q of qs) E.usadas.push(q.id);
   c.estado = 'andamento';
   E.entrev = { id: c.id, veic: c.veic, mes: n.mes, i: 0, qs, fim: false, hostil };
   return true;
+}
+
+/* ============================== v3.8: PODCASTS REAIS E CONVIDADOS RIVAIS ==============================
+   Podcasts reais (Flow, Inteligência Ltda., IronTalks, 3 Irmãos, Podpah) convidam o presidente (mais em ano eleitoral e com o tema dele em alta); recusar custa.
+   De vez em quando um político real rival (líder da oposição, governador de partido rival, candidato adversário) vai a um podcast e critica uma medida; aliado pode defender.
+   Tudo simulado, com chip "simulado", só política: sem acusação, sem vida pessoal. */
+const POD_PUB = { // grupo do público -> [tema, pergunta] // v3.8
+  jovens: ['emprego', 'Muita gente que nos assiste tem menos de 30 anos e busca o primeiro emprego. O que o governo fez de concreto por essa turma?'],
+  gamers: ['redes', 'O pessoal da internet e dos games quer saber: o que o governo pensa sobre as redes e sobre quem vive de criar conteúdo?'],
+  universitarios: ['educacao', 'Tem muito universitário ouvindo a gente. O que muda na bolsa, na pesquisa e na vida de quem estuda?'],
+  classemedia: ['economia', 'A classe média sente o aperto no mercado e no boleto. O que o governo tem a dizer a ela hoje?'],
+  empresariado: ['fiscal', 'Quem empreende quer previsibilidade: dá para esperar imposto menor e conta pública em ordem neste mandato?'],
+  mercado: ['fiscal', 'O mercado olha a conta pública todo dia. Qual é o plano para as contas fecharem sem estrangular o crescimento?'],
+  mei: ['economia', 'O pequeno empreendedor vive no limite entre imposto, juros e burocracia. O que o governo fez por ele?'],
+  periferia: ['seguranca', 'Quem mora na periferia convive com a violência e com o preço das coisas. O que mudou de verdade na vida dessa gente?'],
+  app: ['emprego', 'Entregador e motorista de aplicativo trabalham muitas horas e sem rede de proteção. O governo tem um plano para eles?'],
+  carteira: ['emprego', 'O trabalhador de carteira assinada sente o salário encolher. O que o governo faz por quem acorda cedo e trabalha?'],
+  evangelicos: ['costumes', 'Muitas famílias que nos ouvem são religiosas e se preocupam com a pauta de costumes. Qual é a sua posição, sem rodeio?']
+};
+const podMedida = (V, T, mes, sd) => escolhe(V.lean < -.3 ? [`Presidente, aprovaram ${T} em ${dataMes(mes)}. Conversa franca: quem sente a diferença no dia a dia e quem fica de fora?`, `Vamos falar de ${T}. Na ponta, quem trabalha de segunda a sábado vai sentir isso no bolso?`] // v3.8
+  : V.lean > .3 ? [`Presidente, ${T}: quanto custa por ano, quem paga a conta e o que muda para quem empreende e gera emprego?`, `Aprovaram ${T}. Isso aumenta ou diminui o peso do Estado sobre quem produz? Explica sem juridiquês.`]
+    : [`Vamos destrinchar ${T}: qual era o problema, por que esse caminho e não outro, e como o senhor mede se deu certo?`, `Papo longo: ${T} foi aprovada em ${dataMes(mes)}. O que o senhor faria diferente se pudesse refazer?`], sd);
+// perguntas no estilo do programa: medida aprovada, tema do público, papo longo do banco e, às vezes, uma pegadinha
+function entPodQs(g, V, tam, c) { // v3.8
+  const E = entEnsure(g); const v = entVars(g); const seed = String(g.seed) + 'pod' + g.mes + V.k;
+  const mk = (id, tema, gr, texto, extra) => Object.assign(entSnap(g, { id, tema, gr, p: texto, fl: '' }, v, V.rep), extra || {});
+  const fixas = [];
+  const rv = E.rival && E.rival.pod === V.k && E.rival.estado === 'respondida' && E.rival.resp === 'convite' ? E.rival : null;
+  if (rv) fixas.push(mk('pd-r-' + V.k + g.mes, 'medidas', V.g.slice(0, 2), `${rv.quem.nome} esteve aqui e ${rv.tipo === 'defesa' ? 'defendeu' : 'criticou'} ${rv.topic}. Qual é a sua resposta sobre a medida, sem rodeio?`));
+  const ult = (g.log || []).find(l => l.res === 'aprovada' && l.topic && g.mes - l.mes <= 14);
+  if (ult) fixas.push(mk('pd-m-' + V.k + g.mes, 'medidas', V.g.slice(0, 2), podMedida(V, ult.topic, ult.mes, seed + 'm')));
+  const gs = V.g.filter(k => POD_PUB[k]); const gk = gs[Math.floor(hashStr(seed + 'g') * gs.length) % gs.length];
+  if (gk) fixas.push(mk('pd-p-' + V.k + g.mes, POD_PUB[gk][0], [gk], POD_PUB[gk][1]));
+  let peg = null;
+  if (ult && hashStr(seed + 'peg') < .55) { peg = mk('pd-g-' + V.k + g.mes, 'medidas', V.g.slice(0, 2), 'Pergunta rápida da casa, sem consulta: qual foi a última medida que o senhor assinou, quanto ela custa por ano e quem ganha com ela?', { pegadinha: true }); peg.sit = Math.min(peg.sit, 0); }
+  const nPeg = peg ? 1 : 0; const topo = fixas.slice(0, Math.max(1, tam - nPeg));
+  const resto = Math.max(0, tam - topo.length - nPeg);
+  const banco = resto > 0 ? entEscolhe(g, resto, { tem: V.tem, rep: V.rep, salt: 'pod' + V.k }) : [];
+  return topo.concat(banco, peg ? [peg] : []).slice(0, tam);
+}
+// o podcast comenta a recusa (post com chip "simulado", só sobre o convite); o público reage no custo da recusa
+function entPodComenta(g, V, c) { // v3.8
+  const X = ensureX(g); const seed = 'podc|' + g.mes + V.k;
+  const txt = escolhe([`Convidamos o presidente para o ${V.nome} e o convite não foi aceito. A cadeira segue aberta para falar das medidas do governo.`, `O ${V.nome} chamou o presidente para uma conversa sobre as medidas do governo. Por enquanto, sem resposta.`], seed);
+  empilha(g, X, [{ a: { nome: V.nome, tipo: 'podcast', em: '🎙️', sim: true, fam: true, area: 'podcast' }, txt, likes: engaj(X, seed, 4200, V.alc), rts: engaj(X, seed + 'r', 1200, V.alc), resp: respostas(seed + 'x', 2, () => 'neg', X_PERFIS), tom: 'neg', kind: 'famoso', fx: [] }], seed);
+}
+// convidados: rivais e aliados reais que já existem no jogo
+function entRivais(g, tipo) { // v3.8
+  const out = []; const campo = (sigla, c) => c || elCampDe(bloco(sigla));
+  const gov = (u) => { try { return elGov(g, u) || ELEITOS.gov[u]; } catch (e) { return ELEITOS.gov[u]; } };
+  if (tipo === 'critica') {
+    try { const c = liderOposicao(g.cfg); if (c) out.push({ nome: c.nome, sigla: sg(c.partido), uf: null, papel: 'líder da oposição', camp: campo(c.partido), peso: 2 }); } catch (e) { }
+    for (const u of Object.keys(ELEITOS.gov)) { const r = gov(u); if (!r) continue; const P = g.parties[bloco(r[1])]; if (P && status(P.rel) === 'opos') out.push({ nome: r[0], sigla: sg(r[1]), uf: u, papel: 'governador(a) de ' + UF_INFO[u].nome, camp: campo(r[1]), peso: 1 }); }
+    if (g.mes >= 37 && g.el && g.el.ger && Array.isArray(g.el.ger.cands)) for (const c of g.el.ger.cands) if (c.id !== g.el.ger.meuId && norm(c.nome) !== norm(g.cfg.nome)) out.push({ nome: c.nome, sigla: c.sigla, uf: c.uf || null, papel: 'candidato(a) adversário(a)', camp: campo(c.sigla, c.camp), peso: 2.5 });
+  } else {
+    for (const u of Object.keys(ELEITOS.gov)) { const r = gov(u); if (!r) continue; const P = g.parties[bloco(r[1])]; if (P && status(P.rel) === 'base') out.push({ nome: r[0], sigla: sg(r[1]), uf: u, papel: 'governador(a) de ' + UF_INFO[u].nome, camp: campo(r[1]), peso: 1 }); }
+  }
+  return out;
+}
+function entRivalFrase(q, tipo, T, seed) { // v3.8
+  const C = cap(T);
+  const P = tipo === 'defesa' ? [`${C} chega à ponta: no meu estado já se vê o efeito. Vale defender a medida.`, `Sobre ${T}: apoiei e apoio. Está no caminho certo e precisa ser bem explicada à população.`, `${C} é uma medida que ajuda quem mais precisa. Vale olhar o resultado antes de criticar.`]
+    : q.camp === 'dir' || q.camp === 'cdir' ? [`O governo errou na prioridade ao aprovar ${T}: o custo é alto e a conta chega ao contribuinte.`, `${C} aumenta o peso do Estado e entrega pouco. Defendo outro caminho para o país.`, `Sobre ${T}: o texto é mal desenhado e a execução vai mostrar os problemas.`]
+      : q.camp === 'esq' || q.camp === 'cesq' ? [`${C} fica aquém do que o país precisa: faltou ouvir quem mais depende do Estado.`, `Aprovaram ${T} pensando mais no mercado do que no trabalhador. Defendo outro desenho.`, `Sobre ${T}: o governo cedeu onde não devia e quem vai sentir é o povo.`]
+        : [`Sobre ${T}: o governo anunciou antes de explicar a conta. Falta transparência no desenho.`, `${C} pode ter boa intenção, mas o desenho não resiste a uma análise de custo e benefício.`];
+  return escolhe(P, seed);
+}
+// uma vez por mês: de tempos em tempos um rival (ou aliado) vai a um podcast e fala de uma medida do governo
+function entRivalMes(g, E) { // v3.8
+  if (E.rivalMes === g.mes) return; E.rivalMes = g.mes;
+  if (E.rival && E.rival.estado === 'aberta' && g.mes > E.rival.mes + 1) E.rival.estado = 'expirada';
+  if (elLeve(g) || g.mes < 4 || g.over) return;
+  if (E.rival && g.mes - E.rival.mes < 4) return;
+  const camp = g.mes >= 37;
+  if (hashStr(String(g.seed) + 'rv' + g.mes) >= clamp(.17 + (camp ? .17 : 0) + (aprovacao(g) < 40 ? .08 : 0), 0, .5)) return;
+  const ult = (g.log || []).filter(l => l.res === 'aprovada' && l.topic && g.mes - l.mes <= 10);
+  if (!ult.length) return;
+  const X = ensureX(g); const M = ult[Math.floor(hashStr(String(g.seed) + 'rvm' + g.mes) * ult.length) % ult.length];
+  const h = (X.hist || []).find(x => x.topic === M.topic); const popular = !!(h && h.pos >= 58);
+  let tipo = popular && hashStr(String(g.seed) + 'rvt' + g.mes) < .5 ? 'defesa' : 'critica';
+  let pool = entRivais(g, tipo); if (!pool.length && tipo === 'defesa') { tipo = 'critica'; pool = entRivais(g, tipo); }
+  if (!pool.length) return;
+  const tot = pool.reduce((a, b) => a + b.peso, 0); let r = hashStr(String(g.seed) + 'rvq' + g.mes) * tot; let quem = pool[pool.length - 1];
+  for (const q of pool) { r -= q.peso; if (r < 0) { quem = q; break; } }
+  // podcast: quem é de direita vai mais a programas neutros ou de direita; esquerda, o inverso
+  const ld = quem.camp === 'dir' || quem.camp === 'cdir' ? 1 : quem.camp === 'esq' || quem.camp === 'cesq' ? -1 : 0;
+  const ks = ENT_VEIC_K.filter(k => ENT_VEIC[k].pod && !(E.rival && E.rival.pod === k));
+  const w = ks.map(k => Math.max(.25, 1 + ld * ENT_VEIC[k].lean * .9 + ENT_VEIC[k].alc * .3)); const tw = w.reduce((a, b) => a + b, 0);
+  let r2 = hashStr(String(g.seed) + 'rvp' + g.mes) * tw; let pk = ks[ks.length - 1];
+  for (let i = 0; i < ks.length; i++) { r2 -= w[i]; if (r2 < 0) { pk = ks[i]; break; } }
+  const V = ENT_VEIC[pk]; const T = M.topic; const frase = entRivalFrase(quem, tipo, T, String(g.seed) + 'rvf' + g.mes);
+  const fx = {}; V.g.forEach(k => { fx[k] = (tipo === 'defesa' ? .15 : -.22) * V.alc; }); ajustaGrupos(g, fx);
+  E.rival = { id: 'rv' + g.mes, mes: g.mes, tipo, quem, pod: pk, topic: T, frase, estado: 'aberta', fx };
+  g.feed.unshift({ mes: g.mes, src: V.src, txt: `${quem.nome} (${quem.sigla}) ${tipo === 'defesa' ? 'defende' : 'critica'} ${T} em episódio do ${V.nome}`, sub: 'Trecho simulado pelo jogo; só trata da medida' }); g.feed = g.feed.slice(0, 40);
+  const seed = 'rival|' + g.mes + pk;
+  empilha(g, X, [{ a: { nome: quem.nome, sigla: quem.sigla, uf: quem.uf, tipo: 'politico', em: '🎙️', sim: true, pol: true }, txt: `Corte do ${V.nome}: ${frase}`, likes: engaj(X, seed, 7200, V.alc), rts: engaj(X, seed + 'r', 2400, V.alc), resp: respostas(seed + 'x', 3, () => (tipo === 'defesa' ? 'pos' : 'neg'), X_PERFIS, XR), tom: tipo === 'defesa' ? 'pos' : 'neg', kind: 'pol' }], seed);
+  poeTrend(X, g, '#' + V.nome.replace(/[^A-Za-z0-9]/g, '').slice(0, 14), 26000 + 12000 * V.alc, tipo === 'defesa' ? 'pos' : 'neg');
+}
+// resposta do jogador ao rival: aceitar o próximo convite do podcast, responder no X ou ignorar
+function entRivalResp(n, how) { // v3.8
+  const E = entEnsure(n); const r = E.rival; if (!r || r.estado !== 'aberta') return false; const V = ENT_VEIC[r.pod];
+  if (how === 'convite') { E.prefPod = { k: r.pod, ate: n.mes + 3 }; r.estado = 'respondida'; r.resp = 'convite'; r.msg = `Você sinalizou que aceita o próximo convite do ${V.nome}. Ele deve chegar nos próximos meses e vai abrir com a pergunta sobre a medida.`; return true; }
+  if (how === 'x') {
+    const X = ensureX(n); if (X.postsMes >= POST_LIM) return false;
+    const txt = r.tipo === 'defesa' ? `Agradeço o apoio a ${r.topic}. Vamos seguir explicando a medida e acompanhando os resultados.` : `Sobre ${r.topic}: respeito a crítica, mas o debate precisa partir dos dados e do resultado na vida das pessoas.`;
+    xPostarJogador(n, txt);
+    if (r.tipo !== 'defesa') { const rec = {}; for (const k in (r.fx || {})) rec[k] = -r.fx[k] * .5; ajustaGrupos(n, rec); }
+    r.estado = 'respondida'; r.resp = 'x'; r.msg = r.tipo === 'defesa' ? 'Você agradeceu no X.' : 'Você respondeu no X e recuperou parte do público do podcast.'; return true;
+  }
+  r.estado = 'ignorada'; r.resp = 'ignorar'; r.msg = 'Você deixou passar.'; return true;
 }
 
 /* ---------- análise da resposta livre ---------- */
@@ -20970,7 +21364,7 @@ function entAplicaResposta(n, q, op, texto, ctx) {
   const livre = op === 'livre' ? entLivre(n, texto, q) : null;
   const arq = livre ? livre.arq : op;
   const apAntes = aprovacao(n);
-  const gaf = hashStr('gf' + n.seed + n.mes + q.id + arq + (texto || '').length) < entGafeP(n, arq, livre);
+  const gaf = hashStr('gf' + n.seed + n.mes + q.id + arq + (texto || '').length) < entGafeP(n, arq, livre) + (q.pegadinha ? .08 : 0); // v3.8
   const { dG, dap } = entCalcula(n, q, arq, livre, alc);
   let out; let dapF = dap; const linhas = [];
   if (gaf) {
@@ -21049,6 +21443,7 @@ function entX(n, q, res, V) {
   novos.push({ a: { nome: jor[0], handle: jor[1], tipo: jor[3], em: jor[4], verif: true }, txt, likes: engaj(X, seed, 3600, 1 + Math.abs(res.dap) / 1.5), rts: engaj(X, seed + 'r', 1300, 1), resp: respostas(seed + 'x', 3, () => (tom === 'neu' ? 'neu' : tom === 'pos' ? 'pos' : 'neg'), X_PERFIS), tom, kind: 'imprensa' });
   if (res.op === 'ataque' || res.out === 'gafe') novos.push({ a: CONTA_OPO, txt: res.out === 'gafe' ? `O presidente precisa explicar o que disse sobre ${tn}.` : `Atacar a oposição não responde ao que o país perguntou sobre ${tn}.`, likes: engaj(X, seed + 'o', 6500, 1), rts: engaj(X, seed + 'ro', 1900, 1), resp: [], tom: 'neg', kind: 'lider' });
   if (res.out === 'bom') novos.push({ a: contaPres(n), txt: `Sobre ${tn}: ${entCitacao(res.texto, 150)}`, likes: engaj(X, seed + 'p', 22000, 1), rts: engaj(X, seed + 'rp', 4200, 1), resp: [], tom: 'pos', kind: 'pres' });
+  if (V && V.pod && res.out !== 'morno') novos.push({ a: { nome: V.nome + ' (corte)', tipo: 'podcast', em: '🎙️', sim: true, fam: true, area: 'podcast' }, txt: `Corte: o presidente sobre ${tn}: “${entCitacao(res.texto, 110)}”`, likes: engaj(X, seed + 'pc', 5200, V.alc), rts: engaj(X, seed + 'pcr', 1600, V.alc), resp: respostas(seed + 'pcx', 2, () => tom, X_PERFIS), tom, kind: 'famoso', fx: [] }); // v3.8
   empilha(n, X, novos, seed);
   poeTrend(X, n, V ? '#Entrevista' : '#Coletiva', 26000 + Math.abs(res.dap) * 22000, tom);
 }
@@ -21103,10 +21498,12 @@ function entPend(g) {
   const R = E.entrev;
   if (R && !R.fim) L.push({ id: 'entconv-andamento', tipo: 'entconv', urg: 62, cat: 'Entrevista em andamento', ic: ENT_VEIC[R.veic].ic, titulo: ENT_VEIC[R.veic].nome, ctx: `Pergunta ${R.i + 1} de ${R.qs.length}: “${R.qs[R.i].texto}”`, extra: null, abrir: 'entconv', btns: [] });
   else {
+    const rv = E.rival;
+    if (rv && rv.estado === 'aberta') L.push({ id: 'podrival', tipo: 'entconv', urg: 47, cat: 'Repercussão em podcast', ic: 'Mic', titulo: `${rv.quem.nome} ${rv.tipo === 'defesa' ? 'defende' : 'critica'} ${rv.topic} no ${ENT_VEIC[rv.pod].nome}`, ctx: rv.frase, extra: 'Não gasta ação (responder no X usa um dos posts do mês) · vale este mês e o próximo.', abrir: 'entconv', btns: [] }); // v3.8
     const pend = E.convites.filter(c => c.estado === 'pendente' && c.mes === g.mes);
     for (const c of pend.slice(0, 2)) {
       const V = ENT_VEIC[c.veic]; const hostil = entHostil(g, c.veic);
-      L.push({ id: 'entconv' + c.id, tipo: 'entconv', urg: g.mes >= 37 ? 58 : 44, cat: 'Convite de entrevista', ic: V.ic, titulo: V.nome, ctx: V.ap + (hostil ? ' Veículo de linha oposta à sua: risco maior, custo de recusa menor.' : ''), extra: 'Aceitar custa 1 ação e 6 de energia · vale só neste mês.', abrir: 'entconv', btns: [] });
+      L.push({ id: 'entconv' + c.id, tipo: 'entconv', urg: g.mes >= 37 ? 58 : 44, cat: V.pod ? 'Convite de podcast' : 'Convite de entrevista', ic: V.ic, titulo: V.nome, ctx: V.ap + (V.pod ? ' (Podcast real; falas simuladas.)' : '') + (c.resposta ? ' Você sinalizou que aceitaria este convite.' : '') + (hostil ? ' Veículo de linha oposta à sua: risco maior, custo de recusa menor.' : ''), extra: 'Aceitar custa 1 ação e 6 de energia · vale só neste mês.', abrir: 'entconv', btns: [] });
     }
   }
   return L;
@@ -21114,7 +21511,7 @@ function entPend(g) {
 function entAindaPend(g, kind) {
   const E = g.ent; if (!E) return false;
   if (kind === 'entcol') return !!(E.colet && E.colet.mes === g.mes && !E.colet.fim);
-  if (kind === 'entconv') return !!(E.entrev && !E.entrev.fim) || E.convites.some(c => c.estado === 'pendente' && c.mes === g.mes);
+  if (kind === 'entconv') return !!(E.entrev && !E.entrev.fim) || E.convites.some(c => c.estado === 'pendente' && c.mes === g.mes) || !!(E.rival && E.rival.estado === 'aberta'); // v3.8
   return typeof elAindaPend === 'function' ? elAindaPend(g, kind) : true;
 }
 
@@ -22117,7 +22514,7 @@ function EntPergunta({ q, onResp, alvo }) {
   const [txt, setTxt] = useState('');
   const R = q.res; const rep = ENT_REP[q.rep]; const T = ENT_TEMAS[q.tema];
   return html`<div className="flex flex-col gap-3" data-ent-pergunta=${q.id}>
-    <div className="flex flex-wrap items-center gap-2"><span className="text-ouro"><${Icon} n="Mic" s=${16} /></span><span className="eyebrow">${rep.nome} · ${rep.veic}</span><${Tag}>${T.n}</${Tag}></div>
+    <div className="flex flex-wrap items-center gap-2"><span className="text-ouro"><${Icon} n="Mic" s=${16} /></span><span className="eyebrow">${rep.nome} · ${rep.veic}</span><${Tag}>${T.n}</${Tag}>${rep.pod && html`<${Tag} cor="var(--ouro)">simulado</${Tag}>`}${q.pegadinha && html`<${Tag} cor="var(--ambar)">pegadinha</${Tag}>`}</div>
     <p className="text-base leading-snug">“${q.texto}”</p>
     ${!R ? html`<div className="flex flex-col gap-2">
       <div className="grid gap-2 lg:grid-cols-2">${q.ops.map(o => html`<button key=${o.k} type="button" className="btn btn-ghost text-left !items-start !justify-start flex-col gap-1 p-3" data-op=${o.k} title=${ENT_ARQ[o.k].dica} onClick=${() => onResp(o.k, '')}>
@@ -22160,11 +22557,21 @@ function EntConvites({ g, upd }) {
       </div></div>`;
   }
   const pend = E.convites.filter(c => c.estado === 'pendente' && c.mes === g.mes);
+  const rv = E.rival && E.rival.mes >= g.mes - 1 ? E.rival : null; const RV = rv ? ENT_VEIC[rv.pod] : null; // v3.8
   return html`<div className="flex flex-col gap-3" data-ent="convites">
+    ${rv && html`<div className="rounded-lg border p-3 flex flex-col gap-2" data-podrival=${rv.estado} style=${{ borderColor: 'var(--ouro)' }}>
+      <div className="flex flex-wrap items-center gap-2"><span className="text-ouro"><${Icon} n="Mic" s=${16} /></span><b>Repercussão em podcast</b><${Tag} cor="var(--ouro)">simulado</${Tag}><${Tag}>${RV.nome}</${Tag}></div>
+      <p className="text-sm"><b>${rv.quem.nome}</b> (${rv.quem.sigla}${rv.quem.uf ? '-' + rv.quem.uf : ''}, ${rv.quem.papel}) ${rv.tipo === 'defesa' ? 'defendeu' : 'criticou'} ${rv.topic}: “${rv.frase}”</p>
+      <p className="text-xs text-muted">${rv.tipo === 'defesa' ? 'Pequena alta de aprovação' : 'Pequena queda de aprovação'} no público do podcast (${RV.pub}). A fala é simulada pelo jogo e só trata da medida.</p>
+      ${rv.estado === 'aberta' ? html`<div className="flex flex-wrap gap-2 justify-end">
+        <button type="button" className="btn btn-ghost text-sm" data-rival-ignorar="1" onClick=${() => upd(n => { entRivalResp(n, 'ignorar'); })}>Ignorar</button>
+        <button type="button" className="btn btn-ghost text-sm" data-rival-x="1" disabled=${postsRestantes(g) <= 0} title=${postsRestantes(g) <= 0 ? 'Limite de posts do mês atingido' : 'Usa um dos posts do mês'} onClick=${() => upd(n => { entRivalResp(n, 'x'); })}><${Icon} n="Send" s=${13} /> Responder no X</button>
+        <button type="button" className="btn btn-pri text-sm" data-rival-convite="1" onClick=${() => upd(n => { entRivalResp(n, 'convite'); })}>Aceitar o próximo convite do ${RV.nome}</button></div>` : html`<div className="text-xs text-muted" data-rival-msg="1">${rv.msg || (rv.estado === 'expirada' ? 'Sem resposta: o assunto passou.' : '')}</div>`}
+    </div>`}
     ${pend.length === 0 && html`<p className="text-sm text-muted">Nenhum convite pendente neste mês.${E.ultEntrev && E.ultEntrev.mes === g.mes ? ' Última entrevista: ' + sgn(E.ultEntrev.dap, 1) + ' p.p.' : ''}</p>`}
     ${pend.map(c => { const V = ENT_VEIC[c.veic]; const hostil = entHostil(g, c.veic); return html`<div key=${c.id} className="rounded-lg border border-line p-3 flex flex-col gap-2" data-convite=${c.veic}>
-      <div className="flex flex-wrap items-center gap-2"><span className="text-ouro"><${Icon} n=${V.ic} s=${16} /></span><b>${V.nome}</b><${Tag}>${V.tipo}</${Tag}>${hostil && html`<${Tag} cor="var(--ambar)">linha oposta à sua</${Tag}>`}<${Tag}>alcance ${fmt(V.alc, 2)}×</${Tag}></div>
-      <p className="text-sm text-muted">${V.ap}</p>
+      <div className="flex flex-wrap items-center gap-2"><span className="text-ouro"><${Icon} n=${V.ic} s=${16} /></span><b>${V.nome}</b><${Tag}>${V.tipo}</${Tag}>${V.pod && html`<${Tag} cor="var(--ouro)">simulado</${Tag}>`}${c.resposta && html`<${Tag} cor="var(--verde)">resposta ao convidado</${Tag}>`}${hostil && html`<${Tag} cor="var(--ambar)">linha oposta à sua</${Tag}>`}<${Tag}>alcance ${fmt(V.alc, 2)}×</${Tag}></div>
+      <p className="text-sm text-muted">${V.ap}${V.pod ? ' Público: ' + V.pub + '. Podcast real; perguntas e falas simuladas pelo jogo.' : ''}</p>
       <p className="text-xs text-muted">${hostil ? 'Recusar um veículo hostil custa pouco; ir mal custa mais.' : 'Recusar faz você perder a vitrine junto ao público do veículo.'} Aceitar custa 1 ação e 6 de energia; são 3 a 5 perguntas em sequência.</p>
       <div className="flex gap-2 justify-end"><button type="button" className="btn btn-ghost text-sm" data-conv-recusar=${c.veic} onClick=${() => upd(n => { entRecusa(n, c.id); })}>Recusar</button>
         <button type="button" className="btn btn-pri text-sm" data-conv-aceitar=${c.veic} disabled=${g.acoes <= 0} onClick=${() => upd(n => { entAceita(n, c.id); })}>Aceitar · 1 ação</button></div></div>`; })}
@@ -22180,7 +22587,7 @@ function EntImprensa({ g, upd }) {
       <div className="grid grid-cols-3 gap-2 text-center"><div><div className="num text-xl">${E.feitas}</div><div className="eyebrow">feitas</div></div><div><div className="num text-xl">${E.recusas}</div><div className="eyebrow">recusadas</div></div><div><div className="num text-xl">${E.hist.length}</div><div className="eyebrow">respostas</div></div></div>
       <div className="flex flex-col gap-2">
         ${q && html`<button type="button" className="btn btn-pri justify-center" onClick=${() => setGav('entcol')}><${Icon} n="Mic" s=${14} /> Abrir a coletiva do mês</button>`}
-        ${E.convites.some(c => c.estado === 'pendente' && c.mes === g.mes) || (E.entrev && !E.entrev.fim) ? html`<button type="button" className="btn btn-gold justify-center" onClick=${() => setGav('entconv')}><${Icon} n="Radio" s=${14} /> Convites de entrevista</button>` : null}
+        ${E.convites.some(c => c.estado === 'pendente' && c.mes === g.mes) || (E.entrev && !E.entrev.fim) || (E.rival && E.rival.mes >= g.mes - 1) ? html`<button type="button" className="btn btn-gold justify-center" onClick=${() => setGav('entconv')}><${Icon} n="Radio" s=${14} /> Convites de entrevista</button>` : null}
       </div>
       <div><div className="eyebrow mb-1">Promessas feitas em entrevistas</div>
         ${(E.prom || []).length === 0 ? html`<p className="text-xs text-muted">Nenhuma ainda. Quando você promete algo em texto livre, a imprensa cobra depois.</p>` : html`<ul className="flex flex-col gap-1">${E.prom.slice(-6).reverse().map((p, i) => html`<li key=${i} className="text-xs flex gap-2"><${Tag} cor=${p.estado === 'cumprida' ? 'var(--verde)' : p.estado === 'quebrada' ? 'var(--rubro)' : 'var(--ouro)'}>${p.estado}</${Tag}><span className="flex-1">${p.topic} <span className="text-muted">(${dataCurta(p.mes)})</span></span></li>`)}</ul>`}</div>
@@ -23573,7 +23980,7 @@ function App() {
         ${sec === 'eu' && html`<${Eu} g=${g} upd=${upd} chip=${chipAtual(g, 'eu')} setChip=${(c) => irPara('eu', c)} />`}
         ${sec === 'x' && html`<${RedeX} g=${g} upd=${upd} />`}
         <footer className="mt-10 text-xs text-muted flex flex-col gap-2">
-          <p>Congresso real eleito em 2026 (dados do TSE). Votos e comportamentos dos parlamentares são simulados. Veículos de imprensa aparecem como referência satírica; os cidadãos entrevistados, as manchetes e os indicadores são fictícios. Efígies e emblemas de reserva são ilustrações originais do jogo. Relações bilaterais, pesos de comércio e valores da diplomacia são estimativas do jogo; a seção Bastidores é ficção, com pessoas e empresas inventadas e indisponível para personagens reais.</p>
+          <p>Congresso real eleito em 2026 (dados do TSE). Votos e comportamentos dos parlamentares são simulados. Famosos, podcasts e políticos reais citados em posts e entrevistas aparecem com o selo “simulado”: as falas são inventadas pelo jogo, tratam só de medidas e política e partem de posições públicas declaradas (seguidores são ordens de grandeza). Veículos de imprensa aparecem como referência satírica; os cidadãos entrevistados, as manchetes e os indicadores são fictícios. Efígies e emblemas de reserva são ilustrações originais do jogo. Relações bilaterais, pesos de comércio e valores da diplomacia são estimativas do jogo; a seção Bastidores é ficção, com pessoas e empresas inventadas e indisponível para personagens reais.</p>
           <p data-credito-logos="1">Logotipos: sites oficiais de cada partido, usados apenas para identificação.</p>
           <p data-credito-fotos="1">Fotos: TSE (fotos de registro de candidatura, dados abertos) e Wikimedia Commons (licenças livres; créditos em Configurações). Personagens fictícios têm retratos ilustrados gerados pelo jogo.</p>
         </footer>

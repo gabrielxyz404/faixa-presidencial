@@ -15,7 +15,7 @@ print('25 propostas: mudaram', mud or 'nenhuma', '| erros de página/console:', 
 K = ['topic', 'inst', 'instDet', 'cost', 'rev', 'once', 'cf']
 for n in range(0, len(pares), 2):
     fr, bp = pares[n], pares[n + 1]; out = os.path.join(OUT, 'probe_' + os.path.basename(fr))
-    rr = run(os.path.join(H, 'probe.py'), ROOT, fr, out, str(8791 + n))
+    rr = run(os.path.join(H, 'probe.py'), ROOT, fr, out, str(int(os.environ.get('PROBE_PORT', '8791')) + n))
     print(os.path.basename(fr), ':', [l for l in rr.stdout.splitlines() if 'GET /' not in l][-1:] )
     if not os.path.exists(bp): print('  (sem linha de base em', bp, ')'); continue
     a = {x['t']: x for x in json.load(open(bp))}; b = json.load(open(out))
