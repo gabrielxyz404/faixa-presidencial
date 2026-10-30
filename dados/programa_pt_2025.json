@@ -1,0 +1,186 @@
+{
+ "n": "Partido dos Trabalhadores (PT)",
+ "fonte": "Resolução Política do Diretório Nacional do PT, Brasília, 6/12/2025 (11 p.)",
+ "e": {
+  "economia": [
+   -2,
+   "o papel do Estado como indutor do desenvolvimento",
+   4
+  ],
+  "gasto_social": [
+   -2,
+   "uma agenda de fortalecimento e democratização dos serviços públicos, investimentos na inovação e na qualidade e excelência dos serviços e de ampliação das políticas sociais",
+   6
+  ],
+  "tributacao": [
+   -2,
+   "defender uma reforma tributária progressiva e a redução drástica dos juros reais",
+   5
+  ],
+  "trabalho": [
+   -2,
+   "fim da escala 6x1 e pela redução da jornada de trabalho",
+   7
+  ],
+  "privatizacao": [
+   -2,
+   "contendo a privatização das estatais, bancos públicos, saúde, educação e previdência",
+   6
+  ],
+  "seguranca": [
+   -1,
+   "uma política nacional de segurança pública integrada com as políticas sociais, comprometida com a vida, baseada na inteligência, tecnologia, investigação, participação social e justiça",
+   8
+  ],
+  "costumes": [
+   -1,
+   "enfrentando o machismo estrutural, o racismo e a violência institucional",
+   10
+  ],
+  "ambiente": [
+   -2,
+   "consolidando a transição ecológica e energética justa, soberana e popular como eixo estratégico do desenvolvimento nacional",
+   4
+  ],
+  "soberania_externa": [
+   -1,
+   "a defesa de uma nova arquitetura econômica mundial democrática e multipolar",
+   5
+  ]
+ },
+ "b": [
+  "Reeleição de Lula e ampliação da bancada no Senado",
+  "Reforma tributária progressiva e redução drástica dos juros reais",
+  "Estado indutor: Nova Indústria Brasil e PAC",
+  "Fim da escala 6x1 e redução da jornada",
+  "Contra a privatização de estatais, bancos públicos e serviços",
+  "Regulação das big techs e soberania digital",
+  "Reforma política: financiamento público e voto em lista",
+  "Ministério da Segurança Pública, PEC da Segurança e PL Antifacção",
+  "Transição ecológica e energética justa (COP30)",
+  "Sem anistia ao 8 de janeiro"
+ ],
+ "propostas": [
+  {
+   "pag": 5,
+   "proposta": "Reforma tributária progressiva",
+   "eixo": "tributacao",
+   "sentido": "-1"
+  },
+  {
+   "pag": 5,
+   "proposta": "Redução drástica dos juros reais",
+   "eixo": "economia",
+   "sentido": "-1"
+  },
+  {
+   "pag": 5,
+   "proposta": "Aprofundar a Nova Indústria Brasil e o PAC",
+   "eixo": "economia",
+   "sentido": "-1"
+  },
+  {
+   "pag": 7,
+   "proposta": "Fim da escala 6x1 e redução da jornada de trabalho",
+   "eixo": "trabalho",
+   "sentido": "-1"
+  },
+  {
+   "pag": 7,
+   "proposta": "Tarifa zero no transporte",
+   "eixo": "gasto_social",
+   "sentido": "-1"
+  },
+  {
+   "pag": 7,
+   "proposta": "Ensino integral, formação técnica e primeira infância",
+   "eixo": "gasto_social",
+   "sentido": "-1"
+  },
+  {
+   "pag": 7,
+   "proposta": "Prioridade a trabalhadores de aplicativos, micro e pequenas empresas e periferias",
+   "eixo": "trabalho",
+   "sentido": "-1"
+  },
+  {
+   "pag": 8,
+   "proposta": "Novo marco de proteção ao trabalho por plataformas, com vínculo quando houver subordinação algorítmica e pisos previdenciários",
+   "eixo": "trabalho",
+   "sentido": "-1"
+  },
+  {
+   "pag": 6,
+   "proposta": "Conter a privatização de estatais, bancos públicos, saúde, educação e previdência",
+   "eixo": "privatizacao",
+   "sentido": "-1"
+  },
+  {
+   "pag": 6,
+   "proposta": "Enfrentar o modelo de emendas parlamentares que 'sequestra' o orçamento",
+   "eixo": "economia",
+   "sentido": "0"
+  },
+  {
+   "pag": 6,
+   "proposta": "Reforma política: financiamento público de campanhas e voto em lista com paridade e cotas etnorraciais",
+   "eixo": "costumes",
+   "sentido": "-1"
+  },
+  {
+   "pag": 7,
+   "proposta": "Regulação das big techs, com transparência e responsabilização algorítmica e auditorias independentes",
+   "eixo": "soberania_externa",
+   "sentido": "-1"
+  },
+  {
+   "pag": 8,
+   "proposta": "Política nacional de soberania digital: rede pública de dados, computação de alta performance e IA aberta",
+   "eixo": "soberania_externa",
+   "sentido": "-1"
+  },
+  {
+   "pag": 8,
+   "proposta": "Criar o Ministério da Segurança Pública; PEC da Segurança Pública e PL Antifacção",
+   "eixo": "seguranca",
+   "sentido": "0"
+  },
+  {
+   "pag": 8,
+   "proposta": "Segurança baseada em inteligência e combate financeiro ao crime, contra a repressão com alta letalidade",
+   "eixo": "seguranca",
+   "sentido": "-1"
+  },
+  {
+   "pag": 4,
+   "proposta": "Transição ecológica e energética justa; sociobioeconomia e defesa da Amazônia (Carta de Belém/COP30)",
+   "eixo": "ambiente",
+   "sentido": "-1"
+  },
+  {
+   "pag": 10,
+   "proposta": "Políticas de prevenção e combate ao feminicídio e à violência de gênero",
+   "eixo": "costumes",
+   "sentido": "-1"
+  },
+  {
+   "pag": 2,
+   "proposta": "Sem anistia para os condenados pelo 8 de janeiro",
+   "eixo": "costumes",
+   "sentido": "0"
+  },
+  {
+   "pag": 2,
+   "proposta": "Política externa ativa na América Latina; diálogo e diplomacia; contra ingerência dos EUA na Venezuela",
+   "eixo": "soberania_externa",
+   "sentido": "-1"
+  },
+  {
+   "pag": 9,
+   "proposta": "Ampliar a bancada no Senado para conter impeachment de ministros do STF",
+   "eixo": "costumes",
+   "sentido": "0"
+  }
+ ],
+ "obs": "Substitui as citações do manifesto antigo (p. 18-20, anos 1980: estatização de grandes empresas e bancos) por posições da resolução de dez/2025, mais fiéis ao PT atual. Economia −2 pela ênfase no Estado indutor (não há defesa de estatização geral). Segurança −1: defende PEC da Segurança e PL Antifacção, mas critica a repressão letal. O Programa Partidário seria aprovado no 8º Congresso (abr/2026); se Gabriel enviar o plano de governo de Lula 2026 (TSE), atualizar."
+}
