@@ -50,3 +50,11 @@ O probe passou a exportar `absurdo` e `generica`. O holdout correspondente (40 p
 python3 testes/motor/run_sandbox.py testes/motor/probe.py $S/cur testes/bench/zoeira_dev.json $S/zoeira_dev.json 8881
 python3 testes/bench/score.py testes/bench/zoeira_dev.json $S/zoeira_dev.json
 ```
+
+## Bateria `cft_dev2.json` (v3.7)
+60 propostas novas (20 de Constituição, 20 de trabalho, 20 de previdência), escritas antes de mexer no motor da v3.7 e congeladas, no mesmo formato e com o mesmo corretor de `cft_dev.json`.
+Serve para medir generalização: o motor da v3.7 foi desenvolvido olhando `cft_dev.json`, e `cft_dev2.json` só entrou depois para conferir o que não foi decorado.
+```
+python3 testes/motor/run_sandbox.py testes/motor/probe.py $S/cur testes/bench/cft_dev2.json $S/cft_dev2.json 8842
+python3 testes/bench/score.py testes/bench/cft_dev2.json $S/cft_dev2.json
+```

@@ -2703,7 +2703,7 @@ function trabPos(A) {
   const j = byId('jornada_6x1');
   if (j && j.sg > 0 && !TRAB_J_ABAIXO.test(s) && TRAB_J_VIGENTE.test(s)) {
     j.sg = 0; j.dir = 0; j.jaVigente = true;
-    A.jaVigente = { id: 'ec141', txt: 'A escala 6x1 já foi extinta pela EC 141/2026, que deu ao art. 7º 40 horas semanais e 2 dias de repouso; no jogo, a transição leva a jornada a 42 horas em dez/2026 e a 40 horas em dez/2027, sem redução de salário. A medida é redundante e não gera efeito novo; reduzir a jornada abaixo de 40 horas exigiria uma nova PEC (art. 7º, XIII).' };
+    A.jaVigente = { id: 'ec141', txt: 'A escala 6x1 já foi extinta pela EC 141/2026, que deu ao art. 7º, XIII a jornada de 8 horas diárias e 40 semanais (com 2 dias de repouso na média mensal no regime compensatório coletivo, §2º); no jogo, a transição leva a jornada a 42 horas em dez/2026 e a 40 horas em dez/2027, sem redução de salário. A medida é redundante e não gera efeito novo; reduzir a jornada abaixo de 40 horas exigiria uma nova PEC (art. 7º, XIII).' };
     A.topicoFixo = 'a escala 6x1, já extinta pela EC 141/2026';
   }
   // isenção do IR até R$ 5 mil: Lei 15.270/2025, em vigor desde jan/2026
@@ -3322,6 +3322,7 @@ function dimensionarBase(it, Q, S) {
   const o = it.o, q = it.q, calc = it.calc = [], nome = semArt(o.n);
   let B = null;
   it.B = 0;
+  if (o.v37B != null) { it.B = o.v37B; calc.push(o.v37calc || ('Estimativa do jogo: ' + fmtBi(o.v37B) + '/ano')); return; } // v3.7
   if (o.gen) { dimensionarGen(it, Q); return; } // v3.5: leitura genérica
   if (o.id === 'decimo_quarto') { // v3.5: uma parcela extra a ~34,7 mi de benefícios do INSS (média ~R$ 2 mil), escalada pelo público citado
     const tx = it.ctxTxt || '', m1 = q.money && !q.money.unit && q.money.v < 1e5 && q.money.v >= 100 ? q.money.v : 0;
@@ -3965,12 +3966,13 @@ const AREAS35 = [
 ];
 const AREA_GERAL = { id: 'geral', n: 'administração geral', pa: 'casacivil', ch: 'custeio', b: 'todos', pg: 'emp', cat: 'desenvolvimento', vG: {}, vN: {}, iv: [0, 0], def: 1.5, cap: 10, vu: 600, uc: 8e6, lag: 8 };
 const GEN_PARAR = /[.;!?\n]|\s(?:para financiar|para bancar|para custear|para pagar|financiad[oa]s?|custead[oa]s?|bancad[oa]s?|pago com|pagando com|com recursos|usando recursos|sem aumentar|mas|porem)\b/;
-const GEN_FINAIS = /^(?:e|ou|de|do|da|dos|das|em|no|na|nos|nas|para|por|com|a|o|as|os|que|ao|aos|um|uma)$/;
+const GEN_FINAIS = /^(?:e|ou|de|do|da|dos|das|em|no|na|nos|nas|para|por|com|a|o|as|os|que|ao|aos|um|uma|ate|mais|menos|sem)$/;
 const GEN_NOMES_PES = /medic|enfermeir|professor|policial|agente|servidor|militar|delegad|soldad|bombeir|engenheir|tecnic|analist|pesquisador|funcionari|profission|fiscal|inspetor|auditor|juiz|defensor|promotor|cuidador|psicolog|assistentes? social|guardas|vigilante|monitor|instrutor|orientador|especialist|trabalhador|empregad|cargos|dentist|auxiliar|atendente|motorista/;
 const GEN_NOMES_BEN = /familia|alunos|estudantes|criancas|idosos|jovens|mulheres|pessoas|brasileiros|moradores|pacientes|beneficiarios|aposentados|desempregados|agricultores|produtores|empresas|microempreendedores|vagas|domicilios|cidadaos|adolescentes|mulheres/;
 function foldTxt(x) { x = String(x).normalize('NFC'); let o = ''; for (let i = 0; i < x.length; i++) o += x[i].normalize('NFD')[0].toLowerCase(); return o; }
 function origTrecho(A, t) { const o = String(A.orig || '').normalize('NFC'), f = foldTxt(o), i = f.indexOf(String(t || '')); return i >= 0 ? o.slice(i, i + t.length) : String(t || ''); }
 function genPrep(prep, comp) {
+  if (/^(?:para|em|de|do|da|dos|das|no|na|nos|nas|ao|aos|à|às|com|por|sobre|entre) /i.test(comp)) return comp; // v3.7: o complemento já traz a preposição
   const m = /^(o|a|os|as) (.+)$/i.exec(comp), k = m ? m[1].toLowerCase() : null;
   if (prep === 'de') return m ? ({ o: 'do', a: 'da', os: 'dos', as: 'das' })[k] + ' ' + m[2] : 'de ' + comp;
   if (prep === 'a') return m ? ({ o: 'ao', a: 'à', os: 'aos', as: 'às' })[k] + ' ' + m[2] : 'a ' + comp;
@@ -3988,7 +3990,7 @@ function genLer(A) {
   if (/\b(?:nao|nunca|jamais|sem|nem)\b(?: [a-z]+){0,2} $/.test(f.slice(Math.max(0, i0 - 28), i0))) return null;
   let rest = orig.slice(e0), fr = f.slice(e0);
   const cut = fr.search(GEN_PARAR); if (cut >= 0) { rest = rest.slice(0, cut); fr = fr.slice(0, cut); }
-  rest = rest.replace(/^[\s,:]+/, '').replace(/^que\s+/i, ''); fr = foldTxt(rest);
+  rest = rest.replace(/^[\s,:]+/, '').replace(/^que\s+/i, '').replace(/^[A-Za-zÀ-ú]+mente\s+/, ''); fr = foldTxt(rest); // v3.7: advérbio logo após o verbo ("compulsoriamente") não é o objeto
   let ws = rest.split(/\s+/).filter(Boolean);
   if (ws.length > 12) ws = ws.slice(0, 12);
   while (ws.length && GEN_FINAIS.test(foldTxt(ws[ws.length - 1]).replace(/[^a-z]/g, ''))) ws.pop();
@@ -4017,13 +4019,13 @@ function genTopico(L, cls) {
   if (t.length > 120) t = t.slice(0, 117).replace(/\s+\S*$/, '') + '…';
   return t;
 }
-function genItem(A) {
-  const L = genLer(A); if (!L) return null;
+function genItem(A, force) {
+  let L = genLer(A); if (!L && force) L = v37Fallback(A); if (!L) return null; // v3.7
   const v = L.v, s = A.s;
   const ar = genArea(L, A);
   const q = A.Q;
   const temQtd = q.money.some(x => x.unit) || q.count.length;
-  if (!ar && !temQtd && (L.vagoCab || L.comp.split(' ').length < 2)) return null; // sem área nem número e com complemento de meta genérica ("a felicidade do povo"): continua vago
+  if (!ar && !temQtd && !force && (L.vagoCab || L.comp.split(' ').length < 2)) return null; // sem área nem número e com complemento de meta genérica ("a felicidade do povo"): continua vago
   const area = ar || AREA_GERAL;
   const taxa = TAX_RE.test(L.cf) || v.cls === 'trib';
   const problema = PROB_RE.test(L.cf);
@@ -4044,6 +4046,7 @@ function genItem(A) {
     else if (v.inf === 'fiscalizar') { k = 'G'; kind = 'prog'; }
     else { k = 'G'; kind = 'prog'; }
   }
+  if (force) { k = force.k; kind = force.kind; if (force.sg) sg = force.sg; topCls = null; } // v3.7
   if (k === 'G' && kind === 'prog' && problema && (v.inf === 'combater')) topCls = 'combate';
   const novo = /^(?:criar|instituir|implantar|implementar|lançar|construir|contratar|abrir)$/.test(v.inf);
   const o = {
@@ -4064,6 +4067,7 @@ function genItem(A) {
     if (kind === 'venda' || kind === 'perdao') { o.def = kind === 'venda' ? 4 : 10; o.cap = 60; o.ext = 1; o.inst = 'PL'; }
     if (kind === 'corte') o.sav = 0;
   }
+  if (force) { if (force.inst) o.inst = force.inst; if (force.lc) o.lc = 1; if (force.B != null) o.v37B = force.B; o.v37n = 1; } // v3.7
   const it = { o: o, i: 0, e: 0, t: L.comp, unit: 0, q: {}, calc: [], tipo: 'perm', role: 'main', own: 1, neg: false, ctxTxt: s, ctxOff: 0, dir: sg, sg: sg, verbo: null, mag: null, tot: v.cls === 'fim' && v.sg < 0 && /^(?:acabar com|extinguir|revogar|eliminar)$/.test(v.inf), topicoFixo: o.n, gen: true };
   const bm = q.money.filter(x => x.unit && x.v >= 1e6)[0] || q.money[0];
   if (bm) it.q.money = bm;
@@ -4083,6 +4087,7 @@ function dimensionarGen(it, Q) {
   const o = it.o, g = o.gen, q = it.q, calc = it.calc, money = q.money, count = q.count, pct = q.pct;
   const rot = 'Leitura genérica (' + g.area + '): ';
   let B = 0;
+  if (o.v37B != null) { it.B = o.v37B; calc.push(rot + 'custo estimado de ' + fmtBi(o.v37B) + '/ano (estimativa do jogo)'); return; } // v3.7
   if (o.k === 'R') { it.B = 0; calc.push(rot + 'medida normativa sem dotação própria; custo fiscal direto desprezível'); return; }
   if (o.k === 'T') {
     if (money && money.unit && money.v >= 1e6) { B = money.v / 1e9; calc.push(rot + 'valor informado de ' + fmtBi(B) + '/ano'); }
@@ -4365,8 +4370,539 @@ const JN35 = [
 ].map(x => ({ id: x[0], rx: x[1], txt: x[2], a: x[3] === 'a', nao: x[3] && x[3].indexOf('n:') === 0 ? new RegExp(x[3].slice(2)) : null }));
 const TXT_GENERICA = 'Leitura genérica: o motor não tem um modelo específico para este tema; valores são estimativa de ordem de grandeza.';
 /*V35-END*/
+/*V37-BEGIN*/
+/* ---------- v3.7: Constituição, trabalho e previdência ---------- */ // v3.7
+/* verbos incomuns (aposentar, eleger, adiar, esticar, escolher, contar em dobro...): sem eles o texto caía em "vago" */
+[
+  ['aposent(?:ar|e|ando)', 'norm', 'a aposentadoria', 'de', 'aposentar', 1],
+  ['eleg(?:er|e|endo)', 'norm', 'a eleição', 'de', 'eleger', 1],
+  ['escolh(?:er|a|endo)', 'norm', 'a escolha', 'de', 'escolher', 1],
+  ['adi(?:ar|e|ando)', 'norm', 'o adiamento', 'de', 'adiar', 1],
+  ['estic(?:ar|a|ando)|along(?:ar|ue|ando)|prorrog(?:ar|ue|ando)', 'norm', 'a ampliação', 'de', 'esticar', 1],
+  ['cont(?:ar|e|ando) em dobro|contagem em dobro', 'norm', 'a contagem em dobro', 'de', 'contar em dobro', 1],
+  ['fix(?:ar|e|ando)', 'norm', 'a fixação', 'de', 'fixar', 1],
+  ['defin(?:ir|a|indo)', 'norm', 'a definição', 'de', 'definir', 1],
+  ['torn(?:ar|e|ando)', 'norm', 'a mudança', 'de', 'tornar', 1],
+  ['mud(?:ar|e|ando)|alter(?:ar|e|ando)|modific(?:ar|e|ando)', 'norm', 'a mudança', 'de', 'mudar', 1],
+  ['marc(?:ar|e|ando)', 'norm', 'a marcação', 'de', 'marcar', 1],
+  ['dividir|fracion(?:ar|e|ando)', 'norm', 'a divisão', 'de', 'dividir', 1],
+  ['dispens(?:ar|e|ando)', 'lib', 'a dispensa', 'de', 'dispensar', 1],
+  ['reabr(?:ir|a|indo)|restabelec(?:er|a|endo)|retom(?:ar|e|ando)|reinstitu(?:ir|a|indo)|restaur(?:ar|e|ando)', 'norm', 'a retomada', 'de', 'restabelecer', 1],
+  ['subordin(?:ar|e|ando)', 'norm', 'a subordinação', 'de', 'subordinar', 1],
+  ['imped(?:ir|e|indo)', 'norm', 'o impedimento', 'de', 'impedir', 1],
+  ['submet(?:er|a|endo)', 'norm', 'a submissão', 'de', 'submeter', 1],
+  ['atribu(?:ir|a|indo)', 'norm', 'a atribuição', 'de', 'atribuir', 1],
+  ['pass(?:ar|e|ando) (?:para|a)', 'norm', 'a passagem', 'de', 'passar', 1],
+  ['^por', 'norm', 'a inclusão', 'de', 'pôr', 1],
+  ['aliviar|desafogar', 'trib', 'o alívio', 'de', 'aliviar', -1]
+].forEach(v => GV35.push({ re: new RegExp('\\b(?:' + v[0] + ')\\b'), cls: v[1], nom: v[2], prep: v[3], inf: v[4], sg: v[5] })); // v3.7
+
+/* matéria que só a Constituição (PEC) ou lei complementar (PLP) regula, ou que a Constituição já resolve:
+   { id, ex: 'PEC'|'LC', rx, no, d (dispositivos), ef (efeito), ovr (substitui itens do catálogo por leitura de norma sem custo), nivel/petrea (veredito mesmo com o instrumento certo) } */
+const V37_CARGO = 'senador\\w*|deputad\\w*|president\\w*|governador\\w*|prefeit\\w*|vereador\\w*|ministros? d[oa]s? (?:stf|supremo|stj|tst|tcu|tse|tribunais? superior\\w*)|ministros? dos? tribunais? superior\\w*|\\b(?:stf|supremo|stj|tst|tcu|tse)\\b|supremo tribunal federal|superior tribunal de justica|tribunal superior (?:do trabalho|eleitoral|militar)|desembargador\\w*|procurador.geral|tribunal de contas';
+const V37_ATRIB = 'mandatos?|idade (?:minima|maxima|limite)|aposentadoria compulsoria|aposent\\w+ (?:compulsor|obrigatori)\\w+|numero de|composicao|vitalic\\w+|reeleic\\w+|recondu\\w+|sabatina|lista triplice|escolha d[oa]s? ministros';
+const V37_NORMAS = [
+  { id: 'v37_art7_i', ex: 'LC', d: ['a7_i', 'adct10', 'a69'], rx: /\b(?:despedida|demissao|dispensa) (?:arbitraria|imotivada)\b|\bprotecao contra (?:a )?(?:despedida|demissao|dispensa)\b|\bconvencao 158\b|\b(?:proib\w+|vedar|criar|garantir)\b[^.;]{0,30}\b(?:demissao|dispensa|despedida)\b[^.;]{0,15}\bsem justa causa\b/,
+    ef: 'A proteção da relação de emprego contra despedida arbitrária ou sem justa causa depende de lei complementar, que fixará a indenização compensatória (art. 7º, I); até lá vale a multa de 40% do FGTS (ADCT, art. 10, I).' },
+  { id: 'v37_comp_fed', ex: 'PEC', ovr: 1, d: ['a22_i', 'a18_19'], rx: /\b(?:competencia|poder|atribuicao|prerrogativa)\b[^.;]{0,40}\blegislar\b|\blegislar sobre\b[^.;]{0,60}\b(?:estados?|municipios?|uniao)\b|\b(?:estados?|municipios?)\b[^.;]{0,40}\b(?:poder|competencia|direito) (?:de |para )?legislar/, no: /\bautoriz\w+\b[^.;]{0,30}\bestados?\b[^.;]{0,30}\blegislar\b/,
+    ef: 'A repartição das competências legislativas está nos arts. 22 a 24 e 30: passar poder de legislar de um ente a outro muda o texto constitucional e exige PEC (a Federação é cláusula pétrea, mas redistribuir competências não a extingue).' },
+  { id: 'v37_comp_lc', ex: 'LC', ovr: 1, d: ['a22_pu', 'a69'], rx: /\bautoriz\w+\b[^.;]{0,30}\bestados?\b[^.;]{0,30}\blegislar\b|\bpiso (?:salarial )?regional\b|\bpisos? regionais\b|\bestados? (?:a )?fixar\w* (?:o )?piso\b/,
+    ef: 'A União só autoriza os estados a legislar sobre questões específicas das matérias do art. 22 por lei complementar (art. 22, parágrafo único), como fez a LC 103/2000 para o piso salarial regional.' },
+  { id: 'v37_bc', ex: 'LC', ovr: 1, d: ['lc179', 'a69'], rx: /\b(?:banco central|bacen|\bbc\b)\b[^.;]{0,50}\b(?:autonomia|independencia|mandatos?|diretoria|diretores)\b|\b(?:autonomia|independencia|mandatos?)\b[^.;]{0,40}\b(?:banco central|bacen|\bbc\b)\b|\b(?:bc|banco central) independente\b/, no: /\b(?:financeir\w+|orcamentari\w+)\b/,
+    ef: 'A autonomia do Banco Central, o mandato fixo de sua diretoria e as hipóteses de exoneração estão na LC 179/2021 (CF, arts. 164 e 192): mudá-las exige lei complementar.' },
+  { id: 'v37_veto_emenda', ex: 'PEC', ovr: 1, nivel: 'inconstitucional', petrea: 1, d: ['a60', 'a60_4_i_iii'], rx: /\bvet\w+\b[^.;]{0,25}\bemendas? (?:a |de |da )?(?:constituicao|constitucionais?)\b|\bpresidente\b[^.;]{0,40}\bvetar\b[^.;]{0,30}\bemendas?\b/,
+    ef: 'A emenda constitucional é promulgada pelo Congresso, sem sanção nem veto do presidente (art. 60, §3º); dar veto ao Executivo sobre emendas fere a separação dos Poderes (art. 60, §4º, III).' },
+  { id: 'v37_vitalicio', ex: null, nivel: 'inconstitucional', ovr: 1, d: ['a95_vital'], rx: /\b(?:demitir|exonerar|afastar|destituir|cassar|expulsar)\b[^.;]{0,30}\b(?:ministros? d[oa]s? (?:stf|supremo|stj|tst|tcu|tse|tribunal|tribunais)|ministros? do supremo|juizes?|magistrados?|desembargadores?)\b/,
+    ef: 'Os magistrados são vitalícios: só perdem o cargo por sentença judicial transitada em julgado (art. 95, I), e os ministros do STF só respondem a processo de crime de responsabilidade no Senado (art. 52, II): o Executivo não os demite, nem por decreto.' },
+  { id: 'v37_escolha', ex: 'PEC', ovr: 1, d: ['a46_52', 'a101'], rx: /\b(?:elei\w+|eleger|escolh\w+|nomear|nomeac\w+|sabatina|lista triplice)\b[^.;]{0,50}\b(?:procurador.geral|ministros? d[oa]s? (?:stf|supremo|stj|tcu|tst|tse)|ministros? do supremo|supremo tribunal federal|desembargador\w*|tribunal de contas)\b|\b(?:procurador.geral|ministros? d[oa]s? (?:stf|supremo|stj|tcu|tst|tse)|ministros? do supremo)\b[^.;]{0,40}\b(?:por elei\w+|eleit\w+|escolhid\w+|nomead\w+ por|indicad\w+ por)\b/,
+    ef: 'A escolha do procurador-geral da República, dos ministros dos tribunais superiores e do Tribunal de Contas segue regras do texto constitucional (arts. 52, 73, 84, XIV, 101, 128, §1º): mudar quem escolhe ou o rito exige PEC.' },
+  { id: 'v37_df', ex: 'PEC', ovr: 1, d: ['a18_19'], rx: /\bdistrito federal\b[^.;]{0,40}\b(?:estado|municipio|bancada|capital)\b|\b(?:transform\w+|tornar|elevar|virar)\b[^.;]{0,20}\bdistrito federal\b/,
+    ef: 'O Distrito Federal é ente da Federação, sede da capital (art. 18, §1º), e não pode ser dividido em municípios (art. 32): transformá-lo em estado, ou mudar a capital, exige PEC.' },
+  { id: 'v37_estado', ex: 'PEC', ovr: 1, d: ['a60', 'a18_19'], rx: new RegExp('\\b(?:senado|camara dos deputados|congresso(?: nacional)?|supremo|stf|stj|tse|tcu|presidente da republica|presidencia da republica|poder (?:executivo|legislativo|judiciario)|ministerio publico|defensoria|forcas armadas|distrito federal|assembleias?|governadores|prefeitos|vereadores)\\b[^.;]{0,60}\\b(?:extin\\w+|dissolv\\w+|unicameral|bicameral|mandatos?|competencia|poder de (?:vetar|nomear|aprovar|indicar|destituir|dissolver|convocar|legislar|julgar)|composicao|numero de|autonomia|cargo de|subordin\\w+|sabatina|indicac\\w+ d[eo]|nomeac\\w+ d[eo]|lista triplice|direito de voto|vetar a (?:indicacao|nomeacao))\\b|\\b(?:extin\\w+|dissolv\\w+|unicameral|bicameral|mandatos?|competencia|poder de (?:vetar|nomear|aprovar|indicar|destituir|dissolver|convocar|legislar|julgar)|composicao|numero de|autonomia|cargo de|subordin\\w+|sabatina|indicac\\w+ d[eo]|nomeac\\w+ d[eo]|lista triplice|direito de voto|vetar a (?:indicacao|nomeacao))\\b[^.;]{0,60}\\b(?:senado|camara dos deputados|congresso(?: nacional)?|supremo|stf|stj|tse|tcu|presidente da republica|presidencia da republica|poder (?:executivo|legislativo|judiciario)|ministerio publico|defensoria|forcas armadas|distrito federal|assembleias?|governadores|prefeitos|vereadores)\\b'), no: /\\bsalari|\\bsubsidi|\\bremuneracao|\\borcamento|\\bverba|\\breajuste|\\bemendas? parlamentares?|\\bcomissao\\b/,
+    ef: 'A organização dos Poderes e as competências de cada ente estão na Constituição (arts. 18 a 52, 76 a 91, 92 a 135): criar, extinguir ou reordenar casas, cargos, competências, nomeações e mandatos exige PEC.' },
+  { id: 'v37_voto', ex: 'PEC', ovr: 1, nivel: 'controverso', petrea: 1, d: ['a14_16', 'a55_15', 'a60_4_i_iii'], rx: /\b(?:tirar|retirar|cassar|suspender|negar|proibir|restringir)\b[^.;]{0,25}\b(?:direito de voto|o voto|direitos politicos|sufragio)\b/,
+    ef: 'O voto direto, secreto, universal e periódico é cláusula pétrea (art. 60, §4º, II) e os direitos políticos só se perdem ou suspendem nos casos do art. 15: restringir o voto exige PEC e será derrubado no STF.' },
+  { id: 'v37_teto', ex: 'PEC', ovr: 1, nivel: 'controverso', d: ['a37_x'], rx: /\bteto (?:remuneratorio|constitucional|salarial|de remuneracao)\b|\bsubteto\b|\bremuneracao maxima\b/,
+    ef: 'O teto remuneratório do serviço público é o subsídio dos ministros do STF (art. 37, XI): mudar o limite ou os subtetos exige PEC, e o subsídio dos ministros é fixado por lei de iniciativa conjunta dos chefes dos Poderes (art. 48, XV).' },
+  { id: 'v37_policia_nova', ex: 'PEC', ovr: 1, d: ['a144'], rx: /\b(?:cri(?:ar|e|acao)|autoriz\w+|instituir)\b[^.;]{0,40}\bpolicias?\b[^.;]{0,20}\b(?:estaduais|municipais|de fronteira|metropolitanas|proprias|rodoviaria|ferroviaria|legislativa)\b/,
+    ef: 'O art. 144 lista as polícias e os órgãos de segurança pública e o STF trata o rol como taxativo: criar uma nova corporação exige PEC.' },
+  { id: 'v37_sind_oposicao', ex: null, nivel: 'inconstitucional', ovr: 1, d: ['a8'], rx: /\bcontribuic\w+ (?:sindical|assistencial)\b[^.;]{0,70}\b(?:sem|nao ha|nao ter) (?:o )?(?:direito de )?oposicao\b|\b(?:nao filiad\w+)\b[^.;]{0,70}\bsem (?:o )?(?:direito de )?oposicao\b/,
+    ef: 'A contribuição assistencial cobrada de toda a categoria só vale se o empregado não filiado puder se opor (STF, Tema 935, 2023); cobrá-la sem direito de oposição fere a liberdade de associação (art. 8º, V).' },
+  { id: 'v37_restr_acesso', ex: null, ovr: 1, d: [], rx: /\b(?:impedir|proibir|vedar|barrar|negar)\b[^.;]{0,50}\b(?:receb\w+|contratar|licitar|participar|acessar|obter|ter acesso)\b[^.;]{0,40}\b(?:credito|contratos?|licitac\w+|incentivos?|beneficios?|financiamentos?)\b/, no: /\b(?:r\$|bilho|milho)/,
+    ef: 'Restringir o acesso de quem descumpre a lei a crédito, contratos ou incentivos públicos é matéria de lei ordinária, sem despesa nova.' },
+  { id: 'v37_stf_numero', ex: 'PEC', ovr: 1, nivel: 'controverso', d: ['a101', 'a60_4_i_iii'], rx: /\b(?:aument\w+|ampli\w+|elev\w+|criar|acrescent\w+)\b[^.;]{0,30}\b(?:numero|quantidade|vagas?|cadeiras?) (?:de |no |do )?(?:ministros? )?(?:d[oa] )?(?:stf|supremo)|\b(?:aument\w+|ampli\w+|elev\w+)\b[^.;]{0,25}\bpara \d+\b[^.;]{0,20}\bministros\b[^.;]{0,20}\b(?:stf|supremo)|\bampliar o (?:stf|supremo)\b/,
+    ef: 'O STF tem onze ministros (art. 101): aumentar o número exige PEC e é visto como tentativa de controlar a Corte (afronta à separação dos Poderes, art. 60, §4º, III).' },
+  { id: 'v37_cargos', ex: 'PEC', ovr: 1, d: ['a46_52', 'a101'], rx: new RegExp('\\b(?:' + V37_ATRIB + ')\\b[^.;]{0,60}\\b(?:' + V37_CARGO + ')|\\b(?:' + V37_CARGO + ')[^.;]{0,60}\\b(?:' + V37_ATRIB + ')\\b'), no: /\bnumero de deputad|\bsalari|\bsubsidi|\bremuneracao|\bvencimento/,
+    ef: 'Mandato, idade, número de membros, escolha e aposentadoria compulsória dos cargos de Estado estão no texto constitucional (arts. 14, 29, 46, 52, 73, 101, 111-A e 119): mudá-los exige PEC.' },
+  { id: 'v37_dep_lc', ex: 'LC', ovr: 1, d: ['a45_1', 'a69'], rx: /\bnumero de deputados\b|\brepresentacao d[oe]s? estados? na camara\b|\bbancadas? (?:estaduais|por estado|dos estados)\b/,
+    ef: 'O número total de deputados e a representação de cada estado são fixados por lei complementar (art. 45, §1º; hoje LC 78/1993).' },
+  { id: 'v37_eleitoral', ex: 'PEC', ovr: 1, d: ['a14_16'], rx: /\bvoto (?:facultativ\w*|obrigatori\w*|distrital|em lista|de legenda|impresso)\b|\bvoto d[oe]s? (?:analfabetos|presos|estrangeiros)\b|\bcandidatur\w+ avuls\w+|\bcandidato\w* avuls\w+|\bcoligac\w+|\bclausula de (?:barreira|desempenho)\b|\bsistema (?:eleitoral|proporcional|majoritario|distrital|politico)\b|\bparlamentarismo\b|\bsemipresidencialismo\b|\bdissolv\w+ (?:a |o )?(?:camara|congresso|parlamento)\b|\bdissolucao d[oa] (?:camara|congresso)\b|\btribunal constitucional\b|\bcorte constitucional\b|\brecall\b|\brevogacao de mandato\b|\breferendo (?:revogatorio|para (?:cassar|revogar))|\beleicoes? (?:municipais|gerais|estaduais)\b[^.;]{0,50}\b(?:coincid\w+|unific\w+|mesmo dia|um so dia)|\b(?:coincid\w+|unific\w+)\b[^.;]{0,30}\beleicoes?\b|\bfidelidade partidaria\b|\bjanela partidaria\b|\bposse d[oa] president\w*\b|\bdata da posse\b|\badiar\b[^.;]{0,30}\beleic\w+|\bprorrog\w+\b[^.;]{0,20}\bmandatos?\b|\bdeputad\w+\b[^.;]{0,30}\bdistritos?\b|\b(?:condicoes? de )?elegibilidade\b|\bdesincompatibiliz\w+|\bdomicilio eleitoral\b|\bcandidat\w+\b[^.;]{0,40}\b(?:militar\w*|juiz\w*|promotor\w*)\b|\b(?:militar\w*|juiz\w*|promotor\w*)\b[^.;]{0,30}\bcandidat\w+|\bvoto proporcional\b|\bdistritao\b|\bvotos validos\b[^.;]{0,60}\bpartido|\bpartidos?\b[^.;]{0,80}\bvotos validos\b|\b(?:tempo de tv|horario eleitoral gratuito|fundo partidario)\b[^.;]{0,50}\b(?:exig\w+|minimo|desempenho|votos)\b/,
+    ef: 'Sistema eleitoral e de governo, filiação, datas de eleição e de posse e a duração dos mandatos estão na Constituição (arts. 14 a 17, 28, 29, 44 a 46, 76 e 82): mudá-los exige PEC, e a regra só vale para eleição realizada um ano depois (art. 16).' },
+  { id: 'v37_judic', ex: 'PEC', ovr: 1, d: ['a92_judic'], rx: new RegExp('\\b(?:justica (?:do trabalho|eleitoral|militar|federal|comum)|tst|trts?|stj|stf|supremo|tribunal superior do trabalho|conselho nacional de justica|cnj|cnmp|conselho nacional do ministerio publico|defensoria(?: publica)?(?: da uniao)?|ministerio publico|tribunal de contas|tcu)\\b[^.;]{0,70}\\b(?:extin\\w+|cri(?:ar|e|acao)|fundi\\w+|fusao|unific\\w+|transfer\\w+|passar|passe|competencia|numero de|composicao|autonomia|subordin\\w+|resolucao|jurisdicao|sustar|justica comum)\\b|\\b(?:extin\\w+|cri(?:ar|e|acao)|fundi\\w+|fusao|unific\\w+|transfer\\w+|passar|passe|competencia|numero de|composicao|autonomia|subordin\\w+|resolucao|jurisdicao|sustar|justica comum)\\b[^.;]{0,70}\\b(?:justica (?:do trabalho|eleitoral|militar|federal|comum)|tst|trts?|stj|stf|supremo|tribunal superior do trabalho|conselho nacional de justica|cnj|cnmp|conselho nacional do ministerio publico|defensoria(?: publica)?(?: da uniao)?|ministerio publico|tribunal de contas|tcu)\\b|\\bcompetencia d[ao]s? (?:justica|tribunais|stf|stj|tst)\\b|\\b(?:passar|transferir|mandar|levar|remeter|deslocar)\\b[^.;]{0,30}\\b(?:para )?(?:a )?justica (?:comum|federal|estadual|do trabalho)\\b|\\b(?:extin\\w+|cri(?:ar|e|acao)|transfer\\w+|mandar|passar)\\b[^.;]{0,40}\\b(?:acoes|processos|causas)\\b[^.;]{0,40}\\bjustica\\b'), no: /\\bsalari|\\bsubsidi|\\bremuneracao|\\borcamento/,
+    ef: 'A estrutura e a competência do Judiciário (arts. 92 a 126), do Ministério Público, da Defensoria e do Tribunal de Contas estão na Constituição: extinguir, criar ou deslocar justiças e tribunais, mudar sua composição, autonomia ou competência exige PEC.' },
+  { id: 'v37_cnj_res', ex: 'PEC', ovr: 1, nivel: 'controverso', d: ['a92_judic', 'loman'], rx: /\b(?:cnj|conselho nacional de justica)\b[^.;]{0,60}\b(?:resolucao|fixar)\b[^.;]{0,60}\b(?:salarios?|subsidios?|carreira|vencimentos)\b/,
+    ef: 'A carreira e o subsídio dos magistrados dependem de lei complementar de iniciativa do STF (art. 93, caput) e de lei (art. 96, II, b); o CNJ controla a atuação administrativa, mas não legisla por resolução.' },
+  { id: 'v37_social_cf', ex: 'PEC', ovr: 1, d: ['a6_7'], rx: /\bna constituicao\b|\b(?:direitos? sociais|direitos? fundamentais|direitos? individuais|lista de direitos)\b[^.;]{0,25}\bda constituicao\b|\b(?:colocar|por|incluir|inserir|acrescentar|elevar)\b[^.;]{0,40}\b(?:lista de direitos|direitos? sociais|direitos? fundamentais)\b|\bao texto constitucional\b|\bno texto constitucional\b|\bentre os direitos (?:sociais|fundamentais|individuais)\b|\bcomo direito (?:fundamental|social)\b|\bao nivel de direito fundamental\b|\bdireito fundamental\b|\bconstitucionaliz\w+/, no: /\b(?:respeit\w+|cumpr\w+|conforme|segundo|de acordo com|previst\w+|garantid\w+|vigente|ja consta)\b[^.;]{0,25}\b(?:constituicao|texto constitucional)\b/,
+    ef: 'Incluir um direito no art. 5º ou no art. 6º da Constituição, ou elevá-lo a direito fundamental, é matéria de emenda constitucional (PEC, três quintos em dois turnos).' },
+  { id: 'v37_mp', ex: 'PEC', ovr: 1, d: ['a62_1', 'a62_2'], rx: /\b(?:proib\w+|vedar|limitar|restring\w+|reduz\w+|alter\w+|mud\w+|ampli\w+|estender|encurtar|acabar com)\b[^.;]{0,40}\bmedidas? provisorias?\b|\bmedidas? provisorias?\b[^.;]{0,40}\b(?:vigencia|prazo|prorrog\w+|sem (?:prorrogacao|reedicao)|materia|urgencia e relevancia)\b|\bediar medidas? provisorias? sobre\b/, no: /\b(?:por|via|atraves de|mediante|com) medidas? provisorias?\b/,
+    ef: 'A medida provisória está regulada no art. 62 (60 dias prorrogáveis por mais 60, matérias vedadas no §1º, redação da EC 32/2001): mudar sua vigência ou as matérias vedadas exige PEC.' },
+  { id: 'v37_tratado', ex: 'PEC', ovr: 1, d: ['a49_84', 'a60'], rx: /\btratados?\b[^.;]{0,50}\b(?:forca de emenda|status constitucional|equivalen\w+ a emenda|supralegal)\b|\b(?:forca de emenda|status constitucional)\b[^.;]{0,50}\btratados?\b/,
+    ef: 'Os tratados de direitos humanos aprovados em dois turnos por três quintos de cada Casa equivalem a emenda constitucional (art. 5º, §3º, EC 45/2004); outros tratados têm natureza supralegal.' },
+  { id: 'v37_compuls', ex: 'PEC', ovr: 1, d: ['a46_52'], rx: /\baposent\w+ (?:compulsor|obrigatori)\w+|\baposentadoria compulsoria\b/,
+    ef: 'A aposentadoria compulsória está no art. 40, §1º, II (75 anos, EC 88/2015 e LC 152/2015) e vale também para os ministros dos tribunais superiores: mudar a idade exige PEC.' },
+  { id: 'v37_imunid', ex: 'PEC', ovr: 1, d: ['a53'], rx: /\bimunidade\b[^.;]{0,30}\b(?:parlament\w+|deputad\w+|senador\w+)|\b(?:deputad\w+|senador\w+|parlamentares)\b[^.;]{0,30}\bimunidade\b|\binviolabilidade parlamentar\b/,
+    ef: 'As imunidades material e formal de deputados e senadores estão no art. 53 (EC 35/2001): mudá-las exige PEC.' },
+  { id: 'v37_greve_serv', ex: 'PEC', ovr: 1, nivel: 'controverso', d: ['a37_vii', 'a9'], rx: /\b(?:proib\w+|vedar|acabar com|extinguir|eliminar)\b[^.;]{0,25}\bgreve\b[^.;]{0,30}\bservidor|\bgreve\b[^.;]{0,20}\bservidores?\b[^.;]{0,20}\b(?:proibid\w+|vedad\w+)/,
+    ef: 'O direito de greve do servidor está no art. 37, VII, e o direito de greve é um direito social (art. 9º): proibi-lo exige PEC e será contestado como abolição de direito fundamental (art. 60, §4º, IV).' },
+  { id: 'v37_composicao', ex: 'PEC', ovr: 1, d: ['a46_52', 'a92_judic'], rx: /\b(?:reduz\w+|ampli\w+|aument\w+|elev\w+|diminu\w+)\b[^.;]{0,25}\bde \d+ para \d+\b[^.;]{0,25}\b(?:ministros|desembargadores|juizes|senadores|deputados|vereadores|membros|conselheiros|cadeiras)/,
+    ef: 'O número de membros dos tribunais, do Senado e dos demais órgãos de Estado está na Constituição (arts. 46, 101, 107, 111-A e outros): mudá-lo exige PEC; o número de deputados é fixado por lei complementar (art. 45, §1º).' },
+  { id: 'v37_sindical', ex: 'PEC', ovr: 1, d: ['a8'], rx: /\bunicidade sindical\b|\bpluralidade sindical\b|\bsindicato unico\b|\b(?:mais de um|varios|dois|multiplos|diversos) sindicatos?\b[^.;]{0,40}\b(?:categoria|base|cidade|municipio|empresa)\b|\bbase territorial\b|\bliberdade sindical\b|\bconvencao 87\b|\bsindicatos? (?:por|de) empresa\b|\bsindicat\w+\b[^.;]{0,40}\b(?:criado|criar|criacao)\b[^.;]{0,15}\bpor empresa\b/,
+    ef: 'A unicidade sindical e a base territorial mínima de um município estão no art. 8º, II: mudá-las exige PEC.' },
+  { id: 'v37_seg', ex: 'PEC', ovr: 1, d: ['a144'], rx: /\b(?:policia|policias|guardas?(?: municipa\w+)?|forcas? armadas|bombeiros?)\b[^.;]{0,60}\b(?:subordin\w+|desmilitar\w+|unific\w+|extin\w+|fundi\w+|poder de (?:investigar|prender|policiar)|investigar crimes|poder de policia|ostensiv\w+)\b|\bdesmilitarizacao\b|\bunificacao das policias\b|\b(?:poder de (?:investigar|prender|policiar)|investigar crimes|poder de policia)\b[^.;]{0,50}\b(?:guardas?|policias?|bombeiros?)\b/, no: /\bsalari|\bsoldo\b|\breajuste|\baumento\b/,
+    ef: 'O art. 144 define os órgãos de segurança pública, suas funções e a subordinação (a guarda municipal protege bens, serviços e instalações; investigar é da polícia civil e da federal): mudar isso exige PEC.' },
+  { id: 'v37_greve_pm', ex: 'PEC', ovr: 1, nivel: 'controverso', d: ['a142_greve', 'a9'], rx: /\bgreve\b[^.;]{0,40}\b(?:policia\w*|policiais|militares|bombeiros|forcas armadas|pms?)\b|\b(?:policia\w*|policiais|militares|bombeiros)\b[^.;]{0,30}\bgreve\b/,
+    ef: 'Ao militar é vedada a greve (art. 142, §3º, IV) e o STF estendeu a vedação aos policiais civis e demais carreiras de segurança (Rcl 6568): liberar a greve exige PEC e esbarra na defesa da ordem pública.' },
+  { id: 'v37_senado', ex: 'PEC', ovr: 1, nivel: 'controverso', petrea: 1, d: ['a46_52', 'a60_4_i_iii'], rx: /\bsenadores? por estado\b|\bnumero de senadores\b/,
+    ef: 'A representação igual dos estados no Senado (três senadores por estado, art. 46, §1º) é ligada à forma federativa de Estado, cláusula pétrea (art. 60, §4º, I): reduzi-la exige PEC e será questionada no STF.' },
+  { id: 'v37_criacao_ente', ex: 'LC', ovr: 1, d: ['a18_est', 'a69'], fisc: { B: 3, sg: 1, un: 'ente', no: /\b(?:regras|normas|requisitos|criterios|procedimentos?)\b/ }, rx: /\bcri(?:ar|e|acao)\b (?:de )?(?:(?:um|uma|dois|duas|tres|quatro|cinco|seis|varios|novo|novos|nova|novas|\d+) ){1,3}(?:\w+ )?(?:estados?|municipios?|territorios? federa\w+)\b|\b(?:desmembr\w+|dividir|fundir|incorporar|anexar)\b[^.;]{0,25}\b(?:estados?|municipios?)\b/, no: /\bestado de (?:sitio|defesa|excecao|emergencia|direito)\b/,
+    ef: 'A criação, a fusão e o desmembramento de estados dependem de plebiscito e de lei complementar (art. 18, §3º); os municípios, de lei estadual dentro do período fixado por lei complementar federal (art. 18, §4º).' },
+  { id: 'v37_fpe', ex: 'PEC', d: ['a159'], fisc: { B: 40, sg: 1, un: 'fpe' }, rx: /\b(?:fpe|fpm|fundo de participacao(?: d[oe]s? (?:estados|municipios))?|cota.?parte|partilha d[eoa]s? (?:receitas?|tributos|arrecadacao)|repasse constitucional)\b/, no: /\bmanter\b|\bgarantir\b/,
+    ef: 'Os percentuais do FPE e do FPM e a partilha das receitas tributárias estão no art. 159 da Constituição: mudá-los exige PEC (e a conta recai sobre a União).' },
+  { id: 'v37_pm_uniao', ex: 'PEC', d: ['a144'], fisc: { B: 60, sg: 1, un: 'pm' }, rx: /\bsubordin\w+\b[^.;]{0,30}\b(?:policias? militares|pms?|policia civil|bombeiros)\b[^.;]{0,30}\b(?:governo federal|uniao|presidente|ministerio)\b|\b(?:federaliz\w+|estatiz\w+)\b[^.;]{0,20}\b(?:policias? militares|pms?)\b/,
+    ef: 'As polícias militares e os corpos de bombeiros são forças auxiliares do Exército, mas subordinados aos governadores (art. 144, §6º): passá-los à União muda a Federação e exige PEC; a conta de pessoal passaria a ser federal.' },
+  { id: 'v37_loman', ex: 'LC', ovr: 1, d: ['loman', 'a69'], rx: /\bestatuto da magistratura\b|\bloman\b|\blei organica d[ao] (?:magistratura|ministerio publico|defensoria)\b|\bcarreira (?:e|dos?) (?:salarios|subsidios|vencimentos) d[eo]s? (?:juizes|magistrados)\b/,
+    ef: 'O estatuto da magistratura é lei complementar de iniciativa do STF (art. 93, caput; hoje a Loman, LC 35/1979).' },
+  { id: 'v37_trib_geral', ex: 'LC', ovr: 1, d: ['a146', 'a69'], rx: /\bnormas gerais (?:de |em )?(?:direito )?(?:tributari\w+|tributacao)\b|\bato cooperativo\b|\bcooperativas?\b[^.;]{0,40}\btribut\w+|\btribut\w+[^.;]{0,40}\bcooperativ\w+|\bcodigo tributario nacional\b|\bobrigacao tributaria\b|\bcredito tributario\b|\bprescricao tributaria\b/,
+    ef: 'As normas gerais de direito tributário, inclusive o adequado tratamento ao ato cooperativo, são matéria de lei complementar (art. 146, III).' },
+  { id: 'v37_compulsorio', ex: 'LC', ovr: 1, d: ['a148', 'a69'], rx: /\bemprestimos? compulsorios?\b/,
+    ef: 'O empréstimo compulsório só se institui por lei complementar, para despesa extraordinária de calamidade, guerra externa ou sua iminência, ou investimento público urgente (art. 148).' },
+  { id: 'v37_sfn', ex: 'LC', ovr: 1, d: ['lc179', 'a69'], rx: /\bsistema financeiro nacional\b|\bart(?:igo)?\.? ?192\b/,
+    ef: 'O sistema financeiro nacional será regulado por leis complementares (art. 192).' },
+  { id: 'v37_art41', ex: 'LC', ovr: 1, d: ['a41', 'a69'], rx: /\b(?:exonerar|demitir|desligar|demissao|exoneracao)\b[^.;]{0,60}\b(?:servidor\w*|estavel|estaveis)\b[^.;]{0,60}\b(?:avaliac\w+|desempenho|insuficiencia)|\b(?:avaliac\w+ (?:periodica )?de desempenho|insuficiencia de desempenho)\b[^.;]{0,60}\b(?:servidor|estabilidade|exoner|demiss)/,
+    ef: 'A perda do cargo do servidor estável por insuficiência de desempenho depende de lei complementar, com ampla defesa (art. 41, §1º, III).' },
+  { id: 'v37_inelegib', ex: 'LC', ovr: 1, d: ['a14_9', 'a69'], rx: /\binelegi\w+|\bficha limpa\b/,
+    ef: 'Os casos de inelegibilidade são definidos por lei complementar (art. 14, §9º; LC 64/1990, alterada pela LC 135/2010, Ficha Limpa).' },
+  { id: 'v37_apos_esp_lc', ex: 'LC', d: ['a40_201', 'a69'], rx: /\baposentadoria (?:especial|diferenciada)\b[^.;]{0,60}\b(?:criar|dar|conceder|ampliar|estender|garantir)\b|\b(?:criar|dar|conceder|ampliar|estender|garantir)\b[^.;]{0,30}\baposentadoria (?:especial|diferenciada)\b|\baposentadoria d[eao]s? (?:policiais|policia|agentes penitenciarios|agente socioeducativo|pessoas? com deficiencia|deficientes)\b|\b(?:tempo de contribuicao|idade)\b[^.;]{0,30}\b(?:d[eao]s? )?(?:policiais|policia federal|agentes penitenciarios)\b|\bpoliciais\b[^.;]{0,50}\b(?:tempo de contribuicao|aposentar|aposentadoria)\b/, no: /\b(?:extinguir|acabar com|fim d[ae]|eliminar|abolir|cortar)\b[^.;]{0,25}\baposentadoria (?:especial|diferenciada)\b|\bvigilantes?\b|\bagentes? de transito\b|\bguardas?\b|\bpoliticos?\b|\bparlamentares\b|\bdeputad\w+|\bsenador\w*|\bex.?presidentes\b|\bgovernadores\b/,
+    ef: 'Idade e tempo de contribuição diferenciados (aposentadoria especial) só podem ser fixados por lei complementar e apenas para pessoas com deficiência, policiais e agentes penitenciários e socioeducativos, e atividades com exposição a agentes nocivos, vedada a caracterização por categoria (art. 40, §§4º-A a 4º-C; art. 201, §1º).' },
+  { id: 'v37_honorarios', ex: null, nivel: 'inconstitucional', ovr: 1, d: ['a5_xxxv_lxxiv'], rx: /\bhonorarios\b[^.;]{0,80}\b(?:gratuidade|justica gratuita|beneficiari\w+ da justica)\b|\b(?:gratuidade|justica gratuita)\b[^.;]{0,80}\bhonorarios\b/, no: /\b(?:sem|isent\w+|dispens\w+|proib\w+|vedar|acabar com)\b[^.;]{0,25}\bhonorarios\b/,
+    ef: 'Cobrar honorários de quem tem gratuidade de justiça, com créditos obtidos no processo ou em outro, viola o acesso à Justiça e a assistência jurídica integral (art. 5º, XXXV e LXXIV): o STF declarou inconstitucional esse desconto (ADI 5766, 2021).' },
+  { id: 'v37_export', ex: null, nivel: 'inconstitucional', ovr: 1, fisc: { k: 'T', B: 5, sg: 1 }, d: ['a149_exp'], rx: /\bexporta\w+\b[^.;]{0,50}\bcontribuic\w+|\bcontribuic\w+\b[^.;]{0,50}\b(?:exporta\w+|venda ao exterior)\b/, no: /\bimposto (?:de |sobre a? ?)exportac\w+|\bimposto sobre exportac\w+/,
+    ef: 'As contribuições sociais e a Cide não incidem sobre as receitas de exportação (art. 149, §2º, I): contribuição previdenciária sobre a produção rural exportada fere essa imunidade, e só um imposto de exportação (art. 153, II) alcançaria o produto.' },
+  { id: 'v37_inativos_rgps_', ex: 'PEC', nivel: 'controverso', d: ['a195_ii'], rx: /\b(?:cobrar|criar|instituir|taxar|impor)\b[^.;]{0,40}\bcontribuic\w+\b[^.;]{0,40}\baposentad\w+ (?:do |dos |pelo )?(?:inss|regime geral|rgps|setor privado)|\baposentad\w+ (?:do |dos )?inss\b[^.;]{0,40}\bcontribuic\w+/, 
+    ef: 'A contribuição previdenciária não incide sobre aposentadoria e pensão do regime geral (art. 195, II): cobrá-la dos aposentados do INSS exige PEC e é atacada como ofensa ao direito adquirido.' }
+];
+function v37Normas(A) {
+  const s = A.s, out = [];
+  for (const N of V37_NORMAS) {
+    const m = N.rx.exec(s);
+    if (!m || (N.no && N.no.test(s))) continue;
+    const pre = s.slice(Math.max(0, m.index - 36), m.index);
+    if (CF_NEG_PRE.test(pre)) continue;
+    out.push(Object.assign({}, N, { m: [m.index, m.index + m[0].length] }));
+  }
+  return out;
+}
+/* itens do catálogo que já tratam da matéria como texto constitucional: não são trocados pela leitura de norma */
+const V37_PROT = ['reeleicao', 'foro', 'reforma_politica', 'voto_facultativo', 'aposentadoria_idade', 'previdencia_reforma', 'reforma_adm', 'desvinculacao', 'precatorios', 'zona_franca', 'mudar_capital', 'maioridade_penal', 'mensalidade_universidades', 'planos_saude_fim', 'igrejas_imunidade', 'prisao_segunda_instancia', 'cotas_mulheres_congresso', 'limite_mandatos_parl', 'guarda_nacional', 'pena_morte', 'estado_excecao'];
+function v37Fallback(A) {
+  const orig = String(A.orig || '').normalize('NFC').replace(/[.!?\s]+$/, '');
+  return { v: { nom: 'a mudança', prep: 'em', inf: 'mudar', cls: 'norm', sg: 1 }, comp: orig.charAt(0).toLowerCase() + orig.slice(1), cf: foldTxt(orig), fAll: foldTxt(orig), vagoCab: false };
+}
+/* escala do valor fixo de uma norma com despesa (novo estado, FPE, PM): número citado no texto multiplica a unidade */
+function v37Esc(f, A) {
+  let B = f.B;
+  if (f.un === 'ente') { const m = /\b(\d+)\b[^.;]{0,12}\b(?:estados?|municipios?|territorios?)\b/.exec(A.s); B *= m ? Math.min(6, +m[1]) : 1; }
+  return B;
+}
+const V37_DN = /\b(?:reduz\w+|cort\w+|diminu\w+|baix\w+|tir(?:ar|e)\b|retir\w+|acab\w+ com|extingu\w+|elimin\w+|encurt\w+|suprim\w+)/;
+/* normas que já valem em 2026 (trabalho, previdência e Constituição). rx: o tema; ex: o pedido repete a norma (aí a medida é redundante e não custa nada);
+   sem ex, a norma só é lembrada ("norma relacionada") e o que passar do texto vigente é mudança real */
+const JN37 = [
+  { id: 'lei12506', rx: /\baviso previo\b/, ex: /\baviso previo\b[^.;]{0,40}\b(?:proporcional\w*|3 dias por ano|ate 90 dias)|\b(?:3 dias por ano|90 dias)\b[^.;]{0,40}\baviso previo\b/, txt: 'Lei 12.506/2011 (CF, art. 7º, XXI): o aviso prévio é de 30 dias, com mais 3 dias por ano trabalhado na mesma empresa, até o máximo de 90 dias.' },
+  { id: 'lei13467t', rx: /\bjornada (?:de )?12 ?(?:x|horas)?(?: de trabalho)? ?(?:por )?36\b|\b12 ?x ?36\b|\bnegociado sobre o legislado\b|\bprevalencia do negociado\b|\bacordo individual\b|\bfraciona\w+ (?:d[ae]s? )?ferias\b|\bferias (?:em|divididas em|dividir\w* em) (?:ate )?(?:3|tres) periodos\b|\bdividir (?:as )?ferias\b|\bdistrato\b|\bacordo entre as partes\b|\brescisao (?:por|de) comum acordo\b|\bhonorarios de sucumbencia\b|\bdanos? extrapatrimoni\w+|\bjornada parcial\b|\bbanco de horas\b|\bcontribuicao sindical\b|\bimposto sindical\b/,
+    ex: /\b(?:12 ?x ?36|jornada (?:de )?12 ?(?:x|horas)?(?: de trabalho)? ?(?:por )?36)\b[^.;]{0,50}\bacordo individual\b|\bfraciona\w+ (?:d[ae]s? )?ferias\b[^.;]{0,30}\b(?:3|tres) periodos\b|\bferias[^.;]{0,30}\b(?:ate )?(?:3|tres) periodos\b|\bfim do contrato por acordo\b|\b(?:tornar|deixar|passar a) facultativ\w+ (?:a |o )?(?:contribuicao|imposto) sindical\b|\b(?:tirar|acabar com) a obrigatoriedade d[oa] (?:contribuicao|imposto) sindical\b|\bsaque de 80%/,
+    txt: 'Lei 13.467/2017 (reforma trabalhista): já permite a jornada 12x36 por acordo individual (CLT, art. 59-A), o negociado sobre o legislado (art. 611-A), o fracionamento das férias em até três períodos (art. 134), o distrato com multa de 20%, metade do aviso e saque de 80% do FGTS (art. 484-A) e tornou facultativa a contribuição sindical.' },
+  { id: 'lei13429t', rx: /\bterceiriz\w+|\btrabalho temporario\b/, ex: /\bterceiriz\w+\b[^.;]{0,50}\b(?:atividade.fim|qualquer atividade|atividade principal|todas as atividades)\b|\b(?:atividade.fim|atividade principal)\b[^.;]{0,40}\bterceiriz\w+/, txt: 'Lei 13.429/2017 e Lei 13.467/2017: já permitem a terceirização de qualquer atividade, inclusive a atividade-fim, e ampliaram o trabalho temporário (Lei 6.019/1974); o STF validou a terceirização irrestrita (ADPF 324 e RE 958.252, 2018).' },
+  { id: 'lei14442', rx: /\bteletrabalho\b|\btrabalho remoto\b|\bhome office\b|\b(?:por|de) (?:tarefa|producao)\b/, ex: /\bteletrabalho\b[^.;]{0,40}\b(?:por|de) (?:tarefa|producao)\b|\b(?:por|de) (?:tarefa|producao)\b[^.;]{0,40}\bteletrabalho\b/, txt: 'Lei 14.442/2022 (e CLT, arts. 75-A a 75-F): o teletrabalho está regulado, e o contratado por produção ou tarefa não tem controle de jornada (art. 62, III).' },
+  { id: 'lei14457', rx: /\breembolso.creche\b|\bemprega \+ mulheres\b|\bcreche\b[^.;]{0,50}\b(?:empresas?|reembols\w+)|\bflexibiliz\w+[^.;]{0,30}\bhorario\b[^.;]{0,40}\b(?:pais|maes|filhos)/, ex: /\b(?:flexibiliz\w+|reembols\w+)\b[^.;]{0,60}\b(?:creche|horario)\b[^.;]{0,60}\b(?:pais|maes|filhos|reembols\w+)/, txt: 'Lei 14.457/2022 (Emprega + Mulheres): já prevê o reembolso-creche, a flexibilização de jornada para pais e mães de filhos pequenos e incentivos à contratação de mulheres.' },
+  { id: 'lei11770', rx: /\blicenca.maternidade\b[^.;]{0,50}\b(?:180|seis meses|prorrog\w+|ampli\w+|estend\w+)|\bempresa cidada\b|\b(?:180|seis meses)\b[^.;]{0,30}\blicenca.maternidade\b/, ex: /\bincentivo\b[^.;]{0,40}\blicenca.maternidade\b|\bempresa cidada\b|\blicenca.maternidade\b[^.;]{0,40}\b(?:de )?120 para 180\b/, txt: 'Lei 11.770/2008 (Empresa Cidadã): já permite prorrogar a licença-maternidade de 120 para 180 dias, com dedução do imposto de renda das empresas tributadas pelo lucro real.' },
+  { id: 'lc150', lc: 1, rx: /\bdomestic\w+/, ex: /\bdomestic\w+\b[^.;]{0,60}\b(?:fgts|seguro.desemprego|adicional noturno)/, txt: 'LC 150/2015 (com a EC 72/2013): a empregada doméstica já tem FGTS obrigatório, seguro-desemprego, adicional noturno, jornada de 8 horas diárias e hora extra.' },
+  { id: 'lei5889', rx: /\btrabalhador(?:es)? rura(?:l|is)\b|\bempregados? (?:do campo|rura(?:l|is))\b|\bprodutor rural\b[^.;]{0,60}\b(?:descont\w+|moradia|alimentacao)/, ex: /\bdescont\w+\b[^.;]{0,40}\b(?:moradia|alimentacao)\b[^.;]{0,60}\b(?:salario|empregad\w+)|\b(?:moradia|alimentacao)\b[^.;]{0,40}\bdescont\w+\b[^.;]{0,30}\bsalario/, txt: 'Lei 5.889/1973 (art. 9º): regula o trabalho rural e já autoriza descontar do salário, dentro de limites, a moradia (até 20%) e a alimentação (até 25%).' },
+  { id: 'lei10101', rx: /\bplr\b|\bparticipacao nos (?:lucros|resultados)\b|\blucros ou resultados\b|\bdistribu\w+ (?:de )?lucros? (?:aos|a) (?:empregados|trabalhadores)\b/, ex: /\b(?:distribu\w+|pagar|dividir)\b[^.;]{0,30}\blucros?\b[^.;]{0,40}\b(?:empregados|trabalhadores)\b|\bplr\b[^.;]{0,40}\bsem encargos\b/, txt: 'Lei 10.101/2000: a participação dos trabalhadores nos lucros ou resultados (PLR) já é regulada, negociada com o sindicato ou comissão e sem natureza salarial.' },
+  { id: 'lei7998', rx: /\bseguro.desemprego\b/, ex: /\bseguro.desemprego\b[^.;]{0,40}\b(?:3 a 5|tres a cinco)\s+parcelas\b|\b(?:3 a 5|tres a cinco)\s+parcelas\b[^.;]{0,40}\bseguro.desemprego\b/, txt: 'Lei 7.998/1990: o seguro-desemprego já é pago em 3 a 5 parcelas, conforme o tempo de trabalho, e financiado pelo FAT.' },
+  { id: 'lei8036', rx: /\bdeposito\w* (?:mensal )?(?:no |ao |do |de )?(?:fgts|fundo de garantia)\b|\baliquota do fgts\b/, ex: /\b(?:pagar|depositar|recolher)\b[^.;]{0,30}\b8%[^.;]{0,30}\b(?:fgts|fundo de garantia)\b/, txt: 'Lei 8.036/1990 (art. 15): o empregador deposita todo mês 8% do salário na conta do FGTS do empregado.' },
+  { id: 'lei605', rx: /\brepouso semanal\b|\bdescanso semanal\b|\b(?:domingos?|feriados?)\b[^.;]{0,40}\bdobro\b|\bdobro\b[^.;]{0,40}\b(?:domingos?|feriados?)\b/, ex: /\b(?:domingos?|feriados?)\b[^.;]{0,40}\bdobro\b[^.;]{0,40}\b(?:folga compensatoria|sem folga)|\bdobro\b[^.;]{0,40}\b(?:domingos?|feriados?)\b/, txt: 'Lei 605/1949: o repouso semanal remunerado é garantido, e o trabalho em domingo ou feriado sem folga compensatória é pago em dobro (art. 9º).' },
+  { id: 'lei12997', rx: /\bpericulosidade\b[^.;]{0,40}\b(?:moto\w*|motociclista|motoboy)\b|\b(?:moto\w*|motociclista|motoboy)\b[^.;]{0,40}\bpericulosidade\b/, ex: /\badicional de periculosidade\b[^.;]{0,40}\b(?:moto\w*|motociclista|motoboy)|\b(?:moto\w*|motociclista|motoboy)\b[^.;]{0,40}\badicional de periculosidade\b/, txt: 'Lei 12.997/2014 (CLT, art. 193, §4º): o trabalhador que usa moto no serviço já recebe adicional de periculosidade de 30% sobre o salário-base.' },
+  { id: 'lei14663', rx: /\bsalario minimo\b[^.;]{0,60}\b(?:inflacao|pib|valorizacao|regra de reajuste)\b|\bvalorizacao do salario minimo\b|\b(?:inflacao|pib)\b[^.;]{0,50}\bsalario minimo\b/, ex: /\bsalario minimo\b[^.;]{0,50}\binflacao\b[^.;]{0,30}\bpib\b|\binflacao\b[^.;]{0,30}\bpib\b[^.;]{0,40}\bsalario minimo\b/, txt: 'Lei 14.663/2023: a política de valorização do salário mínimo já reajusta o piso pela inflação (INPC) mais a variação do PIB de dois anos antes.' },
+  { id: 'lc103', lc: 1, rx: /\bpisos? (?:salar\w+ )?regiona(?:l|is)\b/, ex: /\bestados?\b[^.;]{0,30}\bfix\w+\b[^.;]{0,20}\bpiso\b|\bpiso (?:salarial )?regional\b/, txt: 'LC 103/2000: os estados e o DF já podem instituir piso salarial regional para as categorias sem piso em lei federal, convenção ou acordo coletivo.' },
+  { id: 'lei12546', rx: /\bdesoner\w+ (?:da )?folha\b|\bcprb\b|\bcontribuicao previdenciaria sobre (?:a )?receita\b|\baliquota sobre (?:a )?receita\b|\btroc\w+ (?:a )?contribuicao patronal\b|\baliv\w+ (?:a )?folha\b/, txt: 'Lei 12.546/2011: a desoneração da folha (CPRB) já troca a contribuição patronal de 20% por alíquota sobre a receita bruta em setores listados; foi prorrogada e depois reonerada gradualmente (Lei 14.973/2024).' },
+  { id: 'lei8212', rx: /\bcontribuicao patronal\b|\bcota patronal\b|\b20% d[ao]s? (?:folha|remuneracoes)\b|\brecolh\w+[^.;]{0,30}\bfolha\b/, ex: /\b(?:recolh\w+|pagar)\b[^.;]{0,30}\b20%[^.;]{0,30}\bfolha\b[^.;]{0,50}\b(?:inss|patronal)/, txt: 'Lei 8.212/1991 (art. 22): a empresa já recolhe ao INSS 20% da folha de pagamento como contribuição patronal, mais o adicional do RAT (1% a 3%).' },
+  { id: 'lei11788', rx: /\bestagi\w+/, txt: 'Lei 11.788/2008: o estágio já é regulado, com jornada limitada, recesso remunerado e contrapartida de bolsa.' },
+  { id: 'lei10097', rx: /\baprendiz\w+/, txt: 'Lei 10.097/2000 (CLT, art. 429): as empresas de médio e grande porte já são obrigadas a contratar aprendizes, de 5% a 15% das funções que exigem formação profissional.' },
+  { id: 'lei4090', rx: /\b13[ºo]?(?: salario)?\b|\bdecimo terceiro\b/, ex: /\b(?:duas|2) parcelas\b[^.;]{0,40}\b13|\b13[ºo]?\b[^.;]{0,30}\b(?:duas|2) parcelas\b/, txt: 'Lei 4.090/1962 e Lei 4.749/1965 (CF, art. 7º, VIII): o 13º salário já é pago em duas parcelas, a primeira até 30 de novembro e a segunda até 20 de dezembro.' },
+  { id: 'lei7783', rx: /\bgreve\b/, txt: 'Lei 7.783/1989: o direito de greve na iniciativa privada já é regulado, com aviso prévio e manutenção dos serviços essenciais; para servidores o STF aplica a mesma lei (MI 708).' },
+  { id: 'lei13271', rx: /\brevista intima\b/, ex: /\b(?:proibir|vedar)\b[^.;]{0,30}\brevista intima\b/, txt: 'Lei 13.271/2016: já proíbe a revista íntima de funcionárias nos locais de trabalho e de clientes nos estabelecimentos.' },
+  { id: 'clt224', rx: /\bbancari\w+/, ex: /\b(?:6|seis) horas\b[^.;]{0,40}\bbancari\w+|\bbancari\w+\b[^.;]{0,40}\b(?:6|seis) horas\b/, txt: 'CLT, art. 224 (Decreto-Lei 5.452/1943): a jornada dos bancários já é de 6 horas diárias.' },
+  { id: 'clt143', rx: /\babono pecuniario\b|\bvend\w+ (?:\d+|dez|vinte|parte d)\w* (?:dias )?(?:das )?ferias\b/, ex: /\bvend\w+ (?:10|dez) dias\b[^.;]{0,20}\bferias\b/, txt: 'CLT, art. 143 (Decreto-Lei 5.452/1943): o empregado já pode converter um terço das férias (10 dias) em abono pecuniário.' },
+  { id: 'clt192', rx: /\binsalubr\w+/, txt: 'CLT, arts. 189 a 192 (Decreto-Lei 5.452/1943): o adicional de insalubridade já é de 10%, 20% ou 40% do salário mínimo, conforme o grau mínimo, médio ou máximo.' },
+  { id: 'ec103p', pec: 1, rx: /\bpensao por morte\b/, ex: /\b50%[^.;]{0,40}\b10%[^.;]{0,25}\bdependente|\b10% por dependente\b/, txt: 'EC 103/2019 (art. 23): a pensão por morte é de 50% do valor da aposentadoria, mais 10% por dependente, até 100%.' },
+  { id: 'ec103d', pec: 1, rx: /\bpedagio\b/, ex: /\bpedagio de (?:50|100)%/, txt: 'EC 103/2019 (arts. 17 a 20): já criou regras de transição com pedágio de 50% (para quem estava a até dois anos de se aposentar) e de 100% sobre o tempo que faltava.' },
+  { id: 'ec103a', pec: 1, rx: /\b(?:somar|acumul\w+|cumul\w+)\b[^.;]{0,40}\b(?:pensao|aposentadoria)\b|\bacumulacao de (?:pensao|aposentadoria|beneficios)\b/, txt: 'EC 103/2019 (art. 24): a acumulação de pensão por morte e aposentadoria já é limitada, com faixas de redução do benefício de menor valor.' },
+  { id: 'ec103i', pec: 1, rx: /\bidade minima\b|\baposentadoria por idade\b|\baposentar(?:-se)? aos\b|\bhomens e mulheres\b[^.;]{0,30}\baposent/, ex: /\bidade minima\b[^.;]{0,30}\b65\b[^.;]{0,30}\b62\b|\b65 anos\b[^.;]{0,30}\bhomens?\b[^.;]{0,30}\b62\b/, txt: 'EC 103/2019 (CF, art. 201, §7º): a idade mínima já é de 65 anos para homens e 62 para mulheres, com 20 anos de contribuição (homens) ou 15 (mulheres).' },
+  { id: 'ec103t', pec: 1, rx: /\btempo de contribuicao\b|\baposentadoria por tempo\b/, txt: 'EC 103/2019: extinguiu a aposentadoria por tempo de contribuição para quem se filia depois da emenda e manteve regras de transição (arts. 15 a 20) para os demais.' },
+  { id: 'ec103c', pec: 1, rx: /\bmedia d[eao]s? (?:salarios|contribuicoes)\b|\bcalculo d[ao] (?:aposentadoria|beneficio)\b|\bmelhores salarios\b/, txt: 'EC 103/2019 (art. 26): o benefício é calculado pela média de todos os salários de contribuição desde julho de 1994, com 60% da média mais 2 pontos por ano acima de 20 anos de contribuição (15 para mulheres).' },
+  { id: 'ec103x', pec: 1, rx: /\bcontribuicao extraordinaria\b|\bdeficit (?:atuarial|do regime proprio)\b/, ex: /\bcontribuicao extraordinaria\b/, txt: 'EC 103/2019 (CF, art. 149, §§1º-A e 1º-B): já permite cobrar contribuição extraordinária de servidores ativos, aposentados e pensionistas, por prazo determinado, para equacionar o déficit atuarial do regime próprio.' },
+  { id: 'lei9876', rx: /\bfator previdenciario\b/, txt: 'Lei 9.876/1999 criou o fator previdenciário; a EC 103/2019 o extinguiu na regra permanente e o manteve só em uma regra de transição (art. 17).' },
+  { id: 'lei8213r', rx: /\baposentadoria rural\b|\btrabalhador(?:es)? rura(?:l|is)\b[^.;]{0,50}\baposent\w+|\baposent\w+[^.;]{0,50}\btrabalhador(?:es)? rura(?:l|is)\b|\bsegurado especial\b/, ex: /\baposent\w+\b[^.;]{0,40}\brura(?:l|is)\b[^.;]{0,40}\b60\b[^.;]{0,30}\b55\b|\brura(?:l|is)\b[^.;]{0,40}\b60 anos\b[^.;]{0,30}\b55\b/, txt: 'Lei 8.213/1991 (art. 48, §1º) e CF, art. 201, §7º, II: o trabalhador rural já se aposenta aos 60 anos (homem) e 55 (mulher), com 15 anos de atividade rural.' },
+  { id: 'lei8213i', rx: /\bauxilio.doenca\b|\bauxilio por incapacidade\b|\bincapacidade temporaria\b|\bpericia\b[^.;]{0,40}\b(?:inss|auxilio|beneficio|incapacidade)/, txt: 'Lei 8.213/1991 (arts. 59 a 63): o auxílio por incapacidade temporária exige perícia médica e é revisto periodicamente; a Lei 13.846/2019 criou o pente-fino e o bônus de produtividade da perícia.' },
+  { id: 'lc142', rx: /\bdeficien\w+\b[^.;]{0,40}\baposent\w+|\baposent\w+[^.;]{0,40}\bdeficien\w+/, txt: 'LC 142/2013: a aposentadoria da pessoa com deficiência já tem idade e tempo reduzidos conforme o grau da deficiência.' },
+  { id: 'lei14176', rx: /\bauxilio.inclusao\b/, ex: /\bauxilio.inclusao\b/, txt: 'Lei 14.176/2021: criou o auxílio-inclusão, de meio salário mínimo, para o beneficiário do BPC com deficiência que passa a trabalhar.' },
+  { id: 'lei8213m', rx: /\btempo de servico militar\b|\bservico militar obrigatorio\b/, ex: /\b(?:contar|computar|considerar)\b[^.;]{0,40}\b(?:tempo de servico militar|servico militar)\b/, txt: 'Lei 8.213/1991 (art. 55, I) e CF, art. 201, §9º: o tempo de serviço militar já conta para a aposentadoria, pela contagem recíproca entre os regimes.' },
+  { id: 'lei8742', rx: /\bbpc\b|\bloas\b|\bbeneficio de prestacao continuada\b/, txt: 'Lei 8.742/1993 (Loas): o BPC paga um salário mínimo a idosos com 65 anos ou mais e a pessoas com deficiência de famílias com renda per capita de até 1/4 do salário mínimo.' },
+  { id: 'lei12618', rx: /\bfunpresp\b|\bprevidencia complementar\b[^.;]{0,40}\bservidor\w*|\bfundo de pensao\b[^.;]{0,40}\bservidor\w*|\bservidor\w*\b[^.;]{0,50}\b(?:previdencia complementar|fundo de pensao)\b/, ex: /\b(?:criar|instituir)\b[^.;]{0,30}\b(?:fundo de pensao|previdencia complementar|funpresp)\b[^.;]{0,50}\bservidor/, txt: 'Lei 12.618/2012: a previdência complementar dos servidores federais (Funpresp) já existe, com o teto do INSS para quem ingressou depois de 2013 e contribuição do governo igual à do servidor, até 8,5%.' },
+  { id: 'ec41', pec: 1, rx: /\bcontribuicao\b[^.;]{0,50}\b(?:aposentad\w+|inativ\w+|pensionist\w+)\b|\b(?:aposentad\w+|inativ\w+)\b[^.;]{0,40}\bcontribuicao\b/, ex: /\bservidor\w*\b[^.;]{0,20}\baposentad\w+\b[^.;]{0,60}\b(?:passa|passar|excede\w*|acima) d[oa] teto\b/, txt: 'EC 41/2003 (CF, art. 40, §18): os servidores aposentados e pensionistas já pagam contribuição sobre o que passar do teto do INSS; a EC 103/2019 permite alcançar o que passar do salário mínimo quando houver déficit atuarial.' },
+  { id: 'ec41ip', pec: 1, rx: /\bintegralidade\b|\bparidade\b/, txt: 'EC 41/2003 e EC 47/2005: acabaram com a integralidade e a paridade para quem ingressou no serviço público depois de 31/12/2003; as regras de transição preservam o direito de quem ingressou antes.' },
+  { id: 'ec41ap', pec: 1, rx: /\babono de permanencia\b/, txt: 'CF, art. 40, §19 (EC 41/2003 e EC 103/2019): o servidor que já cumpriu os requisitos e continua trabalhando recebe abono de permanência equivalente à sua contribuição previdenciária.' },
+  { id: 'stf661', rx: /\bdesaposenta\w+/, txt: 'Desaposentação: o STF (RE 661.256, 2016) fixou que, sem lei que a preveja, não existe direito à desaposentação; a Lei 8.213/1991 (art. 18, §2º) limita as prestações do aposentado que volta a trabalhar.' },
+  { id: 'lc123', lc: 1, nex: /\bde \d+(?:\.\d+)?%? para \d|\b(?:baix|reduz|elev|aument|subir|majorar|diminu)\w*/, rx: /\bmei\b|\bmicroempreendedor\w*/, ex: /\bmei\b[^.;]{0,50}\b5%[^.;]{0,30}\bsalario minimo\b|\b5%[^.;]{0,30}\bsalario minimo\b[^.;]{0,60}\bmei\b/, txt: 'LC 123/2006 (art. 18-A, com a LC 128/2008): o MEI já contribui com 5% do salário mínimo para a Previdência e conta o tempo para a aposentadoria por idade (para a aposentadoria por tempo de contribuição, só com complementação).' },
+  { id: 'lei13954', rx: /\bpensao militar\b|\bmilitares?\b[^.;]{0,40}\b(?:pensao|pensoes|contribuicao)\b/, txt: 'Lei 13.954/2019: reestruturou a carreira e a previdência dos militares e elevou a contribuição para as pensões a 10,5% (Lei 3.765/1960).' },
+  { id: 'lc51', rx: /\bpolici\w+\b[^.;]{0,50}\baposent\w+|\baposent\w+[^.;]{0,50}\bpolici\w+/, txt: 'LC 51/1985 (com a LC 144/2014) regula a aposentadoria dos policiais civis e federais; a EC 103/2019 (CF, art. 40, §4º-B) remeteu o tema a lei complementar de cada ente.' },
+  { id: 'ec88', pec: 1, rx: /\baposentadoria compulsoria\b|\baposent\w+ compulsor\w+/, ex: /\b75 anos\b[^.;]{0,50}\bcompulsor|\bcompulsor\w+[^.;]{0,50}\b75 anos\b/, txt: 'EC 88/2015 e LC 152/2015: a aposentadoria compulsória é aos 75 anos para os servidores em geral e para os ministros dos tribunais superiores (CF, art. 40, §1º, II).' },
+  { id: 'ec103s', rx: /\baliquota\w*\b[^.;]{0,30}\b(?:inss|segurado\w*|contribuicao previdenciaria)\b|\bcontribuicao d[oe]s? segurados?\b/, txt: 'EC 103/2019 (art. 28): o segurado empregado paga alíquotas progressivas de 7,5%, 9%, 12% e 14% sobre cada faixa do salário de contribuição.' },
+  { id: 'lei8213p', rx: /\bpensao\b[^.;]{0,40}\bfilhos?\b|\bfilhos?\b[^.;]{0,40}\bpensao\b/, txt: 'Lei 8.213/1991 (art. 16): os filhos são dependentes do segurado até 21 anos de idade, ou sem limite se inválidos ou com deficiência.' },
+  { id: 'ec16', pec: 1, rx: /\breeleic\w+/, txt: 'EC 16/1997 criou a reeleição dos chefes do Executivo para um único período subsequente (CF, art. 14, §5º).' },
+  { id: 'ec45t', pec: 1, rx: /\btratados? de direitos humanos\b/, ex: /\btratados? de direitos humanos\b[^.;]{0,60}\b(?:tres quintos|dois turnos|forca de emenda)\b/, txt: 'EC 45/2004 (CF, art. 5º, §3º): os tratados de direitos humanos aprovados em dois turnos por três quintos de cada Casa já equivalem a emenda constitucional.' },
+  { id: 'ec64', pec: 1, rx: /\balimentacao\b[^.;]{0,60}\b(?:direitos? sociais|constituicao)\b|\bdireito (?:a |à )?alimentacao\b/, ex: /\balimentacao\b[^.;]{0,60}\bdireitos? sociais\b/, txt: 'EC 64/2010: a alimentação já está entre os direitos sociais do art. 6º da Constituição.' },
+  { id: 'ec115', pec: 1, rx: /\bprotecao de dados\b[^.;]{0,60}\b(?:direito fundamental|constituicao)\b|\bdireito fundamental\b[^.;]{0,40}\bdados\b/, ex: /\bprotecao de dados\b[^.;]{0,60}\bdireito fundamental\b/, txt: 'EC 115/2022: a proteção de dados pessoais já é direito fundamental (CF, art. 5º, LXXIX).' },
+  { id: 'ec74', pec: 1, rx: /\bdefensoria\b[^.;]{0,60}\bautonomia\b|\bautonomia\b[^.;]{0,60}\bdefensoria\b/, ex: /\bautonomia\b[^.;]{0,60}\bdefensoria publica da uniao\b/, txt: 'EC 74/2013 (com a EC 45/2004 e a EC 69/2012): a Defensoria Pública da União já tem autonomia funcional, administrativa e de iniciativa orçamentária (CF, art. 134, §§2º e 3º).' },
+  { id: 'ec32', pec: 1, rx: /\bmedidas? provisorias?\b[^.;]{0,60}\b(?:vigencia|prazo|prorrog\w+|materia|direito penal|penal)\b|\b(?:proibir|vedar)\b[^.;]{0,40}\bmedidas? provisorias?\b/, ex: /\b(?:proibir|vedar)\b[^.;]{0,40}\bmedidas? provisorias?\b[^.;]{0,30}\b(?:direito penal|penal|processual)\b/, txt: 'EC 32/2001 (CF, art. 62): a medida provisória vale 60 dias, prorrogáveis por mais 60, e é vedada em direito penal, processual penal e processual civil, nacionalidade, direito eleitoral e matéria de lei complementar (§1º).' },
+  { id: 'ec104', pec: 1, rx: /\bpolicias? pen(?:al|ais)\b/, ex: /\b(?:criar|institu\w+)\b[^.;]{0,30}\bpolicias? pen(?:al|ais)\b/, txt: 'EC 104/2019: criou as polícias penais federal, estaduais e distrital (CF, art. 144, VI).' },
+  { id: 'ec97', pec: 1, rx: /\bclausulas? de (?:barreira|desempenho)\b|\bvotos validos\b[^.;]{0,60}\bpartido|\bpartidos?\b[^.;]{0,60}\b(?:fundo partidario|tempo de tv)\b|\bcoligac\w+\b[^.;]{0,30}\bproporcia/, ex: /\b\d+%[^.;]{0,20}\bvotos validos\b[^.;]{0,60}\b(?:fundo partidario|tempo de tv|partido)|\bclausulas? de (?:barreira|desempenho)\b/, txt: 'EC 97/2017 (CF, art. 17, §3º): já condiciona o acesso ao fundo partidário e ao tempo gratuito de rádio e TV a um desempenho mínimo nas eleições (cláusula de desempenho, crescente até 3% dos votos válidos em um terço dos estados em 2030) e proíbe coligações nas eleições proporcionais.' },
+  { id: 'lc135', lc: 1, rx: /\binelegi\w+|\bficha limpa\b/, ex: /\binelegiv\w+[^.;]{0,40}\b(?:8|oito) anos\b|\bcondenad\w+[^.;]{0,40}\bcolegiad\w+/, txt: 'LC 135/2010 (Ficha Limpa, que alterou a LC 64/1990): já torna inelegível por oito anos quem for condenado por órgão colegiado, entre outros casos.' },
+  { id: 'lc78', lc: 1, rx: /\bnumero de deputados\b|\bbancadas? (?:estaduais|por estado)\b/, ex: /\bnumero de deputados\b[^.;]{0,60}\b(?:populacao|estado)/, txt: 'LC 78/1993: disciplina a fixação do número de deputados federais, hoje 513, com mínimo de 8 e máximo de 70 por estado (CF, art. 45, §1º).' },
+  { id: 'ec111', pec: 1, rx: /\bposse d[oa] president\w*\b|\bdata da posse\b/, ex: /\bposse\b[^.;]{0,40}\b5 de janeiro\b/, txt: 'EC 111/2021 (CF, art. 82): a posse do presidente da República passou de 1º para 5 de janeiro, a partir de 2027.' },
+  { id: 'ec26', pec: 1, rx: /\bmoradia\b[^.;]{0,60}\b(?:direitos? sociais|constituicao)\b/, ex: /\bmoradia\b[^.;]{0,60}\bdireitos? sociais\b/, txt: 'EC 26/2000: a moradia já está entre os direitos sociais do art. 6º da Constituição (a EC 90/2015 incluiu o transporte).' },
+  { id: 'ec66', pec: 1, rx: /\bdivorcio\b/, txt: 'EC 66/2010: extinguiu a separação judicial como requisito prévio do divórcio (CF, art. 226, §6º).' }
+].map(x => Object.assign({ v: true }, x));
+function v37Vigente(A) {
+  if (A.jaVigente) return;
+  const s = A.s, hit = [];
+  for (const J of JN37) if (J.rx.test(s)) hit.push({ J: J, exato: !!(J.ex && J.ex.test(s)) && !(J.nex && J.nex.test(s)) });
+  if (!hit.length) return;
+  hit.sort((a, b) => (b.exato ? 1 : 0) - (a.exato ? 1 : 0));
+  const b = hit[0];
+  if (!b.exato && A.normaVigente && A.normaVigente.exato) return;
+  const lab = (J) => { const k = J.txt.indexOf(':'); return k > 0 && k < 70 ? J.txt.slice(0, k) : J.txt.slice(0, 40); };
+  const outros = hit.slice(1, 3).map(x => lab(x.J));
+  const txt = (outros.length ? 'Normas vigentes: ' + [lab(b.J)].concat(outros).join('; ') + '. ' : '') + b.J.txt;
+  A.normaVigente = { id: b.J.id, txt: txt, exato: b.exato, rel: !b.exato, lc: !!b.J.lc, pec: !!b.J.pec };
+  if (b.exato) for (const i of A.items) if (i.o.k === 'G' || i.o.k === 'T') i.regul = true; // o pedido repete a lei: redundante, sem custo
+}
+const V37_UPV = /\b(?:subir|sobe|elev\w+|aument\w+|major\w+|ampli\w+|estend\w+|estic\w+|alonga\w+|endurec\w+|igualar|dobr\w+|duplic\w+|cri(?:ar|e)|institu\w+|restabelec\w+|reabr\w+|retom\w+|volt\w+ a|garant\w+|conced\w+|dar|pagar|cobrar|taxar|tribut\w+|exigir|impor|obrigar|permit\w+|liber\w+|autoriz\w+|assegur\w+|reajust\w+)\b/g;
+const V37_DNV = /\b(?:baix\w+|reduz\w+|diminu\w+|cort\w+|tir(?:ar|e)|retir\w+|acab\w+ com|extingu\w+|elimin\w+|abol\w+|revog\w+|suprim\w+|congel\w+|zerar|encurt\w+|limit\w+|restring\w+|ved(?:ar|e)|proib\w+|fim d[aeo]s?|suspend\w+|isent\w+|desoner\w+|aliv\w+|dispens\w+|tornar facultativ\w+)\b/g;
+/* sentido do verbo em relação ao objeto: +1 (aumenta, cria, permite), -1 (reduz, extingue, proíbe), 0 (não achou) */
+function v37Dir(s, rx) {
+  const m = rx.exec(s); if (!m) return 0;
+  const pre = s.slice(Math.max(0, m.index - 70), m.index), post = s.slice(m.index + m[0].length, m.index + m[0].length + 50);
+  const last = (re, t) => { let r = -1, x; const g = new RegExp(re.source, 'g'); while ((x = g.exec(t))) r = Math.max(r, x.index + x[0].length); return r; };
+  const u = last(V37_UPV, pre), d = last(V37_DNV, pre);
+  if (/\bsem (?:\w+ ){0,2}$/.test(pre)) return -1;
+  if (u >= 0 || d >= 0) return u > d ? 1 : -1;
+  const pu = post.search(new RegExp(V37_UPV.source)), pd = post.search(new RegExp(V37_DNV.source));
+  if (pu >= 0 && (pd < 0 || pu < pd)) return 1;
+  if (pd >= 0) return -1;
+  return 0;
+}
+const V37_PUB = [
+  [/\bservidor\w*|\bregime proprio|\brpps\b|\bfuncionalismo/, .13, 'dos servidores'], [/\bmilitar\w*|\bforcas armadas/, .08, 'dos militares'], [/\bpolici\w+/, .03, 'dos policiais'], [/\bprofessor\w*|\bmagisterio/, .06, 'dos professores'],
+  [/\brura(?:l|is)\b|\bcampo\b|\bsegurado especial/, .2, 'do campo'], [/\bpensionist\w+/, .17, 'dos pensionistas'], [/\binvalidez|\bincapacidade permanente/, .15, 'por incapacidade'], [/\bdeficien\w+|\bpcd\b/, .03, 'das pessoas com deficiência'],
+  [/\bmei\b|\bautonomos?\b|\bcontribuinte individual/, .08, 'dos autônomos'], [/\bvigilantes?|\bseguranc\w+ privad\w+/, .02, 'dos vigilantes'], [/\bagentes? de transito/, .001, 'dos agentes de trânsito']
+];
+const v37Escala = (pub) => (pub ? Math.min(1, pub.f / .2) : 1);
+function v37Pub(s) { for (const p of V37_PUB) if (p[0].test(s)) return { f: p[1], n: p[2] }; return null; }
+function v37Anos(s, rx) { const m = rx.exec(s); if (!m) return null; const t = s.slice(m.index, m.index + m[0].length + 80), a = /\b(\d{2})(?: anos)?\b/.exec(t.replace(/\b\d+%/g, '')); return a ? +a[1] : null; }
+const V37_PRX = { // proto do catálogo por tipo de regra (reações de grupos, pasta, ideologia)
+  cripto: 'cripto', req: 'aposentadoria_idade', ben: 'aposentadoria', capit: 'previdencia_reforma', patronal: 'contrib_patronal', mei: 'simples_mei', serv: 'servidores'
+};
+/* lista de regras: devolve a primeira que casa. B em R$ bi/ano em regime pleno; sav: o resultado é economia; kind T: receita (sg -1 = renúncia) */
+function v37Prev(A) {
+  const s = A.s, M = (rx) => rx.exec(s);
+  const pub = v37Pub(s), pct = (A.Q.pct.find(p => !p.pib) || {}).v;
+  const dePara = /\b(\d+(?:\.\d+)?)%[^.;%]{0,25}\bpara\b[^.;%]{0,8}\b(\d+(?:\.\d+)?)%/.exec(s);
+  let sp = null;
+  // capitalização e regimes mistos: as contribuições saem do regime geral e os benefícios atuais continuam
+  if (/\b(?:previdenc\w+|aposent\w+|inss|pensao|pensoes|segurad\w+|trabalhador\w*|repartic\w+|contribuic\w+|beneficio\w*|poupar|poupanca)\b/.test(s) && M(/\bcapitaliza\w+|\bcontas? individua\w+|\bpoupanca individual|\bregime de capitalizacao|\b(?:sistema|regime) misto\b|\brepartic\w+\b[^.;]{0,40}\b(?:contas?|poupanca|capitaliza\w+)|\bcontas? de capitalizacao|\bprevidencia individual obrigatoria/) && !/\bsem capitaliza|\bcontra a capitaliza|\bacabar com a capitaliza/.test(s)) {
+    const todos = /\b(?:todos|todas)\b[^.;]{0,25}\b(?:segurados|trabalhadores|brasileiros)\b|\bobrigatoria para todos/.test(s), misto = /\bmisto\b|\bparte d[eao]/.test(s), opc = /\bopcional\b|\bfacultativ/.test(s);
+    const B = opc ? 30 : todos ? 250 : misto ? 100 : 60;
+    const esc = todos ? ' para todos os segurados' : misto ? ' em sistema misto (repartição e poupança individual)' : opc ? ' opcional' : /\b(?:novos?|novos entrantes|quem entrar|a partir de \d{4})\b/.test(s) ? ' para os novos trabalhadores' : '';
+    sp = { id: 'capit', proto: 'capit', kind: 'G', sav: false, B: B, topic: 'a capitalização individual da Previdência (contas individuais no lugar da repartição)' + esc + ', com custo de transição', ex: 'PEC', d: ['a40_201'], ef: 'A repartição está na base do regime geral (art. 201): trocar parte dele por contas individuais exige PEC. Quem entra deixa de pagar o INSS enquanto o regime segue pagando os benefícios atuais, e a conta de transição pesa no primário por décadas.', calc: 'Contribuições que saem do regime geral e benefícios atuais mantidos: custo de transição de cerca de R$ ' + B + ' bi/ano nos primeiros anos, crescente' };
+  }
+  // idade mínima
+  else if (M(/\bidade minima\b|\bidade (?:de|da|para) (?:se )?aposent\w+|\baposent\w+ (?:mais tarde|aos \d+)|\baposentadoria (?:por idade )?aos \d+/) && !/\baposentadoria por tempo\b|\bcompulsor|\bpara ser (?:ministro|president|senador|deputad)|\bidade minima para (?:ser|ocupar|exercer|votar|trabalhar)/.test(s)) {
+    const N = v37Anos(s, /\bidade (?:minima )?(?:de |da |para )?(?:se )?(?:aposent\w+|aposentadoria)|\baposent\w+ aos|\bidade minima/);
+    const sem = /\b(?:sem|acabar com|extinguir|eliminar|fim d[aeo])\b[^.;]{0,15}\bidade minima/.test(s);
+    const homens = /\bhomens?\b/.test(s), mulheres = /\bmulheres?\b|\bfemin/.test(s), ambos = (homens && mulheres) || (!homens && !mulheres);
+    let harsher, B;
+    if (sem) { harsher = false; B = 30; }
+    else if (N) {
+      const dm = N - 65, df = N - 62;
+      const eff = ambos ? .55 * Math.abs(dm) + .45 * Math.abs(df) : mulheres ? .45 * Math.abs(df) : .55 * Math.abs(dm);
+      harsher = ambos ? (dm + df) > 0 : mulheres ? df > 0 : dm > 0;
+      const tr = /\btransicao de (\d+) anos?\b|\bem (\d+) anos\b[^.;]{0,20}\btransicao\b/.exec(s), T = tr ? +(tr[1] || tr[2]) : 10; // quem já está perto de cumprir os requisitos fica de fora: o efeito do regime pleno chega em T anos
+      B = 8 * Math.max(eff, .5) * (harsher ? Math.min(1, 5 / T) : 1);
+    } else { const d = v37Dir(s, /\bidade minima|\bidade (?:de|da|para) (?:se )?aposent\w+|\baposent\w+ (?:mais tarde)/); harsher = d >= 0 && !/\bbaix\w+|\breduz\w+|\bantecip\w+/.test(s); B = harsher ? 8 : 12; }
+    if (pub && !(pub.n === 'dos autônomos' || pub.n === 'por incapacidade')) B = Math.max(.3, B * v37Escala(pub));
+    const lcCatI = /\bpolici\w+|\bpenitenciar\w+|\bsocioeducativ\w+|\bdeficien\w+/.test(s);
+    sp = { id: 'idade', proto: 'req', kind: 'G', sav: harsher, B: B, topic: (harsher ? 'o aumento da idade mínima de aposentadoria' : sem ? 'o fim da idade mínima de aposentadoria' : 'a redução da idade mínima de aposentadoria') + (N ? ' para ' + N + ' anos' : '') + (pub ? ' ' + pub.n : ''), ex: lcCatI ? 'LC' : 'PEC', d: lcCatI ? ['a40_201', 'a69'] : ['a201_7', 'a40_201'], calc: 'Idade mínima ' + (harsher ? 'maior' : 'menor') + (N ? ' (' + N + ' anos)' : '') + ': cerca de R$ 8 bi/ano por ano de diferença no regime pleno' + (harsher ? ', aplicada só a quem ainda não cumpriu os requisitos (' + (/\btransicao/.test(s) ? 'com a transição citada' : 'transição de cerca de 10 anos') + ')' : '') + '; o efeito cresce ao longo de anos' };
+  }
+  // tempo de contribuição
+  else if (M(/\btempo (?:minimo )?de contribuicao\b|\banos de contribuicao\b|\bcarencia\b|\baposentadoria por tempo\b/) && !/\bcontar\b|\bem dobro\b/.test(s)) {
+    const reabre = /\b(?:reabr\w+|restabelec\w+|retom\w+|volt\w+ a|criar|reinstitu\w+)\b[^.;]{0,40}\baposentadoria por tempo\b|\bsem idade minima\b/.test(s);
+    const N = v37Anos(s, /\btempo (?:minimo )?de contribuicao|\banos de contribuicao|\bcarencia/);
+    let harsher, B, nom;
+    if (reabre) { harsher = false; B = 30; nom = 'a reabertura da aposentadoria por tempo de contribuição, sem idade mínima'; }
+    else { const d = v37Dir(s, /\btempo (?:minimo )?de contribuicao|\banos de contribuicao|\bcarencia/); harsher = N ? N > 20 : d >= 0; B = N ? .8 * Math.abs(N - 20) : (harsher ? 4 : 8); B = Math.max(B, 1); nom = (harsher ? 'o aumento' : 'a redução') + ' do tempo mínimo de contribuição para a aposentadoria' + (N ? ' para ' + N + ' anos' : ''); }
+    if (pub && !reabre) B = Math.max(.3, B * v37Escala(pub));
+    const lcCat = /\bpolici\w+|\bpenitenciar\w+|\bsocioeducativ\w+|\bdeficien\w+/.test(s);
+    sp = { id: 'tempo', proto: 'req', kind: 'G', sav: harsher, B: B, topic: nom + (pub && !reabre ? ' ' + pub.n : ''), ex: lcCat ? 'LC' : 'PEC', d: lcCat ? ['a40_201', 'a69'] : ['a201_7', 'a40_201'], calc: 'Tempo de contribuição ' + (harsher ? 'maior' : 'menor') + ': ordem de grandeza de R$ ' + fmtNum(B, 1) + ' bi/ano em regime pleno (efeito gradual)' };
+  }
+  // pensão por morte
+  else if (M(/\bpensao por morte\b|\bpensoes? por morte\b|\bpensao\b[^.;]{0,30}\b(?:filhos?|conjuge|viuv\w+)\b/)) {
+    const acum = /\b(?:somar|acumul\w+|cumul\w+)\b/.test(s), filhos = /\bfilhos?\b[^.;]{0,40}\b\d{2} anos\b|\b\d{2} anos\b[^.;]{0,40}\bfilhos?\b/.test(s) || /\bidade\b[^.;]{0,30}\bfilhos\b/.test(s);
+    if (acum) { const d = v37Dir(s, /\b(?:somar|acumul\w+|cumul\w+)\b/); const folga = d >= 0 && !/\b(?:proib\w+|vedar|limitar|restring\w+|acabar com)\b/.test(s); sp = { id: 'pensao_acum', proto: folga ? 'ben' : 'req', kind: 'G', sav: !folga, B: folga ? 12 : 6, topic: (folga ? 'a volta da acumulação integral de pensão por morte e aposentadoria' : 'a vedação à acumulação de pensão por morte e aposentadoria'), ex: 'PEC', d: ['a40_201'], calc: 'Acumulação de pensão e aposentadoria ' + (folga ? 'sem os cortes da EC 103/2019: custo crescente de cerca de R$ 12 bi/ano' : 'mais restrita: economia gradual de cerca de R$ 6 bi/ano') }; }
+    else if (filhos) { const N = v37Anos(s, /\bfilhos?\b/) || 18; const menos = N < 21; sp = { id: 'pensao_filhos', proto: menos ? 'req' : 'ben', kind: 'G', sav: menos, B: Math.max(.3, 0.5 * Math.abs(21 - N)), topic: (menos ? 'a redução' : 'a ampliação') + ' do limite de idade da pensão por morte para os filhos (' + N + ' anos)', ex: null, d: ['a40_201'], calc: 'Pensão de filhos entre ' + Math.min(N, 21) + ' e ' + Math.max(N, 21) + ' anos: economia ou custo pequeno, crescente conforme os dependentes atuais saem do benefício' }; }
+    else { const d = v37Dir(s, /\bpensao\w*/); const menos = d <= 0 && !/\baument\w+|\belev\w+|\bampli\w+|\bvolt\w+|\b100%/.test(s); sp = { id: 'pensao', proto: menos ? 'req' : 'ben', kind: 'G', sav: menos, B: 6, topic: (menos ? 'a redução' : 'o aumento') + ' da pensão por morte' + (pct ? ' (' + fmtNum(pct, pct % 1 ? 1 : 0) + '%)' : ''), ex: 'PEC', d: ['a40_201'], calc: 'Pensão por morte ' + (menos ? 'menor' : 'maior') + ': cerca de R$ 6 bi/ano em regime pleno, só para os novos pensionistas' }; }
+  }
+  // aposentadoria por incapacidade/invalidez
+  else if (M(/\baposentadoria por (?:invalidez|incapacidade)\b|\bincapacidade permanente\b|\binvalidez\b/) && !/\bpericia\b|\brevis\w+/.test(s)) {
+    const serv = /\bservidor\w*|\bregime proprio/.test(s), d = v37Dir(s, /\binvalidez|\bincapacidade/);
+    const mais = d >= 0 && !/\breduz\w+|\bcort\w+|\bbaix\w+/.test(s);
+    sp = { id: 'invalidez', proto: mais ? 'ben' : 'req', kind: 'G', sav: !mais, B: serv ? 3 : 12, topic: (mais ? 'o aumento' : 'a redução') + ' da aposentadoria por invalidez (incapacidade permanente)' + (serv ? ' dos servidores' : '') + (/\b100%/.test(s) ? ' para 100% da remuneração' : ''), ex: 'PEC', d: ['a40_201'], calc: 'Aposentadoria por incapacidade permanente ' + (mais ? 'mais generosa' : 'mais restrita') + ': ' + (serv ? 'público restrito (servidores aposentados por invalidez)' : '60% da média mais 2 pontos por ano acima de 20 hoje') + ', ordem de R$ ' + (serv ? 3 : 12) + ' bi/ano em regime pleno' };
+  }
+  // perícia, pente-fino e revisão de benefícios
+  else if (M(/\b(?:pericia|pericias|revisao|revisar|reavalia\w+|pente.?fino|recadastr\w+|biometri\w+)\b/) && M(/\b(?:auxilio|beneficio|beneficios|inss|incapacidade|bpc|invalidez|deficien\w+|aposentadoria)\b/)) {
+    const bpc = /\bbpc\b|\bloas\b|\bprestacao continuada/.test(s);
+    sp = { id: 'pericia', proto: 'req', kind: 'G', sav: true, B: /\bbiometri/.test(s) ? 1.5 : bpc ? 4 : 3, topic: 'a ' + (/\bbiometri/.test(s) ? 'conferência biométrica' : /\bpericia/.test(s) ? 'perícia' : 'revisão') + (bpc ? ' dos benefícios do BPC' : ' dos benefícios por incapacidade') + ' para cortar pagamentos indevidos', ex: null, d: ['a195_5'], calc: 'Revisão de benefícios: cortes de pagamentos indevidos, economia gradual de cerca de R$ ' + (bpc ? 4 : 3) + ' bi/ano' };
+  }
+  // aposentadoria especial
+  else if (M(/\baposentadoria (?:especial|diferenciada)\b/) && !/\bcontar\b|\bem dobro\b/.test(s)) {
+    const d = v37Dir(s, /\baposentadoria (?:especial|diferenciada)/);
+    if (d < 0) sp = { id: 'especial_fim', proto: 'req', kind: 'G', sav: true, B: 12, topic: 'o fim da aposentadoria especial (exceto as exceções do texto)', ex: 'PEC', d: ['a40_201'], calc: 'Fim da aposentadoria especial para quem trabalha sob agentes nocivos: economia gradual de cerca de R$ 12 bi/ano' };
+    else { const permitido = /\bpolici\w+|\bpenitenciar\w+|\bsocioeducativ\w+|\bdeficien\w+|\bagentes? (?:quimicos|fisicos|biologicos|nocivos)/.test(s); sp = { id: 'especial', proto: 'ben', kind: 'G', sav: false, B: pub && pub.f < .05 ? Math.max(.3, pub.f * 60) : 1.5, topic: 'a aposentadoria especial' + (pub ? ' ' + pub.n : ''), ex: permitido ? 'LC' : 'PEC', d: ['a40_201', 'a69'], calc: 'Aposentadoria especial para uma categoria: custo pequeno, crescente' }; }
+  }
+  // contagem em dobro e conversão de tempo especial em comum
+  else if (M(/\bem dobro\b|\bcontagem (?:em )?dobro\b|\bconversao de tempo (?:especial|de servico)\b|\btempo especial\b/) && M(/\baposent\w+|\btempo de (?:servico|contribuicao|trabalho)\b/)) {
+    sp = { id: 'tempo_dobro', proto: 'ben', kind: 'G', sav: false, B: pub ? Math.max(.3, 6 * v37Escala(pub)) : 1.5, topic: 'a contagem em dobro do tempo de trabalho para a aposentadoria' + (pub ? ' ' + pub.n : ''), ex: 'PEC', d: ['a40_201'], calc: 'Contagem de tempo especial acima do tempo real: aposentadorias mais cedo para uma categoria, custo pequeno e crescente (a EC 103/2019, art. 25, §2º, vedou a conversão)' };
+  }
+  // fórmula de cálculo do benefício: média dos melhores salários
+  else if (M(/\b(?:melhores|maiores) (?:salarios|contribuicoes|remuneracoes)\b|\b\d+% (?:dos )?(?:melhores|maiores)\b|\bmedia d[eao]s? (?:salarios|contribuicoes)\b|\bcalculo d[ao] (?:aposentadoria|beneficio)\b/) && M(/\baposent\w+|\bbeneficio|\binss\b|\bprevidenc/)) {
+    const melhores = /\b(?:melhores|maiores)\b/.test(s) || /\b(?:menos|menor)\b/.test(s);
+    sp = { id: 'calculo', proto: melhores ? 'ben' : 'req', kind: 'G', sav: !melhores, B: melhores ? 10 : 8, topic: (melhores ? 'a média dos melhores salários no cálculo da aposentadoria' : 'a média de todos os salários no cálculo da aposentadoria'), ex: null, d: ['a40_201'], calc: 'Fórmula de cálculo ' + (melhores ? 'mais generosa (descarta os piores salários): custo crescente de cerca de R$ 10 bi/ano' : 'mais dura: economia gradual de cerca de R$ 8 bi/ano') };
+  }
+  // BPC: valor do benefício (um salário mínimo na Constituição) e fim da aposentadoria rural
+  else if (M(/\bbpc\b|\bloas\b|\bbeneficio de prestacao continuada\b/) && /\b(?:reduz\w+|baix\w+|cortar|cortando|diminu\w+)\b/.test(s) && /\b(?:valor|salario minimo|meio salario|metade|\d+%)/.test(s) && !/\bpericia|\brevis\w+|\brenda\b|\bcriterios?\b|\bper capita\b|\belegib\w+/.test(s)) {
+    const frac = /\bmeio salario|\bmetade\b/.test(s) ? .5 : pct ? Math.min(.9, pct / 100) : .3;
+    sp = { id: 'bpc_valor', proto: 'req', kind: 'G', sav: true, B: 112 * frac * .9, topic: 'a redução do valor do BPC' + (frac === .5 ? ' para meio salário mínimo' : ''), ex: 'PEC', nivel: 'controverso', d: ['a40_201', 'a7_iv'], ef: 'O BPC de um salário mínimo para idosos e pessoas com deficiência sem renda está no art. 203, V: pagar menos exige PEC e esbarra no mínimo existencial.', calc: 'BPC com valor menor: base de R$ 112 bi/ano × ' + fmtNum(frac * 100, 0) + '% de corte × 0,9 (fraude e judicialização) = ' + fmtBi(112 * frac * .9) + '/ano' };
+  }
+  else if (M(/\b(?:acabar com|extinguir|fim d\w+|eliminar|abolir|encerrar)\b[^.;]{0,15}\b(?:aposentadoria|previdencia) rura(?:l|is)\b/)) {
+    sp = { id: 'rural_fim', proto: 'req', kind: 'G', sav: true, B: 80, topic: 'o fim da aposentadoria rural', ex: 'PEC', nivel: 'controverso', d: ['a40_201', 'a6_7'], ef: 'A aposentadoria dos trabalhadores rurais (60 anos homem e 55 mulher) está no art. 201, §7º, II: extingui-la exige PEC e agride direito social e de subsistência de milhões de segurados especiais.', calc: 'Fim da aposentadoria rural: cerca de R$ 190 bi/ano em benefícios, economia gradual de até R$ 80 bi/ano' };
+  }
+  // contribuição previdenciária dos servidores
+  else if (M(/\bcontribuic\w+\b[^.;]{0,40}\bservidor\w*|\bservidor\w*[^.;]{0,40}\b(?:contribuicao|aliquota)\b/) && /\b(?:previdenc\w+|regime proprio|aposentad\w+|14%|\d+% para \d+%)/.test(s) && !/\bmilitar|\binativ|\bextraordinaria/.test(s)) {
+    const dp = dePara ? (+dePara[2]) - (+dePara[1]) : (v37Dir(s, /\bcontribuic\w+|\baliquota/) < 0 ? -1 : 2);
+    sp = { id: 'contrib_servidor', proto: 'patronal', kind: 'T', sav: false, sg: dp >= 0 ? 1 : -1, B: Math.max(.3, Math.abs(dp) * 2), topic: (dp >= 0 ? 'o aumento' : 'a redução') + ' da contribuição previdenciária dos servidores federais' + (dePara ? ' de ' + dePara[1] + '% para ' + dePara[2] + '%' : ''), ex: null, d: ['a195_6'], calc: 'Cerca de R$ 2 bi/ano por ponto percentual sobre a remuneração dos servidores civis da União' };
+  }
+  // aposentadorias de alto valor: teto do INSS para juízes, parlamentares e outras carreiras
+  else if (M(/\baposentadoria\w* d[eao]s? (?:juizes|magistrados|promotores|procuradores|ministros|parlamentares|politicos|deputados|senadores)\b[^.;]{0,40}\bteto\b|\b(?:juizes|magistrados|promotores)\b[^.;]{0,30}\baposentadoria\w*[^.;]{0,30}\bteto\b/)) {
+    sp = { id: 'apos_teto', proto: 'req', kind: 'G', sav: true, B: 1.5, topic: 'o teto do INSS para a aposentadoria de juízes e outras carreiras de alta remuneração', ex: 'PEC', nivel: 'controverso', d: ['a40_201', 'a5_xxxvi'], calc: 'Aposentadorias acima do teto do INSS: economia pequena e lenta, cerca de R$ 1,5 bi/ano', ef: 'O teto do INSS para os proventos dos servidores só vale para quem ingressou depois da previdência complementar (art. 40, §§14 a 16): estendê-lo a quem já é magistrado fere direito adquirido e exige PEC.' };
+  }
+  // aposentadoria antecipada ou nova para uma categoria
+  else if (M(/\b(?:antecip\w+|cri(?:ar|e)|institu\w+|conced\w+|dar|garant\w+)\b[^.;]{0,25}\baposentadoria\b[^.;]{0,15}\b(?:d[eao]s?|para)\b[^.;]{0,6}\b(?:[a-z]+(?: de [a-z]+)?)\b/) && !/\bespecial\b|\bpoliciais\b|\bpensao|\bpor (?:idade|tempo|invalidez)\b|\baposentadoria rura(?:l|is)|\bmilitares/.test(s)) {
+    const incl = /\bdonas? de casa\b|\bbaixa renda\b|\binformais?\b|\bsem renda\b/.test(s);
+    sp = { id: 'apos_categoria', proto: 'ben', kind: 'G', sav: false, B: incl ? 4 : 2, topic: (/\bantecip/.test(s) ? 'a antecipação da aposentadoria' : 'a nova aposentadoria') + ' para uma categoria' + (incl ? ' de baixa renda' : ''), ex: incl ? null : 'PEC', d: ['a40_201'], ef: 'Requisitos diferenciados para uma categoria profissional são vedados pela Constituição, salvo os casos do art. 201, §1º, e do art. 40, §§4º-A a 4º-C: incluir uma categoria nova exige PEC.', calc: 'Aposentadoria para um grupo específico: público pequeno, custo crescente de cerca de R$ ' + (incl ? 4 : 2) + ' bi/ano' };
+    if (!incl) sp.nivel = undefined;
+  }
+  // licença-maternidade e paternidade: o prazo de 120 dias está na Constituição, o de 5 dias da paternidade na lei
+  else if (M(/\blicenca.(maternidade|paternidade)\b/) && /\b(?:ampli\w+|estend\w+|aument\w+|elev\w+|esticar|dobr\w+|\d{2,3} dias|\d+ (?:meses|semanas))\b/.test(s) && !/\bempresa cidada\b|\bincentivo\b|\bdeduc\w+/.test(s)) {
+    const mat = /\bmaternidade\b/.test(s), N = v37Anos(s, /\blicenca.(?:maternidade|paternidade)/) ; const dias = /\b(\d{2,3}) dias\b/.exec(s), alvo = dias ? +dias[1] : /\b(\d) meses\b/.test(s) ? 30 * (+/\b(\d) meses\b/.exec(s)[1]) : (mat ? 180 : 20);
+    const extra = Math.max(5, alvo - (mat ? 120 : 5));
+    const B = mat ? 7 * extra / 60 : 2 * extra / 15;
+    sp = { id: 'licenca', proto: 'ben', kind: 'G', sav: false, B: Math.min(B, 40), topic: 'a ampliação da licença-' + (mat ? 'maternidade' : 'paternidade') + ' para ' + alvo + ' dias', ex: mat ? 'PEC' : null, d: ['a7_xviii'], ef: 'A licença à gestante de 120 dias está no art. 7º, XVIII: ampliá-la para todas as empregadas exige PEC (a Lei 11.770/2008 só prevê a prorrogação opcional, pela Empresa Cidadã); a licença-paternidade, de 5 dias no ADCT (art. 10, §1º), pode ser mudada por lei.', calc: 'Salário-maternidade (ou paternidade) pago pelo INSS por mais ' + extra + ' dias: cerca de R$ ' + fmtNum(Math.min(B, 40), 1) + ' bi/ano' };
+  }
+  // pensões de militares (filhas, viúvas): público pequeno
+  else if (M(/\bpens(?:ao|oes)\b[^.;]{0,40}\bmilitar\w*|\bmilitar\w*[^.;]{0,30}\bpens(?:ao|oes)\b/) && !/\bcontribuic\w+|\baliquota/.test(s)) {
+    const corta = v37Dir(s, /\bpens(?:ao|oes)/) <= 0 || /\b(?:extingu\w+|acabar|cort\w+|fim)\b/.test(s);
+    sp = { id: 'pensao_militar', proto: corta ? 'req' : 'ben', kind: 'G', sav: corta, B: 3, topic: (corta ? 'o fim de' : 'a ampliação de') + ' pensões de militares' + (/\bfilhas?\b/.test(s) ? ' (filhas solteiras)' : ''), ex: null, d: ['a40_201'], calc: 'Pensões militares vitalícias de filhas e dependentes: público pequeno, cerca de R$ 3 bi/ano' };
+  }
+  // pedágio de transição
+  else if (M(/\bpedagio\b/) && /\b(?:aposent\w+|tempo (?:que )?falta|tempo de contribuicao|previdenc\w+|transicao)\b/.test(s) && !/\bconcess\w+|\brodovia/.test(s)) {
+    const menos = /\b(?:reduz\w+|baix\w+|acabar|extingu\w+|eliminar|encurt\w+)\b/.test(s);
+    sp = { id: 'pedagio', proto: 'req', kind: 'G', sav: !menos, B: Math.max(.5, 4 * ((pct || 50) / 50)), topic: (menos ? 'a redução do' : 'o') + ' pedágio de transição' + (pct ? ' de ' + fmtNum(pct, pct % 1 ? 1 : 0) + '%' : '') + ' sobre o tempo que falta para a aposentadoria', ex: 'PEC', d: ['a40_201'], calc: 'Pedágio sobre o tempo que falta para quem está perto de se aposentar: economia gradual, cerca de R$ 4 bi/ano a cada 50% de pedágio' };
+  }
+  // integralidade e paridade
+  else if (M(/\bintegralidade\b|\bparidade\b/)) {
+    sp = { id: 'intparid', proto: 'req', kind: 'G', sav: true, B: 5, topic: 'o fim da integralidade e da paridade dos servidores que ingressaram antes de 2004', ex: 'PEC', nivel: 'controverso', d: ['a40_201', 'a5_xxxvi'], calc: 'Fim da integralidade e da paridade: economia lenta, de cerca de R$ 5 bi/ano em regime pleno' };
+  }
+  // abono de permanência
+  else if (M(/\babono de permanencia\b/)) {
+    const d = v37Dir(s, /\babono de permanencia/); const corta = d <= 0;
+    sp = { id: 'abono_perm', proto: corta ? 'req' : 'ben', kind: 'G', sav: corta, B: 2, topic: (corta ? 'o corte' : 'a ampliação') + ' do abono de permanência dos servidores que já poderiam se aposentar', ex: 'PEC', d: ['a40_201'], calc: 'Abono de permanência: cerca de R$ 2 bi/ano' };
+  }
+  // vínculo dos benefícios ao salário mínimo e reajuste abaixo da inflação
+  else if (M(/\bdesvincul\w+|\bvincul\w+[^.;]{0,40}\bsalario minimo\b|\bbeneficios?\b[^.;]{0,40}\b(?:atrel\w+|indexad\w+)\b[^.;]{0,20}\bsalario minimo\b/) && M(/\bbeneficios?\b|\binss\b|\bprevidenci\w+|\baposentad\w+/)) {
+    const desv = /\bdesvincul\w+|\b(?:cortar|acabar com|extinguir|tirar|romper|quebrar|fim d[eo])\b[^.;]{0,30}\bvincul\w+/.test(s);
+    sp = { id: 'vinculo_sm', proto: desv ? 'req' : 'ben', kind: 'G', sav: desv, B: 35, topic: (desv ? 'a desvinculação dos benefícios do INSS do salário mínimo' : 'o vínculo dos benefícios do INSS ao salário mínimo'), ex: 'PEC', nivel: 'controverso', d: ['a40_201', 'a7_iv'], calc: 'Benefícios acima do mínimo deixam de acompanhar o reajuste do salário mínimo: economia crescente a cada ano, cerca de R$ 35 bi/ano em regime pleno' };
+  }
+  else if (M(/\breajust\w+\b[^.;]{0,50}\b(?:beneficios|aposentadorias|pensoes)\b[^.;]{0,60}\b(?:metade|abaixo|menos|so (?:por|pela)|sem (?:reajuste|ganho)|inflacao)\b|\b(?:beneficios|aposentadorias)\b[^.;]{0,50}\b(?:acima do (?:minimo|salario minimo))\b[^.;]{0,50}\b(?:metade da inflacao|abaixo da inflacao|sem reajuste)\b/) && /\bmetade|\babaixo|\bsem reajuste|\bso (?:por|pela)\b|\bmenos que\b/.test(s)) {
+    sp = { id: 'reajuste_ben', proto: 'req', kind: 'G', sav: true, B: 20, topic: 'a redução do reajuste dos benefícios do INSS acima do mínimo (abaixo da inflação)', ex: 'PEC', nivel: 'controverso', d: ['a40_201'], calc: 'Reajuste abaixo da inflação nos benefícios acima do mínimo: economia que se acumula a cada ano, cerca de R$ 20 bi/ano em regime pleno' };
+  }
+  // fim dos regimes próprios / migração dos servidores para o INSS
+  else if (M(/\b(?:acabar com|extinguir|fim d\w+|encerrar)\b[^.;]{0,20}\bregimes? proprios?\b|\bservidor\w*\b[^.;]{0,30}\bnovos?\b[^.;]{0,40}\binss\b|\b(?:levar|migrar|passar|transferir)\b[^.;]{0,30}\bservidor\w*[^.;]{0,40}\binss\b/)) {
+    sp = { id: 'rpps_fim', proto: 'req', keepVal: 1, kind: 'G', sav: false, B: 5, topic: 'o fim dos regimes próprios de previdência, com os servidores novos no INSS', ex: 'PEC', d: ['a40_201'], calc: 'Servidores novos passam ao INSS (teto do regime geral): a União perde contribuições do regime próprio e segue pagando os inativos, custo de transição de cerca de R$ 5 bi/ano, que diminui com os anos' };
+  }
+  // desaposentação
+  else if (M(/\bdesaposenta\w+/)) {
+    sp = { id: 'desapos', proto: 'ben', kind: 'G', sav: false, B: 5, topic: 'a desaposentação (novo benefício para quem seguiu trabalhando)', ex: null, d: ['a195_5'], calc: 'Desaposentação: recálculo do benefício de quem voltou a contribuir, cerca de R$ 5 bi/ano; o STF rejeitou o direito sem lei (RE 661.256)' };
+  }
+  // piso de benefício por tempo de contribuição
+  else if (M(/\bpiso\b[^.;]{0,20}\br\$ ?\d/) && M(/\bcontribuiu|\bcontribuicao|\baposentad/)) {
+    const m = /r\$ ?(\d+(?:\.\d+)?)/.exec(s), v = m ? +m[1] : 2500;
+    sp = { id: 'piso_ben', proto: 'ben', kind: 'G', sav: false, B: Math.max(1, .0155 * Math.max(0, v - 1621)), topic: 'o piso de R$ ' + fmtNum(v, 0) + ' para quem contribuiu por muito tempo', ex: null, d: ['a195_5'], calc: 'Piso acima do mínimo para aposentados de longa contribuição: cerca de 1,5 milhão de benefícios abaixo do piso' };
+  }
+  // teto do INSS
+  else if (M(/\bteto (?:do inss|previdenciario|do regime geral)\b/) && !/\bprevidencia (?:complementar|privada)\b|\bfunpresp\b/.test(s)) {
+    const m = /r\$ ?(\d+(?:\.\d+)?)/.exec(s); const alto = /\b(?:elev\w+|aument\w+|subir|ampli\w+)\b/.test(s);
+    sp = { id: 'teto_inss', proto: 'patronal', kind: 'T', sav: false, sg: alto ? 1 : -1, B: 8, topic: (alto ? 'a elevação' : 'a redução') + ' do teto do INSS' + (m ? ' para R$ ' + fmtNum(+m[1] * (/\bmil\b/.test(s.slice(m.index, m.index + 20)) ? 1000 : 1), 0) : ''), ex: null, d: ['a195_5'], calc: 'Teto maior: mais contribuição agora (cerca de R$ 8 bi/ano) e mais benefício no futuro' };
+  }
+  // alíquota do segurado
+  else if (M(/\baliquota\w*\b[^.;]{0,40}\b(?:inss|segurado\w*|contribuicao previdenciaria)\b|\b(?:inss|contribuicao previdenciaria)\b[^.;]{0,30}\baliquota\w*\b/)) {
+    const baixa = /\bat[ée]? (?:1|um|2|dois) salarios?\b|\bate (?:1|um|2|dois) salarios?\b/.exec(s);
+    const dp = dePara ? (+dePara[2]) - (+dePara[1]) : (/\bpara (\d+(?:\.\d+)?)%/.test(s) ? (+/\bpara (\d+(?:\.\d+)?)%/.exec(s)[1]) - (baixa ? 9 : 11) : (pct || 1) * (v37Dir(s, /\baliquota/) < 0 ? -1 : 1));
+    const faixa = /\bfaixa mais alta|\bfaixa|\bacima d\w+ (?:teto|r\$)/.test(s);
+    sp = { id: 'aliq_inss', proto: 'patronal', kind: 'T', sav: false, sg: dp >= 0 ? 1 : -1, B: Math.max(.3, Math.abs(dp) * (faixa ? 3 : baixa ? 5 : 15)), topic: (dp >= 0 ? 'o aumento' : 'a redução') + ' da alíquota de contribuição ao INSS' + (dePara ? ' de ' + dePara[1] + '% para ' + dePara[2] + '%' : '') + (faixa ? ' na faixa mais alta' : ''), ex: null, d: ['a195_6'], calc: 'Cerca de R$ ' + (faixa ? 3 : 15) + ' bi/ano por ponto percentual ' + (faixa ? 'na faixa mais alta' : 'sobre toda a base') };
+  }
+  // contribuição de aposentados do INSS
+  else if (M(/\b(?:cobrar|criar|instituir|taxar|impor)\b[^.;]{0,40}\bcontribuic\w+\b[^.;]{0,40}\baposentad\w+ (?:do |dos |pelo )?(?:inss|regime geral|rgps)|\baposentad\w+ (?:do |dos )?inss\b[^.;]{0,40}\bcontribuic\w+/)) {
+    sp = { id: 'inss_inativos', proto: 'patronal', kind: 'T', sav: false, sg: 1, B: 30, topic: 'a contribuição dos aposentados do INSS sobre o que passar do salário mínimo', ex: 'PEC', nivel: 'controverso', d: ['a195_ii'], calc: 'Contribuição de 11% sobre o que passar do mínimo nos benefícios do INSS: cerca de R$ 30 bi/ano' };
+  }
+  // contribuição patronal, desoneração e encargos
+  else if (M(/\bcontribuicao patronal\b|\bcota patronal\b|\binss patronal\b|\bencargos? (?:sobre|da) (?:a )?folha\b|\bdesoner\w+ (?:da )?folha\b|\baliviar (?:a )?folha\b|\bfolha de pagamento\b|\bcontribuicao previdenciaria (?:das|de) empresas\b/) && !/\bmilitar/.test(s)) {
+    const setores = [[/\btecnologia|\bsoftware|\binformatica|\bti\b|\btic\b/, 15, 'de tecnologia'], [/\bconstrucao civil|\bconstrucao\b/, 20, 'da construção'], [/\btransporte\w*/, 18, 'de transporte'], [/\bvarejo|\bcomercio\b/, 40, 'do comércio'], [/\bindustria\b/, 60, 'da indústria'], [/\bservicos\b/, 50, 'de serviços'], [/\bagro\w*|\brural/, 8, 'do agro'], [/\bmicro\w*|\bpequen\w+|\bsimples\b|\bprimeiro empregado/, 25, 'das micro e pequenas empresas'], [/\bjovens?\b|\bprimeiro emprego\b|\bmaiores de \d+|\b50 anos\b|\bidosos\b|\bmulheres\b|\bpcd\b|\bdeficien\w+/, 10, 'na contratação de grupos prioritários'], [/\bsetores que mais empregam|\b17 setores|\bintensivos? em mao de obra/, 60, 'dos setores que mais empregam'], [/\bhospitais|\bsantas casas|\bfilantrop\w+/, 15, 'de hospitais filantrópicos']];
+    const st = setores.find(x => x[0].test(s)); const qualif = /\b(?:d[ao]s?|n[ao]s?) (?:empresas? d[eo]|cooperativas?|setor|hospitais|escolas|igrejas|entidades|produtores|microempres\w+|pequenas?)\b/.test(s); const base = st ? st[1] : qualif ? 20 : 480;
+    const d = v37Dir(s, /\bcontribuicao patronal|\bcota patronal|\binss patronal|\bencargos|\bdesoner\w+|\baliviar|\bfolha/);
+    const corte = d <= 0 || /\bmenor\b|\bdesoner\w+|\baliv\w+|\btroc\w+/.test(s);
+    let frac = pct ? Math.min(100, pct) / 100 : /\bzerar|\bisent\w+|\bdispens\w+|\beliminar|\bacabar com/.test(s) ? 1 : /\bmenor\b/.test(s) ? .4 : /\btroc\w+[^.;]{0,50}\b(?:receita|faturamento)\b/.test(s) || /\bdesoner\w+[^.;]{0,30}\bsetores\b/.test(s) ? .3 : .2;
+    let B = base * frac; if (/\bprimeiro empregado/.test(s)) B = 3; if (!st && !pct) B = Math.min(B, 25);
+    B = Math.max(.3, Math.min(B, 120));
+    sp = { id: 'patronal', proto: 'patronal', kind: 'T', sav: false, sg: corte ? -1 : 1, B: B, topic: (corte ? (/\bdesoner\w+/.test(s) ? 'a desoneração da folha de pagamento' : 'a redução da contribuição patronal sobre a folha') : 'o aumento da contribuição patronal sobre a folha') + (st ? ' ' + st[2] : ''), ex: null, d: ['a195_6'], calc: (corte ? 'Renúncia' : 'Arrecadação') + ' de contribuição patronal' + (st ? ' ' + st[2] : '') + ': base estimada de R$ ' + base + ' bi/ano × ' + fmtNum(frac * 100, 0) + '% = ' + fmtBi(B) + '/ano' };
+  }
+  // imposto de X% sobre as operações com criptoativos: a base é o volume negociado, não a arrecadação atual
+  else if (M(/\b(?:imposto|tributo|taxa|iof)\b[^.;]{0,30}\b(\d+(?:\.\d+)?)%[^.;]{0,25}\b(?:operacoes|transacoes|movimentacoes)\b[^.;]{0,30}\b(?:cripto\w*|bitcoin\w*|moeda digital|moedas digitais)\b/)) {
+    const pc = +(/(\d+(?:\.\d+)?)%/.exec(s) || [0, 1])[1];
+    sp = { id: 'cripto_op', proto: 'cripto', kind: 'T', sav: false, sg: 1, B: Math.min(20, 4 * pc), topic: 'o imposto de ' + fmtNum(pc, pc % 1 ? 1 : 0) + '% sobre as operações com criptoativos', ex: null, d: ['a153_vii'], calc: 'Volume anual negociado de cerca de R$ 400 bi × ' + fmtNum(pc, pc % 1 ? 1 : 0) + '% = ' + fmtBi(Math.min(20, 4 * pc)) + '/ano, com forte fuga de base' };
+  }
+  // MEI
+  else if (M(/\bmei\b|\bmicroempreendedor\w*/) && M(/\bcontribui\w*|\bcontribuicao|\baliquota|\binss|\bprevidenci\w+|\b\d+(?:\.\d+)?%/)) {
+    const dp = dePara ? (+dePara[2]) - (+dePara[1]) : (v37Dir(s, /\bmei\b|\bmicroempreendedor|\baliquota|\bcontribuic\w+/) < 0 ? -1 : 1);
+    sp = { id: 'mei', proto: 'mei', kind: 'T', sav: false, sg: dp >= 0 ? 1 : -1, B: Math.max(.2, Math.abs(dp) * 2.9), topic: (dp >= 0 ? 'o aumento' : 'a redução') + ' da contribuição previdenciária do MEI' + (dePara ? ' de ' + dePara[1] + '% para ' + dePara[2] + '% do salário mínimo' : ''), ex: 'LC', d: ['a146', 'a69'], calc: 'Cerca de 15 milhões de MEI: R$ 2,9 bi/ano por ponto percentual do salário mínimo' };
+  }
+  // contribuição dos militares para a pensão
+  else if (M(/\bmilitar\w*\b[^.;]{0,40}\b(?:pensao|pensoes|contribuicao)\b|\b(?:pensao|pensoes)\b[^.;]{0,30}\bmilitar/) && /\bcontribuic\w+|\baliquota|\b\d+(?:\.\d+)?%/.test(s)) {
+    const dp = dePara ? (+dePara[2]) - (+dePara[1]) : 1;
+    sp = { id: 'militar_contrib', proto: 'patronal', kind: 'T', sav: false, sg: dp >= 0 ? 1 : -1, B: Math.max(.2, Math.abs(dp) * .9), topic: (dp >= 0 ? 'o aumento' : 'a redução') + ' da contribuição dos militares para a pensão' + (dePara ? ' de ' + dePara[1] + '% para ' + dePara[2] + '%' : ''), ex: null, d: ['a195_6'], calc: 'Cerca de R$ 0,9 bi/ano por ponto percentual sobre os soldos de ativos, inativos e pensionistas' };
+  }
+  // exoneração de servidor por desempenho
+  else if (M(/\b(?:exonerar|demitir|desligar|demissao|exoneracao)\b[^.;]{0,60}\b(?:servidor\w*|estavel|estaveis)\b[^.;]{0,60}\b(?:avaliac\w+|desempenho|insuficiencia)/)) {
+    sp = { id: 'art41', proto: 'serv', kind: 'G', sav: true, B: 2, topic: 'a exoneração de servidor estável por insuficiência de desempenho', ex: 'LC', d: ['a41', 'a69'], calc: 'Exoneração por avaliação de desempenho: economia pequena e lenta, cerca de R$ 2 bi/ano' };
+  }
+  // benefício temporário a autônomo e MEI sem renda
+  else if (M(/\b(?:beneficio|auxilio|seguro|renda)\b[^.;]{0,40}\b(?:mei|autonom\w+|informais?)\b[^.;]{0,60}\b(?:sem renda|queda|falta de|desempregad|crise)\b|\b(?:mei|autonom\w+)\b[^.;]{0,60}\b(?:sem renda|falta de clientes)\b/) && /\b(?:beneficio|auxilio|seguro|renda)\b/.test(s)) {
+    sp = { id: 'seguro_autonomo', proto: 'ben', kind: 'G', sav: false, B: 8, topic: 'o benefício temporário ao MEI e ao autônomo sem renda', ex: null, d: ['a195_5'], calc: 'Seguro temporário para autônomos e MEI sem renda: cerca de R$ 8 bi/ano' };
+  }
+  return sp;
+}
+/* cria o item (objeto sintético com o proto do catálogo) para a regra lida */
+function v37ItemFisc(A, sp) {
+  const proto = OBJ.find(x => x.id === V37_PRX[sp.proto]) || {};
+  const o = Object.assign({}, proto, { id: (sp.kind === 'G' ? 'v37_prev_' : 'v37_') + sp.id, n: sp.topic, k: sp.kind, v37B: sp.B, v37calc: sp.calc, cat: sp.kind === 'T' ? proto.cat : sp.id === 'capit' ? 'previdencia' : sp.sav ? 'corte_gastos' : 'programa_social', v37prev: 1, sav: sp.sav ? 1 : undefined, req: undefined, tot: undefined, faixa: undefined, sm: undefined, ger: undefined, instNeg: undefined, ri: undefined, lc: sp.ex === 'LC' ? 1 : undefined, inst: sp.ex === 'PEC' ? 'PEC' : 'PL', fix: undefined, uc: undefined, vu: undefined, ben: undefined, ucA: undefined, cap: 400 });
+  if (sp.kind === 'G' && !sp.sav && sp.id !== 'capit') o.ax = { gasto_social: -1 }; // mais gasto social (regra mais frouxa)
+  if (!sp.sav && sp.kind === 'G' && sp.proto === 'req' && !sp.keepVal) { o.iv = [-.5, 0]; o.val = Object.assign({}, o.val, { mercado: -Math.abs((proto.val || {}).mercado || 3), sindicatos: Math.abs((proto.val || {}).sindicatos || 4) }); }
+  if (sp.kind === 'G') o.lag = sp.id === 'capit' ? 24 : (sp.proto === 'req' ? 30 : 12); // regra previdenciária só pega quem ainda não cumpriu os requisitos: o efeito leva anos
+  if (sp.id === 'capit') { o.e = { conf: 1, risco: 0 }; o.val = { mercado: 14, empresariado: 4, sindicatos: -9, periferia: -2, catolicos: -1 }; } // a transição pesa no primário; mercado e gestoras ganham
+  else if (sp.kind === 'G' && sp.sav && sp.B >= 4) o.e = { conf: Math.min(3, .25 * sp.B), risco: -Math.min(9, .6 * sp.B) }; // economia previdenciária crível melhora a expectativa já no anúncio
+  const it = { o: o, i: 0, e: 0, t: sp.id, unit: 0, q: {}, calc: [], tipo: 'perm', role: 'main', own: 1, neg: false, ctxTxt: A.s, ctxOff: 0, dir: 1, sg: sp.sg || 1, verbo: null, mag: null, tot: false, topicoFixo: sp.topic, v37: true };
+  it.q.has = true; it.dur = null;
+  return it;
+}
+const V37_EF = { PEC: 'Os requisitos, benefícios e a organização dos regimes de previdência estão na Constituição e na EC 103/2019 (arts. 40, 195 e 201): mudá-los exige PEC.', LC: 'Idade e tempo diferenciados, o estatuto do MEI e do Simples e as regras de carreira são matéria de lei complementar (art. 40, §§4º-A a 4º-C; art. 41, §1º, III; art. 146, III, d; art. 201, §1º).' };
+const V37_DOM_RX = /\b(?:aposent\w+|previdenc\w+|inss|pensao|pensoes|bpc|loas|servidor\w*|funcionalismo|fgts|clt|sindic\w+|trabalhist\w+|empregad\w+|empregador\w*|constituicao|emenda constitucional|stf|supremo|congresso|senado|camara|tribunal|tribunais|mandato|eleic\w+|competencia|lei complementar)\b/;
+const V37_NAO_6X1 = /\bvinculo\b|\baplicativos?\b|\bplataformas?\b|\bmotoristas?\b|\bentregador\w*|\b12 ?(?:x|horas)?(?: de trabalho)? ?(?:por )?36\b|\bbanco de horas\b|\bintermitente|\bparcial\b/;
+const V37_TRAB_RX = /\b(?:adicional (?:de |por )?(?:insalubridade|periculosidade|noturno|transferencia)|horas? extras?|jornada|ferias|13[ºo]?(?: salario)?|decimo terceiro|aviso previo|estabilidade|licenca.(?:maternidade|paternidade)|vinculo (?:de emprego|empregaticio)|contrato (?:de trabalho|intermitente|temporario|por prazo)|carteira assinada|justa causa|demissao|demitir|dispensa|rescisao|empregad[oa]s?|empregador\w*|patrao|patroes|trabalhad\w+|celetistas?|clt|convencao coletiva|acordo coletivo|terceiriz\w+|teletrabalho|aprendiz\w*|motoristas? de aplicativo|entregador\w*|plataformas?|descont\w+ (?:do |no )?salario)\b/;
+const V37_FISCAL_RX = /\b(?:aposentad\w+|pensionist\w+|previdenc\w+|beneficiari\w+|presidente|ministr[oa]s?|diretor\w*|banco central|stf|supremo|congresso|agencia|governo|tesouro|uniao|inss|fat|subsidi\w+|incentiv\w+|isenc\w+|desoner\w+|renuncia|credito|bndes|beneficios?|auxilio|bolsa|seguro.desemprego|abono|programa|fundo|deduc\w+|financ\w+|orcamento|bilho\w+|milho\w+|r\$|servidor\w*|contribuicao|contribuicoes|imposto|tribut\w+|aliquota|patronal|encargos|folha|publico|publica|publicos)\b/;
+/* escopo da leitura: a norma já tem dono (PEC, LC), a lei já diz o mesmo (redundante) ou é obrigação do empregador sem despesa pública */
+function leituraV37(A) {
+  const V = A.v37 = { normas: [] };
+  const s = A.s;
+  if (!s || A.pledgeOnly || A.items.some(i => i.pledge || i.o.id === 'fala')) return A;
+  { const mc = /\b(?:empresas?|bancos?|estatais|entidades|organizacoes|beneficiarios|contratantes|fornecedores|instituicoes)\b[^.;]{0,25}\b(?:que (?:tenham|recebam|recebem|obtenham|usem|usam|tiverem|contratem|contratarem|forem beneficiad\w+)|beneficiad\w+ (?:por|com))\b/.exec(s); // condição sobre quem recebe: o crédito ou incentivo citado não é novo gasto
+    if (mc) A.items = A.items.filter(i => !(i.o.k !== 'R' && i.o.k !== 'C' && i.i >= mc.index + mc[0].length - 6)); }
+  if (A.jaVigente && A.jaVigente.id === 'ec141' && V37_NAO_6X1.test(s)) { A.items = A.items.filter(i => i.o.id !== 'jornada_6x1'); A.jaVigente = null; A.topicoFixo = null; } // não é redução de jornada
+  if (A.jaVigente) return A; // v3.7: redundância exata já resolvida pelo JA_VIG (ato de comunicação, texto "já em vigor"): nada a acrescentar
+  if (!A.jaVigente && /\b(?:banco central|bacen|bc)\b/.test(s) && /\b(?:dar|conceder|garantir|ter|manter|criar)\b[^.;]{0,25}\b(?:autonomia|independencia)\b|\b(?:bc|banco central) independente\b|\bmandato fixo\b/.test(s) && !/\b(?:financeir\w+|orcamentari\w+|acabar|fim d\w+|revog\w+|extingu\w+|ampli\w+|cort\w+|reduz\w+)\b/.test(s)) { // v3.7: o pedido repete a LC 179/2021: redundante, segue como ato de comunicação
+    A.jaVigente = { id: 'lc179', txt: 'A autonomia do Banco Central e o mandato fixo de sua diretoria já estão em vigor desde a LC 179/2021 (CF, arts. 164 e 192). A medida é redundante e não gera efeito novo; acabar com a autonomia ou ampliá-la (por exemplo, a autonomia financeira) exigiria nova lei complementar ou PEC.', disp: 'lc179' };
+    A.topicoFixo = 'a autonomia do Banco Central, já garantida pela LC 179/2021';
+    A.items.forEach(i => { i.sg = 0; i.dir = 0; i.jaVigente = true; });
+    V.red = true;
+    return A;
+  }
+  v37Vigente(A);
+  const exato0 = !!(A.normaVigente && A.normaVigente.exato);
+  const dinheiro = A.Q.money.some(q => q.unit && q.v >= 1e6);
+  const norma = (extra) => genItem(A, Object.assign({ k: 'R', kind: 'norm', inst: 'PL' }, extra || {}));
+  const troca = (it) => { if (it) { A.items = A.items.filter(i => i.role === 'fonte').concat([it]); A.generica = null; } };
+  V.normas = v37Normas(A);
+  V.normas.forEach(n => { if (n.fisc && n.fisc.no && n.fisc.no.test(s)) n.fisc = null; });
+  const ov = V.normas.find(n => n.ovr || n.fisc);
+  const prot = (n) => A.items.some(i => V37_PROT.indexOf(i.o.id) >= 0 && n && n.m && i.i < n.m[1] + 4 && i.e > n.m[0] - 4);
+  if (ov && !prot(ov) && (!dinheiro || ov.fisc)) {
+    const f = ov.fisc ? { k: ov.fisc.k || 'G', kind: ov.fisc.k === 'T' ? 'trib' : 'prog', inst: ov.ex === 'PEC' ? 'PEC' : 'PL', lc: ov.ex === 'LC', B: v37Esc(ov.fisc, A), sg: ov.fisc.sg } : { k: 'R', kind: 'norm', inst: ov.ex === 'PEC' ? 'PEC' : 'PL', lc: ov.ex === 'LC' };
+    if (f.B != null && V37_DN.test(s) && ov.fisc.un === 'fpe') f.sg = -1;
+    let it = null; try { it = genItem(A, f); } catch (e) { it = null; }
+    troca(it);
+  } else if (V.normas.length) {
+    for (const i of A.items) if ((i.o.k === 'G' || i.o.k === 'T') && !i.q.has) i.regul = true; // norma constitucional ou procedimental: sem despesa própria
+  }
+  const exato = exato0;
+  // leitura fiscal da previdência e dos encargos
+  let sp = null;
+  if (!A.jaVigente && !exato) { try { sp = v37Prev(A); } catch (e) { sp = null; } }
+  if (sp) {
+    troca(v37ItemFisc(A, sp));
+    if (sp.id === 'especial' || sp.id === 'especial_fim') V.normas = V.normas.filter(n => !/^v37_apos_esp/.test(n.id));
+    if (sp.ex || sp.nivel) V.normas.push({ id: 'v37_' + sp.id, ex: sp.ex, nivel: sp.nivel, d: sp.d, ef: sp.ef || V37_EF[sp.ex] || sp.calc });
+  } else if (exato && !dinheiro && !A.jaVigente && !A.items.some(i => i.role === 'fonte')) {
+    let it = null; try { it = norma({ lc: !!A.normaVigente.lc, inst: A.normaVigente.pec ? 'PEC' : 'PL' }); } catch (e) { it = null; } // o pedido repete a lei em vigor: leitura de norma, sem custo
+    if (it) { A.items = [it]; A.generica = null; }
+  } else if (!A.jaVigente && !V.normas.length && V37_TRAB_RX.test(s) && !V37_FISCAL_RX.test(s)) {
+    // obrigação do empregador (adicional, estabilidade, vínculo, férias, 13º): norma trabalhista sem despesa do Tesouro
+    const ok = A.items.length > 0 && A.items.every(i => i.o.k === 'R' && i.o.cat === 'trabalho' && !(i.o.id === 'jornada_6x1' && V37_NAO_6X1.test(s)));
+    if (!ok) { let it = null; try { it = norma({}); } catch (e) { it = null; } if (it) { A.items = A.items.filter(i => i.role === 'fonte').concat([it]); A.generica = null; } }
+  } else if (!A.jaVigente && !V.normas.length && A.items.length && !A.items.some(i => i.v37 || i.gen) && V37_DOM_RX.test(s) && !dinheiro) {
+    // palavra-chave que sequestra o tema: nenhum item lido tem a ver com os termos centrais do texto (ex.: "pedágio" lido como concessão rodoviária)
+    const txt = foldTxt(A.items.map(i => i.o.n + ' ' + i.t).join(' ')), ws = s.split(/[^a-z]+/).filter(w => w.length >= 5 && !GEN_STOP.test(w) && !GEN_FRACAS.test(w) && !/^(?:aumentar|reduzir|criar|acabar|garantir|permitir|proibir|obrigar|fazer|dar|pagar|cobrar|elevar|baixar|subir|todos|todas|quem|mais|menos|para|como|sobre|entre|apos|ainda|fixar|tirar)$/.test(w));
+    if (ws.length >= 2 && ws.every(w => txt.indexOf(w.slice(0, 5)) < 0)) { let it = null; try { it = norma({}); } catch (e) { it = null; } if (it) { A.items = A.items.filter(i => i.role === 'fonte').concat([it]); A.generica = null; } }
+  }
+  return A;
+}
+/*V37-END*/
 /* ---------- v3: tolerancia a erros de digitacao (distancia de edicao em tokens-chave) ---------- */
 let VOC = null; const VOCB = {}; const TYPO_CACHE = {};
+/* vocabulário de trabalho, previdência e Constituição: o corretor de erros de digitação não pode trocar "prévio" por "prêmio" nem "empregadores" por "entregadores" */
+function v37Voc(feed) {
+  JN37.forEach(j => { feed(j.rx.source); if (j.ex) feed(j.ex.source); });
+  V37_NORMAS.forEach(n => feed(n.rx.source));
+  ('previo patrao patroes empregadores empregadas empregada distrato mineiros mineiro orfaos atuais tratar exibir entrada alerta contencao dragas agricultor agricultores reembolsar reembolso capitalizacao integralidade paridade pedagio desaposentacao aposentar aposentado aposentados aposentadoria incapacidade invalidez pensionista pensionistas segurado segurados carencia contribuicao contribuinte celetista celetistas sindicato sindicatos sindical unicidade periculosidade insalubridade terceirizacao terceirizados estabilidade honorarios sucumbencia gratuidade equiparacao inelegivel inelegibilidade plebiscito referendo parlamentarismo presidencialismo magistratura defensoria cooperativa cooperativas tributacao compulsorio microempreendedor teletrabalho rescisao rescisoria intermitente patronal patronais previdenciario previdenciaria vigilantes vigilante peritos pericia periodo periodos ferias licenca maternidade paternidade jornada domesticas domestica emprego empregos desemprego legislar competencia senadores deputados vereadores prefeitos governadores ministros desembargadores tribunais superiores justica constituicao emenda complementar ordinaria medida provisoria vinculo vinculos trabalhista trabalhistas plataforma plataformas entregador entregadores motoristas aplicativo').split(' ').forEach(w => { if (w.length >= 6) VOC.add(w); });
+}
 function construirVoc() {
   VOC = new Set();
   const feed = (src) => {
@@ -4376,6 +4912,7 @@ function construirVoc() {
   };
   OBJ.forEach(o => feed(o.syn)); VB.forEach(v => feed(v.src));
   ['imposto', 'impostos', 'tributo', 'tributos', 'salario', 'aposentadoria', 'aposentadorias', 'privatizar', 'privatizacao', 'estatizar', 'reduzir', 'aumentar', 'ampliar', 'criar', 'extinguir', 'programa', 'governo', 'federal', 'servidores', 'professores', 'policiais', 'combustivel', 'combustiveis', 'gasolina', 'educacao', 'seguranca', 'fortunas', 'heranca', 'herancas', 'dividendos', 'minimo', 'familia', 'beneficio', 'beneficios', 'trabalhadores', 'empresas', 'mercado', 'bancos', 'reforma', 'orcamento', 'petroleo', 'energia', 'rodovias', 'ferrovias', 'hospitais', 'escolas', 'universidades'].forEach(w => VOC.add(w));
+  v37Voc(feed); // v3.7
   VOC.forEach(w => { (VOCB[w.length] = VOCB[w.length] || []).push(w); });
   // palavras protegidas: tudo que ja aparece nas regexes de leitura do proprio motor + palavras comuns do portugues
   PROT = new Set();
@@ -4586,6 +5123,7 @@ function parse(orig) {
   trabPos(A);
   fiscPos(A); // v3.4
   leituraV35(A); // v3.5
+  leituraV37(A); // v3.7
   return A;
 }
 
@@ -4836,13 +5374,13 @@ const CF_BASE = [
   { id: 'a5_xlvii', art: 'CF, art. 5º, XLVII', tema: 'Penas vedadas', regra: 'Proíbe pena de morte (salvo guerra declarada), prisão perpétua, trabalhos forçados, banimento e penas cruéis.', muda: 'petrea' },
   { id: 'a5_lxi', art: 'CF, art. 5º, LXI e LXV', tema: 'Prisão e devido processo', regra: 'Ninguém é preso senão em flagrante ou por ordem escrita e fundamentada de autoridade judiciária, salvo transgressão militar ou crime propriamente militar; a prisão ilegal é relaxada pelo juiz.', muda: 'petrea' },
   { id: 'a5_lvii', art: 'CF, art. 5º, LVII', tema: 'Presunção de inocência', regra: 'Ninguém é considerado culpado até o trânsito em julgado da condenação (ADCs 43, 44 e 54 do STF).', muda: 'petrea' },
-  { id: 'a12_nac', art: 'CF, art. 12, §4º e art. 5º, LI', tema: 'Nacionalidade', regra: 'Brasileiro nato não é extraditado; a perda da nacionalidade só ocorre por cancelamento judicial da naturalização (fraude ou atentado à ordem democrática) ou por pedido expresso do próprio cidadão, vedada a apatridia (EC 131/2023).', muda: 'pec' },
+  { id: 'a12_nac', art: 'CF, art. 12, §4º e art. 5º, LI', tema: 'Nacionalidade', regra: 'Brasileiro nato não é extraditado nem banido; só perde a nacionalidade a pedido expresso (art. 12, §4º, II, EC 131/2023), com direito de readquiri-la; o naturalizado a perde por sentença judicial (fraude ou atentado à ordem democrática).', muda: 'pec' }, // v3.7
   { id: 'a6_7', art: 'CF, arts. 6º e 7º', tema: 'Direitos sociais e trabalhistas', regra: 'Elenca os direitos dos trabalhadores (13º, férias, FGTS, adicionais, licenças); a supressão é tratada pela doutrina como atingida pela proteção do art. 60, §4º, IV.', muda: 'pec' },
   { id: 'a7_i', art: 'CF, art. 7º, I', tema: 'Proteção contra despedida arbitrária', regra: 'Relação de emprego protegida por lei complementar que preverá indenização compensatória.', muda: 'lc' },
   { id: 'adct10', art: 'ADCT, art. 10, I', tema: 'Multa de 40% do FGTS', regra: 'Fixa provisoriamente em 40% (quatro vezes os 10% da Lei 5.107/66) a indenização sobre o saldo do FGTS na despedida sem justa causa, até a lei complementar do art. 7º, I.', muda: 'lc' },
   { id: 'a7_iii', art: 'CF, art. 7º, III', tema: 'FGTS', regra: 'O fundo de garantia é direito do trabalhador; alíquota, uso e rendimento são regulados em lei ordinária (Lei 8.036/90).', muda: 'lei' },
   { id: 'a7_iv', art: 'CF, art. 7º, IV', tema: 'Salário mínimo', regra: 'O mínimo é nacionalmente unificado, fixado em lei e reajustado para preservar o poder de compra; a regra de valorização é lei ordinária.', muda: 'lei' },
-  { id: 'a7_xiii', art: 'CF, art. 7º, XIII e XV', tema: 'Duração do trabalho', regra: 'Jornada normal de até 8 horas diárias e 40 semanais e repouso semanal remunerado de 2 dias, um preferencialmente aos domingos (redação da EC 141/2026). Novo limite exige PEC.', muda: 'pec' },
+  { id: 'a7_xiii', art: 'CF, art. 7º, XIII e XV e §2º', tema: 'Duração do trabalho', regra: 'Jornada normal de até 8 horas diárias e 40 semanais (redação da EC 141/2026); o repouso semanal segue preferencialmente aos domingos, e o regime compensatório por acordo coletivo deve assegurar na média 2 dias de repouso no mês. Novo limite exige PEC.', muda: 'pec' }, // v3.7
   { id: 'ec141', art: 'EC 141/2026, art. 1º; CF, art. 7º, §§2º e 3º', tema: 'Fim da escala 6x1', regra: 'Fixou 40 horas semanais e 2 dias de repouso (este vigente 2 meses após a publicação, EC 141, art. 10, I); acordo coletivo pode compensar na média mensal, com ao menos 1 folga por semana. Na simulação, a jornada cai a 42 horas em dez/2026 e a 40 em dez/2027 (transição não conferida no texto da emenda).', muda: 'pec' },
   { id: 'a7_xvi', art: 'CF, art. 7º, XVI', tema: 'Adicional de hora extra', regra: 'O serviço extraordinário paga no mínimo 50% a mais; aumentar o percentual é lei ordinária, reduzi-lo abaixo de 50% exige emenda.', muda: 'pec' },
   { id: 'a7_xviii', art: 'CF, art. 7º, XVIII e XIX', tema: 'Licenças maternidade e paternidade', regra: 'A licença-gestante tem 120 dias; a licença-paternidade tem prazo fixado em lei (escalonamento aprovado em 2026).', muda: 'lei' },
@@ -4865,7 +5403,7 @@ const CF_BASE = [
   { id: 'a60_4', art: 'CF, art. 60, §4º', tema: 'Cláusulas pétreas', regra: 'Não se delibera proposta tendente a abolir a forma federativa, o voto direto, secreto, universal e periódico, a separação dos Poderes e os direitos e garantias individuais.', muda: 'petrea' },
   { id: 'a60_4_i_iii', art: 'CF, art. 60, §4º, I a III', tema: 'Federação, voto e separação dos Poderes', regra: 'Forma federativa, voto direto, secreto, universal e periódico e separação dos Poderes não podem ser abolidos nem por emenda.', muda: 'petrea' },
   { id: 'a53', art: 'CF, art. 53, §1º e arts. 102 e 105', tema: 'Foro por prerrogativa e imunidades', regra: 'Imunidades parlamentares e foro por prerrogativa de função estão na Constituição.', muda: 'pec' },
-  { id: 'a100', art: 'CF, art. 100 e ADCT, art. 97', tema: 'Precatórios', regra: 'Débitos judiciais das Fazendas Públicas (União, estados e municípios) são pagos exclusivamente na ordem cronológica dos precatórios; o ADCT, art. 97, traz regime especial para estados e municípios em mora, e o STF limita os parcelamentos.', muda: 'pec' },
+  { id: 'a100', art: 'CF, art. 100, caput e §§23 a 30 (EC 136/2025)', tema: 'Precatórios', regra: 'Débitos judiciais das Fazendas Públicas (União, estados, DF e municípios) são pagos exclusivamente na ordem cronológica dos precatórios; estados, DF e municípios pagam em limites de 1% a 5% da receita corrente líquida, conforme o estoque em mora (art. 100, §23, EC 136/2025).', muda: 'pec' }, // v3.7
   { id: 'adct40', art: 'ADCT, arts. 40 e 92-A', tema: 'Zona Franca de Manaus', regra: 'O modelo da Zona Franca é mantido até 2073 por norma transitória da Constituição.', muda: 'pec' },
   { id: 'a196', art: 'CF, arts. 196 a 200', tema: 'Direito à saúde e SUS', regra: 'Saúde é direito de todos e dever do Estado, com atendimento universal pelo SUS.', muda: 'pec' },
   { id: 'a61_1', art: 'CF, art. 61, §1º', tema: 'Iniciativa privativa do Presidente', regra: 'Cabe ao Presidente propor leis sobre servidores federais, organização administrativa e Forças Armadas.', muda: 'lei' },
@@ -4873,15 +5411,15 @@ const CF_BASE = [
   { id: 'a62_2', art: 'CF, art. 62, §2º', tema: 'MP e impostos', regra: 'MP que cria ou aumenta imposto (salvo II, IE, IPI, IOF e extraordinário de guerra) só vale no exercício seguinte se convertida em lei até o fim do ano de sua edição.', muda: 'lei' },
   { id: 'a64', art: 'CF, art. 64', tema: 'Urgência constitucional', regra: 'O Presidente pode pedir urgência para projeto de sua iniciativa: 45 dias em cada Casa, trancando a pauta.', muda: 'dec' },
   { id: 'a69', art: 'CF, art. 69', tema: 'Lei complementar', regra: 'Leis complementares exigem maioria absoluta nas duas Casas (257 deputados e 41 senadores).', muda: 'lc' },
-  { id: 'a84_vi', art: 'CF, art. 84, VI', tema: 'Decreto do Presidente', regra: 'Decreto organiza a administração sem aumentar despesa e regulamenta lei; não cria direitos nem obrigações novas.', muda: 'dec' },
+  { id: 'a84_vi', art: 'CF, art. 84, IV e VI', tema: 'Decreto do Presidente', regra: 'O decreto regulamenta a lei para sua fiel execução (art. 84, IV) e organiza a administração sem aumentar despesa nem criar ou extinguir órgãos (art. 84, VI); não cria direitos nem obrigações novas.', muda: 'dec' }, // v3.7
   { id: 'a101', art: 'CF, art. 101', tema: 'Composição do STF', regra: 'O STF tem onze ministros, com mais de 35 e menos de 70 anos, notável saber jurídico e reputação ilibada, nomeados pelo Presidente após aprovação por maioria absoluta do Senado.', muda: 'pec' },
   { id: 'a136_141', art: 'CF, arts. 136 a 141', tema: 'Estado de defesa e de sítio', regra: 'Medidas excepcionais, por decreto com controle do Congresso, que durante sua vigência impedem emendas à Constituição.', muda: 'dec' },
-  { id: 'a144', art: 'CF, art. 144 e §6º', tema: 'Segurança pública', regra: 'As polícias civis, militares e penais estaduais e os bombeiros são subordinados aos governadores; a União atua pela PF, PRF e Força Nacional e por convênios.', muda: 'pec' },
+  { id: 'a144', art: 'CF, art. 144, I a III, VI e §6º', tema: 'Segurança pública', regra: 'As polícias civis, militares e penais estaduais e os bombeiros militares são subordinados aos governadores; a União atua pela PF, PRF, polícia ferroviária e polícia penal federais.', muda: 'pec' }, // v3.7
   { id: 'a150_i', art: 'CF, art. 150, I', tema: 'Legalidade tributária', regra: 'Tributo só se cria ou aumenta por lei (as alíquotas de II, IE, IPI e IOF podem ser ajustadas pelo Executivo dentro da lei).', muda: 'lei' },
   { id: 'a150_iii', art: 'CF, art. 150, III, b e c; art. 195, §6º', tema: 'Anterioridade anual e noventena', regra: 'Tributo criado ou majorado só vale no exercício seguinte e 90 dias após a lei; II, IE, IOF, empréstimo compulsório de calamidade ou guerra e imposto extraordinário de guerra escapam de ambas; o IPI cumpre só a noventena e o IR só a anterioridade anual.', muda: 'petrea' },
   { id: 'a150_iv', art: 'CF, art. 150, IV', tema: 'Vedação ao confisco', regra: 'Tributos não podem ter efeito de confisco.', muda: 'petrea' },
   { id: 'a150_6', art: 'CF, art. 150, §6º', tema: 'Benefícios fiscais', regra: 'Isenção, anistia e redução de base só por lei específica.', muda: 'lei' },
-  { id: 'a150_vi_b', art: 'CF, art. 150, VI, b', tema: 'Imunidade de templos', regra: 'É vedado tributar templos de qualquer culto.', muda: 'pec' },
+  { id: 'a150_vi_b', art: 'CF, art. 150, VI, b', tema: 'Imunidade de templos', regra: 'É vedado instituir impostos sobre entidades religiosas e templos de qualquer culto, inclusive suas organizações assistenciais.', muda: 'pec' }, // v3.7
   { id: 'a151_iii', art: 'CF, art. 151, III', tema: 'Isenção heterônoma', regra: 'A União não pode isentar tributos de estados e municípios.', muda: 'pec' },
   { id: 'a153_vii', art: 'CF, art. 153, VII e art. 154, I', tema: 'Grandes fortunas e imposto residual', regra: 'O imposto sobre grandes fortunas e novos impostos (residuais) dependem de lei complementar.', muda: 'lc' },
   { id: 'a146', art: 'CF, art. 146', tema: 'Normas gerais tributárias', regra: 'Normas gerais de direito tributário, conflitos de competência e o regime do Simples/MEI exigem lei complementar.', muda: 'lc' },
@@ -4898,7 +5436,7 @@ const CF_BASE = [
   { id: 'lei15270', art: 'Lei 15.270/2025', tema: 'Isenção do IR até R$ 5 mil e tributação mínima de altas rendas', regra: 'Em vigor desde janeiro de 2026: isenção para rendimentos mensais até R$ 5 mil, redução gradual até R$ 7.350, tributação mínima de altas rendas e retenção de 10% na fonte sobre dividendos acima de R$ 50 mil por mês pagos por uma mesma empresa a uma mesma pessoa física (e sobre remessas ao exterior).', muda: 'lei' },
   { id: 'lei15100', art: 'Lei 15.100/2025', tema: 'Uso de celulares nas escolas', regra: 'Em vigor desde janeiro de 2025: proíbe o uso de aparelhos eletrônicos portáteis pessoais pelos estudantes da educação básica, pública e privada, durante as aulas, o recreio e os intervalos, salvo para fins pedagógicos, de acessibilidade, de saúde ou de necessidade individual.', muda: 'lei' }, // v3.5
   { id: 'lei14611', art: 'Lei 14.611/2023', tema: 'Igualdade salarial entre mulheres e homens', regra: 'Em vigor desde julho de 2023: garante igual remuneração para trabalho de igual valor, prevê multa administrativa contra a empresa que discriminar e exige relatório semestral de transparência salarial das empresas com 100 ou mais empregados.', muda: 'lei' }, // v3.5
-  { id: 'a155_156', art: 'CF, arts. 155 e 156', tema: 'Impostos estaduais e municipais', regra: 'ICMS, IPVA e ITCMD são dos estados e do DF; ISS, IPTU e ITBI são dos municípios: a União não os cria, não os extingue nem os isenta (art. 151, III).', muda: 'pec' }, // v3.5
+  { id: 'a155_156', art: 'CF, arts. 155, 156 e 156-A', tema: 'Impostos estaduais e municipais', regra: 'ITCMD e IPVA são dos estados e do DF e IPTU e ITBI dos municípios; ICMS e ISS vão sendo substituídos pelo IBS (art. 156-A, EC 132/2023), de competência compartilhada; a União não os cria, não os extingue nem os isenta (art. 151, III).', muda: 'pec' }, // v3.5 v3.7
   { id: 'a21_164', art: 'CF, arts. 21, VII e 164', tema: 'Moeda e Banco Central', regra: 'A emissão de moeda é competência da União, exercida exclusivamente pelo Banco Central.', muda: 'pec' }, // v3.5
   { id: 'cpp310', art: 'Pacto de São José, art. 7.5; CPP, art. 310', tema: 'Audiência de custódia', regra: 'Todo preso deve ser apresentado sem demora a um juiz; o Pacto de São José da Costa Rica foi ratificado pelo Brasil e a audiência de custódia está no Código de Processo Penal (art. 310, incluído em 2019).', muda: 'lei' }, // v3.5
   { id: 'a14_3', art: 'CF, art. 14, §3º, V', tema: 'Filiação partidária', regra: 'A filiação partidária é condição de elegibilidade: candidatura sem partido exige emenda constitucional.', muda: 'pec' }, // v3.5
@@ -4918,6 +5456,21 @@ const CF_BASE = [
   { id: 'a225_1', art: 'CF, art. 225, §1º, III', tema: 'Unidades de conservação', regra: 'Os espaços territoriais especialmente protegidos só podem ser alterados ou suprimidos por lei, vedada qualquer utilização que comprometa sua integridade.', muda: 'lei' },
   { id: 'l9504', art: 'Lei 9.504/97, arts. 73 e 77', tema: 'Condutas vedadas em ano eleitoral', regra: 'Restringe benefícios, contratações e publicidade nos meses antes da eleição.', muda: 'lei' }
 ];
+CF_BASE.push( // v3.7
+  { id: 'a22_pu', art: 'CF, art. 22, parágrafo único', tema: 'Estados legislando sobre matéria da União', regra: 'Lei complementar pode autorizar os estados a legislar sobre questões específicas das matérias do art. 22, como fez a LC 103/2000 para o piso salarial regional.', muda: 'lc' },
+  { id: 'a46_52', art: 'CF, arts. 14, 29, 46, 101 e 111-A', tema: 'Mandatos e composição dos cargos de Estado', regra: 'Mandato, idade mínima, número de membros e escolha dos senadores, prefeitos, ministros dos tribunais superiores e demais cargos de Estado estão na Constituição (senadores: três por estado, mandato de oito anos, art. 46, §1º).', muda: 'pec' },
+  { id: 'a45_1', art: 'CF, art. 45, §1º', tema: 'Número de deputados federais', regra: 'O número total de deputados e a representação por estado e pelo Distrito Federal são fixados por lei complementar, proporcionalmente à população, com mínimo de oito e máximo de setenta por unidade da Federação.', muda: 'lc' },
+  { id: 'a92_judic', art: 'CF, arts. 92 a 126', tema: 'Estrutura e competência do Judiciário', regra: 'Os órgãos do Judiciário e suas competências estão na Constituição: a Justiça do Trabalho é regida pelos arts. 111 a 116 e o TST tem vinte e sete ministros (art. 111-A).', muda: 'pec' },
+  { id: 'a142_greve', art: 'CF, art. 142, §3º, IV', tema: 'Greve de militares', regra: 'Ao militar são proibidas a sindicalização e a greve.', muda: 'pec' },
+  { id: 'a18_est', art: 'CF, art. 18, §§3º e 4º', tema: 'Criação de estados e municípios', regra: 'Os estados podem se incorporar, subdividir ou desmembrar mediante plebiscito e lei complementar do Congresso; os municípios, por lei estadual dentro do período fixado por lei complementar federal.', muda: 'lc' },
+  { id: 'a14_9', art: 'CF, art. 14, §9º', tema: 'Inelegibilidade', regra: 'Lei complementar estabelece outros casos de inelegibilidade e os prazos de sua cessação (LC 64/1990, alterada pela LC 135/2010).', muda: 'lc' },
+  { id: 'a159', art: 'CF, art. 159', tema: 'FPE e FPM', regra: 'A União entrega aos estados e aos municípios percentuais do Imposto de Renda e do IPI (FPE e FPM) fixados na Constituição.', muda: 'pec' },
+  { id: 'a40_201', art: 'CF, arts. 40 e 201', tema: 'Aposentadoria no regime geral e nos regimes próprios', regra: 'Idade mínima (art. 40, §1º, III; art. 201, §7º), pensão por morte, abono de permanência e a vedação a requisitos diferenciados estão na Constituição e na EC 103/2019: mudá-los exige PEC; idade e tempo diferenciados para pessoas com deficiência, policiais e atividades com agentes nocivos dependem de lei complementar (art. 40, §§4º-A a 4º-C; art. 201, §1º).', muda: 'pec' },
+  { id: 'a149_exp', art: 'CF, art. 149, §2º, I', tema: 'Imunidade das receitas de exportação', regra: 'As contribuições sociais e a Cide não incidem sobre as receitas decorrentes de exportação.', muda: 'pec' },
+  { id: 'a195_ii', art: 'CF, art. 195, II', tema: 'Contribuição do segurado', regra: 'A contribuição do trabalhador e dos demais segurados não incide sobre aposentadoria e pensão do regime geral; nos regimes próprios, a contribuição dos aposentados pode alcançar o que passar do salário mínimo quando houver déficit atuarial (art. 149, §1º-A).', muda: 'pec' },
+  { id: 'a95_vital', art: 'CF, art. 95, I e art. 52, II', tema: 'Vitaliciedade dos magistrados', regra: 'Os magistrados são vitalícios e só perdem o cargo por sentença judicial transitada em julgado; os ministros do STF respondem por crime de responsabilidade perante o Senado.', muda: 'pec' },
+  { id: 'a5_xxxv_lxxiv', art: 'CF, art. 5º, XXXV e LXXIV', tema: 'Acesso à Justiça e assistência jurídica gratuita', regra: 'A lei não exclui da apreciação do Judiciário lesão ou ameaça a direito, e o Estado presta assistência jurídica integral e gratuita a quem comprovar insuficiência de recursos.', muda: 'lei' }
+);
 const CF_IDX = {}; CF_BASE.forEach(d => { CF_IDX[d.id] = d; });
 const CF_RANK = { COM: 0, ADM: 1, DEC: 2, PL: 3, MP: 3, DL: 3.5, LC: 4, PEC: 5, IMPOSSIVEL: 9 };
 const CF_INST_NOME = { COM: 'ato político', ADM: 'ato administrativo', DEC: 'decreto', PL: 'lei ordinária (PL)', MP: 'medida provisória', DL: 'decreto legislativo (aprovação do Congresso)', LC: 'lei complementar (PLP)', PEC: 'emenda constitucional (PEC)', IMPOSSIVEL: 'nenhum (cláusula pétrea)' };
@@ -4930,7 +5483,7 @@ function cfSug(id, tipo, texto, edit, extra) { return Object.assign({ id: id, ti
 function cfSugInst(id, para, texto, grave) { return cfSug(id, 'instrumento', texto, { op: 'inst', para: para }, { para: para, grave: grave !== false }); }
 const CF_DIREITOS = [
   { id: 'tribunal_excecao', d: ['a5_xxxvii', 'a60_4'], rx: /\b(?:tribunais?|juizos?|justica|cortes?) (?:de|d[ao]) excecao\b|\b(?:tribunal|juizo) ad hoc\b|\bjulgar civis (?:em|por|nos?) tribunais? militar\w*/, ef: 'É vedado o juízo ou tribunal de exceção (art. 5º, XXXVII e LIII): o direito ao juiz natural é garantia individual protegida pelo art. 60, §4º, IV.', sub: 'julgar pelos juízes e tribunais já previstos na Constituição', txt: 'Retirar o tribunal de exceção e usar os órgãos judiciários que a Constituição já prevê' },
-  { id: 'expropriacao', d: ['a5_xxii_xxiv', 'a60_4'], ex: /\b(?:trabalho (?:escravo|analogo)|psicotropic\w+|drogas|maconha|coca\b)/, rx: /\b(?:ocup\w+|desapropri\w+|expropri\w+|confisc\w+|tom\w+|invad\w+|requisit\w+|nacionaliz\w+) (?:\w+ ){0,4}(?:terras?|imoveis?|propriedades?|fazendas?|bens|empresas?)\b[^.;]{0,30}\bsem (?:a )?(?:previa e justa )?(?:indeniza\w+|compensac\w+|pagar)|\bsem (?:a )?(?:previa e justa )?indenizacao\b[^.;]{0,30}\b(?:terras?|imoveis?|propriedades?|fazendas?)/, ef: 'A propriedade é direito individual (art. 5º, XXII) e a desapropriação exige prévia e justa indenização (art. 5º, XXIV): tomar terras ou bens sem pagar fere cláusula pétrea (art. 60, §4º, IV). A exceção do art. 243 vale só para terras com trabalho escravo ou cultivo ilegal de psicotrópicos.', sub: 'desapropriar mediante prévia e justa indenização, em títulos da dívida agrária quando for reforma agrária', txt: 'Trocar a ocupação sem pagamento por desapropriação com prévia e justa indenização' },
+  { id: 'expropriacao', d: ['a5_xxii_xxiv', 'a60_4'], ex: /\b(?:trabalho (?:escravo|analogo)|psicotropic\w+|drogas|maconha|coca\b)/, rx: /\b(?:ocup\w+|desapropri\w+|expropri\w+|confisc\w+|tom\w+|invad\w+|requisit\w+|nacionaliz\w+) (?:\w+ ){0,4}(?:terras?|imoveis?|propriedades?|fazendas?|bens|empresas?)\b[^.;]{0,30}\bsem (?:a )?(?:previa e justa )?(?:indeniza\w+|compensac\w+|pagar)|\bsem (?:a )?(?:previa e justa )?indenizacao\b[^.;]{0,30}\b(?:terras?|imoveis?|propriedades?|fazendas?)/, ef: 'A propriedade é direito individual (art. 5º, XXII) e a desapropriação exige prévia e justa indenização (art. 5º, XXIV): tomar terras ou bens sem pagar fere cláusula pétrea (art. 60, §4º, IV). A exceção do art. 243 vale só para propriedades rurais e urbanas com trabalho escravo ou cultivo ilegal de psicotrópicos.', sub: 'desapropriar mediante prévia e justa indenização, em títulos da dívida agrária quando for reforma agrária', txt: 'Trocar a ocupação sem pagamento por desapropriação com prévia e justa indenização' },
   { id: 'cassacao_mandato', d: ['a55_15', 'a60_4_i_iii'], ex: /\b(?:condenad\w+|improbidade|ficha limpa|quebra de decoro|justica eleitoral|tse)\b/, rx: /\bcass\w+ (?:\w+ ){0,4}(?:deputad\w+|senador\w+|parlamentar\w*|governador\w*|prefeit\w+|vereador\w+|ministros? (?:do )?(?:stf|supremo)|juiz\w*|opositores|oposicao|adversarios)\b/, ef: 'Mandato eletivo só se perde nos casos da Constituição, por decisão da própria Casa ou da Justiça Eleitoral (arts. 15 e 55); o Executivo ou uma lei que cassa opositores fere a separação dos Poderes e a forma federativa (art. 60, §4º, I e III).', sub: 'deixar a perda de mandato para a Casa legislativa e a Justiça Eleitoral, nos casos da Constituição', txt: 'Trocar a cassação por representação à Casa legislativa ou à Justiça Eleitoral' },
   { id: 'mordaca', d: ['a5_ix', 'a60_4'], rx: /\bproib\w+ (?:\w+ )?(?:a |as |os |o )?(?:imprensa|midia|jornais|jornalistas|emissoras?|veiculos? de comunicacao|redes? sociais|televisao)\b[^.;]{0,30}\b(?:criticar|criticas?|divulgar|noticiar|falar mal|opinar|investigar|fiscalizar)|\bproib\w+ (?:a |as |os |o )?(?:tv globo|rede globo|globo|folha|estadao|sbt|record|band|jornal nacional)\b|\bcriminaliz\w+ (?:a )?(?:critica|criticar)\b[^.;]{0,25}(?:presidente|governo|autoridades)|\bproib\w+ [^.;]{0,25}\bde criticar (?:o )?(?:presidente|governo|ministros|autoridades)\b/, ef: 'Proibir a imprensa de criticar o governo ou vetar um veículo é censura (art. 5º, IX e art. 220, §§1º e 2º; ADPF 130), direito individual protegido pelo art. 60, §4º, IV.', sub: 'responsabilizar abusos por lei, depois da publicação e com direito de resposta', txt: 'Trocar a proibição por responsabilização posterior dos abusos, com direito de resposta (art. 5º, V)' },
   { id: 'prisao_arbitraria', d: ['a5_lxi', 'a60_4'], rx: /prend\w+ (?:sem|independente de|dispensand\w+) (?:ordem|mandado) judicial|prisao (?:administrativa|sem ordem judicial|sem processo)|detencao arbitraria|\bprend\w+ (?:\w+ )?(?:os |as )?(?:opositores|adversarios politicos|criticos|jornalistas|deputados da oposicao|ministros do stf)\b/, ef: 'Prisão sem flagrante ou ordem judicial fundamentada viola o art. 5º, LXI, direito individual protegido pelo art. 60, §4º, IV.', sub: 'prisão apenas em flagrante ou por ordem judicial fundamentada', txt: 'Trocar a prisão sem ordem judicial por prisão em flagrante ou mediante ordem judicial fundamentada' },
@@ -4938,7 +5491,7 @@ const CF_DIREITOS = [
   { id: 'reuniao', d: ['a5_xvi', 'a60_4'], rx: /proibir (?:as |os )?(?:manifestacoes|reunioes|protestos|passeatas)|restringir (?:o direito de )?(?:reuniao|manifestacao)|criminalizar (?:os )?(?:protestos|manifestacoes)/, ef: 'A liberdade de reunião pacífica (art. 5º, XVI) é direito individual protegido pelo art. 60, §4º, IV.', sub: 'organizar as manifestações com aviso prévio à autoridade, sem proibi-las', txt: 'Trocar a proibição por aviso prévio à autoridade, sem vedar a manifestação pacífica' },
   { id: 'religiao', d: ['a5_vi', 'a60_4'], rx: /(?:proibir|vedar|banir|fechar) (?:os |as |a |o )?(?:igrejas?|cultos?|religiao|religioes|templos?)|religiao oficial/, ef: 'A liberdade de crença e o Estado laico (art. 5º, VI e art. 19, I) são protegidos pelo art. 60, §4º, IV.', sub: 'garantir a liberdade de culto e a laicidade do Estado', txt: 'Retirar a vedação e garantir a liberdade de culto' },
   { id: 'associacao', d: ['a5_xvii_xix', 'a60_4'], rx: /(?:dissolver|extinguir|fechar|banir|cassar o registro d\w+) (?:os |as |o |a )?(?:ongs?|sindicatos?|partidos?|associacoes|igrejas)/, ef: 'Associações e partidos só se dissolvem por decisão judicial (art. 5º, XIX; art. 17): ato do Executivo viola direito individual protegido pelo art. 60, §4º, IV.', sub: 'fiscalizar as entidades e pedir à Justiça a dissolução em caso de ilegalidade', txt: 'Trocar a dissolução por fiscalização e pedido judicial em caso de ilegalidade' },
-  { id: 'nacionalidade', d: ['a12_nac', 'a60_4'], rx: /(?:retirar|cassar|perder|tirar) (?:a )?(?:nacionalidade|cidadania) (?:de )?(?:brasileir\w+|nato)|banir brasileir\w+|expulsar brasileir\w+/, ef: 'Brasileiro nato não perde a nacionalidade nem é banido ou extraditado (art. 12, §4º e art. 5º, LI e XLVII).', sub: 'responsabilizar judicialmente quem cometer crimes', txt: 'Trocar a perda da nacionalidade por responsabilização judicial' },
+  { id: 'nacionalidade', d: ['a12_nac', 'a60_4'], rx: /(?:retirar|cassar|perder|tirar) (?:a )?(?:nacionalidade|cidadania) (?:de )?(?:brasileir\w+|nato)|banir brasileir\w+|expulsar brasileir\w+/, ef: 'Brasileiro nato não perde a nacionalidade contra a sua vontade (só a pedido próprio, art. 12, §4º, II), nem é banido ou extraditado (art. 5º, XLVII, d e LI).', sub: 'responsabilizar judicialmente quem cometer crimes', txt: 'Trocar a perda da nacionalidade por responsabilização judicial' },
   { id: 'retroativa', d: ['a5_xxxix_xl', 'a60_4'], rx: /retroativ\w+[^.;]{0,30}(?:pena|crime|lei penal|punicao)/, ef: 'A lei penal que prejudica o réu não retroage (art. 5º, XL), direito individual protegido pelo art. 60, §4º, IV.', sub: 'valer apenas para fatos futuros', txt: 'Limitar a regra a fatos ocorridos depois da vigência da lei' }
 ];
 // nível de legados: trechos do parecer da checagem antiga -> dispositivo da base e vício padrão
@@ -4948,7 +5501,7 @@ const CF_LEG = [
   [/art\. 37, XV/, 'a37_xv', 'materia'], [/art\. 41\b/, 'a41', 'materia'], [/art\. 5º, XXXVI/, 'a5_xxxvi', 'materia'], [/arts\. 198 e 212/, 'a198_212', 'materia'], [/art\. 170\b/, 'a170_177', 'materia'],
   [/art\. 228/, 'a228', 'materia'], [/art\. 5º, XXIV|art\. 5º, XXII/, 'a5_xxii_xxiv', 'materia'], [/art\. 150, VI, b/, 'a150_vi_b', 'forma'], [/art\. 150, IV/, 'a150_iv', 'materia'], [/art\. 231|art\. 225/, 'a225_231', 'materia'],
   [/art\. 5º, LVII/, 'a5_lvii', 'materia'], [/art\. 5º, IX|art\. 220/, 'a5_ix', 'clausula_petrea'], [/art\. 201/, 'a201_7', 'forma'], [/art\. 49/, 'a49_84', 'forma'], [/art\. 201, §7º/, 'a201_7', 'forma'], [/art\. 128 do Código Penal|ADPF 54/, 'a5_caput', 'materia'],
-  [/art\. 4º, VI/, 'a49_84', 'materia'], [/art\. 37, caput/, 'a37_ii', 'materia']
+  [/art\. 4º, VI/, 'a49_84', 'materia'], [/art\. 4º, VII/, 'a49_84', 'materia'], [/art\. 37, caput/, 'a37_ii', 'materia']
 ];
 function cfCtx(A, legal, g) {
   const s = A.s;
@@ -5060,7 +5613,7 @@ CF_RULES.push(C => {
   if (!lcItems.length && !txt && !dem && !gen) return null;
   const E = C.E;
   const d = lcItems.some(i => i.o.id === 'grandes_fortunas') ? ['a153_vii', 'a69'] : txt ? ['a163_165', 'a69'] : dem ? ['a7_i', 'a69'] : lcItems.some(i => /mei|simples/.test(i.o.id)) ? ['a146', 'a69'] : lcItems.some(i => i.o.id === 'fgts_multa') ? ['adct10', 'a7_i', 'a69'] : ['a146', 'a69'];
-  const ef = lcItems.some(i => i.o.id === 'fgts_multa') ? 'Qualquer mudança na multa do FGTS mexe na indenização do art. 7º, I e do ADCT, art. 10, II: depende de lei complementar, aprovada por maioria absoluta (257 deputados e 41 senadores).' : (dem ? 'A proteção contra despedida arbitrária ou sem justa causa depende de lei complementar (art. 7º, I), que fixará a indenização compensatória (por ora, a multa de 40% do FGTS, ADCT, art. 10, I): proibir a demissão sem justa causa exige lei complementar, por maioria absoluta (257 deputados e 41 senadores). Decreto e medida provisória não servem (art. 62, §1º, III).' : 'Matéria reservada a lei complementar (art. 69): aprovação por maioria absoluta nas duas Casas, 257 deputados e 41 senadores. Decreto e medida provisória não servem (art. 62, §1º, III).'); // v3.5
+  const ef = lcItems.some(i => i.o.id === 'fgts_multa') ? 'Qualquer mudança na multa do FGTS mexe na indenização do art. 7º, I e do ADCT, art. 10, I: depende de lei complementar, aprovada por maioria absoluta (257 deputados e 41 senadores).' : (dem ? 'A proteção contra despedida arbitrária ou sem justa causa depende de lei complementar (art. 7º, I), que fixará a indenização compensatória (por ora, a multa de 40% do FGTS, ADCT, art. 10, I): proibir a demissão sem justa causa exige lei complementar, por maioria absoluta (257 deputados e 41 senadores). Decreto e medida provisória não servem (art. 62, §1º, III).' : 'Matéria reservada a lei complementar (art. 69): aprovação por maioria absoluta nas duas Casas, 257 deputados e 41 senadores. Decreto e medida provisória não servem (art. 62, §1º, III).'); // v3.5
   if (!E || E === 'LC' || E === 'PEC') return cfHit({ id: 'lc_reservada', d: d, exige: 'LC', efeito: ef });
   if (E === 'DEC' || E === 'MP' || E === 'ADM') return cfHit({ id: 'lc_reservada', d: d, vicio: 'forma', nivel: 'inconstitucional', exige: 'LC', mpVedada: E === 'MP', efeito: ef,
     sug: [cfSugInst('lc_plp', 'LC', 'Trocar ' + (E === 'MP' ? 'a medida provisória' : 'o decreto') + ' por projeto de lei complementar (PLP, maioria absoluta)')] });
@@ -5073,7 +5626,7 @@ const CF_PEC = [
   { id: 'mandato', rx: /\b(?:duracao do mandato|mandato (?:presidencial )?de (?:cinco|seis|sete|oito|quatro|\d) anos|(?:reduz\w*|ampli\w+|aument\w+|alter\w+|mud\w+|encurt\w+|prolong\w+) (?:o )?mandato (?:do |dos |de )?(?:presidente|presidencial|deputados|senadores|governadores|prefeitos)|fim da reeleicao|(?:acabar com|extinguir|eliminar|proibir) (?:a )?reeleicao|reeleicao (?:de|para) (?:presidente|prefeitos|governadores))\b/, d: ['a14_16'], ef: 'Duração do mandato e reeleição estão no texto constitucional (art. 14, §5º e art. 82): exigem PEC, e a mudança só vale para eleição realizada um ano depois (art. 16).' },
   { id: 'estabilidade', rx: /\b(?:fim da estabilidade|acabar com a estabilidade|flexibilizar a estabilidade|teto (?:remuneratorio|constitucional)|subteto)\b/, d: ['a41', 'a37_ii'], ef: 'Estabilidade do servidor (art. 41) e teto remuneratório (art. 37, XI) estão na Constituição: só PEC os altera.' },
   { id: 'aposentadoria', rx: /\b(?:idade minima[^.;]{0,30}aposent\w+|aposent\w+[^.;]{0,30}idade minima|tempo de contribuicao|regras? de aposentadoria|aposentadoria integral|aposentad\w+ (?:integral )?aos? \d{2}\b|aposentar aos? \d{2}\b)\b/, d: ['a201_7'], ef: 'Idade mínima e tempo de contribuição estão no art. 201, §7º: só PEC altera os requisitos.' },
-  { id: 'congresso_comp', rx: /\b(?:numero de (?:deputados|senadores|vereadores)|composicao d[oa] (?:congresso|senado|camara)|parlamentarismo|semipresidencialismo|voto distrital|distritao|unicameral)\b/, d: ['a14_16'], ef: 'Sistema de governo, composição do Congresso e sistema eleitoral estão na Constituição (arts. 44 a 46, 76 e 77): exigem PEC e respeitam a anterioridade eleitoral (art. 16).' },
+  { id: 'congresso_comp', rx: /\b(?:numero de (?:senadores|vereadores)|composicao d[oa] (?:congresso|senado|camara)|parlamentarismo|semipresidencialismo|voto distrital|distritao|unicameral)\b/, d: ['a14_16'], ef: 'Sistema de governo, composição do Congresso e sistema eleitoral estão na Constituição (arts. 44 a 46, 76 e 77): exigem PEC e respeitam a anterioridade eleitoral (art. 16).' },
   { id: 'petroleo', rx: /\b(?:monopolio (?:estatal |da uniao )?d[oa] petroleo|reestatizar o petroleo|monopolio da petrobras)\b/, d: ['a170_177'], ef: 'O monopólio da União sobre o petróleo está no art. 177: ampliá-lo ou restringi-lo exige PEC.' },
   { id: 'capital', rx: /\b(?:mudar a capital|transferir a capital)\b/, d: ['a18_19'], ef: 'A capital federal está definida no art. 18, §1º: transferi-la exige PEC.' },
   { id: 'ensino', rx: /\b(?:cobrar mensalidade|fim da gratuidade|mensalidade (?:nas|nos|em) universidades? publicas?)\b/, d: ['a206_iv'], ef: 'A gratuidade do ensino público está no art. 206, IV: cobrar mensalidade exige PEC.' },
@@ -5094,7 +5647,7 @@ CF_RULES.push(C => {
     if (extraSug) sug.push(extraSug);
     out.push(cfHit({ id: id, d: d, vicio: vicio, nivel: nivel, exige: 'PEC', petreaDisc: !!petreaDisc, efeito: ef, sug: sug }));
   };
-  for (const R of CF_PEC) if (C.m(R.rx)) addPec(R.id, R.d, R.ef, R.petreaDisc);
+  for (const R of CF_PEC) if (C.m(R.rx) && !(R.id === 'aposentadoria' && C.A.v37 && C.A.v37.normas.some(n => /^v37_(idade|tempo|apos_esp)/.test(n.id)))) addPec(R.id, R.d, R.ef, R.petreaDisc); // v3.7: a leitura da previdência já fixa o instrumento (PEC ou lei complementar)
   // jornada: EC 141/2026 já em vigor
   const j = C.act.find(i => i.o.id === 'jornada_6x1') || C.A.items.find(i => i.o.id === 'jornada_6x1' && i.jaVigente);
   if (j && C.A.jaVigente) out.push(cfHit({ id: 'jornada_vigente', d: ['ec141', 'a7_xiii'], exige: 'PEC', efeito: C.A.jaVigente.txt }));
@@ -5115,6 +5668,24 @@ CF_RULES.push(C => {
   // abono salarial
   const ab = C.act.find(i => i.o.id === 'abono_salarial' && i.sg < 0);
   if (ab) addPec('abono', ['a239_3'], 'O abono salarial de um salário mínimo para quem ganha até dois mínimos está no art. 239, §3º: reduzir ou extinguir o benefício exige PEC.', false);
+  return out;
+});
+/* R7b (v3.7): matéria de PEC, de lei complementar ou já resolvida pela Constituição, lida pelas normas da v3.7 */
+CF_RULES.push(C => {
+  const V = C.A.v37; if (!V || !V.normas.length) return null;
+  const E = C.E, out = [];
+  for (const N of V.normas) {
+    if (N.ex === 'PEC') {
+      let vicio = null, nivel = 'ok'; const sug = [];
+      if (E && E !== 'PEC') { vicio = 'forma'; nivel = cfInstNivel(E); sug.push(cfSugInst(N.id + '_pec', 'PEC', 'Transformar em PEC (três quintos em dois turnos, 308 deputados e 49 senadores)')); }
+      else if (N.nivel) { vicio = N.petrea ? 'clausula_petrea' : 'materia'; nivel = N.nivel; }
+      out.push(cfHit({ id: N.id, d: N.d, vicio: vicio, nivel: nivel, exige: 'PEC', petreaDisc: !!N.petrea && !(E && E !== 'PEC'), efeito: N.ef, sug: sug }));
+    } else if (N.ex === 'LC') {
+      if (!E || E === 'LC' || E === 'PEC') out.push(cfHit({ id: N.id, d: N.d, exige: 'LC', efeito: N.ef }));
+      else if (E === 'DEC' || E === 'MP' || E === 'ADM') out.push(cfHit({ id: N.id, d: N.d, vicio: 'forma', nivel: 'inconstitucional', exige: 'LC', mpVedada: E === 'MP', efeito: N.ef, sug: [cfSugInst('lc_plp', 'LC', 'Trocar ' + (E === 'MP' ? 'a medida provisória' : 'o decreto') + ' por projeto de lei complementar (PLP, maioria absoluta)')] }));
+      else out.push(cfHit({ id: N.id, d: N.d, vicio: 'forma', nivel: 'controverso', exige: 'LC', efeito: N.ef + ' Lei ordinária sobre matéria de lei complementar tem vício formal.', sug: [cfSugInst('lc_plp', 'LC', 'Trocar o projeto de lei por projeto de lei complementar (PLP, maioria absoluta)')] }));
+    } else out.push(cfHit({ id: N.id, d: N.d, vicio: 'materia', nivel: N.nivel || 'controverso', efeito: N.ef }));
+  }
   return out;
 });
 /* R8: anterioridade tributária e vigência */
@@ -5233,7 +5804,7 @@ CF_RULES.push(C => {
     if (hed) out.push(cfHit({ id: 'indulto_hediondo', d: ['a5_xliii', 'a84_xii'], vicio: 'materia', nivel: 'inconstitucional', exige: 'PEC', petreaDisc: true,
       efeito: 'Tortura, tráfico, terrorismo e crimes hediondos são insuscetíveis de graça ou anistia (art. 5º, XLIII): o indulto presidencial não os alcança e o STF anula o decreto nessa parte.',
       sug: [cfSug('indulto_ret', 'retirar', 'Excluir do indulto os crimes hediondos e equiparados (art. 5º, XLIII)', null, { grave: true })] }));
-    else out.push(cfHit({ id: 'indulto', d: ['a84_xii'], efeito: 'O indulto é prerrogativa privativa do Presidente (art. 84, XII), por decreto, com a audiência do Conselho Nacional de Política Criminal; não pode alcançar crimes hediondos e equiparados (art. 5º, XLIII) nem servir de desvio de finalidade (ADPF 964).' }));
+    else out.push(cfHit({ id: 'indulto', d: ['a84_xii'], efeito: 'O indulto é prerrogativa privativa do Presidente (art. 84, XII), por decreto, com audiência, se necessário, dos órgãos instituídos em lei; não pode alcançar crimes hediondos e equiparados (art. 5º, XLIII) nem servir de desvio de finalidade.' })); // v3.7
   }
   if (fraco && C.m(/\banisti\w+\b/) && !C.m(/\banistia (?:fiscal|ambiental|de multas?|de dividas?)\b/)) out.push(cfHit({ id: 'anistia_lei', d: ['a84_xii'], vicio: 'forma', nivel: 'inconstitucional', exige: 'PL',
     efeito: 'Anistia é lei do Congresso (art. 48, VIII), com sanção presidencial; decreto ou medida provisória não anistia: o Presidente só pode conceder indulto individual ou coletivo (art. 84, XII).',
@@ -5295,7 +5866,7 @@ CF_RULES.push(C => {
   }
   const gen = C.act.find(i => i.o.gen && (i.o.k === 'R'));
   if (C.act.some(i => i.o.gen) && !out.length && /\b(?:eleic\w+|eleitor\w*|candidat\w+|candidatur\w+|mandatos?|reeleic\w+|partidos? politicos?|voto|urnas?|campanha eleitoral|coligac\w+)\b/.test(C.s)) out.push(cfHit({ id: 'gen_eleitoral', d: ['a14_16'], efeito: 'Matéria eleitoral: lei que altere o processo eleitoral só vale para eleição realizada mais de um ano depois de sua vigência (art. 16); mandato, reeleição e sistema eleitoral estão no texto constitucional (arts. 14 e 44 a 46) e só mudam por PEC.' })); // v3.5: leitura genérica não perde a base constitucional
-  if (gen && (E === 'DEC' || E === 'ADM')) out.push(cfHit({ id: 'gen_legalidade', d: ['a84_vi'], vicio: 'forma', nivel: 'inconstitucional', exige: 'PL', efeito: 'Obrigar, proibir ou liberar condutas de particulares é matéria de lei (art. 5º, II: ninguém é obrigado a fazer ou deixar de fazer algo senão em virtude de lei); o decreto presidencial só organiza a administração (art. 84, VI).',
+  if (gen && (E === 'DEC' || E === 'ADM')) out.push(cfHit({ id: 'gen_legalidade', d: ['a84_vi'], vicio: 'forma', nivel: 'inconstitucional', exige: 'PL', efeito: 'Obrigar, proibir ou liberar condutas de particulares é matéria de lei (art. 5º, II: ninguém é obrigado a fazer ou deixar de fazer algo senão em virtude de lei); o decreto presidencial só regulamenta a lei (art. 84, IV) e organiza a administração (art. 84, VI).',
     sug: [cfSugInst('gen_pl', 'PL', 'Transformar em projeto de lei, já que a norma alcança particulares')] }));
   return out.length ? out : null;
 }); // v3.5
@@ -5320,12 +5891,12 @@ const CF35 = [
   { id: 'recall', rx: /\brecall\b|\brevogacao de mandato\b|\breferendo revogatorio\b/, nivel: 'ok', exige: 'PEC', force: 1, d: ['a14_16'], ef: 'A perda de mandato só ocorre nos casos da Constituição (arts. 55 e 15); o recall de eleitos exige emenda constitucional.' },
   { id: 'passagem_aerea', rx: /\b(?:congelar|tabelar|limitar|fixar|controlar|teto)\b[^.;]{0,25}\b(?:passagens?|tarifas?|precos?)\b[^.;]{0,15}\b(?:aere\w+|aviacao|voos?)\b/, nivel: 'controverso', d: ['a170_177'], ef: 'As tarifas aéreas são livres desde a abertura do setor (Lei 11.182/2005); tabelar ou congelar o preço fere a livre iniciativa e a livre concorrência (art. 170) e será contestado por ADI das companhias.' },
   { id: 'transgenico', rx: /\b(?:transgenic\w+|ogm|geneticamente modificad\w+)\b[^.;]{0,30}\b(?:sem|retirar|acabar com|dispensar)\b[^.;]{0,20}\b(?:rotulo|aviso|simbolo|informacao|identificacao)\b|\bsem (?:aviso|simbolo|rotulo|informacao)\b[^.;]{0,30}\btransgenic\w+/, nivel: 'controverso', d: ['rotulo'], ef: 'O consumidor tem direito à informação adequada (CDC, art. 6º, III) e o rótulo de transgênicos é exigido por decreto (Decreto 4.680/2003): dispensar o aviso será contestado como violação do direito do consumidor.' },
-  { id: 'poliafetiva', rx: /\buniao poliafetiva\b|\bpoliamor\w*|\bcasamento (?:entre )?(?:tres|mais de duas) pessoas\b|\bpoligamia\b/, nivel: 'controverso', d: ['a5_caput'], ef: 'A Constituição reconhece o casamento e a união estável entre duas pessoas (art. 226) e o CNJ vedou o registro em cartório de uniões poliafetivas (2018): reconhecê-las exige lei e será judicializado.' },
+  { id: 'poliafetiva', rx: /\buniao poliafetiva\b|\bpoliamor\w*|\bcasamento (?:entre )?(?:tres|mais de duas) pessoas\b|\bpoligamia\b/, nivel: 'controverso', d: ['a5_caput'], ef: 'A Constituição protege a família e reconhece a união estável entre o homem e a mulher (art. 226, §3º), estendida pelo STF a casais do mesmo sexo (ADI 4277); o CNJ vedou o registro em cartório de uniões poliafetivas (2018): reconhecê-las exige lei e será judicializado.' },
   { id: 'tabelamento_geral', rx: /\b(?:congel\w+|tabel\w+)\b[^.;]{0,20}\bpre(?:co|cos)\b/, nivel: 'controverso', d: ['a170_177'], ef: 'Congelar ou tabelar preços restringe a livre iniciativa e a livre concorrência (CF, art. 170, IV e parágrafo único) e, quando amplo e sem prazo, será contestado por ADI das confederações empresariais.', neg: /\b(?:gasolina|diesel|combustiv\w+|petrobras|energia|luz)\b/ },
   { id: 'tiktok', rx: /\b(?:banir|bloquear|proibir)\b[^.;]{0,10}\b(?:o )?(?:tiktok|x|twitter|telegram|instagram|whatsapp|redes? sociais)\b/, nivel: 'controverso', d: ['a5_ix'], ef: 'Bloquear uma rede social inteira atinge a liberdade de expressão (art. 5º, IX e art. 220) e o Marco Civil da Internet, que só admite suspensão em hipóteses legais e por ordem judicial; a medida será judicializada.' },
   { id: 'saida_tratado', rx: /\b(?:sair|saida|retirar o brasil|tirar o brasil|deixar|abandonar|denunciar|romper com|sair fora)\b[^.;]{0,20}\b(?:acordo de paris|mercosul|omc|oms|onu|oea|tratado|acordo (?:internacional|do clima))\b|\bacordo de paris\b[^.;]{0,15}\b(?:sair|saida|tirar|deixar)\b/, nivel: 'controverso', d: ['a49_84'], aut: 1, ef: 'A denúncia de tratado internacional é debatida no STF (ADI 1625): a corrente majoritária exige a autorização do Congresso (art. 49, I), que referendou a entrada; fazê-lo por decreto será contestado.' },
   { id: 'entrada_tratado', rx: /\b(?:entrar|aderir|ingressar|adesao|aprovar|fechar|assinar)\b[^.;]{0,15}\b(?:na |a |o |no )?(?:ocde|omc|acordo mercosul|acordo (?:comercial|de livre.?comercio|entre o mercosul)|acordo com a (?:ue|uniao europeia))\b|\bacordo mercosul.?(?:uniao europeia|ue)\b|\badesao (?:a|da) ocde\b/, nivel: 'ok', d: ['a49_84'], aut: 1, ef: 'Tratados e acordos internacionais são assinados pelo Presidente, mas só valem depois da aprovação do Congresso por decreto legislativo (CF, art. 49, I e art. 84, VIII).' },
-  { id: 'missao_paz', rx: /\b(?:enviar|mandar|deslocar)\b[^.;]{0,20}\btropas?\b[^.;]{0,30}\b(?:onu|missao|paz|exterior)\b|\bmissao de paz\b/, nivel: 'ok', d: ['a49_84'], aut: 1, ef: 'O envio de tropas ao exterior depende de autorização do Congresso (CF, art. 49, II e art. 84, XIX) e do respeito à solução pacífica dos conflitos (art. 4º, VI).' }
+  { id: 'missao_paz', rx: /\b(?:enviar|mandar|deslocar)\b[^.;]{0,20}\btropas?\b[^.;]{0,30}\b(?:onu|missao|paz|exterior)\b|\bmissao de paz\b/, nivel: 'ok', d: ['a49_84'], aut: 1, ef: 'O envio de tropas ao exterior segue a prática de autorização do Congresso por decreto legislativo (LC 90/1997); a CF trata da guerra e da paz (art. 49, II; art. 84, XIX e XX) e manda buscar a solução pacífica dos conflitos (art. 4º, VII).' }
 ];
 CF_RULES.push(C => {
   const out = [];
@@ -5362,6 +5933,7 @@ function cfEngine(A, legal, g) {
   const base = { v: 1, dispositivos: [], instrumentoExigido: 'COM', instrumentoAtual: 'COM', vicio: null, nivel: legal.nivel, sugestoes: [], mpVedada: false, bloqueio: false, petrea: false, parecer: legal.parecer };
   if ((A.pledgeOnly || A.talk) && !A.jaVigente) { legal.jur = base; return legal; }
   if (A.jaVigente && legal.nivel === 'ok') { legal.parecer = A.jaVigente.txt; }
+  if (A.v37 && A.v37.red) { legal.jur = base; return legal; } // v3.7: pedido que repete a lei em vigor não tem vício a apontar
   const C = cfCtx(A, legal, g);
   let hits = [];
   for (const r of CF_RULES) { let h = null; try { h = r(C); } catch (e) { h = null; } if (h) hits = hits.concat(h); }
@@ -5857,7 +6429,10 @@ function analisar(g, texto, ctx) {
   const A = parse(orig);
   const s = A.s;
   A.instExpl = null; A.instDet = null;
-  for (let n = 0; n < INST_EXPL.length; n++) if (INST_EXPL[n][1].test(s)) { A.instExpl = INST_EXPL[n][0]; break; }
+  const sIE = s.replace(/\bsem (?:a |uma |nova |qualquer |necessidade de |precisar de )?(?:lei complementar|plp|pec|emenda constitucional|emenda a constituicao|decreto|medida provisoria|projeto de lei|lei)\b/g, ' '); // v3.7: "sem lei complementar" nega o instrumento
+  for (let n = 0; n < INST_EXPL.length; n++) if (INST_EXPL[n][1].test(sIE)) { A.instExpl = INST_EXPL[n][0]; break; }
+  if ((A.instExpl === 'MP' || A.instExpl === 'DEC' || A.instExpl === 'ADM') && A.v37 && A.v37.normas.some(n => n.id === 'v37_mp' || n.id === 'v37_tratado' || n.id === 'v37_cnj_res')) A.instExpl = null; // v3.7: a medida provisória é o assunto, não o instrumento
+  if (A.instExpl === 'PL' && !/\b(?:projeto de lei|pl|lei ordinaria|nova lei|enviar ao congresso|mandar ao congresso)\b/.test(s) && A.v37 && A.v37.normas.some(n => n.ex === 'LC')) A.instExpl = null; // v3.7: "por lei" sobre matéria de lei complementar é só o gênero
   if (A.instExpl === 'LC') A.instDet = 'LC';
   // restricoes de fonte ("sem aumentar impostos") e promessas
   const sized = (i) => i.o.k === 'G' || i.o.k === 'T' || i.o.k === 'E';
@@ -5927,6 +6502,7 @@ function analisar(g, texto, ctx) {
   if (A.vago) inst = A.instExpl ? (A.instExpl === 'LC' ? 'PL' : A.instExpl) : 'COM';
   if (A.instExpl === 'LC') A.instDet = 'LC';
   else if (!A.instExpl && A.items.some(i => i.sg && (i.o.lc || i.lcDyn) && !i.fora)) A.instDet = 'LC';
+  if (A.instDet === 'LC' && !A.instExpl && !A.vago && !A.talk && (inst === 'MP' || INST_ORDEM.indexOf(inst) < INST_ORDEM.indexOf('PL'))) inst = 'PL'; // v3.7: matéria de lei complementar não vai por MP, decreto ou ato
   if (A.autInst && !A.instExpl && !A.vago && !A.talk) { if (INST_ORDEM.indexOf(inst) < INST_ORDEM.indexOf('PL')) inst = 'PL'; if (inst === 'PL') A.instDet = 'AUT'; } // v3.5: tratado = autorização do Congresso
   if (!A.instExpl && !A.vago && !A.talk && inst === 'PL' && /\bestado de sitio\b/.test(s) && A.items.some(i => i.sg && i.o.id === 'estado_excecao')) A.instDet = 'AUT'; // v3.4: sítio = autorização do Congresso (257/41)
   // pasta
@@ -6882,7 +7458,7 @@ function montaParecerV3(X) {
   const S = [];
   S.push('A proposta (' + prop.topic + ') seria editada como ' + INST_NOME[inst] + ' e executada pela pasta ' + pastaNome + '.');
   if (A.generica) S.push(TXT_GENERICA); // v3.5
-  if (A.normaVigente) S.push('Já em vigor: ' + A.normaVigente.txt + ' O que passar do texto vigente é mudança real; o que repetir é redundante.'); // v3.5
+  if (A.normaVigente) S.push(A.normaVigente.rel ? 'Norma relacionada: ' + A.normaVigente.txt + ' O que passar do texto vigente é mudança real.' : 'Já em vigor: ' + A.normaVigente.txt + ' O que passar do texto vigente é mudança real; o que repetir é redundante.'); // v3.5 v3.7
   if (A.talk) S.push('É um ato de comunicação, sem despesa nem receita: o efeito se limita à percepção pública.');
   else if (F.S > 0) S.push('Custo e financiamento: despesa ou renúncia de ' + fmtBi(F.S) + ' no primeiro ano, com fonte cobrindo ' + fmtNum(F.cov * 100, 0) + '% da conta, resultado líquido de ' + fmtBi(Math.abs(F.Neff || 0)) + (F.Neff > 0 ? ' de pressão sobre o primário.' : ' favorável ao primário.'));
   else if ((F.Neff || 0) < 0) S.push('Custo e financiamento: melhora o primário em ' + fmtBi(-F.Neff) + '.');
@@ -8520,7 +9096,7 @@ const MED_TIPOS = { // v3.6
   programa:  { nome: 'Programa',                  ic: 'ClipboardList', imp: [6, 18],  mat: [12, 18], antE: .25, antG: .55, antF: .15 },
   obra:      { nome: 'Obra ou contratação',       ic: 'HardHat',       imp: [12, 24], mat: [12, 24], antE: .2,  antG: .5,  antF: .1 },
   regulacao: { nome: 'Regulação',                 ic: 'FileText',      imp: [3, 8],   mat: [6, 12],  antE: .35, antG: .8,  antF: .5 },
-  previdencia: { nome: 'Regra previdenciária', ic: 'Landmark',  imp: [30, 42], mat: [6, 12],  antE: .3,  antG: .85, antF: 0 }, // v3.6: economia cresce com as coortes que deixam de se aposentar
+  previdencia: { nome: 'Regra previdenciária', ic: 'Landmark',  imp: [30, 42], mat: [6, 12],  antE: .6,  antG: 1, antF: .08 }, // v3.6: economia cresce com as coortes que deixam de se aposentar
   estatal:   { nome: 'Estatal ou privatização',   ic: 'Building2',     imp: [6, 15],  mat: [12, 18], antE: .45, antG: .7,  antF: .7 }
 };
 const MED_FASES = [['pub', 'Publicação'], ['reg', 'Regulamentação'], ['imp', 'Implantação'], ['pleno', 'Efeito pleno'], ['mat', 'Maturação']];
@@ -8552,7 +9128,8 @@ function medTipo(prop) {
   const fl = prop.flags || [], cats = prop.cats || [];
   if (prop.transiente || prop.vago || prop.absurdo || fl.includes('ato_comunicacao') || fl.includes('promessa') || fl.includes('fora_competencia') || fl.includes('absurdo')) return null;
   const os = (prop.objs || []).filter(o => o.sg || o.own);
-  if (os.some(x => x.id === 'previdencia_reforma' || x.cat === 'previdencia') && (prop.cost || 0) <= 0) return 'previdencia';
+  if (os.some(x => x.id === 'previdencia_reforma' || x.id === 'aposentadoria_idade') && (prop.cost || 0) <= 0) return 'previdencia';
+  if (os.some(x => x.k === 'G' && /^v37_prev_/.test(x.id))) return 'previdencia'; // v3.7: regras de requisito e benefício, mais duras ou mais frouxas
   const o = os[0];
   if (o) {
     if (o.k === 'C' || o.k === 'D') return null;
@@ -12589,7 +13166,7 @@ const TB_FONTE = {
   seg: { t: 'MTE / Codefat, Lei 7.998/1990', d: 'piso R$ 1.621 e teto R$ 2.518,65 desde 11/01/2026; no jogo, reajustados em janeiro com o salário mínimo e o INPC', obs: 'gasto anual (R$ 45–50 bi) é estimativa de memória, não verificada' },
   abono: { t: 'Governo federal (MTE), estimativa para 2026', d: '26,9 mi de beneficiários e R$ 33,5 bi; EC 135/2024', obs: 'teto de renda divergente entre fontes' },
   sm: { t: 'Decreto de 30/12/2025', d: 'R$ 1.621 em 2026 (+6,79%)', obs: 'o valor de 2027 em diante é calculado pelo jogo: INPC (aproximado pelo IPCA de 12 meses) + PIB de dois anos antes, com ganho real entre 0,6% e 2,5%' },
-  ec141: { t: 'EC 141/2026 (PEC 221/2019), CF compilada no TSE', d: 'art. 7º, XIII e XV: 40h semanais e 2 dias de repouso; transição 42h (dez/2026) e 40h (dez/2027) no jogo', obs: 'datas da transição aproximadas' },
+  ec141: { t: 'EC 141/2026 (PEC 221/2019), CF compilada no TSE', d: 'art. 7º, XIII: 40h semanais (repouso de 2 dias na média mensal, §2º); transição 42h (dez/2026) e 40h (dez/2027) no jogo', obs: 'datas da transição aproximadas' },
   lic: { t: 'Lei de 31/03/2026 (número incerto) e ADCT art. 10, §1º', d: '10 dias em 2027, 15 em 2028 e 20 em 2029', obs: '' },
   des: { t: 'Lei 14.973/2024', d: 'reoneração gradual: cota patronal 75% em 2027 e plena em 2028', obs: 'renúncia de R$ 15–20 bi/ano é estimativa de memória' },
   mei_lim: { t: 'LC 123/2006, art. 18-A', d: 'R$ 81 mil/ano, congelado desde 2018; PLP 186/2026 propõe R$ 110 mil e depois R$ 140 mil', obs: 'votação adiada para depois das eleições' }
@@ -17556,7 +18133,7 @@ function Documento({ prop, g, children }) {
     <div className="px-5 sm:px-8 pt-5 pb-3 border-b border-black/10 text-center">
       <div className="text-[11px] tracking-[.2em] uppercase font-semibold" style=${{ fontFamily: 'var(--f-mono)' }}>Presidência da República · Casa Civil · Subchefia para Assuntos Jurídicos</div>
       <div className="disp text-2xl sm:text-3xl font-black uppercase mt-2">${prop.instDetalhe === 'AUT' ? 'Pedido de autorização ao Congresso' : INST_NOME[prop.inst]}</div>
-      <div className="text-xs mt-1" style=${{ fontFamily: 'var(--f-mono)' }}>Brasília, ${MESES[(g.mes - 1) % 12]} de ${ano} · ${prop.ai ? 'parecer gerado por IA' : prop.motor === 'v3' ? 'parecer do motor v3.6' : prop.motor === 'v2' ? 'parecer do motor v2' : 'parecer do motor local'}</div>
+      <div className="text-xs mt-1" style=${{ fontFamily: 'var(--f-mono)' }}>Brasília, ${MESES[(g.mes - 1) % 12]} de ${ano} · ${prop.ai ? 'parecer gerado por IA' : prop.motor === 'v3' ? 'parecer do motor v3.7' : prop.motor === 'v2' ? 'parecer do motor v2' : 'parecer do motor local'}</div>
     </div>
     <div className="px-5 sm:px-8 py-5 flex flex-col gap-4">${children}</div>
   </div>`;

@@ -1,0 +1,1271 @@
+[
+ {
+  "t": "Esticar o mandato dos senadores de oito para dez anos",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "senador|mandato"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 46: mandato de 8 anos; alterar exige PEC; sem custo"
+ },
+ {
+  "t": "Passar para os estados a competência de legislar sobre direito penal",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "penal"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 22 I: direito penal é privativo da União; transferir exige PEC"
+ },
+ {
+  "t": "Esticar de 75 para 80 anos a idade da aposentadoria compulsória no serviço público",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "compulsoria|aposentadoria|idade|75|80"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   -2,
+   1
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 40 §1º II (EC 88/2015 e LC 152/2015): 75 anos; mudar exige PEC; efeito fiscal desprezível"
+ },
+ {
+  "t": "Exigir que cada decreto de indulto traga justificativa publicada em dez dias",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "indulto|decreto|justifica"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Regra procedimental sem despesa; CF 84 XII deixa o indulto ao Presidente; sem custo"
+ },
+ {
+  "t": "Fixar mandato de dez anos, sem recondução, para ministros do Supremo",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "mandato|stf|supremo|ministro"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 101: ministros do STF até a aposentadoria compulsória; mandato fixo exige PEC; sem custo"
+ },
+ {
+  "t": "Subir para 45 anos a idade mínima para ser ministro do Supremo",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "stf|supremo|idade|ministro"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 101 caput (mais de 35 e menos de 70 anos); mudar exige PEC; sem custo"
+ },
+ {
+  "t": "Tornar o voto facultativo para todos os eleitores",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "voto|facultativ"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 14 §1º I: alistamento e voto obrigatórios entre 18 e 70 anos; exige PEC"
+ },
+ {
+  "t": "Autorizar candidatura avulsa, sem filiação a partido",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "candidatura|avuls|filiac"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 14 §3º V: filiação partidária é condição de elegibilidade; exige PEC"
+ },
+ {
+  "t": "Limitar a três mandatos consecutivos a permanência de deputados federais",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "mandato|reeleic|deputad|limit"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 45 e 14: sem limite de reeleição para o Legislativo; limite exige PEC; sem custo"
+ },
+ {
+  "t": "Criar um Tribunal Constitucional separado do Supremo",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "tribunal constitucional|corte constitucional|constitucional"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   0,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 92 e 102: criar tribunal de cúpula exige PEC; custo de instalação de poucos bilhões"
+ },
+ {
+  "t": "Dar ao presidente o poder de dissolver a Câmara dos Deputados em caso de crise",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "dissol|camara"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Presidencialismo (CF 2º e 76 a 84): dissolução inexiste; exige PEC e fere a separação de Poderes (cláusula pétrea, art. 60 §4º III)"
+ },
+ {
+  "t": "Regular por lei complementar o número de deputados de cada estado conforme a população",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "deputad|bancada|numero|populac"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PLP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "LC 78/1993",
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 45 §1º manda LC fixar o total de deputados e a representação por estado (LC 78/1993)"
+ },
+ {
+  "t": "Autorizar o Tribunal de Contas da União a sustar contratos do Executivo por conta própria",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "tribunal de contas|tcu|contrato|sustar"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 71 §§1º e 2º: o ato é sustado pelo Congresso; contratos só pelo Congresso, e o TCU decide em 90 dias se este não o faz; mudar exige PEC"
+ },
+ {
+  "t": "Eleger prefeitos para mandatos de cinco anos",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "mandato|prefeit"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 29 I: mandato de 4 anos; exige PEC; sem custo"
+ },
+ {
+  "t": "Fazer coincidir em um só dia as eleições municipais e as gerais",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "eleic|coincid|unific|municipai|gerais"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 29 II e 77: calendários separados; unificar exige PEC com prorrogação ou encurtamento de mandatos"
+ },
+ {
+  "t": "Revogar a imunidade de deputados e senadores por crimes comuns",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "imunidade|parlament"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 53 (EC 35/2001): imunidade formal; mudar exige PEC; sem custo"
+ },
+ {
+  "t": "Aumentar o repasse do Fundo de Participação dos Estados",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "fundo de participacao|fpe|repasse|estados"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   8,
+   300
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 159 I a: FPE e FPM são fixados na CF; elevar o percentual exige PEC; custo federal de dezenas de bilhões"
+ },
+ {
+  "t": "Acabar com o foro privilegiado de ministros de Estado e parlamentares",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "foro"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 53 §1º, 102 I b e c: foro por prerrogativa está na CF; extinguir exige PEC; sem custo"
+ },
+ {
+  "t": "Marcar a posse do presidente da República para 5 de janeiro",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "posse"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "EC 111/2021",
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 82 (EC 111/2021 fixou a posse em 5 de janeiro a partir de 2027)"
+ },
+ {
+  "t": "Escolher os ministros do Supremo a partir de lista tríplice elaborada pela OAB",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "stf|supremo|ministro|lista|escolh|oab"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 101 par. único: nomeação pelo Presidente após aprovação do Senado; mudar o rito exige PEC; sem custo"
+ },
+ {
+  "t": "Obrigar o patrão a motivar por escrito toda demissão por justa causa",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "justa causa|demissao|motiv"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CLT 482 e 477: hoje só há comunicação da dispensa; regra procedimental sem despesa pública"
+ },
+ {
+  "t": "Fixar prazo de quinze dias para o ministério responder a pedido de registro sindical",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "registro sindical|prazo|sindic"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL",
+   "ADM",
+   "DEC",
+   "MP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 8º I: registro no órgão competente; prazo é regra procedimental sem despesa"
+ },
+ {
+  "t": "Pagar em dobro o trabalho em domingos e feriados quando não houver folga compensatória",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "dobro|domingo|feriado"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 605/1949",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 605/1949 art. 9º já paga em dobro o repouso e feriado trabalhados sem folga compensatória"
+ },
+ {
+  "t": "Deixar a empresa distribuir lucros aos empregados conforme metas, sem encargos trabalhistas",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "lucros|resultados|plr|participac"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": [
+   -5,
+   1
+  ],
+  "unico": null,
+  "jaVigente": "Lei 10.101/2000",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 10.101/2000 já permite PLR negociada sem natureza salarial"
+ },
+ {
+  "t": "Pagar de três a cinco parcelas de seguro-desemprego conforme o tempo de serviço",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "seguro.desemprego|parcelas|desemprego"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 7.998/1990",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 7.998/1990 art. 4º: 3 a 5 parcelas conforme o tempo de contribuição; norma já em vigor"
+ },
+ {
+  "t": "Baixar de 8% para 6% o depósito mensal do empregador no FGTS",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "fgts|deposito"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   -1,
+   2
+  ],
+  "receita": [
+   -3,
+   1
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 8.036/1990 art. 15: 8% do salário; mudar é por lei ordinária; efeito sobre o resultado primário desprezível (FGTS é fundo do trabalhador)"
+ },
+ {
+  "t": "Tirar a obrigatoriedade do imposto sindical",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "sindic|contribuicao"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 13.467/2017",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 13.467/2017 (reforma trabalhista) tornou facultativa a contribuição sindical"
+ },
+ {
+  "t": "Proibir greve de servidores públicos",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "greve|servidor"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "CF 37 VII garante o direito de greve do servidor nos termos de lei; proibi-lo exige PEC e esbarra em direito fundamental (art. 9º, cláusula pétrea)"
+ },
+ {
+  "t": "Passar para a Justiça comum as ações de acidente de trabalho contra o empregador",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "acidente|justica"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 114 VI (EC 45/2004): competência da Justiça do Trabalho; mudar exige PEC; sem custo relevante"
+ },
+ {
+  "t": "Reduzir de 27 para 20 os ministros do Tribunal Superior do Trabalho",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "tst|tribunal superior do trabalho|ministro"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 111-A: TST com 27 ministros; mudar o número exige PEC; efeito fiscal desprezível"
+ },
+ {
+  "t": "Deixar o empregado vender 20 dias das férias em vez de 10",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "ferias|abono|vender"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CLT 143: abono pecuniário de até um terço das férias; mudar o limite é lei ordinária; sem custo público"
+ },
+ {
+  "t": "Dividir as férias em até três períodos, com acordo do empregado",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "ferias|periodo|fraciona|dividir"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 13.467/2017",
+  "cf": [
+   "ok"
+  ],
+  "nota": "CLT 134 §1º (Lei 13.467/2017): férias em até três períodos, um com 14 dias; já em vigor"
+ },
+ {
+  "t": "Pagar adicional de insalubridade de 40% a quem recolhe lixo urbano",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "insalubridade|lixo|adicional"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CLT 192: grau máximo de 40% do salário mínimo; Súmula 448 do TST reconhece o lixo urbano; sem custo público relevante"
+ },
+ {
+  "t": "Proibir a revista íntima de empregadas pela empresa",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "revista"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 13.271/2016",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 13.271/2016 proíbe a revista íntima de funcionárias; já em vigor"
+ },
+ {
+  "t": "Cortar em 30% a contribuição patronal ao INSS das empresas de tecnologia",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "patronal|contribuicao|tecnologia|inss|folha"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": [
+   -30,
+   -0.5
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Renúncia de contribuição patronal de um setor: alguns bilhões por ano (receita negativa)"
+ },
+ {
+  "t": "Dispensar da contribuição patronal o primeiro empregado de cada microempresa",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "patronal|contribuicao|primeiro|micro|empregad"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL",
+   "MP",
+   "PLP"
+  ],
+  "custo": null,
+  "receita": [
+   -15,
+   -0.3
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Renúncia de contribuição patronal para microempresas: alguns bilhões por ano (receita negativa)"
+ },
+ {
+  "t": "Criar por lei proteção contra despedida arbitrária com indenização de seis salários",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "despedida|demissao|dispensa|indeniza"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PLP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 7º I: proteção contra despedida arbitrária \"nos termos de lei complementar\"; exige PLP (maioria absoluta)"
+ },
+ {
+  "t": "Obrigar as plataformas a pagar seguro contra acidentes aos entregadores",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "plataforma|aplicativo|seguro|acidente|entregador"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Custo recai sobre as plataformas, não sobre o Tesouro; sem custo público"
+ },
+ {
+  "t": "Fixar em seis horas a jornada diária dos bancários",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "banc|jornada|6|seis"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "5.452/1943",
+  "cf": [
+   "ok"
+  ],
+  "nota": "CLT art. 224 (Decreto-Lei 5.452/1943) já fixa 6 horas para bancários"
+ },
+ {
+  "t": "Permitir sindicato com base territorial menor que um município",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "sindic|base territorial|municipio"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 8º II: unicidade sindical, base territorial mínima de um município; mudar exige PEC"
+ },
+ {
+  "t": "Trocar a repartição por contas individuais para quem entrar no mercado de trabalho a partir de 2028",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "capitaliza|individua|repartic|conta"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   15,
+   400
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Regime de capitalização para novos entrantes: as contribuições saem do INSS e os benefícios atuais seguem; custo de transição de dezenas a centenas de bilhões por ano"
+ },
+ {
+  "t": "Montar um sistema misto, com parte do INSS em repartição e parte em poupança individual",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "capitaliza|misto|individua|poupanca|repartic"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   10,
+   300
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Parte da contribuição desviada para contas individuais: custo de transição relevante (dezenas de bilhões por ano)"
+ },
+ {
+  "t": "Igualar em 65 anos a idade de aposentadoria de homens e mulheres",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "idade|aposentadoria|mulher|igual"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   -12,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 201 §7º I (EC 103/2019): 65 anos homem e 62 mulher; elevar exige PEC; economia gradual"
+ },
+ {
+  "t": "Aumentar para 25 anos o tempo mínimo de contribuição para a aposentadoria por idade",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "tempo|contribuicao|aposentadoria"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   -10,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "EC 103/2019 art. 19 e 201 §7º: 20 anos para homens e 15 para mulheres; mudar exige PEC; economia gradual"
+ },
+ {
+  "t": "Criar uma transição com pedágio de 100% do tempo que falta para quem está perto de se aposentar",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "pedagio|transicao"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   -20,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "EC 103/2019",
+  "cf": [
+   "ok"
+  ],
+  "nota": "EC 103/2019 art. 20 já traz pedágio de 100% sobre o tempo que falta"
+ },
+ {
+  "t": "Voltar a aplicar o fator previdenciário no cálculo das aposentadorias",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "fator previdenciario|fator"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "PEC"
+  ],
+  "custo": [
+   -12,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 9.876/1999 criou o fator; economia gradual no cálculo de novos benefícios"
+ },
+ {
+  "t": "Fixar em 18 anos o limite de idade da pensão por morte para os filhos",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "pensao|filho|idade"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   -3,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 8.213/1991 art. 16: filhos até 21 anos ou inválidos; efeito restrito aos filhos entre 18 e 21; economia pequena"
+ },
+ {
+  "t": "Pagar 100% da média dos salários na aposentadoria por incapacidade permanente",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "incapacidade|invalidez|aposentadoria"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PEC",
+   "PL"
+  ],
+  "custo": [
+   1,
+   30
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "EC 103/2019 art. 26 §2º: 60% mais 2% por ano acima de 20; 100% só em acidente; público restrito"
+ },
+ {
+  "t": "Elevar em cinco anos o tempo de contribuição dos policiais federais para se aposentar",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "policia|policial|aposentadoria|contribuicao"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PLP"
+  ],
+  "custo": [
+   -3,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 40 §4º-B (EC 103/2019): aposentadoria de policiais por lei complementar; público pequeno, economia de poucos bilhões"
+ },
+ {
+  "t": "Dar aposentadoria especial a agentes de trânsito por atividade de risco",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "aposentadoria especial|risco|agente|transito"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   0.05,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 40 §4º e §4º-B: critérios diferenciados só para deficientes, agentes penitenciários e policiais, e agentes expostos a nocivos (sem caracterização por categoria); incluir agentes de trânsito exige PEC; público pequeno"
+ },
+ {
+  "t": "Cobrar dos aposentados do INSS contribuição de 11% sobre o que passar de um salário mínimo",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "aposentad|contribuicao|inss|inativ"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": [
+   10,
+   120
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "CF 195 II: não incide contribuição sobre aposentadoria e pensão do RGPS; exige PEC e há questão de direito adquirido"
+ },
+ {
+  "t": "Reajustar os benefícios do INSS acima do mínimo só por metade da inflação",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "reajuste|beneficio|inflacao|inss"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   -60,
+   -1
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "CF 201 §4º: preservação do valor real; exige PEC e há questão de direito adquirido; economia crescente"
+ },
+ {
+  "t": "Baixar de 5% para 4% do salário mínimo a contribuição do MEI",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "mei|microempreendedor|contribuicao"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PLP"
+  ],
+  "custo": null,
+  "receita": [
+   -8,
+   -0.2
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "LC 123/2006 art. 18-A (LC 128/2008): 5% do salário mínimo; renúncia de alguns bilhões"
+ },
+ {
+  "t": "Aumentar de 10,5% para 14% a contribuição dos militares para a pensão",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "militar|pensao|contribuicao"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   0.5,
+   12
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 13.954/2019 fixou 10,5% (Lei 3.765/1960); receita de alguns bilhões"
+ },
+ {
+  "t": "Cobrar contribuição extraordinária dos servidores para cobrir déficit do regime próprio",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "contribuicao extraordinaria|servidor|deficit|regime proprio"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC",
+   "PL",
+   "PLP"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   20
+  ],
+  "unico": null,
+  "jaVigente": "EC 103/2019",
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 149 §1º-B (EC 103/2019): contribuição extraordinária por até 20 anos; já prevista"
+ },
+ {
+  "t": "Exigir cadastro biométrico de todos os beneficiários do BPC",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "bpc|biometri|cadastro|beneficio"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   -3,
+   1
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Regra de gestão com custo de implantação de poucos bilhões; pode haver economia pequena"
+ },
+ {
+  "t": "Fixar em trinta dias o prazo para o INSS decidir os pedidos de benefício",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "inss|prazo|pedido|beneficio|decid"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL",
+   "ADM",
+   "DEC",
+   "MP"
+  ],
+  "custo": [
+   -1,
+   3
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Prazo de resposta é regra procedimental; o custo é de gestão (reforço de pessoal), não da regra em si"
+ },
+ {
+  "t": "Contar em dobro o tempo de trabalho em mina de subsolo para aposentadoria",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "tempo|dobro|aposentadoria|mina|subsolo"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC",
+   "PLP"
+  ],
+  "custo": [
+   0.2,
+   10
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "EC 103/2019 art. 25 §2º veda a conversão de tempo especial em comum; aposentadoria especial é matéria de LC (CF 201 §1º)"
+ },
+ {
+  "t": "Calcular a aposentadoria pela média dos 80% melhores salários",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "media|calculo|salarios|melhores"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "PEC",
+   "PLP"
+  ],
+  "custo": [
+   1,
+   40
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "EC 103/2019 art. 26 usa 100% da média; custo crescente conforme novas aposentadorias"
+ },
+ {
+  "t": "Eleger por voto dos segurados os conselheiros do Conselho Nacional de Previdência Social",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "conselho|previdencia|eleic|conselheir"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PL",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 8.213/1991 art. 3º: composição do CNPS; regra de organização sem despesa relevante"
+ }
+]
