@@ -1,0 +1,1320 @@
+[
+ {
+  "t": "Criar um programa de creches em tempo integral para 1 milhão de crianças",
+  "topic": "as creches e a pré-escola e a escola em tempo integral para 1 milhão de crianças",
+  "inst": "ADM",
+  "instDet": null,
+  "cost": 11,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição, ressalvando que despesa obrigatória de caráter continuado exige estimativa de impacto e compensação (LRF, art. 17).",
+  "vago": false,
+  "conf": null,
+  "pasta": "Educação",
+  "gan": [
+   "PDT",
+   "Federação PSOL-Rede",
+   "Federação PT-PCdoB-PV",
+   "PSB"
+  ],
+  "per": [
+   "Missão",
+   "Novo",
+   "o mercado financeiro",
+   "o Sul"
+  ],
+  "tecnico": "A proposta (as creches e a pré-escola e a escola em tempo integral para 1 milhão de crianças) seria editada como Ato do Poder Executivo e executada pela pasta Educação. Custo e financiamento: despesa ou renúncia de R$ 11,0 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 11,0 bi de pressão sobre o primário. Ganham: periferia (recebem parte das creches e a pré-escola: R$ 6,0 bi/ano); universitários e meio cultural (recebem parte da escola em tempo integral: R$ 5,0 bi/ano). Perdem: mercado financeiro (reage ao risco-país); União / Tesouro (arca com custo líquido de R$ "
+ },
+ {
+  "t": "Construir 500 mil casas populares pelo Minha Casa Minha Vida",
+  "topic": "o Minha Casa Minha Vida para 500 mil de casas",
+  "inst": "MP",
+  "instDet": null,
+  "cost": 7.5,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Cidades",
+  "gan": [
+   "Federação PT-PCdoB-PV",
+   "Federação PSOL-Rede",
+   "PDT",
+   "PSB"
+  ],
+  "per": [
+   "Missão",
+   "Novo",
+   "o mercado financeiro",
+   "o Nordeste"
+  ],
+  "tecnico": "A proposta (o Minha Casa Minha Vida para 500 mil de casas) seria editada como Medida Provisória e executada pela pasta Cidades. Custo e financiamento: despesa ou renúncia de R$ 7,5 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 7,5 bi de pressão sobre o primário. Ganham: construção civil (ganha demanda, crédito ou obras do Minha Casa Minha Vida); periferia (recebem parte do Minha Casa Minha Vida: R$ 7,5 bi/ano). Perdem: mercado financeiro (reage ao risco-país); União / Tesouro (arca com custo líquido de R$ 7,5 bi/ano, que consome espaço no arcabouço e no primário)."
+ },
+ {
+  "t": "Liberar o porte de armas para cidadãos comuns",
+  "topic": "a flexibilização do porte de armas",
+  "inst": "DEC",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "controverso",
+  "cfTxt": "Decretos de flexibilização de armas já foram parcialmente suspensos pelo STF (ADIs 6119, 6139 e 6466) por extrapolar o Estatuto do Desarmamento.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Justiça e Segurança Pública",
+  "gan": [
+   "PL",
+   "Republicanos",
+   "Missão",
+   "Avante"
+  ],
+  "per": [
+   "universitários e meio cultural",
+   "Federação PSOL-Rede",
+   "os povos indígenas",
+   "a periferia"
+  ],
+  "tecnico": "A proposta (a flexibilização do porte de armas) seria editada como Decreto Presidencial e executada pela pasta Justiça e Segurança Pública. Sem efeito orçamentário mensurável. Ganham: agro (favoráveis à flexibilização do porte de armas); policiais e forças de segurança (favoráveis à flexibilização do porte de armas). Perdem: universitários e meio cultural (contrários à flexibilização do porte de armas); povos indígenas (contrários à flexibilização do porte de armas). Riscos principais: social (90/100), jurídico (52/100), de narrativa e desinformação (44/100). Congresso: por ser ato do Executiv"
+ },
+ {
+  "t": "Legalizar a maconha para uso recreativo",
+  "topic": "a descriminalização das drogas",
+  "inst": "PL",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Justiça e Segurança Pública",
+  "gan": [
+   "Federação PSOL-Rede",
+   "universitários e meio cultural",
+   "Federação PT-PCdoB-PV"
+  ],
+  "per": [
+   "PL",
+   "Republicanos",
+   "bancada evangélica",
+   "os evangélicos"
+  ],
+  "tecnico": "A proposta (a descriminalização das drogas) seria editada como Projeto de Lei e executada pela pasta Justiça e Segurança Pública. Sem efeito orçamentário mensurável. Ganham: universitários e meio cultural (favoráveis à descriminalização das drogas). Perdem: evangélicos (contrários à descriminalização das drogas); católicos (contrários à descriminalização das drogas). Riscos principais: congressual (93/100), social (50/100), eleitoral (32/100). Congresso: projeção de 147 a 239 votos na Câmara (precisa de 257) e 19 a 34 no Senado (precisa de 41); frentes contrárias: bancada evangélica, bancada d"
+ },
+ {
+  "t": "Criar uma renda básica universal de R$ 600",
+  "topic": "a renda básica universal de R$ 600",
+  "inst": "PL",
+  "instDet": null,
+  "cost": 288,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição, ressalvando que despesa obrigatória de caráter continuado exige estimativa de impacto e compensação (LRF, art. 17).",
+  "vago": false,
+  "conf": null,
+  "pasta": "Casa Civil",
+  "gan": [
+   "Federação PSOL-Rede",
+   "PDT",
+   "Federação PT-PCdoB-PV",
+   "os católicos"
+  ],
+  "per": [
+   "o mercado financeiro",
+   "União / Tesouro",
+   "bloco liberal (Novo e afins)",
+   "Missão"
+  ],
+  "tecnico": "A proposta (a renda básica universal de R$ 600) seria editada como Projeto de Lei e executada pela pasta Casa Civil. Custo e financiamento: despesa ou renúncia de R$ 288 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 288 bi de pressão sobre o primário. Ganham: católicos (recebem parte da renda básica universal: R$ 288 bi/ano); classe média (recebem parte da renda básica universal: R$ 288 bi/ano). Perdem: mercado financeiro (reage ao risco-país); União / Tesouro (arca com custo líquido de R$ 288 bi/ano, que consome espaço no arcabouço e no primário). Riscos principa"
+ },
+ {
+  "t": "Proibir celular nas escolas",
+  "topic": "\"Proibir celular nas escolas\"",
+  "inst": "COM",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes no que foi escrito, mas o texto é genérico: a AGU só consegue avaliar a medida depois que ela for detalhada (objeto, instrumento, alvo e fonte).",
+  "vago": true,
+  "conf": null,
+  "pasta": "Casa Civil",
+  "gan": [],
+  "per": [],
+  "tecnico": "A proposta (\"Proibir celular nas escolas\") seria editada como Ato político / Comunicação e executada pela pasta Casa Civil. Sem efeito orçamentário mensurável. Riscos principais: de implementação (27/100). Congresso: por ser ato do Executivo, não exige votação; o risco é de sustação por decreto legislativo. Jurídico: sem vício constitucional aparente. Prazo: efeito imediato. Coerência: neutra para o PT (0). A medida não mexe em eixos em que o programa do PT tenha posição clara. Assessoria jurídica não identificou impacto orçamentário claro. A imprensa tende a tratar como gesto simbólico. Execu"
+ },
+ {
+  "t": "Contratar 50 mil médicos para o SUS",
+  "topic": "o Mais Médicos para 50 mil de médicos",
+  "inst": "MP",
+  "instDet": null,
+  "cost": 12.5,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição, ressalvando que despesa obrigatória de caráter continuado exige estimativa de impacto e compensação (LRF, art. 17).",
+  "vago": false,
+  "conf": null,
+  "pasta": "Saúde",
+  "gan": [
+   "o Nordeste",
+   "Federação PT-PCdoB-PV",
+   "Federação PSOL-Rede",
+   "PDT"
+  ],
+  "per": [
+   "o Sudeste",
+   "Missão",
+   "Novo",
+   "o mercado financeiro"
+  ],
+  "tecnico": "A proposta (o Mais Médicos para 50 mil de médicos) seria editada como Medida Provisória e executada pela pasta Saúde. Custo e financiamento: despesa ou renúncia de R$ 12,5 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 12,5 bi de pressão sobre o primário. Ganham: classe média (recebem parte do Mais Médicos: R$ 12,5 bi/ano); periferia (recebem parte do Mais Médicos: R$ 12,5 bi/ano). Perdem: mercado financeiro (reage ao risco-país); União / Tesouro (arca com custo líquido de R$ 12,5 bi/ano, que consome espaço no arcabouço e no primário). Riscos principais: congressua"
+ },
+ {
+  "t": "Instituir passe livre no transporte público nacional",
+  "topic": "o transporte público e a tarifa zero",
+  "inst": "PL",
+  "instDet": null,
+  "cost": 12,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição, ressalvando que despesa obrigatória de caráter continuado exige estimativa de impacto e compensação (LRF, art. 17).",
+  "vago": false,
+  "conf": null,
+  "pasta": "Cidades",
+  "gan": [
+   "Federação PSOL-Rede",
+   "a periferia",
+   "PDT",
+   "Federação PT-PCdoB-PV"
+  ],
+  "per": [
+   "Missão",
+   "Novo",
+   "o mercado financeiro",
+   "o Norte"
+  ],
+  "tecnico": "A proposta (o transporte público e a tarifa zero) seria editada como Projeto de Lei e executada pela pasta Cidades. Custo e financiamento: despesa ou renúncia de R$ 12,0 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 12,0 bi de pressão sobre o primário. Ganham: periferia (recebem parte do transporte público e a tarifa zero: R$ 12,0 bi/ano); universitários e meio cultural (recebem parte do transporte público e a tarifa zero: R$ 12,0 bi/ano). Perdem: mercado financeiro (reage ao risco-país); Municípios (passam a arcar com parte do custo do transporte público e a tari"
+ },
+ {
+  "t": "Zerar o desmatamento na Amazônia até 2030",
+  "topic": "a ofensiva contra o desmatamento por 4 anos na Amazônia",
+  "inst": "ADM",
+  "instDet": null,
+  "cost": 3,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Meio Ambiente",
+  "gan": [
+   "Federação PSOL-Rede",
+   "bancada ambientalista",
+   "os povos indígenas",
+   "universitários e meio cultural"
+  ],
+  "per": [
+   "PL",
+   "bancada ruralista (FPA)",
+   "Missão",
+   "Outros"
+  ],
+  "tecnico": "A proposta (a ofensiva contra o desmatamento por 4 anos na Amazônia) seria editada como Ato do Poder Executivo e executada pela pasta Meio Ambiente. Custo e financiamento: despesa ou renúncia de R$ 3,0 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 3,0 bi de pressão sobre o primário. Ganham: povos indígenas (recebem parte da ofensiva contra o desmatamento: R$ 3,0 bi/ano); universitários e meio cultural (recebem parte da ofensiva contra o desmatamento: R$ 3,0 bi/ano). Perdem: agro (reage ao efeito indireto da medida); União / Tesouro (arca com custo líquido de R$ 3,"
+ },
+ {
+  "t": "Criar um imposto sobre carbono",
+  "topic": "o imposto sobre carbono",
+  "inst": "PL",
+  "instDet": null,
+  "cost": 0,
+  "rev": 8,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Fazenda",
+  "gan": [
+   "PL",
+   "União Progressista (União-PP)",
+   "Missão",
+   "o Nordeste"
+  ],
+  "per": [
+   "o empresariado",
+   "o Sudeste",
+   "Federação PSOL-Rede",
+   "bancada empresarial e industrial"
+  ],
+  "tecnico": "A proposta (o imposto sobre carbono) seria editada como Projeto de Lei e executada pela pasta Fazenda. Custo e financiamento: melhora o primário em R$ 3,4 bi. Ganham: universitários e meio cultural (reage ao efeito indireto da medida); União / Tesouro (melhora o resultado primário em R$ 3,4 bi/ano). Perdem: empresariado (pagam imposto sobre carbono); agro (pagam imposto sobre carbono). Riscos principais: social (42/100), congressual (35/100), de implementação (27/100). Congresso: projeção de 233 a 326 votos na Câmara (precisa de 257) e 37 a 52 no Senado (precisa de 41); frentes contrárias: ban"
+ },
+ {
+  "t": "Reduzir a conta de luz em 20%",
+  "topic": "o aumento de 20% da conta de luz",
+  "inst": "MP",
+  "instDet": null,
+  "cost": 50,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição, ressalvando que despesa obrigatória de caráter continuado exige estimativa de impacto e compensação (LRF, art. 17).",
+  "vago": false,
+  "conf": null,
+  "pasta": "Minas e Energia",
+  "gan": [
+   "o Nordeste",
+   "Federação PSOL-Rede",
+   "PDT",
+   "Federação PT-PCdoB-PV"
+  ],
+  "per": [
+   "o Sudeste",
+   "Missão",
+   "Novo",
+   "o mercado financeiro"
+  ],
+  "tecnico": "A proposta (o aumento de 20% da conta de luz) seria editada como Medida Provisória e executada pela pasta Minas e Energia. Custo e financiamento: despesa ou renúncia de R$ 50,0 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 50,0 bi de pressão sobre o primário. Ganham: classe média (recebem parte da conta de luz: R$ 50,0 bi/ano); periferia (recebem parte da conta de luz: R$ 50,0 bi/ano). Perdem: mercado financeiro (reage ao risco-país); União / Tesouro (arca com custo líquido de R$ 50,0 bi/ano, que consome espaço no arcabouço e no primário). Riscos principais: de me"
+ },
+ {
+  "t": "Perdoar as dívidas do Fies",
+  "topic": "o Fies e o Prouni",
+  "inst": "MP",
+  "instDet": null,
+  "cost": 4,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Educação",
+  "gan": [
+   "Federação PSOL-Rede",
+   "universitários e meio cultural",
+   "PDT",
+   "Federação PT-PCdoB-PV"
+  ],
+  "per": [
+   "Missão",
+   "Novo",
+   "o Nordeste",
+   "Federação PSDB-Cidadania"
+  ],
+  "tecnico": "A proposta (o Fies e o Prouni) seria editada como Medida Provisória e executada pela pasta Educação. Custo e financiamento: despesa ou renúncia de R$ 4,0 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 4,0 bi de pressão sobre o primário. Ganham: universitários e meio cultural (recebem parte do Fies e o Prouni: R$ 4,0 bi/ano); classe média (recebem parte do Fies e o Prouni: R$ 4,0 bi/ano). Perdem: mercado financeiro (reage ao risco-país); União / Tesouro (arca com custo líquido de R$ 4,0 bi/ano, que consome espaço no arcabouço e no primário). Riscos principais: congr"
+ },
+ {
+  "t": "Criar o Desenrola 2 para renegociar dívidas",
+  "topic": "o programa de renegociação de dívidas (Desenrola)",
+  "inst": "MP",
+  "instDet": null,
+  "cost": 3,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Fazenda",
+  "gan": [
+   "Federação PSOL-Rede",
+   "PDT",
+   "Federação PT-PCdoB-PV",
+   "PSB"
+  ],
+  "per": [
+   "Missão",
+   "Novo",
+   "o mercado financeiro",
+   "Federação PSDB-Cidadania"
+  ],
+  "tecnico": "A proposta (o programa de renegociação de dívidas (Desenrola)) seria editada como Medida Provisória e executada pela pasta Fazenda. Custo e financiamento: despesa ou renúncia de R$ 3,0 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 3,0 bi de pressão sobre o primário. Ganham: classe média (recebem parte do programa de renegociação de dívidas); periferia (recebem parte do programa de renegociação de dívidas). Perdem: mercado financeiro (reage ao risco-país); bancos e financeiras (perde subsídio ou demanda com a redução do programa de renegociação de dívidas). Riscos "
+ },
+ {
+  "t": "Acabar com o foro privilegiado",
+  "topic": "o fim do foro privilegiado",
+  "inst": "PEC",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Relações Institucionais",
+  "gan": [],
+  "per": [
+   "a classe média",
+   "universitários e meio cultural"
+  ],
+  "tecnico": "A proposta (o fim do foro privilegiado) seria editada como Proposta de Emenda à Constituição e executada pela pasta Relações Institucionais. Sem efeito orçamentário mensurável. Perdem: classe média (contrários ao recuo em foro privilegiado); universitários e meio cultural (contrários ao recuo em foro privilegiado). Riscos principais: congressual (68/100), social (25/100). Congresso: projeção de 219 a 311 votos na Câmara (precisa de 308) e 33 a 48 no Senado (precisa de 49). Jurídico: sem vício constitucional aparente. Prazo: efeitos concretos em cerca de 6 meses. Coerência: neutra para o PT (0)"
+ },
+ {
+  "t": "Aumentar o salário mínimo para R$ 2 mil",
+  "topic": "o salário mínimo para R$ 2.000",
+  "inst": "PL",
+  "instDet": null,
+  "cost": 103.35,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição, ressalvando que despesa obrigatória de caráter continuado exige estimativa de impacto e compensação (LRF, art. 17).",
+  "vago": false,
+  "conf": null,
+  "pasta": "Trabalho e Emprego",
+  "gan": [
+   "os sindicatos e servidores",
+   "PDT",
+   "Federação PSOL-Rede",
+   "Federação PT-PCdoB-PV"
+  ],
+  "per": [
+   "o empresariado",
+   "o mercado financeiro",
+   "Novo",
+   "bancada empresarial e industrial"
+  ],
+  "tecnico": "A proposta (o salário mínimo para R$ 2.000) seria editada como Projeto de Lei e executada pela pasta Trabalho e Emprego. Custo e financiamento: despesa ou renúncia de R$ 103 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 103 bi de pressão sobre o primário. Ganham: sindicatos e servidores (recebem parte do salário mínimo: R$ 103 bi/ano); caminhoneiros (recebem parte do salário mínimo: R$ 103 bi/ano). Perdem: empresariado (reage ao efeito indireto sobre juros, câmbio e atividade); mercado financeiro (reage ao risco-país). Riscos principais: fiscal (100/100), de merca"
+ },
+ {
+  "t": "Privatizar os Correios",
+  "topic": "a privatização dos Correios",
+  "inst": "PL",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Comunicações",
+  "gan": [
+   "Missão",
+   "Novo",
+   "Federação PSDB-Cidadania",
+   "bloco liberal (Novo e afins)"
+  ],
+  "per": [
+   "Federação PSOL-Rede",
+   "Federação PT-PCdoB-PV",
+   "bancada sindical e trabalhista",
+   "os sindicatos e servidores"
+  ],
+  "tecnico": "A proposta (a privatização dos Correios) seria editada como Projeto de Lei e executada pela pasta Comunicações. Custo e financiamento: melhora o primário em R$ 3,8 bi. Ganham: mercado financeiro (favoráveis à venda dos Correios); empresariado (favoráveis à venda dos Correios). Perdem: sindicatos e servidores (contrários à venda dos Correios); povos indígenas (reage ao efeito indireto da medida). Riscos principais: social (95/100), congressual (29/100), eleitoral (24/100). Congresso: projeção de 239 a 332 votos na Câmara (precisa de 257) e 40 a 55 no Senado (precisa de 41); frentes contrárias: "
+ },
+ {
+  "t": "Criar uma ferrovia ligando o Centro-Oeste aos portos do Norte",
+  "topic": "as ferrovias no Norte e no Centro-Oeste e os portos e aeroportos",
+  "inst": "ADM",
+  "instDet": null,
+  "cost": 13,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição, ressalvando que despesa obrigatória de caráter continuado exige estimativa de impacto e compensação (LRF, art. 17).",
+  "vago": false,
+  "conf": null,
+  "pasta": "Infraestrutura (Transportes, Cidades, Minas e Energia)",
+  "gan": [
+   "o Centro-Oeste",
+   "o Norte",
+   "o empresariado",
+   "o agro"
+  ],
+  "per": [
+   "o Sudeste",
+   "o Nordeste",
+   "o Sul",
+   "os caminhoneiros"
+  ],
+  "tecnico": "A proposta (as ferrovias no Norte e no Centro-Oeste e os portos e aeroportos) seria editada como Ato do Poder Executivo e executada pela pasta Infraestrutura (Transportes, Cidades, Minas e Energia). Custo e financiamento: despesa ou renúncia de R$ 13,0 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 13,0 bi de pressão sobre o primário. Ganham: empresariado (recebem parte das ferrovias: R$ 8,0 bi/ano); agro (recebem parte das ferrovias: R$ 8,0 bi/ano). Perdem: caminhoneiros (reage ao efeito indireto da medida); União / Tesouro (arca com custo líquido de R$ 13,0 bi/an"
+ },
+ {
+  "t": "Reduzir o imposto sobre alimentos da cesta básica",
+  "topic": "a redução dos impostos e o corte da cesta básica / combate à fome",
+  "inst": "PL",
+  "instDet": null,
+  "cost": -0.9,
+  "rev": -20,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição, ressalvando que renúncia de receita exige estimativa de impacto e medida de compensação (LRF, art. 14).",
+  "vago": false,
+  "conf": null,
+  "pasta": "Fazenda",
+  "gan": [
+   "a classe média",
+   "o empresariado",
+   "PL",
+   "Republicanos"
+  ],
+  "per": [
+   "o mercado financeiro",
+   "os povos indígenas",
+   "universitários e meio cultural",
+   "o Norte"
+  ],
+  "tecnico": "A proposta (a redução dos impostos e o corte da cesta básica / combate à fome) seria editada como Projeto de Lei e executada pela pasta Fazenda. Custo e financiamento: despesa ou renúncia de R$ 20,0 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 19,2 bi de pressão sobre o primário. Ganham: classe média (deixam de pagar R$ 20,0 bi/ano em impostos); empresariado (deixam de pagar R$ 20,0 bi/ano em impostos). Perdem: mercado financeiro (reage ao risco-país); povos indígenas (reage ao efeito indireto da medida). Riscos principais: de mercado e câmbio (46/100), fiscal (3"
+ },
+ {
+  "t": "Proibir a demissão sem justa causa",
+  "topic": "\"Proibir a demissão sem justa causa\"",
+  "inst": "COM",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes no que foi escrito, mas o texto é genérico: a AGU só consegue avaliar a medida depois que ela for detalhada (objeto, instrumento, alvo e fonte).",
+  "vago": true,
+  "conf": null,
+  "pasta": "Casa Civil",
+  "gan": [],
+  "per": [],
+  "tecnico": "A proposta (\"Proibir a demissão sem justa causa\") seria editada como Ato político / Comunicação e executada pela pasta Casa Civil. Sem efeito orçamentário mensurável. Riscos principais: de implementação (27/100). Congresso: por ser ato do Executivo, não exige votação; o risco é de sustação por decreto legislativo. Jurídico: sem vício constitucional aparente. Prazo: efeito imediato. Coerência: neutra para o PT (0). A medida não mexe em eixos em que o programa do PT tenha posição clara. Assessoria jurídica não identificou impacto orçamentário claro. A imprensa tende a tratar como gesto simbólico"
+ },
+ {
+  "t": "Acabar com a contribuição sindical",
+  "topic": "o fim da contribuição sindical",
+  "inst": "PL",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição, ressalvando que renúncia de receita exige estimativa de impacto e medida de compensação (LRF, art. 14).",
+  "vago": false,
+  "conf": null,
+  "pasta": "Casa Civil",
+  "gan": [
+   "Federação PSOL-Rede",
+   "PDT",
+   "Federação PT-PCdoB-PV",
+   "PSB"
+  ],
+  "per": [
+   "Missão",
+   "PL",
+   "União Progressista (União-PP)",
+   "os sindicatos e servidores"
+  ],
+  "tecnico": "A proposta (o fim da contribuição sindical) seria editada como Projeto de Lei e executada pela pasta Casa Civil. Sem efeito orçamentário mensurável. Ganham: empresariado (deixam de pagar contribuição sindical); classe média (deixam de pagar contribuição sindical). Perdem: sindicatos e servidores (reage ao efeito indireto da medida). Riscos principais: congressual (65/100), social (34/100), de implementação (20/100). Congresso: projeção de 196 a 288 votos na Câmara (precisa de 257) e 28 a 42 no Senado (precisa de 41). Jurídico: sem vício constitucional aparente. Prazo: efeitos concretos em cerc"
+ },
+ {
+  "t": "Criar a carteira verde e amarela com menos encargos",
+  "topic": "o fim da desoneração da folha",
+  "inst": "PL",
+  "instDet": null,
+  "cost": 0,
+  "rev": 18,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Fazenda",
+  "gan": [
+   "Novo",
+   "Missão",
+   "PL",
+   "Podemos"
+  ],
+  "per": [
+   "o empresariado",
+   "Federação PSOL-Rede",
+   "o agro",
+   "PDT"
+  ],
+  "tecnico": "A proposta (o fim da desoneração da folha) seria editada como Projeto de Lei e executada pela pasta Fazenda. Custo e financiamento: melhora o primário em R$ 10,1 bi. Ganham: União / Tesouro (melhora o resultado primário em R$ 10,1 bi/ano). Perdem: empresariado (pagam desoneração da folha); agro (pagam desoneração da folha). Riscos principais: social (88/100), congressual (35/100), eleitoral (27/100). Congresso: projeção de 230 a 323 votos na Câmara (precisa de 257) e 37 a 52 no Senado (precisa de 41); frentes contrárias: bancada empresarial e industrial. Jurídico: sem vício constitucional apar"
+ },
+ {
+  "t": "Garantir 30 dias de férias para entregadores de aplicativo",
+  "topic": "a regulamentação do trabalho por aplicativo",
+  "inst": "PL",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Trabalho e Emprego",
+  "gan": [
+   "Federação PSOL-Rede",
+   "Federação PT-PCdoB-PV",
+   "bancada sindical e trabalhista",
+   "PDT"
+  ],
+  "per": [
+   "Novo",
+   "bancada empresarial e industrial",
+   "Missão",
+   "PL"
+  ],
+  "tecnico": "A proposta (a regulamentação do trabalho por aplicativo) seria editada como Projeto de Lei e executada pela pasta Trabalho e Emprego. Sem efeito orçamentário mensurável. Ganham: sindicatos e servidores (favoráveis à regulamentação do trabalho por aplicativo); periferia (favoráveis à regulamentação do trabalho por aplicativo). Perdem: empresariado (contrários à regulamentação do trabalho por aplicativo); mercado financeiro (contrários à regulamentação do trabalho por aplicativo). Riscos principais: congressual (76/100). Congresso: projeção de 188 a 280 votos na Câmara (precisa de 257) e 25 a 40"
+ },
+ {
+  "t": "Regulamentar as redes sociais e responsabilizar as big techs",
+  "topic": "\"Regulamentar as redes sociais e responsabilizar as…\"",
+  "inst": "COM",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes no que foi escrito, mas o texto é genérico: a AGU só consegue avaliar a medida depois que ela for detalhada (objeto, instrumento, alvo e fonte).",
+  "vago": true,
+  "conf": null,
+  "pasta": "Casa Civil",
+  "gan": [],
+  "per": [],
+  "tecnico": "A proposta (\"Regulamentar as redes sociais e responsabilizar as…\") seria editada como Ato político / Comunicação e executada pela pasta Casa Civil. Sem efeito orçamentário mensurável. Riscos principais: de implementação (27/100). Congresso: por ser ato do Executivo, não exige votação; o risco é de sustação por decreto legislativo. Jurídico: sem vício constitucional aparente. Prazo: efeito imediato. Coerência: neutra para o PT (0). A medida não mexe em eixos em que o programa do PT tenha posição clara. Assessoria jurídica não identificou impacto orçamentário claro. A imprensa tende a tratar com"
+ },
+ {
+  "t": "Criar uma guarda nacional permanente",
+  "topic": "\"Criar uma guarda nacional permanente\"",
+  "inst": "COM",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes no que foi escrito, mas o texto é genérico: a AGU só consegue avaliar a medida depois que ela for detalhada (objeto, instrumento, alvo e fonte).",
+  "vago": true,
+  "conf": null,
+  "pasta": "Casa Civil",
+  "gan": [],
+  "per": [],
+  "tecnico": "A proposta (\"Criar uma guarda nacional permanente\") seria editada como Ato político / Comunicação e executada pela pasta Casa Civil. Sem efeito orçamentário mensurável. Riscos principais: de implementação (27/100). Congresso: por ser ato do Executivo, não exige votação; o risco é de sustação por decreto legislativo. Jurídico: sem vício constitucional aparente. Prazo: efeito imediato. Coerência: neutra para o PT (0). A medida não mexe em eixos em que o programa do PT tenha posição clara. Assessoria jurídica não identificou impacto orçamentário claro. A imprensa tende a tratar como gesto simbóli"
+ },
+ {
+  "t": "Ampliar o horário das escolas para tempo integral em todo o país",
+  "topic": "a ampliação da escola em tempo integral",
+  "inst": "ADM",
+  "instDet": null,
+  "cost": 5,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Educação",
+  "gan": [
+   "PDT",
+   "Federação PSOL-Rede",
+   "Federação PT-PCdoB-PV",
+   "universitários e meio cultural"
+  ],
+  "per": [
+   "Missão",
+   "Novo",
+   "o mercado financeiro",
+   "União / Tesouro"
+  ],
+  "tecnico": "A proposta (a ampliação da escola em tempo integral) seria editada como Ato do Poder Executivo e executada pela pasta Educação. Custo e financiamento: despesa ou renúncia de R$ 5,0 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 5,0 bi de pressão sobre o primário. Ganham: universitários e meio cultural (recebem parte da escola em tempo integral: R$ 5,0 bi/ano); classe média (recebem parte da escola em tempo integral: R$ 5,0 bi/ano). Perdem: mercado financeiro (reage ao risco-país); União / Tesouro (arca com custo líquido de R$ 5,0 bi/ano, que consome espaço no arcab"
+ },
+ {
+  "t": "Taxar compras internacionais de até 50 dólares",
+  "topic": "a taxa das blusinhas e a intervenção no câmbio",
+  "inst": "PL",
+  "instDet": null,
+  "cost": 0,
+  "rev": 7,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Fazenda",
+  "gan": [
+   "Federação PSOL-Rede",
+   "Federação PT-PCdoB-PV",
+   "PDT",
+   "PSB"
+  ],
+  "per": [
+   "Novo",
+   "Missão",
+   "PL",
+   "a classe média"
+  ],
+  "tecnico": "A proposta (a taxa das blusinhas e a intervenção no câmbio) seria editada como Projeto de Lei e executada pela pasta Fazenda. Custo e financiamento: melhora o primário em R$ 4,4 bi. Ganham: União / Tesouro (melhora o resultado primário em R$ 4,4 bi/ano). Perdem: classe média (pagam taxa das blusinhas); gamers e usuários da internet (pagam taxa das blusinhas). Riscos principais: congressual (89/100), social (53/100), eleitoral (30/100). Congresso: projeção de 153 a 246 votos na Câmara (precisa de 257) e 20 a 35 no Senado (precisa de 41). Jurídico: sem vício constitucional aparente. Prazo: efeit"
+ },
+ {
+  "t": "Desonerar a folha de pagamento de 17 setores",
+  "topic": "a desoneração da folha",
+  "inst": "PL",
+  "instDet": null,
+  "cost": 0,
+  "rev": -18,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição, ressalvando que renúncia de receita exige estimativa de impacto e medida de compensação (LRF, art. 14).",
+  "vago": false,
+  "conf": null,
+  "pasta": "Fazenda",
+  "gan": [
+   "o empresariado",
+   "Federação PSOL-Rede",
+   "o agro",
+   "PDT"
+  ],
+  "per": [
+   "Novo",
+   "Missão",
+   "PL",
+   "Podemos"
+  ],
+  "tecnico": "A proposta (a desoneração da folha) seria editada como Projeto de Lei e executada pela pasta Fazenda. Custo e financiamento: despesa ou renúncia de R$ 18,0 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 18,0 bi de pressão sobre o primário. Ganham: empresariado (deixam de pagar R$ 18,0 bi/ano em desoneração da folha); agro (deixam de pagar R$ 18,0 bi/ano em desoneração da folha). Perdem: mercado financeiro (reage ao risco-país); União / Tesouro (arca com custo líquido de R$ 18,0 bi/ano, que consome espaço no arcabouço e no primário). Riscos principais: congressual ("
+ },
+ {
+  "t": "Criar cotas para mulheres no Congresso",
+  "topic": "as cotas e a igualdade racial",
+  "inst": "PL",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Justiça e Segurança Pública",
+  "gan": [
+   "Federação PSOL-Rede",
+   "Federação PT-PCdoB-PV",
+   "universitários e meio cultural",
+   "a periferia"
+  ],
+  "per": [
+   "PL",
+   "Republicanos",
+   "MDB",
+   "Missão"
+  ],
+  "tecnico": "A proposta (as cotas e a igualdade racial) seria editada como Projeto de Lei e executada pela pasta Justiça e Segurança Pública. Sem efeito orçamentário mensurável. Ganham: universitários e meio cultural (favoráveis às cotas e a igualdade racial); periferia (favoráveis às cotas e a igualdade racial). Perdem: agro (contrários às cotas e a igualdade racial); evangélicos (contrários às cotas e a igualdade racial). Riscos principais: congressual (86/100), de narrativa e desinformação (32/100), social (23/100). Congresso: projeção de 162 a 254 votos na Câmara (precisa de 257) e 21 a 36 no Senado (p"
+ },
+ {
+  "t": "Fazer uma reforma administrativa com fim da estabilidade dos servidores",
+  "topic": "o fim do reajuste dos servidores federais e a reforma administrativa",
+  "inst": "PEC",
+  "instDet": null,
+  "cost": -275,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Gestão e Inovação",
+  "gan": [
+   "Missão",
+   "Novo",
+   "o mercado financeiro",
+   "União / Tesouro"
+  ],
+  "per": [
+   "o Sudeste",
+   "a classe média",
+   "os sindicatos e servidores",
+   "Federação PSOL-Rede"
+  ],
+  "tecnico": "A proposta (o fim do reajuste dos servidores federais e a reforma administrativa) seria editada como Proposta de Emenda à Constituição e executada pela pasta Gestão e Inovação. Custo e financiamento: melhora o primário em R$ 225 bi. Ganham: mercado financeiro (aprovam a reforma administrativa); União / Tesouro (melhora o resultado primário em R$ 225 bi/ano). Perdem: classe média (perdem com a redução do reajuste dos servidores federais: R$ 250 bi/ano a menos); sindicatos e servidores (perdem com a redução do reajuste dos servidores federais: R$ 250 bi/ano a menos). Riscos principais: social (9"
+ },
+ {
+  "t": "Proibir agrotóxicos banidos na Europa",
+  "topic": "a proibição da liberação de agrotóxicos",
+  "inst": "PL",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Meio Ambiente",
+  "gan": [
+   "Federação PSOL-Rede",
+   "bancada ambientalista",
+   "PSB",
+   "universitários e meio cultural"
+  ],
+  "per": [
+   "PL",
+   "União Progressista (União-PP)",
+   "o agro",
+   "bancada ruralista (FPA)"
+  ],
+  "tecnico": "A proposta (a proibição da liberação de agrotóxicos) seria editada como Projeto de Lei e executada pela pasta Meio Ambiente. Sem efeito orçamentário mensurável. Ganham: universitários e meio cultural (favoráveis ao recuo em liberação de agrotóxicos); povos indígenas (favoráveis ao recuo em liberação de agrotóxicos). Perdem: agro (contrários ao recuo em liberação de agrotóxicos); agronegócio (perde margem ou mercado com liberação de agrotóxicos). Riscos principais: congressual (96/100), social (27/100). Congresso: projeção de 146 a 239 votos na Câmara (precisa de 257) e 19 a 33 no Senado (preci"
+ },
+ {
+  "t": "Dar aumento de 9% para professores",
+  "topic": "o aumento de 9% do investimento em educação",
+  "inst": "ADM",
+  "instDet": null,
+  "cost": 16.65,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição, ressalvando que despesa obrigatória de caráter continuado exige estimativa de impacto e compensação (LRF, art. 17).",
+  "vago": false,
+  "conf": null,
+  "pasta": "Educação",
+  "gan": [
+   "PDT",
+   "Federação PSOL-Rede",
+   "universitários e meio cultural",
+   "PSB"
+  ],
+  "per": [
+   "Missão",
+   "Novo",
+   "o mercado financeiro",
+   "o empresariado"
+  ],
+  "tecnico": "A proposta (o aumento de 9% do investimento em educação) seria editada como Ato do Poder Executivo e executada pela pasta Educação. Custo e financiamento: despesa ou renúncia de R$ 16,6 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 16,6 bi de pressão sobre o primário. Ganham: universitários e meio cultural (recebem parte do investimento em educação: R$ 16,6 bi/ano); classe média (recebem parte do investimento em educação: R$ 16,6 bi/ano). Perdem: mercado financeiro (reage ao risco-país); empresariado (reage ao efeito indireto sobre juros, câmbio e atividade). Risc"
+ },
+ {
+  "t": "Antecipar o 13º dos aposentados",
+  "topic": "a antecipação do 13º dos aposentados",
+  "inst": "DEC",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Previdência",
+  "gan": [
+   "Federação PSOL-Rede",
+   "PDT",
+   "Federação PT-PCdoB-PV",
+   "PSB"
+  ],
+  "per": [
+   "Missão",
+   "Novo",
+   "Federação PSDB-Cidadania"
+  ],
+  "tecnico": "A proposta (a antecipação do 13º dos aposentados) seria editada como Decreto Presidencial e executada pela pasta Previdência. Sem efeito orçamentário mensurável. Ganham: classe média (recebem parte da antecipação do 13º dos aposentados). Perdem: Missão (contrários); Novo (contrários). Riscos principais: de implementação (20/100). Congresso: por ser ato do Executivo, não exige votação; o risco é de sustação por decreto legislativo. Jurídico: sem vício constitucional aparente. Prazo: efeitos concretos em cerca de 2 meses. Coerência: alinhada para o PT (+72). Convergência no eixo gasto social: ma"
+ },
+ {
+  "t": "Criar um fundo soberano com royalties do petróleo",
+  "topic": "os royalties e o fundo social do petróleo",
+  "inst": "PL",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Minas e Energia",
+  "gan": [
+   "Federação PSOL-Rede",
+   "Federação PT-PCdoB-PV",
+   "bancada municipalista",
+   "PDT"
+  ],
+  "per": [
+   "Novo",
+   "Missão",
+   "PL",
+   "Federação PSDB-Cidadania"
+  ],
+  "tecnico": "A proposta (os royalties e o fundo social do petróleo) seria editada como Projeto de Lei e executada pela pasta Minas e Energia. Sem efeito orçamentário mensurável. Ganham: Estados e DF (recebem recursos ou alívio com royalties e o fundo social do petróleo); Municípios (recebem recursos ou alívio com royalties e o fundo social do petróleo). Perdem: setor de petróleo e combustíveis (perde margem ou mercado com royalties e o fundo social do petróleo). Riscos principais: congressual (62/100). Congresso: projeção de 208 a 300 votos na Câmara (precisa de 257) e 29 a 43 no Senado (precisa de 41). Ju"
+ },
+ {
+  "t": "Reduzir a taxa Selic para 8%",
+  "topic": "a política de juros",
+  "inst": "COM",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Fazenda",
+  "gan": [
+   "Federação PSOL-Rede",
+   "Federação PT-PCdoB-PV",
+   "PDT",
+   "PSB"
+  ],
+  "per": [
+   "Missão",
+   "Novo",
+   "PL",
+   "o mercado financeiro"
+  ],
+  "tecnico": "A proposta (a política de juros) seria editada como Ato político / Comunicação e executada pela pasta Fazenda. Sem efeito orçamentário mensurável. Ganham: Federação PSOL-Rede (agenda alinhada); Federação PT-PCdoB-PV (agenda alinhada). Perdem: mercado financeiro (contrários à política de juros). Riscos principais: de mercado e câmbio (25/100), congressual (24/100). Congresso: por ser ato do Executivo, não exige votação; o risco é de sustação por decreto legislativo. Jurídico: sem vício constitucional aparente. Prazo: efeitos concretos em cerca de 3 meses. Coerência: alinhada para o PT (+60). Co"
+ },
+ {
+  "t": "Proibir a exportação de minério bruto",
+  "topic": "o corte da exploração de petróleo e mineração",
+  "inst": "ADM",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Minas e Energia",
+  "gan": [
+   "Federação PSOL-Rede",
+   "bancada ambientalista",
+   "os povos indígenas",
+   "PDT"
+  ],
+  "per": [
+   "Missão",
+   "Novo",
+   "PL",
+   "Podemos"
+  ],
+  "tecnico": "A proposta (o corte da exploração de petróleo e mineração) seria editada como Ato do Poder Executivo e executada pela pasta Minas e Energia. Sem efeito orçamentário mensurável. Ganham: povos indígenas (aprovam o corte da exploração de petróleo e mineração); universitários e meio cultural (aprovam o corte da exploração de petróleo e mineração). Perdem: agro (perdem com a redução da exploração de petróleo e mineração); construção civil (perde subsídio ou demanda com a redução da exploração de petróleo e mineração). Riscos principais: congressual (30/100), internacional (23/100). Congresso: por s"
+ },
+ {
+  "t": "Criar zona franca no Nordeste",
+  "topic": "a Zona Franca de Manaus no Nordeste",
+  "inst": "PEC",
+  "instDet": null,
+  "cost": 0,
+  "rev": -8,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição, ressalvando que renúncia de receita exige estimativa de impacto e medida de compensação (LRF, art. 14).",
+  "vago": false,
+  "conf": null,
+  "pasta": "Fazenda",
+  "gan": [
+   "o Nordeste",
+   "Novo",
+   "Missão",
+   "PL"
+  ],
+  "per": [
+   "Federação PSOL-Rede",
+   "o Sudeste",
+   "Federação PT-PCdoB-PV",
+   "PDT"
+  ],
+  "tecnico": "A proposta (a Zona Franca de Manaus no Nordeste) seria editada como Proposta de Emenda à Constituição e executada pela pasta Fazenda. Custo e financiamento: despesa ou renúncia de R$ 8,0 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 8,0 bi de pressão sobre o primário. Ganham: empresariado (deixam de pagar R$ 8,0 bi/ano em Zona Franca de Manaus). Perdem: indústria (paga mais Zona Franca de Manaus); sindicatos e servidores (reage ao efeito indireto da medida). Riscos principais: congressual (48/100), de implementação (24/100), de mercado e câmbio (21/100). Congresso"
+ },
+ {
+  "t": "Dar anistia aos presos do 8 de janeiro",
+  "topic": "a anistia ou indulto",
+  "inst": "DEC",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "inconstitucional",
+  "cfTxt": "O STF já anulou indulto por desvio de finalidade (ADPF 964); crimes contra o Estado Democrático de Direito não admitem graça ou anistia.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Justiça e Segurança Pública",
+  "gan": [
+   "PL",
+   "Federação PRD-Solidariedade",
+   "Republicanos",
+   "Avante"
+  ],
+  "per": [
+   "Federação PSOL-Rede",
+   "universitários e meio cultural",
+   "Federação PT-PCdoB-PV",
+   "a classe média"
+  ],
+  "tecnico": "A proposta (a anistia ou indulto) seria editada como Decreto Presidencial e executada pela pasta Justiça e Segurança Pública. Sem efeito orçamentário mensurável. Ganham: evangélicos (favoráveis à anistia ou indulto); policiais e forças de segurança (favoráveis à anistia ou indulto). Perdem: universitários e meio cultural (contrários à anistia ou indulto); classe média (contrários à anistia ou indulto). Riscos principais: jurídico (86/100), social (45/100), de narrativa e desinformação (44/100). Congresso: por ser ato do Executivo, não exige votação; o risco é de sustação por decreto legislativ"
+ },
+ {
+  "t": "Revogar a reforma trabalhista de 2017",
+  "topic": "a revogação da flexibilização trabalhista",
+  "inst": "PL",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Trabalho e Emprego",
+  "gan": [
+   "Federação PSOL-Rede",
+   "bancada sindical e trabalhista",
+   "PDT",
+   "Federação PT-PCdoB-PV"
+  ],
+  "per": [
+   "Novo",
+   "bancada empresarial e industrial",
+   "Missão",
+   "PL"
+  ],
+  "tecnico": "A proposta (a revogação da flexibilização trabalhista) seria editada como Projeto de Lei e executada pela pasta Trabalho e Emprego. Sem efeito orçamentário mensurável. Ganham: sindicatos e servidores (favoráveis ao recuo em flexibilização trabalhista); periferia (favoráveis ao recuo em flexibilização trabalhista). Perdem: empresariado (contrários ao recuo em flexibilização trabalhista); mercado financeiro (contrários ao recuo em flexibilização trabalhista). Riscos principais: congressual (79/100). Congresso: projeção de 177 a 269 votos na Câmara (precisa de 257) e 24 a 38 no Senado (precisa de"
+ },
+ {
+  "t": "Criar o seguro-desemprego para autônomos",
+  "topic": "o seguro-desemprego",
+  "inst": "PL",
+  "instDet": null,
+  "cost": 8,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Trabalho e Emprego",
+  "gan": [
+   "Federação PSOL-Rede",
+   "PDT",
+   "Federação PT-PCdoB-PV",
+   "PSB"
+  ],
+  "per": [
+   "Novo",
+   "Missão",
+   "o mercado financeiro",
+   "o Nordeste"
+  ],
+  "tecnico": "A proposta (o seguro-desemprego) seria editada como Projeto de Lei e executada pela pasta Trabalho e Emprego. Custo e financiamento: despesa ou renúncia de R$ 8,0 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 8,0 bi de pressão sobre o primário. Ganham: periferia (recebem parte do seguro-desemprego: R$ 8,0 bi/ano); sindicatos e servidores (recebem parte do seguro-desemprego: R$ 8,0 bi/ano). Perdem: mercado financeiro (reage ao risco-país); União / Tesouro (arca com custo líquido de R$ 8,0 bi/ano, que consome espaço no arcabouço e no primário). Riscos principais: co"
+ },
+ {
+  "t": "Liberar o FGTS para pagar dívidas",
+  "topic": "o FGTS",
+  "inst": "MP",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Trabalho e Emprego",
+  "gan": [
+   "Federação PSOL-Rede",
+   "PDT",
+   "Federação PT-PCdoB-PV",
+   "bancada sindical e trabalhista"
+  ],
+  "per": [
+   "Novo",
+   "Missão",
+   "PL",
+   "Federação PSDB-Cidadania"
+  ],
+  "tecnico": "A proposta (o FGTS) seria editada como Medida Provisória e executada pela pasta Trabalho e Emprego. Sem efeito orçamentário mensurável. Ganham: classe média (favoráveis ao FGTS); periferia (favoráveis ao FGTS). Perdem: construção civil (perde margem ou mercado com FGTS). Riscos principais: congressual (59/100). Congresso: projeção de 212 a 304 votos na Câmara (precisa de 257) e 30 a 44 no Senado (precisa de 41). Jurídico: sem vício constitucional aparente. Prazo: efeitos concretos em cerca de 2 meses. Coerência: alinhada para o PT (+70). Convergência no eixo gasto social: mais gasto social com"
+ },
+ {
+  "t": "Equiparar salário de homens e mulheres com multa para empresas",
+  "topic": "\"Equiparar salário de homens e mulheres com…\"",
+  "inst": "COM",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes no que foi escrito, mas o texto é genérico: a AGU só consegue avaliar a medida depois que ela for detalhada (objeto, instrumento, alvo e fonte).",
+  "vago": true,
+  "conf": null,
+  "pasta": "Casa Civil",
+  "gan": [],
+  "per": [],
+  "tecnico": "A proposta (\"Equiparar salário de homens e mulheres com…\") seria editada como Ato político / Comunicação e executada pela pasta Casa Civil. Sem efeito orçamentário mensurável. Riscos principais: de implementação (27/100). Congresso: por ser ato do Executivo, não exige votação; o risco é de sustação por decreto legislativo. Jurídico: sem vício constitucional aparente. Prazo: efeito imediato. Coerência: neutra para o PT (0). A medida não mexe em eixos em que o programa do PT tenha posição clara. Assessoria jurídica não identificou impacto orçamentário claro. A imprensa tende a tratar como gesto "
+ },
+ {
+  "t": "Criar 100 novos institutos federais",
+  "topic": "as universidades federais",
+  "inst": "ADM",
+  "instDet": null,
+  "cost": 6,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Educação",
+  "gan": [
+   "universitários e meio cultural",
+   "o Sudeste",
+   "a classe média",
+   "a periferia"
+  ],
+  "per": [
+   "o Nordeste",
+   "o mercado financeiro",
+   "União / Tesouro"
+  ],
+  "tecnico": "A proposta (as universidades federais) seria editada como Ato do Poder Executivo e executada pela pasta Educação. Custo e financiamento: despesa ou renúncia de R$ 6,0 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 6,0 bi de pressão sobre o primário. Ganham: universitários e meio cultural (recebem parte das universidades federais: R$ 6,0 bi/ano); classe média (recebem parte das universidades federais: R$ 6,0 bi/ano). Perdem: mercado financeiro (reage ao risco-país); União / Tesouro (arca com custo líquido de R$ 6,0 bi/ano, que consome espaço no arcabouço e no primár"
+ },
+ {
+  "t": "Acabar com a reeleição de deputados",
+  "topic": "o fim da reforma política",
+  "inst": "PEC",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Relações Institucionais",
+  "gan": [],
+  "per": [],
+  "tecnico": "A proposta (o fim da reforma política) seria editada como Proposta de Emenda à Constituição e executada pela pasta Relações Institucionais. Sem efeito orçamentário mensurável. Riscos principais: congressual (71/100), de implementação (24/100). Congresso: projeção de 214 a 306 votos na Câmara (precisa de 308) e 32 a 47 no Senado (precisa de 49). Jurídico: sem vício constitucional aparente. Prazo: efeitos concretos em cerca de 12 meses. Coerência: neutra para o PT (0). A medida não mexe em eixos em que o programa do PT tenha posição clara. Execução: Ministério da Casa Civil (área: Relações Insti"
+ },
+ {
+  "t": "Instituir o voto distrital",
+  "topic": "a reforma política",
+  "inst": "PEC",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Relações Institucionais",
+  "gan": [],
+  "per": [],
+  "tecnico": "A proposta (a reforma política) seria editada como Proposta de Emenda à Constituição e executada pela pasta Relações Institucionais. Sem efeito orçamentário mensurável. Riscos principais: congressual (62/100), de implementação (24/100). Congresso: projeção de 235 a 327 votos na Câmara (precisa de 308) e 36 a 50 no Senado (precisa de 49). Jurídico: sem vício constitucional aparente. Prazo: efeitos concretos em cerca de 12 meses. Coerência: neutra para o PT (0). A medida não mexe em eixos em que o programa do PT tenha posição clara. Execução: Ministério da Casa Civil (área: Relações Instituciona"
+ },
+ {
+  "t": "Abrir o mercado de gás natural",
+  "topic": "o gás natural e o novo mercado de gás",
+  "inst": "ADM",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Minas e Energia",
+  "gan": [
+   "Novo",
+   "Missão",
+   "PL",
+   "União Progressista (União-PP)"
+  ],
+  "per": [
+   "Federação PSOL-Rede",
+   "Federação PT-PCdoB-PV",
+   "PDT",
+   "PSB"
+  ],
+  "tecnico": "A proposta (o gás natural e o novo mercado de gás) seria editada como Ato do Poder Executivo e executada pela pasta Minas e Energia. Sem efeito orçamentário mensurável. Ganham: empresariado (favoráveis ao gás natural e o novo mercado de gás); setor de petróleo e combustíveis (ganha espaço com gás natural e o novo mercado de gás). Perdem: Federação PSOL-Rede (contrários); Federação PT-PCdoB-PV (contrários). Nenhum risco acima de 20/100 foi identificado. Congresso: por ser ato do Executivo, não exige votação; o risco é de sustação por decreto legislativo. Jurídico: sem vício constitucional apare"
+ },
+ {
+  "t": "Fazer concurso para 20 mil policiais federais",
+  "topic": "a ampliação da Polícia Federal para 20 mil de policiais e os concursos públicos",
+  "inst": "ADM",
+  "instDet": null,
+  "cost": 11,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição, ressalvando que despesa obrigatória de caráter continuado exige estimativa de impacto e compensação (LRF, art. 17).",
+  "vago": false,
+  "conf": null,
+  "pasta": "Justiça e Segurança Pública",
+  "gan": [
+   "policiais e forças de segurança",
+   "os sindicatos e servidores",
+   "Missão",
+   "Novo"
+  ],
+  "per": [
+   "Federação PSOL-Rede",
+   "o Nordeste",
+   "o mercado financeiro",
+   "o Norte"
+  ],
+  "tecnico": "A proposta (a ampliação da Polícia Federal para 20 mil de policiais e os concursos públicos) seria editada como Ato do Poder Executivo e executada pela pasta Justiça e Segurança Pública. Custo e financiamento: despesa ou renúncia de R$ 11,0 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 11,0 bi de pressão sobre o primário. Ganham: policiais e forças de segurança (recebem parte da Polícia Federal: R$ 6,0 bi/ano); sindicatos e servidores (recebem parte dos concursos públicos: R$ 5,0 bi/ano). Perdem: mercado financeiro (reage ao risco-país); União / Tesouro (arca com "
+ },
+ {
+  "t": "Dobrar o orçamento da ciência",
+  "topic": "a duplicação do fomento à ciência e tecnologia",
+  "inst": "ADM",
+  "instDet": null,
+  "cost": 10,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Ciência e Tecnologia",
+  "gan": [
+   "universitários e meio cultural",
+   "o Sudeste",
+   "a classe média",
+   "a construção civil"
+  ],
+  "per": [
+   "o mercado financeiro",
+   "o Norte",
+   "o Nordeste",
+   "União / Tesouro"
+  ],
+  "tecnico": "A proposta (a duplicação do fomento à ciência e tecnologia) seria editada como Ato do Poder Executivo e executada pela pasta Ciência e Tecnologia. Custo e financiamento: despesa ou renúncia de R$ 10,0 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 10,0 bi de pressão sobre o primário. Ganham: universitários e meio cultural (recebem parte do fomento à ciência e tecnologia: R$ 10,0 bi/ano); classe média (recebem parte do fomento à ciência e tecnologia: R$ 10,0 bi/ano). Perdem: mercado financeiro (reage ao risco-país); União / Tesouro (arca com custo líquido de R$ 10,0"
+ },
+ {
+  "t": "Criar uma estatal de semicondutores",
+  "topic": "a reestatização empresas privadas e os data centers e a soberania digital",
+  "inst": "PL",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 30,
+  "cf": "controverso",
+  "cfTxt": "Desapropriação exige indenização prévia e justa (art. 5º, XXIV). Sem ela, acionistas vencem no STF.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Fazenda",
+  "gan": [
+   "Federação PSOL-Rede",
+   "bancada sindical e trabalhista",
+   "Federação PT-PCdoB-PV",
+   "os sindicatos e servidores"
+  ],
+  "per": [
+   "o mercado financeiro",
+   "Missão",
+   "Novo",
+   "o empresariado"
+  ],
+  "tecnico": "A proposta (a reestatização empresas privadas e os data centers e a soberania digital) seria editada como Projeto de Lei e executada pela pasta Fazenda. Custo e financiamento: despesa ou renúncia de R$ 30,0 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 30,0 bi de pressão sobre o primário. Ganham: sindicatos e servidores (favoráveis à estatização da reestatização); setor de tecnologia e plataformas (ganha espaço com data centers e a soberania digital). Perdem: mercado financeiro (contrários à estatização da reestatização); empresariado (contrários à estatização da "
+ },
+ {
+  "t": "Isentar de IR a PLR dos trabalhadores",
+  "topic": "a redução do Imposto de Renda da pessoa física",
+  "inst": "PL",
+  "instDet": null,
+  "cost": 0,
+  "rev": -27,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição, ressalvando que renúncia de receita exige estimativa de impacto e medida de compensação (LRF, art. 14).",
+  "vago": false,
+  "conf": null,
+  "pasta": "Fazenda",
+  "gan": [
+   "a classe média",
+   "os sindicatos e servidores",
+   "o Sudeste",
+   "os católicos"
+  ],
+  "per": [
+   "Estados e DF",
+   "Municípios",
+   "o mercado financeiro",
+   "União / Tesouro"
+  ],
+  "tecnico": "A proposta (a redução do Imposto de Renda da pessoa física) seria editada como Projeto de Lei e executada pela pasta Fazenda. Custo e financiamento: despesa ou renúncia de R$ 27,0 bi no primeiro ano, com fonte cobrindo 0% da conta, resultado líquido de R$ 27,0 bi de pressão sobre o primário. Ganham: classe média (deixam de pagar R$ 27,0 bi/ano em Imposto de Renda da pessoa física); sindicatos e servidores (deixam de pagar R$ 27,0 bi/ano em Imposto de Renda da pessoa física). Perdem: Estados e DF (perdem R$ 13,2 bi/ano de transferências); Municípios (perdem R$ 13,2 bi/ano de transferências). Ri"
+ },
+ {
+  "t": "Proibir o trabalho infantil artístico",
+  "topic": "o corte da primeira infância",
+  "inst": "ADM",
+  "instDet": null,
+  "cost": 0,
+  "rev": 0,
+  "once": 0,
+  "extra": 0,
+  "cf": "ok",
+  "cfTxt": "Sem vícios aparentes. A AGU considera a medida compatível com a Constituição.",
+  "vago": false,
+  "conf": null,
+  "pasta": "Desenvolvimento e Assistência Social",
+  "gan": [
+   "Missão",
+   "Novo"
+  ],
+  "per": [
+   "Federação PSOL-Rede",
+   "PDT",
+   "Federação PT-PCdoB-PV",
+   "PSB"
+  ],
+  "tecnico": "A proposta (o corte da primeira infância) seria editada como Ato do Poder Executivo e executada pela pasta Desenvolvimento e Assistência Social. Sem efeito orçamentário mensurável. Ganham: Missão (agenda alinhada); Novo (agenda alinhada). Perdem: católicos (perdem com a redução da primeira infância); evangélicos (perdem com a redução da primeira infância). Riscos principais: congressual (21/100). Congresso: por ser ato do Executivo, não exige votação; o risco é de sustação por decreto legislativo. Jurídico: sem vício constitucional aparente. Prazo: efeitos concretos em cerca de 10 meses. Coerê"
+ }
+]
