@@ -191,14 +191,16 @@
       "apresentadores": [
         "Felipe Cestaro"
       ],
-      "vies": "neutro"
+      "vies": "direita",
+      "nota": "viés informado por Gabriel"
     },
     {
       "nome": "3 Irmãos Podcast",
       "apresentadores": [
         "os três irmãos apresentadores"
       ],
-      "vies": "neutro"
+      "vies": "esquerda",
+      "nota": "viés informado por Gabriel"
     },
     {
       "nome": "Podpah",
