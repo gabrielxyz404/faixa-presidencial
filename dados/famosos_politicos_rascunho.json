@@ -1,34 +1,214 @@
 {
   "nota": "Rascunho aprovado por Gabriel em 30/10/2026 para a feature 'famosos com viés político no X'. Posições vêm de declarações públicas recorrentes (a conferir com fonte antes de publicar). No jogo: selo 'simulado', só posição sobre a medida, sem xingamento, acusação, crime, vida pessoal ou @. Afinidade com o Missão de Danilo Gentili e Léo Lins informada por Gabriel.",
-  "estilos": {"alinhado": "apoia ou critica conforme o viés", "humor": "ironia leve sobre a medida", "critico_geral": "critica governos de qualquer lado; elogia raramente; foco em corrupção, gasto e 'sistema'"},
+  "estilos": {
+    "alinhado": "apoia ou critica conforme o viés",
+    "humor": "ironia leve sobre a medida",
+    "critico_geral": "critica governos de qualquer lado; elogia raramente; foco em corrupção, gasto e 'sistema'"
+  },
   "famosos": [
-    {"nome": "Felipe Neto", "area": "youtuber", "vies": "esquerda", "estilo": "alinhado"},
-    {"nome": "Caetano Veloso", "area": "cantor", "vies": "esquerda", "estilo": "alinhado"},
-    {"nome": "Chico Buarque", "area": "cantor e escritor", "vies": "esquerda", "estilo": "alinhado"},
-    {"nome": "Gilberto Gil", "area": "cantor", "vies": "esquerda", "estilo": "alinhado"},
-    {"nome": "Gregório Duvivier", "area": "humorista", "vies": "esquerda", "estilo": "humor"},
-    {"nome": "Marcelo Adnet", "area": "humorista", "vies": "esquerda", "estilo": "humor"},
-    {"nome": "Fábio Porchat", "area": "humorista", "vies": "centro-esquerda", "estilo": "humor"},
-    {"nome": "Wagner Moura", "area": "ator", "vies": "esquerda", "estilo": "alinhado"},
-    {"nome": "Paulo Betti", "area": "ator", "vies": "esquerda", "estilo": "alinhado"},
-    {"nome": "Bruno Gagliasso", "area": "ator", "vies": "esquerda", "estilo": "alinhado"},
-    {"nome": "Daniela Mercury", "area": "cantora", "vies": "esquerda", "estilo": "alinhado"},
-    {"nome": "Pabllo Vittar", "area": "cantora", "vies": "esquerda", "estilo": "alinhado"},
-    {"nome": "Sabrina Fernandes", "area": "youtuber", "vies": "esquerda", "estilo": "alinhado"},
-    {"nome": "Thiago Torres (Chavoso da USP)", "area": "youtuber", "vies": "esquerda", "estilo": "alinhado"},
-    {"nome": "Nando Moura", "area": "youtuber", "vies": "direita", "estilo": "critico_geral"},
-    {"nome": "Danilo Gentili", "area": "humorista", "vies": "direita liberal", "estilo": "humor", "afinidade": "MISSÃO"},
-    {"nome": "Léo Lins", "area": "humorista", "vies": "direita liberal", "estilo": "humor", "afinidade": "MISSÃO"},
-    {"nome": "Regina Duarte", "area": "atriz", "vies": "direita", "estilo": "alinhado"},
-    {"nome": "Zezé Di Camargo", "area": "cantor", "vies": "direita", "estilo": "alinhado"},
-    {"nome": "Gusttavo Lima", "area": "cantor", "vies": "direita", "estilo": "alinhado"},
-    {"nome": "Sérgio Reis", "area": "cantor", "vies": "direita", "estilo": "alinhado"},
-    {"nome": "Roger Moreira", "area": "músico", "vies": "direita", "estilo": "alinhado"},
-    {"nome": "Antonia Fontenelle", "area": "atriz e youtuber", "vies": "direita", "estilo": "alinhado"},
-    {"nome": "Ratinho", "area": "apresentador", "vies": "direita", "estilo": "alinhado"},
-    {"nome": "Silas Malafaia", "area": "pastor", "vies": "direita", "estilo": "alinhado"},
-    {"nome": "Luciano Hang", "area": "empresário", "vies": "direita", "estilo": "alinhado"},
-    {"nome": "Ana Paula Henkel", "area": "ex-atleta e comentarista", "vies": "direita", "estilo": "alinhado"},
-    {"nome": "Bárbara (Te Atualizei)", "area": "youtuber", "vies": "direita", "estilo": "alinhado"}
-  ]
+    {
+      "nome": "Felipe Neto",
+      "area": "youtuber",
+      "vies": "esquerda",
+      "estilo": "alinhado"
+    },
+    {
+      "nome": "Caetano Veloso",
+      "area": "cantor",
+      "vies": "esquerda",
+      "estilo": "alinhado"
+    },
+    {
+      "nome": "Chico Buarque",
+      "area": "cantor e escritor",
+      "vies": "esquerda",
+      "estilo": "alinhado"
+    },
+    {
+      "nome": "Gilberto Gil",
+      "area": "cantor",
+      "vies": "esquerda",
+      "estilo": "alinhado"
+    },
+    {
+      "nome": "Gregório Duvivier",
+      "area": "humorista",
+      "vies": "esquerda",
+      "estilo": "humor"
+    },
+    {
+      "nome": "Marcelo Adnet",
+      "area": "humorista",
+      "vies": "esquerda",
+      "estilo": "humor"
+    },
+    {
+      "nome": "Fábio Porchat",
+      "area": "humorista",
+      "vies": "centro-esquerda",
+      "estilo": "humor"
+    },
+    {
+      "nome": "Wagner Moura",
+      "area": "ator",
+      "vies": "esquerda",
+      "estilo": "alinhado"
+    },
+    {
+      "nome": "Paulo Betti",
+      "area": "ator",
+      "vies": "esquerda",
+      "estilo": "alinhado"
+    },
+    {
+      "nome": "Bruno Gagliasso",
+      "area": "ator",
+      "vies": "esquerda",
+      "estilo": "alinhado"
+    },
+    {
+      "nome": "Daniela Mercury",
+      "area": "cantora",
+      "vies": "esquerda",
+      "estilo": "alinhado"
+    },
+    {
+      "nome": "Pabllo Vittar",
+      "area": "cantora",
+      "vies": "esquerda",
+      "estilo": "alinhado"
+    },
+    {
+      "nome": "Sabrina Fernandes",
+      "area": "youtuber",
+      "vies": "esquerda",
+      "estilo": "alinhado"
+    },
+    {
+      "nome": "Thiago Torres (Chavoso da USP)",
+      "area": "youtuber",
+      "vies": "esquerda",
+      "estilo": "alinhado"
+    },
+    {
+      "nome": "Nando Moura",
+      "area": "youtuber",
+      "vies": "direita",
+      "estilo": "critico_geral"
+    },
+    {
+      "nome": "Danilo Gentili",
+      "area": "humorista",
+      "vies": "direita liberal",
+      "estilo": "humor",
+      "afinidade": "MISSÃO"
+    },
+    {
+      "nome": "Léo Lins",
+      "area": "humorista",
+      "vies": "direita liberal",
+      "estilo": "humor",
+      "afinidade": "MISSÃO"
+    },
+    {
+      "nome": "Regina Duarte",
+      "area": "atriz",
+      "vies": "direita",
+      "estilo": "alinhado"
+    },
+    {
+      "nome": "Zezé Di Camargo",
+      "area": "cantor",
+      "vies": "direita",
+      "estilo": "alinhado"
+    },
+    {
+      "nome": "Gusttavo Lima",
+      "area": "cantor",
+      "vies": "direita",
+      "estilo": "alinhado"
+    },
+    {
+      "nome": "Sérgio Reis",
+      "area": "cantor",
+      "vies": "direita",
+      "estilo": "alinhado"
+    },
+    {
+      "nome": "Roger Moreira",
+      "area": "músico",
+      "vies": "direita",
+      "estilo": "alinhado"
+    },
+    {
+      "nome": "Antonia Fontenelle",
+      "area": "atriz e youtuber",
+      "vies": "direita",
+      "estilo": "alinhado"
+    },
+    {
+      "nome": "Ratinho",
+      "area": "apresentador",
+      "vies": "direita",
+      "estilo": "alinhado"
+    },
+    {
+      "nome": "Silas Malafaia",
+      "area": "pastor",
+      "vies": "direita",
+      "estilo": "alinhado"
+    },
+    {
+      "nome": "Luciano Hang",
+      "area": "empresário",
+      "vies": "direita",
+      "estilo": "alinhado"
+    },
+    {
+      "nome": "Ana Paula Henkel",
+      "area": "ex-atleta e comentarista",
+      "vies": "direita",
+      "estilo": "alinhado"
+    },
+    {
+      "nome": "Bárbara (Te Atualizei)",
+      "area": "youtuber",
+      "vies": "direita",
+      "estilo": "alinhado"
+    }
+  ],
+  "podcasts": [
+    {
+      "nome": "Flow Podcast",
+      "apresentadores": [
+        "Igor 3K"
+      ],
+      "vies": "neutro",
+      "nota": "entrevistou candidatos de vários lados"
+    },
+    {
+      "nome": "IronTalks",
+      "apresentadores": [
+        "Felipe Cestaro"
+      ],
+      "vies": "neutro"
+    },
+    {
+      "nome": "3 Irmãos Podcast",
+      "apresentadores": [
+        "os três irmãos apresentadores"
+      ],
+      "vies": "neutro"
+    },
+    {
+      "nome": "Podpah",
+      "apresentadores": [
+        "Igão",
+        "Mítico"
+      ],
+      "vies": "centro-esquerda",
+      "nota": "viés informado por Gabriel"
+    }
+  ],
+  "podcasts_regras": "Convidam o presidente na campanha e no mandato (recusa tem custo); perguntas no estilo do programa sobre medidas e temas do público; opositores reais também vão e criticam só medidas/política; aliados podem defender; selo 'simulado', sem vida pessoal nem acusações."
 }
