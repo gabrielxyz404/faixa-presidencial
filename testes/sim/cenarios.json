@@ -719,5 +719,139 @@
     "just": "Beneficiários e famílias reagem bem."
    }
   ]
+ },
+ {
+  "id": "zoeira_dia_meme",
+  "descricao": "Proposta bizarra e legal (v3.8): Dia Nacional do Meme por lei. Custo ~0 e sem desgaste grande: a imprensa comenta, jovens e gamers curtem, mercado e classe média não se abalam.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Criar o Dia Nacional do Meme por lei kkk",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "custo",
+    "m3": "estavel",
+    "m12": "estavel",
+    "just": "Data comemorativa é declaração honorífica (Lei 12.345/2010): sem despesa permanente."
+   },
+   {
+    "ind": "prim",
+    "m12": "estavel",
+    "just": "Sem custo fiscal, o primário não se mexe."
+   },
+   {
+    "ind": "risco",
+    "m3": "estavel",
+    "just": "Medida simbólica não move o risco-país; a piada não vira calote."
+   },
+   {
+    "ind": "ap",
+    "m3": "estavel",
+    "just": "Efeito pequeno: nem comemoração nem crise de imagem."
+   },
+   {
+    "ind": "g_gamers",
+    "m3": "qualquer",
+    "just": "Gamers e internautas tendem a curtir; efeito pequeno, só informado."
+   }
+  ]
+ },
+ {
+  "id": "zoeira_feriado_samba",
+  "descricao": "Proposta bizarra e legal (v3.8): Dia do Samba de Raiz como feriado nacional, por lei. Custo fiscal ~0, mas o empresariado reclama do dia parado e o trabalhador aplaude.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Instituir o Dia do Samba de Raiz como feriado nacional, por projeto de lei",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "custo",
+    "m3": "estavel",
+    "just": "Feriado nacional não cria despesa pública direta (Lei 662/1949)."
+   },
+   {
+    "ind": "g_empresariado",
+    "m3": "desce",
+    "just": "Dia parado custa produção e comércio: o empresariado reage mal a feriado novo."
+   },
+   {
+    "ind": "g_sindicatos",
+    "m3": "sobe",
+    "just": "Mais um dia de descanso agrada sindicatos e trabalhadores."
+   },
+   {
+    "ind": "ap",
+    "m3": "estavel",
+    "just": "Ganhos e perdas pequenos e opostos: a aprovação geral fica perto de onde estava."
+   }
+  ]
+ },
+ {
+  "id": "zoeira_ato_interno",
+  "descricao": "Proposta bizarra e legal (v3.8): bermuda e chinelo nas repartições federais às sextas, por decreto. Ato administrativo, sem custo e sem efeito macro.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Liberar bermuda e chinelo nas repartições federais às sextas, por decreto",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "custo",
+    "m3": "estavel",
+    "m12": "estavel",
+    "just": "Código de vestimenta interno do Executivo não tem custo."
+   },
+   {
+    "ind": "pib",
+    "m12": "estavel",
+    "just": "Sem efeito macroeconômico."
+   },
+   {
+    "ind": "ipca",
+    "m12": "estavel",
+    "just": "Sem efeito sobre preços."
+   },
+   {
+    "ind": "ap",
+    "m3": "estavel",
+    "just": "Notícia leve: a aprovação não se mexe de forma relevante."
+   }
+  ]
+ },
+ {
+  "id": "stf_penal_dura",
+  "descricao": "STF com perfil real (v3.8): PEC que reduz a maioridade penal para 16 anos, aprovada no Congresso e julgada no plenário. Com 4 garantistas, 2 moderados e 4 de linha dura, o resultado depende da semente por partida (variação de até 15 pontos de garantismo): o indicador de tensão com o STF deve reagir quando a Corte suspende.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Reduzir a maioridade penal para 16 anos, por PEC",
+    "resultado": "stf"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "stf",
+    "m3": "qualquer",
+    "m12": "qualquer",
+    "just": "A composição real tem metade do plenário com perfil garantista ou moderado e metade de linha dura: a decisão varia por partida e a tensão só sobe quando a Corte suspende."
+   },
+   {
+    "ind": "ap",
+    "m3": "qualquer",
+    "just": "Medida popular entre policiais e classe média; a derrota no STF atenua o ganho."
+   }
+  ]
  }
 ]

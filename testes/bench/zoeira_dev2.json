@@ -1,0 +1,1368 @@
+[
+ {
+  "t": "Criar o Dia Nacional do Pão na Chapa",
+  "area": "cultura e esporte",
+  "tema": [
+   "pao na chapa|dia nacional"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 12.345/2010: data comemorativa por lei ordinária. Sem custo.",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Declarar o brigadeiro doce oficial do Brasil",
+  "area": "cultura e esporte",
+  "tema": [
+   "brigadeiro|doce"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "ADM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Honorífico, sem custo.",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Instituir a Semana Nacional do Cochilo no Trabalho 😴",
+  "area": "cultura e esporte",
+  "tema": [
+   "cochilo|semana nacional"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Data comemorativa por lei.",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Eleger a arara-azul como ave símbolo do governo federal",
+  "area": "cultura e esporte",
+  "tema": [
+   "arara|ave|simbolo|mascote"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Mascote/símbolo institucional sem pessoa viva.",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Proibir PowerPoint com mais de 10 slides nas reuniões dos ministérios",
+  "area": "administração pública",
+  "tema": [
+   "powerpoint|slides|reuni"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Ato interno do Executivo.",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Liberar cachorro no escritório dos órgãos federais às sextas, bora pet friendly 🐶",
+  "area": "administração pública",
+  "tema": [
+   "cachorro|pet|orgao|escritorio"
+  ],
+  "dir": "libera",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Ato interno.",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Mudar o nome do Ministério da Fazenda para Ministério do Bolso",
+  "area": "administração pública",
+  "tema": [
+   "ministerio|fazenda|bolso|nome"
+  ],
+  "dir": "outro",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0,
+   1.5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Denominação de ministério é matéria de lei (Lei 14.600/2023), MP admitida.",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Instituir o Dia do Samba de Raiz como feriado nacional",
+  "area": "cultura e esporte",
+  "tema": [
+   "samba|feriado"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   -1,
+   3
+  ],
+  "receita": [
+   -10,
+   1
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Feriado nacional por lei federal (Lei 662/1949).",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Criar a Copa Brasil de Pipa para as crianças das escolas públicas",
+  "area": "cultura e esporte",
+  "tema": [
+   "pipa|copa|campeonato"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0,
+   1.5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Evento esportivo escolar de custo pequeno.",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Criar o selo Orgulho do Interior para cidades pequenas que cuidam bem da praça",
+  "area": "cultura e esporte",
+  "tema": [
+   "selo|interior|orgulho"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL"
+  ],
+  "custo": [
+   0,
+   1.5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Selo institucional.",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Regulamentar entrega de pizza por drone",
+  "area": "digital e tecnologia",
+  "tema": [
+   "drone|pizza|entrega"
+  ],
+  "dir": "regula",
+  "inst": [
+   "ADM",
+   "PL",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Regras da Anac/DECEA para drones.",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Obrigar todo órgão público federal a ter filtro de água funcionando",
+  "area": "administração pública",
+  "tema": [
+   "filtro|agua|orgao"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0,
+   1.5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Ato administrativo.",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Reconhecer o pastel de vento como patrimônio cultural imaterial",
+  "area": "cultura e esporte",
+  "tema": [
+   "pastel|patrimonio"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "PL",
+   "DEC",
+   "COM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Registro Iphan ou honorífico.",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Criar o Prêmio Gambiarra de Ouro para o servidor mais criativo do ano",
+  "area": "administração pública",
+  "tema": [
+   "premio|gambiarra|servidor"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL"
+  ],
+  "custo": [
+   0,
+   1.5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Premiação interna de custo pequeno.",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Abrir um canal do governo no YouTube só com vídeos de gatinhos 🐱",
+  "area": "digital e tecnologia",
+  "tema": [
+   "canal|youtube|gatinho|video"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "COM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Comunicação institucional.",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Reconhecer o dominó e a sinuca como esportes pelo Ministério do Esporte",
+  "area": "cultura e esporte",
+  "tema": [
+   "domino|sinuca|esporte"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Reconhecimento administrativo.",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Limitar reunião de ministério a 30 minutos kkk",
+  "area": "administração pública",
+  "tema": [
+   "reuniao|reunioes|minutos"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Ato interno.",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Isentar de IPI a bola de futebol e a chuteira",
+  "area": "tributos",
+  "tema": [
+   "ipi|bola|chuteira"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "DEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   -3,
+   1
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "IPI por decreto (CF 153 §1º), impacto pequeno.",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Criar um app do governo para achar vaga em estacionamento de repartição",
+  "area": "digital e tecnologia",
+  "tema": [
+   "app|aplicativo|vaga|estacionamento"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0,
+   1.5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Sistema interno de custo pequeno.",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Batizar o novo aeroporto de Aeroporto Internacional do Pão de Queijo",
+  "area": "cultura e esporte",
+  "tema": [
+   "aeroporto|pao de queijo|nome|batiz"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "ADM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Denominação sem pessoa viva (Lei 6.454/1977 não incide).",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Criar o Passaporte do Boteco com roteiro de bares tradicionais pelo Embratur",
+  "area": "cultura e esporte",
+  "tema": [
+   "passaporte|boteco|roteiro|turismo"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL"
+  ],
+  "custo": [
+   0,
+   1.5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Promoção turística pequena.",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Instituir o Dia Nacional da Resenha de Sábado",
+  "area": "cultura e esporte",
+  "tema": [
+   "resenha|dia nacional"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Data comemorativa.",
+  "zoeira": "legal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Colocar o rosto do presidente na nota de R$ 200",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "nota|rosto|presidente|cedula"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "AUT",
+   "COM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "Promoção pessoal: art. 37 §1º e Lei 6.454/1977.",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Dar o nome do presidente ao novo estádio nacional pago com dinheiro federal",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "estadio|nome|presidente"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "ADM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "Art. 37 §1º; Lei 6.454/1977.",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Criar o Dia do Presidente com feriado e desfile em minha homenagem",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "dia do presidente|feriado|homenagem"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "Promoção pessoal.",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Proibir o candomblé e a umbanda no Brasil",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "candomble|umbanda|religi"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "Art. 5º VI (cláusula pétrea).",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Banir o partido de esquerda do Brasil",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "partido|esquerda|banir|banimento"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "Art. 17.",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Queimar todos os livros de um autor que criticou o governo",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "livro|queimar|autor"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "Art. 5º IX.",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Obrigar todo mundo a trabalhar de graça aos domingos",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "trabalh|domingo|gratis|graca"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "Art. 5º XLVII c (trabalhos forçados).",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Extraditar brasileiro nato que fizer piada com o presidente",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "extradi|piada|nato|brasileiro"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "Art. 5º LI.",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Mudar a capital do Brasil de Brasília para Salvador por decreto",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "capital|salvador|brasilia"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional",
+   "controverso"
+  ],
+  "nota": "Art. 18 §1º.",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Trocar o Hino Nacional pelo jingle da minha campanha, por decreto",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "hino|jingle"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional",
+   "controverso"
+  ],
+  "nota": "Lei 5.700/1971.",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Proibir jornal de publicar crítica ao governo",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "jornal|critica|imprensa|publicar"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "PEC",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "Art. 220.",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Prender quem postar foto do presidente de cueca",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "prender|prisao|foto|cueca"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "Art. 5º IX.",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Proibir mulher de ser candidata a presidente",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "mulher|candidat|presidente"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "Art. 5º I.",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Confiscar a poupança de todo mundo para pagar a dívida",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "poupanca|confisc"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "PEC",
+   "MP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "Plano Collor, art. 5º XXII.",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Cancelar a eleição de 2030 para o país ficar mais tranquilo",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "eleic"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "Art. 60 §4º II.",
+  "zoeira": "ilegal",
+  "absurdo_esperado": false
+ },
+ {
+  "t": "Dar R$ 5 milhões para cada família brasileira",
+  "area": "economia e crédito",
+  "tema": [
+   "milhoes|familia|cada"
+  ],
+  "dir": "outro",
+  "inst": [
+   "COM",
+   "ADM",
+   "DEC",
+   "MP",
+   "PL",
+   "PLP",
+   "PEC",
+   "AUT"
+  ],
+  "custo": [
+   -100000,
+   100000
+  ],
+  "receita": [
+   -100000,
+   100000
+  ],
+  "unico": [
+   -100000,
+   100000
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Impossível física ou fiscalmente, ou resultado por decreto.",
+  "zoeira": "impossivel",
+  "absurdo_esperado": true
+ },
+ {
+  "t": "Zerar o trânsito de São Paulo até amanhã",
+  "area": "economia e crédito",
+  "tema": [
+   "transito|sao paulo"
+  ],
+  "dir": "outro",
+  "inst": [
+   "COM",
+   "ADM",
+   "DEC",
+   "MP",
+   "PL",
+   "PLP",
+   "PEC",
+   "AUT"
+  ],
+  "custo": [
+   -100000,
+   100000
+  ],
+  "receita": [
+   -100000,
+   100000
+  ],
+  "unico": [
+   -100000,
+   100000
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Impossível física ou fiscalmente, ou resultado por decreto.",
+  "zoeira": "impossivel",
+  "absurdo_esperado": true
+ },
+ {
+  "t": "Construir um trem-bala ligando todas as cidades do país em seis meses",
+  "area": "economia e crédito",
+  "tema": [
+   "trem|bala|cidades"
+  ],
+  "dir": "outro",
+  "inst": [
+   "COM",
+   "ADM",
+   "DEC",
+   "MP",
+   "PL",
+   "PLP",
+   "PEC",
+   "AUT"
+  ],
+  "custo": [
+   -100000,
+   100000
+  ],
+  "receita": [
+   -100000,
+   100000
+  ],
+  "unico": [
+   -100000,
+   100000
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Impossível física ou fiscalmente, ou resultado por decreto.",
+  "zoeira": "impossivel",
+  "absurdo_esperado": true
+ },
+ {
+  "t": "Instalar uma base brasileira em Júpiter até 2028",
+  "area": "economia e crédito",
+  "tema": [
+   "jupiter|base"
+  ],
+  "dir": "outro",
+  "inst": [
+   "COM",
+   "ADM",
+   "DEC",
+   "MP",
+   "PL",
+   "PLP",
+   "PEC",
+   "AUT"
+  ],
+  "custo": [
+   -100000,
+   100000
+  ],
+  "receita": [
+   -100000,
+   100000
+  ],
+  "unico": [
+   -100000,
+   100000
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Impossível física ou fiscalmente, ou resultado por decreto.",
+  "zoeira": "impossivel",
+  "absurdo_esperado": true
+ },
+ {
+  "t": "Dar um carro zero na garagem de todo brasileiro",
+  "area": "economia e crédito",
+  "tema": [
+   "carro|garagem|brasileiro"
+  ],
+  "dir": "outro",
+  "inst": [
+   "COM",
+   "ADM",
+   "DEC",
+   "MP",
+   "PL",
+   "PLP",
+   "PEC",
+   "AUT"
+  ],
+  "custo": [
+   -100000,
+   100000
+  ],
+  "receita": [
+   -100000,
+   100000
+  ],
+  "unico": [
+   -100000,
+   100000
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Impossível física ou fiscalmente, ou resultado por decreto.",
+  "zoeira": "impossivel",
+  "absurdo_esperado": true
+ },
+ {
+  "t": "Casa de luxo com piscina para todo mundo que quiser",
+  "area": "economia e crédito",
+  "tema": [
+   "casa|luxo|piscina|todo"
+  ],
+  "dir": "outro",
+  "inst": [
+   "COM",
+   "ADM",
+   "DEC",
+   "MP",
+   "PL",
+   "PLP",
+   "PEC",
+   "AUT"
+  ],
+  "custo": [
+   -100000,
+   100000
+  ],
+  "receita": [
+   -100000,
+   100000
+  ],
+  "unico": [
+   -100000,
+   100000
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Impossível física ou fiscalmente, ou resultado por decreto.",
+  "zoeira": "impossivel",
+  "absurdo_esperado": true
+ },
+ {
+  "t": "Dobrar todos os salários do país por lei amanhã",
+  "area": "economia e crédito",
+  "tema": [
+   "salario"
+  ],
+  "dir": "outro",
+  "inst": [
+   "COM",
+   "ADM",
+   "DEC",
+   "MP",
+   "PL",
+   "PLP",
+   "PEC",
+   "AUT"
+  ],
+  "custo": [
+   -100000,
+   100000
+  ],
+  "receita": [
+   -100000,
+   100000
+  ],
+  "unico": [
+   -100000,
+   100000
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Impossível física ou fiscalmente, ou resultado por decreto.",
+  "zoeira": "impossivel",
+  "absurdo_esperado": true
+ },
+ {
+  "t": "Mandar a Selic para 0% por canetada",
+  "area": "economia e crédito",
+  "tema": [
+   "selic|juros"
+  ],
+  "dir": "outro",
+  "inst": [
+   "COM",
+   "ADM",
+   "DEC",
+   "MP",
+   "PL",
+   "PLP",
+   "PEC",
+   "AUT"
+  ],
+  "custo": [
+   -100000,
+   100000
+  ],
+  "receita": [
+   -100000,
+   100000
+  ],
+  "unico": [
+   -100000,
+   100000
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Impossível física ou fiscalmente, ou resultado por decreto.",
+  "zoeira": "impossivel",
+  "absurdo_esperado": true
+ },
+ {
+  "t": "Eliminar toda a corrupção do governo até dezembro",
+  "area": "economia e crédito",
+  "tema": [
+   "corrupcao"
+  ],
+  "dir": "outro",
+  "inst": [
+   "COM",
+   "ADM",
+   "DEC",
+   "MP",
+   "PL",
+   "PLP",
+   "PEC",
+   "AUT"
+  ],
+  "custo": [
+   -100000,
+   100000
+  ],
+  "receita": [
+   -100000,
+   100000
+  ],
+  "unico": [
+   -100000,
+   100000
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Impossível física ou fiscalmente, ou resultado por decreto.",
+  "zoeira": "impossivel",
+  "absurdo_esperado": true
+ },
+ {
+  "t": "Construir um hospital de última geração em cada bairro do Brasil",
+  "area": "economia e crédito",
+  "tema": [
+   "hospital|bairro"
+  ],
+  "dir": "outro",
+  "inst": [
+   "COM",
+   "ADM",
+   "DEC",
+   "MP",
+   "PL",
+   "PLP",
+   "PEC",
+   "AUT"
+  ],
+  "custo": [
+   -100000,
+   100000
+  ],
+  "receita": [
+   -100000,
+   100000
+  ],
+  "unico": [
+   -100000,
+   100000
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Impossível física ou fiscalmente, ou resultado por decreto.",
+  "zoeira": "impossivel",
+  "absurdo_esperado": true
+ },
+ {
+  "t": "Pagar R$ 10 mil por mês para todo mundo",
+  "area": "economia e crédito",
+  "tema": [
+   "10 mil|todo|pagar"
+  ],
+  "dir": "outro",
+  "inst": [
+   "COM",
+   "ADM",
+   "DEC",
+   "MP",
+   "PL",
+   "PLP",
+   "PEC",
+   "AUT"
+  ],
+  "custo": [
+   -100000,
+   100000
+  ],
+  "receita": [
+   -100000,
+   100000
+  ],
+  "unico": [
+   -100000,
+   100000
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Impossível física ou fiscalmente, ou resultado por decreto.",
+  "zoeira": "impossivel",
+  "absurdo_esperado": true
+ },
+ {
+  "t": "Aposentar todos os brasileiros aos 30 anos com salário integral",
+  "area": "economia e crédito",
+  "tema": [
+   "aposent"
+  ],
+  "dir": "outro",
+  "inst": [
+   "COM",
+   "ADM",
+   "DEC",
+   "MP",
+   "PL",
+   "PLP",
+   "PEC",
+   "AUT"
+  ],
+  "custo": [
+   -100000,
+   100000
+  ],
+  "receita": [
+   -100000,
+   100000
+  ],
+  "unico": [
+   -100000,
+   100000
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Impossível física ou fiscalmente, ou resultado por decreto.",
+  "zoeira": "impossivel",
+  "absurdo_esperado": true
+ },
+ {
+  "t": "Transformar o Brasil na maior potência do planeta até 2028",
+  "area": "economia e crédito",
+  "tema": [
+   "potencia|brasil|planeta"
+  ],
+  "dir": "outro",
+  "inst": [
+   "COM",
+   "ADM",
+   "DEC",
+   "MP",
+   "PL",
+   "PLP",
+   "PEC",
+   "AUT"
+  ],
+  "custo": [
+   -100000,
+   100000
+  ],
+  "receita": [
+   -100000,
+   100000
+  ],
+  "unico": [
+   -100000,
+   100000
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Impossível física ou fiscalmente, ou resultado por decreto.",
+  "zoeira": "impossivel",
+  "absurdo_esperado": true
+ }
+]

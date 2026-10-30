@@ -58,3 +58,11 @@ Serve para medir generalização: o motor da v3.7 foi desenvolvido olhando `cft_
 python3 testes/motor/run_sandbox.py testes/motor/probe.py $S/cur testes/bench/cft_dev2.json $S/cft_dev2.json 8842
 python3 testes/bench/score.py testes/bench/cft_dev2.json $S/cft_dev2.json
 ```
+
+## Bateria `zoeira_dev2.json` (v3.8)
+50 propostas novas de zoeira (22 `legal`, 15 `ilegal`, 13 `impossivel`), escritas e congeladas antes de mexer no motor da v3.8, no mesmo formato e com o mesmo corretor de `zoeira_dev.json`.
+Placar antes da v3.8 (motor v3.7): 26,0% totalmente certos, `absurdo` 3/13, 1 falso positivo de absurdo. A v3.8 passou a ler o conteúdo (kkk, emoji e gíria deixaram de ser gatilho de absurdo).
+```
+python3 testes/motor/run_sandbox.py testes/motor/probe.py $S/cur testes/bench/zoeira_dev2.json $S/zoeira_dev2.json 8883
+python3 testes/bench/score.py testes/bench/zoeira_dev2.json $S/zoeira_dev2.json
+```
