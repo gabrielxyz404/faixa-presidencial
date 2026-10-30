@@ -1,0 +1,486 @@
+{
+ "n": "PSD (Caiado e Kassab)",
+ "fonte": "Plano de Governo — Eleição Presidencial 2026 (Ronaldo Caiado, vice Gilberto Kassab), PSD, 2027 a 2030",
+ "e": {
+  "economia": [
+   1,
+   "preservando a iniciativa privada como principal motor da economia",
+   5
+  ],
+  "gasto_social": [
+   0,
+   "Preservar os programas de transferência de renda, atualizar cadastros e combater fraude sem constranger beneficiários.",
+   61
+  ],
+  "tributacao": [
+   0,
+   "O ajuste não será baseado em aumentos sucessivos de impostos nem em cortes lineares.",
+   12
+  ],
+  "trabalho": [
+   1,
+   "redução dos custos que empurram pessoas e empresas à informalidade",
+   15
+  ],
+  "privatizacao": [
+   1,
+   "usar a concessão de ativos públicos maduros para financiar a infraestrutura nova",
+   47
+  ],
+  "seguranca": [
+   2,
+   "pena mínima de 45 anos de reclusão para associação ou recrutamento para organização terrorista doméstica",
+   17
+  ],
+  "costumes": [
+   0,
+   "Programas universais terão metas de equidade; ações focalizadas serão usadas quando a desigualdade estiver comprovada",
+   67
+  ],
+  "ambiente": [
+   0,
+   "O Estado será rigoroso contra desmatamento, grilagem, garimpo ilegal, incêndios criminosos e poluição, e parceiro de quem quer se regularizar, investir e produzir dentro da lei.",
+   50
+  ],
+  "soberania_externa": [
+   0,
+   "Não adotaremos alinhamentos automáticos nem aceitaremos falsas escolhas entre polos geopolíticos rivais.",
+   73
+  ]
+ },
+ "b": [
+  "Lei do Terrorismo Doméstico contra facções (PCC, CV)",
+  "Ministério da Segurança Pública sob a Presidência",
+  "Pena mínima de 45 anos e regime REDAD",
+  "Enriquecimento incompatível: 20 anos de pena e perda de bens",
+  "Maioridade penal aos 16 anos em crimes graves",
+  "Fim da reeleição, inclusive para 2027",
+  "Estabilização fiscal sem aumento da carga",
+  "Investimento de 17% para 25% do PIB",
+  "Concessões, PPPs e fim de obras paradas",
+  "SUS com fila por prioridade clínica e metade da espera"
+ ],
+ "propostas": [
+  {
+   "cap": "Fiscal",
+   "pag": 12,
+   "proposta": "Despesas obrigatórias crescendo abaixo do PIB nominal, preservando direitos adquiridos",
+   "eixo": "gasto_social",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Fiscal",
+   "pag": 12,
+   "proposta": "Estratégia fiscal plurianual: estabilizar a dívida/PIB, recuperar superávits primários e reduzir a despesa de juros",
+   "eixo": "economia",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Fiscal",
+   "pag": 12,
+   "proposta": "Rever subsídios e benefícios tributários sem resultado, com prazo e avaliação independente",
+   "eixo": "tributacao",
+   "sentido": "0"
+  },
+  {
+   "cap": "Fiscal",
+   "pag": 12,
+   "proposta": "Aplicar o teto constitucional em todos os Poderes e combater supersalários",
+   "eixo": "gasto_social",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Fiscal",
+   "pag": 13,
+   "proposta": "Novas despesas de pessoal e custeio só com compensação permanente",
+   "eixo": "gasto_social",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Fiscal",
+   "pag": 13,
+   "proposta": "Compromisso de não recorrer a aumentos permanentes de carga tributária",
+   "eixo": "tributacao",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Fiscal",
+   "pag": 13,
+   "proposta": "Respeitar a autonomia do Banco Central e reduzir pressões fiscais sobre preços",
+   "eixo": "economia",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Crescimento",
+   "pag": 14,
+   "proposta": "Elevar o investimento total de cerca de 17% para cerca de 25% do PIB",
+   "eixo": "economia",
+   "sentido": "0"
+  },
+  {
+   "cap": "Crescimento",
+   "pag": 14,
+   "proposta": "Estratégia Brasil 2040 alinhando PPA, orçamento, bancos públicos e agências",
+   "eixo": "economia",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Crescimento",
+   "pag": 14,
+   "proposta": "Agenda de produtividade: digitalizar licenças, fixar prazos, reduzir sobreposições",
+   "eixo": "economia",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Crescimento",
+   "pag": 15,
+   "proposta": "Ampliar acordos comerciais e reduzir barreiras a insumos e tecnologia",
+   "eixo": "economia",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Crescimento",
+   "pag": 15,
+   "proposta": "Reindustrializar sem proteção permanente nem escolha arbitrária de empresas",
+   "eixo": "economia",
+   "sentido": "0"
+  },
+  {
+   "cap": "Crescimento",
+   "pag": 15,
+   "proposta": "Micro e pequenas empresas: simplificar obrigações, crédito e garantias, reduzir custo de formalização",
+   "eixo": "economia",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Crescimento",
+   "pag": 15,
+   "proposta": "Mercado de trabalho: formação contínua, novas formas de trabalho e menor custo da informalidade",
+   "eixo": "trabalho",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Indústria",
+   "pag": 43,
+   "proposta": "Depreciação acelerada permanente para modernização industrial (PL 473/2026), inclusive PMEs",
+   "eixo": "tributacao",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Indústria",
+   "pag": 43,
+   "proposta": "Política industrial permanente com oito eixos de futuro e apoio com contrapartida e prazo",
+   "eixo": "economia",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Indústria",
+   "pag": 44,
+   "proposta": "Compras públicas priorizando produto nacional, com prazo e transferência de tecnologia",
+   "eixo": "economia",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Ciência",
+   "pag": 26,
+   "proposta": "Marco da IA centrado no uso e no risco concreto, 'sem licenciar a matemática'",
+   "eixo": "economia",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Ciência",
+   "pag": 26,
+   "proposta": "Regime tributário estável e competitivo para data centers, condicionado a energia renovável",
+   "eixo": "tributacao",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Segurança",
+   "pag": 16,
+   "proposta": "Criar o Ministério da Segurança Pública e o Conselho Estratégico sob liderança da Presidência",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Segurança",
+   "pag": 17,
+   "proposta": "Lei do Terrorismo Doméstico: enquadra PCC, CV e milícias e permite Forças Armadas sem GLO",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Segurança",
+   "pag": 17,
+   "proposta": "Pena mínima de 45 anos para associação ou recrutamento e de 35 anos para financiamento e lavagem",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Segurança",
+   "pag": 17,
+   "proposta": "REDAD: cela individual, sem visita íntima, monitoramento das conversas com advogados e progressão só após 90% da pena",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Segurança",
+   "pag": 17,
+   "proposta": "Reincidência qualificada e execução da pena após condenação em segunda instância",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Segurança",
+   "pag": 17,
+   "proposta": "Crime de enriquecimento incompatível (20 anos), inversão do ônus da prova e perda autônoma de bens",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Segurança",
+   "pag": 17,
+   "proposta": "Sistema Nacional de Inteligência Criminal com biometria, perfis genéticos e IA",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Segurança",
+   "pag": 18,
+   "proposta": "Fundo Nacional de Combate ao Terrorismo Doméstico, sem contingenciamento, alimentado por bens recuperados",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Segurança",
+   "pag": 18,
+   "proposta": "Comando Nacional de Proteção de Fronteiras e zonas prioritárias de recuperação da soberania na Amazônia",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Segurança",
+   "pag": 18,
+   "proposta": "Rede Nacional de Presídios de Segurança Máxima",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Segurança",
+   "pag": 19,
+   "proposta": "Feminicídio: progressão só após 90% da pena e perdimento total dos bens do condenado",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Segurança",
+   "pag": 19,
+   "proposta": "Estupro de vulnerável menor de 13 anos: pena mínima de 30 anos",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Segurança",
+   "pag": 19,
+   "proposta": "Educação na primeira infância e qualificação de jovens como principal política de prevenção à violência",
+   "eixo": "seguranca",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Segurança",
+   "pag": 19,
+   "proposta": "Regras duras para apostas on-line, com proibição de publicidade em mídia de massa e redes e teto de endividamento",
+   "eixo": "costumes",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Segurança",
+   "pag": 20,
+   "proposta": "PEC da maioridade penal aos 16 anos para crimes graves",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Segurança",
+   "pag": 20,
+   "proposta": "Furto de celular equiparado a roubo",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Segurança",
+   "pag": 20,
+   "proposta": "Lei do Enriquecimento Ilícito e Sistema Nacional Anticorrupção",
+   "eixo": "seguranca",
+   "sentido": "0"
+  },
+  {
+   "cap": "Social",
+   "pag": 61,
+   "proposta": "Preservar a transferência de renda com regra de transição gradual para quem entra no trabalho formal",
+   "eixo": "gasto_social",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Social",
+   "pag": 62,
+   "proposta": "Prioridade absoluta para crianças e adolescentes, com orçamento federal identificado e coordenação na Presidência",
+   "eixo": "gasto_social",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Social",
+   "pag": 62,
+   "proposta": "Moradia primeiro para a população em situação de rua e aluguel social",
+   "eixo": "gasto_social",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Saúde",
+   "pag": 77,
+   "proposta": "Reduzir em pelo menos 50% o tempo mediano das filas prioritárias do SUS até 2030",
+   "eixo": "gasto_social",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Energia",
+   "pag": 36,
+   "proposta": "Manter a gratuidade da conta de luz para famílias de baixa renda",
+   "eixo": "gasto_social",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Energia",
+   "pag": 35,
+   "proposta": "Rever gradualmente subsídios e encargos da conta de luz e transferi-los ao orçamento por decisão do Congresso",
+   "eixo": "economia",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Energia",
+   "pag": 35,
+   "proposta": "Petrobras e demais estatais com governança e investimento, sem uso partidário ou controle artificial de preços",
+   "eixo": "privatizacao",
+   "sentido": "0"
+  },
+  {
+   "cap": "Energia",
+   "pag": 37,
+   "proposta": "Petróleo como pilar da matriz: avaliar novas fronteiras pelo rigor ambiental e financiar a transição",
+   "eixo": "ambiente",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Infraestrutura",
+   "pag": 47,
+   "proposta": "Calendário permanente de leilões do PPI em rodovias, ferrovias, portos, aeroportos, saneamento e infraestrutura social",
+   "eixo": "privatizacao",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Infraestrutura",
+   "pag": 47,
+   "proposta": "Triagem de obras paradas: concluir, transferir à iniciativa privada por concessão ou encerrar",
+   "eixo": "privatizacao",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Infraestrutura",
+   "pag": 47,
+   "proposta": "BNDES como estruturador de projetos e catalisador de capital privado",
+   "eixo": "privatizacao",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Infraestrutura",
+   "pag": 47,
+   "proposta": "Licenciamento com prazos definidos e procedimento simplificado para projetos de baixo impacto",
+   "eixo": "ambiente",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Agro",
+   "pag": 23,
+   "proposta": "Priorizar Ferrogrão, Norte-Sul, Fiol, BR-163 e hidrovias para escoar a produção",
+   "eixo": "ambiente",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Meio ambiente",
+   "pag": 50,
+   "proposta": "Licenciamento por risco, com prazos públicos e baixo risco simplificado",
+   "eixo": "ambiente",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Meio ambiente",
+   "pag": 50,
+   "proposta": "Mutirão de regularização ambiental, sem anistia a dano doloso ou reincidência",
+   "eixo": "ambiente",
+   "sentido": "0"
+  },
+  {
+   "cap": "Meio ambiente",
+   "pag": 51,
+   "proposta": "Mercado de carbono regulado de alta integridade e pagamento por serviços ambientais em escala",
+   "eixo": "ambiente",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Meio ambiente",
+   "pag": 51,
+   "proposta": "Combate integrado a desmatamento e grilagem, responsabilizando financiadores e compradores",
+   "eixo": "ambiente",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Meio ambiente",
+   "pag": 51,
+   "proposta": "Diplomacia ambiental soberana: cooperar sem aceitar tutela sobre território ou recursos",
+   "eixo": "soberania_externa",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Mineração",
+   "pag": 54,
+   "proposta": "Acesso a minerais críticos condicionado a processamento no Brasil e transferência de tecnologia",
+   "eixo": "soberania_externa",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Mineração",
+   "pag": 54,
+   "proposta": "Cadeia de custódia do ouro e responsabilização de compradores e financiadores do garimpo ilegal",
+   "eixo": "ambiente",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Exterior",
+   "pag": 73,
+   "proposta": "Consolidar o acordo Mercosul-UE e negociar novos acordos comerciais",
+   "eixo": "soberania_externa",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Exterior",
+   "pag": 74,
+   "proposta": "Retomar a aproximação com a OCDE e participar de ONU, OMC, G20 e BRICS",
+   "eixo": "soberania_externa",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Defesa",
+   "pag": 31,
+   "proposta": "Diversificar parcerias de Defesa, evitando dependência de um único país ou fornecedor",
+   "eixo": "soberania_externa",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Racismo",
+   "pag": 67,
+   "proposta": "Metas de equidade por raça, território e gênero, com ações focalizadas só quando a desigualdade estiver comprovada",
+   "eixo": "costumes",
+   "sentido": "0"
+  }
+ ],
+ "obs": "Fonte: Plano de Governo 2027-2030 (PSD, Caiado e Kassab), 100 páginas; páginas = numeração do rodapé = página do PDF. Citações dos 9 eixos conferidas por script contra o texto extraído (substring do texto normalizado); trechos cortados na margem pelo pdftotext não foram usados. Estrutura: 26 temas, sem capítulos sobre tributação, trabalho ou privatização. Posições: economia +1 (iniciativa privada como principal motor, produtividade, abertura comercial, autonomia do BC; contrapeso: Estratégia Brasil 2040, política industrial permanente com oito eixos, preferência por produto nacional nas compras públicas, bancos públicos). gasto_social 0 (misto: despesas obrigatórias abaixo do PIB nominal, teto e supersalários, compensação de novas despesas; mas preserva transferência de renda, gratuidade da conta de luz, SUS universal com meta de reduzir 50% da fila e prioridade absoluta à infância; a ênfase é gastar melhor, não gastar menos). tributacao 0 (sem aumento de carga e sem novo imposto, repetido nos temas 4 e 18, mas sem corte geral nem reforma própria; revisão de benefícios tributários eleva receita; cortes só setoriais: depreciação acelerada, data centers, smartphone de entrada). trabalho +1 com base fraca (apenas uma linha, tema 5, p.15: reduzir custos da informalidade e segurança para novas formas de trabalho; nada sobre CLT, sindicatos, jornada ou salário mínimo). privatizacao +1 (concessões, PPPs, leilões do PPI, concessão de ativos maduros, obras paradas transferidas ao setor privado; mas NÃO há venda de estatais: Petrobras e demais estatais ficam com governança, sem controle artificial de preços). seguranca +2 (Lei do Terrorismo Doméstico, penas mínimas de 35 a 45 anos, REDAD, maioridade penal aos 16, execução da pena em segunda instância, Forças Armadas sem GLO; contrapeso declarado: devido processo, controle externo e prevenção pela educação). costumes 0 (sem base nos temas clássicos: o plano NÃO trata de aborto, armas, drogas, LGBT ou ensino domiciliar; sinais mistos: restrição à publicidade de apostas e maioridade penal de um lado, metas de equidade racial e de gênero, secretaria de segurança da mulher e liberdade religiosa de outro). ambiente 0 (misto: rigor contra desmatamento, grilagem e garimpo, mercado de carbono, PSA, bioeconomia e Amazônia com governança fundiária; mas licenciamento simplificado, petróleo como pilar, Ferrogrão, mineração estratégica; não propõe mineração em terras indígenas e trata o garimpo ali como cadeia criminosa). soberania_externa 0 (sem alinhamento automático, relações simultâneas com EUA, UE, China e BRICS; aproximação com OCDE e acordo Mercosul-UE de um lado, minerais críticos com processamento local, diversificação em Defesa e recusa de tutela ambiental de outro). Números: investimento de cerca de 17% para cerca de 25% do PIB (p.14); infraestrutura de cerca de 2% para 4% do PIB (p.46, diagnóstico); gás industrial perto de US$ 8/MMBtu (p.37); fila do SUS -50% e mortalidade cardiovascular e materna -30% até 2030 (pp.77-81); penas mínimas de 45, 35 e 30 anos e progressão após 90% (pp.17,19); enriquecimento incompatível com 20 anos (p.17). Propostas que podem conflitar com a Constituição (só informativo): fim da reeleição aplicado ao mandato iniciado em 2027 (p.8); pena mínima de 45 anos (limite de 30 anos de cumprimento, art. 75 do Código Penal, e vedação de pena de caráter perpétuo, art. 5º XLVII); execução da pena após segunda instância (presunção de inocência, art. 5º LVII; STF ADC 43/44/54); maioridade penal aos 16 (art. 228 da CF, discutida como cláusula pétrea); monitoramento obrigatório das conversas com advogados e perda do diploma de Direito (art. 133 CF e Estatuto da OAB); inversão do ônus da prova patrimonial e perda autônoma de bens (devido processo e propriedade); progressão só após 90% da pena (individualização da pena, art. 5º XLVI); emprego das Forças Armadas no crime organizado sem GLO (art. 142). Ênfases mistas: o tema Segurança é o mais longo e específico, mas a abertura do plano fala em pacificar, governar para todos e respeitar as instituições. O tema Saúde (pp.75-96) é o mais extenso, em tom técnico e de gestão. Experiência de Goiás é citada como modelo em vários temas. Sentidos das propostas: + = direita/liberal/conservador (ambiente: + = exploração; soberania_externa: + = alinhamento com EUA/Ocidente). Pessoas reais citadas no texto foram omitidas; propostas resumidas, não literais."
+}

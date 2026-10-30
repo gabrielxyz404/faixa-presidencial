@@ -35,3 +35,5 @@ Pesquisa em dados/programas_2026_pesquisa.json (planos de governo 2026 registrad
 
 ## 7. Teste final grande (carta branca de Gabriel)
 Depois de tudo: testar a fundo e melhorar — compreensão (inclusive propostas mal escritas: testes/bench/ruido.py gera versões com erro de digitação, sem acento, abreviações, caixa), teor/intenção da proposta, simulação dos efeitos (testes/sim) e reação às ações do jogador. Linha de base v3.6 no reservado geral: limpo 39% totalmente certos (5 critérios 50%); mal escrito 32% (43%); tema cai de 93% para 81%.
+Programas extraídos (citações com página): dados/programa_missao.json, programa_pt_2025.json, programa_pl_2026.json, programa_psd_2026.json. Novo/Zema: sem plano encontrado.
+Regra (Gabriel): a posição de cada partido combina programa + HISTÓRICO real no poder (governos do PT, governo Bolsonaro e votos de Flávio no Senado, Caiado em Goiás, Zema em Minas, votos de parlamentares do MBL). Pesquisa em dados/historico_partidos.json. No jogo, mostrar as duas fontes quando divergirem ("Programa 2026, p. X" e "No governo: fez Y (ano)").
