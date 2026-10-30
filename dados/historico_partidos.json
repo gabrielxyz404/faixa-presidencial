@@ -1,0 +1,632 @@
+{
+ "PT": {
+  "periodos": [
+   "Lula 1 e 2 (2003-2010)",
+   "Dilma 1 e 2 (2011-2016)",
+   "Lula 3 (2023-2026)"
+  ],
+  "e": {
+   "economia": {
+    "pos": -1,
+    "resumo": "Estado indutor e gasto público, mas com ajuste fiscal sempre que apertou: superávit alto em 2003, Levy em 2015, arcabouço em 2023.",
+    "evidencias": [
+     {
+      "fato": "Meta de superávit primário de 4,25% do PIB para 2003, com Palocci na Fazenda, mantendo o tripé macroeconômico herdado (2003)",
+      "fonte": "https://memoria.ebc.com.br/agenciabrasil//noticia/2003-01-13/fiscal-restraint-will-ensure-bigger-surplus-2003-says-palocci"
+     },
+     {
+      "fato": "Ajuste fiscal de 2015 com Joaquim Levy: MPs que endureceram seguro-desemprego, abono e pensão por morte, aprovadas no Congresso em maio de 2015",
+      "fonte": "https://www.jb.com.br/economia/noticias/2015/05/07/amp/a-aprovacao-da-mp-do-ajuste-fiscal-foi-vitoria-da-sociedade-diz-levy.html"
+     },
+     {
+      "fato": "Em 2023-2025 a política fiscal opera sob o arcabouço fiscal (meta de superávit); a cobertura econômica o cita como restrição ao custo da isenção do IR até R$ 5 mil",
+      "fonte": "https://acionista.com.br/justica-tributaria-ou-populismo-fiscal-confira-o-que-economistas-pensam-da-proposta-que-amplia-a-faixa-de-isencao-do-ir-a-quem-ganha-ate-r-5-mil/"
+     }
+    ]
+   },
+   "gasto_social": {
+    "pos": -2,
+    "resumo": "Marca histórica: criou e ampliou transferência de renda, valorizou o salário mínimo, expandiu habitação e universidades.",
+    "evidencias": [
+     {
+      "fato": "Bolsa Família criado pela MP 132 (outubro de 2003)",
+      "fonte": "https://planalto.gov.br/ccivil_03/mpv/Antigas_2003/132.htm"
+     },
+     {
+      "fato": "Política permanente de valorização do salário mínimo em vigor a partir de 2007",
+      "fonte": "https://www.dieese.org.br/notatecnica/2009/notatec79SalMin2009.pdf"
+     },
+     {
+      "fato": "Balanço de Lula e Dilma (segundo o Brasil de Fato): Minha Casa Minha Vida (lançado em 2009, cerca de 4,3 milhões de moradias financiadas) e 18 novas universidades federais",
+      "fonte": "https://www.brasildefato.com.br/2022/10/17/qual-o-balanco-dos-governos-lula-e-bolsonaro/"
+     },
+     {
+      "fato": "Setembro de 2026: reajuste de cerca de 15% no Bolsa Família, piso vai a R$ 691 (o piso de R$ 600 foi fixado no governo anterior e mantido)",
+      "fonte": "https://tribunadosertao.com.br/financas/2026/09/17/980604-lula-anuncia-reajuste-no-bolsa-familia-as-vesperas-das-eleicoes-valor-minimo-sobe-para-r-691"
+     }
+    ]
+   },
+   "tributacao": {
+    "pos": -1,
+    "resumo": "Reforma tributária do consumo e isenção do IR compensada por taxação de alta renda; carga total continuou alta.",
+    "evidencias": [
+     {
+      "fato": "Reforma tributária do consumo (PEC 45) aprovada no Senado em 8/11/2023, 53 a 24, com apoio do governo",
+      "fonte": "https://www.congressoemfoco.com.br/area/congresso-nacional/moro-flavio-bolsonaro-marinho-veja-os-6-senadores-contra-a-reforma-tributaria-na-ccj/"
+     },
+     {
+      "fato": "Projeto de isenção do IR até R$ 5 mil (2025) compensada por alíquota mínima de 10% para rendas acima de R$ 50 mil por mês; em 2024 o limite já havia subido de R$ 1,9 mil para R$ 2,6 mil",
+      "fonte": "https://bpmoney.com.br/economia/haddad-isencao-do-ir-ate-r-5-mil-custara-r-27-bi"
+     }
+    ]
+   },
+   "trabalho": {
+    "pos": -1,
+    "resumo": "Pró-trabalhador na agenda (salário mínimo, fim da 6x1), mas Dilma restringiu benefícios trabalhistas em 2015.",
+    "evidencias": [
+     {
+      "fato": "MP do ajuste de 2015 mudou regras de seguro-desemprego e abono; aprovada sob críticas de sindicatos e do próprio PT, e Lula chamou de erro incluir sem negociar",
+      "fonte": "https://exame.com/brasil/lula-critica-dilma-por-conducao-do-ajuste-fiscal/"
+     },
+     {
+      "fato": "PEC do fim da escala 6x1 aprovada em 2026 (Câmara 472 a 22 no 1º turno; Senado 75 a 1), pauta central do programa do PT",
+      "fonte": "https://www.congressoemfoco.com.br/noticia/123241/por-75-votos-a-um-senado-aprova-pec-do-fim-da-escala-6x1"
+     }
+    ]
+   },
+   "privatizacao": {
+    "pos": -1,
+    "resumo": "Não vendeu controle de grandes estatais, mas recorreu a concessões em volume recorde.",
+    "evidencias": [
+     {
+      "fato": "Governo Lula 3 chegou ao fim de 2025 com cerca de 50 leilões de rodovias, portos e aeroportos, apontado como o maior volume de concessões de infraestrutura da história",
+      "fonte": "https://jornaldebrasilia.com.br/noticias/economia/lula-supera-bolsonaro-e-fhc-como-governo-que-mais-fez-concessoes-de-infraestrutura/"
+     },
+     {
+      "fato": "Reforma da Previdência dos servidores em 2003 (reforma, não privatização) mostra pragmatismo desde o primeiro mandato",
+      "fonte": "https://exame.com/economia/documento-do-governo-mostra-que-previdencia-e-prioridade-entre-as-reformas-m0065179"
+     }
+    ]
+   },
+   "seguranca": {
+    "pos": -1,
+    "resumo": "Segurança como política federal integrada e controle de armas; pouca entrega legislativa até o fim de 2026.",
+    "evidencias": [
+     {
+      "fato": "PEC da Segurança Pública (constitucionaliza o Susp) aprovada na Câmara em 4/3/2026, mas parada no Senado semanas depois",
+      "fonte": "https://www.congressoemfoco.com.br/noticia/118276/pec-da-seguranca-emperra-no-senado-50-dias-apos-aprovacao-na-camara"
+     },
+     {
+      "fato": "Governo Lula 3 revogou decretos que flexibilizavam armas (2022-2023)",
+      "fonte": "https://www.istoedinheiro.com.br/governo-lula-comecara-revogaco-de-armas-anulando-8-decretos-e-uma-portaria/"
+     }
+    ]
+   },
+   "costumes": {
+    "pos": -1,
+    "resumo": "Desfez medidas conservadoras do governo anterior; agenda de direitos sem grandes rupturas legislativas.",
+    "evidencias": [
+     {
+      "fato": "Decreto 11.611/2023 revogou o programa de escolas cívico-militares (Pecim)",
+      "fonte": "https://www.meuvademecumonline.com.br/legislacao/decretos/20848/pagina_14/47/decreto-n-11-611-de-19-de-julho-de-2023/"
+     }
+    ]
+   },
+   "ambiente": {
+    "pos": -1,
+    "resumo": "Retomou fiscalização e queda do desmatamento na Amazônia, mas empurrou licença de petróleo na Foz do Amazonas e sancionou o Código Florestal com vetos.",
+    "evidencias": [
+     {
+      "fato": "Desmatamento na Amazônia (Prodes): queda de 22% em 2022-23 e de 30,6% em 2023-24 (6.288 km²)",
+      "fonte": "https://www.poder360.com.br/governo/governo-anuncia-reducao-de-22-de-desmatamento-na-amazonia/"
+     },
+     {
+      "fato": "Ibama emitiu em 20/10/2025 licença para Petrobras perfurar poço na Foz do Amazonas após pressão pública de Lula, antes da COP30; ONGs criticaram",
+      "fonte": "https://jovempan.com.br/noticias/sustentabilidade/pressao-de-lula-por-licenca-da-petrobras-na-foz-do-amazonas-antes-da-cop30.html"
+     },
+     {
+      "fato": "Dilma sancionou o novo Código Florestal em 2012 com 12 vetos e 32 modificações; ambientalistas consideraram insuficiente, ruralistas criticaram os vetos",
+      "fonte": "https://www.congressoemfoco.com.br/noticias/dilma-veta-12-artigos-do-codigo-florestal/"
+     }
+    ]
+   },
+   "soberania_externa": {
+    "pos": -1,
+    "resumo": "Política externa independente e multipolar, com abertura comercial ao Ocidente quando convém.",
+    "evidencias": [
+     {
+      "fato": "Declaração de Teerã (17/5/2010): Brasil e Turquia intermediam acordo nuclear com o Irã, rejeitado por EUA e aliados",
+      "fonte": "https://www.gazetadopovo.com.br/republica/apoio-historico-e-alinhamento-ideologico-de-lula-ao-ira-enfraquecem-politica-externa-do-brasil/"
+     },
+     {
+      "fato": "2025: presidência do Brics e resposta ao tarifaço de Trump levando o tema ao Brics e à OMC",
+      "fonte": "https://www.cnnbrasil.com.br/economia/macroeconomia/lula-quer-debate-com-brics-sobre-possivel-resposta-conjunta-a-tarifaco-de-trump/"
+     },
+     {
+      "fato": "Acordo Mercosul-UE promulgado por decreto em 28/4/2026, apresentado como resposta ao unilateralismo de Trump",
+      "fonte": "https://www.poder360.com.br/poder-governo/para-lula-acordo-mercosul-ue-e-resposta-a-unilateralismo-de-trump/"
+     }
+    ]
+   }
+  },
+  "contrastes": [
+   "Programa 2025 quer conter privatizações (-2), mas o governo Lula 3 bateu recorde de concessões de infraestrutura (cerca de 50 leilões até 2025). Concessão não é venda de estatal, mas é entrega ao setor privado. Fonte: https://jornaldebrasilia.com.br/noticias/economia/lula-supera-bolsonaro-e-fhc-como-governo-que-mais-fez-concessoes-de-infraestrutura/",
+   "Programa fala em Estado indutor e juros reais muito menores (-2), mas a prática repetiu ajuste fiscal: superávit de 4,25% em 2003, Levy em 2015, arcabouço com meta de superávit em 2023. Fonte: https://memoria.ebc.com.br/agenciabrasil//noticia/2003-01-13/fiscal-restraint-will-ensure-bigger-surplus-2003-says-palocci",
+   "Programa defende transição ecológica como eixo (-2), mas o governo pressionou pela licença de petróleo na Foz do Amazonas (out/2025) e Dilma aceitou texto do Código Florestal que ruralistas defendiam (2012). Fonte: https://jovempan.com.br/noticias/sustentabilidade/pressao-de-lula-por-licenca-da-petrobras-na-foz-do-amazonas-antes-da-cop30.html",
+   "Programa prega direitos trabalhistas e fim da 6x1 (-2), mas em 2015 o governo Dilma aprovou restrição a seguro-desemprego e abono, criticada por Lula e sindicatos. Fonte: https://exame.com/brasil/lula-critica-dilma-por-conducao-do-ajuste-fiscal/",
+   "Em 2003 o PT no governo fez reforma da Previdência dos servidores, que a CUT e parte da esquerda combateram. Fonte: https://exame.com/economia/documento-do-governo-mostra-que-previdencia-e-prioridade-entre-as-reformas-m0065179",
+   "Programa e prática: o piso do Bolsa Família de R$ 600 veio do governo anterior e foi mantido; o PT elevou para R$ 691 em setembro de 2026, a semanas da eleição. Fonte: https://tribunadosertao.com.br/financas/2026/09/17/980604-lula-anuncia-reajuste-no-bolsa-familia-as-vesperas-das-eleicoes-valor-minimo-sobe-para-r-691"
+  ],
+  "lacunas": [
+   "Nao localizei, nesta rodada, fonte sobre Mais Medicos/PAC com dados oficiais; so material partidario.",
+   "Status final do PL 1087/2025 (isencao do IR) nao confirmado."
+  ]
+ },
+ "PL": {
+  "periodos": [
+   "Jair Bolsonaro (2019-2022)",
+   "Flávio Bolsonaro no Senado (2019-2026)"
+  ],
+  "e": {
+   "economia": {
+    "pos": 1,
+    "resumo": "Reformista e liberal na agenda (Previdência, privatizações), mas furou o teto de gastos em ano eleitoral.",
+    "evidencias": [
+     {
+      "fato": "Reforma da Previdência (EC 103/2019): Senado aprovou em 2º turno por 60 a 19; Flávio Bolsonaro votou sim",
+      "fonte": "https://congressoemfoco.com.br/economia/leia-como-cada-senador-votou-no-2o-turno-da-previdencia"
+     },
+     {
+      "fato": "Teto de gastos teve cinco exceções em quatro anos, cerca de R$ 840 bi fora do teto (R$ 300 bi sem a pandemia), segundo a Gazeta do Povo",
+      "fonte": "https://www.gazetadopovo.com.br/economia/quais-os-acertos-e-os-erros-de-bolsonaro-na-economia/"
+     },
+     {
+      "fato": "PEC Kamikaze (2022): cerca de R$ 41 bi fora do teto; Câmara aprovou em 2º turno por 469 a 17",
+      "fonte": "https://maisretorno.com/portal/camara-aprova-em-2o-turno-pec-kamikaze-por-469-votos-a-17"
+     }
+    ]
+   },
+   "gasto_social": {
+    "pos": 0,
+    "resumo": "Manteve transferência de renda e a ampliou em ano eleitoral; discurso era de porta de saída.",
+    "evidencias": [
+     {
+      "fato": "PEC Kamikaze (jul/2022) elevou o Auxílio Brasil de R$ 400 para R$ 600 até o fim de 2022, fora do teto",
+      "fonte": "https://istoedinheiro.com.br/pec-kamikaze-entenda-como-fica-a-economia-com-o-pacote-de-bolsonaro"
+     }
+    ]
+   },
+   "tributacao": {
+    "pos": 1,
+    "resumo": "Cortou tributos sobre combustíveis em 2022; Flávio votou contra a reforma do consumo e foi inconsistente entre revogar e revisar.",
+    "evidencias": [
+     {
+      "fato": "LC 194/2022 limitou o ICMS de combustíveis, energia, comunicações e transporte coletivo a 17-18% (sancionada em 24/6/2022; vetada a compensação aos estados); a LC 192/2022 zerou PIS/Cofins de combustíveis",
+      "fonte": "https://www.conjur.com.br/2022-jun-24/bolsonaro-sanciona-vetos-lei-limita-icms-combustiveis//?print=1"
+     },
+     {
+      "fato": "Flávio votou contra a PEC 45 (reforma tributária) em 2023 e contra a regulamentação em 2025",
+      "fonte": "https://www.folhape.com.br/politica/flavio-votou-contra-reforma-tributaria-mas-promete-enviar-ao/507786/"
+     },
+     {
+      "fato": "Flávio assinou emendas para pressionar a alíquota padrão do IVA",
+      "fonte": "https://www.reformatributaria.com/reforma-tributaria-congresso-nacional/flavio-bolsonaro-assinou-40-emendas-que-pressionavam-a-aliquota-padrao-do-iva/"
+     }
+    ]
+   },
+   "trabalho": {
+    "pos": 1,
+    "resumo": "Base limitada: na votação do fim da 6x1 a bancada do PL em geral votou a favor, apesar do programa pelo negociado sobre o legislado.",
+    "evidencias": [
+     {
+      "fato": "PEC do fim da 6x1 na Câmara (mai/2026): 472 a 22 no 1º turno; só Novo e Missão votaram majoritariamente contra, e entre os contrários do PL há nomes isolados (Júlia Zanatta, Zé Trovão)",
+      "fonte": "https://agenciabrasil.ebc.com.br/politica/noticia/2026-05/saiba-como-votaram-os-deputados-na-pec-que-acaba-com-escala-6x1"
+     }
+    ]
+   },
+   "privatizacao": {
+    "pos": 1,
+    "resumo": "Privatizou Eletrobras e abriu saneamento, mas ficou abaixo da meta de R$ 1 tri.",
+    "evidencias": [
+     {
+      "fato": "Lei 14.182/2021 (capitalização da Eletrobras), sancionada com vetos em 12/7/2021",
+      "fonte": "https://www.mattosfilho.com.br/en/unico/lei-captalizacao-eletrobras/"
+     },
+     {
+      "fato": "Marco legal do saneamento (Lei 14.026/2020) para ampliar a participação privada, meta de universalização até 2033",
+      "fonte": "https://www.politize.com.br/marco-legal-do-saneamento-basico/"
+     },
+     {
+      "fato": "2019-2021: cerca de R$ 200 bi arrecadados com venda de ações de estatais, abaixo da promessa de R$ 1 tri de Guedes",
+      "fonte": "https://www.gazetadopovo.com.br/economia/quais-os-acertos-e-os-erros-de-bolsonaro-na-economia/"
+     }
+    ]
+   },
+   "seguranca": {
+    "pos": 2,
+    "resumo": "Armamentismo e endurecimento penal; Flávio no Senado com proposta de reduzir a maioridade penal, sem lei própria aprovada.",
+    "evidencias": [
+     {
+      "fato": "Decretos de 2019 a 2021 ampliaram o acesso a armas e munições (posse, porte, CACs); revogados em 2022-2023 pelo governo seguinte",
+      "fonte": "https://www.campograndenews.com.br/brasil/cidades/bolsonaro-edita-4-decretos-que-ampliam-acesso-a-armas-e-municoes"
+     },
+     {
+      "fato": "Pacote anticrime (Lei 13.964/2019, sancionado em dezembro de 2019); homicídios caíram em 2019, com disputa sobre a base de comparação (governo falou em 23%)",
+      "fonte": "https://www.gazetadopovo.com.br/opiniao/editoriais/boas-noticias-na-seguranca-publica-homicidios-bolsonaro-moro/"
+     },
+     {
+      "fato": "Flávio apresentou PEC para reduzir a maioridade penal (14 anos para crimes graves e 16 para os demais), parada na CCJ",
+      "fonte": "https://istoe.com.br/proposta-de-flavio-bolsonaro-para-reduzir-maioridade-penal-aguarda-votacao-na-ccj/"
+     },
+     {
+      "fato": "Balanço do mandato de Flávio: nove discursos e nenhum projeto próprio aprovado",
+      "fonte": "https://congressoemfoco.com.br/legislativo/nove-discursos-e-nenhum-projeto-aprovado-a-atuacao-de-flavio-bolsonaro-no-senado"
+     }
+    ]
+   },
+   "costumes": {
+    "pos": 2,
+    "resumo": "Agenda conservadora em educação e drogas.",
+    "evidencias": [
+     {
+      "fato": "Decreto 10.004/2019 criou o Programa Nacional das Escolas Cívico-Militares (revogado em 2023)",
+      "fonte": "https://www2.camara.leg.br/legin/fed/decret/2019/decreto-10004-5-setembro-2019-789086-norma-pe.html"
+     },
+     {
+      "fato": "Flávio votou a favor da PEC das drogas (criminaliza porte e posse de qualquer quantidade): 53 a 9 no 1º turno",
+      "fonte": "https://www.folhavitoria.com.br/politica/flavio-bolsonaro-vota-a-favor-da-pec-das-drogas-e-ironiza-homenagem-a-harmonia-entre-poderes/"
+     }
+    ]
+   },
+   "ambiente": {
+    "pos": 2,
+    "resumo": "Desmatamento subiu e o Fundo Amazônia ficou paralisado; o governo atribuiu o travamento a decreto sobre o comitê do fundo.",
+    "evidencias": [
+     {
+      "fato": "Média anual de desmatamento da Amazônia de cerca de 11.405 km² em 2019-2021 contra 7.458 km² em 2016-2018 (comparação da Greenpeace, organização ambientalista)",
+      "fonte": "https://www.greenpeace.org/brasil/blog/a-verdade-sobre-a-amazonia-sob-o-governo-bolsonaro/"
+     },
+     {
+      "fato": "Fundo Amazônia paralisado desde 2019; a gestão alegou que o travamento decorreu de decreto que extinguiu o comitê do fundo",
+      "fonte": "https://ihu.unisinos.br/594444-alta-no-desmate-coroa-desmonte-ambiental-de-bolsonaro-e-salles"
+     },
+     {
+      "fato": "PL 191/2020, enviado ao Congresso, previa mineração e energia em terras indígenas",
+      "fonte": "https://www.greenpeace.org/brasil/blog/a-verdade-sobre-a-amazonia-sob-o-governo-bolsonaro/"
+     }
+    ]
+   },
+   "soberania_externa": {
+    "pos": 2,
+    "resumo": "Alinhamento explícito com Trump e distanciamento de acordos multilaterais.",
+    "evidencias": [
+     {
+      "fato": "Estudo acadêmico: principal diretriz da política externa foi o alinhamento ao governo Trump",
+      "fonte": "https://periodicos.unb.br/index.php/MED/article/download/27792/24440"
+     },
+     {
+      "fato": "Anúncio de saída do Pacto Global para a Migração em dezembro de 2018 (Brasil voltou ao pacto em 2023)",
+      "fonte": "https://www.jb.com.br/pais/2018/12/964527-aloysio-nunes-critica-saida-do-pacto-para-migracao-anunciada-por-bolsonaro.html"
+     }
+    ]
+   }
+  },
+  "contrastes": [
+   "Programa 2026 quer Estado eficiente, corte de gastos (Tesouraço) e menos ministérios (+2), mas o governo Bolsonaro abriu cinco exceções ao teto (cerca de R$ 840 bi) e fez a PEC Kamikaze em 2022. Fonte: https://www.gazetadopovo.com.br/economia/quais-os-acertos-e-os-erros-de-bolsonaro-na-economia/",
+   "Programa promete reforma tributária corrigida e redução do IVA, mas Flávio votou contra a reforma (2023 e 2025) e na campanha oscilou entre revogar e enviar nova regulamentação. Fontes: https://www.folhape.com.br/politica/flavio-votou-contra-reforma-tributaria-mas-promete-enviar-ao/507786/ e https://www.gazetadopovo.com.br/eleicoes/2026/flavio-promete-fim-da-reeleicao-e-revogacao-da-reforma-tributaria-como-1o-ato-de-mandato/",
+   "Programa trata meio ambiente como ativo estratégico (+1), mas a prática 2019-2022 foi de exploração: desmatamento em alta, Fundo Amazônia parado, proposta de mineração em terras indígenas (+2). Fonte: https://www.greenpeace.org/brasil/blog/a-verdade-sobre-a-amazonia-sob-o-governo-bolsonaro/",
+   "Programa defende o negociado sobre o legislado (+2), mas na votação do fim da 6x1 em 2026 a bancada do PL em geral votou a favor. Fonte: https://agenciabrasil.ebc.com.br/politica/noticia/2026-05/saiba-como-votaram-os-deputados-na-pec-que-acaba-com-escala-6x1",
+   "Programa mantém programas sociais como porta de saída, mas o governo ampliou o Auxílio Brasil para R$ 600 fora do teto em ano eleitoral. Fonte: https://istoedinheiro.com.br/pec-kamikaze-entenda-como-fica-a-economia-com-o-pacote-de-bolsonaro",
+   "Programa promete privatizações caso a caso e foco em segurança (+2), mas Flávio não teve projeto próprio de segurança aprovado em sete anos de Senado (a assessoria destaca atuação na Lei Antifacção, não verificada). Fonte: https://congressoemfoco.com.br/legislativo/nove-discursos-e-nenhum-projeto-aprovado-a-atuacao-de-flavio-bolsonaro-no-senado"
+  ],
+  "lacunas": [
+   "Votos nominais de Flávio sobre arcabouço fiscal, aborto, PEC da Segurança e fim da 6x1 no Senado nao localizados.",
+   "Mercado de trabalho no governo Bolsonaro (Lei de Liberdade Economica, MP carteira verde e amarela) sem fonte nesta rodada."
+  ]
+ },
+ "PSD": {
+  "periodos": [
+   "Ronaldo Caiado, governo de Goiás (1/2019-3/2026), pelo DEM e depois União Brasil",
+   "Caiado filiado ao PSD desde 27/1/2026 (formalizado em março) e candidato do PSD à Presidência",
+   "PSD de Gilberto Kassab: ministérios com Dilma e Temer, neutro em 2022, base de Lula 3 desde 2023"
+  ],
+  "perfil": "Registro: Caiado esteve no União Brasil (governou Goiás por essa legenda) e migrou ao PSD em jan/2026. O PSD de Kassab é descrito como pragmático: neutro na eleição de 2022, entrou na base de Lula 3 com ministérios (incluindo Minas e Energia e Agricultura) e ao mesmo tempo ocupa cargos no governo Tarcísio em SP; Kassab criticou Lula em jan/2025 dizendo que ele não seria eleito 'hoje'. Fontes: https://www.congressoemfoco.com.br/noticia/115889/ao-lado-de-eduardo-leite-e-ratinho-jr--caiado-anuncia-filiacao-ao-psd ; https://www.congressoemfoco.com.br/noticia/29713/kassab-acerta-apoio-do-psd-a-lula-e-quer-dois-ministerios ; https://congressoemfoco.com.br/coluna/50991/o-unico-ismo-que-segue-o-psd-e-o-pragmatismo",
+  "e": {
+   "economia": {
+    "pos": 1,
+    "resumo": "Ajuste fiscal pragmático em Goiás, com ajuda do STF para entrar no Regime de Recuperação Fiscal e reforma da previdência estadual.",
+    "evidencias": [
+     {
+      "fato": "Goiás entrou no RRF por decisão do STF (liminar de Gilmar Mendes) depois de Caiado ter dito que o regime estava descartado; exigiu reforma previdenciária estadual",
+      "fonte": "https://www.coad.com.br/home/noticias-detalhe/106277/supremo-tribunal-federal-garante-adesao-de-goias-ao-regime-de-recuperacao-fiscal"
+     },
+     {
+      "fato": "Caiado afirmou que o RRF estava descartado para Goiás (declaração anterior à adesão)",
+      "fonte": "https://jornalopcao.com.br/ultimas-noticias/caiado-afirma-que-regime-de-recuperacao-fiscal-rrf-esta-descartado-para-goias-165610/"
+     },
+     {
+      "fato": "Reforma da previdência estadual enviada à Assembleia em 2019 (economia estimada de R$ 400 mi no ano seguinte)",
+      "fonte": "https://www.maisgoias.com.br/politica/caiado-entrega-reforma-da-previdencia-a-presidente-da-alego/"
+     },
+     {
+      "fato": "Capag de Goiás subiu de C para B no Tesouro Nacional",
+      "fonte": "https://opopular.com.br/economia/melhor-situac-o-fiscal-eleva-classificac-o-de-goias-na-secretaria-do-tesouro-nacional-1.2528422"
+     }
+    ]
+   },
+   "tributacao": {
+    "pos": 1,
+    "resumo": "Incentivos fiscais e redução de ICMS em Goiás; PSD apoiou reforma do consumo com ressalvas.",
+    "evidencias": [
+     {
+      "fato": "Programas de incentivo fiscal (Produzir, ProGoiás criado em 2020) mantidos; renúncia fiscal publicada anualmente pelo IMB",
+      "fonte": "https://goias.gov.br/imb/wp-content/uploads/sites/29/2025/08/Relatorio-de-Renuncia-Fiscal-2024-IMB.pdf"
+     },
+     {
+      "fato": "Caiado afirma ter reduzido ICMS de combustíveis, energia e telecom de 25% para 17% (declaração do governador, agosto de 2026)",
+      "fonte": "https://www.maisgoias.com.br/brasil/veja-o-que-pensam-caiado-mendanha-e-vitor-hugo-sobre-impostos-e-incentivos-fiscais-em-goias/"
+     },
+     {
+      "fato": "Kassab disse ser favorável à reforma tributária (PEC 45), criticando 'absurdos' do texto",
+      "fonte": "https://www.infomoney.com.br/?p=2320630"
+     }
+    ]
+   },
+   "trabalho": {
+    "pos": 1,
+    "resumo": "Apoio declarado do PSD à reforma trabalhista de 2017, com racha interno na Previdência.",
+    "evidencias": [
+     {
+      "fato": "PSD de Kassab declarou apoio à reforma trabalhista de 2017 e pediu adiamento da Previdência",
+      "fonte": "https://congressoemfoco.com.br/noticia/35386/psd-de-kassab-declara-apoio-a-reforma-trabalhista-mas-pede-adiamento-da-previdenciaria"
+     },
+     {
+      "fato": "Em 2019 Kassab disse que o PSD não fecharia questão sobre a reforma da Previdência; dois deputados do PSD votaram contra a orientação favorável",
+      "fonte": "https://www.metropoles.com/brasil/politica-br/gilberto-kassab-diz-que-psd-nao-fechara-questao-sobre-previdencia"
+     }
+    ]
+   },
+   "privatizacao": {
+    "pos": 1,
+    "resumo": "Plano de recuperação de Goiás incluiu venda de ativos; privatização parcial, sem venda total.",
+    "evidencias": [
+     {
+      "fato": "Plano de Recuperação Fiscal de Goiás assentado em revisão de incentivos fiscais, privatização/desmobilização de ativos e ajuste de pessoal",
+      "fonte": "https://goias.gov.br/imb/wp-content/uploads/sites/29/2024/05/Nota_executiva_003_2024_Uma_breve_analise_da_historia_fiscal_de_goias.pdf"
+     }
+    ]
+   },
+   "seguranca": {
+    "pos": 2,
+    "resumo": "Segurança é a marca de Caiado: queda forte de homicídios em Goiás, com alta letalidade policial criticada.",
+    "evidencias": [
+     {
+      "fato": "Taxa de homicídios de Goiás caiu 52,1% entre 2018 e 2024 (18,8 por 100 mil), segundo o Anuário Brasileiro de Segurança Pública, citado na cobertura",
+      "fonte": "https://www.jornalopcao.com.br/ultimas-noticias/lula-cai-na-pesquisa-quaest-e-caiado-ganha-forca-com-modelo-de-seguranca-publica-de-goias-764949/"
+     },
+     {
+      "fato": "Pesquisadora critica o modelo: cresceu a taxa de mortes cometidas por policiais",
+      "fonte": "https://ihu.unisinos.br/647910-policia-violenta-e-principal-bandeira-de-caiado-entrevista-com-cileide-alves"
+     },
+     {
+      "fato": "Candidato promete 40 presídios federais e criticou a PEC da Segurança do governo Lula",
+      "fonte": "https://tribunadejundiai.com.br/politica/eleicoes-2026/ronaldo-caiado-debate-promete-40-presidios-federais-e-endurece-combate-violencia-mulher/"
+     }
+    ]
+   },
+   "costumes": {
+    "pos": 1,
+    "resumo": "Expansão dos colégios militares e promessa de anistia a Bolsonaro; sem bandeira costumeira forte.",
+    "evidencias": [
+     {
+      "fato": "Goiás tem cerca de 76 colégios militares (2023); 12,4% dos alunos estudavam em colégios da PM em levantamento anterior; Caiado reagiu ao fim do Pecim federal dizendo 'não muda nada'",
+      "fonte": "https://jornalopcao.com.br/ultimas-noticias/caiado-sobre-encerramento-de-programa-de-escolas-civico-militares-nao-muda-nada-508541/"
+     },
+     {
+      "fato": "Caiado prometeu anistia a Bolsonaro como primeiro ato (lançamento da pré-candidatura)",
+      "fonte": "https://revistaoeste.com/politica/caiado-lanca-pre-candidatura-e-promete-anistia-a-bolsonaro/"
+     }
+    ]
+   },
+   "ambiente": {
+    "pos": 1,
+    "resumo": "Licenciamento ágil e pró-agro em Goiás, com queda recente de desmatamento segundo órgãos estaduais.",
+    "evidencias": [
+     {
+      "fato": "Plataforma Ipê reduziu o tempo médio de licença de 3 anos (2019) para 60 dias, segundo o governo; desmatamento no estado caiu 37% frente a 2019 pelo Deter (dados do governo e de portais locais)",
+      "fonte": "https://www.maisgoias.com.br/cidades/desmatamento-em-goias-cai-37-na-comparacao-com-2019-aponta-deter/"
+     },
+     {
+      "fato": "Entidades e ambientalistas pediram veto de Caiado a lei que flexibiliza fiscalização ambiental em Goiás",
+      "fonte": "https://www.maisgoias.com.br/cidades/entidades-e-ambientalistas-exigem-veto-de-caiado-a-lei-que-flexibiliza-fiscalizacao-ambiental-em-goias/"
+     }
+    ]
+   }
+  },
+  "contrastes": [
+   "Programa 2026 do PSD é rigoroso contra desmatamento (0); em Goiás o governo é pró-agro, com licenciamento flexível e pedidos de veto a lei que afrouxa fiscalização (+1), embora o desmatamento tenha caído segundo dados estaduais. Fonte: https://www.maisgoias.com.br/cidades/entidades-e-ambientalistas-exigem-veto-de-caiado-a-lei-que-flexibiliza-fiscalizacao-ambiental-em-goias/",
+   "Programa trata costumes por equidade e metas (0), mas em Goiás a aposta educacional foi a militarização de escolas (cerca de 76 colégios) e Caiado promete anistia a Bolsonaro. Fonte: https://jornalopcao.com.br/ultimas-noticias/caiado-sobre-encerramento-de-programa-de-escolas-civico-militares-nao-muda-nada-508541/",
+   "Discurso de não ao RRF vs prática: Caiado disse que o RRF estava descartado e depois Goiás entrou no regime por liminar do STF. Fonte: https://jornalopcao.com.br/ultimas-noticias/caiado-afirma-que-regime-de-recuperacao-fiscal-rrf-esta-descartado-para-goias-165610/",
+   "Programa promete 'estabilização sem aumento da carga' e concessões; a prática em Goiás foi ajuste via previdência estadual, revisão de incentivos e venda de ativos. Fonte: https://goias.gov.br/imb/wp-content/uploads/sites/29/2024/05/Nota_executiva_003_2024_Uma_breve_analise_da_historia_fiscal_de_goias.pdf",
+   "Programa diz 'sem alinhamentos automáticos' (0), mas Caiado promete anistia a Bolsonaro e o PSD é ao mesmo tempo base de Lula 3 e do governo Tarcísio, o que mostra pragmatismo e não linha ideológica. Fonte: https://revistaoeste.com/politica/sem-conseguir-cargos-com-tarcisio-kassab-abriga-aliados-no-governo-lula/"
+  ],
+  "lacunas": [
+   "Sem fonte sobre politica social de Goiás (Goiás Social, Aluguel Social) com URL confiavel nesta rodada; gasto_social omitido.",
+   "Sem fonte sobre posicao de Caiado/PSD em politica externa; soberania_externa omitida.",
+   "Votos de Caiado como deputado federal (ate 2019) nao localizados.",
+   "Celg foi privatizada em 2016 (governo anterior); nao atribuida a Caiado."
+  ]
+ },
+ "NOVO": {
+  "periodos": [
+   "Romeu Zema, governo de Minas Gerais (2019-2026)"
+  ],
+  "e": {
+   "economia": {
+    "pos": 1,
+    "resumo": "Ajuste fiscal e dívida: tentou o RRF durante anos sem concluir, depois aderiu ao Propag (2025); herdou déficit e regularizou salários.",
+    "evidencias": [
+     {
+      "fato": "Zema pediu urgência ao projeto de adesão ao RRF (PL 1.202/2019, em 2021); o regime impunha vender estatais e não foi concluído",
+      "fonte": "https://www.brasildefato.com.br/2022/03/11/regime-de-recuperacao-fiscal-impede-reajustes-e-investimentos-futuros-do-estado/"
+     },
+     {
+      "fato": "Adesão ao Propag aprovada na Assembleia em junho de 2025; dívida de Minas com a União estimada em mais de R$ 165 bi",
+      "fonte": "https://ofator.com.br/informacao/o-caminho-das-privatizacoes-de-cemig-e-copasa-apos-aprovacao-do-propag-que-permite-a-federalizacao/"
+     },
+     {
+      "fato": "Governo diz ter encontrado déficit de R$ 11,4 bi em jan/2019 e ter regularizado salários e 13º a partir de 2021 (autodeclarado)",
+      "fonte": "https://www.agenciaminas.mg.gov.br/noticia/reducao-da-criminalidade-e-quitacao-de-dividas-marcam-primeiro-ano-do-governo-zema-107114"
+     }
+    ]
+   },
+   "trabalho": {
+    "pos": 2,
+    "resumo": "Posição liberal clara: contra fim da 6x1 e a favor de CLT opcional; como governador concedeu reajustes a servidores.",
+    "evidencias": [
+     {
+      "fato": "Zema criticou a PEC do fim da 6x1 e defendeu CLT opcional (jun/2026); em 2023 já era contra lei sobre a escala 6x1",
+      "fonte": "https://www.tribunadosertao.com.br/politica/2026/06/22/926433-zema-critica-pec-da-escala-6x1-e-defende-clt-opcional"
+     },
+     {
+      "fato": "Bancada do Novo (4 deputados) votou majoritariamente contra a PEC da 6x1 na Câmara em 2026",
+      "fonte": "https://agenciabrasil.ebc.com.br/politica/noticia/2026-05/saiba-como-votaram-os-deputados-na-pec-que-acaba-com-escala-6x1"
+     },
+     {
+      "fato": "Em Minas: reajuste de 10,06% aos servidores em 2022 e, em 2024, a Assembleia elevou a proposta de 3,62% para 4,62%",
+      "fonte": "https://tribunademinas.com.br/noticias/politica/26-06-2024/reajuste-julho.html?amp=1"
+     }
+    ]
+   },
+   "privatizacao": {
+    "pos": 1,
+    "resumo": "Promete privatizar muito, entregou pouco: projetos enviados à Assembleia emperraram e a estratégia virou federalização.",
+    "evidencias": [
+     {
+      "fato": "Em nov/2024 o governo enviou projetos à ALMG para privatizar Cemig e Copasa; a Constituição mineira exige aprovação da Assembleia e referendo, e os projetos seguiram na lista de prioridades de 2026 sem avanço",
+      "fonte": "https://ofator.com.br/?p=54722"
+     },
+     {
+      "fato": "Em 2023 Zema sinalizou transferir Cemig, Copasa e Codemig à União para abater a dívida (federalização)",
+      "fonte": "https://demarest.com.br/wp-content/uploads/2023/11/Minas-pode-repassar-Cemig-e-Copasa-a-Uniao-para-pagar-divida.pdf"
+     },
+     {
+      "fato": "Lei que autoriza a federalização da Codemig e da Codemge foi sancionada (a federalização de Cemig e Copasa depende da União)",
+      "fonte": "https://tribunademinas.com.br/opiniao/editorial/24-07-2025/federalizacao-da-cemig-deve-ser-discutida-com-profundidade-e-transparencia.html?amp=1"
+     }
+    ]
+   },
+   "seguranca": {
+    "pos": 1,
+    "resumo": "Reforço de efetivo e frota e queda de criminalidade segundo o governo; dados não verificados de forma independente.",
+    "evidencias": [
+     {
+      "fato": "Governo informa queda de 16% nos homicídios no 1º trimestre de 2019 e 765 novos policiais civis entre 2019 e 2021 (autodeclarado)",
+      "fonte": "https://www.agenciaminas.mg.gov.br/noticia/reducao-da-criminalidade-e-quitacao-de-dividas-marcam-primeiro-ano-do-governo-zema-107114"
+     },
+     {
+      "fato": "Cobertura sobre menor índice de criminalidade em oito anos em Minas",
+      "fonte": "https://tudoemdia.com/minas-gerais-tem-menor-indice-de-criminalidade-dos-ultimos-oito-anos"
+     }
+    ]
+   },
+   "ambiente": {
+    "pos": 1,
+    "resumo": "Pró-mineração e licenciamento célere; críticas de atingidos e ONGs, contestadas pelo governo. Base fraca e de fontes críticas.",
+    "evidencias": [
+     {
+      "fato": "Em 2024 Minas revisou as regras da caução ambiental de barragens criadas seis meses antes",
+      "fonte": "https://itabiraonline.com.br/2024/06/06/minas-reve-regras-da-caucao-ambiental-de-barragens-criadas-ha-6-meses/"
+     },
+     {
+      "fato": "Em 2021-2022: Zema comemorou investimento de R$ 220 mi da Vallourec; a Semad diz que o processo seguiu as normas, críticos apontam licenciamento expresso",
+      "fonte": "https://ihu.unisinos.br/615825-estrutura-da-vallourec-que-cedeu-em-mg-teve-reuniao-extraordinaria-licenciamento-expresso-e-alertas-de-ambientalistas-em-sua-ampliacao"
+     }
+    ]
+   }
+  },
+  "contrastes": [
+   "Discurso de Estado mínimo e privatização total, mas na prática as privatizações de Cemig e Copasa não saíram (Assembleia e referendo) e o governo partiu para federalização via Propag; em 2026 Zema chegou a recuar da privatização total. Fontes: https://ofator.com.br/?p=54722 e https://sbtnews.sbt.com.br/noticia/politica/zema-recua-de-privatizacao-total-e-quer-desmame-de-isencoes",
+   "Regime de Recuperação Fiscal: a adesão foi buscada de 2019 a 2023, mas a referência indica que o regime não foi concluído; a saída foi o Propag (2025). Fonte: https://jovempan.com.br/economia/macroeconomia/zema-minas-segue-trabalhando-para-aderir-ao-regime-de-recuperacao-fiscal/",
+   "Discurso contra a CLT e o gasto público, mas o governo deu reajuste de 10,06% aos servidores em 2022 (dentro do limite da LRF) e a Assembleia elevou o de 2024. Fontes: https://diariodocomercio.com.br/economia/reajuste-de-1006-sera-pago-a-todos-os-servidores-estaduais-de-minas-em-maio/ e https://tribunademinas.com.br/noticias/politica/26-06-2024/reajuste-julho.html?amp=1"
+  ],
+  "lacunas": [
+   "Plano de governo 2026 do Novo nao encontrado: posicoes de gasto_social, tributacao, costumes e soberania_externa nao tem base historica nesta rodada e foram omitidas.",
+   "Ordem cronologica e desfecho final de Cemig/Copasa em 2026 nao confirmados."
+  ]
+ },
+ "MISSAO": {
+  "periodos": [
+   "Kim Kataguiri, deputado federal (2019-2026), do DEM/União Brasil ao Missão",
+   "MBL e Partido Missão (TSE homologou em nov/2025)"
+  ],
+  "perfil": "Sem passagem pelo Executivo: o histórico vem do mandato de Kim Kataguiri e de posições públicas do MBL/Missão, que se define como direita não bolsonarista e liberal na economia. Fontes: https://www.cnnbrasil.com.br/eleicoes/quem-e-renan-santos-candidato-do-partido-missao-a-presidencia/ ; https://www.poder360.com.br/poder-partidos-politicos/partido-missao-tera-candidatos-para-todos-os-cargos-em-2026-diz-renan/",
+  "e": {
+   "economia": {
+    "pos": 2,
+    "resumo": "Defesa constante de reformas liberais e disciplina fiscal.",
+    "evidencias": [
+     {
+      "fato": "Em 2019 Kim lançou a Frente pelo Livre Mercado, tendo a reforma da Previdência como primeiro objetivo",
+      "fonte": "https://www.infomoney.com.br/?p=57732"
+     },
+     {
+      "fato": "Em 2019 disse ser totalmente a favor da reforma da Previdência, ainda que duvidasse que o texto seria aprovado como veio",
+      "fonte": "https://www.tribunapr.com.br/noticias/economia/kim-kataguiri-duvida-que-mais-da-metade-do-texto-da-reforma-sobrevivera-na-camara/"
+     },
+     {
+      "fato": "Em 2026 coordena propostas de reforma do Estado no programa do Missão e disputa reeleição como deputado federal",
+      "fonte": "https://www.bahianoticias.com.br/noticia/309678-kim-kataguiri-avalia-mandato-aponta-falhas-no-governo-lula-e-garante-ida-ao-missao-em-2026-confira-entrevista-completa"
+     }
+    ]
+   },
+   "gasto_social": {
+    "pos": 1,
+    "resumo": "Pauta anti-privilégios no funcionalismo; propostas de substituir o Bolsa Família no programa, sem votos nominais localizados.",
+    "evidencias": [
+     {
+      "fato": "PEC antiprivilégios de Kim, vista pelo PT como ameaça ao funcionalismo",
+      "fonte": "https://iclnoticias.com.br/?p=85961"
+     },
+     {
+      "fato": "Programa 2026 do Missão inclui 'mutirão anti-Bolsa Família' e Livro Amarelo, lançados na convenção que oficializou Renan Santos",
+      "fonte": "https://www.correiodamanha.com.br/politica/2026/08/307261-renan-santos-oficializa-candidatura-e-faz-ataques-a-lula-e-flavio.html"
+     }
+    ]
+   },
+   "tributacao": {
+    "pos": 1,
+    "resumo": "Pauta de redução e limite de impostos, base limitada.",
+    "evidencias": [
+     {
+      "fato": "Kim protocolou PEC para limitar o IPVA (2026)",
+      "fonte": "https://portaldeprefeitura.com.br/bastidores-da-politica/deputado-kim-kataguiri-protocola-pec-para-limitar-ipva/615882/"
+     }
+    ]
+   },
+   "trabalho": {
+    "pos": 2,
+    "resumo": "Votou contra o fim da 6x1 sendo o único do Missão; defende flexibilização.",
+    "evidencias": [
+     {
+      "fato": "Kim votou contra a PEC do fim da 6x1 na Câmara (mai/2026), em placar de 472 a 22 no 1º turno e 461 a 19 no 2º; só Novo e Missão votaram majoritariamente contra",
+      "fonte": "https://agenciabrasil.ebc.com.br/politica/noticia/2026-05/saiba-como-votaram-os-deputados-na-pec-que-acaba-com-escala-6x1"
+     },
+     {
+      "fato": "Kim disse que não temia perder votos e que a PEC não acabaria com a escala 6x1 na prática",
+      "fonte": "https://www.itatiaia.com.br/politica/kim-kataguiri-que-votou-contra-o-fim-da-escala-6x1-diz-nao-temer-perder-votos-pec-farsante/"
+     }
+    ]
+   }
+  },
+  "contrastes": [
+   "Missão se diz independente, mas em 2026 Kim se juntou ao Novo apenas no voto contra o fim da 6x1 (472 a 22) e retirou sua candidatura à presidência da Câmara para apoiar um candidato do Novo: o liberalismo trabalhista é coerente, mas isola o partido. Fontes: https://www.poder360.com.br/congresso/kim-retira-candidatura-a-presidencia-da-camara-e-apoia-candidato-do-novo/ e https://agenciabrasil.ebc.com.br/politica/noticia/2026-05/saiba-como-votaram-os-deputados-na-pec-que-acaba-com-escala-6x1",
+   "O programa traz propostas que parte da imprensa associa a bandeiras de esquerda (anti-oligarquia, Selic abaixo de 6%) e que destoam do histórico liberal de Kim; a Selic baixa conflita com a autonomia do BC (ver plano_proximo_pacote.md, fonte: imprensa; não é histórico de poder).",
+   "Missão nunca governou; sem Executivo, o histórico de prática vem só do mandato de Kim e dos posicionamentos públicos."
+  ],
+  "lacunas": [
+   "Votos nominais de Kim sobre teto de gastos, reforma trabalhista (2017), arcabouço e reforma tributária nao localizados: apenas declaracoes.",
+   "Sem base historica para privatizacao, seguranca, costumes, ambiente e soberania_externa (omitidos)."
+  ]
+ }
+}
