@@ -29,3 +29,9 @@ Hoje PROGRAMAS.MISSAO só tem o eixo economia (estatuto). Preencher os 9 eixos c
 Pontos reportados: ajuste fiscal amplo e superávit nominal; economia liberal com Estado regulador; Selic abaixo de 6% (conflita com autonomia do BC); linha dura contra facções; combate a privilégios/anti-oligarquia; desdolarizar a América do Sul e "exportar o real"; parte da imprensa vê propostas parecidas com bandeiras da esquerda.
 Fontes: bahianoticias.com.br/noticia/319085; fpabramo.org.br (convenção do Missão); jornaldebrasilia.com.br; correiodamanha.com.br/politica/2026/08/307261; infomoney.com.br/?p=3434705.
 Danilo Gentili e Léo Lins (afinidade Missão) reagem segundo esse programa.
+
+## 6. Programas dos outros partidos
+Pesquisa em dados/programas_2026_pesquisa.json (planos de governo 2026 registrados no TSE e manifestos; só resumos de imprensa, sites bloqueados nesta sessão). Integrar com citação quando Gabriel enviar os PDFs (Flávio/PL, Caiado/PSD, Zema/Novo, Lula/PT, MDB "Caminhos para o Brasil" etc.).
+
+## 7. Teste final grande (carta branca de Gabriel)
+Depois de tudo: testar a fundo e melhorar — compreensão (inclusive propostas mal escritas: testes/bench/ruido.py gera versões com erro de digitação, sem acento, abreviações, caixa), teor/intenção da proposta, simulação dos efeitos (testes/sim) e reação às ações do jogador. Linha de base v3.6 no reservado geral: limpo 39% totalmente certos (5 critérios 50%); mal escrito 32% (43%); tema cai de 93% para 81%.
