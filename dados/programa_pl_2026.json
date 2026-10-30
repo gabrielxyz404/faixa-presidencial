@@ -1,0 +1,486 @@
+{
+ "n": "PL",
+ "fonte": "Para o Brasil vencer o atraso: Diretrizes do Plano de Governo 2027-2030 (Flávio Bolsonaro, PL)",
+ "e": {
+  "economia": [
+   2,
+   "O Brasil precisa de uma alternativa liberal, conservadora, reformista e corajosa: um Estado eficiente",
+   12
+  ],
+  "gasto_social": [
+   1,
+   "Nosso foco é a superação da armadilha da pobreza, não a sua administração.",
+   43
+  ],
+  "tributacao": [
+   2,
+   "com o objetivo de reduzir efetivamente a carga sobre a produção e o consumo",
+   30
+  ],
+  "trabalho": [
+   2,
+   "Por isso defendemos o negociado sobre o legislado",
+   44
+  ],
+  "privatizacao": [
+   1,
+   "vamos retomar o Programa Nacional de Desestatização com critério, avaliando caso a caso onde a presença do Estado deixou de fazer sentido",
+   70
+  ],
+  "seguranca": [
+   2,
+   "Vamos declarar guerra ao crime organizado.",
+   13
+  ],
+  "costumes": [
+   2,
+   "o respeito à liberdade, à família, à vida desde a concepção, à propriedade privada",
+   9
+  ],
+  "ambiente": [
+   1,
+   "Tratamos o meio ambiente como um ativo estratégico, não como um obstáculo ao desenvolvimento",
+   57
+  ],
+  "soberania_externa": [
+   1,
+   "Nos últimos anos, as relações com países como Argentina, Estados Unidos e Israel foram levadas ao limite do rompimento.",
+   62
+  ]
+ },
+ "b": [
+  "Guerra ao crime: facções como narcoterroristas",
+  "Maioridade penal aos 16 anos",
+  "Presídios de segurança máxima (TREVA) e 500 mil vagas",
+  "Tesouraço: corte de gastos, 10 ministérios a menos",
+  "Reforma tributária corrigida: reduzir o IVA",
+  "Negociado sobre o legislado e menor custo do trabalho",
+  "R$ 900 bi em infraestrutura com PPPs e concessões",
+  "Programas sociais mantidos como porta de saída",
+  "Escola sem doutrinação, método fônico e escolas cívico-militares",
+  "Fim da reeleição e reforma do STF"
+ ],
+ "propostas": [
+  {
+   "cap": "Brasil sem Medo",
+   "pag": 13,
+   "proposta": "Declarar guerra ao crime organizado: PCC, CV e milícias tratados como organizações narcoterroristas",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil sem Medo",
+   "pag": 13,
+   "proposta": "Bandido armado com fuzil será abatido pelas forças de segurança",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil sem Medo",
+   "pag": 13,
+   "proposta": "Apoiar e sancionar a redução da maioridade penal de 18 para 16 anos",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil sem Medo",
+   "pag": 13,
+   "proposta": "Punir também maiores de 14 anos por crimes graves (estupro, tráfico, tortura, assassinato)",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil sem Medo",
+   "pag": 13,
+   "proposta": "Sistema Nacional de Fronteira: tropa de elite das Forças Armadas para 16 mil km de fronteira",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil sem Medo",
+   "pag": 14,
+   "proposta": "5 novos presídios de segurança máxima no modelo de El Salvador (complexo TREVA), sem celular nem visita íntima",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil sem Medo",
+   "pag": 14,
+   "proposta": "500 mil novas vagas prisionais em 4 anos, zerando o déficit carcerário",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil sem Medo",
+   "pag": 14,
+   "proposta": "Castração química de condenados por estupro e abuso de crianças",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil sem Medo",
+   "pag": 14,
+   "proposta": "Tornozeleira eletrônica para agressores de mulheres com medida protetiva e cumprimento integral da pena",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil sem Medo",
+   "pag": 15,
+   "proposta": "Tropas especiais da Marinha e da Aeronáutica ocupando portos e aeroportos de forma permanente",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil sem Medo",
+   "pag": 15,
+   "proposta": "Dobrar os investimentos federais em segurança pública ao longo do mandato",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil sem Medo",
+   "pag": 15,
+   "proposta": "Muralha Brasileira: reconhecimento facial nacional e mais de 1 milhão de novas câmeras",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil sem Medo",
+   "pag": 15,
+   "proposta": "Redirecionar recursos das famílias de detentos às famílias das vítimas",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil sem Medo",
+   "pag": 15,
+   "proposta": "Acabar com a progressão de regime para crimes hediondos (cumprimento integral)",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil sem Medo",
+   "pag": 16,
+   "proposta": "Pena inicial quadruplicada, sem benefícios, para quem furta ou revende celular roubado",
+   "eixo": "seguranca",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil por Elas",
+   "pag": 17,
+   "proposta": "Central da Mulher (física, itinerante e por aplicativo) com serviços integrados em todo o país",
+   "eixo": "gasto_social",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Brasil por Elas",
+   "pag": 21,
+   "proposta": "Ampliar creches em período integral e voucher-creche na rede privada onde faltar vaga",
+   "eixo": "gasto_social",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Brasil sem Fila",
+   "pag": 26,
+   "proposta": "Prontuário eletrônico único vinculado ao CPF, interoperável entre redes pública e privada",
+   "eixo": "gasto_social",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Brasil sem Fila",
+   "pag": 27,
+   "proposta": "Amplo revogaço regulatório e Liberdade Econômica estendida a estados e municípios",
+   "eixo": "economia",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil Mais Barato",
+   "pag": 30,
+   "proposta": "Rever a reforma tributária e reduzir o IVA (projetado em cerca de 30%), mantendo a não cumulatividade",
+   "eixo": "tributacao",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil Mais Barato",
+   "pag": 31,
+   "proposta": "Reduzir gradualmente a CDE e as fontes incentivadas, mantida a tarifa social; menos impostos sobre energia e combustíveis",
+   "eixo": "tributacao",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Prepara",
+   "pag": 35,
+   "proposta": "Alfabetização pelo método fônico e Programa Acolher (aluno remunerado dá reforço)",
+   "eixo": "costumes",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Prepara",
+   "pag": 35,
+   "proposta": "Educação livre de doutrinação político-partidária; pais decidem os valores dos filhos",
+   "eixo": "costumes",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Prepara",
+   "pag": 35,
+   "proposta": "Ampliar as Escolas Cívico-Militares",
+   "eixo": "costumes",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Prepara",
+   "pag": 36,
+   "proposta": "Voucher educacional onde faltar vaga na rede pública",
+   "eixo": "privatizacao",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Prepara",
+   "pag": 36,
+   "proposta": "Ampliar o ensino técnico no ensino médio em parceria com o setor produtivo",
+   "eixo": "economia",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Prepara",
+   "pag": 37,
+   "proposta": "Empréstimo Contingente à Renda no lugar do financiamento estudantil atual",
+   "eixo": "gasto_social",
+   "sentido": "0"
+  },
+  {
+   "cap": "Brasil que Prepara",
+   "pag": 37,
+   "proposta": "Garantir condições para a correção efetiva da tabela SUS e contratar exames na rede privada em horários ociosos",
+   "eixo": "gasto_social",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Brasil que Prepara",
+   "pag": 40,
+   "proposta": "Esporte feminino reservado a atletas do sexo feminino, da base ao alto rendimento",
+   "eixo": "costumes",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Prospera",
+   "pag": 42,
+   "proposta": "Manter os programas sociais existentes, com combate a fraudes, e trilha de saída para o trabalho",
+   "eixo": "gasto_social",
+   "sentido": "0"
+  },
+  {
+   "cap": "Brasil que Prospera",
+   "pag": 43,
+   "proposta": "Reduzir gradualmente o custo do trabalho, sem retirar direitos",
+   "eixo": "trabalho",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Prospera",
+   "pag": 44,
+   "proposta": "Contrato com menor custo na folha para jovens de 18 a 24 anos no primeiro emprego",
+   "eixo": "trabalho",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Prospera",
+   "pag": 44,
+   "proposta": "Contrato mais atrativo para desempregados com 50 anos ou mais há 12 meses ou mais",
+   "eixo": "trabalho",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Prospera",
+   "pag": 44,
+   "proposta": "Negociado sobre o legislado e jornada flexível",
+   "eixo": "trabalho",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Prospera",
+   "pag": 44,
+   "proposta": "Posicionar-se contra a República Sindical e a unicidade sindical",
+   "eixo": "trabalho",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Prospera",
+   "pag": 45,
+   "proposta": "Manter o trabalho por aplicativos, com proteção social e previdenciária, sem protagonismo sindical",
+   "eixo": "trabalho",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Prospera",
+   "pag": 46,
+   "proposta": "CAIXA como Banco da Prosperidade, com crédito, orientação financeira e habitação",
+   "eixo": "privatizacao",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Brasil que Prospera",
+   "pag": 47,
+   "proposta": "Retomar o Casa Verde e Amarela com meta de 2,5 milhões de residências",
+   "eixo": "gasto_social",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Brasil que Prospera",
+   "pag": 47,
+   "proposta": "Nenhuma escola sem água até 2030; Lixão Zero; acelerar concessões do Marco do Saneamento",
+   "eixo": "privatizacao",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Cresce",
+   "pag": 49,
+   "proposta": "Crescimento sustentado de 4% ao ano ao longo da próxima década, apoiado no investimento privado",
+   "eixo": "economia",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Cresce",
+   "pag": 50,
+   "proposta": "Licença ambiental concedida se o órgão não decidir dentro do prazo (licença tácita)",
+   "eixo": "ambiente",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Cresce",
+   "pag": 50,
+   "proposta": "Estabilidade de regras de até 20 anos para grandes projetos e Estado responde por prejuízo se voltar atrás",
+   "eixo": "economia",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Cresce",
+   "pag": 50,
+   "proposta": "Autonomia a povos indígenas e quilombolas para decidir sobre atividades produtivas em suas terras",
+   "eixo": "ambiente",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Cresce",
+   "pag": 51,
+   "proposta": "Investir R$ 900 bilhões em 4 anos em rodovias, hidrovias, portos, aeroportos e ferrovias (PPPs e concessões)",
+   "eixo": "privatizacao",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Cresce",
+   "pag": 51,
+   "proposta": "Destravar a Ferrogrão e a Hidrovia do Tapajós; Trem do Nordeste; concluir a Transnordestina",
+   "eixo": "ambiente",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Cresce",
+   "pag": 52,
+   "proposta": "Permitir a exploração do gás não convencional (fracking) com responsabilidade ambiental",
+   "eixo": "ambiente",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Cresce",
+   "pag": 55,
+   "proposta": "Minerais críticos: Estado como regulador, atração de capital estrangeiro e licenciamento ágil",
+   "eixo": "ambiente",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Cresce",
+   "pag": 57,
+   "proposta": "Consolidar o mercado regulado de carbono e ampliar o pagamento por serviços ambientais",
+   "eixo": "ambiente",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Brasil que Cresce",
+   "pag": 58,
+   "proposta": "Meta de zerar o desmatamento ilegal até 2029",
+   "eixo": "ambiente",
+   "sentido": "-1"
+  },
+  {
+   "cap": "Brasil que Cresce",
+   "pag": 62,
+   "proposta": "Diplomacia pragmática: reaproximar de Argentina, Estados Unidos e Israel e negociar também com China e UE",
+   "eixo": "soberania_externa",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Cresce",
+   "pag": 63,
+   "proposta": "Retomar a adesão à OCDE, com fim gradual do IOF sobre o câmbio",
+   "eixo": "soberania_externa",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Brasil que Cresce",
+   "pag": 63,
+   "proposta": "Abertura comercial gradual e plano de integração às cadeias globais de valor",
+   "eixo": "soberania_externa",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Cumpre a Constituição",
+   "pag": 65,
+   "proposta": "Fim do foro privilegiado criminal no STF e limitação das decisões monocráticas",
+   "eixo": "costumes",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Cumpre a Constituição",
+   "pag": 66,
+   "proposta": "Fim da reeleição para Presidente da República",
+   "eixo": "costumes",
+   "sentido": "0"
+  },
+  {
+   "cap": "Cumpre a Constituição",
+   "pag": 66,
+   "proposta": "Extinguir estruturas estatais tipo Ministério da Verdade e revogar atos contra críticos",
+   "eixo": "costumes",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Não Volta Atrás",
+   "pag": 69,
+   "proposta": "Cortar no mínimo 10 ministérios, reduzir cargos comissionados e combater supersalários",
+   "eixo": "gasto_social",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Não Volta Atrás",
+   "pag": 69,
+   "proposta": "Continuar a reforma administrativa e ampla revisão normativa infralegal",
+   "eixo": "economia",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Não Volta Atrás",
+   "pag": 70,
+   "proposta": "Fortalecer a Lei das Estatais, blindar fundos de pensão e retomar o Programa Nacional de Desestatização caso a caso",
+   "eixo": "privatizacao",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Não Volta Atrás",
+   "pag": 71,
+   "proposta": "Reformular as regras fiscais, entregar superávits primários e limitar o crédito subsidiado do Tesouro",
+   "eixo": "economia",
+   "sentido": "+1"
+  },
+  {
+   "cap": "Não Volta Atrás",
+   "pag": 72,
+   "proposta": "Pacote antifraude na Previdência e nova governança do consignado do INSS",
+   "eixo": "gasto_social",
+   "sentido": "0"
+  }
+ ],
+ "obs": "Fonte: PDF de 76 páginas, sem numeração visível de capa; usei a numeração do rodapé, que coincide com a página do PDF (capa=1, índice pp.3-7, Apresentação p.8, Conclusão pp.74-75). Verifiquei por script que cada citação aparece no texto normalizado da página indicada. O texto extraído é contínuo e não encontrei gráficos ou caixas com dados que contrariem o corpo do texto; não fiz leitura visual página a página. Posições: economia +2 (autodefinição 'liberal, conservadora, reformista'; Estado 'não é ser o empresário'; revogaço regulatório, abertura comercial, superávits; contrapeso: CAIXA, BNDES e bancos regionais ampliados, indução em IA e minerais). gasto_social +1 (mantém programas sociais e propõe tabela SUS, creches e Casa Verde e Amarela; mas o foco é 'armadilha da pobreza', corte de ministérios e superávit; NÃO propõe desindexação nem desvinculação de pisos; sem meta numérica de gasto social). tributacao +2 (reduzir IVA, impostos sobre energia e combustíveis, desoneração de exportações e investimentos; sem proposta de tributar renda ou patrimônio; sem números de alíquota ou meta de carga). trabalho +2 (negociado sobre o legislado, contra 'República Sindical' e unicidade sindical, contratos com menor custo para 18-24 e 50+; mas diz 'sem retirar direitos' e protege trabalho por aplicativos). privatizacao +1 (Desestatização 'caso a caso', PPPs, concessões, saneamento privado, vouchers; NÃO lista estatais a privatizar; fortalece a CAIXA e a Lei das Estatais). seguranca +2 (guerra ao crime, abate de armado com fuzil, 500 mil vagas, maioridade 16, castração química). costumes +2 baseado em valores declarados (vida desde a concepção, família, escola sem doutrinação, esporte feminino por sexo de nascimento, escolas cívico-militares); o texto NÃO trata explicitamente de aborto, drogas, armas, casamento ou LGBT além disso, e afirma 'respeita todos os arranjos familiares'. Liberdade de expressão e fim do 'Ministério da Verdade' também puxam para esse eixo. ambiente +1 (ênfase em licença tácita, fracking, Ferrogrão, Tapajós, mineração e terras indígenas com autonomia produtiva; contrapesos: meta de zerar desmatamento ilegal até 2029, mercado de carbono, bioeconomia, pagamento por serviços ambientais, biocombustíveis). Nas propostas, sentido -1 em ambiente marca proteção. soberania_externa +1 (pragmatismo; reaproximação com EUA, Israel e Argentina e crítica ao alinhamento com Irã e Venezuela; porém 'Negociaremos com todos', China incluída, e busca de soluções diplomáticas contra sanções dos EUA, China e Europa, p.54; adesão à OCDE). Propostas com provável conflito constitucional (informação, o motor decide): maioridade penal de 18 para 16 e punição de maiores de 14 (art. 228, cláusula pétrea segundo parte da doutrina, art. 60 §4º IV); castração química (art. 5º, III e XLVII 'e', penas cruéis); fim da progressão de regime em crimes hediondos e pena integral (art. 5º, XLVI individualização da pena); abate de armado com fuzil (art. 5º, caput, direito à vida); redirecionar recursos de famílias de presos (art. 5º XLV e auxílio-reclusão, art. 201 III); licença ambiental tácita (art. 225 §1º IV); autonomia produtiva em terras indígenas (art. 231 §2º e §3º, usufruto exclusivo e mineração dependem de autorização do Congresso); fim do foro por prerrogativa no STF (emenda, art. 102 I b); fim da reeleição (PEC, art. 14 §5º; possível); estabilidade de regras por 20 anos (conflito possível com poder regulatório); Forças Armadas em fronteira e portos (art. 142 e LC 97, legal por GLO/lei). Pessoas reais citadas no texto foram omitidas; ataques ao governo e a adversários foram ignorados, retendo só as propostas. Faltam números de Selic, meta fiscal e carga tributária: o plano fala de 'superávits primários' e de levar a Dívida/PIB a estabilidade e queda, sem meta. Números citados: R$ 900 bi em 4 anos de infraestrutura; crescimento de 4% ao ano; 500 mil vagas prisionais; 5 presídios novos; 1 milhão de câmeras; 2,5 milhões de residências; corte de no mínimo 10 ministérios; dobrar investimento federal em segurança; zerar desmatamento ilegal até 2029; 20 anos de estabilidade de regras; Trem do Nordeste de 1.400 km. Divergências texto/lado: a agenda de mulheres, creches, SUS e conectividade tem cunho de gasto social ampliado (sentido -1 nas propostas), enquanto a ênfase fiscal e o tom são liberais."
+}
