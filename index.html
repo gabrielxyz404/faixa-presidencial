@@ -2568,7 +2568,7 @@ P('fundao', 'o fundo eleitoral e partidário', 'fundao|fundo eleitoral|fundo par
 
 /* ---------- Instituicoes, autoritarismo e anticorrupcao ---------- */
 P('golpe', 'a ruptura institucional', 'fechar (o )?(congresso|stf|supremo|senado|camara)|dissolver o (congresso|stf)|fim do (congresso|stf|supremo)|acabar com o (stf|supremo|congresso)|intervencao militar|\\bai.?5\\b|cancelar (as )?eleic\\w+|adiar (as )?eleic\\w+|terceiro mandato|reeleicao ilimitada|prorrogar (o )?mandato|golpe( de estado)?|ditadura|poderes absolutos|decretar (a )?ditadura|manter.?se no poder|ficar no poder|presidente vitalicio|governar sem (o )?congresso|mandar prender (ministros?|juizes?)|prender (os )?(ministros?|juizes?)', { k: 'R', pa: 'casacivil', inst: 'DEC', val: { mercado: -14, universitarios: -14, classemedia: -6, empresariado: -5, indigenas: -5, policiais: 2 }, e: { risco: 70, dol: .45, conf: -18 }, d: { eua: -20, ue: -25 }, stf: 40, esc: 30, ap: -9, iv: [0, 1], lag: 1, legal: 'golpe' });
-P('estado_excecao', 'o estado de sítio ou de defesa', 'estado de (?:sitio|defesa)|decretar (?:o )?estado de excecao|estado de guerra', { k: 'R', pa: 'casacivil', inst: 'DEC', val: { mercado: -3, universitarios: -3, classemedia: -1, policiais: 1 }, e: { conf: -3, risco: 8 }, stf: 2, iv: [0, .3], lag: 1 });
+P('estado_excecao', 'o estado de sítio ou de defesa', 'estado de (?:sitio|defesa)|decretar (?:o )?estado de excecao|estado de guerra', { k: 'R', pa: 'casacivil', inst: 'DEC', ri: [[/\bestado de sitio\b/, 'PL']] /* v3.4: o sítio exige autorização do Congresso por maioria absoluta (art. 137, parágrafo único) */, val: { mercado: -3, universitarios: -3, classemedia: -1, policiais: 1 }, e: { conf: -3, risco: 8 }, stf: 2, iv: [0, .3], lag: 1 });
 P('censura', 'o controle sobre a imprensa', 'censur\\w+|prender jornalistas?|fechar (jornal|jornais|emissora|emissoras|a globo|a imprensa)|calar a imprensa|cassar (a )?concessao|perseguir (a )?imprensa|controle da imprensa|controle social da midia|regulacao da midia|silenciar|proibir (jornalistas|a imprensa|criticas?)|multar (jornalistas?|a imprensa)|prender opositores|perseguir opositores', { k: 'R', pa: 'casacivil', inst: 'DEC', val: { universitarios: -10, gamers: -10, classemedia: -4, mercado: -2 }, d: { ue: -8 }, e: { risco: 8, conf: -3 }, stf: 25, iv: [0, .9], lag: 1, legal: 'censura' });
 P('ataque_instituicoes', 'o ataque do presidente às instituições', 'atacar (a |o |os |as )?(pf|stf|imprensa|congresso|tse|supremo|ministros? do stf|justica eleitoral|urnas?)|ditadura do judiciario|velha imprensa|imprensa marrom|ignorar (a )?(decisao|decisoes) do stf|descumprir (a )?(decis\\w+|ordens?)|desobedecer (ao )?stf|urnas? (eletronicas? )?(sao )?fraud\\w+|voto impresso|culpar (o )?(stf|congresso|imprensa)|desacreditar|perseguicao politica', { k: 'C', pa: 'casacivil', inst: 'COM', val: { mercado: -5, universitarios: -4, classemedia: -1 }, e: { conf: -3, risco: 8 }, stf: 10, ap: -1, iv: [0, .6], lag: 1, cat: 'ataque', legal: 'ataque' });
 P('ampliar_stf', 'a ampliação do STF', 'aumentar (o numero de )?ministros do stf|ampliar o stf|mais ministros no stf|novos ministros no stf|encher o stf|court packing|mudar a composicao do stf|reduzir o poder do stf|limitar o stf|mandato (para|dos) ministros do (stf|supremo)|aposentadoria compulsoria dos ministros|mandato fixo no stf|mandato no stf', { k: 'R', pa: 'casacivil', inst: 'PEC', val: { mercado: -4, universitarios: -4, classemedia: -2 }, e: { conf: -2, risco: 6 }, stf: 12, iv: [0, .5], lag: 6, legal: 'stf' });
@@ -2680,6 +2680,74 @@ function trabPos(A) {
   return A;
 }
 /*CF-TRAB-END*/
+/*FISC-V34-BEGIN*/
+/* v3.4: (1) escopo por produto em IPI/IOF/II; (2) dividendos depois da Lei 15.270/2025; (3) autonomia do BC já vigente (LC 179/2021); (4) sítio: motivo não é programa de gasto */
+const ESC_IDS = ['ipi', 'iof', 'imposto_importacao', 'pis_cofins_diesel'];
+const ESC_GEN = /^(?:todos?|todas?|tudo|qualquer|quaisquer|produtos?|bens|mercadorias|industria\w*|setor\w*|economia|empresas?|empresarios?|consumo|consumidor\w*|brasileiros?|pessoas?|quem|ano|anos|mes|meses|periodo|pais|brasil|importad\w+|exportac\w+|importac\w+|operac\w+|cambio|credito|emprestimos?|financiamentos?|aplicac\w+|titulos?|derivativos?|renda|estados?|municipios?|fundos?|fpe|fpm|governo|uniao|investiment\w+|exterior|carga|aliquotas?|taxas?|valor|impostos?|tributos?|tributac\w+|cobranca|incidencia|alivio|arrecadac\w+|bancos?|financeir\w+|seguradoras?|fisica|juridica|pobres|ricos|familias?|trabalhadores|idosos|jovens|mulheres|aposentados|servidores|classe|populacao|cidadaos|contribuintes|sociedade|que|e|ou|mas|por|com|sem|durante|ate|como|se|ao|na|no|nas|nos|do|da|dos|das|de|em|um|uma|essa|esse|esta|este|isso|disso|cada|alem|apos|antes|ja|mais|menos|maior|menor|total|parcial|temporari\w+|permanente|fim|metade|base)$/;
+const ESC_VERBO = /^(?:estimular|incentivar|baratear|reduzir|aumentar|facilitar|ajudar|combater|compensar|financiar|equilibrar|garantir|promover|fomentar|viabilizar|manter|conter|baixar|subir|elevar|zerar|cortar|isentar|desonerar|tributar|taxar|aplicar|cobrar|arrecadar|gerar|criar|ampliar|expandir|impulsionar|aquecer|reativar|recuperar|salvar|ajustar|cumprir|pagar|pagando|ter|ser|fazer|reforcar|proteger|apoiar)$/;
+const ESC_PROD = [[/eletric\w*|hibrid\w*|\bevs?\b|bateri\w+|paine\w* solar\w*|solar\w*/, .012], [/tablets?|notebooks?|computador\w*|celular\w*|smartphone\w*|televis\w+|\btvs?\b|eletronic\w+|consoles?|videogames?|games?|drones?|informatica/, .04], [/linha branca|eletrodomestic\w+|geladeira\w*|fogao|fogoes|maquinas? de lavar|ar condicionado/, .05], [/etanol|flex|gnv|biocombust\w+|biodiesel/, .05], [/motos?|motocicletas?|bicicletas?|patinete\w*/, .02], [/carros?|automoveis|automovel|veiculos?|pickups?|utilitarios?|suvs?/, .13], [/caminho\w+|onibus|tratore?s?|maquinas?|implementos?/, .04], [/cigarros?|tabaco|fumo|charutos?/, .1], [/bebidas?|cervejas?|vinhos?|cachaca|refrigerantes?|uisque|whisky|destilados?/, .08], [/armas?|municoes|municao/, .01]];
+const ESC_ACENTO = { eletricos: 'elétricos', eletrico: 'elétrico', eletrica: 'elétrica', eletricas: 'elétricas', hibridos: 'híbridos', hibrido: 'híbrido', veiculos: 'veículos', veiculo: 'veículo', automoveis: 'automóveis', automovel: 'automóvel', eletronicos: 'eletrônicos', eletrodomesticos: 'eletrodomésticos', caminhoes: 'caminhões', maquinas: 'máquinas', cosmeticos: 'cosméticos', petroleo: 'petróleo', aco: 'aço', paineis: 'painéis', municoes: 'munições', calcados: 'calçados', fogoes: 'fogões', fogao: 'fogão', informatica: 'informática', utilitarios: 'utilitários', cachaca: 'cachaça', oleo: 'óleo' };
+const BC_REAL = /\bindependencia (?:financeira|orcamentaria)|\bautonomia (?:financeira|orcamentaria)|\bempresa publica\b|\bpec 65\b|\borcamento proprio\b/;
+const TXT_BC_VIGENTE = 'A autonomia do Banco Central já está em vigor desde a LC 179/2021: mandatos fixos de 4 anos para o presidente e os diretores, não coincidentes com o do Presidente da República, nomeação com sabatina no Senado e demissão só nas hipóteses da lei. A medida é redundante e não gera efeito novo; mudar o quadro exigiria a independência financeira e orçamentária (PEC 65/2023, transformação em empresa pública) ou, no sentido contrário, uma lei complementar que revogue a autonomia.';
+const TXT_DIV_VIGENTE = 'A Lei 15.270/2025 já tributa os dividendos: retenção de 10% na fonte sobre o que passar de R$ 50 mil por mês pago por uma mesma empresa a uma mesma pessoa física (e sobre as remessas ao exterior), além da tributação mínima de altas rendas. Taxar dividendos sem alíquota nova é redundante e não gera efeito novo; elevar a alíquota ou baixar o piso de R$ 50 mil exigiria nova lei.';
+function escProduto(s, it) {
+  const mt = /^(?:iof|ipi|imposto sobre produtos industrializados|imposto de importacao|tarifa de importacao)\b/.exec(it.t || ''), t0 = mt && it.t.length > mt[0].length ? it.i + mt[0].length : it.e; // o sinônimo do objeto pode já embutir o produto ("iof sobre seguros")
+  const tail = s.slice(t0, it.e + 70), off0 = Math.max(0, it.i - 50), head = s.slice(off0, it.i);
+  const corta = (str) => { const tk = str.split(' '), out = []; for (const t of tk) { if (out.length && /^(?:e|ou|para|por|com|sem|ate|que|mas|durante|em|no|na|nos|nas|ao|pelo|pela|financiad\w+|compensand\w+|cortando)$/.test(t)) break; out.push(t); } while (out.length > 1 && /^(?:de|da|do|a|e)$/.test(out[out.length - 1])) out.pop(); return out; };
+  let m = /^\s*(?:(?:de|do|da|dos|das|sobre|para|nos?|nas?|em|incidente (?:sobre|nos?|nas?)|aplicado (?:a|ao|aos|as)|cobrado (?:de|dos|das|sobre))\s+(?:(?:o|a|os|as)\s+)?|(?:o|a|os|as)\s+)([a-z][a-z0-9]*(?: (?:de |da |do |a |e )?[a-z][a-z0-9]*){0,2})/.exec(tail), toks = null, from = t0;
+  if (m) { toks = corta(m[1]); from = t0 + m[0].length - m[1].length; }
+  if (!toks || ESC_GEN.test(toks[0]) || ESC_VERBO.test(toks[0]) || /\d/.test(toks[0]) || toks[0].length < 3) {
+    toks = null;
+    const mh = /(?:isent\w+|desoner\w+|zer\w+|reduz\w+|cort\w+|baix\w+|aument\w+|elev\w+|tribut\w+|taxar|sobretax\w+|major\w+|diminu\w+|elimin\w+)\s+(?:(?:o|a|os|as)\s+)?([a-z][a-z0-9]*(?: (?:de |da |do |a )?[a-z][a-z0-9]*){0,2})\s+(?:de|do|da)\s*$/.exec(head);
+    if (mh) { const t2 = corta(mh[1]); if (!ESC_GEN.test(t2[0]) && !ESC_VERBO.test(t2[0]) && !/\d/.test(t2[0]) && t2[0].length >= 3 && !/\bipi$|\biof$/.test(t2[0])) { toks = t2; from = off0 + mh.index + mh[0].indexOf(mh[1]); } }
+  }
+  if (!toks) return null;
+  const ph = toks.join(' '); let share = .05;
+  for (const r of ESC_PROD) if (r[0].test(ph)) { share = r[1]; break; }
+  const disp = toks.map(t => ESC_ACENTO[t] || t).join(' ');
+  return { share: share, txt: 'de ' + disp, nome: disp, i: from, e: from + ph.length };
+}
+function fiscPos(A) {
+  const s = A.s;
+  // (1) escopo por produto
+  for (const it of A.items.slice()) {
+    if (it.o.k !== 'T' || ESC_IDS.indexOf(it.o.id) < 0 || it.pledge || it.escProd) continue;
+    if (it.q && it.q.money && it.q.money.unit) continue;
+    const ep = escProduto(s, it); if (!ep) continue;
+    it.escProd = ep;
+    A.items = A.items.filter(j => j === it || !(j.i >= ep.i && j.e <= ep.e && j.o.k !== 'C' && j.o.k !== 'T'));
+  }
+  // (2) autonomia do BC
+  const bc = A.items.find(i => i.o.id === 'autonomia_bc' && !i.pledge);
+  if (bc && !A.jaVigente) {
+    if (!BC_REAL.test(s)) {
+      bc.sg = 0; bc.dir = 0; bc.jaVigente = true;
+      A.jaVigente = { id: 'lc179', txt: TXT_BC_VIGENTE };
+      A.topicoFixo = 'a autonomia do Banco Central, já em vigor pela LC 179/2021';
+    } else { bc.sg = 1; bc.dir = 1; bc.topicoFixo = 'a independência financeira e orçamentária do Banco Central (PEC 65/2023)'; }
+  }
+  // (3) dividendos: Lei 15.270/2025 já cobra 10% acima de R$ 50 mil/mês
+  const dv = A.items.find(i => i.o.id === 'dividendos' && !i.pledge && i.sg > 0 && i.role === 'main');
+  if (dv && !A.jaVigente) {
+    const pc = dv.q.pct && !dv.q.pct.pib ? dv.q.pct.v : null;
+    const outros = A.items.filter(j => j !== dv && j.role === 'main' && j.sg && j.o.k !== 'C' && !j.o.ger);
+    if (pc != null && pc > 10 && pc <= 100) {
+      dv.divInc = { from: 10, to: pc };
+      dv.topicoFixo = 'a elevação da tributação dos dividendos de 10% para ' + fmtNum(pc, pc % 1 ? 1 : 0) + '% (Lei 15.270/2025)';
+      A.notaLei = 'A Lei 15.270/2025 já retém 10% na fonte sobre dividendos acima de R$ 50 mil por mês por pagador e pessoa física; a proposta é cobrada apenas no acréscimo de ' + fmtNum(pc - 10, pc % 1 ? 1 : 0) + ' pontos percentuais.';
+    } else if (!outros.length) {
+      dv.sg = 0; dv.dir = 0; dv.jaVigente = true;
+      A.jaVigente = { id: 'div15270', txt: TXT_DIV_VIGENTE };
+      A.topicoFixo = 'a tributação dos dividendos, já instituída pela Lei 15.270/2025';
+    }
+  }
+  // (4) estado de sítio: o motivo ("por causa da violência", "contra as facções") não é programa de gasto
+  const ex = A.items.find(i => i.o.id === 'estado_excecao' && !i.pledge);
+  if (ex && /\bestado de sitio\b/.test(s)) {
+    A.items = A.items.filter(j => !(j !== ex && j.o.k === 'G' && j.i >= ex.e && /^[^.;]{0,40}\b(?:por causa|por conta|devido|em razao|diante|em funcao|contra|para (?:combater|conter|enfrentar|reprimir|controlar|acabar com)|por)\b/.test(s.slice(ex.e, j.i))));
+  }
+}
+/*FISC-V34-END*/
 
 P('mae_auxilio', 'o auxílio às mães e gestantes', 'maes? solo|maes? solteiras?|mae atipica|auxilio.?mae|bolsa.?mae|auxilio.?gestante|licenca.?maternidade|auxilio.?creche|chefes de familia mulheres', { ch: 'transf', base: 0, ex: 0, def: 5, cap: 40, ben: 3, vu: 300, fr: 12, b: 'pobres', rg: 'pobre', pob: .8, lag: 3, pa: 'casacivil', pn: 'Desenvolvimento e Assistência Social', inst: 'MP', val: { catolicos: 2, evangelicos: 1.5, universitarios: 1 }, iv: [-.5, 0], cat: 'programa_social', ax: { gasto_social: -1 }, pf: 'transferencia', nota: 'Programa focalizado depende do Cadastro Único.' });
 P('desenrola', 'o programa de renegociação de dívidas (Desenrola)', 'desenrola|renegociacao de dividas|dividas das familias|limpa nome|endividamento das familias|perdao de dividas|negativados|inadimplencia das familias|fundo garantidor de dividas', { ch: 'subs', base: 0, ex: 0, def: 3, cap: 25, b: 'media', rg: 'urb', pob: .4, lag: 3, pa: 'fazenda', inst: 'MP', val: { periferia: 3, classemedia: 3, mercado: -1.5, empresariado: .5 }, iv: [-.3, 0], cat: 'programa_social', ax: { gasto_social: -1 }, st: { bancos: -1, varejo: 2 }, pf: 'desenrola', nota: 'O custo fiscal é a garantia do Fundo Garantidor; bancos concedem os descontos.' });
@@ -2693,7 +2761,7 @@ P('politica_cuidados', 'a política nacional de cuidados', 'politica nacional de
 P('primeira_infancia', 'a primeira infância', 'primeira infancia|crianca feliz|marco legal da primeira infancia|trabalho infantil|\\beca\\b|estatuto da crianca|desnutricao infantil|visitas domiciliares', { ch: 'custeio', base: 2, def: 2, cap: 15, ben: 3, b: 'pobres', rg: 'pobre', pob: .7, lag: 10, pa: 'casacivil', pn: 'Desenvolvimento e Assistência Social', inst: 'ADM', idh: .002, val: { catolicos: 2, evangelicos: 2, periferia: 2 }, iv: [-.2, .1], cat: 'programa_social', ax: { gasto_social: -1 } });
 P('saude_indigena', 'a saúde indígena', 'saude indigena|\\bsesai\\b|\\bdsei\\b|atendimento aos yanomami|saude dos yanomami|casas de saude indigena', { ch: 'saude', base: 1.5, def: 1, cap: 5, b: 'ind', rg: 'amaz', pob: .6, lag: 4, pa: 'saude', inst: 'ADM', idh: .001, val: { indigenas: 8, universitarios: 2 }, iv: [-.2, -.4], cat: 'saude', ax: { gasto_social: -1, ambiente: -1 } });
 P('quilombolas', 'as comunidades quilombolas e tradicionais', 'quilombolas?|quilombos?|titulacao quilombola|comunidades tradicionais|ribeirinhos|extrativistas|povos tradicionais|reservas extrativistas', { ch: 'subs', base: .6, def: 1, cap: 5, b: 'rural', rg: 'n', pob: .6, lag: 10, pa: 'casacivil', pn: 'Igualdade Racial', inst: 'ADM', val: { indigenas: 3, universitarios: 3, agro: -2, periferia: 1 }, iv: [-.3, -.4], cat: 'progressista', ax: { ambiente: -1, gasto_social: -1 } });
-P('aposentadoria_idade', 'a idade mínima de aposentadoria', 'idade minima( de aposentadoria| para aposentadoria| para se aposentar)?|tempo de contribuicao|regra de transicao|aposentadoria por idade|aposentar aos \\d+|aposentadoria aos \\d+', { k: 'G', sav: 1, ch: 'transf', base: 0, def: 30, cap: 120, b: 'idosos', rg: 'pop', pob: .2, lag: 12, pa: 'casacivil', pn: 'Previdência Social', inst: 'PEC', val: { mercado: 5, empresariado: 2, sindicatos: -9, classemedia: -4, periferia: -4 }, e: { risco: -2, conf: .8 }, iv: [.8, .1], cat: 'corte_gastos', cred: .8, ax: { gasto_social: 1 }, pf: 'previdencia', nota: 'Mudanças na idade mínima exigem emenda constitucional (art. 201, §7º).' });
+P('aposentadoria_idade', 'a idade mínima de aposentadoria', 'idade minima( de aposentadoria| para aposentadoria| para se aposentar)?|idade (?:minima )?(?:d[aeo]s? )?aposentadoria|idade (?:minima )?para (?:se )?aposentar\\w*|tempo de contribuicao|regra de transicao|aposentadoria por idade|aposentar aos \\d+|aposentadoria aos \\d+', { k: 'G', sav: 1, req: 1, ch: 'transf', base: 0, def: 30, cap: 120, b: 'idosos', rg: 'pop', pob: .2, lag: 12, pa: 'casacivil', pn: 'Previdência Social', inst: 'PEC', val: { mercado: 5, empresariado: 2, sindicatos: -9, classemedia: -4, periferia: -4 }, e: { risco: -2, conf: .8 }, iv: [.8, .1], cat: 'corte_gastos', cred: .8, ax: { gasto_social: 1 }, pf: 'previdencia', nota: 'Mudanças na idade mínima exigem emenda constitucional (art. 201, §7º).' });
 /* --- trabalho --- */
 P('terceirizacao', 'a terceirização e a pejotização', 'terceirizacao|terceirizar|pejotizacao|contrato intermitente|trabalho intermitente|\\bpj\\b|contrato de risco|trabalho temporario|banco de horas', { k: 'R', pa: 'casacivil', pn: 'Trabalho e Emprego', inst: 'PL', val: { empresariado: 6, mercado: 3, sindicatos: -9, periferia: -2 }, e: { des: -.03, pib: .02 }, iv: [.7, 0], lag: 6, cat: 'trabalho', ax: { trabalho: 1 }, st: { servicos: 2 }, nota: 'O STF admitiu a terceirização irrestrita (ADPF 324, 2018) mas discute a pejotização no Tema 1389.' });
 P('greve', 'o direito de greve', 'direito de greve|regulamentar (a )?greve|greve de servidores|greves|greve geral|greve dos servidores|corte de ponto', { k: 'R', pa: 'casacivil', inst: 'PL', val: { sindicatos: -8, empresariado: 3, mercado: 2, classemedia: 1 }, iv: [.5, .2], lag: 3, cat: 'trabalho', ax: { trabalho: 1 }, nota: 'A greve de servidores segue regida por decisão do STF (MI 708) até regulamentação por lei.' });
@@ -3197,15 +3265,45 @@ const ALVO_G = [[/\bmicro ?empreendedor\w*|\bmei\b|pequenas? empresas?|empresari
 const INCR_RE = /(?:mais|incluir|incluindo|adicionais?|novas?|novos|outras?|outros|extras?|acrescentar|acrescimo de)\s*$/;
 const RECENTE_RE = /\b(?:feito|feita|criad[ao]|instituid[ao]|aprovad[ao]|decretad[ao]|editad[ao]|publicad[ao]|sancionad[ao]|imposta?)\b(?: [a-z]+){0,3} (?:neste ano|nesse ano|este ano|esse ano|ano passado|mes passado|recentemente|ontem|semana passada)|\b(?:no|do) ano passado\b|\brecente\b|\brecentemente\b|\bultim[oa]s? (?:ano|mes|anos)\b|\b(?:fim|acabou|acabar|acabaram|encerrou) (?:d[ao] |com a )?isencao\b|\bvoltar a isentar\b|\bre-?isent\w+|\bdesfazer o aumento\b|\baumento d[oa]s? \w+( \w+){0,3} (?:feito|decretado|aprovado)|\bem 202\d\b/;
 const A_PARTIAL =/\b(?:carros?|automoveis|veiculos|motos?|cigarros?|bebidas?|refrigerantes?|armas|municoes|aco|eletronicos|celulares|bicicletas?|eletrodomesticos|linha branca|brinquedos|roupas|calcados|maquinas|fertilizantes|alimentos|petroleo|diesel|insumos|baterias|paineis|cosmeticos|perfumes|joias|seguros?)\b/;
+/* v3.4: escopo por produto (IPI/IOF/II "de carros elétricos"): a base cheia só vale para o imposto inteiro; com produto citado, B é a fatia do produto */
 function dimensionar(it, Q, S) {
+  dimensionarBase(it, Q, S);
+  const ep = it.escProd;
+  if (ep && !it.escAplicado && it.B > 0 && it.o.k === 'T') {
+    const f = ep.share * (it.o.id === 'imposto_importacao' ? 2 : 1), B0 = it.B;
+    it.B = B0 * f; it.escAplicado = true;
+    it.calc.push('Escopo restrito a ' + ep.nome + ': cerca de ' + fmtNum(f * 100, f < .1 ? 1 : 0) + '% da base de ' + semArt(it.o.n) + ' (' + fmtBi(B0) + ' para o imposto inteiro) = ' + fmtBi(it.B) + '/ano');
+  }
+}
+function dimensionarBase(it, Q, S) {
   const o = it.o, q = it.q, calc = it.calc = [], nome = semArt(o.n);
   let B = null;
   it.B = 0;
+  // v3.4: dividendos acima de 10% (Lei 15.270/2025 já cobra 10%): só o incremento, ~R$ 0,55 bi por ponto percentual
+  if (it.divInc) {
+    B = Math.min(8, .55 * (it.divInc.to - it.divInc.from)); it.dir = 1;
+    calc.push('Lei 15.270/2025 já retém 10% sobre dividendos acima de R$ 50 mil/mês: só o acréscimo de ' + fmtNum(it.divInc.to - it.divInc.from, 1).replace(/,0$/, '') + ' pontos percentuais conta, a cerca de R$ 0,55 bi/ano por ponto = ' + fmtBi(B) + '/ano');
+    it.B = B; return;
+  }
   const money = q.money, pct = q.pct;
   let count = q.count;
   const durM = it.dur;
   if (it.savTarget != null && o.k === 'G') { it.B = it.savTarget; calc.push('Meta de economia citada no texto distribuída entre os cortes: ' + fmtBi(it.B) + '/ano para ' + semArt(o.n)); return; }
   if (it.regul && (o.k === 'G' || o.k === 'T')) { it.B = 0; calc.push('Medida normativa (proibir, obrigar, exigir ou regulamentar) sem dotação própria: custo fiscal direto desprezível'); return; }
+  // v3.4: idade minima com alvo ("para 60 anos"): ~R$ 6 bi/ano por ano de diferenca sobre a regra atual (65 homens, 62 mulheres; EC 103/2019), com rampa de anos
+  if (o.req && o.k === 'G') {
+    const c0 = it.ctxTxt || '', ma = c0.match(/(?:idade|aposent\w+)[^.;]{0,70}?\b(?:para|aos|ate os|a partir d[eo]s?) (\d{2})(?: anos)?\b/), N = ma ? +ma[1] : 0;
+    if (N >= 50 && N <= 75) {
+      const fem = /\bmulher|\bfeminin/.test(c0), ref = fem ? 62 : 65, d = Math.abs(N - ref);
+      if (d >= 1) {
+        B = Math.min(o.cap || 120, 6 * d * (fem ? .8 : 1)); it.reqAlvo = N;
+        if ((N < ref) !== (it.dir < 0)) { it.dir = N < ref ? -1 : 1; if (it.sg) it.sg = it.dir; }
+        calc.push('Idade mínima de ' + ref + ' para ' + N + ' anos (' + (fem ? 'mulheres' : 'homens') + '): ' + (N < ref ? 'mais benefícios pagos por mais tempo' : 'benefícios pagos por menos tempo') + ', cerca de R$ 6 bi/ano por ano de diferença = ' + fmtBi(B) + '/ano quando a regra estiver plenamente em vigor (o efeito cresce ao longo de vários anos)');
+        it.B = B; return;
+      }
+    }
+    if (it.dir < 0) { B = Math.min(o.cap || 120, it.tot ? o.def * 2 : o.def); calc.push('Sem idade-alvo informada: afrouxar o requisito de idade/contribuição custa, no tamanho padrão do jogo, ' + fmtBi(B) + '/ano em regime pleno'); it.B = B; return; }
+  }
   if (o.k === 'R' || o.k === 'C' || o.k === 'D') { it.B = 0; if (o.fix) calc.push('Efeito fiscal estimado do instrumento: ' + (o.fix.rev ? 'perda de arrecadação de ' + fmtBi(Math.abs(o.fix.rev)) + '/ano' : '') + (o.fix.cost ? 'despesa de ' + fmtBi(Math.abs(o.fix.cost)) + '/ano' : '') + ' (estimativa do jogo)'); return; }
   if (o.k === 'E') {
     let val = o['val$'] || 0;
@@ -3279,7 +3377,8 @@ function dimensionar(it, Q, S) {
   if (pct && pct.rate && o.k === 'T' && o.base > 0 && pct.rate.from > 0 && !pct.pib) {
     const rt = pct.rate, rel = rt.to / rt.from - 1, ctx0 = it.ctxTxt || '';
     let share = 1, why = '';
-    if (A_PARTIAL.test(ctx0) && (o.id === 'ipi' || o.id === 'imposto_importacao' || o.id === 'iof_cambio' || o.id === 'iof' || o.id === 'pis_cofins_diesel')) { share = .2; why = ' × 20% (incidência só sobre os bens citados)'; }
+    if (it.escProd) { share = it.escProd.share * (o.id === 'imposto_importacao' ? 2 : 1); why = ' × ' + fmtNum(share * 100, share < .1 ? 1 : 0) + '% (incidência só sobre ' + it.escProd.nome + ')'; it.escAplicado = true; } // v3.4
+    else if (A_PARTIAL.test(ctx0) && (o.id === 'ipi' || o.id === 'imposto_importacao' || o.id === 'iof_cambio' || o.id === 'iof' || o.id === 'pis_cofins_diesel')) { share = .2; why = ' × 20% (incidência só sobre os bens citados)'; }
     else if (o.id === 'ir_pf' && /\b(?:ricos|alta renda|altas rendas|maiores rendas|super.?ricos|milionarios|faixa mais alta|acima de)/.test(ctx0)) { share = .3; why = ' × 30% (só as faixas mais altas)'; }
     B = Math.min(o.base * Math.abs(rel) * share, o.cap || o.def * 3);
     if (it.verbo == null || it.verbo.cls === 'CHG' || (rel > 0) !== (it.dir > 0)) { it.dir = rel >= 0 ? 1 : -1; if (it.sg) it.sg = it.dir; }
@@ -3341,7 +3440,9 @@ function dimensionar(it, Q, S) {
 const V3N = OBJ.length;
 const MUN_IDS = ['infra_geral', 'minha_casa', 'creches', 'educacao_geral', 'sus_geral', 'transporte_publico', 'saneamento', 'ubs', 'seguranca_geral', 'cultura', 'esporte', 'turismo', 'merenda', 'obras_paradas', 'ensino_integral'];
 function setProp(id, p) { const o = OBJ.find(x => x.id === id); if (o) Object.assign(o, p); }
-P('fim_autonomia_bc', 'o fim da autonomia do Banco Central', 'acabar com a autonomia do (?:banco central|bc)|fim da autonomia do (?:banco central|bc)|revogar (?:a )?(?:lei (?:da|de) )?autonomia do (?:banco central|bc)|derrubar (?:a )?(?:lei (?:da|de) )?autonomia do (?:banco central|bc)|(?:retirar|tirar|suprimir|extinguir) a autonomia do (?:banco central|bc)|revogar a lc 179|autonomia do (?:banco central|bc) (?:acabou|e revogada)', { k: 'R', lc: 1, pa: 'fazenda', inst: 'PL', val: { mercado: -14, empresariado: -3, classemedia: -2, sindicatos: 2, periferia: 1 }, e: { conf: -8, risco: 15, dol: .15, ipca: .08 }, iv: [-.6, 0], lag: 1, cat: 'juros', ax: { economia: -1 }, nota: 'A autonomia do Banco Central está na LC 179/2021: desfazê-la exige lei complementar (maioria absoluta) e o mercado reage com prêmio de risco imediato.' });
+P('fim_autonomia_bc', 'o fim da autonomia do Banco Central', 'acabar com a autonomia do (?:banco central|bc)|fim da autonomia do (?:banco central|bc)|revogar (?:a )?(?:lei (?:da|de) )?autonomia do (?:banco central|bc)|derrubar (?:a )?(?:lei (?:da|de) )?autonomia do (?:banco central|bc)|(?:retirar|tirar|suprimir|extinguir) a autonomia do (?:banco central|bc)|revogar a lc 179|autonomia do (?:banco central|bc) (?:acabou|e revogada)|(?:demitir|destituir|exonerar|afastar|trocar|derrubar|tirar|mandar embora) (?:o |os |todos os )?(?:presidente|diretores|diretoria|presidentes) d[oa] (?:banco central|bc|bacen)\\b|(?:fim|acabar com|extinguir|revogar) (?:o |os )?mandatos? fixos? d[oa]s? (?:presidente|diretores|diretoria|banco central|bc)', { k: 'R', lc: 1, pa: 'fazenda', inst: 'PL', val: { mercado: -14, empresariado: -3, classemedia: -2, sindicatos: 2, periferia: 1 }, e: { conf: -8, risco: 15, dol: .15, ipca: .08 }, iv: [-.6, 0], lag: 1, cat: 'juros', ax: { economia: -1 }, nota: 'A autonomia do Banco Central está na LC 179/2021: desfazê-la exige lei complementar (maioria absoluta) e o mercado reage com prêmio de risco imediato.' });
+/* v3.4: autonomia do BC já vigente (LC 179/2021); só independência financeira/orçamentária ou empresa pública (PEC 65/2023) é mudança real */
+P('autonomia_bc', 'a autonomia do Banco Central', 'autonomia (?:total |plena |completa |operacional |institucional )?(?:ao|do|para o|d[ao]) (?:banco central|bc|bacen)\\b|(?:banco central|bc|bacen) (?:totalmente |plenamente )?(?:independente|autonomo)\\b|independencia (?:total |plena )?(?:do|ao|para o|d[ao]) (?:banco central|bc|bacen)\\b|independencia (?:financeira|orcamentaria)(?: e (?:financeira|orcamentaria))?[^.;]{0,25}(?:banco central|bc|bacen)\\b|(?:banco central|bc|bacen) com (?:independencia|autonomia) (?:financeira|orcamentaria)|autonomia (?:financeira|orcamentaria)(?: e (?:financeira|orcamentaria))? (?:ao|do|para o|d[ao]) (?:banco central|bc|bacen)\\b|mandatos? fixos? (?:de \\d+ anos )?(?:ao|aos|para o|para os|do|dos) (?:(?:presidente|diretores|diretoria|presidentes) (?:do |da |de )?)?(?:banco central|bc|bacen)\\b|(?:transformar|tornar) o (?:banco central|bc|bacen) (?:em )?(?:uma )?empresa publica|banco central (?:como )?empresa publica|\\bpec 65\\b', { k: 'R', pa: 'fazenda', pn: 'Fazenda / Banco Central', inst: 'COM', ri: [[/independencia (?:financeira|orcamentaria)|autonomia (?:financeira|orcamentaria)|empresa publica|\bpec 65\b|orcamento proprio/, 'PEC']], val: { mercado: 2, empresariado: 1, sindicatos: -2 }, e: { conf: .5, risco: -1 }, iv: [.4, 0], lag: 12, nota: 'A LC 179/2021 já garante autonomia operacional, mandatos fixos de 4 anos não coincidentes com o do Presidente e vedação de demissão ad nutum; só a independência financeira e orçamentária (PEC 65/2023, que o transforma em empresa pública de natureza especial) muda o quadro.' });
 P('reserva_legal', 'a reserva legal e o Código Florestal', 'reserva legal(?: florestal)?|percentual de reserva legal|reservas? florestais?|areas? de preservacao permanente|codigo florestal|lei florestal', { k: 'R', pa: 'ambiente', inst: 'PL', val: { universitarios: 6, indigenas: 4, agro: -9, empresariado: -1 }, d: { ue: 5, eua: 1 }, desm: -400, iv: [-.4, -.2], lag: 6, cat: 'ambiente', ax: { ambiente: -1 }, st: { agro: -2 }, lg: [{ sg: -1, n: 'controverso', t: 'Reduzir a reserva legal e as áreas de preservação do Código Florestal (Lei 12.651/2012) esbarra no art. 225 e na vedação ao retrocesso ambiental, aplicada pelo STF nas ADIs do Código Florestal (2018); a judicialização é certa.' }], nota: 'A reserva legal é de 80% na Amazônia e 20% nas demais regiões; flexibilizá-la é a principal pauta da bancada ruralista.' });
 P('desvinc_sm', 'a desvinculação dos benefícios do salário mínimo', 'desvincul\\w+[^.;]{0,50}?salario minimo|desindexa\\w+[^.;]{0,50}?salario minimo|(?:fim|acabar com|revogar|extinguir|romper) (?:a |da )?vinculacao[^.;]{0,50}?salario minimo|salario minimo[^.;]{0,30}?desvincul\\w+', { k: 'R', fix: { cost: -25 }, pa: 'fazenda', inst: 'PEC', val: { periferia: -9, sindicatos: -10, classemedia: -4, catolicos: -3, evangelicos: -2, mercado: 4, empresariado: 2 }, e: { risco: -3, conf: 1 }, ent: { municipios: 1 }, iv: [.7, 0], lag: 12, cat: 'corte_gastos', cred: .6, ax: { gasto_social: 1 }, nota: 'Desvincular o piso dos benefícios do salário mínimo (art. 201, §2º) exige PEC e economiza por reajustes reais menores; é o corte mais regressivo da agenda fiscal.' });
 P('voto_facultativo', 'o voto facultativo', 'voto facultativo|voto opcional|voto nao obrigatorio|obrigatoriedade do voto|voto obrigatorio|tornar (?:o )?voto (?:facultativo|opcional)', { k: 'R', pa: 'casacivil', pn: 'Relações Institucionais', inst: 'PEC', val: { periferia: -2, classemedia: 1, universitarios: -1 }, iv: [.2, .1], lag: 12, ax: { instituicoes: 1 }, nota: 'O voto obrigatório está no art. 14, §1º, I da Constituição: o fim da obrigatoriedade exige emenda.' });
@@ -3682,7 +3783,8 @@ function parse(orig) {
     if (gv && gv.mag && gv.cls === 'SUB' && chain.length === 1) it.dir = -1;
     /* v3.2: objeto que JA E economia (corte de gastos, ajuste fiscal, pente-fino, contingenciamento): verbo de corte/reducao/ampliacao nao inverte o sinal;
        so verbos de desfazer ("acabar com", "suspender", "revogar") sobre a politica nominal invertem */
-    if (m.o.sav && !m.o.mal && m.o.k === 'G' && chain.length) {
+    // v3.4: objeto-requisito (idade minima, tempo de contribuicao): o verbo vale como escrito (baixar a idade = mais gasto; subir = economia)
+    if (m.o.sav && !m.o.mal && !m.o.req && m.o.k === 'G' && chain.length) {
       const undo = (v) => v.tot && /^(acab|extin|revog|suspend|suspens|cancel|desfaz|desfeit|encerr|abandon|sustar|fim|chega|derrub|anul|rescind|desist|renunc|abol|descontinu|desativ)/.test(v.t) && /ajuste|austeridade|corte|pente|conting|bloqueio|enxug|equilibrio|economia|revisao|auditoria/.test(m.t) && !/^(reduzir|cortar)/.test(m.t);
       let dd = 1; for (const v of chain) if (undo(v)) dd *= -1;
       it.dir = dd;
@@ -3780,6 +3882,7 @@ function parse(orig) {
   for (const a of ALVO_T) if (a[0].test(s)) { A.alvoT = a[1]; break; }
   for (const a of ALVO_G) if (a[0].test(s)) { A.alvoG = a[1]; break; }
   trabPos(A);
+  fiscPos(A); // v3.4
   return A;
 }
 
@@ -4089,7 +4192,9 @@ const CF_BASE = [
   { id: 'a225_231', art: 'CF, arts. 225 e 231', tema: 'Meio ambiente e terras indígenas', regra: 'Dever de proteção ambiental e direitos originários indígenas; STF veda o retrocesso.', muda: 'lei' },
   { id: 'a228', art: 'CF, art. 228', tema: 'Maioridade penal', regra: 'São penalmente inimputáveis os menores de 18 anos; parte da doutrina a vê como cláusula pétrea.', muda: 'pec' },
   { id: 'a239_3', art: 'CF, art. 239, §3º', tema: 'Abono salarial', regra: 'Assegura um salário mínimo anual de abono a quem ganha até o teto fixado na Constituição: dois mínimos do ano-base de 2025, corrigido a partir de 2026 pela inflação, e não mais pelo mínimo do ano.', muda: 'pec' },
-  { id: 'lei15270', art: 'Lei 15.270/2025', tema: 'Isenção do IR até R$ 5 mil e tributação mínima de altas rendas', regra: 'Em vigor desde janeiro de 2026: isenção para rendimentos mensais até R$ 5 mil, redução gradual até R$ 7.350, tributação mínima de altas rendas e retenção sobre dividendos remetidos acima de R$ 50 mil por mês.', muda: 'lei' },
+  { id: 'lei15270', art: 'Lei 15.270/2025', tema: 'Isenção do IR até R$ 5 mil e tributação mínima de altas rendas', regra: 'Em vigor desde janeiro de 2026: isenção para rendimentos mensais até R$ 5 mil, redução gradual até R$ 7.350, tributação mínima de altas rendas e retenção de 10% na fonte sobre dividendos acima de R$ 50 mil por mês pagos por uma mesma empresa a uma mesma pessoa física (e sobre remessas ao exterior).', muda: 'lei' },
+  { id: 'lc179', art: 'LC 179/2021; CF, art. 192', tema: 'Autonomia do Banco Central', regra: 'Em vigor desde 2021: mandatos de 4 anos para o presidente e os diretores, não coincidentes com o do Presidente da República, e demissão só nas hipóteses da lei; alterar a autonomia exige lei complementar e a independência financeira e orçamentária depende de emenda (PEC 65/2023).', muda: 'lc' },
+  { id: 'a34_136', art: 'CF, arts. 34, III, 136 e 142', tema: 'Intervenção federal, estado de defesa e GLO', regra: 'Violência localizada se enfrenta com intervenção federal para pôr termo a grave comprometimento da ordem pública (art. 34, III), estado de defesa em locais restritos e determinados (art. 136) ou garantia da lei e da ordem (art. 142; LC 97/1999); o estado de sítio fica para comoção grave de repercussão nacional, guerra ou ineficácia do estado de defesa (art. 137).', muda: 'dec' },
   { id: 'a5_xxxvii', art: 'CF, art. 5º, XXXVII e LIII', tema: 'Juiz natural e tribunais de exceção', regra: 'Não haverá juízo ou tribunal de exceção; ninguém será processado nem sentenciado senão pela autoridade competente.', muda: 'petrea' },
   { id: 'a5_xliii', art: 'CF, art. 5º, XLIII', tema: 'Crimes hediondos e graça ou anistia', regra: 'Tortura, tráfico de drogas, terrorismo e crimes hediondos são insuscetíveis de graça ou anistia.', muda: 'pec' },
   { id: 'a84_xii', art: 'CF, art. 84, XII', tema: 'Indulto e comutação de penas', regra: 'Compete privativamente ao Presidente conceder indulto e comutar penas, com audiência, se necessário, dos órgãos instituídos em lei; a graça e a anistia não alcançam os crimes hediondos.', muda: 'dec' },
@@ -4363,18 +4468,30 @@ CF_RULES.push(C => {
 CF_RULES.push(C => {
   const out = [], E = C.E, s = C.s, fraco = C.fraco(E);
   if (C.A.jaVigente && C.A.jaVigente.id === 'lei15270') out.push(cfHit({ id: 'ir_vigente', d: ['lei15270'], efeito: C.A.jaVigente.txt }));
+  // v3.4: dividendos (Lei 15.270/2025), autonomia do BC (LC 179/2021)
+  if (C.A.jaVigente && C.A.jaVigente.id === 'div15270') out.push(cfHit({ id: 'div_vigente', d: ['lei15270'], efeito: C.A.jaVigente.txt }));
+  if (C.A.jaVigente && C.A.jaVigente.id === 'lc179') out.push(cfHit({ id: 'bc_vigente', d: ['lc179'], efeito: C.A.jaVigente.txt }));
+  if (C.act.some(i => i.divInc)) out.push(cfHit({ id: 'div_incremento', d: ['lei15270', 'a150_iii'], exige: 'PL', efeito: 'Os dividendos já sofrem retenção de 10% acima de R$ 50 mil por mês por pagador (Lei 15.270/2025): subir a alíquota é lei ordinária (PL), vale só no exercício seguinte (anterioridade anual, art. 150, III, b) e, por ser imposto de renda, dispensa a noventena (art. 150, §1º).' }));
+  if (C.act.some(i => i.o.id === 'autonomia_bc')) out.push(cfHit({ id: 'bc_pec', d: ['lc179'], exige: 'PEC', efeito: 'A LC 179/2021 já garante a autonomia operacional do Banco Central; a independência financeira e orçamentária, com a transformação em empresa pública (PEC 65/2023), mexe na organização do Estado e exige emenda constitucional.' }));
   // estado de sítio e de defesa legítimos (arts. 136 a 139): o que se avalia é o procedimento, não o golpe
   if (C.m(/\bestado de (?:sitio|defesa)\b/)) {
+    // v3.4: o sítio exige autorização do Congresso (maioria absoluta) e só cabe em comoção grave de repercussão nacional, ineficácia do estado de defesa ou guerra
+    const sitio = !!C.m(/\bestado de sitio\b/), exSit = sitio ? 'PL' : 'DEC';
+    const nacional = /\b(?:guerra|agressao (?:armada )?estrangeira|invasao|ataque (?:armado )?estrangeiro|comocao (?:grave )?(?:de repercussao )?nacional|em todo o (?:pais|territorio|brasil)|todo o territorio nacional|ambito nacional|em nivel nacional|pais inteiro|ineficacia do estado de defesa|estado de defesa (?:foi |se mostrou )?ineficaz)\b|(?<!forca )\bnacional\b/.test(s);
+    const localizada = sitio && !nacional && (C.A.escopo.ufs.length > 0 || /\b(?:violencia|facc\w+|crime organizado|trafico|criminalidade|seguranca publica|milicia\w*|homicidios|assaltos|arrastao|rebeliao|motim|presidios?|greve de policiais|cidade|capital|municipio|bairro|comunidades?|favelas?)\b/.test(s));
     const motivo = C.m(/\bestado de (?:sitio|defesa)\b[^.;]{0,70}\b(?:por (?:tempo|prazo) indeterminado|indefinid\w+|para (?:prender|perseguir|calar|fechar|cassar|adiar|cancelar|suspender|censurar|reprimir)|contra (?:a |os |as )?(?:oposicao|opositores|adversarios|imprensa|jornalistas|manifestantes pacificos))/);
     const semCong = C.m(/\bestado de (?:sitio|defesa)\b[^.;]{0,50}\bsem (?:o |a )?(?:congresso|autorizacao|aval|aprovacao|oitiva|conselho)/);
     const proc = /\b(?:autorizacao|aprovacao|aval)\b[^.;]{0,25}\bcongresso\b|\bcongresso\b[^.;]{0,25}\b(?:autoriz\w+|aprov\w+)|\bconselhos? (?:da republica|de defesa)/.test(s);
     if (motivo) out.push(cfHit({ id: 'excecao_abusiva', d: ['a137_139', 'a60_4_i_iii'], vicio: 'clausula_petrea', nivel: 'inconstitucional', exige: 'IMPOSSIVEL', petrea: true,
       efeito: 'Estado de defesa e de sítio só valem para preservar a ordem em calamidade, comoção grave ou guerra (arts. 136 e 137), com prazo certo; usá-los contra a oposição, a imprensa ou para suspender o jogo democrático fere as cláusulas pétreas (art. 60, §4º, I a III).',
       sug: [cfSug('excecao_reformula', 'reformular', 'Não há ajuste possível: reformule a medida sem usar o estado de exceção contra adversários', null, { grave: true })] }));
-    else if (semCong) out.push(cfHit({ id: 'excecao_sem_congresso', d: ['a137_139', 'a136_141'], vicio: 'forma', nivel: 'inconstitucional', exige: 'DEC',
+    else if (semCong) out.push(cfHit({ id: 'excecao_sem_congresso', d: ['a137_139', 'a136_141'], vicio: 'forma', nivel: 'inconstitucional', exige: exSit,
       efeito: 'O estado de sítio exige autorização prévia do Congresso por maioria absoluta (art. 137, parágrafo único) e o de defesa precisa ser submetido ao Congresso em 24 horas (art. 136, §4º); decretar sem o Legislativo é crime de responsabilidade.',
       sug: [cfSug('excecao_proc', 'procedimento', 'Ouvir os Conselhos da República e de Defesa Nacional e pedir autorização ao Congresso antes de decretar', { op: 'sub', rx: 'sem (?:o |a )?(?:congresso|autorizacao|aval|aprovacao|oitiva|conselho)\\w*', fl: 'gi', para: 'com autorização do Congresso e oitiva dos Conselhos da República e de Defesa Nacional', paraFraco: '' }, { grave: true })] }));
-    else out.push(cfHit({ id: 'estado_excecao', d: ['a137_139', 'a136_141'], exige: 'DEC',
+    else if (localizada) out.push(cfHit({ id: 'sitio_localizado', d: ['a137_139', 'a34_136'], vicio: 'materia', nivel: 'controverso', exige: 'PL',
+      efeito: 'O estado de sítio exige autorização prévia do Congresso por maioria absoluta (art. 137, parágrafo único), depois de ouvidos os Conselhos da República e de Defesa Nacional, e só cabe em comoção grave de repercussão nacional, ineficácia do estado de defesa ou guerra (art. 137, I e II). Violência urbana concentrada em um estado não preenche esse requisito: os instrumentos adequados são a intervenção federal (art. 34, III), o estado de defesa em locais restritos e determinados (art. 136) ou a GLO (art. 142; LC 97/1999). Decretar o sítio assim será contestado no STF.',
+      sug: [cfSug('sitio_troca', 'retirar', 'Trocar o estado de sítio por intervenção federal na segurança pública (art. 34, III), que atende ao caso localizado', { op: 'sub', rx: 'estado de sitio', fl: 'gi', para: 'intervenção federal na segurança pública (art. 34, III)', paraFraco: '' }, { grave: true })] }));
+    else out.push(cfHit({ id: 'estado_excecao', d: ['a137_139', 'a136_141'], exige: exSit,
       efeito: 'Estado de defesa e de sítio são instrumentos previstos na Constituição (arts. 136 a 141). O sítio exige oitiva dos Conselhos da República e de Defesa Nacional e autorização do Congresso por maioria absoluta (art. 137), inclusive em caso de guerra declarada; o de defesa é decretado e submetido ao Congresso em 24 horas. Enquanto durarem, nenhuma emenda constitucional pode ser votada (art. 60, §1º).',
       sug: proc ? [] : [cfSug('excecao_proc', 'procedimento', 'Prever a oitiva dos Conselhos da República e de Defesa Nacional e a autorização do Congresso (art. 137)', { op: 'add', txt: ', com oitiva dos Conselhos da República e de Defesa Nacional e autorização do Congresso (art. 137)' }, { grave: false })] }));
   }
@@ -4708,6 +4825,7 @@ function topicoItem(it, A, comEscopo) {
     if (o.id === 'est_outras' || o.id === 'reestatizacao_geral') { const EMPN = { eletrobras: 'a Eletrobras', correios: 'os Correios', petrobras: 'a Petrobras', bndes: 'o BNDES', embraer: 'a Embraer', telebras: 'a Telebras', infraero: 'a Infraero', serpro: 'o Serpro', dataprev: 'a Dataprev', 'casa da moeda': 'a Casa da Moeda', 'banco do nordeste': 'o Banco do Nordeste', vale: 'a Vale' }; const mc = (it.t + ' ' + A.s).match(/\b(eletrobras|correios|petrobras|bndes|embraer|telebras|infraero|serpro|dataprev|casa da moeda|banco do nordeste|vale)\b/); if (mc) nE = EMPN[mc[1]]; else if (o.id === 'reestatizacao_geral') { const mt = A.s.match(/(?:reestatiz|estatiz|nacionaliz|encamp)\w+ ((?:os |as |o |a )?(?!de volta)[a-z]+(?: (?!e |de |para |com |de volta)[a-z]+)?)/); nE = mt ? mt[1].replace(/^(?=[a-z])(?!(?:os|as|o|a) )/, 'as ') : 'empresas privadas'; } }
     t = /concess/.test(o.id) && it.own > 0 ? n : (it.own > 0 ? 'a ' + (/concess|ppp/.test(o.id) ? 'concessão' : 'privatização') + ' ' : (o.id === 'reestatizacao_geral' && nE !== n ? 'a reestatização ' : 'a estatização ')) + de(nE);
   }
+  else if (o.req && !(it.sg < 0 && it.tot)) t = (it.sg < 0 ? 'a redução ' : 'o aumento ') + de(n) + (it.reqAlvo ? ' para ' + it.reqAlvo + ' anos' : ''); // v3.4
   else if (o.sav && it.sg < 0) t = (it.tot && it.dur != null && it.dur <= 12 ? 'a suspensão ' : 'o fim ') + de(n);
   else if (o.k === 'T' && o.exo && it.sg < 0) t = n + (pc ? ' em ' + pc : '');
   else if (o.k === 'T' && o.exo && it.sg > 0) t = 'o fim ' + de(n);
@@ -4729,6 +4847,7 @@ function topicoItem(it, A, comEscopo) {
   else if (o.sav) t = n + comp;
   else if (inf === 'ampliar' && o.ex !== 0 && o.base > 0 && o.k === 'G') t = 'a ampliação ' + de(n) + (comp && !/^ de R\$ [\d.]+$/.test(comp) ? comp : (comp || ''));
   else t = n + comp;
+  if (it.escProd && o.k === 'T') { if (it.sg < 0 && (it.tot || it.mag === 1) && !pc) t = 'a isenção ' + de(n) + ' ' + it.escProd.txt; else t += ' ' + it.escProd.txt; } // v3.4
   if (it.dur != null && it.dur <= 48) t += ' por ' + durTxt(it.dur);
   if (comEscopo && A.escopo.nivel !== 'nacional') {
     const e = A.escopo; let loc = '';
@@ -4858,8 +4977,8 @@ function atrasosDe(A, F) {
 }
 function montaParecer(A, F, legal, inst, via, fx, pasta) {
   const P = [];
-  const det = A.instDet === 'LC' ? ' (lei complementar, maioria absoluta: 257 deputados e 41 senadores)' : inst === 'PEC' ? ' (308 deputados e 49 senadores, em dois turnos)' : '';
-  const motivo = inst === 'PEC' ? 'por tratar de matéria constitucional' : inst === 'MP' ? 'pela urgência e relevância e por vigorar de imediato' : inst === 'DEC' ? 'por estar na esfera de competência privativa do Presidente' : inst === 'PL' ? 'porque a matéria depende de lei' : inst === 'ADM' ? 'por ser matéria de gestão do Executivo' : 'por não haver ato normativo a editar';
+  const det = A.instDet === 'LC' ? ' (lei complementar, maioria absoluta: 257 deputados e 41 senadores)' : A.instDet === 'AUT' ? ' (autorização do Congresso por maioria absoluta: 257 deputados e 41 senadores, depois de ouvidos os Conselhos da República e de Defesa Nacional)' : inst === 'PEC' ? ' (308 deputados e 49 senadores, em dois turnos)' : '';
+  const motivo = A.instDet === 'AUT' ? 'porque o estado de sítio depende de autorização prévia do Congresso (CF, art. 137, parágrafo único)' : inst === 'PEC' ? 'por tratar de matéria constitucional' : inst === 'MP' ? 'pela urgência e relevância e por vigorar de imediato' : inst === 'DEC' ? 'por estar na esfera de competência privativa do Presidente' : inst === 'PL' ? 'porque a matéria depende de lei' : inst === 'ADM' ? 'por ser matéria de gestão do Executivo' : 'por não haver ato normativo a editar';
   P.push('Instrumento recomendado: ' + INST_NOME[inst] + det + ', ' + motivo + '.');
   const princ = A.items.find(i => i.role === 'main' && i.sg && i.o.k !== 'C') || A.items.find(i => i.pledge) || A.items[0];
   if (A.vago || !princ) P.push('A Casa Civil não identificou objeto, valor, alvo ou prazo concretos; a proposta foi tratada como gesto simbólico, com efeitos reduzidos.');
@@ -5026,6 +5145,7 @@ function analisar(g, texto, ctx) {
   if (A.vago) inst = A.instExpl ? (A.instExpl === 'LC' ? 'PL' : A.instExpl) : 'COM';
   if (A.instExpl === 'LC') A.instDet = 'LC';
   else if (!A.instExpl && A.items.some(i => i.sg && (i.o.lc || i.lcDyn) && !i.fora)) A.instDet = 'LC';
+  if (!A.instExpl && !A.vago && !A.talk && inst === 'PL' && /\bestado de sitio\b/.test(s) && A.items.some(i => i.sg && i.o.id === 'estado_excecao')) A.instDet = 'AUT'; // v3.4: sítio = autorização do Congresso (257/41)
   // pasta
   const dom = A.items.filter(i => i.sg && i.o.k !== 'C').sort((a, b) => (b.B || 0) - (a.B || 0))[0] || A.items[0];
   const pasta = dom ? (dom.o.pa || 'casacivil') : 'casacivil';
@@ -5077,6 +5197,8 @@ function analisar(g, texto, ctx) {
   // golpe/censura
   if (legal.golpe) A.golpe = true;
   if (A.jaVigente) notas.push(A.jaVigente.txt);
+  if (A.notaLei) notas.push(A.notaLei); // v3.4
+  if (A.items.some(i => i.escProd && i.sg < 0 && i.o.id === 'ipi')) notas.push('As alíquotas do IPI mudam por decreto (CF, art. 153, §1º) e a redução vale já na publicação: a noventena (art. 150, III, c) só vale para aumento.'); // v3.4
   // topico
   let topic = montaTopico(A, F);
   if (!topic) {
@@ -5632,6 +5754,7 @@ function motivoGrupo(k, v, ativos, fx) {
   if (o.k === 'G') {
     if (o.sav) {
       if (s > 0) return pos ? 'aprovam ' + nm + (B ? ' (economia de ' + fmtBi(B) + '/ano)' : '') : 'perdem com ' + nm + (B ? ' (corte de ' + fmtBi(B) + '/ano)' : '');
+      if (o.req) return pos ? 'ganham com a redução ' + de(nm) + (B ? ' (custo de ' + fmtBi(B) + '/ano)' : '') : 'perdem com a redução ' + de(nm); // v3.4
       return pos ? 'ganham com o fim ' + de(nm) : 'perdem com o fim ' + de(nm);
     }
     if (s > 0 && pos) return 'recebem parte ' + de(nm) + (B ? ': ' + fmtBi(B) + '/ano' : '') + (o.vu && o.ch === 'transf' ? ' (valor médio de R$ ' + fmtNum(money || o.vu, 0) + ' por beneficiário' + (o.fr === 1 ? '/ano' : '/mês') + ')' : '') + (best.fora ? '' : '');
