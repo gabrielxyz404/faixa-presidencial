@@ -1,0 +1,723 @@
+[
+ {
+  "id": "sm_aumento",
+  "descricao": "Aumento real do salário mínimo (PL aprovado): pobreza cai, inflação sobe de leve, primário piora pela indexação de benefícios.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Aumentar o salário mínimo em R$ 100 acima da inflação, por projeto de lei",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "prim",
+    "m3": "desce",
+    "m12": "desce",
+    "m24": "desce",
+    "just": "Benefícios do INSS, BPC, abono e seguro-desemprego são indexados ao mínimo: cada R$ 1 a mais custa algo como R$ 0,3 a 0,4 bi por ano."
+   },
+   {
+    "ind": "pob",
+    "m12": "desce",
+    "m24": "desce",
+    "just": "Mais renda na base da pirâmide; a pobreza responde com defasagem, por isso nada no mês 3."
+   },
+   {
+    "ind": "ipca",
+    "m12": "sobe",
+    "just": "Pressão de serviços e de demanda dos mais pobres: efeito pequeno mas de sinal positivo no primeiro ano."
+   },
+   {
+    "ind": "g_periferia",
+    "m3": "sobe",
+    "just": "Quem ganha mínimo ou benefício indexado percebe o ganho de renda de imediato."
+   },
+   {
+    "ind": "g_empresariado",
+    "m3": "desce",
+    "just": "Custo da folha sobe; o empresariado reage mal a aumento real do piso."
+   },
+   {
+    "ind": "divida",
+    "m24": "sobe",
+    "just": "Despesa permanente maior sem fonte: dívida/PIB acima do controle em dois anos."
+   }
+  ]
+ },
+ {
+  "id": "prev_idade",
+  "descricao": "Reforma que eleva a idade mínima a 67 anos (PEC aprovada): economia gradual, desgaste imediato com aposentáveis e sindicatos.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Elevar a idade mínima de aposentadoria para 67 anos, por PEC",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "prim",
+    "m3": "qualquer",
+    "m12": "sobe",
+    "m24": "sobe",
+    "just": "Poucos segurados são atingidos no início: o ganho fiscal cresce com a coorte que deixa de se aposentar."
+   },
+   {
+    "ind": "custo",
+    "m3": "desce",
+    "m12": "cresce",
+    "m24": "cresce",
+    "just": "Gradualismo: a economia vem das coortes que deixam de se aposentar a cada mês; o fluxo anual de economia de dois anos deve superar o do primeiro trimestre."
+   },
+   {
+    "ind": "ap",
+    "m3": "desce",
+    "m12": "desce",
+    "just": "Quem está perto de se aposentar e os sindicatos penalizam o governo logo que a regra é aprovada."
+   },
+   {
+    "ind": "g_sindicatos",
+    "m3": "desce",
+    "just": "Bancada sindical é a principal opositora de aumento de idade mínima."
+   },
+   {
+    "ind": "g_mercado",
+    "m3": "sobe",
+    "just": "Mercado financeiro premia sinal de sustentabilidade fiscal."
+   },
+   {
+    "ind": "risco",
+    "m3": "qualquer",
+    "m12": "desce",
+    "m24": "desce",
+    "just": "Melhora da trajetória da dívida reduz o prêmio de risco com algum atraso."
+   },
+   {
+    "ind": "divida",
+    "m24": "desce",
+    "just": "Primário melhor reduz a dívida/PIB no horizonte de dois anos."
+   }
+  ]
+ },
+ {
+  "id": "prev_capit",
+  "descricao": "Capitalização individual para novos trabalhadores (PEC aprovada): custo de transição piora o primário.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Criar a capitalização individual para os novos trabalhadores, por PEC",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "prim",
+    "m3": "qualquer",
+    "m12": "desce",
+    "m24": "desce",
+    "just": "O INSS deixa de receber a contribuição dos novos segurados e segue pagando os atuais: o déficit corrente sobe (dezenas a centenas de bi por ano)."
+   },
+   {
+    "ind": "divida",
+    "m24": "sobe",
+    "just": "Custo de transição financiado por dívida."
+   },
+   {
+    "ind": "g_mercado",
+    "m3": "sobe",
+    "just": "Mercado financeiro e gestoras de previdência ganham."
+   },
+   {
+    "ind": "g_sindicatos",
+    "m3": "desce",
+    "just": "Fim do regime de repartição para novos entrantes é rejeitado por sindicatos."
+   }
+  ]
+ },
+ {
+  "id": "jornada_pec",
+  "descricao": "Redução da jornada para 36 horas sem corte de salário (PEC aprovada).",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Reduzir a jornada de trabalho para 36 horas semanais, sem redução de salário, por PEC",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "ipca",
+    "m12": "sobe",
+    "m24": "qualquer",
+    "just": "Custo unitário do trabalho maior é repassado a preços de serviços e do comércio."
+   },
+   {
+    "ind": "g_carteira",
+    "m3": "sobe",
+    "just": "Trabalhadores com carteira ganham tempo livre sem perder salário."
+   },
+   {
+    "ind": "g_empresariado",
+    "m3": "desce",
+    "just": "Aumento do custo por hora trabalhada."
+   },
+   {
+    "ind": "conf",
+    "m3": "desce",
+    "just": "Interferência no mercado de trabalho reduz a confiança de investidores."
+   },
+   {
+    "ind": "des",
+    "m3": "qualquer",
+    "m12": "qualquer",
+    "m24": "qualquer",
+    "just": "Efeito ambíguo: menos horas por trabalhador pode gerar contratações, mas encarece o emprego."
+   }
+  ]
+ },
+ {
+  "id": "bf_mp_caduca",
+  "descricao": "Ampliação do Bolsa Família por MP que ninguém vota e caduca em 4 meses: o jogo desfaz parte do efeito.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "enviar",
+    "texto": "Por medida provisória, aumentar o Bolsa Família para R$ 800"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "custo",
+    "m3": "sobe",
+    "m12": "atenua",
+    "m24": "atenua",
+    "just": "A MP vale desde o primeiro dia; depois de caducar, a maior parte do gasto some (a Constituição devolve ao status anterior os efeitos não convertidos)."
+   },
+   {
+    "ind": "prim",
+    "m3": "desce",
+    "m12": "atenua",
+    "just": "Mesma lógica no resultado primário."
+   },
+   {
+    "ind": "g_periferia",
+    "m3": "sobe",
+    "just": "Quem recebe o benefício reage logo."
+   },
+   {
+    "ind": "pob",
+    "m3": "desce",
+    "m12": "qualquer",
+    "just": "Pobreza cai enquanto a MP vigora."
+   }
+  ]
+ },
+ {
+  "id": "bf_pl",
+  "descricao": "Mesma ampliação do Bolsa Família por lei aprovada: efeito permanece.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Por projeto de lei, aumentar o Bolsa Família para R$ 800",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "custo",
+    "m3": "sobe",
+    "m12": "persiste",
+    "m24": "persiste",
+    "just": "Despesa permanente depois de convertida em lei."
+   },
+   {
+    "ind": "prim",
+    "m3": "desce",
+    "m12": "desce",
+    "m24": "desce",
+    "just": "Gasto permanente reduz o primário."
+   },
+   {
+    "ind": "pob",
+    "m12": "desce",
+    "m24": "desce",
+    "just": "Transferência de renda reduz a pobreza com defasagem."
+   },
+   {
+    "ind": "g_periferia",
+    "m3": "sobe",
+    "just": "Beneficiários reagem de imediato."
+   }
+  ]
+ },
+ {
+  "id": "dividendos",
+  "descricao": "Tributo novo com anterioridade: IR de 15% sobre dividendos por lei só rende no ano seguinte.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Taxar dividendos em 15%, por projeto de lei",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "receita",
+    "m3": "estavel",
+    "m12": "qualquer",
+    "m24": "sobe",
+    "just": "Anterioridade anual (CF art. 150, III, b): lei publicada no ano 1 só cobra no ano 2; a receita não aparece no primeiro trimestre."
+   },
+   {
+    "ind": "prim",
+    "m3": "estavel",
+    "m12": "qualquer",
+    "m24": "sobe",
+    "just": "O primário só melhora quando o tributo passa a ser cobrado."
+   },
+   {
+    "ind": "g_empresariado",
+    "m3": "desce",
+    "just": "Tributar lucros distribuídos desagrada ao empresariado já na aprovação."
+   },
+   {
+    "ind": "g_mercado",
+    "m3": "desce",
+    "just": "Idem para o mercado financeiro."
+   }
+  ]
+ },
+ {
+  "id": "ipi_decreto",
+  "descricao": "Corte do IPI de carros por decreto: efeito imediato na arrecadação (IPI pode ser reduzido por decreto, sem anterioridade).",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Zerar o IPI de carros por decreto",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "receita",
+    "m3": "desce",
+    "m12": "desce",
+    "m24": "desce",
+    "just": "Alíquota reduzida por decreto vale desde a publicação (CF 153 §1º); renúncia de alguns bi por ano."
+   },
+   {
+    "ind": "prim",
+    "m3": "desce",
+    "m12": "desce",
+    "m24": "desce",
+    "just": "Renúncia de receita reduz o primário."
+   },
+   {
+    "ind": "g_classemedia",
+    "m3": "sobe",
+    "just": "Carro mais barato favorece a classe média."
+   },
+   {
+    "ind": "g_empresariado",
+    "m3": "sobe",
+    "just": "Indústria automotiva ganha demanda."
+   }
+  ]
+ },
+ {
+  "id": "ipi_dec_vs_pl",
+  "descricao": "Mesma medida por decreto (mês 0) e por lei votada só no mês 3: o decreto antecipa o efeito, depois convergem.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Zerar o IPI de carros por decreto",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "receita",
+    "m3": "desce",
+    "m12": "estavel",
+    "m24": "estavel",
+    "just": "No mês 3 só o decreto já vale; a partir do mês 3 as duas rotas têm a mesma alíquota."
+   },
+   {
+    "ind": "prim",
+    "m3": "desce",
+    "m12": "estavel",
+    "m24": "estavel",
+    "just": "Mesmo raciocínio no primário."
+   }
+  ],
+  "controle": [
+   {
+    "mes": 3,
+    "tipo": "propor",
+    "texto": "Zerar o IPI de carros, por projeto de lei",
+    "resultado": "aprovada"
+   }
+  ]
+ },
+ {
+  "id": "stf_suspende",
+  "descricao": "Medida claramente inconstitucional (pena de morte) assinada por decreto: o STF suspende, o efeito é desfeito e há desgaste.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Instituir pena de morte para traficantes, por decreto",
+    "resultado": "stf"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "custo",
+    "m3": "estavel",
+    "m12": "estavel",
+    "m24": "estavel",
+    "just": "Medida suspensa: nenhuma despesa nova (o primário total pode oscilar um pouco pelo risco político, por isso se mede o fluxo direto)."
+   },
+   {
+    "ind": "receita",
+    "m3": "estavel",
+    "m12": "estavel",
+    "m24": "estavel",
+    "just": "Medida suspensa: nenhuma receita nova."
+   },
+   {
+    "ind": "ipca",
+    "m3": "estavel",
+    "m12": "estavel",
+    "m24": "estavel",
+    "just": "Medida suspensa: nenhum efeito em preços."
+   },
+   {
+    "ind": "ap",
+    "m3": "desce",
+    "just": "Derrota perante o STF e a tentativa de atropelar a Constituição desgastam a imagem."
+   },
+   {
+    "ind": "stf",
+    "m3": "sobe",
+    "just": "A tensão com o Supremo sobe quando uma medida é derrubada."
+   }
+  ]
+ },
+ {
+  "id": "priv_petrobras",
+  "descricao": "Privatização da Petrobras (PL aprovado): receita única abate a dívida; mercado aplaude, sindicatos reagem.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Privatizar a Petrobras, por projeto de lei",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "divida",
+    "m3": "desce",
+    "m12": "desce",
+    "m24": "desce",
+    "just": "Receita única de centenas de bi abate a dívida bruta (apenas o abatimento mecânico; o fluxo de dividendos perdido pesa devagar)."
+   },
+   {
+    "ind": "g_mercado",
+    "m3": "sobe",
+    "just": "Mercado financeiro defende privatizações."
+   },
+   {
+    "ind": "g_sindicatos",
+    "m3": "desce",
+    "just": "Petroleiros e centrais sindicais se opõem."
+   },
+   {
+    "ind": "conf",
+    "m3": "sobe",
+    "just": "Sinal pró-mercado eleva a confiança."
+   },
+   {
+    "ind": "risco",
+    "m12": "desce",
+    "just": "Dívida menor melhora o prêmio de risco."
+   }
+  ]
+ },
+ {
+  "id": "congela_gasolina",
+  "descricao": "Congelamento do preço da gasolina por decreto: alivia a inflação no curto prazo, custa confiança e abre risco fiscal e de oferta.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Congelar o preço da gasolina por decreto",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "ipca",
+    "m3": "desce",
+    "m12": "qualquer",
+    "m24": "qualquer",
+    "just": "Combustível pesa no IPCA: o congelamento segura o índice; depois a defasagem do preço acumula e pode haver desabastecimento ou realinhamento."
+   },
+   {
+    "ind": "conf",
+    "m3": "desce",
+    "just": "Intervenção em preços da estatal assusta investidores."
+   },
+   {
+    "ind": "g_mercado",
+    "m3": "desce",
+    "just": "Mercado reage mal a controle de preços."
+   },
+   {
+    "ind": "risco",
+    "m12": "sobe",
+    "just": "Passivo oculto da Petrobras eleva o risco percebido."
+   }
+  ]
+ },
+ {
+  "id": "serv_contrata",
+  "descricao": "Contratação de 50 mil servidores federais: despesa de pessoal permanente.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Contratar 50 mil servidores federais por concurso",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "custo",
+    "m3": "sobe",
+    "m12": "sobe",
+    "m24": "sobe",
+    "just": "Folha de pessoal é gasto permanente: ~R$ 10 bi por ano para 50 mil servidores."
+   },
+   {
+    "ind": "prim",
+    "m3": "desce",
+    "m12": "desce",
+    "m24": "desce",
+    "just": "Despesa permanente reduz o primário."
+   },
+   {
+    "ind": "divida",
+    "m24": "sobe",
+    "just": "Mais déficit, mais dívida."
+   }
+  ]
+ },
+ {
+  "id": "fim_estabilidade",
+  "descricao": "Fim da estabilidade dos servidores (PEC aprovada): servidores reagem, mercado aplaude, economia só no longo prazo.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Acabar com a estabilidade dos servidores públicos, por PEC",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "g_servidores",
+    "m3": "desce",
+    "m12": "desce",
+    "just": "Servidores perdem a principal garantia da carreira."
+   },
+   {
+    "ind": "g_sindicatos",
+    "m3": "desce",
+    "just": "Sindicatos do funcionalismo se mobilizam."
+   },
+   {
+    "ind": "g_mercado",
+    "m3": "sobe",
+    "just": "Agenda de reforma administrativa agrada ao mercado."
+   },
+   {
+    "ind": "prim",
+    "m3": "qualquer",
+    "m24": "sobe",
+    "just": "A economia vem de desligamentos e menor reposição ao longo dos anos, não no primeiro trimestre."
+   }
+  ]
+ },
+ {
+  "id": "sm_revoga",
+  "descricao": "Aprovar o aumento do salário mínimo e, no mês 2, revogá-lo: os efeitos devem ser desfeitos.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Aumentar o salário mínimo em R$ 100 acima da inflação, por projeto de lei",
+    "resultado": "aprovada"
+   },
+   {
+    "mes": 2,
+    "tipo": "propor",
+    "texto": "Revogar o aumento real do salário mínimo, por projeto de lei",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "prim",
+    "m12": "estavel",
+    "m24": "estavel",
+    "just": "Benefícios voltam ao valor anterior: o primário converge ao do controle."
+   },
+   {
+    "ind": "pob",
+    "m24": "estavel",
+    "just": "Depois da revogação a pobreza volta à trajetória do controle."
+   },
+   {
+    "ind": "ipca",
+    "m24": "estavel",
+    "just": "Sem o aumento, a pressão sobre preços desaparece."
+   },
+   {
+    "ind": "custo",
+    "m12": "estavel",
+    "m24": "estavel",
+    "just": "A despesa extra sai do orçamento."
+   }
+  ]
+ },
+ {
+  "id": "fortunas_morre",
+  "descricao": "Projeto de imposto sobre grandes fortunas enviado e deixado sem articulação: arquivado em 3 meses, sem efeito fiscal.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "enviar",
+    "texto": "Criar o imposto sobre grandes fortunas de 2% acima de R$ 50 milhões, por projeto de lei"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "receita",
+    "m3": "estavel",
+    "m12": "estavel",
+    "m24": "estavel",
+    "just": "Projeto que não é votado não arrecada."
+   },
+   {
+    "ind": "prim",
+    "m3": "estavel",
+    "m12": "estavel",
+    "m24": "estavel",
+    "just": "Idem."
+   },
+   {
+    "ind": "pib",
+    "m3": "estavel",
+    "m12": "estavel",
+    "just": "Sem lei aprovada não há efeito real."
+   },
+   {
+    "ind": "ap",
+    "m3": "qualquer",
+    "just": "Arquivamento pode custar capital político; o efeito é incerto."
+   }
+  ]
+ },
+ {
+  "id": "desonera_folha",
+  "descricao": "Desoneração da folha dos setores que mais empregam (PL aprovado): renúncia fiscal em troca de emprego.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Desonerar a folha de pagamento dos setores que mais empregam, por projeto de lei",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "receita",
+    "m3": "desce",
+    "m12": "desce",
+    "m24": "desce",
+    "just": "A contribuição patronal sobre a folha deixa de ser cobrada: renúncia de dezenas de bi."
+   },
+   {
+    "ind": "prim",
+    "m3": "desce",
+    "m12": "desce",
+    "m24": "desce",
+    "just": "Renúncia reduz o primário."
+   },
+   {
+    "ind": "des",
+    "m12": "desce",
+    "m24": "desce",
+    "just": "Custo menor de contratar sustenta emprego formal (efeito pequeno)."
+   },
+   {
+    "ind": "g_empresariado",
+    "m3": "sobe",
+    "just": "Setores beneficiados reagem bem."
+   }
+  ]
+ },
+ {
+  "id": "bpc_dobro",
+  "descricao": "Dobrar o BPC (PL aprovado): despesa permanente grande, alivia pobreza, pressiona o risco fiscal.",
+  "acoes": [
+   {
+    "mes": 0,
+    "tipo": "propor",
+    "texto": "Dobrar o BPC, por projeto de lei",
+    "resultado": "aprovada"
+   }
+  ],
+  "esperado": [
+   {
+    "ind": "prim",
+    "m3": "desce",
+    "m12": "desce",
+    "m24": "desce",
+    "just": "BPC custa ~R$ 100 bi por ano; dobrar o valor soma dezenas de bi."
+   },
+   {
+    "ind": "pob",
+    "m12": "desce",
+    "m24": "desce",
+    "just": "Idosos e pessoas com deficiência de baixa renda recebem mais."
+   },
+   {
+    "ind": "divida",
+    "m24": "sobe",
+    "just": "Despesa permanente sem fonte aumenta a dívida."
+   },
+   {
+    "ind": "risco",
+    "m12": "sobe",
+    "just": "Deterioração fiscal eleva o risco-país."
+   },
+   {
+    "ind": "g_periferia",
+    "m3": "sobe",
+    "just": "Beneficiários e famílias reagem bem."
+   }
+  ]
+ }
+]

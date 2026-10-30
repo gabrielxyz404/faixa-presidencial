@@ -31,3 +31,12 @@ python3 testes/bench/score.py testes/bench/dev.json $S/bench_dev.json [--json $S
 ```
 A saída traz % por critério, % médio, % de itens totalmente certos, totais por área, falsos "já vigente" (informativo) e a lista de itens errados com o motivo.
 Não ajuste o motor olhando o holdout; use `dev.json` para desenvolver.
+
+## Bateria `cft_dev.json` (Constituição, trabalho e previdência)
+90 propostas (30 de Constituição e organização do Estado, 30 de trabalho/CLT/sindicatos/FGTS, 30 de previdência/servidores/BPC), mesmo formato e corretor. Inclui reformas grandes (capitalização, idade mínima, desvinculação do mínimo,
+unicidade sindical, PEC com cláusula pétrea), matérias de lei complementar (CF 7º I, 41 §1º III, 93, 146, 148, 154 I, 192) e normas já vigentes (Lei 12.506/2011, 13.467/2017, 13.429/2017, 14.611/2023, 11.770/2008, LC 150/2015, EC 103/2019 etc.).
+O holdout correspondente (45 propostas, 15 por área) fica fora do repositório.
+```
+python3 testes/motor/run_sandbox.py testes/motor/probe.py $S/cur testes/bench/cft_dev.json $S/cft_dev.json 8841
+python3 testes/bench/score.py testes/bench/cft_dev.json $S/cft_dev.json
+```

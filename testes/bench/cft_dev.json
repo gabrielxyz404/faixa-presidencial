@@ -1,0 +1,1927 @@
+[
+ {
+  "t": "Passar para os estados o poder de legislar sobre trânsito e transporte rodoviário",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "transito|transporte|rodoviari"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 22 XI: competência privativa da União; mudança exige PEC; sem custo federal relevante"
+ },
+ {
+  "t": "Dar poder de investigar crimes às guardas municipais das cidades com mais de 500 mil habitantes",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "guarda"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 144 §8º limita as guardas à proteção de bens, serviços e instalações; investigar é da polícia civil; exige PEC"
+ },
+ {
+  "t": "Fazer o presidente governar por um mandato único de seis anos",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "mandato"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 14 §5º e 82 (EC 16/1997 criou a reeleição); mandato de 6 anos exige PEC"
+ },
+ {
+  "t": "Pôr a alimentação adequada entre os direitos sociais da Constituição",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "alimenta"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "EC 64/2010",
+  "cf": [
+   "ok"
+  ],
+  "nota": "EC 64/2010 incluiu a alimentação no art. 6º"
+ },
+ {
+  "t": "Elevar a proteção de dados pessoais ao nível de direito fundamental na Constituição",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "dados"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "EC 115/2022",
+  "cf": [
+   "ok"
+  ],
+  "nota": "EC 115/2022 incluiu a proteção de dados no art. 5º LXXIX"
+ },
+ {
+  "t": "Eleger deputados federais por distritos, um por circunscrição, no lugar do voto proporcional",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "distrit"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 45 fixa o sistema proporcional; mudar exige PEC"
+ },
+ {
+  "t": "Garantir autonomia administrativa e orçamentária à Defensoria Pública da União",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "defensoria"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "EC 74/2013",
+  "cf": [
+   "ok"
+  ],
+  "nota": "EC 74/2013 estendeu a autonomia à DPU (art. 134 §3º)"
+ },
+ {
+  "t": "Mudar o artigo 60 para tirar dos direitos individuais a proteção de cláusula pétrea e assim permitir a pena de morte",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "clausula petrea|pena de morte|direitos individuais|art"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "CF 60 §4º IV: emenda tendente a abolir direitos e garantias individuais é vedada; STF controla até a tramitação"
+ },
+ {
+  "t": "Adiar para 2032 a próxima eleição presidencial e prorrogar os atuais mandatos",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "eleic|mandato|prorroga|adia"
+  ],
+  "dir": "outro",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": "CF 60 §4º II (voto periódico) e separação de poderes; prorrogar mandato próprio é vedado"
+ },
+ {
+  "t": "Juntar os ministérios da Fazenda e do Planejamento em uma só pasta",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "fusao|fundi|junt|uniao|ministerio|planejamento|fazenda"
+  ],
+  "dir": "outro",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   -3.0,
+   1.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Organização dos ministérios por lei (Lei 14.600/2023), em geral por MP; economia pequena"
+ },
+ {
+  "t": "Criar dois estados novos a partir do desmembramento do Pará, com plebiscito",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "estado|para|desmembr|divis|carajas|tapajos|criacao"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PLP",
+   "PEC"
+  ],
+  "custo": [
+   0.5,
+   30.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 18 §3º e §4º: plebiscito e lei complementar; estados novos custam estrutura federal e do Judiciário"
+ },
+ {
+  "t": "Subordinar as polícias militares ao governo federal, com comando único nacional",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "policia"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   10.0,
+   200.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional",
+   "controverso"
+  ],
+  "nota": "CF 144 §6º e pacto federativo (60 §4º I); folha das PMs passa de R$ 100 bi"
+ },
+ {
+  "t": "Criar um empréstimo compulsório para gastos extraordinários de uma guerra externa iminente",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "emprestimo compulsorio"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PLP"
+  ],
+  "custo": null,
+  "receita": [
+   0.0,
+   80.0
+  ],
+  "unico": [
+   0.0,
+   100.0
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 148 I exige lei complementar; só para calamidade ou guerra externa ou sua iminência"
+ },
+ {
+  "t": "Criar, por lei complementar, um imposto novo de 1% sobre operações com criptoativos",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "cripto|ativos? digita|imposto"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PLP"
+  ],
+  "custo": null,
+  "receita": [
+   0.3,
+   10.0
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 154 I: impostos residuais por LC, não cumulativos e com fato gerador próprio; mercado cripto movimenta centenas de bi"
+ },
+ {
+  "t": "Definir por lei complementar as normas gerais de tributação das cooperativas",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "cooperativ"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PLP"
+  ],
+  "custo": null,
+  "receita": [
+   -3.0,
+   1.0
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 146 III c: adequado tratamento tributário ao ato cooperativo por LC; efeito pequeno"
+ },
+ {
+  "t": "Editar a lei complementar que organiza todo o sistema financeiro nacional, prevista no artigo 192",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "sistema financeiro|192|financeir"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PLP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 192 (EC 40/2003): sistema regulado por leis complementares; sem custo fiscal direto"
+ },
+ {
+  "t": "Deixar o CNJ fixar por resolução a carreira e os salários dos juízes, sem lei complementar",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "cnj|conselho nacional de justica|resolucao|magistrat|juiz"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional",
+   "controverso"
+  ],
+  "nota": "CF 93 caput: Estatuto da Magistratura é lei complementar de iniciativa do STF; resolução não substitui"
+ },
+ {
+  "t": "Aprovar um novo Estatuto da Magistratura com teto e limite aos penduricalhos",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "estatuto|magistratura|juiz|penduricalho|teto|supersalario"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PLP"
+  ],
+  "custo": [
+   -10.0,
+   1.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 93; LOMAN (LC 35/1979) segue vigente; iniciativa é do STF; economia depende do corte dos penduricalhos"
+ },
+ {
+  "t": "Aposentar compulsoriamente os ministros dos tribunais superiores só aos 80 anos",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "aposentadoria compulsoria|ministro|80 anos|idade|compulsoria"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 40 §1º II e EC 88/2015 fixam 75 anos; mudar exige PEC; efeito fiscal desprezível"
+ },
+ {
+  "t": "Autorizar greve de policiais civis e militares",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "greve"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "CF 142 §3º IV veda greve a militares; STF (Tema 541) a veda também a policiais civis"
+ },
+ {
+  "t": "Exigir plebiscito nacional antes de privatizar qualquer estatal federal",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "plebiscito|privatiza"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PEC",
+   "PL"
+  ],
+  "custo": [
+   -1.0,
+   2.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 14 e Lei 9.709/1998 regem plebiscito; custo de consulta nacional gira em centenas de milhões"
+ },
+ {
+  "t": "Proibir o presidente de editar medida provisória sobre direito penal",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "medidas? provisoria"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "EC 32/2001",
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 62 §1º I b, incluído pela EC 32/2001, já veda MP sobre direito penal e processual"
+ },
+ {
+  "t": "Reduzir a vigência das medidas provisórias para 30 dias, sem prorrogação",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "medidas? provisoria"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 62 §3º: 60 dias prorrogáveis por mais 60; mudar exige PEC"
+ },
+ {
+  "t": "Dar força de emenda a tratado de direitos humanos aprovado com três quintos em dois turnos",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "tratado"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "EC 45/2004",
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 5º §3º, incluído pela EC 45/2004"
+ },
+ {
+  "t": "Exigir 3% dos votos válidos em um terço dos estados para o partido ter fundo partidário e tempo de TV",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "clausula|barreira|desempenho|partido"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "EC 97/2017",
+  "cf": [
+   "ok"
+  ],
+  "nota": "EC 97/2017 criou a cláusula de desempenho progressiva"
+ },
+ {
+  "t": "Permitir referendo para cassar o mandato do presidente a pedido de 5 milhões de eleitores",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "referendo|revogat|recall|cassa|mandato"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   -1.0,
+   5.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 14 lista plebiscito, referendo e iniciativa popular; revogação de mandato não existe; custo de consulta nacional"
+ },
+ {
+  "t": "Reduzir para dois o número de senadores por estado",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "senador"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "CF 46 §1º fixa três senadores; igualdade de representação dos estados é ligada à forma federativa (60 §4º I)"
+ },
+ {
+  "t": "Criar as polícias penais federal, estaduais e distrital na Constituição",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "policia penal|policias penais|penal"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "EC 104/2019",
+  "cf": [
+   "ok"
+  ],
+  "nota": "EC 104/2019 criou as polícias penais (art. 144 VI)"
+ },
+ {
+  "t": "Trocar o presidencialismo pelo parlamentarismo, com primeiro-ministro escolhido pelo Congresso",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "parlament"
+  ],
+  "dir": "outro",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Plebiscito de 1993 manteve o presidencialismo; mudança de sistema exige PEC e, para muitos, nova consulta popular"
+ },
+ {
+  "t": "Declarar inelegível por oito anos quem for condenado por tribunal colegiado",
+  "area": "Constituição e organização do Estado",
+  "tema": [
+   "inelegib|ficha limpa|condenad"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PLP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "LC 135/2010",
+  "cf": [
+   "ok"
+  ],
+  "nota": "LC 135/2010 (Ficha Limpa) alterou a LC 64/1990"
+ },
+ {
+  "t": "Pagar aviso prévio de 30 dias mais 3 dias por ano trabalhado, até 90 dias",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "aviso previo"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 12.506/2011",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 12.506/2011 criou o aviso prévio proporcional"
+ },
+ {
+  "t": "Deixar o empregado sacar todo o FGTS em conta própria quando quiser, sem esperar demissão",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "fgts"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL",
+   "MP",
+   "PEC"
+  ],
+  "custo": [
+   -5.0,
+   25.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Lei 8.036/1990; saque amplo drena o fundo que financia habitação e saneamento; efeito fiscal indireto"
+ },
+ {
+  "t": "Baixar de 40% para 20% a multa do FGTS por demissão sem justa causa",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "multa.*fgts|fgts.*multa|multa"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL",
+   "PLP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Lei 8.036/1990 art. 18 §1º e ADCT art. 10; multa vai ao trabalhador, sem efeito direto no primário"
+ },
+ {
+  "t": "Liberar a jornada de 12 horas de trabalho por 36 de descanso por acordo individual",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "12|36|jornada"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 13.467/2017",
+  "cf": [
+   "ok"
+  ],
+  "nota": "CLT 59-A (Lei 13.467/2017) já permite a 12x36 por acordo individual escrito"
+ },
+ {
+  "t": "Permitir mais de um sindicato por categoria na mesma cidade",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "sindic"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 8º II veda mais de uma organização na mesma base territorial; exige PEC; convenção 87 da OIT não ratificada"
+ },
+ {
+  "t": "Aceitar contratação de terceirizados em qualquer atividade da empresa, inclusive a principal",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "terceiriz"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 13.429/2017",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 13.429/2017 e Lei 13.467/2017; STF ADPF 324 confirmou"
+ },
+ {
+  "t": "Vetar a terceirização da atividade-fim das empresas",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "terceiriz"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "STF (ADPF 324, RE 958252) admitiu a terceirização; revogar é escolha legislativa contra jurisprudência"
+ },
+ {
+  "t": "Criar contrato de primeiro emprego sem multa de FGTS e com contribuição patronal menor, para jovens de 18 a 29 anos",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "primeiro emprego|jovem|verde|contrat"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   -20.0,
+   0.0
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Modelo da MP 905/2019 (caducou); renúncia estimada em R$ 10 bi/ano ou mais"
+ },
+ {
+  "t": "Adotar a semana de quatro dias, 32 horas, para todos os celetistas",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "32 horas|quatro dias|jornada|semana"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   -5.0,
+   15.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 7º XIII fixa 44 horas semanais; exige PEC; efeito fiscal indireto pequeno"
+ },
+ {
+  "t": "Reconhecer vínculo de emprego a motoristas de aplicativo que passem de 40 horas semanais na plataforma",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "aplicativo|motorista|plataforma|vinculo"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "STF julga o Tema 1291 sobre vínculo; projeto de lei é possível"
+ },
+ {
+  "t": "Fazer o salário mínimo subir todo ano pela inflação mais a variação do PIB de dois anos antes",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "salario minimo"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   0.0,
+   50.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.663/2023",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 14.663/2023 reinstituiu a política de valorização do salário mínimo"
+ },
+ {
+  "t": "Autorizar os estados a fixarem piso salarial regional acima do mínimo nacional",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "piso|salario minimo|regional"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PLP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "LC 103/2000",
+  "cf": [
+   "ok"
+  ],
+  "nota": "LC 103/2000 já autoriza pisos regionais (CF 7º V)"
+ },
+ {
+  "t": "Deixar o sindicato cobrar contribuição assistencial de toda a categoria, com direito de oposição do não filiado",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "contribuicao|sindic|assistencial"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "STF (Tema 935, 2023) admitiu a contribuição assistencial com oposição; CLT 579 e 545 após a Lei 13.467/2017"
+ },
+ {
+  "t": "Garantir estabilidade de um ano à trabalhadora que volta da licença-maternidade",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "estabilidade|maternidade|gestante"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "ADCT 10 II b protege a gestante até 5 meses após o parto; estender é possível por lei"
+ },
+ {
+  "t": "Dar incentivo fiscal à empresa que ampliar a licença-maternidade de 120 para 180 dias",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "maternidade|empresa cidada|mae|gestante|licenca"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": [
+   -3.0,
+   0.0
+  ],
+  "unico": null,
+  "jaVigente": "Lei 11.770/2008",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 11.770/2008 (Empresa Cidadã) permite dedução do IR; renúncia pequena"
+ },
+ {
+  "t": "Pagar 30% de adicional de periculosidade a quem trabalha com moto",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "periculosidade|moto"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 12.997/2014",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 12.997/2014 incluiu o motofretista no art. 193 da CLT"
+ },
+ {
+  "t": "Permitir teletrabalho por tarefa ou produção, sem controle de jornada",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "teletrabalho|remoto|home"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.442/2022",
+  "cf": [
+   "ok"
+  ],
+  "nota": "CLT 62 III (Lei 14.442/2022)"
+ },
+ {
+  "t": "Estimular empresas a flexibilizar horário de pais e mães de filhos pequenos e a reembolsar a creche",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "creche|flexib|pais|maes|mulher"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   -2.0,
+   0.0
+  ],
+  "unico": null,
+  "jaVigente": "Lei 14.457/2022",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 14.457/2022 (Emprega + Mulheres)"
+ },
+ {
+  "t": "Obrigar empresas com mais de cem empregados a publicar relatório de transparência salarial entre homens e mulheres",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "transparencia|relatorio|salarial|igualdade"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.611/2023",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 14.611/2023 exige o relatório semestral"
+ },
+ {
+  "t": "Garantir à empregada doméstica FGTS obrigatório, seguro-desemprego e adicional noturno",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "domestic"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PLP",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "LC 150/2015",
+  "cf": [
+   "ok"
+  ],
+  "nota": "LC 150/2015 regulamentou a EC 72/2013"
+ },
+ {
+  "t": "Autorizar o produtor rural a descontar moradia e alimentação do salário do empregado do campo",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "rural|campo|produtor|moradia"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 5.889/1973",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 5.889/1973, art. 9º, já limita esses descontos"
+ },
+ {
+  "t": "Baixar o adicional de hora extra de 50% para 25%",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "hora extra|horas extras|adicional"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "CF 7º XVI fixa o mínimo de 50%; direitos do art. 7º são tidos por muitos como cláusula pétrea"
+ },
+ {
+  "t": "Pagar o 13º salário em doze parcelas mensais",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "13|decimo"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL",
+   "PEC",
+   "MP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 7º VIII; Lei 4.749/1965 admite duas parcelas"
+ },
+ {
+  "t": "Dar um benefício temporário ao MEI e ao autônomo que ficar sem renda por falta de clientes",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "beneficio|autonom|mei|renda"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   2.0,
+   40.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Hoje só celetista tem (Lei 7.998/1990); milhões de MEIs e autônomos"
+ },
+ {
+  "t": "Extinguir a Justiça do Trabalho e mandar os processos para a Justiça comum",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "justica do trabalho"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   -25.0,
+   1.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 111 a 116; orçamento da JT passa de R$ 20 bi; parte dos custos migra para a Justiça comum"
+ },
+ {
+  "t": "Fazer o trabalhador pagar honorários do advogado da empresa se perder a ação, mesmo com gratuidade de justiça",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "honorario|sucumb|justica gratuita|gratuita"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "STF (ADI 5766, 2021) invalidou parte da cobrança a beneficiários da justiça gratuita"
+ },
+ {
+  "t": "Proibir demissão sem justa causa em empresas que tenham crédito subsidiado do BNDES",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "demissao|dispensa|bndes"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL",
+   "PLP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 7º I (despedida arbitrária) depende de LC; condicionar crédito público é possível"
+ },
+ {
+  "t": "Aliviar a folha de pagamento dos setores que mais empregam, trocando a contribuição patronal por alíquota sobre a receita",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "folha|desonera|contribuicao"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   -100.0,
+   -3.0
+  ],
+  "unico": null,
+  "jaVigente": "Lei 12.546/2011",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 12.546/2011 (desoneração da folha) e Lei 14.784/2023; custa dezenas de bi"
+ },
+ {
+  "t": "Permitir o fim do contrato por acordo entre as partes, com saque de 80% do FGTS e metade do aviso prévio",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "acordo|distrato|fgts|rescis"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 13.467/2017",
+  "cf": [
+   "ok"
+  ],
+  "nota": "CLT 484-A (Lei 13.467/2017)"
+ },
+ {
+  "t": "Multar a empresa que mandar mensagem de trabalho fora do expediente",
+  "area": "trabalho, CLT e sindicatos",
+  "tema": [
+   "desconexao|expediente|mensagem|multa"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   0.0,
+   1.0
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Direito de desconexão não está em lei federal; multas administrativas rendem pouco"
+ },
+ {
+  "t": "Subir a idade mínima de aposentadoria para 67 anos, para homens e mulheres, com transição de vinte anos",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "idade minima|aposentadoria"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   -15.0,
+   0.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "EC 103/2019 fixou 65/62; efeito gradual, primeiro ano pequeno; R$ 5 a 15 bi no primeiro ano"
+ },
+ {
+  "t": "Criar a capitalização individual, em que cada novo trabalhador poupa em conta própria, sem repartição",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "capitaliza"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   20.0,
+   400.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "Custo de transição: o INSS perde contribuições dos novos e segue pagando os atuais; dezenas a centenas de bi/ano"
+ },
+ {
+  "t": "Cortar o vínculo entre os benefícios do INSS e o salário mínimo",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "vincul|salario minimo|desvincul"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   -120.0,
+   -5.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 201 §2º; mais de 60% dos benefícios são de um salário mínimo; economia cresce no tempo"
+ },
+ {
+  "t": "Acabar com a aposentadoria especial de quem trabalha sob agentes nocivos, exceto mineiros de subsolo",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "aposentadoria especial|especial"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   -30.0,
+   -1.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "CF 201 §1º II; EC 103/2019 já restringiu; gasto de poucos bi"
+ },
+ {
+  "t": "Dar aposentadoria especial a vigilantes e seguranças privados",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "vigilante|seguranca|aposentadoria especial"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PLP",
+   "PEC",
+   "PL"
+  ],
+  "custo": [
+   0.3,
+   10.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 201 §1º exige lei complementar; categoria com ~ 600 mil"
+ },
+ {
+  "t": "Acabar com a integralidade e a paridade de quem entrou no serviço público antes de 2004",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "integralidade|paridade"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   -30.0,
+   -0.5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": "Direito adquirido e regras de transição da EC 41/2003 e 47/2005; STF protege o direito já completo"
+ },
+ {
+  "t": "Cobrar contribuição previdenciária dos servidores aposentados sobre o que passa do teto do INSS",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "inativo|aposentad|contribuicao"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC",
+   "PL",
+   "PLP"
+  ],
+  "custo": null,
+  "receita": [
+   0.0,
+   25.0
+  ],
+  "unico": null,
+  "jaVigente": "EC 41/2003",
+  "cf": [
+   "ok"
+  ],
+  "nota": "EC 41/2003 criou a contribuição de inativos acima do teto; validada pelo STF na ADI 3105"
+ },
+ {
+  "t": "Exigir perícia a cada seis meses do auxílio por incapacidade e cortar após dois anos",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "pericia|auxilio|incapacidade|doenca"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL",
+   "DEC",
+   "MP"
+  ],
+  "custo": [
+   -10.0,
+   -0.3
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 8.213/1991 art. 60 e 101; revisão periódica já existe, mas não nesse ritmo"
+ },
+ {
+  "t": "Pagar pensão por morte de 50% do benefício mais 10% por dependente",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "pensao|pensoes"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PEC",
+   "PL"
+  ],
+  "custo": [
+   -8.0,
+   1.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "EC 103/2019",
+  "cf": [
+   "ok"
+  ],
+  "nota": "EC 103/2019 art. 23: cota familiar de 50% mais 10% por dependente"
+ },
+ {
+  "t": "Voltar a permitir somar pensão por morte e aposentadoria integrais",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "pensao|pensoes|acumul"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   3.0,
+   40.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "EC 103/2019 art. 24 limitou o acúmulo; revogar eleva o gasto"
+ },
+ {
+  "t": "Reabrir a aposentadoria por tempo de contribuição, 35 anos para homem e 30 para mulher, sem idade mínima",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "tempo de contribuicao"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   10.0,
+   120.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "EC 103/2019 extinguiu a regra; reabrir eleva o gasto em dezenas de bi"
+ },
+ {
+  "t": "Contratar peritos e médicos para o INSS concluir qualquer pedido de benefício em 30 dias",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "inss|pericia|perito|fila|concessao|medico"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP",
+   "DEC",
+   "ADM"
+  ],
+  "custo": [
+   0.3,
+   8.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Folha de peritos médicos federais custa alguns bi; atrasos de benefício elevam gasto retroativo"
+ },
+ {
+  "t": "Aposentar o trabalhador rural aos 60 anos se homem e 55 se mulher, com 15 anos de atividade",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "rural"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   -3.0,
+   3.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 8.213/1991",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 8.213/1991 art. 48 §1º já prevê essas idades e carência de 15 anos"
+ },
+ {
+  "t": "Taxar a produção rural destinada à exportação com contribuição previdenciária",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "exporta|producao|rural|contribuicao"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "PLP",
+   "PEC"
+  ],
+  "custo": null,
+  "receita": [
+   1.0,
+   20.0
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional",
+   "controverso"
+  ],
+  "nota": "CF 149 §2º I (EC 33/2001): contribuições sociais não incidem sobre receitas de exportação"
+ },
+ {
+  "t": "Permitir ao MEI contribuir com 5% do salário mínimo e contar o tempo para aposentadoria por idade",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "mei|microempreendedor"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PLP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "LC 128/2008",
+  "cf": [
+   "ok"
+  ],
+  "nota": "LC 128/2008 criou o MEI; LC 123/2006 art. 18-A"
+ },
+ {
+  "t": "Subir de 14% para 16% a alíquota do INSS sobre a faixa mais alta de salário",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "aliquota|inss|contribuicao"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "PEC",
+   "PLP"
+  ],
+  "custo": null,
+  "receita": [
+   1.0,
+   30.0
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "EC 103/2019 art. 28: alíquotas progressivas até 14%; empregados acima de R$ 5 mil são minoria"
+ },
+ {
+  "t": "Elevar o teto do INSS para R$ 12 mil",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "teto"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "PEC",
+   "MP"
+  ],
+  "custo": [
+   0.0,
+   8.0
+  ],
+  "receita": [
+   0.5,
+   40.0
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Teto tem efeito de caixa positivo no curto prazo e custo futuro"
+ },
+ {
+  "t": "Garantir piso de R$ 2.500 para quem contribuiu por mais de 35 anos",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "piso"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "PEC"
+  ],
+  "custo": [
+   5.0,
+   80.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Piso acima do mínimo para contribuintes de longo prazo; milhões de beneficiários"
+ },
+ {
+  "t": "Restabelecer a desaposentação para quem seguiu trabalhando",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "desaposenta"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   1.0,
+   20.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "STF (Tema 503, RE 661256) vedou a desaposentação sem lei; lei nova é possível, impacto fiscal alto"
+ },
+ {
+  "t": "Acabar com os regimes próprios e levar todos os servidores novos para o INSS",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "regime proprio|servidor|inss"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   -15.0,
+   15.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 40; sem efeito fiscal imediato, as contribuições seguem; teto do INSS reduz benefícios no longo prazo"
+ },
+ {
+  "t": "Pagar aposentadoria por invalidez de servidor com 100% do último salário",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "invalidez"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   0.3,
+   10.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "EC 103/2019 reduziu a 60% mais 2% por ano acima de 20; exceto acidente e doença grave"
+ },
+ {
+  "t": "Cortar o abono de permanência de servidores que já poderiam se aposentar",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "abono de permanencia|permanencia"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   -8.0,
+   -0.2
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 40 §19 (EC 41/2003); gasto de poucos bi"
+ },
+ {
+  "t": "Editar a lei complementar do artigo 41 para exonerar servidor estável após sucessivas avaliações de desempenho ruins",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "servidor|avaliacao|desempenho|estabilidade"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PLP"
+  ],
+  "custo": [
+   -10.0,
+   1.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "CF 41 §1º III exige lei complementar; economia gradual"
+ },
+ {
+  "t": "Congelar os salários de todos os servidores federais por três anos",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "congelamento|congelar|servidor|reajuste"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL",
+   "PLP",
+   "MP"
+  ],
+  "custo": [
+   -50.0,
+   -2.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "LC 173/2020 fez congelamento em 2020-21; folha federal ativa ~ R$ 200 bi"
+ },
+ {
+  "t": "Criar o fundo de pensão federal complementar para servidor novo, com contribuição do governo igual à do servidor até 8,5%",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "funpresp|complementar|fundo|previdencia"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 12.618/2012",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 12.618/2012 criou a Funpresp com teto do INSS"
+ },
+ {
+  "t": "Elevar o BPC para um salário mínimo e meio aos idosos com mais de 80 anos",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "bpc|loas|beneficio"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   5.0,
+   60.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 8.742/1993; ~ 3 milhões de idosos recebem BPC; só os acima de 80 é parcela menor"
+ },
+ {
+  "t": "Liberar BPC para famílias com renda de até meio salário mínimo por pessoa",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "bpc|loas|beneficio"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   10.0,
+   90.0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 8.742/1993 usa um quarto; ampliar dobra o público potencial; LRF 17 exige compensação"
+ },
+ {
+  "t": "Fazer nova perícia em todos os beneficiários do BPC por deficiência",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "bpc|pericia|loas"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   -25.0,
+   -0.5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 8.742/1993 art. 21: revisão a cada 2 anos; ~ 3 milhões de beneficiários"
+ },
+ {
+  "t": "Tirar a contribuição ao INSS do aposentado que continua empregado",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "aposentad"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   -12.0,
+   -0.2
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 8.212/1991 art. 12 §4º; milhões de aposentados trabalhando"
+ },
+ {
+  "t": "Fazer toda empresa recolher 20% da folha de pagamento ao INSS como contribuição patronal",
+  "area": "previdência, servidores e BPC",
+  "tema": [
+   "contribuicao patronal|folha|inss|patronal"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   -5.0,
+   60.0
+  ],
+  "unico": null,
+  "jaVigente": "Lei 8.212/1991",
+  "cf": [
+   "ok"
+  ],
+  "nota": "Lei 8.212/1991 art. 22 I já prevê os 20% sobre a folha"
+ }
+]
