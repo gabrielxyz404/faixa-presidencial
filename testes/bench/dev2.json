@@ -1,0 +1,2665 @@
+[
+ {
+  "t": "Parar de cobrar imposto de renda sobre aluguel de até R$ 3 mil",
+  "area": "tributos",
+  "tema": [
+   "aluguel|imposto de renda|\\bir\\b"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   -8,
+   -0.3
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Zerar o imposto de importação de máquinas agrícolas",
+  "area": "tributos",
+  "tema": [
+   "importac|maquina"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "DEC",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": [
+   -3,
+   -0.1
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "II é extrafiscal: Camex/decreto"
+ },
+ {
+  "t": "Criar um adicional de 5% sobre o lucro dos bancos",
+  "area": "tributos",
+  "tema": [
+   "banco|lucro|csll"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   1,
+   25
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Reduzir o IOF sobre compras com cartão no exterior",
+  "area": "tributos",
+  "tema": [
+   "iof|cartao|exterior"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "DEC"
+  ],
+  "custo": null,
+  "receita": [
+   -6,
+   -0.3
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Criar uma tributação mínima para quem ganha mais de R$ 1 milhão por ano",
+  "area": "tributos",
+  "tema": [
+   "renda|minim|ricos|milh|alta"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   15
+  ],
+  "unico": null,
+  "jaVigente": "Lei 15.270/2025",
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Cobrar imposto sobre dividendos enviados ao exterior",
+  "area": "tributos",
+  "tema": [
+   "dividend"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   10
+  ],
+  "unico": null,
+  "jaVigente": "Lei 15.270/2025",
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Deixar de cobrar IPI de bicicletas",
+  "area": "tributos",
+  "tema": [
+   "ipi|bicicleta"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "DEC"
+  ],
+  "custo": null,
+  "receita": [
+   -1,
+   0
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Aposentadoria integral para todos aos 60 anos",
+  "area": "trabalho e previdência",
+  "tema": [
+   "aposentad|idade"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PEC"
+  ],
+  "custo": [
+   50,
+   400
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Zerar a fila do INSS",
+  "area": "trabalho e previdência",
+  "tema": [
+   "fila|inss|benefic"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "ADM",
+   "DEC",
+   "MP"
+  ],
+  "custo": [
+   0.5,
+   15
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Dar seguro-desemprego de 8 parcelas para quem perde o emprego",
+  "area": "trabalho e previdência",
+  "tema": [
+   "seguro.?desemprego|parcela"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   5,
+   60
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Voltar a exigir contribuição sindical obrigatória",
+  "area": "trabalho e previdência",
+  "tema": [
+   "sindic"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Reduzir a jornada de trabalho para 36 horas semanais",
+  "area": "trabalho e previdência",
+  "tema": [
+   "jornada|horas"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Criar um auxílio para quem cuida de idoso em casa",
+  "area": "trabalho e previdência",
+  "tema": [
+   "cuidad|idoso|auxilio"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   1,
+   30
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Triplicar os leitos de UTI do SUS",
+  "area": "saúde",
+  "tema": [
+   "leito|uti"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "ADM",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   3,
+   40
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Proibir propaganda de bebida alcoólica em estádios",
+  "area": "saúde",
+  "tema": [
+   "propaganda|bebida|alcool"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Criar um plano nacional de combate ao câncer infantil",
+  "area": "saúde",
+  "tema": [
+   "cancer"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.3,
+   10
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Vacinar todas as meninas contra HPV nas escolas",
+  "area": "saúde",
+  "tema": [
+   "hpv|vacin"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.1,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Obrigar planos de saúde a cobrir tratamento de autismo sem limite de sessões",
+  "area": "saúde",
+  "tema": [
+   "plano|autis|tea|sess"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Regulamentar o uso de canetas emagrecedoras",
+  "area": "saúde",
+  "tema": [
+   "caneta|emagrec|obesidade|medicament"
+  ],
+  "dir": "regula",
+  "inst": [
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": "ato da Anvisa"
+ },
+ {
+  "t": "Aumentar as bolsas da Capes em 30%",
+  "area": "educação",
+  "tema": [
+   "capes|bolsa|pos.?gradua"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "ADM",
+   "DEC",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.5,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Criar 500 mil vagas em escolas de tempo integral",
+  "area": "educação",
+  "tema": [
+   "tempo integral|vagas|escola"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   2,
+   40
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Obrigar o ensino de educação financeira nas escolas",
+  "area": "educação",
+  "tema": [
+   "financeir|educacao"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Acabar com o vestibular e usar só o Enem",
+  "area": "educação",
+  "tema": [
+   "enem|vestibular"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "ADM",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Dar um computador para cada aluno do ensino médio público",
+  "area": "educação",
+  "tema": [
+   "computador|aluno|notebook|ensino medio"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   2,
+   30
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Pagar um valor por aluno aos municípios que alfabetizarem na idade certa",
+  "area": "educação",
+  "tema": [
+   "alfabetiz|ler|municip|aluno"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.5,
+   10
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Criar um banco nacional de DNA de condenados",
+  "area": "segurança",
+  "tema": [
+   "dna|banco|condenad|genetic"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   0,
+   2
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 12.654/2012",
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Aumentar a pena do feminicídio para 40 anos",
+  "area": "segurança",
+  "tema": [
+   "feminicid|pena"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.994/2024",
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Instalar câmeras nos uniformes de todos os policiais federais",
+  "area": "segurança",
+  "tema": [
+   "camera|policia"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.05,
+   3
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Proibir arma de fogo para quem responde por violência doméstica",
+  "area": "segurança",
+  "tema": [
+   "arma"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Reduzir a maioridade penal para 14 anos",
+  "area": "segurança",
+  "tema": [
+   "maioridade"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Construir 20 presídios federais",
+  "area": "segurança",
+  "tema": [
+   "presidio|penitenciar"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   1,
+   15
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Criar um imposto sobre o carbono das importações",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "carbono"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   10
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Zerar o desmatamento ilegal até 2030",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "desmat"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "ADM",
+   "DEC",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.5,
+   10
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Proibir a pesca industrial dentro de unidades de conservação",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "pesca|unidade|conservacao"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 9.985/2000",
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Obrigar todo município a ter aterro sanitário",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "aterro|municip|lixo|residuo"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 12.305/2010",
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Plantar 1 bilhão de árvores",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "arvore|reflorest|plant"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.5,
+   20
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Liberar o uso de agrotóxico proibido na Europa",
+  "area": "meio ambiente e clima",
+  "tema": [
+   "agrotox"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Deixar a bandeira tarifária sempre verde",
+  "area": "energia e mineração",
+  "tema": [
+   "bandeira|tarifa"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": "bandeira é ato da ANEEL"
+ },
+ {
+  "t": "Construir mais três usinas nucleares",
+  "area": "energia e mineração",
+  "tema": [
+   "nuclear|usina"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "ADM",
+   "MP"
+  ],
+  "custo": [
+   5,
+   60
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Cobrar royalties de 10% sobre a exploração de lítio",
+  "area": "energia e mineração",
+  "tema": [
+   "royalt|litio|cfem|mineral"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   5
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Multar as distribuidoras que deixarem o consumidor sem luz",
+  "area": "energia e mineração",
+  "tema": [
+   "apagao|distribuidor|multa|luz"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "ADM",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Instalar painéis solares em todas as escolas públicas",
+  "area": "energia e mineração",
+  "tema": [
+   "painel|solar|escola"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.5,
+   15
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Zerar a tarifa de energia das famílias do CadÚnico",
+  "area": "energia e mineração",
+  "tema": [
+   "tarifa|energia|luz"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   3,
+   40
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Duplicar a BR-116 no Nordeste",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "br-?116|duplic|rodovia"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   1,
+   30
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Dar passe livre aos estudantes no transporte intermunicipal",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "passe|estudante|transporte"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0.3,
+   10
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Criar um piso mínimo para o frete dos caminhoneiros",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "frete|piso|caminhone"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 13.703/2018",
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Conceder todos os portos federais à iniciativa privada",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "porto"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "ADM",
+   "DEC",
+   "MP",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Proibir a circulação de caminhão com mais de 40 anos",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "caminh"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Reconstruir as pontes que caíram com dinheiro da União",
+  "area": "infraestrutura e transporte",
+  "tema": [
+   "ponte"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.2,
+   10
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Perdoar as multas do Ibama aplicadas a pequenos agricultores",
+  "area": "agro",
+  "tema": [
+   "multa|ibama|agricult"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL",
+   "MP",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": [
+   -2,
+   0
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Aumentar o crédito do Pronaf para R$ 100 bilhões",
+  "area": "agro",
+  "tema": [
+   "pronaf|credito|agricultura familiar"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "MP",
+   "PL",
+   "ADM"
+  ],
+  "custo": [
+   1,
+   25
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Proibir a venda de terras a estrangeiros",
+  "area": "agro",
+  "tema": [
+   "estrangeir|terra"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 5.709/1971",
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Criar um seguro contra geada para o café",
+  "area": "agro",
+  "tema": [
+   "seguro|geada|cafe"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL",
+   "ADM"
+  ],
+  "custo": [
+   0.1,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Acabar com a Embrapa",
+  "area": "agro",
+  "tema": [
+   "embrapa"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   -6,
+   -0.5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Rastrear todo o gado do país com brinco eletrônico",
+  "area": "agro",
+  "tema": [
+   "gado|rastre|brinco|bovin"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "ADM",
+   "PL",
+   "DEC"
+  ],
+  "custo": [
+   0.1,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Aumentar o Bolsa Família em 20%",
+  "area": "assistência social e renda",
+  "tema": [
+   "bolsa"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "MP",
+   "PL",
+   "DEC"
+  ],
+  "custo": [
+   5,
+   40
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Criar uma pensão para órfãos de feminicídio",
+  "area": "assistência social e renda",
+  "tema": [
+   "orfao|feminicid|pensao"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0.05,
+   2
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.717/2023",
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Pagar R$ 1.000 por mês a cada pessoa em situação de rua",
+  "area": "assistência social e renda",
+  "tema": [
+   "rua|1.?000|beneficio|renda"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL",
+   "ADM"
+  ],
+  "custo": [
+   0.3,
+   6
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Reajustar o BPC pela inflação",
+  "area": "assistência social e renda",
+  "tema": [
+   "bpc"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL",
+   "MP",
+   "DEC"
+  ],
+  "custo": [
+   0,
+   8
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Dar vale-gás de graça para famílias pobres",
+  "area": "assistência social e renda",
+  "tema": [
+   "gas"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   1,
+   10
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.237/2021",
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Dobrar o número de CRAS",
+  "area": "assistência social e renda",
+  "tema": [
+   "cras|assistencia"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "ADM",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.2,
+   6
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Limitar o spread bancário",
+  "area": "economia e crédito",
+  "tema": [
+   "spread|banco|juros"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Elevar o compulsório dos bancos",
+  "area": "economia e crédito",
+  "tema": [
+   "compulsorio|banco"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Fazer um programa de recompra de dívidas dos endividados com 50% de desconto",
+  "area": "economia e crédito",
+  "tema": [
+   "divida|desconto|endivid|renegoci"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   1,
+   30
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Congelar o preço do botijão de gás",
+  "area": "economia e crédito",
+  "tema": [
+   "gas|botijao|preco"
+  ],
+  "dir": "regula",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0,
+   15
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Permitir que o brasileiro tenha conta em dólar no país",
+  "area": "economia e crédito",
+  "tema": [
+   "conta|dolar|moeda"
+  ],
+  "dir": "libera",
+  "inst": [
+   "ADM",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.286/2021",
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Criar um fundo garantidor para pequenas empresas",
+  "area": "economia e crédito",
+  "tema": [
+   "fundo|garantidor|pequena"
+  ],
+  "dir": "cria",
+  "inst": [
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.5,
+   10
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Extinguir a EBC",
+  "area": "estatais e privatização",
+  "tema": [
+   "ebc|comunicacao"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   -3,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Privatizar o Serpro",
+  "area": "estatais e privatização",
+  "tema": [
+   "serpro"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": [
+   0.5,
+   15
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Recomprar a Eletrobras",
+  "area": "estatais e privatização",
+  "tema": [
+   "eletrobras"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": [
+   10,
+   150
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Proibir a privatização da Caixa",
+  "area": "estatais e privatização",
+  "tema": [
+   "caixa"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL",
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Fundir o BNDES e o Banco do Brasil",
+  "area": "estatais e privatização",
+  "tema": [
+   "bndes|banco do brasil|fusao|fundir"
+  ],
+  "dir": "outro",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Vender 20% da Petrobras na bolsa",
+  "area": "estatais e privatização",
+  "tema": [
+   "petrobras"
+  ],
+  "dir": "transfere",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": [
+   20,
+   250
+  ],
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Descriminalizar a prostituição",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "prostitu|sexual|trabalho sexual"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Reconhecer a união poliafetiva",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "poliafet|uniao|casamento"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Proibir cirurgia de mudança de sexo para menores de 18 anos",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "cirurgia|menor|trans|18 anos"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Criar cotas para indígenas nas universidades federais",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "cota|indigen|universidade"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 12.711/2012",
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Garantir intérprete de Libras em todos os órgãos públicos",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "libras|interprete"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": [
+   0.05,
+   3
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 13.146/2015",
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Proibir o discurso de ódio religioso",
+  "area": "direitos civis e costumes",
+  "tema": [
+   "odio|religios|intoler"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Acabar com o fundo eleitoral",
+  "area": "política e eleições",
+  "tema": [
+   "fundo"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   -8,
+   -1
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Proibir a reeleição de prefeitos e governadores",
+  "area": "política e eleições",
+  "tema": [
+   "reeleic"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Adotar o voto distrital misto",
+  "area": "política e eleições",
+  "tema": [
+   "distrital"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Tornar o voto facultativo",
+  "area": "política e eleições",
+  "tema": [
+   "voto|facultativ"
+  ],
+  "dir": "libera",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Reduzir o tempo de propaganda eleitoral na TV",
+  "area": "política e eleições",
+  "tema": [
+   "propaganda|tv|eleitoral"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   -1,
+   0
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Prorrogar o mandato do presidente por mais dois anos",
+  "area": "política e eleições",
+  "tema": [
+   "mandato|prorrog"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional",
+   "controverso"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Proibir o uso de celular ao dirigir",
+  "area": "digital e tecnologia",
+  "tema": [
+   "celular|dirig|volante"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 9.503/1997",
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Obrigar sites a verificar a idade de menores de idade",
+  "area": "digital e tecnologia",
+  "tema": [
+   "idade|menor|site|plataforma|crianc"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 15.211/2025",
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Criar uma agência nacional de inteligência artificial",
+  "area": "digital e tecnologia",
+  "tema": [
+   "inteligencia artificial|ia\\b|agencia"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0.1,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Proibir reconhecimento facial por empresas privadas",
+  "area": "digital e tecnologia",
+  "tema": [
+   "reconhecimento facial"
+  ],
+  "dir": "proibe",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Dar internet grátis para quem recebe Bolsa Família",
+  "area": "digital e tecnologia",
+  "tema": [
+   "internet|bolsa"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.5,
+   15
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Obrigar a remoção de deepfakes em 24 horas",
+  "area": "digital e tecnologia",
+  "tema": [
+   "deepfake|remo"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Aumentar a tarifa de importação do aço chinês",
+  "area": "relações exteriores e comércio",
+  "tema": [
+   "aco|importac|tarifa"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   10
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Reconhecer o Estado da Palestina",
+  "area": "relações exteriores e comércio",
+  "tema": [
+   "palestin"
+  ],
+  "dir": "libera",
+  "inst": [
+   "COM",
+   "ADM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Acolher 100 mil refugiados venezuelanos",
+  "area": "relações exteriores e comércio",
+  "tema": [
+   "refugiad|venezuela"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL"
+  ],
+  "custo": [
+   0.1,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 9.474/1997",
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Fechar um acordo de livre-comércio com a China",
+  "area": "relações exteriores e comércio",
+  "tema": [
+   "china|acordo|livre"
+  ],
+  "dir": "cria",
+  "inst": [
+   "AUT",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Enviar ajuda humanitária a Gaza",
+  "area": "relações exteriores e comércio",
+  "tema": [
+   "gaza|ajuda|humanitaria"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "MP"
+  ],
+  "custo": [
+   0.01,
+   3
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Exigir visto de cidadãos americanos por reciprocidade",
+  "area": "relações exteriores e comércio",
+  "tema": [
+   "visto|americano|reciproc"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": null,
+  "receita": [
+   0,
+   2
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Criar um vale-ingresso de R$ 100 para jovens",
+  "area": "cultura e esporte",
+  "tema": [
+   "vale|ingresso|jovens"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": [
+   0.5,
+   15
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Obrigar os cinemas a exibir filmes nacionais",
+  "area": "cultura e esporte",
+  "tema": [
+   "cinema|filme|nacional|tela"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL",
+   "DEC",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "MP 2.228-1/2001",
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Construir 100 quadras esportivas nas periferias",
+  "area": "cultura e esporte",
+  "tema": [
+   "quadra|esport"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0.1,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Criar uma lei geral do esporte",
+  "area": "cultura e esporte",
+  "tema": [
+   "lei geral|esporte"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 14.597/2023",
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Pagar bolsa a atleta olímpico",
+  "area": "cultura e esporte",
+  "tema": [
+   "bolsa|atleta"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PL",
+   "MP",
+   "ADM"
+  ],
+  "custo": [
+   0,
+   3
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 10.891/2004",
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Isentar de impostos os instrumentos musicais",
+  "area": "cultura e esporte",
+  "tema": [
+   "instrument|musica|imposto|isen"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL"
+  ],
+  "custo": null,
+  "receita": [
+   -2,
+   0
+  ],
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Ceder terrenos da União para construir casas populares",
+  "area": "habitação e cidades",
+  "tema": [
+   "terreno|casa|imovel|uniao|moradia"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC",
+   "PL"
+  ],
+  "custo": [
+   0,
+   10
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Congelar o aluguel por dois anos",
+  "area": "habitação e cidades",
+  "tema": [
+   "alugue"
+  ],
+  "dir": "regula",
+  "inst": [
+   "PL",
+   "MP"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Garantir saneamento básico em todas as favelas",
+  "area": "habitação e cidades",
+  "tema": [
+   "saneamento|favela"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   2,
+   60
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Aumentar o teto do Minha Casa Minha Vida para imóveis de R$ 500 mil",
+  "area": "habitação e cidades",
+  "tema": [
+   "minha casa|imove|teto"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "ADM",
+   "DEC",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   0,
+   10
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Criar um seguro obrigatório contra desastres para casas em área de risco",
+  "area": "habitação e cidades",
+  "tema": [
+   "seguro|desastre|risco"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   0,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Reduzir os juros do financiamento da casa própria para 4% ao ano",
+  "area": "habitação e cidades",
+  "tema": [
+   "juro|financiamento|casa propria"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "ADM",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   1,
+   40
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Reduzir em 20% o salário de ministros e deputados",
+  "area": "administração pública",
+  "tema": [
+   "salario|ministro|deputad"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PL",
+   "PEC"
+  ],
+  "custo": [
+   -1,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Digitalizar todos os processos do INSS",
+  "area": "administração pública",
+  "tema": [
+   "digital|processo|inss"
+  ],
+  "dir": "cria",
+  "inst": [
+   "ADM",
+   "DEC"
+  ],
+  "custo": [
+   0.1,
+   5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Unificar as agências reguladoras",
+  "area": "administração pública",
+  "tema": [
+   "agencia|regulador|unific|fundir"
+  ],
+  "dir": "outro",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   -3,
+   0
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Obrigar os ministros a divulgar a agenda de reuniões",
+  "area": "administração pública",
+  "tema": [
+   "agenda|ministro|divulg|transparencia"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "DEC",
+   "ADM",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Cortar 10% do orçamento de todos os ministérios",
+  "area": "administração pública",
+  "tema": [
+   "corte|ministerio|orcamento|gasto"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "ADM",
+   "DEC",
+   "MP",
+   "PL"
+  ],
+  "custo": [
+   -120,
+   -5
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Aumentar o salário dos servidores em 5%",
+  "area": "administração pública",
+  "tema": [
+   "servidor|salario|reajuste"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PL"
+  ],
+  "custo": [
+   5,
+   40
+  ],
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Aumentar para 15 o número de ministros do STF",
+  "area": "Judiciário e Constituição",
+  "tema": [
+   "stf|ministro"
+  ],
+  "dir": "aumenta",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "controverso",
+   "inconstitucional"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Limitar o mandato dos ministros do STF a 12 anos",
+  "area": "Judiciário e Constituição",
+  "tema": [
+   "mandato|stf|ministro"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Criar a prisão perpétua para crimes hediondos",
+  "area": "Judiciário e Constituição",
+  "tema": [
+   "perpetua"
+  ],
+  "dir": "cria",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "inconstitucional"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Acabar com o foro privilegiado dos ministros do STF",
+  "area": "Judiciário e Constituição",
+  "tema": [
+   "foro"
+  ],
+  "dir": "extingue",
+  "inst": [
+   "PEC"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Obrigar o CNJ a publicar o salário de todos os juízes",
+  "area": "Judiciário e Constituição",
+  "tema": [
+   "cnj|salario|juiz|publicar|transparencia"
+  ],
+  "dir": "obriga",
+  "inst": [
+   "PL",
+   "ADM"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": "Lei 12.527/2011",
+  "cf": [
+   "ok"
+  ],
+  "nota": ""
+ },
+ {
+  "t": "Reduzir os recursos para o STF julgar mais rápido",
+  "area": "Judiciário e Constituição",
+  "tema": [
+   "recurso|stf|julg"
+  ],
+  "dir": "reduz",
+  "inst": [
+   "PEC",
+   "PL"
+  ],
+  "custo": null,
+  "receita": null,
+  "unico": null,
+  "jaVigente": null,
+  "cf": [
+   "ok",
+   "controverso"
+  ],
+  "nota": ""
+ }
+]
