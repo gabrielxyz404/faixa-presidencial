@@ -1,4 +1,43 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+  /* v3.6: medidas em vigor */
+  .med-grid { display: grid; grid-template-columns: minmax(0,1fr); gap: 16px; }
+  @media (min-width: 1500px) { .med-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+  .med-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .med-card[data-estado=suspensa] { border-color: rgba(232,146,58,.6); }
+  .med-head { display: flex; gap: 12px; align-items: flex-start; }
+  .med-ic { flex: none; width: 40px; height: 40px; border-radius: 999px; background: var(--panel2); display: flex; align-items: center; justify-content: center; color: var(--ouro); }
+  .med-tit { font-weight: 700; font-size: 17px; line-height: 1.25; }
+  .med-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .med-fases { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 4px; }
+  .med-fase { position: relative; display: flex; flex-direction: column; gap: 2px; padding-top: 18px; font-size: 12px; color: var(--muted); min-width: 0; }
+  .med-fase b { font-weight: 600; color: var(--muted); overflow-wrap: anywhere; }
+  .med-fase small { font-size: 10.5px; }
+  .med-fase::before { content: ''; position: absolute; left: 0; right: 0; top: 6px; height: 2px; background: var(--line); }
+  .med-dot { position: absolute; left: 0; top: 0; width: 14px; height: 14px; border-radius: 999px; background: var(--panel2); border: 2px solid var(--line); display: flex; align-items: center; justify-content: center; color: #04130b; z-index: 1; }
+  .med-fase[data-st=feito]::before, .med-fase[data-st=pulada]::before { background: var(--verde); }
+  .med-fase[data-st=feito] .med-dot, .med-fase[data-st=pulada] .med-dot { background: var(--verde); border-color: var(--verde); }
+  .med-fase[data-st=pulada] b { text-decoration: line-through; }
+  .med-fase[data-st=atual] { color: var(--fg); }
+  .med-fase[data-st=atual] b { color: var(--ouro); }
+  .med-fase[data-st=atual] .med-dot { background: var(--ouro); border-color: var(--ouro); box-shadow: 0 0 0 4px rgba(250,204,21,.18); }
+  .med-fase[data-st=atual]::before { background: linear-gradient(90deg, var(--verde), var(--ouro)); }
+  .med-prog-t { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .med-pr table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px; }
+  .med-pr th { text-align: right; font-weight: 500; font-size: 10.5px; color: var(--muted); font-family: var(--f-mono); letter-spacing: .08em; text-transform: uppercase; padding: 2px 6px; }
+  .med-pr td { padding: 4px 6px; border-top: 1px solid var(--line); }
+  .med-pr td.num { text-align: right; white-space: nowrap; }
+  .med-mini { width: 70px; } .med-mini i { display: block; height: 5px; border-radius: 999px; }
+  .med-pas ul, .med-not ul, .med-fim { list-style: none; margin: 4px 0 0; padding: 0; font-size: 13px; display: flex; flex-direction: column; gap: 4px; }
+  .med-pas .num, .med-not .num, .med-fim .num { color: var(--muted); font-size: 11.5px; margin-right: 6px; }
+  .med-not li[data-t=neg] { border-left: 2px solid var(--rubro); padding-left: 8px; }
+  .med-not li[data-t=pos] { border-left: 2px solid var(--verde); padding-left: 8px; }
+  .med-not li[data-t=neu] { border-left: 2px solid var(--line); padding-left: 8px; }
+  .med-acoes { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 4px; border-top: 1px solid var(--line); margin-top: auto; padding-top: 12px; }
+  .med-kpis { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px 24px; }
+  @media (min-width: 1100px) { .med-kpis { grid-template-columns: repeat(6, minmax(0,1fr)); } }
+  .med-kpi { font-size: 24px; font-weight: 700; margin-top: 2px; } .med-kpi small { font-size: 11px; color: var(--muted); font-weight: 500; }
+  @media (max-width: 640px) { .med-fase b { font-size: 10px; } .med-fase small { font-size: 9px; } .med-mini, .med-pr th:last-child { display: none; } .med-card { padding: 14px; } }
+</style></head><body>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Faixa Presidencial</title>
@@ -1365,7 +1404,7 @@ function agendaAtrasos(g, prop) {
   let n = 0;
   for (const a of atrasosDe(prop)) {
     if (g.pendentes.length >= 40) break;
-    const it = { mes: g.mes + a.em, cat: a.cat, i: a.i != null ? a.i : n, txt: a.txt, bom: a.bom, k: prop.scale };
+    const it = { mes: g.mes + a.em, cat: a.cat, i: a.i != null ? a.i : n, txt: a.txt, bom: a.bom, k: prop.scale, pid: prop.id }; // v3.6: pid, para a revogação/caducidade cancelar as consequências agendadas
     if (a.cat === 'motor') it.def = { fx: a.fx || {}, fis: a.fis || {} }; // efeito do motor v2 não está na tabela: viaja no próprio item
     g.pendentes.push(it);
     n++;
@@ -6011,6 +6050,8 @@ function analisar(g, texto, ctx) {
   if (legal.golpe) prop.stf.golpe = true;
   if (legal.censura) prop.stf.censura = true;
   cfProp(prop, legal);
+  // v3.6: objetos que a medida mexe (tipo, canal, defasagem), para o ciclo de vida da medida em vigor
+  prop.objs = A.items.filter(i => (i.sg || i.pledge || i.own) && !i.fora).sort((a, b) => (b.role === 'main' ? 1 : 0) - (a.role === 'main' ? 1 : 0) || (b.B || 0) - (a.B || 0)).slice(0, 6).map(i => ({ id: i.o.id, n: i.o.n, k: i.o.k, ch: i.o.ch || null, cat: i.o.cat || null, lag: i.o.lag || 0, B: i.B ? r2(i.B) : 0, sg: i.sg || 0, own: i.own || 0, st: !!i.o.st, regul: !!i.regul, mal: !!i.o.mal, priv: i.o.priv || null }));
   if (privAlvo && g && g.estatais && g.estatais[privAlvo] === false) prop.once = 0;
   // sinaliza fora de competencia
   if (A.items.some(i => i.fora)) { prop.flags.push('fora_competencia'); }
@@ -8465,6 +8506,509 @@ function CfEmendas({ g }) {
 }
 /*CF-UI-END*/
 
+/* ============================== v3.6: MEDIDAS EM VIGOR (ciclo de vida depois da aprovação) ============================== */
+/* Cada medida aprovada vira um registro em g.medidas (criado de forma preguiçosa; saves antigos funcionam sem o campo):
+   publicação -> regulamentação -> implantação (rampa) -> efeito pleno -> maturação. O efeito sobre opinião/expectativa entra no anúncio;
+   o efeito real (economia, social, regional) e o fiscal entram mês a mês pela rampa. Pelo caminho podem ocorrer problemas (atraso, estouro,
+   contingenciamento, TCU, lobby, protesto/greve, ADI/liminar, desabastecimento, elisão, demanda acima do previsto...) e boas surpresas.
+   Tudo sorteado por hashStr(g.seed, id da medida, mês, tipo de evento): estável por partida. Nenhuma fala de pessoa real. */
+const MED_TIPOS = { // v3.6
+  conduta:   { nome: 'Norma de conduta',          ic: 'Scale',         imp: [1, 3],   mat: [3, 6],   antE: .55, antG: .85, antF: 1 },
+  preco:     { nome: 'Controle de preços',        ic: 'Tags',          imp: [1, 2],   mat: [3, 6],   antE: .8,  antG: .9,  antF: 1 },
+  tributo:   { nome: 'Tributo',                   ic: 'Receipt',       imp: [2, 4],   mat: [6, 12],  antE: .35, antG: .8,  antF: .3 },
+  beneficio: { nome: 'Benefício ou subsídio',     ic: 'HandCoins',     imp: [2, 4],   mat: [6, 12],  antE: .3,  antG: .6,  antF: .85 },
+  programa:  { nome: 'Programa',                  ic: 'ClipboardList', imp: [6, 18],  mat: [12, 18], antE: .25, antG: .55, antF: .15 },
+  obra:      { nome: 'Obra ou contratação',       ic: 'HardHat',       imp: [12, 24], mat: [12, 24], antE: .2,  antG: .5,  antF: .1 },
+  regulacao: { nome: 'Regulação',                 ic: 'FileText',      imp: [3, 8],   mat: [6, 12],  antE: .35, antG: .8,  antF: .5 },
+  previdencia: { nome: 'Regra previdenciária', ic: 'Landmark',  imp: [30, 42], mat: [6, 12],  antE: .3,  antG: .85, antF: 0 }, // v3.6: economia cresce com as coortes que deixam de se aposentar
+  estatal:   { nome: 'Estatal ou privatização',   ic: 'Building2',     imp: [6, 15],  mat: [12, 18], antE: .45, antG: .7,  antF: .7 }
+};
+const MED_FASES = [['pub', 'Publicação'], ['reg', 'Regulamentação'], ['imp', 'Implantação'], ['pleno', 'Efeito pleno'], ['mat', 'Maturação']];
+const MED_ESTADOS = { ativa: ['em vigor', 'var(--verde)'], suspensa: ['suspensa por liminar', 'var(--ambar)'], consolidada: ['consolidada', 'var(--muted)'], revogada: ['revogada', 'var(--muted)'], caducada: ['MP caducou', 'var(--rubro)'], derrubada: ['derrubada no STF', 'var(--rubro)'] };
+const MED_PROB = { // problemas ativos: rótulo curto, cor, ícone
+  atraso: ['Atraso', 'var(--ambar)', 'Hourglass'], estouro: ['Custo acima do previsto', 'var(--rubro)', 'TriangleAlert'], contingenciamento: ['Contingenciada', 'var(--ambar)', 'Hourglass'],
+  tcu: ['TCU aponta falhas', 'var(--rubro)', 'Gavel'], lobby: ['Lobby dos atingidos', 'var(--ambar)', 'Users'], protesto: ['Protesto', 'var(--rubro)', 'Siren'], greve: ['Greve', 'var(--rubro)', 'Siren'],
+  adi: ['Ação no STF', 'var(--rubro)', 'Gavel'], desabastecimento: ['Desabastecimento', 'var(--rubro)', 'TriangleAlert'], elisao: ['Elisão: base menor', 'var(--ambar)', 'Receipt'],
+  conformidade: ['Custo de conformidade', 'var(--ambar)', 'FileText'], demanda: ['Demanda acima do previsto', 'var(--ambar)', 'HandCoins'], tarifa: ['Tarifa em alta', 'var(--ambar)', 'Zap']
+};
+const MED_REMEDIO = ['adi', 'tcu', 'estouro', 'atraso', 'contingenciamento', 'protesto', 'greve', 'lobby', 'elisao', 'conformidade', 'desabastecimento', 'tarifa', 'demanda'];
+const MED_IND = { // indicador: [nome, unidade, casas, peso para ordenar, sentido bom (+1 sobe é bom)]
+  'e.pib': ['PIB', ' pp', 2, 4, 1], 'e.ipca': ['Inflação', ' pp', 2, 3.3, -1], 'e.des': ['Desemprego', ' pp', 2, 3.3, -1], 'e.dol': ['Dólar', ' R$', 2, 5, -1], 'e.risco': ['Risco-país', ' pts', 0, .05, -1],
+  'e.conf': ['Confiança', ' pts', 1, .33, 1], 's.pob': ['Pobreza', ' pp', 2, 2.5, -1], 's.hom': ['Homicídios', ' /100 mil', 2, 2, -1], 's.idh': ['IDH', '', 3, 330, 1], 's.desm': ['Desmatamento', ' km²', 0, .003, -1]
+};
+const medArt = (t, tab) => { const m = /^(o|a|os|as) (.*)$/.exec(t); return m ? tab[m[1]] + ' ' + m[2] : tab.x + ' ' + t; };
+const medDe = (t) => medArt(t, { o: 'do', a: 'da', os: 'dos', as: 'das', x: 'de' }), medEm = (t) => medArt(t, { o: 'no', a: 'na', os: 'nos', as: 'nas', x: 'em' }), medA = (t) => medArt(t, { o: 'ao', a: 'à', os: 'aos', as: 'às', x: 'a' });
+const medCap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+const medCurto = (t) => { t = String(t || ''); if (t.length <= 56) return t; const c = t.slice(0, 56); return c.slice(0, c.lastIndexOf(' ') > 30 ? c.lastIndexOf(' ') : 56).replace(/[ ,;]+$/, '') + '…'; };
+const medL = (g) => (g && Array.isArray(g.medidas) ? g.medidas : []); // leitura (não cria)
+function medidasDe(g) { if (!Array.isArray(g.medidas)) g.medidas = []; return g.medidas; }
+const medU = (g, M, tag) => hashStr(String(g.seed) + '|med|' + M.id + '|' + tag);
+const medNomeG = (k) => { const G = GRUPOS.find(x => x.k === k); return G ? G.nome : k; };
+const medMesTxt = (m) => dataCurta(Math.max(1, Math.round(m)));
+const medAtivo = (M) => M.estado === 'ativa' || M.estado === 'suspensa';
+
+// classifica a medida pelo objeto principal que o motor leu (prop.objs) ou, na falta, pelas categorias; null = sem ciclo de vida (fala, promessa, vago)
+function medTipo(prop) {
+  const fl = prop.flags || [], cats = prop.cats || [];
+  if (prop.transiente || prop.vago || prop.absurdo || fl.includes('ato_comunicacao') || fl.includes('promessa') || fl.includes('fora_competencia') || fl.includes('absurdo')) return null;
+  const os = (prop.objs || []).filter(o => o.sg || o.own);
+  if (os.some(x => x.id === 'previdencia_reforma' || x.cat === 'previdencia') && (prop.cost || 0) <= 0) return 'previdencia';
+  const o = os[0];
+  if (o) {
+    if (o.k === 'C' || o.k === 'D') return null;
+    if (o.k === 'E') return 'estatal';
+    if (o.k === 'T') return 'tributo';
+    if (o.k === 'R') return (o.cat === 'tabelamento' || /alugue|preco|tabel|congel/.test(o.id)) ? 'preco' : (o.st || o.cat === 'redes' ? 'regulacao' : 'conduta');
+    if (o.regul) return 'regulacao';
+    return o.ch === 'invest' ? 'obra' : (o.ch === 'transf' || o.ch === 'subs') ? 'beneficio' : 'programa';
+  }
+  if (cats.includes('privatizacao') || cats.includes('estatizacao')) return 'estatal';
+  if (cats.includes('tabelamento')) return 'preco';
+  if (cats.some(c => ['novo_imposto', 'corte_imposto', 'isencao_ir', 'taxa_ricos', 'imposto_bets', 'combustivel'].includes(c))) return 'tributo';
+  if (cats.some(c => ['programa_social', 'salario_minimo'].includes(c))) return 'beneficio';
+  if (cats.some(c => ['infra', 'moradia'].includes(c))) return 'obra';
+  if (cats.some(c => ['saude', 'educacao', 'seguranca_plano', 'ambiente'].includes(c)) || (prop.cost || 0) > 0) return 'programa';
+  return null;
+}
+// parte do efeito que entra já no anúncio (expectativa e opinião) e parte que vem pela rampa (economia real, indicadores sociais, regiões)
+function medSplit(prop, tipo) {
+  const T = MED_TIPOS[tipo], fx = prop.fx || {}, ag = {}, ra = {};
+  for (const key of Object.keys(fx)) {
+    const v = fx[key];
+    if (key === 'e') {
+      ag.e = {}; ra.e = {};
+      for (const c in v) { const a = tipo === 'preco' && c === 'ipca' ? 1 : (c === 'conf' || c === 'risco' || c === 'dol') ? Math.min(1, T.antE + .2) : T.antE * .6; ag.e[c] = v[c] * a; ra.e[c] = v[c] * (1 - a); }
+    } else if (key === 'g') {
+      ag.g = {}; ra.g = {};
+      for (const c in v) { const a = v[c] < 0 ? Math.min(1, T.antG + .2) : T.antG; ag.g[c] = v[c] * a; ra.g[c] = v[c] * (1 - a); }
+    } else if (key === 's' || key === 'r') ra[key] = Object.assign({}, v);
+    else if (key === 'gx') { ag.gx = v; ra.gx = v; }
+    else if (key === 'd') ag.d = Object.assign({}, v);
+    else ag[key] = v;
+  }
+  return { ag, ra };
+}
+function medPrazos(g, prop, tipo, k) {
+  const T = MED_TIPOS[tipo], inst = prop.inst, h = (s) => hashStr(String(prop.id) + 'med' + s);
+  let dReg = 0;
+  if (inst === 'ADM' || inst === 'COM') dReg = ['programa', 'obra', 'estatal', 'regulacao'].includes(tipo) ? 1 : 0;
+  else if (inst === 'DEC') dReg = ['conduta', 'preco', 'tributo'].includes(tipo) ? 0 : 1;
+  else if (inst === 'MP') dReg = 1 + (h('r') < .4 ? 1 : 0);
+  else if (inst === 'PL') dReg = prop.instDetalhe === 'AUT' ? 1 : 1 + Math.floor(h('r') * 4);
+  else if (inst === 'PEC') dReg = 3 + Math.floor(h('r') * 7);
+  const tam = Math.max(Math.abs(prop.cost || 0) + Math.abs(prop.extra || 0), Math.abs(prop.rev || 0) * .5) * k;
+  const sz = clamp(tam / 30, 0, 1);
+  let comp = .6; try { comp = clamp(compMin(g.cfg, prop.pastaExec || 'casacivil'), 0, 1); } catch (e) { }
+  let dImp = T.imp[0] + (T.imp[1] - T.imp[0]) * h('i');
+  if (['programa', 'obra', 'beneficio', 'estatal'].includes(tipo)) dImp *= 1 + .5 * sz;
+  if (inst === 'DEC' || inst === 'ADM') dImp *= .8;
+  dImp *= 1.35 - .7 * comp;
+  const lag = Math.max(0, ...(prop.objs || []).map(o => o.lag || 0));
+  dImp = clamp(Math.round(Math.max(dImp, lag * .5)), 1, 30);
+  const dMat = Math.round(T.mat[0] + (T.mat[1] - T.mat[0]) * h('m'));
+  return { dReg, dImp, dMat, dPl: Math.max(1, Math.round(dMat * .4)), comp, sz };
+}
+function medidaCria(g, prop, k, ato) {
+  const tipo = medTipo(prop); if (!tipo) return null;
+  const T = MED_TIPOS[tipo], P = medPrazos(g, prop, tipo, k), sp = medSplit(prop, tipo);
+  const gr = (L) => (L || []).filter(x => x.tipo === 'grupo').slice(0, 4).map(x => ({ q: x.quem, n: x.nome }));
+  const m0 = g.mes;
+  const M = {
+    id: 'md' + m0 + '-' + (g.seqMed = (g.seqMed || 0) + 1), pid: prop.id, topic: prop.topic, nm: medCurto(prop.topic), ato: ato || prop.inst, inst: prop.inst, det: prop.instDetalhe || null, tipo, m0, k,
+    dReg: P.dReg, mReg: m0 + P.dReg, dImp: P.dImp, mPleno: m0 + P.dReg + P.dImp, dPl: P.dPl, mMat: m0 + P.dReg + P.dImp + P.dMat,
+    pasta: prop.pastaExec || null, comp: Math.round(P.comp * 100) / 100, stfNivel: (prop.stf && prop.stf.nivel) || 'ok', cats: (prop.cats || []).slice(0, 4),
+    ag: sp.ag, ra: sp.ra, aplic: 0, efAp: 0, mEf: 1, mCusto: 1, mRec: 1, fAnt: T.antF,
+    fis: { custo: (prop.cost || 0) * k, extra: (prop.extra || 0) * k, receita: ((prop.rev || 0) - vigRev(prop)) * k }, fisAp: { custo: 0, extra: 0, receita: 0 }, once: prop.once || 0,
+    estado: 'ativa', mp: prop.inst === 'MP', probs: [], not: [], ultEv: 0, cont: {}, acel: 0, congelaAte: 0, sz: Math.round(P.sz * 100) / 100,
+    pol: prop.entendimento ? prop.entendimento.polaridade : 0, objIds: (prop.objs || []).filter(o => o.sg).map(o => o.id),
+    per: gr((prop.imp || {}).per), gan: gr((prop.imp || {}).gan), priv: !!prop.privAlvo || (prop.cats || []).includes('privatizacao'), estat: (prop.cats || []).includes('estatizacao'),
+    vigMes: prop.vig && prop.vig.itens && prop.vig.itens.length ? m0 + Math.max(...prop.vig.itens.map(v => Math.max(1, v.em))) : null,
+    vigIt: prop.vig && prop.vig.itens ? prop.vig.itens.map(v => ({ mes: m0 + Math.max(1, v.em), rev: (v.rev || 0) * k })) : []
+  };
+  if (M.vigMes) { const d = Math.max(0, M.vigMes - M.mPleno); M.mPleno += d; M.mMat += d; }
+  const pr = (m) => medMesTxt(m);
+  M.not.push({ mes: m0, t: 'neu', x: `${M.ato} publicado. ${P.dReg > 0 ? 'Regulamentação até ' + pr(M.mReg) + '; ' : ''}implantação até ${pr(M.mPleno)}; efeito pleno de ${pr(M.mPleno)} a ${pr(M.mPleno + P.dPl)}.` });
+  medidasDe(g).push(M);
+  const L = medidasDe(g);
+  if (L.length > 60) { const i = L.findIndex(m => !medAtivo(m)); L.splice(i >= 0 ? i : 0, 1); }
+  return M;
+}
+const medRamp = (M, t) => { if (t < M.mReg) return 0; const x = clamp((t - M.mReg + 1) / Math.max(1, M.mPleno - M.mReg), 0, 1); return x * x * (3 - 2 * x) * .6 + x * .4; };
+function medSyncFiscal(g, M, r) {
+  const f = M.fAnt + (1 - M.fAnt) * r;
+  const alvo = { custo: M.fis.custo * M.mCusto * f, extra: M.fis.extra * M.mCusto * f, receita: M.fis.receita * (M.fis.receita > 0 ? M.mRec : 1) * f };
+  for (const c of ['custo', 'extra', 'receita']) { const d = alvo[c] - M.fisAp[c]; if (d) { g.fiscal[c] += d; M.fisAp[c] = alvo[c]; } }
+}
+function medFase(g, M) {
+  if (!medAtivo(M)) return 'fim';
+  const t = g.mes;
+  if (t < M.mReg) return t === M.m0 ? 'pub' : 'reg';
+  if (t < M.mPleno) return 'imp';
+  if (t < M.mPleno + M.dPl) return 'pleno';
+  if (t < M.mMat) return 'mat';
+  return 'fim';
+}
+const medDoProp = (g, prop) => medL(g).find(m => m.pid === prop.id) || null;
+// desfaz o que já entrou (anúncio + rampa + fiscal). frac: parte desfeita
+function medidaReverte(g, M, frac, estado) {
+  const k = M.k;
+  applyFx(g, M.ag, -k * frac);
+  applyFx(g, M.ra, -k * M.efAp * frac);
+  M.efAp *= (1 - frac);
+  for (const c of ['custo', 'extra', 'receita']) { const d = M.fisAp[c] * frac; g.fiscal[c] -= d; M.fisAp[c] -= d; M.fis[c] *= (1 - frac); }
+  if (M.once > 0 && estado !== 'revogada') g.eco.divida += M.once * frac / ((g.eco.pibNom || 12000) / 100);
+  if (g.pendentes) g.pendentes = g.pendentes.filter(p => p.pid !== M.pid);
+  M.estado = estado; M.probs = []; M.fim = g.mes;
+}
+function medNoticia(g, M, tom, txt, notas) {
+  M.not.unshift({ mes: g.mes, t: tom, x: txt }); if (M.not.length > 8) M.not.length = 8;
+  if (notas) notas.push({ t: tom, x: txt });
+  g.feed.unshift({ mes: g.mes, src: tom === 'pos' ? 'globo' : tom === 'neg' ? 'antag' : 'carta', txt: tom === 'neg' ? txt.toUpperCase() : txt });
+  g.feed = g.feed.slice(0, 40);
+  linhaAdd(g, 'MEDIDAS', txt);
+}
+const medVigRec = (g, M) => (g.pendentes || []).reduce((a, q) => a + (q.pid === M.pid && q.def && q.def.fis && q.def.fis.receita > 0 ? q.def.fis.receita : 0), 0);
+const medProb = (M, k) => M.probs.find(p => p.k === k);
+function medAddProb(M, k, mes, fim, extra) { M.probs = M.probs.filter(p => p.k !== k); M.probs.push(Object.assign({ k, mes, fim }, extra || {})); }
+const medDesloca = (M, d) => { M.mPleno += d; M.mMat += d; };
+function medQuemAtinge(g, M) { // grupo atingido que mais pesa (perdedor com aprovação mais baixa)
+  const c = M.per.filter(x => g.groups[x.q] != null).sort((a, b) => g.groups[a.q] - g.groups[b.q]);
+  return c.length ? c[0] : null;
+}
+const MED_AUTOR_ADI = { sindicatos: 'as centrais sindicais', servidores: 'as entidades do funcionalismo', empresariado: 'a confederação patronal do setor', agro: 'a confederação do agronegócio', mercado: 'entidades do mercado financeiro', caminhoneiros: 'a confederação dos transportadores', policiais: 'as associações de classe da segurança', universitarios: 'entidades da educação e da cultura', evangelicos: 'bancadas e entidades religiosas', catolicos: 'entidades religiosas' };
+const MED_MOTIVO_ATRASO = { obra: 'a licitação foi impugnada', beneficio: 'o cadastro dos beneficiários atrasou', estatal: 'o processo de transição emperrou', programa: 'a pasta não fechou o cronograma', regulacao: 'o regulamento saiu atrasado' };
+
+// sorteia no máximo um acontecimento por medida e mês
+function medSorteia(g, M, fase, ctx) {
+  const t = g.mes, idade = t - M.m0, nv = M.stfNivel;
+  const gasta = Math.abs(M.fis.custo) + Math.abs(M.fis.extra) > .5, comp = ctx.comp;
+  const E = [];
+  const add = (k, ok, p, run) => { if (ok && p > 0) E.push({ k, p, run }); };
+  const C = (k) => M.cont[k] || 0;
+  const prog = fase === 'reg' || fase === 'imp' || fase === 'pub';
+  add('atraso', (gasta || ['regulacao', 'estatal', 'programa', 'obra'].includes(M.tipo)) && (fase === 'reg' || fase === 'imp') && C('atraso') < 2,
+    .015 + .04 * (1 - comp) + .025 * M.sz + (ctx.aperto ? .02 : 0) + .015 * M.acel, () => {
+      const d = 1 + Math.floor(medU(g, M, t + 'ad') * 3); medDesloca(M, d); medAddProb(M, 'atraso', t, null, { d });
+      return ['neg', `Atraso ${medEm(M.nm)}: ${MED_MOTIVO_ATRASO[M.tipo] || 'o cronograma escorregou'} e o efeito pleno vai para ${medMesTxt(M.mPleno)} (mais ${d} ${d === 1 ? 'mês' : 'meses'})`];
+    });
+  add('estouro', gasta && M.tipo !== 'beneficio' && M.fis.custo + M.fis.extra > 0 && fase === 'imp' && C('estouro') < 2,
+    .012 + .03 * (1 - comp) + .03 * M.sz + .01 * M.acel, () => {
+      const f = Math.min(1.5, 1.1 + .3 * medU(g, M, t + 'eo') * (1 + (1 - comp))); M.mCusto *= f; medAddProb(M, 'estouro', t, t + 8, { f });
+      return ['neg', `Custo ${medDe(M.nm)} estoura: a execução sai ${Math.round((f - 1) * 100)}% mais cara que o previsto`];
+    });
+  add('contingenciamento', ctx.aperto && M.fis.custo + M.fis.extra > 0 && fase === 'imp' && M.congelaAte < t && C('conting') < 1, .12, () => {
+    medDesloca(M, 2); M.congelaAte = t + 1; medAddProb(M, 'contingenciamento', t, t + 3);
+    return ['neg', `Contingenciamento: com o primário fora da meta, a Fazenda segura o dinheiro ${medDe(M.nm)} e o cronograma escorrega dois meses`];
+  });
+  add('tcu', fase === 'imp' && (M.sz >= .35 || (M.tipo === 'obra' && M.sz >= .15)) && C('tcu') < 1, .03 + .04 * M.sz, () => {
+    M.congelaAte = t + 1; M.mEf *= .92; g.escandalo = clamp(g.escandalo + 3, 0, 100); medAddProb(M, 'tcu', t, t + 5);
+    try { xEvento(g, 'escandalo', { txt: 'TCU aponta falhas na execução ' + medDe(M.nm) }); } catch (e) { }
+    return ['neg', `O TCU aponta falhas na execução ${medDe(M.nm)} e manda corrigir antes de novos repasses`];
+  });
+  const per = medQuemAtinge(g, M), pq = per ? g.groups[per.q] : 100;
+  add('lobby', per && prog && idade <= 8 && C('lobby') < 1, .03 + .012 * Math.min(3, M.per.length), () => {
+    const ok = medU(g, M, t + 'lb') < .45, nome = medNomeG(per.q);
+    if (ok) { M.mEf *= .88; medDesloca(M, 1); g.groups[per.q] = clamp(g.groups[per.q] + 2, 1, 99); medAddProb(M, 'lobby', t, t + 4); return ['neg', `A pressão de ${nome.toLowerCase()} arranca ajustes ${medEm(M.nm)}: o regulamento sai mais brando e a implantação perde ritmo`]; }
+    g.groups[per.q] = clamp(g.groups[per.q] - 1, 1, 99);
+    return ['neu', `${nome} pressiona o Congresso contra ${M.nm}, mas o governo mantém o desenho da medida`];
+  });
+  add('protesto', per && !g.protesto && (g.protCool || 0) <= t && prog && idade <= 10 && pq < 55 && C('prot') < 2, .045 + (pq < 40 ? .04 : 0), () => {
+    const greve = ['servidores', 'sindicatos', 'policiais', 'caminhoneiros', 'carteira'].includes(per.q) && medU(g, M, t + 'gv') < .5, nome = medNomeG(per.q);
+    if (greve) { medAddProb(M, 'greve', t, t + 2, { q: per.q }); return ['neg', `Greve de ${nome.toLowerCase()} contra ${M.nm}: categoria cruza os braços e cobra revisão da medida`]; }
+    novoProtesto(g, per.q, M.topic, 8); medAddProb(M, 'protesto', t, t + 3, { q: per.q });
+    return null;
+  });
+  const pAdi = ({ ok: .01, controverso: .07, inconstitucional: .12 }[nv] || .01) * (1 + Math.max(0, g.stf - 40) / 60) * (M.inst === 'DEC' || M.inst === 'ADM' ? 1.2 : 1);
+  add('adi', !medProb(M, 'adi') && C('adi') < 1 && idade <= 12 && (nv !== 'ok' || M.per.length > 0) && fase !== 'fim' && M.estado === 'ativa', pAdi, () => {
+    const autor = MED_AUTOR_ADI[per ? per.q : ''] || 'um partido de oposição';
+    const pl = ({ ok: .05, controverso: .3, inconstitucional: .5 }[nv] || .05) * (g.stf > 50 ? 1.3 : 1);
+    const lim = medU(g, M, t + 'lim') < pl, fim = t + 2 + Math.floor(medU(g, M, t + 'jul') * 3);
+    medAddProb(M, 'adi', t, fim, { lim, autor });
+    try { xEvento(g, 'escandalo', { txt: 'Ação no STF contra ' + M.nm }); } catch (e) { }
+    if (lim) { M.estado = 'suspensa'; M.susp = t; return ['neg', `Liminar no STF suspende ${M.nm}: ${autor} questionou ${M.ato} e o plenário julga a ação em ${medMesTxt(fim)}`]; }
+    return ['neg', `${autor[0].toUpperCase() + autor.slice(1)} aciona o STF contra ${M.ato} (${M.nm}); sem liminar, a medida segue valendo até o julgamento em ${medMesTxt(fim)}`];
+  });
+  add('desabastecimento', M.tipo === 'preco' && idade >= 2 && idade <= 10 && C('desab') < 2, .08, () => {
+    applyFx(g, { e: { ipca: .15, conf: -1.5 }, g: { periferia: -2, classemedia: -1.5 } }, M.k); medAddProb(M, 'desabastecimento', t, t + 3);
+    return ['neg', `Faltam produtos nas prateleiras: com ${M.nm}, o preço travado afasta a oferta e cresce o mercado paralelo`];
+  });
+  add('elisao', M.tipo === 'tributo' && (M.fis.receita > 0 || medVigRec(g, M) > 0) && idade >= 2 && idade <= 14 && C('elisao') < 1, .06, () => {
+    const red = .08 + .2 * medU(g, M, t + 'el'); M.mRec *= (1 - red); medAddProb(M, 'elisao', t, t + 8);
+    for (const q of (g.pendentes || [])) if (q.pid === M.pid && q.def && q.def.fis && q.def.fis.receita > 0) q.def.fis.receita *= (1 - red); // receita que ainda vai entrar pela anterioridade tributária
+    return ['neg', `Elisão fiscal: contribuintes reorganizam a base e a arrecadação ${medDe(M.nm)} vem ${Math.round(red * 100)}% abaixo da prevista`];
+  });
+  add('demanda', M.tipo === 'beneficio' && (fase === 'imp' || fase === 'pleno') && C('demanda') < 1, .06, () => {
+    const f = 1.08 + .15 * medU(g, M, t + 'dm'); M.mCusto *= f; medAddProb(M, 'demanda', t, t + 6);
+    for (const x of M.gan.slice(0, 2)) if (g.groups[x.q] != null) g.groups[x.q] = clamp(g.groups[x.q] + 1.5, 1, 99);
+    return ['neu', `Procura acima do previsto: mais gente se habilita ${medA(M.nm)} e a despesa sobe ${Math.round((f - 1) * 100)}%, mas os beneficiários aprovam`];
+  });
+  add('conformidade', M.tipo === 'regulacao' && fase === 'imp' && C('conf') < 1, .07, () => {
+    M.mEf *= .92; applyFx(g, { e: { pib: -.03, conf: -1 }, g: { empresariado: -1.5 } }, M.k); medAddProb(M, 'conformidade', t, t + 6);
+    return ['neg', `Setor reclama do custo de conformidade ${medDe(M.nm)}: empresas gastam com adaptação e a implantação perde ritmo`];
+  });
+  add('privatizacao', (M.priv || M.estat) && idade >= 3 && idade <= 16 && C('priv') < 1, .09, () => {
+    if (M.estat) { M.mCusto *= 1.2; medAddProb(M, 'estouro', t, t + 8); return ['neg', `Estatal reassumida exige aporte: o Tesouro cobre ${M.nm} com 20% a mais que o previsto`]; }
+    if (medU(g, M, t + 'pv') < .5) { applyFx(g, { e: { ipca: .08 }, g: { classemedia: -2, periferia: -1.5 } }, M.k); medAddProb(M, 'tarifa', t, t + 6); return ['neg', `Tarifa sobe após ${M.nm}: o consumidor reclama e a nova gestora promete melhorar o serviço`]; }
+    applyFx(g, { e: { conf: 1.5 }, g: { mercado: 2, empresariado: 1.5, classemedia: 1 } }, M.k);
+    return ['pos', `Nova gestão acelera investimentos após ${M.nm}: filas e falhas no serviço caem e o mercado aplaude`];
+  });
+  add('supera', (fase === 'imp' || fase === 'pleno') && C('supera') < 1 && M.mEf < 1.3, .008 + .02 * clamp(comp, 0, 1), () => {
+    M.mEf = Math.min(1.4, M.mEf * (1.12 + .12 * medU(g, M, t + 'sp')));
+    for (const x of M.gan.slice(0, 2)) if (g.groups[x.q] != null) g.groups[x.q] = clamp(g.groups[x.q] + 1.5, 1, 99);
+    return ['pos', `${medCap(M.nm)} funciona melhor que o previsto: a execução ganha ritmo e os resultados aparecem antes do esperado`];
+  });
+  add('antecipa', fase === 'imp' && M.mPleno - t >= 2 && C('antecipa') < 1, .012 + .02 * clamp(comp, 0, 1), () => {
+    medDesloca(M, -1); return ['pos', `Indicadores ${medDe(M.nm)} melhoram antes do prazo: o efeito pleno é antecipado em um mês, para ${medMesTxt(M.mPleno)}`];
+  });
+  add('adapta', (fase === 'pleno' || fase === 'mat') && ['regulacao', 'tributo', 'preco', 'conduta'].includes(M.tipo) && C('adapta') < 1, .06, () => {
+    M.mEf = Math.min(1.4, M.mEf * 1.08); M.mRec = Math.min(1, M.mRec * 1.08);
+    M.probs = M.probs.filter(p => p.k !== 'conformidade' && p.k !== 'elisao');
+    return ['pos', `O setor se adapta ${medA(M.nm)}: o custo de conformidade cai e a medida ganha tração`];
+  });
+  let melhor = null, mr = 1;
+  for (const e of E) { const u = medU(g, M, t + '|' + e.k), r = u / e.p; if (u < e.p && r < mr) { mr = r; melhor = e; } }
+  if (!melhor) return null;
+  const chave = { contingenciamento: 'conting', desabastecimento: 'desab', protesto: 'prot', conformidade: 'conf', privatizacao: 'priv' }[melhor.k] || melhor.k;
+  const out = melhor.run();
+  M.cont[chave] = (M.cont[chave] || 0) + 1; M.ultEv = t;
+  return out === null ? { k: melhor.k, ja: true } : { k: melhor.k, tom: out[0], txt: out[1] };
+}
+// julgamento da ação no STF e fim dos problemas com prazo
+function medProblemas(g, M, notas) {
+  const t = g.mes;
+  for (const p of M.probs.slice()) {
+    if (p.k === 'greve' && t < p.fim) { applyFx(g, { e: { pib: -.02 }, g: { [p.q]: -1 } }, 1); }
+    if (p.k === 'adi' && t >= p.fim) {
+      M.probs = M.probs.filter(x => x !== p);
+      const mini = { id: M.pid, scale: M.k, stf: { nivel: M.stfNivel }, cats: M.cats, fx: { g: Object.fromEntries(Object.keys(M.ag.g || {}).map(c => [c, ((M.ag.g || {})[c] || 0) + ((M.ra.g || {})[c] || 0)])) } };
+      let j = null; try { j = julgamentoSTF(g, mini); } catch (e) { j = null; }
+      let suspende = !!(j && j.suspende);
+      if (suspende && p.ajuste && medU(g, M, t + 'aj') < .5) suspende = false;
+      if (suspende) {
+        medidaReverte(g, M, 1, 'derrubada'); g.stf = clamp(g.stf + 8, 0, 100); for (const kk of GKEYS) g.groups[kk] = clamp(g.groups[kk] - 1, 1, 99);
+        medNoticia(g, M, 'neg', `STF derruba ${M.nm}${j ? ' por ' + j.placar : ''}: ${M.ato} perde a eficácia e os efeitos já produzidos são desfeitos`, notas);
+      } else {
+        if (M.estado === 'suspensa') { const d = Math.max(1, t - (M.susp || t)); M.mReg += d; medDesloca(M, d); M.estado = 'ativa'; }
+        g.stf = clamp(g.stf - 2, 0, 100);
+        medNoticia(g, M, 'pos', `STF rejeita a ação contra ${M.nm}${j ? ' por ' + j.placar : ''}: a medida segue valendo${p.lim ? ' e o cronograma é retomado' : ''}`, notas);
+      }
+      continue;
+    }
+    if (p.fim != null && t >= p.fim) {
+      M.probs = M.probs.filter(x => x !== p);
+      if (p.k === 'greve') medNoticia(g, M, 'neu', `A greve contra ${M.nm} termina sem acordo formal e a categoria volta ao trabalho`, notas);
+    }
+    if (p.k === 'protesto' && !g.protesto) M.probs = M.probs.filter(x => x !== p);
+    if (p.k === 'atraso' && t >= M.mPleno) M.probs = M.probs.filter(x => x !== p);
+  }
+}
+function medidasMensal(g, notas) {
+  const L = medidasDe(g); if (!L.length) return;
+  const t = g.mes; let nEv = 0;
+  let aperto = false; try { aperto = metaFiscal(g).status === 'descumprida'; } catch (e) { }
+  const ordem = L.map((m, i) => i).sort((a, b) => medU(g, L[a], 'o' + t) - medU(g, L[b], 'o' + t)); // ordem embaralhada por mês (o teto de acontecimentos não favorece as mais antigas)
+  for (const i of ordem) {
+    const M = L[i]; if (!medAtivo(M)) continue;
+    medProblemas(g, M, notas);
+    if (!medAtivo(M)) continue;
+    const fase = medFase(g, M);
+    if (M.estado === 'ativa') {
+      const r = medRamp(M, t);
+      if (M.congelaAte < t && r > M.aplic) { const d = r - M.aplic; applyFx(g, M.ra, M.k * d * M.mEf); M.efAp += d * M.mEf; M.aplic = r; }
+      medSyncFiscal(g, M, M.aplic);
+    }
+    if (M.estado === 'ativa' && fase === 'fim' && !M.probs.length) { M.estado = 'consolidada'; M.fim = t; medNoticia(g, M, 'neu', `${medCap(M.nm)} completa o ciclo: efeito consolidado e política incorporada à rotina do governo`, notas); continue; }
+    if (nEv >= 3 || t <= M.ultEv + 1 || fase === 'fim' || M.estado !== 'ativa') continue;
+    let comp = M.comp; try { if (M.pasta) comp = clamp(entregaPasta(g, M.pasta) / 100 + .1, 0, 1); } catch (e) { }
+    const ev = medSorteia(g, M, fase, { comp, aperto });
+    if (ev) { nEv++; if (!ev.ja) medNoticia(g, M, ev.tom, ev.txt, notas); else { M.not.unshift({ mes: t, t: 'neg', x: `Protesto contra ${M.nm}: ruas ocupadas, veja o Termômetro das ruas` }); if (M.not.length > 8) M.not.length = 8; } }
+  }
+}
+// ---- ações do jogador sobre uma medida em vigor ----
+function medPodeAcelerar(g, M) {
+  const fase = medFase(g, M);
+  if (g.acoes <= 0) return { ok: false, t: 'Sem ações neste mês' };
+  if (M.estado !== 'ativa') return { ok: false, t: 'Medida suspensa ou encerrada' };
+  if (fase !== 'reg' && fase !== 'imp' && fase !== 'pub') return { ok: false, t: 'Já em efeito pleno' };
+  if (M.acel >= 2) return { ok: false, t: 'Já acelerada duas vezes' };
+  if (M.mPleno - Math.max(g.mes, M.mReg) < 2) return { ok: false, t: 'Faltam menos de dois meses' };
+  return { ok: true, t: 'Custa 1 ação e ~6% a mais no custo; aumenta o risco de falhas' };
+}
+function medAcelera(g, id) {
+  const M = medL(g).find(m => m.id === id); if (!M || !medPodeAcelerar(g, M).ok) return;
+  g.acoes--; g.pes.energia = clamp(g.pes.energia - 8, 0, 100); g.pes.estresse = clamp(g.pes.estresse + 2, 0, 100);
+  const rest = M.mPleno - Math.max(g.mes, M.mReg), d = clamp(Math.round(rest * .3), 1, rest - 1);
+  medDesloca(M, -d); M.mCusto *= 1.06; M.acel++;
+  medNoticia(g, M, 'pos', `Governo acelera ${M.nm}: força-tarefa antecipa o efeito pleno para ${medMesTxt(M.mPleno)}, com custo um pouco maior`);
+}
+function medProbRemedio(M) { for (const k of MED_REMEDIO) { const p = medProb(M, k); if (p && !(k === 'adi' && p.ajuste)) return p; } return null; }
+function medPodeAjustar(g, M) {
+  if (g.acoes <= 0) return { ok: false, t: 'Sem ações neste mês', l: 'Ajustar' };
+  if (M.estado === 'revogada' || M.estado === 'caducada' || M.estado === 'derrubada' || M.estado === 'consolidada') return { ok: false, t: 'Medida encerrada', l: 'Ajustar' };
+  const p = medProbRemedio(M);
+  if (p) return { ok: true, t: 'Custa 1 ação: reduz o problema "' + MED_PROB[p.k][0] + '"', l: 'Ajustar: ' + MED_PROB[p.k][0].toLowerCase() };
+  if (medFase(g, M) === 'reg' && M.mReg - g.mes >= 2) return { ok: true, t: 'Custa 1 ação: antecipa o regulamento em dois meses', l: 'Regulamentar já' };
+  return { ok: false, t: 'Nenhum problema ativo para ajustar', l: 'Ajustar' };
+}
+function medAjusta(g, id) {
+  const M = medL(g).find(m => m.id === id); if (!M || !medPodeAjustar(g, M).ok) return;
+  g.acoes--; g.pes.energia = clamp(g.pes.energia - 6, 0, 100); g.pes.estresse = clamp(g.pes.estresse + 1, 0, 100);
+  const p = medProbRemedio(M);
+  if (!p) { const d = 2; M.mReg -= d; medDesloca(M, -d); medNoticia(g, M, 'pos', `Regulamento ${medDe(M.nm)} sai antes do previsto: a implantação começa em ${medMesTxt(M.mReg)}`); return; }
+  const tira = () => { M.probs = M.probs.filter(x => x !== p); };
+  let txt = `Governo ajusta ${M.nm}`;
+  if (p.k === 'atraso') { medDesloca(M, -1); tira(); txt = `Força-tarefa recupera um mês do cronograma ${medDe(M.nm)}`; }
+  else if (p.k === 'estouro') { M.mCusto = 1 + (M.mCusto - 1) * .5; tira(); txt = `Renegociação de contratos reduz pela metade o estouro ${medDe(M.nm)}`; }
+  else if (p.k === 'tcu') { tira(); M.mEf = Math.min(1, M.mEf + .05); g.escandalo = clamp(g.escandalo - 2, 0, 100); txt = `Governo cumpre as determinações do TCU e ${M.nm} volta ao ritmo`; }
+  else if (p.k === 'contingenciamento') { tira(); medDesloca(M, -1); txt = `Fazenda libera parte da verba contingenciada ${medDe(M.nm)}`; }
+  else if (p.k === 'lobby') { tira(); M.mEf = Math.min(1, M.mEf + .05); txt = `Governo reabre o diálogo com os atingidos e recompõe o desenho ${medDe(M.nm)}`; }
+  else if (p.k === 'protesto') { tira(); if (p.q && g.groups[p.q] != null) g.groups[p.q] = clamp(g.groups[p.q] + 3, 1, 99); txt = `Governo abre negociação com os manifestantes e ajusta ${M.nm}`; }
+  else if (p.k === 'greve') { tira(); if (p.q && g.groups[p.q] != null) g.groups[p.q] = clamp(g.groups[p.q] + 2, 1, 99); txt = `Acordo encerra a greve contra ${M.nm}`; }
+  else if (p.k === 'adi') { p.ajuste = true; txt = `AGU reforça a defesa e ajusta o texto ${medDe(M.nm)}: a chance de derrubada no STF cai`; }
+  else if (p.k === 'elisao') { M.mRec = Math.min(1, M.mRec + (1 - M.mRec) * .5); tira(); txt = `Receita fecha brechas e recupera metade da arrecadação perdida ${medDe(M.nm)}`; }
+  else if (p.k === 'conformidade') { M.mEf = Math.min(1, M.mEf + .05); tira(); txt = `Regulamentação complementar simplifica a conformidade ${medDe(M.nm)}`; }
+  else if (p.k === 'desabastecimento' || p.k === 'tarifa') { tira(); applyFx(g, { e: { ipca: -.08 } }, M.k); txt = `Governo ajusta a regra e normaliza a oferta ligada ${medA(M.nm)}`; }
+  else if (p.k === 'demanda') { tira(); M.mCusto = 1 + (M.mCusto - 1) * .6; txt = `Cadastro é revisto e a despesa ${medDe(M.nm)} volta para perto do previsto`; }
+  medNoticia(g, M, 'pos', txt);
+}
+// a proposta aprovada reduz/extingue o mesmo objeto de uma medida que cria/amplia (ou vice-versa)? então é a revogação dela
+function medAchaRevogada(g, prop) {
+  const pol = prop.entendimento ? prop.entendimento.polaridade : 0; if (!pol) return null;
+  const ids = (prop.objs || []).filter(o => o.sg).map(o => o.id); if (!ids.length) return null;
+  return medL(g).find(m => medAtivo(m) && m.pol && m.pol * pol < 0 && (m.objIds || []).some(i => ids.includes(i))) || null;
+}
+const medRevogaDireto = (M) => (M.inst === 'DEC' || M.inst === 'ADM' || M.inst === 'COM') && !M.mp;
+function medPodeRevogar(g, M) {
+  if (!medAtivo(M)) return { ok: false, t: 'Medida já encerrada', l: 'Revogar' };
+  if (M.priv) return { ok: false, t: 'Venda concluída: só reestatização por nova lei', l: 'Revogar' };
+  if (g.acoes <= 0) return { ok: false, t: 'Sem ações neste mês', l: medRevogaDireto(M) ? 'Revogar por decreto' : 'Propor revogação' };
+  return medRevogaDireto(M) ? { ok: true, t: 'Custa 1 ação; o recuo desgasta o governo', l: 'Revogar por decreto' } : { ok: true, t: 'Leva o texto "Revogar…" à Mesa para o fluxo normal de proposta', l: 'Propor revogação' };
+}
+function medRevoga(g, id) {
+  const M = medL(g).find(m => m.id === id); if (!M || !medPodeRevogar(g, M).ok) return false;
+  if (!medRevogaDireto(M)) {
+    const texto = 'Revogar ' + M.topic;
+    g.revogPend = { texto, mid: M.id };
+    if (!g.minProp) g.minProp = { lista: [], hist: [], eng: {}, leal: {}, vazou: {}, usados: [], seq: 0, ger: null, aj: null };
+    g.minProp.aj = { texto, n: Date.now() };
+    return true;
+  }
+  g.acoes--; g.pes.energia = clamp(g.pes.energia - 8, 0, 100); g.pes.estresse = clamp(g.pes.estresse + 4, 0, 100);
+  medidaReverte(g, M, .85, 'revogada');
+  for (const kk of GKEYS) g.groups[kk] = clamp(g.groups[kk] - .8, 1, 99);
+  g.escandalo = clamp(g.escandalo + 1, 0, 100); estOf(g).revogacoes = (estOf(g).revogacoes || 0) + 1;
+  medNoticia(g, M, 'neu', `Governo revoga ${M.ato} (${M.nm}): efeitos já produzidos são em grande parte desfeitos e o recuo custa capital político`);
+  return false;
+}
+// MP: convertida em lei (continua o ciclo); caducada/rejeitada (desfaz 70% do que entrou, como antes)
+function medMPConvertida(g, prop) { const M = medDoProp(g, prop); if (M) { M.mp = false; M.not.unshift({ mes: g.mes, t: 'pos', x: 'MP convertida em lei pelo Congresso: a medida deixa de ter prazo de caducidade' }); } }
+// resumo para a Mesa e o painel
+function medResumo(g) {
+  const L = medL(g).filter(medAtivo);
+  const prob = L.filter(m => m.probs.length || m.estado === 'suspensa').length;
+  const imp = L.filter(m => ['pub', 'reg', 'imp'].includes(medFase(g, m))).length;
+  return { n: L.length, imp, prob, susp: L.filter(m => m.estado === 'suspensa').length, pleno: L.filter(m => ['pleno', 'mat'].includes(medFase(g, m))).length };
+}
+function medResumoMesa(g) {
+  const r = medResumo(g); if (!r.n) return null;
+  const partes = [];
+  if (r.imp) partes.push(`${r.imp} ${r.imp === 1 ? 'medida em implantação' : 'medidas em implantação'}`);
+  if (r.pleno) partes.push(`${r.pleno} em efeito pleno ou maturação`);
+  if (r.prob) partes.push(`${r.prob} com problema`);
+  return { prob: r.prob, titulo: partes.join(', ') || `${r.n} medidas em vigor`, ctx: medL(g).filter(m => medAtivo(m) && m.probs.length).slice(0, 2).map(m => `${m.topic}: ${MED_PROB[m.probs[0].k][0].toLowerCase()}`).join(' · ') || 'Veja prazos, custos previstos e realizados e acontecimentos de cada medida na seção Medidas.' };
+}
+function medIndicadores(M) {
+  const L = [], k = M.k;
+  for (const key in MED_IND) {
+    const [grp, c] = key.split('.');
+    const a = ((M.ag || {})[grp] || {})[c] || 0, r = ((M.ra || {})[grp] || {})[c] || 0;
+    const prev = (a + r) * k, real = (a + r * M.efAp) * k;
+    if (Math.abs(prev) < 1e-9) continue;
+    const I = MED_IND[key];
+    L.push({ key, nome: I[0], un: I[1], d: I[2], prev, real, bom: (prev * I[4]) > 0, peso: Math.abs(prev) * I[3] });
+  }
+  return L.sort((a, b) => b.peso - a.peso).slice(0, 3);
+}
+function medPassos(g, M) {
+  const t = g.mes, L = [];
+  const it = (g.pauta || []).find(x => x.prop && x.prop.id === M.pid);
+  if (M.mp && it) L.push({ mes: it.mesEnvio + MP_PRAZO, x: 'Prazo da MP: perde a eficácia se o Congresso não votar' });
+  const adi = medProb(M, 'adi'); if (adi) L.push({ mes: adi.fim, x: 'Julgamento da ação no STF' });
+  if (M.vigMes && M.vigMes > t) L.push({ mes: M.vigMes, x: 'Anterioridade cumprida: arrecadação do aumento começa' });
+  if (M.mReg > t) L.push({ mes: M.mReg, x: 'Regulamentação concluída; começa a implantação' });
+  if (M.mPleno > t) L.push({ mes: M.mPleno, x: 'Implantação completa: efeito pleno' });
+  if (M.mPleno + M.dPl > t) L.push({ mes: M.mPleno + M.dPl, x: 'Maturação: o setor se adapta e os resultados se firmam' });
+  if (M.mMat > t) L.push({ mes: M.mMat, x: 'Ciclo concluído' });
+  return L.sort((a, b) => a.mes - b.mes).slice(0, 4);
+}
+
+function MedCartao({ g, M, upd, irPara }) {
+  const T = MED_TIPOS[M.tipo] || MED_TIPOS.programa, fase = medFase(g, M), ativo = medAtivo(M);
+  const est = MED_ESTADOS[M.estado] || MED_ESTADOS.ativa;
+  const ix = MED_FASES.findIndex(f => f[0] === fase), fimOk = fase === 'fim' && M.estado === 'consolidada';
+  const datas = { pub: M.m0, reg: M.mReg, imp: M.mReg, pleno: M.mPleno, mat: M.mPleno + M.dPl };
+  const ind = medIndicadores(M), pas = ativo ? medPassos(g, M) : [];
+  const pa = medPodeAcelerar(g, M), pj = medPodeAjustar(g, M), pv = medPodeRevogar(g, M);
+  const linhas = [];
+  const vgP = (M.vigIt || []).reduce((a, v) => a + v.rev, 0), vgR = (M.vigIt || []).reduce((a, v) => a + (v.mes < g.mes ? v.rev : 0), 0); // receita que depende da anterioridade tributária
+  const c1 = { prev: (M.fis.custo + M.fis.extra), real: (M.fisAp.custo + M.fisAp.extra) }, r1 = { prev: M.fis.receita + vgP, real: M.fisAp.receita + vgR };
+  if (Math.abs(c1.prev) >= .05) linhas.push({ nome: 'Despesa', un: ' bi/ano', d: 1, prev: c1.prev, real: c1.real, ruim: M.mCusto > 1.05 });
+  if (Math.abs(r1.prev) >= .05) linhas.push({ nome: 'Receita', un: ' bi/ano', d: 1, prev: r1.prev, real: r1.real, ruim: M.mRec < .95 });
+  for (const x of ind) linhas.push({ nome: x.nome, un: x.un, d: x.d, prev: x.prev, real: x.real, bom: x.bom, ind: true });
+  const pct = Math.round(M.aplic * 100);
+  return html`<article className="med-card" data-med=${M.id} data-tipo=${M.tipo} data-fase=${fase} data-estado=${M.estado}>
+    <header className="med-head">
+      <span className="med-ic" aria-hidden="true"><${Icon} n=${T.ic} s=${20} /></span>
+      <div className="min-w-0">
+        <h3 className="med-tit">${M.topic[0].toUpperCase() + M.topic.slice(1)}</h3>
+        <div className="med-chips"><${Tag}>${T.nome}</${Tag}><${Tag}>${M.ato}</${Tag}><${Tag}>aprovada em ${medMesTxt(M.m0)}</${Tag}><${Tag} cor=${est[1]}>${est[0]}</${Tag}>${M.mp && html`<${Tag} cor="var(--ambar)">aguarda o Congresso</${Tag}>`}</div>
+      </div>
+    </header>
+    <ol className="med-fases" aria-label="Fases da medida">${MED_FASES.map((f, i) => {
+      const pulada = f[0] === 'reg' && M.dReg === 0;
+      const st = !ativo && !fimOk ? (i <= ix && ix >= 0 ? 'feito' : 'fut') : fimOk || (ix >= 0 && i < ix) ? 'feito' : i === ix ? 'atual' : 'fut';
+      const quando = f[0] === 'reg' ? (pulada ? 'dispensada' : 'até ' + medMesTxt(datas.reg)) : (f[0] === 'pub' ? medMesTxt(datas.pub) : 'a partir de ' + medMesTxt(datas[f[0]]));
+      return html`<li key=${f[0]} className="med-fase" data-st=${pulada ? 'pulada' : st} aria-current=${st === 'atual' ? 'step' : undefined}><span className="med-dot">${st === 'feito' || pulada ? html`<${Icon} n="Check" s=${10} sw=${3} />` : ''}</span><b>${f[1]}</b><small className="num">${quando}</small></li>`;
+    })}</ol>
+    ${ativo && html`<div className="med-prog" role="img" aria-label=${'Rampa de implantação: ' + pct + '%'}><div className="med-prog-t"><span>Efeito real já aplicado</span><span className="num">${pct}%${M.mEf !== 1 ? ' · rendimento ' + Math.round(M.mEf * 100) + '%' : ''}</span></div><div className="bar-track" style=${{ height: '6px' }}><i style=${{ display: 'block', height: '100%', width: pct + '%', background: M.mEf < .95 ? 'var(--ambar)' : 'var(--verde)' }}></i></div></div>`}
+    ${linhas.length > 0 && html`<div className="med-pr"><div className="eyebrow">Previsto × realizado</div><table><thead><tr><th></th><th>Previsto</th><th>Realizado</th><th></th></tr></thead><tbody>${linhas.map(l => {
+      const r = Math.abs(l.prev) > 1e-9 ? clamp(l.real / l.prev, 0, 1.5) : 0;
+      return html`<tr key=${l.nome}><td>${l.nome}</td><td className="num">${sgn(l.prev, l.d)}${l.un}</td><td className="num" style=${{ color: l.ruim ? 'var(--rubro)' : 'var(--fg)' }}>${sgn(l.real, l.d)}${l.un}</td><td className="med-mini"><i style=${{ width: Math.min(100, r * 100) + '%', background: l.ruim ? 'var(--rubro)' : 'var(--ouro)' }}></i></td></tr>`;
+    })}</tbody></table>${ind.length > 0 && html`<p className="text-xs text-muted">Indicadores: contribuição estimada desta medida, não o valor total do país.</p>`}</div>`}
+    ${M.probs.length > 0 && html`<div className="med-probs" data-testid="med-probs"><div className="eyebrow">Problemas ativos</div><div className="med-chips">${M.probs.map(p => { const P = MED_PROB[p.k] || [p.k, 'var(--ambar)', 'TriangleAlert']; return html`<span key=${p.k} className="chip" style=${{ color: P[1], borderColor: P[1] }}><${Icon} n=${P[2]} s=${12} /> ${P[0]}${p.k === 'adi' && p.lim ? ' (liminar)' : ''}${p.ajuste ? ' (defesa reforçada)' : ''}</span>`; })}</div></div>`}
+    ${pas.length > 0 && html`<div className="med-pas"><div className="eyebrow">Próximas etapas</div><ul>${pas.map((p, i) => html`<li key=${i}><span className="num">${medMesTxt(p.mes)}</span> ${p.x}</li>`)}</ul></div>`}
+    <div className="med-not"><div className="eyebrow">Últimas notícias da medida</div><ul>${M.not.slice(0, 3).map((n, i) => html`<li key=${i} data-t=${n.t}><span className="num">${medMesTxt(n.mes)}</span> ${n.x}</li>`)}</ul></div>
+    ${ativo && html`<div className="med-acoes">
+      <button type="button" className="btn btn-sm btn-ghost" disabled=${!pa.ok} title=${pa.t} onClick=${() => upd(n => { medAcelera(n, M.id); })}><${Icon} n="FastForward" s=${14} /> Acelerar</button>
+      <button type="button" className="btn btn-sm btn-ghost" disabled=${!pj.ok} title=${pj.t} onClick=${() => upd(n => { medAjusta(n, M.id); })}><${Icon} n="Wrench" s=${14} /> ${pj.l}</button>
+      <button type="button" className="btn btn-sm btn-ghost" disabled=${!pv.ok} title=${pv.t} onClick=${() => { upd(n => { medRevoga(n, M.id); }); if (!medRevogaDireto(M)) irPara('mesa'); }}><${Icon} n="Undo2" s=${14} /> ${pv.l}</button>
+    </div>`}
+  </article>`;
+}
+function MedidasVigor({ g, upd, irPara }) {
+  const L = medL(g), vivas = L.filter(medAtivo).slice().reverse(), fim = L.filter(m => !medAtivo(m)).slice().reverse();
+  const R = medResumo(g);
+  const tot = vivas.reduce((a, m) => ({ c: a.c + m.fis.custo + m.fis.extra, ca: a.ca + m.fisAp.custo + m.fisAp.extra, r: a.r + m.fis.receita + (m.vigIt || []).reduce((x, v) => x + v.rev, 0), ra: a.ra + m.fisAp.receita + (m.vigIt || []).reduce((x, v) => x + (v.mes < g.mes ? v.rev : 0), 0) }), { c: 0, ca: 0, r: 0, ra: 0 });
+  return html`<div className="flex flex-col gap-6" data-secao-medidas="1">
+    <${CabecaSecao} eyebrow="Governo" titulo="Medidas em vigor" />
+    <section className="sec med-resumo" aria-label="Resumo das medidas">
+      <div className="faixa" style=${{ marginBottom: '14px' }}></div>
+      <div className="med-kpis">
+        <div><div className="eyebrow">Em vigor</div><div className="num med-kpi">${R.n}</div></div>
+        <div><div className="eyebrow">Em implantação</div><div className="num med-kpi">${R.imp}</div></div>
+        <div><div className="eyebrow">Efeito pleno ou maturação</div><div className="num med-kpi">${R.pleno}</div></div>
+        <div><div className="eyebrow">Com problema</div><div className="num med-kpi" style=${{ color: R.prob ? 'var(--rubro)' : 'var(--fg)' }}>${R.prob}</div></div>
+        <div><div className="eyebrow">Despesa prevista × realizada</div><div className="num med-kpi">${fmt(tot.c, 1)} × ${fmt(tot.ca, 1)}<small> bi/ano</small></div></div>
+        <div><div className="eyebrow">Receita prevista × realizada</div><div className="num med-kpi">${fmt(tot.r, 1)} × ${fmt(tot.ra, 1)}<small> bi/ano</small></div></div>
+      </div>
+      <p className="text-xs text-muted" style=${{ marginTop: '10px' }}>O anúncio mexe na opinião e nas expectativas na hora; o efeito real e o fiscal chegam mês a mês, conforme a medida é regulamentada e implantada. Acelerar, ajustar e revogar custam uma ação.</p>
+    </section>
+    ${vivas.length === 0 && html`<section className="sec"><p className="text-muted">Nenhuma medida em vigor ainda. Medidas aprovadas na Mesa (decretos, leis, MPs, programas, tributos, regulações) aparecem aqui com prazos, custos e acontecimentos.</p></section>`}
+    <div className="med-grid">${vivas.map(M => html`<${MedCartao} key=${M.id} g=${g} M=${M} upd=${upd} irPara=${irPara} />`)}</div>
+    ${fim.length > 0 && html`<section className="sec sec-sm"><div className="eyebrow" style=${{ marginBottom: '8px' }}>Concluídas e encerradas</div><ul className="med-fim">${fim.slice(0, 12).map(M => html`<li key=${M.id}><span className="num">${medMesTxt(M.m0)}</span> <b>${M.nm}</b> <${Tag} cor=${(MED_ESTADOS[M.estado] || MED_ESTADOS.ativa)[1]}>${(MED_ESTADOS[M.estado] || MED_ESTADOS.ativa)[0]}</${Tag}>${M.not[0] ? html` <span className="text-muted text-xs">${M.not[0].x}</span>` : ''}</li>`)}</ul></section>`}
+  </div>`;
+}
+
 /* ============================== EXECUÇÃO DA MEDIDA ============================== */
 /* teto de saliência: uma única medida raramente move a aprovação geral em mais de ~5 pontos (a opinião reage ao conjunto, não a uma linha do orçamento).
    Acima de 3,5 pontos a variação é comprimida por tanh e o movimento de cada grupo é reescalado na mesma proporção. */
@@ -8482,18 +9026,28 @@ function executaProposta(g, prop, resultado) {
   const antes = { ap: aprovacao(g), conf: g.eco.conf, risco: g.eco.risco, stf: g.stf, prim: primario(g) };
   const k = prop.scale;
   const est = estOf(g); let agendados = 0, novoProt = false, segNota = null, bloqNota = null;
+  let medM = null, medRev = null; // v3.6
   if (resultado === 'aprovada') {
-    applyFx(g, prop.fx, k);
+    if (g.revogPend && g.revogPend.texto === prop.texto) { medRev = medidasDe(g).find(m => m.id === g.revogPend.mid && medAtivo(m)) || null; g.revogPend = null; }
+    if (!medRev) medRev = medAchaRevogada(g, prop); // v3.6: proposta que reverte uma medida em vigor (texto livre) desfaz a original
+    if (medRev) { medidaReverte(g, medRev, 1, 'revogada'); estOf(g).revogacoes = (estOf(g).revogacoes || 0) + 1; medNoticia(g, medRev, 'neu', `Revogação aprovada (${ato}): ${medRev.ato} deixa de valer e os efeitos já produzidos são em grande parte desfeitos`); }
+    else { try { medM = medidaCria(g, prop, k, ato); } catch (e) { medM = null; if (typeof console !== 'undefined') console.warn('medidaCria', e); } } // v3.6
+    if (!medRev) {
+    applyFx(g, medM ? medM.ag : prop.fx, k);
     segNota = segAplicaMedida(g, prop, k);
-    g.fiscal.custo += (prop.cost || 0) * k; g.fiscal.receita += ((prop.rev || 0) - vigRev(prop)) * k; g.fiscal.extra += (prop.extra || 0) * k;
+    if (medM) medSyncFiscal(g, medM, 0); // v3.6: custo e receita entram pela rampa (fração inicial conforme o tipo)
+    else { g.fiscal.custo += (prop.cost || 0) * k; g.fiscal.receita += ((prop.rev || 0) - vigRev(prop)) * k; g.fiscal.extra += (prop.extra || 0) * k; }
     if (prop.once > 0) g.eco.divida = Math.max(20, g.eco.divida - prop.once / ((g.eco.pibNom || 12000) / 100));
+    }
     for (const f of prop.flags) {
       if (f.startsWith('priv_')) g.estatais[f.slice(5)] = false;
       else if (!FLAGS_META.includes(f) && !g.flags.includes(f)) g.flags.push(f);
     }
+    if (!medRev) {
     fase3Aprovada(g, prop, k);
     agendados = agendaAtrasos(g, prop) + agendaVigencia(g, prop);
     if ((prop.bloqueio || []).length) bloqNota = aplicaBloqueio(g, prop);
+    }
     if (prop.inst === 'PEC') est.pec = (est.pec || 0) + 1;
     cfPosAprovada(g, prop);
     if (prop.cats.includes('estatizacao')) est.estat = (est.estat || 0) + 1;
@@ -8557,7 +9111,8 @@ function executaProposta(g, prop, resultado) {
   if (resultado === 'aprovada' && prop.absurdo) est.absurdos = (est.absurdos || 0) + 1;
   const marcos = checaMarcos(g);
   return { ato, manchetes, vozes, antes, depois, resolveu, protesto: novoProt, agendados, marcos: marcos.map(m => m.nome), seg: segNota,
-    coer: resultado === 'aprovada' && prop.coerP ? prop.coerP : null, bloqueio: bloqNota, vigencia: resultado === 'aprovada' && prop.vig ? prop.vig.itens.map(v => ({ em: v.em, alvo: v.alvo, rev: v.rev })) : null };
+    coer: resultado === 'aprovada' && prop.coerP ? prop.coerP : null, bloqueio: bloqNota, vigencia: resultado === 'aprovada' && prop.vig ? prop.vig.itens.map(v => ({ em: v.em, alvo: v.alvo, rev: v.rev })) : null,
+    medida: medM ? { tipo: MED_TIPOS[medM.tipo].nome, reg: medM.dReg > 0 ? medMesTxt(medM.mReg) : null, pleno: medMesTxt(medM.mPleno), mat: medMesTxt(medM.mPleno + medM.dPl) } : null, revogou: medRev ? medRev.topic : null };
 }
 
 /* ============================== FIM DO MÊS ============================== */
@@ -8584,6 +9139,7 @@ function fimDoMes(g) {
   }
   AP.mark('crises');
   liquidaPendentes(g, notas);
+  try { medidasMensal(g, notas); } catch (e) { if (typeof console !== 'undefined') console.warn('medidasMensal', e); } // v3.6
   AP.mark('medidas');
   const prim = primario(g);
   const fazTec = g.cfg.ministros.fazenda === 'tecnico' ? 5 : g.cfg.ministros.fazenda === 'outsider' ? -6 : 0;
@@ -8832,7 +9388,7 @@ function apFim(g, S) {
 function luaDeMel(g) { if (g.mes > 6) return; const b = (7 - g.mes) * .12; for (const k of GKEYS) g.groups[k] = clamp(g.groups[k] + b, 1, 99); }
 
 /* ---- linha do mandato ---- */
-const LINHA_CATS = { 'AÇÃO': 'var(--ouro)', CONGRESSO: 'var(--anil)', STF: 'var(--ambar)', CRISE: 'var(--rubro)', ECONOMIA: 'var(--verde)', 'ESCÂNDALO': 'var(--rubro)', RUAS: 'var(--ambar)', 'MINISTÉRIO': 'var(--muted)' };
+const LINHA_CATS = { 'AÇÃO': 'var(--ouro)', CONGRESSO: 'var(--anil)', STF: 'var(--ambar)', CRISE: 'var(--rubro)', ECONOMIA: 'var(--verde)', 'ESCÂNDALO': 'var(--rubro)', RUAS: 'var(--ambar)', 'MINISTÉRIO': 'var(--muted)', MEDIDAS: 'var(--verde)' }; // v3.6
 function linhaAdd(g, cat, txt, mes) { g.linha = g.linha || []; g.linha.unshift({ mes: mes || g.mes, cat, txt }); if (g.linha.length > 150) g.linha.length = 150; }
 function linhaDeNotas(g, notas, mes) {
   for (const n of notas) {
@@ -9161,7 +9717,8 @@ function propDoItem(it) {
   return Object.assign({}, p, { bonus: b, campanha: it.campanha || null });
 }
 const vigRev = (prop) => (prop.vig ? prop.vig.itens.reduce((a, v) => a + v.rev, 0) : 0);
-function reverteProposta(g, prop, frac) {
+function reverteProposta(g, prop, frac, motivo) {
+  { const M = medDoProp(g, prop); if (M && medAtivo(M)) { medidaReverte(g, M, frac, motivo === 'derrubada' ? 'derrubada' : 'caducada'); return; } } // v3.6: desfaz só o que a rampa já aplicou
   const k = prop.scale == null ? 1 : prop.scale;
   applyFx(g, prop.fx, -k * frac);
   if (g.pendentes) g.pendentes = g.pendentes.filter(p => p.pid !== prop.id); // vigência e fiscalização agendadas caem junto
@@ -9259,7 +9816,7 @@ function pautaMensal(g, notas) {
     for (const b in (it.bloc || {})) it.bloc[b] *= .8;
     if (it.trabMes !== g.mes) it.apoioBonus = (it.apoioBonus || 0) - 3;
     if (it.mp && it.meses >= MP_PRAZO) {
-      reverteProposta(g, it.prop, .7); arquiva.push(it);
+      reverteProposta(g, it.prop, .7, 'caducou'); arquiva.push(it);
       notas.push({ t: 'neg', x: `A MP "${it.prop.topic}" caducou sem votação no Congresso: 70% dos efeitos são desfeitos.` });
       g.feed.unshift({ mes: g.mes, src: 'antag', txt: `MP CADUCA: CONGRESSO DEIXA PRAZO VENCER E GOVERNO PERDE ${it.prop.topic.toUpperCase()}` });
       g.log.unshift({ mes: g.mes, ato: 'MP caducou', texto: it.prop.texto, res: 'caducou', topic: it.prop.topic }); linhaAdd(g, 'CONGRESSO', `MP caducou: ${it.prop.topic}`);
@@ -9281,10 +9838,11 @@ function fechaMP(n, prop, res, plano) {
   const antes = { ap: aprovacao(n), conf: n.eco.conf, risco: n.eco.risco, stf: n.stf, prim: primario(n) };
   let manchetes;
   if (res === 'aprovada') {
+    try { medMPConvertida(n, prop); } catch (e) { }
     n.log.unshift({ mes: n.mes, ato: 'MP convertida em lei', texto: prop.texto, res: 'aprovada', topic: prop.topic });
     linhaAdd(n, 'CONGRESSO', `MP convertida em lei: ${prop.topic}`);
   } else {
-    reverteProposta(n, prop, .7); estOf(n).derrotas = (estOf(n).derrotas || 0) + 1; n.poderes.derr = (n.poderes.derr || 0) + 1;
+    reverteProposta(n, prop, .7, res); estOf(n).derrotas = (estOf(n).derrotas || 0) + 1; n.poderes.derr = (n.poderes.derr || 0) + 1;
     if (res === 'derrubada') n.poderes.cs = clamp(n.poderes.cs + 10, 0, 100);
     for (const kk of GKEYS) n.groups[kk] = clamp(n.groups[kk] - .8, 1, 99);
     n.pes.estresse = clamp(n.pes.estresse + 6, 0, 100);
@@ -11557,7 +12115,7 @@ const EXEMPLOS = ['Criar imposto sobre apostas esportivas para financiar escolas
 
 /* ---- seções, subseções e navegação (persistidas em g.ui; aceitam #mesa #pais #poder #mundo #eu) ---- */
 const SECOES = [
-  { k: 'mesa', nome: 'Mesa', i: 'LayoutDashboard' }, { k: 'pais', nome: 'País', i: 'Flag' }, { k: 'poder', nome: 'Poder', i: 'Landmark' },
+  { k: 'mesa', nome: 'Mesa', i: 'LayoutDashboard' }, { k: 'pais', nome: 'País', i: 'Flag' }, { k: 'poder', nome: 'Poder', i: 'Landmark' }, { k: 'medidas', nome: 'Medidas', i: 'ClipboardList' }, // v3.6: painel das medidas em vigor
   { k: 'mundo', nome: 'Mundo', i: 'Globe' }, { k: 'eu', nome: 'Eu', i: 'User' }, { k: 'x', nome: 'X', i: 'AtSign' }
 ];
 const SECAO_KS = SECOES.map(s => s.k);
@@ -11568,7 +12126,7 @@ const CHIPS = {
   eu: [{ k: 'condicao', nome: 'Condição' }, { k: 'bemestar', nome: 'Bem-estar e agenda' }, { k: 'familia', nome: 'Família e partido' }, { k: 'bastidores', nome: 'Bastidores' }, { k: 'conquistas', nome: 'Conquistas' }]
 };
 function secDeHash(hash) {
-  const m = /^#?\/?(mesa|pais|poder|mundo|eu|x)(?:[\/:]([a-z]+))?\/?$/i.exec(String(hash || '').trim());
+  const m = /^#?\/?(mesa|pais|poder|medidas|mundo|eu|x)(?:[\/:]([a-z]+))?\/?$/i.exec(String(hash || '').trim()); // v3.6
   if (!m) return null;
   const sec = m[1].toLowerCase(), c = m[2] && m[2].toLowerCase();
   return { sec, chip: c && CHIPS[sec] && CHIPS[sec].some(x => x.k === c) ? c : null };
@@ -11712,6 +12270,7 @@ function pendenciasMesa(g) {
   if (prox.length) {
     L.push({ id: 'contas', tipo: 'contas', urg: 38 + Math.min(14, prox.length * 3), cat: 'Contas a vencer', ic: 'Clock', titulo: prox.length === 1 ? 'Uma conta vence em breve' : `${prox.length} contas vencem em breve`, ctx: prox.slice(0, 2).map(p => p.txt).join(' · '), extra: null, abrir: 'contas', btns: [] });
   }
+  try { const r = medResumoMesa(g); if (r && r.prob) L.push({ id: 'medidas', tipo: 'medidas', urg: 61, cat: 'Medidas em vigor', ic: 'ClipboardList', titulo: r.titulo, ctx: r.ctx, extra: null, abrir: 'medidas', btns: [] }); } catch (e) { } // v3.6
   pendenciasF4(g).forEach(x => L.push(x));
   entPendX(g, L);
   return L.map((x, i) => Object.assign(x, { ord: i })).sort((a, b) => b.urg - a.urg || a.ord - b.ord);
@@ -11882,7 +12441,7 @@ function secaoDaPendencia(p) {
   return 'mesa';
 }
 function contagemPendencias(g) {
-  const c = { mesa: 0, pais: 0, poder: 0, mundo: 0, eu: 0, x: 0 };
+  const c = { mesa: 0, pais: 0, poder: 0, medidas: 0, mundo: 0, eu: 0, x: 0 }; // v3.6
   let L = [];
   try { L = g && g.cfg && !g.over ? pendenciasMesa(g) : []; } catch (e) { L = []; }
   c.mesa = L.length; // a Mesa lista todas em "Precisa de você"
@@ -11926,12 +12485,13 @@ function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino 
   const semAcoes = g.acoes <= 0 || g.pes.energia < 10 || elSemGoverno(g);
   const enviar = () => { if (txt.trim().length < 4 || semAcoes) return; decidir(txt.trim()); setTxt(''); };
   const pend = pendenciasMesa(g);
+  let resMed = null; try { resMed = medResumoMesa(g); } catch (e) { } // v3.6
   const vis = todas ? pend : pend.slice(0, 4);
   useEffect(() => { if (gav && !aindaPend(g, gav.kind)) setGav(null); }, [g]);
   const decidirG = (...a) => { setGav(null); return decidir(...a); };
   const votarG = (id) => { setGav(null); setArt(null); if (votarItem) votarItem(id); };
   const agir = (k, p) => {
-    if (k === 'abrir') setGav({ kind: p.abrir });
+    if (k === 'abrir') { if (p.abrir === 'medidas') irPara('medidas'); else setGav({ kind: p.abrir }); } // v3.6
     else if (k === 'responder') setGav({ kind: 'crise' });
     else if (k === 'responderqq') setGav({ kind: 'qq' });
     else if (k === 'ignorar') upd(n => { ignoraCrise(n); });
@@ -11978,6 +12538,9 @@ function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino 
         </div>
         <div className="flex flex-wrap gap-2 mt-4">${EXEMPLOS.slice(0, 6).map(x => html`<button key=${x} type="button" onClick=${() => setTxt(x)} className="chip hover:text-fg hover:border-muted !normal-case !tracking-normal !text-[11.5px] !font-sans !whitespace-normal !text-left">${x}</button>`)}</div>
       </section>
+      ${resMed && html`<section className="sec sec-sm" aria-label="Medidas em vigor" data-resumo-medidas="1"><div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0"><span className="text-ouro" aria-hidden="true"><${Icon} n="ClipboardList" s=${20} /></span><div className="min-w-0"><div className="eyebrow">Medidas em vigor</div><div className="text-sm font-semibold">${resMed.titulo}</div></div></div>
+        <button type="button" className="btn btn-ghost btn-sm" onClick=${() => irPara('medidas')}>Acompanhar <${Icon} n="ChevronRight" s=${14} /></button></div></section>`}
       <div className="grid gap-6 md:grid-cols-2">
         <section className="sec sec-sm" aria-labelledby="diario-t">
           <div className="flex items-center justify-between mb-3"><h3 id="diario-t" className="h-quiet">Diário do mandato</h3><span className="eyebrow">${g.log.length} atos</span></div>
@@ -16993,7 +17556,7 @@ function Documento({ prop, g, children }) {
     <div className="px-5 sm:px-8 pt-5 pb-3 border-b border-black/10 text-center">
       <div className="text-[11px] tracking-[.2em] uppercase font-semibold" style=${{ fontFamily: 'var(--f-mono)' }}>Presidência da República · Casa Civil · Subchefia para Assuntos Jurídicos</div>
       <div className="disp text-2xl sm:text-3xl font-black uppercase mt-2">${prop.instDetalhe === 'AUT' ? 'Pedido de autorização ao Congresso' : INST_NOME[prop.inst]}</div>
-      <div className="text-xs mt-1" style=${{ fontFamily: 'var(--f-mono)' }}>Brasília, ${MESES[(g.mes - 1) % 12]} de ${ano} · ${prop.ai ? 'parecer gerado por IA' : prop.motor === 'v3' ? 'parecer do motor v3.5' : prop.motor === 'v2' ? 'parecer do motor v2' : 'parecer do motor local'}</div>
+      <div className="text-xs mt-1" style=${{ fontFamily: 'var(--f-mono)' }}>Brasília, ${MESES[(g.mes - 1) % 12]} de ${ano} · ${prop.ai ? 'parecer gerado por IA' : prop.motor === 'v3' ? 'parecer do motor v3.6' : prop.motor === 'v2' ? 'parecer do motor v2' : 'parecer do motor local'}</div>
     </div>
     <div className="px-5 sm:px-8 py-5 flex flex-col gap-4">${children}</div>
   </div>`;
@@ -17300,6 +17863,8 @@ function ModalDecisao({ dec, g, upd, setDec, onClose }) {
     ${coerMsg && html`<div className="text-sm p-3 rounded" data-secao="coerencia-resultado" style=${{ background: coerMsg.neg ? 'rgba(178,58,38,.08)' : 'rgba(34,197,94,.12)' }}>${coerMsg.txt}</div>`}
     ${R.ex.bloqueio && html`<div className="text-sm p-3 rounded" data-secao="bloqueio-resultado" style=${{ background: 'rgba(178,58,38,.08)' }}>${R.ex.bloqueio}</div>`}
     ${R.ex.vigencia && R.ex.vigencia.length > 0 && html`<div className="text-sm p-3 rounded" data-secao="vigencia-resultado" style=${{ background: 'rgba(255,255,255,.06)' }}>Anterioridade tributária: a arrecadação do aumento (${R.ex.vigencia.map(v => bi(v.rev) + '/ano').join(' e ')}) só entra a partir de ${R.ex.vigencia.map(v => dataCurta(g.mes + Math.max(1, v.em))).join(' e ')}. Nada disso chega ao caixa antes.</div>`}
+    ${R.ex.medida && html`<div className="text-sm p-3 rounded" data-secao="medida-resultado" style=${{ background: 'rgba(34,197,94,.10)' }}><b>Ciclo de vida (${R.ex.medida.tipo}):</b> ${R.ex.medida.reg ? 'regulamentação até ' + R.ex.medida.reg + '; ' : ''}implantação até ${R.ex.medida.pleno}; efeito pleno e maturação até ${R.ex.medida.mat}. Opinião e expectativas reagem já; o efeito real e o fiscal chegam mês a mês. Acompanhe em Medidas.</div>`}
+    ${R.ex.revogou && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,255,255,.06)' }}>Revogação aprovada: ${R.ex.revogou} deixa de valer.</div>`}
     ${R.ex.agendados > 0 && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,255,255,.06)' }}>${R.ex.agendados} ${R.ex.agendados === 1 ? 'efeito futuro agendado' : 'efeitos futuros agendados'} em Contas a vencer.</div>`}
     ${R.ex.marcos && R.ex.marcos.length > 0 && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(250,204,21,.14)' }}>Marco do mandato: <b>${R.ex.marcos.join(' · ')}</b></div>`}
     <div>
@@ -22079,6 +22644,7 @@ function App() {
         ${sec === 'mesa' && html`<${Mesa} g=${g} decidir=${decidir} motorNome=${motorNome} upd=${upd} votarItem=${votarItem} encerrar=${encerrarMes} irPara=${irPara} refino=${refino} />`}
         ${sec === 'pais' && html`<${Pais} g=${g} upd=${upd} decidir=${decidir} chip=${chipAtual(g, 'pais')} setChip=${(c) => irPara('pais', c)} />`}
         ${sec === 'poder' && html`<${Poder} g=${g} upd=${upd} decidir=${decidir} votarItem=${votarItem} chip=${chipAtual(g, 'poder')} setChip=${(c) => irPara('poder', c)} />`}
+        ${sec === 'medidas' && html`<${MedidasVigor} g=${g} upd=${upd} irPara=${irPara} />`}
         ${sec === 'mundo' && html`<${Diplomacia} g=${g} decidir=${decidir} upd=${upd} chip=${chipAtual(g, 'mundo')} setChip=${(c) => irPara('mundo', c)} />`}
         ${sec === 'eu' && html`<${Eu} g=${g} upd=${upd} chip=${chipAtual(g, 'eu')} setChip=${(c) => irPara('eu', c)} />`}
         ${sec === 'x' && html`<${RedeX} g=${g} upd=${upd} />`}
