@@ -4,12 +4,14 @@ sys.stdout.reconfigure(encoding='utf-8')
 ROOT=sys.argv[1]; OUT=sys.argv[2]
 handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=ROOT)
 handler.log_message = lambda *a, **k: None
-srv = http.server.ThreadingHTTPServer(('127.0.0.1', 8781), handler)
+import os
+PORT = int(os.environ.get('BATCH3_PORT', '8781'))  # v3.8: porta configurável
+srv = http.server.ThreadingHTTPServer(('127.0.0.1', PORT), handler)
 threading.Thread(target=srv.serve_forever, daemon=True).start()
 def click(pg,t):
     pg.locator('button, [role=tab], a, summary, label').filter(has_text=t).first.click(timeout=8000); pg.wait_for_timeout(600)
 def start(pg):
-    pg.goto('http://127.0.0.1:8781/index.html', wait_until='networkidle'); pg.wait_for_timeout(1500)
+    pg.goto('http://127.0.0.1:%d/index.html' % PORT, wait_until='networkidle'); pg.wait_for_timeout(1500)
     for t in ["Presidente eleito","Assumir o mandato","3Personalidade","Negociador","Técnico","Avançar"]: click(pg,t)
     for _ in range(40):
         bt = pg.locator('button').filter(has_text=re.compile(r'^\s*Escolher nome\s*$'))
@@ -34,6 +36,11 @@ with sync_playwright() as p:
             pg.locator('#caixa').scroll_into_view_if_needed(); pg.fill('#caixa',t)
             click(pg,'Assinar e enviar'); pg.wait_for_timeout(2500)
             txt=pg.evaluate("()=>{const e=document.querySelector('.modal-wrap');return e?e.innerText:'NO MODAL: '+document.body.innerText.slice(0,500)}")
+            # v3.8: o parecer ficou enxuto; a análise do ministro e o detalhe por partido abrem sob demanda
+            for _alvo in (pg.locator('.modal-wrap [data-pedir-ministro]'), pg.locator('.modal-wrap summary').filter(has_text='Ver detalhe por partido')):
+                try: _alvo.first.click(timeout=1500); pg.wait_for_timeout(300)
+                except Exception: pass
+            txt=pg.evaluate("()=>document.querySelector('.modal-wrap').innerText")
             # expand base juridica
             try:
                 pg.locator('.modal-wrap').get_by_text(re.compile('Ver base jurídica')).first.click(timeout=1500); pg.wait_for_timeout(300)
@@ -43,7 +50,7 @@ with sync_playwright() as p:
             res.append({'i':i+1,'t':t,'a0':a0,'txt':txt,'btns':btns})
             print(i+1,t,a0,len(txt))
             # desistir
-            try: pg.locator('.modal-wrap button').filter(has_text='Desistir').first.click(timeout=2000)
+            try: pg.locator('.modal-wrap button').filter(has_text=re.compile('^(Desistir|Retirar proposta)$')).first.click(timeout=2000)
             except Exception: pg.keyboard.press('Escape')
             pg.wait_for_timeout(500)
             res[-1]['a1']=acoes(pg); print('  acoes after',res[-1]['a1'])
