@@ -1,0 +1,173 @@
+{
+ "fontes": {
+  "mortalidade_infantil": {
+   "nome": "Mortalidade infantil",
+   "unidade": "óbitos <1 ano por 1.000 nascidos vivos",
+   "ano": 2023,
+   "fonte": "DATASUS SIM/SINASC (TabNet), compilado na Wikipédia pt",
+   "url": "https://pt.wikipedia.org/wiki/Lista_de_unidades_federativas_do_Brasil_por_mortalidade_infantil",
+   "confianca": "media",
+   "melhor": "menor"
+  },
+  "medicos_mil": {
+   "nome": "Médicos por 1.000 habitantes",
+   "unidade": "médicos/1.000 hab.",
+   "ano": 2025,
+   "fonte": "Demografia Médica no Brasil 2025 (FMUSP/CFM), tabela por UF via Estratégia Med",
+   "url": "https://med.estrategia.com/portal/noticias/brasil-tera-635-mil-medicos-ate-o-fim-do-ano-confira-os-principais-dados-da-demografia-medica-2025/",
+   "confianca": "media",
+   "melhor": "maior"
+  },
+  "plano_saude_pct": {
+   "nome": "População com plano de saúde médico-hospitalar",
+   "unidade": "% da população",
+   "ano": 2025,
+   "fonte": "ANS (vínculos out/2025, via Times Brasil) / população IBGE 2025 (SIDRA 6579); cálculo próprio",
+   "url": "https://timesbrasil.com.br/empresas-e-negocios/planos-de-saude-batem-53-milhoes-de-beneficiarios-veja-qual-estado-liderou-a-alta-em-2025/",
+   "confianca": "media",
+   "melhor": "maior"
+  }
+ },
+ "BR": {
+  "mortalidade_infantil": 12.6,
+  "medicos_mil": 2.98,
+  "plano_saude_pct": 24.9
+ },
+ "UF": {
+  "AC": {
+   "mortalidade_infantil": 16.9,
+   "medicos_mil": 1.82,
+   "plano_saude_pct": 5.3
+  },
+  "AL": {
+   "mortalidade_infantil": 13.5,
+   "medicos_mil": 2.3,
+   "plano_saude_pct": 12.2
+  },
+  "AM": {
+   "mortalidade_infantil": 17.0,
+   "medicos_mil": 1.58,
+   "plano_saude_pct": 16.2
+  },
+  "AP": {
+   "mortalidade_infantil": 20.9,
+   "medicos_mil": 1.46,
+   "plano_saude_pct": 8.2
+  },
+  "BA": {
+   "mortalidade_infantil": 14.8,
+   "medicos_mil": 2.07,
+   "plano_saude_pct": 12.0
+  },
+  "CE": {
+   "mortalidade_infantil": 11.7,
+   "medicos_mil": 2.25,
+   "plano_saude_pct": 16.1
+  },
+  "DF": {
+   "mortalidade_infantil": 10.8,
+   "medicos_mil": 6.28,
+   "plano_saude_pct": 34.3
+  },
+  "ES": {
+   "mortalidade_infantil": 11.6,
+   "medicos_mil": 3.55,
+   "plano_saude_pct": 33.8
+  },
+  "GO": {
+   "mortalidade_infantil": 12.4,
+   "medicos_mil": 3.0,
+   "plano_saude_pct": 26.5
+  },
+  "MA": {
+   "mortalidade_infantil": 14.8,
+   "medicos_mil": 1.27,
+   "plano_saude_pct": 7.7
+  },
+  "MG": {
+   "mortalidade_infantil": 11.2,
+   "medicos_mil": 3.49,
+   "plano_saude_pct": 27.6
+  },
+  "MS": {
+   "mortalidade_infantil": 13.5,
+   "medicos_mil": 3.04,
+   "plano_saude_pct": 23.6
+  },
+  "MT": {
+   "mortalidade_infantil": 14.0,
+   "medicos_mil": 2.38,
+   "plano_saude_pct": 17.7
+  },
+  "PA": {
+   "mortalidade_infantil": 15.0,
+   "medicos_mil": 1.37,
+   "plano_saude_pct": 10.4
+  },
+  "PB": {
+   "mortalidade_infantil": 12.9,
+   "medicos_mil": 3.09,
+   "plano_saude_pct": 11.3
+  },
+  "PE": {
+   "mortalidade_infantil": 13.2,
+   "medicos_mil": 2.41,
+   "plano_saude_pct": 15.3
+  },
+  "PI": {
+   "mortalidade_infantil": 14.9,
+   "medicos_mil": 2.48,
+   "plano_saude_pct": 12.2
+  },
+  "PR": {
+   "mortalidade_infantil": 10.8,
+   "medicos_mil": 3.26,
+   "plano_saude_pct": 27.0
+  },
+  "RJ": {
+   "mortalidade_infantil": 13.4,
+   "medicos_mil": 4.2,
+   "plano_saude_pct": 32.6
+  },
+  "RN": {
+   "mortalidade_infantil": 11.1,
+   "medicos_mil": 2.42,
+   "plano_saude_pct": 18.7
+  },
+  "RO": {
+   "mortalidade_infantil": 12.2,
+   "medicos_mil": 2.64,
+   "plano_saude_pct": 9.8
+  },
+  "RR": {
+   "mortalidade_infantil": 23.8,
+   "medicos_mil": 1.77,
+   "plano_saude_pct": 4.4
+  },
+  "RS": {
+   "mortalidade_infantil": 9.6,
+   "medicos_mil": 3.45,
+   "plano_saude_pct": 23.8
+  },
+  "SC": {
+   "mortalidade_infantil": 9.0,
+   "medicos_mil": 3.19,
+   "plano_saude_pct": 21.4
+  },
+  "SE": {
+   "mortalidade_infantil": 18.4,
+   "medicos_mil": 2.63,
+   "plano_saude_pct": 14.9
+  },
+  "SP": {
+   "mortalidade_infantil": 11.3,
+   "medicos_mil": 3.76,
+   "plano_saude_pct": 40.6
+  },
+  "TO": {
+   "mortalidade_infantil": 10.6,
+   "medicos_mil": 2.81,
+   "plano_saude_pct": 8.4
+  }
+ }
+}

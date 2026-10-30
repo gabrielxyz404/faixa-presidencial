@@ -1,0 +1,867 @@
+{
+    "economia":  {
+                     "fontes":  {
+                                    "pib_per_capita":  {
+                                                           "nome":  "PIB per capita",
+                                                           "unidade":  "R$ (preços correntes)",
+                                                           "ano":  2023,
+                                                           "fonte":  "IBGE, Contas Regionais 2023 (PIB, tab. 5938) dividido pela população do Censo 2022 (mesma base do IBGE; BR confere com R$ 53.886,67 divulgado)",
+                                                           "url":  "https://sidra.ibge.gov.br/tabela/5938",
+                                                           "confianca":  "alta",
+                                                           "melhor":  "maior"
+                                                       },
+                                    "renda_domiciliar_pc":  {
+                                                                "nome":  "Rendimento domiciliar per capita",
+                                                                "unidade":  "R$/mês",
+                                                                "ano":  2025,
+                                                                "fonte":  "IBGE, PNAD Contínua anual - rendimento médio mensal real domiciliar per capita (tab. 7531)",
+                                                                "url":  "https://sidra.ibge.gov.br/tabela/7531",
+                                                                "confianca":  "alta",
+                                                                "melhor":  "maior"
+                                                            },
+                                    "idhm":  {
+                                                 "nome":  "IDHM",
+                                                 "unidade":  "índice 0-1",
+                                                 "ano":  2024,
+                                                 "fonte":  "PNUD/IPEA/FJP, Radar IDHM 2024 (Painel IDHM), tabela reproduzida pelo IPECE",
+                                                 "url":  "https://www.ipece.ce.gov.br/wp-content/uploads/sites/45/2026/08/Enfoque_Economico_N328_140826.pdf",
+                                                 "confianca":  "media",
+                                                 "melhor":  "maior"
+                                             }
+                                },
+                     "BR":  {
+                                "pib_per_capita":  53886.67,
+                                "renda_domiciliar_pc":  2264,
+                                "idhm":  0.805
+                            },
+                     "UF":  {
+                                "AC":  {
+                                           "pib_per_capita":  31675.6,
+                                           "renda_domiciliar_pc":  1372,
+                                           "idhm":  0.754
+                                       },
+                                "AL":  {
+                                           "pib_per_capita":  28675.84,
+                                           "renda_domiciliar_pc":  1401,
+                                           "idhm":  0.746
+                                       },
+                                "AM":  {
+                                           "pib_per_capita":  41047.91,
+                                           "renda_domiciliar_pc":  1450,
+                                           "idhm":  0.767
+                                       },
+                                "AP":  {
+                                           "pib_per_capita":  38187.09,
+                                           "renda_domiciliar_pc":  1675,
+                                           "idhm":  0.756
+                                       },
+                                "BA":  {
+                                           "pib_per_capita":  30476.54,
+                                           "renda_domiciliar_pc":  1452,
+                                           "idhm":  0.759
+                                       },
+                                "CE":  {
+                                           "pib_per_capita":  26405.96,
+                                           "renda_domiciliar_pc":  1379,
+                                           "idhm":  0.773
+                                       },
+                                "DF":  {
+                                           "pib_per_capita":  129790.44,
+                                           "renda_domiciliar_pc":  4401,
+                                           "idhm":  0.866
+                                       },
+                                "ES":  {
+                                           "pib_per_capita":  54732.78,
+                                           "renda_domiciliar_pc":  2209,
+                                           "idhm":  0.804
+                                       },
+                                "GO":  {
+                                           "pib_per_capita":  47721.56,
+                                           "renda_domiciliar_pc":  2378,
+                                           "idhm":  0.815
+                                       },
+                                "MA":  {
+                                           "pib_per_capita":  22020.63,
+                                           "renda_domiciliar_pc":  1231,
+                                           "idhm":  0.745
+                                       },
+                                "MG":  {
+                                           "pib_per_capita":  47321.23,
+                                           "renda_domiciliar_pc":  2289,
+                                           "idhm":  0.809
+                                       },
+                                "MS":  {
+                                           "pib_per_capita":  66884.75,
+                                           "renda_domiciliar_pc":  2369,
+                                           "idhm":  0.812
+                                       },
+                                "MT":  {
+                                           "pib_per_capita":  74620.05,
+                                           "renda_domiciliar_pc":  2297,
+                                           "idhm":  0.797
+                                       },
+                                "PA":  {
+                                           "pib_per_capita":  31347.59,
+                                           "renda_domiciliar_pc":  1435,
+                                           "idhm":  0.758
+                                       },
+                                "PB":  {
+                                           "pib_per_capita":  24395.17,
+                                           "renda_domiciliar_pc":  1542,
+                                           "idhm":  0.76
+                                       },
+                                "PE":  {
+                                           "pib_per_capita":  29857.27,
+                                           "renda_domiciliar_pc":  1568,
+                                           "idhm":  0.767
+                                       },
+                                "PI":  {
+                                           "pib_per_capita":  24736.15,
+                                           "renda_domiciliar_pc":  1534,
+                                           "idhm":  0.764
+                                       },
+                                "PR":  {
+                                           "pib_per_capita":  58624.33,
+                                           "renda_domiciliar_pc":  2687,
+                                           "idhm":  0.822
+                                       },
+                                "RJ":  {
+                                           "pib_per_capita":  73052.55,
+                                           "renda_domiciliar_pc":  2732,
+                                           "idhm":  0.819
+                                       },
+                                "RN":  {
+                                           "pib_per_capita":  30804.91,
+                                           "renda_domiciliar_pc":  1779,
+                                           "idhm":  0.778
+                                       },
+                                "RO":  {
+                                           "pib_per_capita":  48353.39,
+                                           "renda_domiciliar_pc":  1970,
+                                           "idhm":  0.786
+                                       },
+                                "RR":  {
+                                           "pib_per_capita":  39460.54,
+                                           "renda_domiciliar_pc":  1870,
+                                           "idhm":  0.78
+                                       },
+                                "RS":  {
+                                           "pib_per_capita":  59736.2,
+                                           "renda_domiciliar_pc":  2772,
+                                           "idhm":  0.818
+                                       },
+                                "SC":  {
+                                           "pib_per_capita":  67459.74,
+                                           "renda_domiciliar_pc":  2752,
+                                           "idhm":  0.833
+                                       },
+                                "SE":  {
+                                           "pib_per_capita":  27518.8,
+                                           "renda_domiciliar_pc":  1688,
+                                           "idhm":  0.761
+                                       },
+                                "SP":  {
+                                           "pib_per_capita":  77566.27,
+                                           "renda_domiciliar_pc":  2862,
+                                           "idhm":  0.838
+                                       },
+                                "TO":  {
+                                           "pib_per_capita":  42553.36,
+                                           "renda_domiciliar_pc":  1979,
+                                           "idhm":  0.797
+                                       }
+                            }
+                 },
+    "trabalho":  {
+                     "fontes":  {
+                                    "desocupacao":  {
+                                                        "nome":  "Taxa de desocupação",
+                                                        "unidade":  "%",
+                                                        "ano":  "2º tri 2026",
+                                                        "fonte":  "IBGE, PNAD Contínua trimestral (tab. 4099)",
+                                                        "url":  "https://sidra.ibge.gov.br/tabela/4099",
+                                                        "confianca":  "alta",
+                                                        "melhor":  "menor"
+                                                    },
+                                    "informalidade":  {
+                                                          "nome":  "Taxa de informalidade",
+                                                          "unidade":  "% dos ocupados",
+                                                          "ano":  "2º tri 2026",
+                                                          "fonte":  "IBGE, PNAD Contínua trimestral (tab. 8529)",
+                                                          "url":  "https://sidra.ibge.gov.br/tabela/8529",
+                                                          "confianca":  "alta",
+                                                          "melhor":  "menor"
+                                                      },
+                                    "rendimento_trabalho":  {
+                                                                "nome":  "Rendimento médio real habitual do trabalho",
+                                                                "unidade":  "R$/mês",
+                                                                "ano":  "2º tri 2026",
+                                                                "fonte":  "IBGE, PNAD Contínua trimestral (tab. 5436)",
+                                                                "url":  "https://sidra.ibge.gov.br/tabela/5436",
+                                                                "confianca":  "alta",
+                                                                "melhor":  "maior"
+                                                            }
+                                },
+                     "BR":  {
+                                "desocupacao":  5.4,
+                                "informalidade":  37.4,
+                                "rendimento_trabalho":  3738
+                            },
+                     "UF":  {
+                                "AC":  {
+                                           "desocupacao":  6.6,
+                                           "informalidade":  43.7,
+                                           "rendimento_trabalho":  3149
+                                       },
+                                "AL":  {
+                                           "desocupacao":  7.9,
+                                           "informalidade":  43.4,
+                                           "rendimento_trabalho":  2578
+                                       },
+                                "AM":  {
+                                           "desocupacao":  7.5,
+                                           "informalidade":  51.7,
+                                           "rendimento_trabalho":  2771
+                                       },
+                                "AP":  {
+                                           "desocupacao":  9.8,
+                                           "informalidade":  44.5,
+                                           "rendimento_trabalho":  3134
+                                       },
+                                "BA":  {
+                                           "desocupacao":  9.1,
+                                           "informalidade":  50.7,
+                                           "rendimento_trabalho":  2563
+                                       },
+                                "CE":  {
+                                           "desocupacao":  6.6,
+                                           "informalidade":  48.7,
+                                           "rendimento_trabalho":  2727
+                                       },
+                                "DF":  {
+                                           "desocupacao":  6.5,
+                                           "informalidade":  28.7,
+                                           "rendimento_trabalho":  6171
+                                       },
+                                "ES":  {
+                                           "desocupacao":  2.3,
+                                           "informalidade":  40,
+                                           "rendimento_trabalho":  3637
+                                       },
+                                "GO":  {
+                                           "desocupacao":  4,
+                                           "informalidade":  36.1,
+                                           "rendimento_trabalho":  3946
+                                       },
+                                "MA":  {
+                                           "desocupacao":  6,
+                                           "informalidade":  56.9,
+                                           "rendimento_trabalho":  2284
+                                       },
+                                "MG":  {
+                                           "desocupacao":  3.8,
+                                           "informalidade":  36.5,
+                                           "rendimento_trabalho":  3463
+                                       },
+                                "MS":  {
+                                           "desocupacao":  2.7,
+                                           "informalidade":  29.2,
+                                           "rendimento_trabalho":  3840
+                                       },
+                                "MT":  {
+                                           "desocupacao":  2.2,
+                                           "informalidade":  34.1,
+                                           "rendimento_trabalho":  4137
+                                       },
+                                "PA":  {
+                                           "desocupacao":  6.2,
+                                           "informalidade":  55.9,
+                                           "rendimento_trabalho":  2593
+                                       },
+                                "PB":  {
+                                           "desocupacao":  5.4,
+                                           "informalidade":  45.8,
+                                           "rendimento_trabalho":  2799
+                                       },
+                                "PE":  {
+                                           "desocupacao":  8.3,
+                                           "informalidade":  45.4,
+                                           "rendimento_trabalho":  2771
+                                       },
+                                "PI":  {
+                                           "desocupacao":  8.3,
+                                           "informalidade":  49.5,
+                                           "rendimento_trabalho":  2547
+                                       },
+                                "PR":  {
+                                           "desocupacao":  3.1,
+                                           "informalidade":  30.5,
+                                           "rendimento_trabalho":  4204
+                                       },
+                                "RJ":  {
+                                           "desocupacao":  7.1,
+                                           "informalidade":  37.1,
+                                           "rendimento_trabalho":  4158
+                                       },
+                                "RN":  {
+                                           "desocupacao":  5.6,
+                                           "informalidade":  41.3,
+                                           "rendimento_trabalho":  2861
+                                       },
+                                "RO":  {
+                                           "desocupacao":  2.6,
+                                           "informalidade":  42,
+                                           "rendimento_trabalho":  3799
+                                       },
+                                "RR":  {
+                                           "desocupacao":  5,
+                                           "informalidade":  42.7,
+                                           "rendimento_trabalho":  3568
+                                       },
+                                "RS":  {
+                                           "desocupacao":  4.2,
+                                           "informalidade":  29.6,
+                                           "rendimento_trabalho":  4169
+                                       },
+                                "SC":  {
+                                           "desocupacao":  2.1,
+                                           "informalidade":  25.4,
+                                           "rendimento_trabalho":  4372
+                                       },
+                                "SE":  {
+                                           "desocupacao":  7.9,
+                                           "informalidade":  47.3,
+                                           "rendimento_trabalho":  3042
+                                       },
+                                "SP":  {
+                                           "desocupacao":  5.4,
+                                           "informalidade":  30.1,
+                                           "rendimento_trabalho":  4447
+                                       },
+                                "TO":  {
+                                           "desocupacao":  4.1,
+                                           "informalidade":  37.8,
+                                           "rendimento_trabalho":  3498
+                                       }
+                            }
+                 },
+    "educacao":  {
+                     "fontes":  {
+                                    "ideb_ai":  {
+                                                    "nome":  "IDEB anos iniciais",
+                                                    "unidade":  "nota 0-10",
+                                                    "ano":  2025,
+                                                    "fonte":  "INEP, Ideb 2025 (valores por UF reproduzidos pela imprensa a partir do INEP; rede não especificada, provavelmente total; BR total 6,3 / pública 6,1)",
+                                                    "url":  "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb/resultados",
+                                                    "confianca":  "media",
+                                                    "melhor":  "maior"
+                                                },
+                                    "ideb_af":  {
+                                                    "nome":  "IDEB anos finais",
+                                                    "unidade":  "nota 0-10",
+                                                    "ano":  2025,
+                                                    "fonte":  "INEP, Ideb 2025 (idem; BR total 5,3 / pública 5,0)",
+                                                    "url":  "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb/resultados",
+                                                    "confianca":  "media",
+                                                    "melhor":  "maior"
+                                                },
+                                    "ideb_em":  {
+                                                    "nome":  "IDEB ensino médio",
+                                                    "unidade":  "nota 0-10",
+                                                    "ano":  2025,
+                                                    "fonte":  "INEP, Ideb 2025 (idem; BR total 4,5 / pública 4,3)",
+                                                    "url":  "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb/resultados",
+                                                    "confianca":  "media",
+                                                    "melhor":  "maior"
+                                                },
+                                    "analfabetismo":  {
+                                                          "nome":  "Taxa de analfabetismo (15+ anos)",
+                                                          "unidade":  "%",
+                                                          "ano":  2025,
+                                                          "fonte":  "IBGE, PNAD Contínua Educação 2025 (tab. 7125)",
+                                                          "url":  "https://sidra.ibge.gov.br/tabela/7125",
+                                                          "confianca":  "alta",
+                                                          "melhor":  "menor"
+                                                      },
+                                    "superior_25":  {
+                                                        "nome":  "Pessoas de 25+ anos com superior completo",
+                                                        "unidade":  "%",
+                                                        "ano":  2025,
+                                                        "fonte":  "IBGE, PNAD Contínua Educação 2025 (tab. 7135)",
+                                                        "url":  "https://sidra.ibge.gov.br/tabela/7135",
+                                                        "confianca":  "alta",
+                                                        "melhor":  "maior"
+                                                    }
+                                },
+                     "BR":  {
+                                "ideb_ai":  6.3,
+                                "ideb_af":  5.3,
+                                "ideb_em":  4.5,
+                                "analfabetismo":  4.9,
+                                "superior_25":  21.4
+                            },
+                     "UF":  {
+                                "AC":  {
+                                           "ideb_ai":  6.3,
+                                           "ideb_af":  4.9,
+                                           "ideb_em":  4.2,
+                                           "analfabetismo":  8.9,
+                                           "superior_25":  19.2
+                                       },
+                                "AL":  {
+                                           "ideb_ai":  6.4,
+                                           "ideb_af":  5.3,
+                                           "ideb_em":  4.3,
+                                           "analfabetismo":  13.1,
+                                           "superior_25":  14.3
+                                       },
+                                "AM":  {
+                                           "ideb_ai":  6,
+                                           "ideb_af":  4.9,
+                                           "ideb_em":  3.8,
+                                           "analfabetismo":  4.3,
+                                           "superior_25":  18.4
+                                       },
+                                "AP":  {
+                                           "ideb_ai":  5.5,
+                                           "ideb_af":  4.6,
+                                           "ideb_em":  4,
+                                           "analfabetismo":  4.5,
+                                           "superior_25":  23.6
+                                       },
+                                "BA":  {
+                                           "ideb_ai":  5.7,
+                                           "ideb_af":  4.5,
+                                           "ideb_em":  4,
+                                           "analfabetismo":  9.5,
+                                           "superior_25":  13.1
+                                       },
+                                "CE":  {
+                                           "ideb_ai":  6.8,
+                                           "ideb_af":  5.7,
+                                           "ideb_em":  4.5,
+                                           "analfabetismo":  11.1,
+                                           "superior_25":  13.7
+                                       },
+                                "DF":  {
+                                           "ideb_ai":  6.4,
+                                           "ideb_af":  5.1,
+                                           "ideb_em":  4.1,
+                                           "analfabetismo":  2,
+                                           "superior_25":  41.3
+                                       },
+                                "ES":  {
+                                           "ideb_ai":  6.6,
+                                           "ideb_af":  5.4,
+                                           "ideb_em":  4.9,
+                                           "analfabetismo":  3.8,
+                                           "superior_25":  21.6
+                                       },
+                                "GO":  {
+                                           "ideb_ai":  6.5,
+                                           "ideb_af":  5.7,
+                                           "ideb_em":  4.8,
+                                           "analfabetismo":  3.5,
+                                           "superior_25":  21.7
+                                       },
+                                "MA":  {
+                                           "ideb_ai":  5.7,
+                                           "ideb_af":  4.7,
+                                           "ideb_em":  3.9,
+                                           "analfabetismo":  10.9,
+                                           "superior_25":  12.9
+                                       },
+                                "MG":  {
+                                           "ideb_ai":  6.6,
+                                           "ideb_af":  5.5,
+                                           "ideb_em":  4.6,
+                                           "analfabetismo":  3.8,
+                                           "superior_25":  19.7
+                                       },
+                                "MS":  {
+                                           "ideb_ai":  5.9,
+                                           "ideb_af":  5,
+                                           "ideb_em":  4.4,
+                                           "analfabetismo":  3.9,
+                                           "superior_25":  23.1
+                                       },
+                                "MT":  {
+                                           "ideb_ai":  6.3,
+                                           "ideb_af":  5.1,
+                                           "ideb_em":  4.4,
+                                           "analfabetismo":  3.5,
+                                           "superior_25":  21.1
+                                       },
+                                "PA":  {
+                                           "ideb_ai":  5.6,
+                                           "ideb_af":  4.8,
+                                           "ideb_em":  4.6,
+                                           "analfabetismo":  6.2,
+                                           "superior_25":  14.3
+                                       },
+                                "PB":  {
+                                           "ideb_ai":  6.1,
+                                           "ideb_af":  4.9,
+                                           "ideb_em":  4.4,
+                                           "analfabetismo":  11.6,
+                                           "superior_25":  15.1
+                                       },
+                                "PE":  {
+                                           "ideb_ai":  6,
+                                           "ideb_af":  5.1,
+                                           "ideb_em":  4.7,
+                                           "analfabetismo":  10.1,
+                                           "superior_25":  16.5
+                                       },
+                                "PI":  {
+                                           "ideb_ai":  6.3,
+                                           "ideb_af":  5.4,
+                                           "ideb_em":  5,
+                                           "analfabetismo":  13.1,
+                                           "superior_25":  15.8
+                                       },
+                                "PR":  {
+                                           "ideb_ai":  7,
+                                           "ideb_af":  5.9,
+                                           "ideb_em":  5.1,
+                                           "analfabetismo":  3.3,
+                                           "superior_25":  22.9
+                                       },
+                                "RJ":  {
+                                           "ideb_ai":  6.1,
+                                           "ideb_af":  5.1,
+                                           "ideb_em":  4.2,
+                                           "analfabetismo":  1.6,
+                                           "superior_25":  27.3
+                                       },
+                                "RN":  {
+                                           "ideb_ai":  5.7,
+                                           "ideb_af":  4.6,
+                                           "ideb_em":  4.2,
+                                           "analfabetismo":  9.3,
+                                           "superior_25":  18.2
+                                       },
+                                "RO":  {
+                                           "ideb_ai":  6.1,
+                                           "ideb_af":  4.8,
+                                           "ideb_em":  4.2,
+                                           "analfabetismo":  5.1,
+                                           "superior_25":  16.6
+                                       },
+                                "RR":  {
+                                           "ideb_ai":  5.9,
+                                           "ideb_af":  4.4,
+                                           "ideb_em":  3.8,
+                                           "analfabetismo":  3.4,
+                                           "superior_25":  24.3
+                                       },
+                                "RS":  {
+                                           "ideb_ai":  6.3,
+                                           "ideb_af":  5.4,
+                                           "ideb_em":  4.9,
+                                           "analfabetismo":  2.2,
+                                           "superior_25":  21.7
+                                       },
+                                "SC":  {
+                                           "ideb_ai":  6.7,
+                                           "ideb_af":  5.4,
+                                           "ideb_em":  4.5,
+                                           "analfabetismo":  1.5,
+                                           "superior_25":  24.7
+                                       },
+                                "SE":  {
+                                           "ideb_ai":  5.8,
+                                           "ideb_af":  4.8,
+                                           "ideb_em":  4.3,
+                                           "analfabetismo":  10.3,
+                                           "superior_25":  15.2
+                                       },
+                                "SP":  {
+                                           "ideb_ai":  6.6,
+                                           "ideb_af":  5.5,
+                                           "ideb_em":  4.7,
+                                           "analfabetismo":  1.9,
+                                           "superior_25":  27
+                                       },
+                                "TO":  {
+                                           "ideb_ai":  5.9,
+                                           "ideb_af":  4.9,
+                                           "ideb_em":  4.3,
+                                           "analfabetismo":  6.8,
+                                           "superior_25":  21.2
+                                       }
+                            }
+                 },
+    "infraestrutura":  {
+                           "fontes":  {
+                                          "internet_pct":  {
+                                                               "nome":  "Domicílios com utilização de internet",
+                                                               "unidade":  "% dos domicílios",
+                                                               "ano":  2025,
+                                                               "fonte":  "IBGE, PNAD Contínua TIC 2025 (tab. 7307; divulgada em jul/2026)",
+                                                               "url":  "https://sidra.ibge.gov.br/tabela/7307",
+                                                               "confianca":  "alta",
+                                                               "melhor":  "maior"
+                                                           }
+                                      },
+                           "BR":  {
+                                      "internet_pct":  95
+                                  },
+                           "UF":  {
+                                      "AC":  {
+                                                 "internet_pct":  90.7
+                                             },
+                                      "AL":  {
+                                                 "internet_pct":  92.2
+                                             },
+                                      "AM":  {
+                                                 "internet_pct":  94.3
+                                             },
+                                      "AP":  {
+                                                 "internet_pct":  95.3
+                                             },
+                                      "BA":  {
+                                                 "internet_pct":  92.7
+                                             },
+                                      "CE":  {
+                                                 "internet_pct":  92.3
+                                             },
+                                      "DF":  {
+                                                 "internet_pct":  98.2
+                                             },
+                                      "ES":  {
+                                                 "internet_pct":  95.1
+                                             },
+                                      "GO":  {
+                                                 "internet_pct":  96.9
+                                             },
+                                      "MA":  {
+                                                 "internet_pct":  92.1
+                                             },
+                                      "MG":  {
+                                                 "internet_pct":  94.5
+                                             },
+                                      "MS":  {
+                                                 "internet_pct":  95.8
+                                             },
+                                      "MT":  {
+                                                 "internet_pct":  97
+                                             },
+                                      "PA":  {
+                                                 "internet_pct":  93.5
+                                             },
+                                      "PB":  {
+                                                 "internet_pct":  93.3
+                                             },
+                                      "PE":  {
+                                                 "internet_pct":  92.8
+                                             },
+                                      "PI":  {
+                                                 "internet_pct":  92.5
+                                             },
+                                      "PR":  {
+                                                 "internet_pct":  95.5
+                                             },
+                                      "RJ":  {
+                                                 "internet_pct":  95.6
+                                             },
+                                      "RN":  {
+                                                 "internet_pct":  94.4
+                                             },
+                                      "RO":  {
+                                                 "internet_pct":  96.2
+                                             },
+                                      "RR":  {
+                                                 "internet_pct":  96.1
+                                             },
+                                      "RS":  {
+                                                 "internet_pct":  95.2
+                                             },
+                                      "SC":  {
+                                                 "internet_pct":  97.1
+                                             },
+                                      "SE":  {
+                                                 "internet_pct":  93.5
+                                             },
+                                      "SP":  {
+                                                 "internet_pct":  96.6
+                                             },
+                                      "TO":  {
+                                                 "internet_pct":  94.7
+                                             }
+                                  }
+                       },
+    "transportes":  {
+                        "fontes":  {
+                                       "rodovias_boas_pct":  {
+                                                                 "nome":  "Rodovias em estado geral ótimo/bom",
+                                                                 "unidade":  "% da extensão avaliada",
+                                                                 "ano":  2025,
+                                                                 "fonte":  "CNT, Pesquisa CNT de Rodovias 2025 (síntese por estado; ótimo + bom)",
+                                                                 "url":  "https://repositorio.itl.org.br/jspui/bitstream/123456789/847/1/Pesquisa%20CNT%20de%20Rodovias%202025%20-%20S%C3%ADntese%20dos%20resultados%20-%20nacional,%20por%20regi%C3%A3o%20e%20por%20estados.pdf",
+                                                                 "confianca":  "alta",
+                                                                 "melhor":  "maior"
+                                                             },
+                                       "malha_pavimentada_km":  {
+                                                                    "nome":  "Extensão pavimentada avaliada pela CNT (federais + principais estaduais)",
+                                                                    "unidade":  "km",
+                                                                    "ano":  2025,
+                                                                    "fonte":  "CNT, Pesquisa CNT de Rodovias 2025; não é a malha pavimentada total da UF",
+                                                                    "url":  "https://repositorio.itl.org.br/jspui/bitstream/123456789/847/1/Pesquisa%20CNT%20de%20Rodovias%202025%20-%20S%C3%ADntese%20dos%20resultados%20-%20nacional,%20por%20regi%C3%A3o%20e%20por%20estados.pdf",
+                                                                    "confianca":  "media",
+                                                                    "melhor":  "maior"
+                                                                },
+                                       "mortes_transito_100mil":  {
+                                                                      "nome":  "Mortes no trânsito por 100 mil hab.",
+                                                                      "unidade":  "óbitos/100 mil hab.",
+                                                                      "ano":  2024,
+                                                                      "fonte":  "Ministério da Saúde, SIM/DataSUS (CID-10 V01-V99, por residência, dados finais 2024) / população IBGE 2024",
+                                                                      "url":  "http://tabnet.datasus.gov.br/cgi/deftohtm.exe?sim/cnv/ext10br.def",
+                                                                      "confianca":  "alta",
+                                                                      "melhor":  "menor"
+                                                                  }
+                                   },
+                        "BR":  {
+                                   "rodovias_boas_pct":  37.9,
+                                   "malha_pavimentada_km":  114197,
+                                   "mortes_transito_100mil":  18
+                               },
+                        "UF":  {
+                                   "AC":  {
+                                              "rodovias_boas_pct":  3,
+                                              "malha_pavimentada_km":  1355,
+                                              "mortes_transito_100mil":  15.9
+                                          },
+                                   "AL":  {
+                                              "rodovias_boas_pct":  47.2,
+                                              "malha_pavimentada_km":  841,
+                                              "mortes_transito_100mil":  23.9
+                                          },
+                                   "AM":  {
+                                              "rodovias_boas_pct":  8.1,
+                                              "malha_pavimentada_km":  989,
+                                              "mortes_transito_100mil":  14.4
+                                          },
+                                   "AP":  {
+                                              "rodovias_boas_pct":  11,
+                                              "malha_pavimentada_km":  545,
+                                              "mortes_transito_100mil":  12.3
+                                          },
+                                   "BA":  {
+                                              "rodovias_boas_pct":  30.4,
+                                              "malha_pavimentada_km":  9302,
+                                              "mortes_transito_100mil":  21
+                                          },
+                                   "CE":  {
+                                              "rodovias_boas_pct":  37.5,
+                                              "malha_pavimentada_km":  3773,
+                                              "mortes_transito_100mil":  20.5
+                                          },
+                                   "DF":  {
+                                              "rodovias_boas_pct":  53.7,
+                                              "malha_pavimentada_km":  456,
+                                              "mortes_transito_100mil":  10.9
+                                          },
+                                   "ES":  {
+                                              "rodovias_boas_pct":  31.5,
+                                              "malha_pavimentada_km":  1743,
+                                              "mortes_transito_100mil":  22.8
+                                          },
+                                   "GO":  {
+                                              "rodovias_boas_pct":  46.8,
+                                              "malha_pavimentada_km":  7684,
+                                              "mortes_transito_100mil":  25.9
+                                          },
+                                   "MA":  {
+                                              "rodovias_boas_pct":  10.5,
+                                              "malha_pavimentada_km":  4724,
+                                              "mortes_transito_100mil":  23.9
+                                          },
+                                   "MG":  {
+                                              "rodovias_boas_pct":  34.6,
+                                              "malha_pavimentada_km":  15557,
+                                              "mortes_transito_100mil":  16.3
+                                          },
+                                   "MS":  {
+                                              "rodovias_boas_pct":  58.3,
+                                              "malha_pavimentada_km":  4739,
+                                              "mortes_transito_100mil":  25.5
+                                          },
+                                   "MT":  {
+                                              "rodovias_boas_pct":  26.2,
+                                              "malha_pavimentada_km":  7156,
+                                              "mortes_transito_100mil":  32.6
+                                          },
+                                   "PA":  {
+                                              "rodovias_boas_pct":  21.3,
+                                              "malha_pavimentada_km":  4453,
+                                              "mortes_transito_100mil":  22.7
+                                          },
+                                   "PB":  {
+                                              "rodovias_boas_pct":  27.8,
+                                              "malha_pavimentada_km":  1782,
+                                              "mortes_transito_100mil":  21.6
+                                          },
+                                   "PE":  {
+                                              "rodovias_boas_pct":  29.9,
+                                              "malha_pavimentada_km":  3189,
+                                              "mortes_transito_100mil":  19.4
+                                          },
+                                   "PI":  {
+                                              "rodovias_boas_pct":  50,
+                                              "malha_pavimentada_km":  4147,
+                                              "mortes_transito_100mil":  34.5
+                                          },
+                                   "PR":  {
+                                              "rodovias_boas_pct":  48.6,
+                                              "malha_pavimentada_km":  6601,
+                                              "mortes_transito_100mil":  24.2
+                                          },
+                                   "RJ":  {
+                                              "rodovias_boas_pct":  59.2,
+                                              "malha_pavimentada_km":  2649,
+                                              "mortes_transito_100mil":  7.9
+                                          },
+                                   "RN":  {
+                                              "rodovias_boas_pct":  20.8,
+                                              "malha_pavimentada_km":  1883,
+                                              "mortes_transito_100mil":  14.8
+                                          },
+                                   "RO":  {
+                                              "rodovias_boas_pct":  24.1,
+                                              "malha_pavimentada_km":  1901,
+                                              "mortes_transito_100mil":  32.1
+                                          },
+                                   "RR":  {
+                                              "rodovias_boas_pct":  26.4,
+                                              "malha_pavimentada_km":  1159,
+                                              "mortes_transito_100mil":  20.1
+                                          },
+                                   "RS":  {
+                                              "rodovias_boas_pct":  27,
+                                              "malha_pavimentada_km":  8813,
+                                              "mortes_transito_100mil":  16.3
+                                          },
+                                   "SC":  {
+                                              "rodovias_boas_pct":  36.8,
+                                              "malha_pavimentada_km":  3554,
+                                              "mortes_transito_100mil":  19.1
+                                          },
+                                   "SE":  {
+                                              "rodovias_boas_pct":  44.8,
+                                              "malha_pavimentada_km":  653,
+                                              "mortes_transito_100mil":  24.7
+                                          },
+                                   "SP":  {
+                                              "rodovias_boas_pct":  77.1,
+                                              "malha_pavimentada_km":  10970,
+                                              "mortes_transito_100mil":  11.9
+                                          },
+                                   "TO":  {
+                                              "rodovias_boas_pct":  20.3,
+                                              "malha_pavimentada_km":  3579,
+                                              "mortes_transito_100mil":  38.7
+                                          }
+                               }
+                    }
+}
