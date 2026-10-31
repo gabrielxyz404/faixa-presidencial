@@ -17590,15 +17590,6 @@ function Poder({ g, upd, decidir, votarItem, chip, setChip, abrirPend }) {
     ${c === 'figuras' && html`<${ElFiguras} g=${g} />`}
   </${Subpagina}>`;
 }
-function Promessas({ g }) {
-  return html`<section className="sec" aria-labelledby="prom-t"><h3 id="prom-t" className="disp text-2xl font-extrabold uppercase mb-4">Promessas de campanha</h3>
-    <ul className="grid gap-2 sm:grid-cols-2">${g.cfg.promessas.map(k => { const P = PROMESSAS.find(p => p.k === k); const ok = P.check(g); return html`<li key=${k} className="flex items-center gap-2 text-sm">
-      <span style=${{ color: ok ? 'var(--verde)' : 'var(--muted)' }}><${Icon} n=${ok ? 'CircleCheck' : 'Circle'} /></span><span className="flex-1">${P.nome}</span><span className="num text-xs text-muted">${P.prog(g)}</span></li>`; })}</ul></section>`;
-}
-function Eu({ g, upd }) {
-  return html`<div className="flex flex-col gap-6"><${CabecaSecao} eyebrow="Eu" titulo="Vida pessoal e mandato" /><${VidaPessoal} g=${g} upd=${upd} /><${Promessas} g=${g} /></div>`;
-}
-
 /* ============================== ABA X (rede social simulada) ============================== */
 const X_CAT = (p) => (p.kind === 'famoso' ? 'fam' : p.kind === 'pres' || p.kind === 'lider' || p.kind === 'pol' || p.kind === 'jogador' ? 'pol' : p.kind === 'jornal' || p.kind === 'imprensa' ? 'imp' : 'pes');
 const X_COR = { pos: 'var(--verde)', neg: 'var(--rubro)', neu: 'var(--muted)' };
@@ -17611,26 +17602,32 @@ function AvatarX({ a }) {
 }
 function PostX({ p, mini }) {
   const a = p.a, resp = p.resp || [];
-  return html`<li className=${mini ? 'flex gap-2 py-2' : 'card p-3 flex gap-3'} style=${{ minWidth: 0 }} data-post=${p.kind}>
-    ${html`<${AvatarX} a=${a} />`}
+  const selo = a.sim && html`<span className="chip selo-sim" title=${a.fam ? 'Pessoa real; o post é simulado pelo jogo e só trata da medida, a partir do viés público declarado' : a.pol ? 'Político real; o trecho é simulado pelo jogo e só trata de política' : 'Parlamentar real; o post é simulado pelo jogo e só reflete o voto simulado dele'}>simulado</span>`;
+  const quem = html`<b style=${{ overflowWrap: 'anywhere' }}>${a.nome}${a.sim && !a.fam ? ' · ' + [a.sigla, a.uf].filter(Boolean).join('-') : ''}</b>`;
+  const verif = a.verif && html`<span style=${{ color: 'var(--anil)' }} title="Conta verificada (simulada)"><${Icon} n="BadgeCheck" s=${14} /></span>`;
+  const af = a.af && html`<span className="chip" style=${{ color: 'var(--anil)', borderColor: 'var(--anil)' }} title="Afinidade informada com o Missão; a reação segue a pauta do partido, de forma simulada">afinidade Missão</span>`;
+  const handle = a.handle && html`<span className="x-muted" style=${{ overflowWrap: 'anywhere' }}>@${a.handle}</span>`;
+  if (mini) return html`<li className="flex gap-2 py-2" style=${{ minWidth: 0 }} data-post=${p.kind}>
+    <${AvatarX} a=${a} />
     <div className="min-w-0 flex-1">
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm" style=${{ minWidth: 0 }}>
-        <b style=${{ overflowWrap: 'anywhere' }}>${a.nome}${a.sim && !a.fam ? ' · ' + [a.sigla, a.uf].filter(Boolean).join('-') : ''}</b>
-        ${a.fam && html`<span className="text-muted text-xs">${a.area}${a.seg ? ' · ' + (a.seg >= 1 ? fmt(a.seg, 0) + ' mi' : fmt(a.seg * 1000, 0) + ' mil') + ' seguidores (aprox.)' : ''}</span>`}
-        ${a.verif && html`<span style=${{ color: 'var(--anil)' }} title="Conta verificada (simulada)"><${Icon} n="BadgeCheck" s=${14} /></span>`}
-        ${a.sim && html`<span className="chip selo-sim" title=${a.fam ? 'Pessoa real; o post é simulado pelo jogo e só trata da medida, a partir do viés público declarado' : a.pol ? 'Político real; o trecho é simulado pelo jogo e só trata de política' : 'Parlamentar real; o post é simulado pelo jogo e só reflete o voto simulado dele'}>simulado</span>`}
-        ${a.af && html`<span className="chip" style=${{ color: 'var(--anil)', borderColor: 'var(--anil)' }} title="Afinidade informada com o Missão; a reação segue a pauta do partido, de forma simulada">afinidade Missão</span>`}
-        ${a.handle && html`<span className="text-muted text-xs" style=${{ overflowWrap: 'anywhere' }}>@${a.handle}</span>`}
-        ${p.mes != null && html`<span className="text-muted text-xs">· ${dataCurta(p.mes)}</span>`}
-      </div>
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm" style=${{ minWidth: 0 }}>${quem}${verif}${selo}${af}${handle}</div>
       <div className="text-sm mt-1 leading-snug" style=${{ overflowWrap: 'anywhere' }}>${p.txt}</div>
-      ${!mini && p.fx && p.fx.length > 0 && html`<div className="text-xs text-muted mt-1" data-fam-efeito="1">Público que o segue: ${p.fx.slice(0, 4).map(x => (GRUPOS.find(z => z.k === x.k) || { nome: x.k }).nome + ' ' + sgn(x.d, 1)).join(' · ')} p.p. de aprovação</div>`}
-      ${!mini && html`<div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs text-muted num">
-        <span className="inline-flex items-center gap-1"><${Icon} n="MessageCircle" s=${13} /> ${resp.length}</span>
-        <span className="inline-flex items-center gap-1"><${Icon} n="Repeat2" s=${13} /> ${fmtK(p.rts || 0)}</span>
-        <span className="inline-flex items-center gap-1" style=${{ color: p.tom === 'pos' ? 'var(--verde)' : undefined }}><${Icon} n="Heart" s=${13} /> ${fmtK(p.likes || 0)}</span>
-      </div>`}
-      ${!mini && resp.length > 0 && html`<details className="mt-2"><summary className="text-xs text-muted cursor-pointer">${resp.length} ${resp.length === 1 ? 'resposta' : 'respostas'}</summary>
+    </div>
+  </li>`;
+  const fx = p.fx && p.fx.length > 0 ? p.fx.slice(0, 4) : [];
+  return html`<li className="x-post" data-post=${p.kind}>
+    <div className="x-av" aria-hidden="true">${a.em || '👤'}</div>
+    <div className="min-w-0">
+      <div className="x-who">${quem}${verif}${selo}${af}${handle}${p.mes != null && html`<span className="x-muted">· ${dataCurta(p.mes)}</span>`}</div>
+      ${a.fam && html`<div className="x-muted">${a.area}${a.seg ? ' · ' + (a.seg >= 1 ? fmt(a.seg, 0) + ' mi' : fmt(a.seg * 1000, 0) + ' mil') + ' seguidores (aprox.)' : ''}</div>`}
+      <div className="x-txt">${p.txt}</div>
+      ${fx.length > 0 && html`<div className="gv-chips mt-2" data-fam-efeito="1" title="Público que o segue: efeito na aprovação, em pontos percentuais">${fx.map(x => html`<span key=${x.k} className=${'gv-chip ' + (x.d >= 0 ? 'pos' : 'neg')}>${(GRUPOS.find(z => z.k === x.k) || { nome: x.k }).nome} ${sgn(x.d, 1)}</span>`)}</div>`}
+      <div className="x-eng">
+        <span title="Respostas"><${Icon} n="MessageCircle" s=${15} /> ${resp.length}</span>
+        <span title="Reposts"><${Icon} n="Repeat2" s=${15} /> ${fmtK(p.rts || 0)}</span>
+        <span title="Curtidas" style=${{ color: p.tom === 'pos' ? 'var(--verde)' : undefined }}><${Icon} n="Heart" s=${15} /> ${fmtK(p.likes || 0)}</span>
+      </div>
+      ${resp.length > 0 && html`<details className="gv-det mt-2"><summary><span className="gv-car"><${Icon} n="ChevronRight" s=${14} /></span> ${resp.length} ${resp.length === 1 ? 'resposta' : 'respostas'}</summary>
         <ul className="mt-1 flex flex-col divide-y divide-line">${resp.map((r, i) => html`<${PostX} key=${i} mini=${true} p=${{ a: r.a, txt: r.txt, kind: 'resp', mes: null }} />`)}</ul></details>`}
     </div>
   </li>`;
@@ -17651,15 +17648,15 @@ function FamososX({ g, upd }) { // v3.8
   const FM = g.x && g.x.fam; const rec = []; const vistos = new Set();
   if (FM) for (const p of FM.posts) { if (g.mes - p.mes > 4 || vistos.has(p.nome)) continue; vistos.add(p.nome); rec.push(p); }
   rec.sort((a, b) => (a.tom === 'neg' ? 0 : 1) - (b.tom === 'neg' ? 0 : 1) || b.mes - a.mes);
-  return html`<section className="card p-4 flex flex-col gap-3" data-secao="x-famosos">
-    <div className="flex flex-wrap items-center gap-2"><b className="text-sm">Famosos e as suas medidas</b><${SeloSim} a="o" /></div>
-    <p className="text-xs text-muted">Pessoas reais com viés público declarado comentam as medidas que você publica; os posts são simulados e tratam só da medida. Ataque ou apoio de famoso grande mexe de leve na aprovação do público que o segue. Convidar para live gasta 1 ação e pode suavizar o próximo ataque, se o viés dele não for oposto demais ao seu.</p>
-    ${FM && FM.ult && FM.ult.mes === g.mes && html`<div className="text-sm p-3 rounded" role="status" data-fam-ult="1" style=${{ background: 'var(--panel2)' }}>${FM.ult.txt}</div>`}
-    ${rec.length === 0 ? html`<p className="text-sm text-muted">Ninguém comentou ainda. Publique medidas para ver quem reage.</p>` : html`<ul className="grid gap-2 sm:grid-cols-2">${rec.slice(0, 6).map(p => { const f = FAMOSOS.find(x => x.n === p.nome); if (!f) return null; const pode = famLivePode(g, f);
-      return html`<li key=${p.nome} className="rounded-lg border border-line p-3 flex flex-col gap-2" data-fam=${p.nome}>
-        <div className="flex flex-wrap items-center gap-2 min-w-0"><span aria-hidden="true">${famEm(f)}</span><b className="text-sm" style=${{ overflowWrap: 'anywhere' }}>${f.n}</b><${Tag} cor=${p.tom === 'pos' ? 'var(--verde)' : 'var(--rubro)'}>${p.tom === 'pos' ? 'apoiou' : p.suav ? 'ressalvas' : 'criticou'}</${Tag}>${f.af && html`<${Tag} cor="var(--anil)">afinidade Missão</${Tag}>`}</div>
-        <div className="text-xs text-muted">${f.a} · ${f.s >= 1 ? fmt(f.s, 0) + ' mi' : fmt(f.s * 1000, 0) + ' mil'} seguidores (aprox.) · ${p.topic} · ${dataCurta(p.mes)}</div>
-        <div className="flex flex-wrap items-center gap-2"><button type="button" className="btn btn-ghost text-xs" data-fam-live=${f.n} disabled=${!pode.ok} onClick=${() => upd(n => { famLive(n, f.n); })}><${Icon} n="Video" s=${13} /> Convidar para live (1 ação)</button>${!pode.ok && html`<span className="text-xs text-muted">${pode.motivo}</span>`}${pode.ok && html`<span className="text-xs text-muted">chance de topar ${fmt(pode.chance * 100, 0)}%</span>`}</div>
+  return html`<section className="sec" data-secao="x-famosos" aria-labelledby="x-fam-t">
+    <${MxHead} id="x-fam-t" eb="X · famosos" t="Famosos e as suas medidas" tip="Pessoas reais com viés público declarado comentam as medidas que você publica; os posts são simulados e tratam só da medida. Ataque ou apoio de famoso grande mexe de leve na aprovação do público que o segue. Convidar para live gasta 1 ação e pode suavizar o próximo ataque, se o viés dele não for oposto demais ao seu." />
+    ${FM && FM.ult && FM.ult.mes === g.mes && html`<div className="mx-box text-sm mb-3" role="status" data-fam-ult="1">${FM.ult.txt}</div>`}
+    ${rec.length === 0 ? html`<p className="text-sm text-muted">Ninguém comentou ainda. Publique medidas para ver quem reage.</p>` : html`<ul className="flex flex-col gap-3" style=${{ padding: 0, margin: 0, listStyle: 'none' }}>${rec.slice(0, 6).map(p => { const f = FAMOSOS.find(x => x.n === p.nome); if (!f) return null; const pode = famLivePode(g, f); const cor = p.tom === 'pos' ? 'var(--verde)' : 'var(--rubro)';
+      return html`<li key=${p.nome} className="mx-card panel" style=${{ '--st': cor }} data-fam=${p.nome}>
+        <div className="mx-h"><span className="gv-ic" style=${{ '--c': cor, fontSize: 20 }} aria-hidden="true">${famEm(f)}</span><div className="min-w-0"><div className="mx-t">${f.n}</div><div className="mx-s">${f.a} · ${f.s >= 1 ? fmt(f.s, 0) + ' mi' : fmt(f.s * 1000, 0) + ' mil'} seguidores (aprox.)</div></div><${Tag} cor=${cor}>${p.tom === 'pos' ? 'apoiou' : p.suav ? 'ressalvas' : 'criticou'}</${Tag}></div>
+        <div className="gv-chips"><${MxChip}>${p.topic}</${MxChip}><${MxChip}>${dataCurta(p.mes)}</${MxChip}>${f.af && html`<${Tag} cor="var(--anil)">afinidade Missão</${Tag}>`}</div>
+        <div className="gv-acts"><button type="button" className="btn btn-ghost" data-fam-live=${f.n} disabled=${!pode.ok} onClick=${() => upd(n => { famLive(n, f.n); })}><${Icon} n="Video" s=${13} /> Convidar para live (1 ação)</button></div>
+        ${!pode.ok && html`<div className="mx-s">${pode.motivo}</div>`}${pode.ok && html`<div className="mx-s">chance de topar ${fmt(pode.chance * 100, 0)}%</div>`}
       </li>`; })}</ul>`}
   </section>`;
 }
@@ -17670,7 +17667,8 @@ function RedeX({ g, upd }) {
   const [campId, setCampId] = useState('');
   const [campTag, setCampTag] = useState('');
   const rest = postsRestantes(g), ap = aprovacao(g);
-  const posts = (X.posts || []).filter(p => fil === 'todos' || X_CAT(p) === fil);
+  const todos = (X.posts || []);
+  const posts = todos.filter(p => fil === 'todos' || X_CAT(p) === fil);
   const itens = (g.pauta || []);
   const it = itens.find(x => x.id === campId) || null;
   const tagPad = it ? hashtag(it.prop.topic) : '';
@@ -17681,62 +17679,78 @@ function RedeX({ g, upd }) {
   const hist = X.hist || [], ult = hist.length ? hist[hist.length - 1] : null;
   const snapA = X.snapAnt || null;
   const gr = GRUPOS.slice().sort((a, b) => b.w - a.w);
-  return html`<div className="flex flex-col gap-6" style=${{ minWidth: 0 }}>
-    <${CabecaSecao} eyebrow="Rede social" titulo="X" />
-    <p className="text-xs text-muted" data-secao="aviso-x">Simulação do jogo: perfis, posts e números são fictícios; parlamentares, famosos e políticos reais aparecem com selo 'simulado' e só comentam a posição política coerente com o voto simulado deles ou o viés público declarado (famosos e podcasts: v3.8).</p>
+  const trend = X.trend || [];
+  const filtros = [['todos', 'Todos'], ['pol', 'Políticos'], ['fam', 'Famosos'], ['imp', 'Imprensa'], ['pes', 'Pessoas']];
+  return html`<div className="flex flex-col gap-6" style=${{ minWidth: 0 }} data-x="raiz">
+    <${MxStyle} />
+    <div className="flex flex-wrap items-end justify-between gap-2"><div><div className="eyebrow">Rede social</div><h2 className="disp text-3xl font-black uppercase leading-none mt-1">X<${GvTip} txt="Simulação do jogo: perfis, posts e números são fictícios; parlamentares, famosos e políticos reais aparecem com selo 'simulado' e só comentam a posição política coerente com o voto simulado deles ou o viés público declarado (famosos e podcasts: v3.8)." /></h2></div>
+      <p className="gv-sub" data-secao="aviso-x">Simulação: pessoas reais levam o selo “simulado”.</p></div>
 
-    <section className="card p-4 flex flex-col gap-3" data-secao="x-postar">
-      <div className="flex items-center justify-between gap-2"><b className="text-sm">Postar como presidente</b><span className="text-xs text-muted num">${rest > 0 ? rest + ' de ' + POST_LIM + ' posts neste mês' : 'limite de ' + POST_LIM + ' posts neste mês atingido'}</span></div>
-      <textarea rows="3" maxLength="280" value=${txt} onChange=${e => setTxt(e.target.value)} placeholder="O que o presidente quer dizer ao país?" aria-label="Texto do post" disabled=${rest <= 0}></textarea>
-      <div className="flex items-center justify-between gap-2"><span className="text-xs text-muted num">${txt.length}/280</span><button type="button" className="btn btn-pri text-sm" disabled=${rest <= 0 || !txt.trim()} onClick=${posta}><${Icon} n="Send" s=${14} /> Postar</button></div>
-      ${X.ult && X.ult.mes === g.mes && html`<div className="text-sm p-3 rounded" role="status" style=${{ background: 'var(--panel2)' }}>${X.ult.txt}</div>`}
-    </section>
+    <section aria-label="Resumo da rede" data-gv="x-resumo"><div className="gv-kpis">
+      <${GvKpi} dado="x-seg" ic="Users" cor="var(--anil)" k="Seguidores" v=${fmtK(X.seg || 0)} s="da conta presidencial" />
+      <${GvKpi} dado="x-aprov" ic="ThumbsUp" cor=${corAprov(ap)} k="Aprovação" v=${fmt(ap, 0) + '%'} s="do governo, hoje" />
+      <${GvKpi} dado="x-posts" ic="PenLine" cor=${rest > 0 ? 'var(--ouro)' : 'var(--rubro)'} k="Posts no mês" v=${rest + '/' + POST_LIM} s=${rest > 0 ? 'ainda disponíveis' : 'limite atingido'} />
+      <${GvKpi} dado="x-trend" ic="Hash" cor="var(--verde)" k="Assuntos em alta" v=${trend.length} s=${trend.length ? trend[0].tag : 'nada em alta'} />
+      <${GvKpi} dado="x-humor" ic="Smile" cor=${ult ? (ult.pos >= 55 ? 'var(--verde)' : ult.pos <= 45 ? 'var(--rubro)' : 'var(--ambar)') : 'var(--muted)'} k="Humor da rede" v=${ult ? ult.pos + '%' : '–'} s=${ult ? 'positivo no último evento' : 'sem eventos ainda'} />
+    </div></section>
 
-    <section className="card p-4 flex flex-col gap-3" data-secao="x-campanha">
-      <div><b className="text-sm">Lançar campanha</b><p className="text-xs text-muted mt-1">Escolha uma medida na pauta do Congresso e uma hashtag. A pressão das redes muda a disposição de voto dos parlamentares (custa 1 ação política). Medida impopular pode virar o jogo contra você.</p></div>
-      ${itens.length === 0 ? html`<p className="text-sm text-muted">Nenhuma medida na pauta do Congresso. Envie um projeto, PEC ou MP à pauta para poder fazer campanha.</p>` : html`
-        <div className="grid gap-2 sm:grid-cols-2">
-          <label className="flex flex-col gap-1"><span className="eyebrow">Medida na pauta</span><select value=${campId} onChange=${e => { setCampId(e.target.value); setCampTag(''); }}><option value="">Escolher…</option>${itens.map(x => html`<option key=${x.id} value=${x.id}>${x.prop.topic}${x.campanha ? ' · ' + x.campanha.tag : ''}</option>`)}</select></label>
-          <label className="flex flex-col gap-1"><span className="eyebrow">Hashtag</span><input type="text" value=${campTag} onChange=${e => setCampTag(e.target.value)} placeholder=${tagPad || '#SuaHashtag'} maxLength="31" /></label>
-        </div>
-        ${it && html`<div className="text-xs text-muted">${popIt < 0 ? 'Esta medida é impopular: a campanha deve sair pela culatra.' : 'Esta medida tem apoio popular: a campanha tende a ajudar.'}${it.campanha ? ` Campanha atual: ${it.campanha.tag} (${dataCurta(it.campanha.mes)}, força ${fmt(it.campanha.forca, 1)}).` : ''}</div>`}
-        <div className="flex justify-end"><button type="button" className="btn btn-gold text-sm" disabled=${!it || g.acoes <= 0 || jaFez} onClick=${lanca}><${Icon} n="Megaphone" s=${14} /> Lançar campanha (1 ação)</button></div>
-        ${g.acoes <= 0 && html`<div className="text-xs text-muted">Sem ações políticas neste mês.</div>`}`}
-    </section>
+    <div className="x-layout">
+      <div className="x-col">
+        <section className="x-compose" data-secao="x-postar">
+          <${Ef} nome=${g.cfg.nome} cor=${corPresidente(g.cfg)} papel="presidente" s=${44} p=${g.cfg} />
+          <div className="flex flex-col gap-2 min-w-0">
+            <textarea rows="3" maxLength="280" value=${txt} onChange=${e => setTxt(e.target.value)} placeholder="O que o presidente quer dizer ao país?" aria-label="Texto do post" disabled=${rest <= 0}></textarea>
+            <div className="flex items-center justify-between gap-2 flex-wrap"><span className="x-muted num">${txt.length}/280 · ${rest > 0 ? rest + ' de ' + POST_LIM + ' posts neste mês' : 'limite de ' + POST_LIM + ' posts neste mês atingido'}</span><button type="button" className="btn btn-pri" disabled=${rest <= 0 || !txt.trim()} onClick=${posta}><${Icon} n="Send" s=${14} /> Postar</button></div>
+            ${X.ult && X.ult.mes === g.mes && html`<div className="mx-box text-sm" role="status">${X.ult.txt}</div>`}
+          </div>
+        </section>
 
-    <div className="grid gap-6 lg:grid-cols-2" style=${{ minWidth: 0 }}>
-      <section className="card p-4 flex flex-col gap-3" data-secao="x-assuntos">
-        <b className="text-sm">Assuntos do momento</b>
-        ${(X.trend || []).length === 0 ? html`<p className="text-sm text-muted">Nada em alta ainda. Vote medidas ou poste para movimentar a rede.</p>` : html`<ol className="flex flex-col gap-2">${X.trend.slice(0, 8).map((t, i) => html`<li key=${t.tag} className="flex items-center gap-2 min-w-0">
-          <span className="num text-xs text-muted w-4">${i + 1}</span>
-          <div className="min-w-0 flex-1"><div className="text-sm font-semibold" style=${{ overflowWrap: 'anywhere' }}>${t.tag}</div><div className="text-xs text-muted num">${fmtK(t.vol)} posts · ${dataCurta(t.mes)}</div></div>
-          <span className="shrink-0 rounded-full" style=${{ width: 10, height: 10, background: X_COR[t.tom] || X_COR.neu }} title=${t.tom === 'pos' ? 'tom positivo' : t.tom === 'neg' ? 'tom negativo' : 'tom neutro'}></span></li>`)}</ol>`}
-      </section>
-      <section className="card p-4 flex flex-col gap-3" data-secao="x-humor">
-        <div className="flex items-baseline justify-between gap-2"><b className="text-sm">Humor da rede</b><span className="text-xs text-muted num">aprovação ${fmt(ap, 0)}% · ${fmtK(X.seg || 0)} seguidores</span></div>
-        <${GraficoHumor} hist=${hist} ap=${ap} />
-        <div className="text-xs text-muted">% de reações positivas a cada evento (últimos 12). ${ult ? 'Último: ' + ult.pos + '% (' + ult.topic + ').' : ''}</div>
-      </section>
+        <section className="flex flex-col gap-3" data-secao="x-feed">
+          <div className="chipnav" role="group" aria-label="Filtrar posts">${filtros.map(([k, n]) => html`<button key=${k} type="button" aria-selected=${fil === k} onClick=${() => setFil(k)}>${n}${k === 'todos' ? '' : ' ' + todos.filter(p => X_CAT(p) === k).length}</button>`)}</div>
+          ${posts.length === 0 ? html`<p className="text-sm text-muted">Nenhum post aqui ainda. A rede reage às votações, às crises, aos protestos e ao que você postar.</p>` : html`<ul className="x-feed">${posts.slice(0, 40).map(p => html`<${PostX} key=${p.id} p=${p} />`)}</ul>`}
+        </section>
+      </div>
+
+      <div className="x-col">
+        <section className="sec" data-secao="x-assuntos" aria-labelledby="x-ass-t">
+          <${MxHead} id="x-ass-t" eb="X · agora" t="Assuntos do momento" />
+          ${trend.length === 0 ? html`<p className="text-sm text-muted">Nada em alta ainda. Vote medidas ou poste para movimentar a rede.</p>` : html`<ol style=${{ listStyle: 'none', padding: 0, margin: 0 }}>${trend.slice(0, 8).map((t, i) => html`<li key=${t.tag} className="x-tt">
+            <span className="num x-muted">${i + 1}</span>
+            <div className="min-w-0"><div className="text-sm font-semibold" style=${{ overflowWrap: 'anywhere' }}>${t.tag}</div><div className="x-muted num">${fmtK(t.vol)} posts · ${dataCurta(t.mes)}</div></div>
+            <${MxChip} cor=${X_COR[t.tom] || X_COR.neu}>${t.tom === 'pos' ? 'positivo' : t.tom === 'neg' ? 'negativo' : 'neutro'}</${MxChip}></li>`)}</ol>`}
+        </section>
+
+        <section className="sec" data-secao="x-humor" aria-labelledby="x-hum-t">
+          <${MxHead} id="x-hum-t" eb="X · clima" t="Humor da rede" tip="% de reações positivas a cada evento (últimos 12)." />
+          <${GraficoHumor} hist=${hist} ap=${ap} />
+          ${ult && html`<div className="mx-s mt-2">Último: ${ult.pos}% (${ult.topic}).</div>`}
+        </section>
+
+        <section className="sec" data-secao="x-campanha" aria-labelledby="x-cam-t">
+          <${MxHead} id="x-cam-t" eb="X · pressão" t="Lançar campanha" tip="Escolha uma medida na pauta do Congresso e uma hashtag. A pressão das redes muda a disposição de voto dos parlamentares (custa 1 ação política). Medida impopular pode virar o jogo contra você." />
+          ${itens.length === 0 ? html`<p className="text-sm text-muted">Nenhuma medida na pauta do Congresso. Envie um projeto, PEC ou MP à pauta para poder fazer campanha.</p>` : html`<div className="flex flex-col gap-3">
+            <label className="flex flex-col gap-1"><span className="eyebrow">Medida na pauta</span><select value=${campId} onChange=${e => { setCampId(e.target.value); setCampTag(''); }}><option value="">Escolher…</option>${itens.map(x => html`<option key=${x.id} value=${x.id}>${x.prop.topic}${x.campanha ? ' · ' + x.campanha.tag : ''}</option>`)}</select></label>
+            <label className="flex flex-col gap-1"><span className="eyebrow">Hashtag</span><input type="text" value=${campTag} onChange=${e => setCampTag(e.target.value)} placeholder=${tagPad || '#SuaHashtag'} maxLength="31" /></label>
+            ${it && html`<div className="gv-chips"><${MxChip} c=${popIt < 0 ? 'neg' : 'pos'}>${popIt < 0 ? 'impopular: deve sair pela culatra' : 'apoio popular: tende a ajudar'}</${MxChip}>${it.campanha && html`<${MxChip}>atual ${it.campanha.tag} · força ${fmt(it.campanha.forca, 1)}</${MxChip}>`}</div>`}
+            <button type="button" className="btn btn-pri self-start" disabled=${!it || g.acoes <= 0 || jaFez} onClick=${lanca}><${Icon} n="Megaphone" s=${14} /> Lançar campanha (1 ação)</button>
+            ${g.acoes <= 0 && html`<div className="mx-s">Sem ações políticas neste mês.</div>`}</div>`}
+        </section>
+
+        <${FamososX} g=${g} upd=${upd} />
+
+        <section className="sec" data-secao="x-grupos" aria-labelledby="x-gru-t">
+          <${MxHead} id="x-gru-t" eb="X · base" t="Como cada grupo está" />
+          <${MxDet} rot=${'Ver os ' + gr.length + ' grupos'}><ul className="flex flex-col gap-2" style=${{ padding: 0, margin: 0, listStyle: 'none' }}>${gr.map(G => {
+            const v = g.groups[G.k], d = snapA && snapA[G.k] != null ? v - snapA[G.k] : null;
+            return html`<li key=${G.k} className="flex items-center gap-2 min-w-0"><span className="shrink-0" aria-hidden="true">${G.em}</span>
+              <span className="text-xs flex-1 min-w-0" style=${{ overflowWrap: 'anywhere' }}>${G.nome}</span>
+              <div className="bar-track shrink-0" style=${{ width: 56, height: 8 }}><div style=${{ width: clamp(v, 0, 100) + '%', height: '100%', background: v >= 55 ? 'var(--verde)' : v >= 40 ? 'var(--ambar)' : 'var(--rubro)' }}></div></div>
+              <span className="num text-xs w-7 text-right">${fmt(v, 0)}</span>
+              <span className="num text-xs w-5 text-center" style=${{ color: d == null || Math.abs(d) < .3 ? 'var(--muted)' : d > 0 ? 'var(--verde)' : 'var(--rubro)' }} title=${d == null ? 'sem comparação ainda' : 'vs. fechamento do mês anterior: ' + sgn(d, 1)}>${d == null || Math.abs(d) < .3 ? '–' : d > 0 ? '▲' : '▼'}</span></li>`;
+          })}</ul></${MxDet}>
+        </section>
+      </div>
     </div>
-
-    <section className="card p-4 flex flex-col gap-3" data-secao="x-grupos">
-      <b className="text-sm">Como cada grupo está</b>
-      <ul className="grid gap-x-6 gap-y-2 sm:grid-cols-2">${gr.map(G => {
-        const v = g.groups[G.k], d = snapA && snapA[G.k] != null ? v - snapA[G.k] : null;
-        return html`<li key=${G.k} className="flex items-center gap-2 min-w-0"><span className="shrink-0" aria-hidden="true">${G.em}</span>
-          <span className="text-xs flex-1 min-w-0" style=${{ overflowWrap: 'anywhere' }}>${G.nome}</span>
-          <div className="bar-track shrink-0" style=${{ width: 72, height: 8 }}><div style=${{ width: clamp(v, 0, 100) + '%', height: '100%', background: v >= 55 ? 'var(--verde)' : v >= 40 ? 'var(--ambar)' : 'var(--rubro)' }}></div></div>
-          <span className="num text-xs w-7 text-right">${fmt(v, 0)}</span>
-          <span className="num text-xs w-5 text-center" style=${{ color: d == null || Math.abs(d) < .3 ? 'var(--muted)' : d > 0 ? 'var(--verde)' : 'var(--rubro)' }} title=${d == null ? 'sem comparação ainda' : 'vs. fechamento do mês anterior: ' + sgn(d, 1)}>${d == null || Math.abs(d) < .3 ? '–' : d > 0 ? '▲' : '▼'}</span></li>`;
-      })}</ul>
-    </section>
-
-    <${FamososX} g=${g} upd=${upd} />
-
-    <section className="flex flex-col gap-3" data-secao="x-feed">
-      <div className="chipnav" role="group" aria-label="Filtrar posts">${[['todos', 'Todos'], ['pol', 'Políticos'], ['fam', 'Famosos'], ['imp', 'Imprensa'], ['pes', 'Pessoas']].map(([k, n]) => html`<button key=${k} type="button" aria-selected=${fil === k} onClick=${() => setFil(k)}>${n}</button>`)}</div>
-      ${posts.length === 0 ? html`<p className="text-sm text-muted">Nenhum post aqui ainda. A rede reage às votações, às crises, aos protestos e ao que você postar.</p>` : html`<ul className="flex flex-col gap-3">${posts.slice(0, 40).map(p => html`<${PostX} key=${p.id} p=${p} />`)}</ul>`}
-    </section>
   </div>`;
 }
 
@@ -21633,57 +21647,148 @@ function ChipPais({ p, s = 22 }) {
 const pesoRot = (p) => (p.peso / PESO_TOT >= .1 ? 'peso comercial alto' : p.peso / PESO_TOT >= .035 ? 'peso comercial médio' : 'peso comercial baixo');
 function AvisoMsg({ m }) { return m ? html`<p className="text-sm p-2 rounded border border-line mt-2" role="status" data-msg="1">${m.x}</p>` : null; }
 
+/* ============================== MUNDO / EU / X v2: mesma linguagem do Poder → Governo ============================== */
+/* Reaproveita GV_CSS (faixa de indicadores, "?" de ajuda, chips, detalhes) e acrescenta cartões (mx-*) e o feed do X (x-*). Sem fonte mono. */
+const MX_CSS = `
+.mx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px;align-items:start}
+.mx-grid.g2{grid-template-columns:repeat(auto-fill,minmax(400px,1fr))}
+.mx-grid.g3{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.mx-grid.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:640px){.mx-grid,.mx-grid.g2,.mx-grid.g3,.mx-grid.c3{grid-template-columns:minmax(0,1fr)}}
+.mx-card{display:flex;flex-direction:column;gap:10px;padding:14px;background:var(--panel2);border:1px solid var(--line2);border-top:3px solid var(--st,var(--line2));border-radius:12px;min-width:0;list-style:none}
+.mx-card:hover{border-color:var(--muted);border-top-color:var(--st,var(--muted))}
+.mx-card.panel{background:var(--panel)}
+.mx-card.dim{opacity:.55}
+.mx-h{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center}
+.mx-h.nr{grid-template-columns:auto minmax(0,1fr)}
+.mx-t{font-weight:600;font-size:15px;line-height:1.25;overflow-wrap:anywhere}
+.mx-s{font-size:12px;color:var(--muted);line-height:1.35}
+.mx-txt{font-size:13px;color:var(--muted);line-height:1.4;margin:0}
+.mx-txt.c2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mx-num{font-family:var(--f-disp);font-size:26px;font-weight:700;line-height:1.1;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.mx-lab{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.mx-box{padding:14px;background:var(--panel2);border:1px solid var(--line2);border-radius:12px;min-width:0}
+.mx-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:900px){.mx-cols{grid-template-columns:minmax(0,1fr)}}
+.mx-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.mx-act{display:flex;flex-direction:column;gap:8px;text-align:left;width:100%;padding:14px;background:var(--panel2);border:1px solid var(--line2);border-top:3px solid var(--c,var(--line2));border-radius:12px;color:var(--fg);cursor:pointer;font:inherit;min-width:0}
+.mx-act:hover:not(:disabled){border-color:var(--muted);border-top-color:var(--c,var(--muted))}
+.mx-act:focus-visible{outline:2px solid var(--ouro);outline-offset:2px}
+.mx-act:disabled{opacity:.5;cursor:not-allowed}
+.mx-act-h{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;font-weight:600;font-size:15px;line-height:1.25}
+.mx-steps{display:flex;gap:4px}
+.mx-steps i{height:8px;flex:1;border-radius:3px;background:var(--line2)}
+.mx-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column}
+.mx-list li{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+.mx-list li:first-child{border-top:0}
+.mx-date{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:48px}
+.x-layout{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:24px;align-items:start}
+@media (max-width:1100px){.x-layout{grid-template-columns:minmax(0,1fr)}}
+.x-col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.x-av{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:22px;background:var(--panel2);border:1px solid var(--line2);flex:none;overflow:hidden}
+.x-compose{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;padding:14px;background:var(--panel);border:1px solid var(--line2);border-radius:12px}
+.x-post{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;padding:14px;background:var(--panel);border:1px solid var(--line2);border-radius:12px;min-width:0;list-style:none}
+.x-post:hover{border-color:var(--muted)}
+.x-who{display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;font-size:14px;min-width:0;line-height:1.35}
+.x-who b{font-weight:600;overflow-wrap:anywhere}
+.x-muted{color:var(--muted);font-size:13px}
+.x-txt{font-size:15px;line-height:1.45;margin-top:4px;overflow-wrap:anywhere}
+.x-eng{display:flex;flex-wrap:wrap;gap:4px 22px;margin-top:10px;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.x-eng span{display:inline-flex;align-items:center;gap:6px}
+.x-feed{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+.x-tt{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.x-tt:first-child{border-top:0}
+`;
+function MxStyle() { return html`<style>${GV_CSS}${MX_CSS}</style>`; }
+function MxHead({ eb, t, tip, right, id, sub }) {
+  return html`<div className="gv-sec-h"><div>${eb && html`<div className="eyebrow">${eb}</div>`}<h3 id=${id} className="disp text-2xl font-extrabold uppercase">${t}${tip && html`<${GvTip} txt=${tip} />`}</h3>${sub && html`<p className="gv-sub">${sub}</p>`}</div>${right || null}</div>`;
+}
+function MxDet({ rot, children, dado }) {
+  return html`<details className="gv-det" data-mx-det=${dado || null}><summary><span className="gv-car"><${Icon} n="ChevronRight" s=${14} /></span> ${rot}</summary><div className="gv-det-b">${children}</div></details>`;
+}
+function MxChip({ c, cor, children, t }) {
+  return html`<span className=${'gv-chip ' + (c || '')} title=${t || null} style=${cor ? { color: cor, borderColor: cor } : null}>${children}</span>`;
+}
+const MX_REL = [['eua', 'Estados Unidos', '🇺🇸'], ['china', 'China', '🇨🇳'], ['ue', 'União Europeia', '🇪🇺'], ['merc', 'Mercosul', '🤝'], ['brics', 'BRICS', '🌐'], ['ocde', 'OCDE', '🏛️']];
+function MundoResumo({ g }) {
+  const M = g.mundo; const D = g.dip; const me = mundoEcon(g); const dec = decisaoAtual(g); const v = M.visita;
+  const vals = MX_REL.map(r => D[r[0]]); const media = vals.reduce((s, x) => s + x, 0) / vals.length;
+  const pior = MX_REL.reduce((a, r) => (D[r[0]] < D[a[0]] ? r : a), MX_REL[0]);
+  const pend = dec && !M.mesa.resolvida ? 1 : 0;
+  return html`<section aria-label="Resumo do Mundo" data-gv="mundo-resumo"><div className="gv-kpis">
+    <${GvKpi} dado="mundo-rel" ic="Globe" cor=${corAprov(media)} k="Relações (média)" v=${fmt(media, 0)} s=${'pior: ' + pior[1] + ' ' + fmt(D[pior[0]], 0)} />
+    <${GvKpi} dado="mundo-comercio" ic="Ship" cor=${me.pib >= 0 ? 'var(--verde)' : 'var(--rubro)'} k="Balanço comercial" v=${sgn(me.pib, 2) + ' p.p.'} s=${'dólar ' + sgn(me.dol, 2) + ' · agro ' + sgn(me.agro, 2)} />
+    <${GvKpi} dado="mundo-isol" ic=${M.isol >= 45 ? 'ShieldAlert' : 'ShieldCheck'} cor=${M.isol < 35 ? 'var(--verde)' : M.isol < 60 ? 'var(--ambar)' : 'var(--rubro)'} k="Isolamento" v=${fmt(M.isol, 0) + '/100'} s=${M.sanc.length ? M.sanc.length + (M.sanc.length === 1 ? ' sanção ativa' : ' sanções ativas') : 'sem sanções ativas'} />
+    <${GvKpi} dado="mundo-pend" ic="Scale" cor=${pend ? 'var(--ouro)' : 'var(--muted)'} k="Diplomacia pendente" v=${pend} s=${pend ? 'decisão do mês aguarda você' : dec ? 'decisão do mês resolvida' : 'nada pendente'} />
+    <${GvKpi} dado="mundo-viagens" ic="Plane" cor="var(--anil)" k="Visitas de Estado" v=${M.visitas.length} s=${v ? (v.mes > g.mes ? 'agendada: ' + PAIS_MAP[v.pais].nome : 'em viagem: ' + PAIS_MAP[v.pais].nome) : 'nenhuma agendada'} />
+  </div></section>`;
+}
 function MundoPanorama({ g, decidir, go }) {
   const M = g.mundo; const D = g.dip; const a = alin100(g); const me = mundoEcon(g);
-  const rel = [['eua', 'Estados Unidos', '🇺🇸'], ['china', 'China', '🇨🇳'], ['ue', 'União Europeia', '🇪🇺'], ['merc', 'Mercosul', '🤝'], ['brics', 'BRICS', '🌐'], ['ocde', 'OCDE', '🏛️']];
   const acoes = [
-    { l: 'Visita oficial a Washington', t: 'Fazer visita oficial aos Estados Unidos e reunião na Casa Branca', i: 'Plane' },
-    { l: 'Cúpula do BRICS', t: 'Liderar a cúpula do BRICS e defender a desdolarização com a China', i: 'Globe' },
-    { l: 'Fechar acordo Mercosul-UE', t: 'Fechar o acordo comercial Mercosul-União Europeia', i: 'Handshake' },
-    { l: 'Pedir entrada na OCDE', t: 'Formalizar a adesão do Brasil à OCDE com abertura comercial', i: 'Landmark' },
-    { l: 'COP: meta climática ambiciosa', t: 'Anunciar meta de desmatamento zero e transição energética na COP do clima', i: 'Leaf' },
-    { l: 'Viagem comercial à China', t: 'Missão comercial à China para vender carne e soja e atrair investimentos', i: 'Ship' }
+    { l: 'Visita oficial a Washington', t: 'Fazer visita oficial aos Estados Unidos e reunião na Casa Branca', i: 'Plane', c: 'var(--anil)' },
+    { l: 'Cúpula do BRICS', t: 'Liderar a cúpula do BRICS e defender a desdolarização com a China', i: 'Globe', c: 'var(--rubro)' },
+    { l: 'Fechar acordo Mercosul-UE', t: 'Fechar o acordo comercial Mercosul-União Europeia', i: 'Handshake', c: 'var(--ouro)' },
+    { l: 'Pedir entrada na OCDE', t: 'Formalizar a adesão do Brasil à OCDE com abertura comercial', i: 'Landmark', c: 'var(--anil)' },
+    { l: 'COP: meta climática ambiciosa', t: 'Anunciar meta de desmatamento zero e transição energética na COP do clima', i: 'Leaf', c: 'var(--verde)' },
+    { l: 'Viagem comercial à China', t: 'Missão comercial à China para vender carne e soja e atrair investimentos', i: 'Ship', c: 'var(--ambar)' }
   ];
   const dec = decisaoAtual(g);
-  return html`<div className="grid gap-6 lg:grid-cols-12">
-    <section className="lg:col-span-7 sec flex flex-col gap-5">
-      <h3 className="disp text-2xl font-extrabold uppercase">Termômetro de alinhamento</h3>
-      <${MedidorLado} id="alin" rot=${rotuloAlin(a)} v=${a} esq="China / BRICS" dir="EUA / Ocidente" txt=${`${fmt(a, 0)} de 100 (0 = Sul Global, 100 = Ocidente)`} grad="linear-gradient(90deg, var(--rubro), var(--panel2) 50%, var(--anil))" />
-      <p className="text-xs text-muted">Quem fica longe do meio aumenta a chance de sanções e tarifas do lado oposto. Quem fica exatamente no meio recebe menos acordos especiais (investimento, tecnologia e defesa) de qualquer um dos lados.</p>
-      <div data-medidor="isol">
-        <div className="flex justify-between text-sm mb-1"><span>Isolamento internacional</span><span className="num">${fmt(M.isol, 0)} / 100</span></div>
-        <${Bar} v=${M.isol} cor=${M.isol < 35 ? 'var(--verde)' : M.isol < 60 ? 'var(--ambar)' : 'var(--rubro)'} h=${8} label="Isolamento internacional" />
-        <p className="text-xs text-muted mt-1">Sobe com relações ruins, sanções, gafes e saída de organismos; cai com tratados e cúpulas. Acima de 45 empurra o risco-país para cima.</p>
-      </div>
-      <div className="grid sm:grid-cols-2 gap-x-6 gap-y-3">${rel.map(([k, n, em]) => html`<div key=${k}>
-        <div className="flex justify-between text-sm"><span>${em} ${n}</span><span className="num">${fmt(D[k], 0)}</span></div><${Bar} v=${D[k]} cor=${corAprov(D[k])} h=${6} label=${n} /></div>`)}</div>
-      <div className="p-3 rounded-lg border border-line" data-econ-mundo="1">
-        <div className="eyebrow mb-1">Efeito das relações na economia · ${ESTIMATIVA_JOGO}</div>
-        <div className="grid grid-cols-3 gap-2 text-center">
-          <div><div className="num text-lg" style=${{ color: me.pib >= 0 ? 'var(--verde)' : 'var(--rubro)' }}>${sgn(me.pib, 2)}</div><div className="text-[11px] text-muted">PIB (p.p., meta)</div></div>
-          <div><div className="num text-lg" style=${{ color: me.dol <= 0 ? 'var(--verde)' : 'var(--rubro)' }}>${sgn(me.dol, 2)}</div><div className="text-[11px] text-muted">Dólar (R$)</div></div>
-          <div><div className="num text-lg" style=${{ color: me.agro >= 0 ? 'var(--verde)' : 'var(--rubro)' }}>${sgn(me.agro, 2)}</div><div className="text-[11px] text-muted">Agro (pts/mês)</div></div>
+  const sit = [
+    { ic: 'Plane', c: 'var(--anil)', t: 'Visita de Estado', x: M.visita ? (M.visita.mes > g.mes ? `Agendada: ${PAIS_MAP[M.visita.pais].nome}, em ${dataMes(M.visita.mes)}.` : `Em viagem: ${PAIS_MAP[M.visita.pais].nome}. Resolve no fim do mês.`) : 'Nenhuma visita de Estado agendada.', b: ['viagens', 'Visitas de Estado'] },
+    { ic: 'Scale', c: dec && !M.mesa.resolvida ? 'var(--ouro)' : 'var(--muted)', t: 'Mesa diplomática', x: dec && !M.mesa.resolvida ? 'Decisão diplomática do mês aguarda você.' : dec ? 'Decisão diplomática do mês: resolvida.' : 'Sem decisão diplomática neste mês.', b: ['mesa', 'Mesa diplomática'] },
+    { ic: 'ScrollText', c: 'var(--verde)', t: 'Tratados', x: `${M.tratados.length} ${M.tratados.length === 1 ? 'tratado assinado' : 'tratados assinados'} no mandato.`, b: ['tratados', 'Tratados'] }
+  ];
+  return html`<div className="flex flex-col gap-6" data-mundo="panorama">
+    <section className="sec" data-secao-mundo="alinhamento" aria-labelledby="mp-alin">
+      <${MxHead} id="mp-alin" eb="Mundo · posição" t="Alinhamento e isolamento" tip="Quem fica longe do meio aumenta a chance de sanções e tarifas do lado oposto. Quem fica exatamente no meio recebe menos acordos especiais (investimento, tecnologia e defesa) de qualquer um dos lados. O isolamento sobe com relações ruins, sanções, gafes e saída de organismos; cai com tratados e cúpulas. Acima de 45 empurra o risco-país para cima." />
+      <div className="mx-cols">
+        <div className="mx-box"><${MedidorLado} id="alin" rot=${rotuloAlin(a)} v=${a} esq="China / BRICS" dir="EUA / Ocidente" txt=${`${fmt(a, 0)} de 100 (0 = Sul Global, 100 = Ocidente)`} grad="linear-gradient(90deg, var(--rubro), var(--panel2) 50%, var(--anil))" /></div>
+        <div className="mx-box" data-medidor="isol">
+          <div className="flex justify-between text-sm mb-2"><span>Isolamento internacional</span><span className="num">${fmt(M.isol, 0)} / 100</span></div>
+          <${Bar} v=${M.isol} cor=${M.isol < 35 ? 'var(--verde)' : M.isol < 60 ? 'var(--ambar)' : 'var(--rubro)'} h=${8} label="Isolamento internacional" />
+          <div className="mx-s mt-2">${M.isol < 35 ? 'Baixo: o Brasil tem espaço para negociar com todos os lados.' : M.isol < 60 ? 'Moderado: atenção a sanções e gafes.' : 'Alto: risco-país e investimento sofrem.'}</div>
         </div>
-        <p className="text-xs text-muted mt-2">Cada país pesa conforme o comércio. Quando a relação sobe acima do ponto de partida, exportações, PIB e agro respiram melhor e o dólar alivia.</p>
       </div>
-      ${M.sanc.length > 0 && html`<div data-sancoes="1"><div className="eyebrow mb-1">Sanções e tarifas ativas</div><ul className="flex flex-col gap-1 text-sm">${M.sanc.map((s, i) => html`<li key=${i} className="flex items-center gap-2"><${Icon} n="ShieldAlert" s=${14} /> ${s.nome} <span className="text-xs text-muted">até ${dataCurta(s.ate)}</span></li>`)}</ul></div>`}
+      ${M.sanc.length > 0 && html`<div className="mt-4" data-sancoes="1"><div className="eyebrow mb-2">Sanções e tarifas ativas</div><div className="gv-chips">${M.sanc.map((s, i) => html`<${MxChip} key=${i} c="neg"><${Icon} n="ShieldAlert" s=${12} /> ${s.nome} · até ${dataCurta(s.ate)}</${MxChip}>`)}</div></div>`}
     </section>
-    <aside className="lg:col-span-5 flex flex-col gap-6">
-      <section className="sec">
-        <h3 className="disp text-2xl font-extrabold uppercase mb-1">Agora no Itamaraty</h3>
-        <ul className="text-sm flex flex-col gap-2">
-          <li className="flex gap-2"><${Icon} n="Plane" s=${15} /><span>${M.visita ? (M.visita.mes > g.mes ? `Visita agendada: ${PAIS_MAP[M.visita.pais].nome}, em ${dataMes(M.visita.mes)}.` : `Em viagem: ${PAIS_MAP[M.visita.pais].nome}. Resolve no fim do mês.`) : 'Nenhuma visita de Estado agendada.'}</span></li>
-          <li className="flex gap-2"><${Icon} n="Scale" s=${15} /><span>${dec && !M.mesa.resolvida ? 'Decisão diplomática do mês aguarda você.' : dec ? 'Decisão diplomática do mês: resolvida.' : 'Sem decisão diplomática neste mês.'}</span></li>
-          <li className="flex gap-2"><${Icon} n="ScrollText" s=${15} /><span>${M.tratados.length} ${M.tratados.length === 1 ? 'tratado assinado' : 'tratados assinados'} no mandato.</span></li>
-        </ul>
-        ${go && html`<div className="flex flex-wrap gap-2 mt-3"><button type="button" className="btn btn-ghost !text-xs" onClick=${() => go('mesa')}>Mesa diplomática</button><button type="button" className="btn btn-ghost !text-xs" onClick=${() => go('viagens')}>Visitas de Estado</button><button type="button" className="btn btn-ghost !text-xs" onClick=${() => go('blocos')}>Blocos</button></div>`}
-      </section>
-      <section className="sec">
-        <h3 className="disp text-2xl font-extrabold uppercase mb-1">Agenda externa</h3>
-        <p className="text-xs text-muted mb-3">Cada missão gasta 1 ação do mês e passa pelo motor de decisão.</p>
-        <div className="flex flex-col gap-2">${acoes.map(x => html`<button key=${x.l} className="btn btn-ghost justify-start text-sm" disabled=${g.acoes <= 0} onClick=${() => decidir(x.t)}><${Icon} n=${x.i} s=${15} /> ${x.l}</button>`)}</div>
-      </section>
-    </aside>
+
+    <section className="sec" data-secao-mundo="relacoes" aria-labelledby="mp-rel">
+      <${MxHead} id="mp-rel" eb="Mundo · parceiros" t="Relações com os principais parceiros" tip="Relação de 0 a 100 com cada parceiro ou bloco. Cada um pesa na economia conforme o comércio com o Brasil. Detalhe país a país na aba Países." />
+      <div className="mx-grid c3">${MX_REL.map(([k, n, em]) => { const v = D[k]; const cor = corAprov(v);
+        return html`<div key=${k} className="mx-card panel" style=${{ '--st': cor }} data-rel=${k}>
+          <div className="mx-h"><span className="gv-ic" style=${{ '--c': cor, fontSize: 20 }} aria-hidden="true">${em}</span><div className="mx-t">${n}</div><span className="num text-lg font-semibold" style=${{ color: cor }}>${fmt(v, 0)}</span></div>
+          <${Bar} v=${v} cor=${cor} h=${6} label=${n} />
+          <div className="gv-chips"><${MxChip} cor=${cor}>${v >= 55 ? 'relação boa' : v >= 38 ? 'relação regular' : 'relação ruim'}</${MxChip}></div>
+        </div>`; })}</div>
+    </section>
+
+    <section className="sec" data-econ-mundo="1" aria-labelledby="mp-eco">
+      <${MxHead} id="mp-eco" eb=${'Mundo · economia · ' + ESTIMATIVA_JOGO} t="Efeito das relações na economia" tip="Cada país pesa conforme o comércio. Quando a relação sobe acima do ponto de partida, exportações, PIB e agro respiram melhor e o dólar alivia." />
+      <div className="mx-grid g3">
+        ${[['PIB (p.p., meta)', me.pib, me.pib >= 0, 'TrendingUp'], ['Dólar (R$)', me.dol, me.dol <= 0, 'DollarSign'], ['Agro (pts/mês)', me.agro, me.agro >= 0, 'Wheat']].map(([l, v, bom, ic]) => html`<div key=${l} className="mx-card panel" style=${{ '--st': bom ? 'var(--verde)' : 'var(--rubro)' }}>
+          <div className="mx-h nr"><span className="gv-ic" style=${{ '--c': bom ? 'var(--verde)' : 'var(--rubro)' }}><${Icon} n=${ic} s=${20} /></span><div><div className="mx-s">${l}</div><div className="mx-num" style=${{ color: bom ? 'var(--verde)' : 'var(--rubro)' }}>${sgn(v, 2)}</div></div></div></div>`)}
+      </div>
+    </section>
+
+    <section className="sec" data-secao-mundo="itamaraty" aria-labelledby="mp-ita">
+      <${MxHead} id="mp-ita" eb="Mundo · Itamaraty" t="Agora no Itamaraty" />
+      <div className="mx-grid g3">${sit.map(s => html`<div key=${s.t} className="mx-card panel" style=${{ '--st': s.c }}>
+        <div className="mx-h nr"><span className="gv-ic" style=${{ '--c': s.c }}><${Icon} n=${s.ic} s=${20} /></span><div className="mx-t">${s.t}</div></div>
+        <p className="mx-txt">${s.x}</p>
+        ${go && html`<button type="button" className="btn btn-ghost btn-sm self-start" onClick=${() => go(s.b[0])}>${s.b[1]}</button>`}
+      </div>`)}</div>
+      ${go && html`<div className="mt-3"><button type="button" className="btn btn-ghost btn-sm" onClick=${() => go('blocos')}>Blocos e organismos</button></div>`}
+    </section>
+
+    <section className="sec" data-secao-mundo="agenda" aria-labelledby="mp-ag">
+      <${MxHead} id="mp-ag" eb="Mundo · missões" t="Agenda externa" tip="Cada missão gasta 1 ação do mês e passa pelo motor de decisão." right=${html`<${MxChip} cor=${g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)'}>${g.acoes}/5 ações</${MxChip}>`} />
+      <div className="mx-grid">${acoes.map(x => html`<div key=${x.l} className="mx-card panel" style=${{ '--st': x.c }}>
+        <div className="mx-h nr"><span className="gv-ic" style=${{ '--c': x.c }}><${Icon} n=${x.i} s=${20} /></span><div className="mx-t">${x.l}</div></div>
+        <p className="mx-txt c2" title=${x.t}>${x.t}</p>
+        <button type="button" className="btn btn-pri btn-sm self-start" aria-label=${x.l} disabled=${g.acoes <= 0} onClick=${() => decidir(x.t)}><${Icon} n="Send" s=${14} /> Enviar (1 ação)</button>
+      </div>`)}</div>
+    </section>
   </div>`;
 }
 
@@ -21694,15 +21799,15 @@ const TR_SIM = 'Simulação: o que é negociado, construído, aprovado ou retali
 const mesesTxt = (n) => (n >= 12 ? `${fmt(n / 12, n % 12 ? 1 : 0)} ${n === 12 ? 'ano' : 'anos'}` : `${n} meses`);
 
 function TrKpi({ rot, v, sub, tip }) {
-  return html`<div className="card p-3 min-w-0" title=${tip || ''}><div className="eyebrow">${rot}</div><div className="num text-xl font-bold leading-tight">${v}</div>${sub && html`<div className="text-[11px] text-muted leading-snug">${sub}</div>`}</div>`;
+  return html`<div className="mx-card panel min-w-0" title=${tip || ''}><div className="eyebrow">${rot}</div><div className="num text-xl font-bold leading-tight">${v}</div>${sub && html`<div className="text-xs text-muted leading-snug">${sub}</div>`}</div>`;
 }
 function TrEtapa({ icone, nome, prod, cap, eta, g, tip }) {
   const pct = cap > 0 ? clamp(prod / cap * 100, 0, 100) : 0;
-  return html`<div className="card p-3 flex flex-col gap-2 min-w-0" title=${tip} data-etapa=${nome}>
+  return html`<div className="mx-card panel flex flex-col gap-2 min-w-0" title=${tip} data-etapa=${nome}>
     <div className="flex items-center gap-2"><span className="text-ouro"><${Icon} n=${icone} s=${18} /></span><b className="text-sm">${nome}</b></div>
     <div className="num text-2xl font-extrabold leading-none">${fmt(prod / 1000, 1)}<span className="text-xs text-muted font-normal"> mil t/ano</span></div>
     <${Bar} v=${pct} cor="var(--ouro)" h=${6} label=${'Utilização de ' + nome} />
-    <div className="text-[11px] text-muted leading-snug">Capacidade ${fmt(cap / 1000, 1)} mil t/ano${eta != null ? ` · próxima entrada: ${dataCurta(eta)} (${mesesTxt(Math.max(0, eta - g.mes))})` : cap > 0 ? '' : ' · ainda inexistente no Brasil'}</div></div>`;
+    <div className="text-xs text-muted leading-snug">Capacidade ${fmt(cap / 1000, 1)} mil t/ano${eta != null ? ` · próxima entrada: ${dataCurta(eta)} (${mesesTxt(Math.max(0, eta - g.mes))})` : cap > 0 ? '' : ' · ainda inexistente no Brasil'}</div></div>`;
 }
 function TrCadeia({ g, upd }) {
   const T = g.tr; const R = trReceita(g); const C = R.C; const E = trEmpregos(g);
@@ -21712,23 +21817,17 @@ function TrCadeia({ g, upd }) {
   const emObra = T.plantas.filter(p => p.estado === 'construcao');
   const topUf = Object.entries(E.emp).sort((a, b) => b[1] - a[1]).slice(0, 6);
   return html`<section className="sec flex flex-col gap-4" data-tr="cadeia">
-    <div className="flex items-baseline justify-between gap-2 flex-wrap"><h3 className="disp text-2xl font-extrabold uppercase">Cadeia produtiva</h3><span className="eyebrow">mina → óxidos → ímãs</span></div>
+    <${MxHead} eb="Terras raras · mina → óxidos → ímãs" t="Cadeia produtiva" />
     <div className="grid gap-3 sm:grid-cols-3">
       <${TrEtapa} icone="Pickaxe" nome="Mina (TREO)" prod=${C.mina} cap=${C.minaCap} eta=${C.minaEta} g=${g} tip="Produção brasileira em 2025: ~2 mil t (reportado). Capacidade e projetos: estimativas do jogo." />
       <${TrEtapa} icone="FlaskConical" nome="Óxidos separados" prod=${C.ox} cap=${C.oxCap} eta=${C.oxEta} g=${g} tip="Hoje quase toda a separação é feita fora do Brasil; a China tem ~91% do refino mundial (AIE)." />
       <${TrEtapa} icone="Magnet" nome="Ímãs" prod=${C.im} cap=${C.imCap} eta=${C.imEta} g=${g} tip="A China tem ~94% dos ímãs mundiais (AIE). Hoje o Brasil não fabrica ímãs em escala." />
     </div>
-    <div className="grid gap-3 grid-cols-2 sm:grid-cols-4">
-      <${TrKpi} rot="Receita do setor" v=${'R$ ' + fmt(T.rec, 2) + ' bi'} sub="por ano (estimativa do jogo)" tip="Produção × valor agregado × índice de preço × dólar. Minério < óxidos < ímãs." />
-      <${TrKpi} rot="Receita pública" v=${'R$ ' + fmt(T.recPub, 2) + ' bi'} sub="impostos, royalties e participações" />
-      <${TrKpi} rot="Empregos" v=${fmt(E.tot, 0)} sub=${'diretos e indiretos' + (E.ob ? ' · ' + fmt(E.ob, 0) + ' em obras' : '')} />
-      <${TrKpi} rot="Autonomia" v=${fmt(C.autonomia * 100, 0) + '%'} sub="da produção separada no país" tip="Parcela do minério produzido que vira óxido no Brasil." />
-    </div>
     ${topUf.length > 0 && html`<div className="flex flex-wrap gap-2 text-xs" data-tr="emp-uf">${topUf.map(([u, n]) => html`<${Tag} key=${u}>${u} · ${fmt(n, 0)} empregos</${Tag}>`)}</div>`}
-    ${emObra.length > 0 && html`<div className="flex flex-col gap-2" data-tr="obras"><div className="eyebrow">Obras em andamento</div>${emObra.map(p => { const tot = Math.max(1, p.fim - p.ini); const pct = clamp((g.mes - p.ini) / tot * 100, 0, 100); return html`<div key=${p.id} className="card p-3 flex flex-col gap-1">
+    ${emObra.length > 0 && html`<div className="flex flex-col gap-2" data-tr="obras"><div className="eyebrow">Obras em andamento</div>${emObra.map(p => { const tot = Math.max(1, p.fim - p.ini); const pct = clamp((g.mes - p.ini) / tot * 100, 0, 100); return html`<div key=${p.id} className="mx-card panel flex flex-col gap-1">
       <div className="flex flex-wrap items-center gap-2"><b className="text-sm">${p.nome}</b><${Tag}>${p.uf}</${Tag}><span className="text-xs text-muted">R$ ${fmt(p.custo, 1)} bi · entra em ${dataCurta(p.fim)} (${mesesTxt(Math.max(0, p.fim - g.mes))})</span></div>
       <${Bar} v=${pct} cor="var(--anil)" h=${6} label=${'Obra: ' + p.nome} /></div>`; })}</div>`}
-    <div className="card p-3 flex flex-col gap-3" data-tr="investir">
+    <div className="mx-card panel flex flex-col gap-3" data-tr="investir">
       <div className="flex items-center gap-2"><span className="text-ouro"><${Icon} n="Factory" s=${18} /></span><b>Investir na cadeia</b><span className="text-xs text-muted">1 ação</span></div>
       <div className="grid gap-3 sm:grid-cols-2">
         <div><div className="eyebrow mb-1">Etapa</div><div className="flex flex-wrap gap-2">${['oxidos', 'imas'].map(k => html`<button key=${k} type="button" className=${'btn btn-ghost !text-xs ' + (et === k ? '!border-ouro text-ouro' : '')} onClick=${() => setEt(k)} aria-pressed=${et === k}>${TR_ETAPA[k]}</button>`)}</div></div>
@@ -21744,7 +21843,7 @@ function TrCadeia({ g, upd }) {
 
 function TrGrafico({ g }) {
   const T = g.tr; const [k, setK] = useState('ndpr'); const h = T.ph[k].slice(-48); const n = h.length;
-  const W = 320, H = 110, pl = 34, pb = 16; const mn = Math.min(...h) * .97, mx = Math.max(...h) * 1.03, rg = mx - mn || 1;
+  const W = 320, H = 130, pl = 40, pb = 20; const mn = Math.min(...h) * .97, mx = Math.max(...h) * 1.03, rg = mx - mn || 1;
   const pts = h.map((v, i) => [pl + (n > 1 ? i / (n - 1) : 1) * (W - pl - 6), 6 + (1 - (v - mn) / rg) * (H - pb - 10)]);
   const line = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' '); const last = pts[pts.length - 1];
   const refY = 6 + (1 - (TR_REF[k] - mn) / rg) * (H - pb - 10);
@@ -21753,20 +21852,19 @@ function TrGrafico({ g }) {
     <svg viewBox=${`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label=${'Preço de ' + TR_NOMES[k] + ' nos últimos meses'}>
       <line x1=${pl} y1=${refY} x2=${W - 6} y2=${refY} stroke="var(--line)" strokeDasharray="3 3" />
       <path d=${line} fill="none" stroke="var(--ouro)" strokeWidth="1.8" /><circle cx=${last[0]} cy=${last[1]} r="3" fill="var(--ouro)" />
-      <text x="2" y="12" fontSize="9" fill="var(--muted)">${fmt(mx, 0)}</text><text x="2" y=${H - pb} fontSize="9" fill="var(--muted)">${fmt(mn, 0)}</text>
-      <text x=${pl} y=${H - 3} fontSize="9" fill="var(--muted)">${dataCurta(g.mes - n + 1)}</text><text x=${W - 6} y=${H - 3} fontSize="9" fill="var(--muted)" textAnchor="end">${dataCurta(g.mes)}</text>
-      <text x=${W - 8} y=${refY - 3} fontSize="8" fill="var(--muted)" textAnchor="end">referência ${fmt(TR_REF[k], 0)}</text></svg>
+      <text x="2" y="14" fontSize="12" fill="var(--muted)">${fmt(mx, 0)}</text><text x="2" y=${H - pb} fontSize="12" fill="var(--muted)">${fmt(mn, 0)}</text>
+      <text x=${pl} y=${H - 4} fontSize="12" fill="var(--muted)">${dataCurta(g.mes - n + 1)}</text><text x=${W - 6} y=${H - 4} fontSize="12" fill="var(--muted)" textAnchor="end">${dataCurta(g.mes)}</text>
+      <text x=${W - 8} y=${refY - 3} fontSize="12" fill="var(--muted)" textAnchor="end">referência ${fmt(TR_REF[k], 0)}</text></svg>
   </div>`;
 }
 function TrMercado({ g }) {
   const T = g.tr; const ctrl = T.ctrl;
   const tips = { ndpr: 'Ordem de grandeza: NdPr ~US$ 60–110/kg (resumos de busca, 2025–2026). Referência MP Materials: piso de US$ 110/kg por 10 anos.', dy: 'Ordem de grandeza: Dy ~US$ 265–320/kg fora da China (2025–2026).', tb: 'Ordem de grandeza: Tb ~US$ 1.100/kg fora da China (2025–2026).' };
   return html`<section className="sec flex flex-col gap-3" data-tr="mercado">
-    <div className="flex items-baseline justify-between gap-2 flex-wrap"><h3 className="disp text-2xl font-extrabold uppercase">Mercado</h3>
-      <${Tag} cor=${ctrl === 'ativo' ? 'var(--rubro)' : ctrl === 'suspenso' ? 'var(--verde)' : 'var(--muted)'}>${ctrl === 'ativo' ? 'China: controles renovados' : ctrl === 'suspenso' ? 'China: controles suspensos' : 'China: decisão pendente'}</${Tag}></div>
-    <div className="grid gap-3 grid-cols-3">${['ndpr', 'dy', 'tb'].map(k => { const h = T.ph[k]; const d = h.length > 1 ? h[h.length - 1] - h[h.length - 2] : 0; return html`<div key=${k} className="card p-3 min-w-0" title=${tips[k]} data-preco=${k}><div className="eyebrow truncate">${TR_NOMES[k]}</div><div className="num text-lg font-bold leading-tight">US$ ${fmt(T.preco[k], k === 'tb' ? 0 : 1)}</div><div className="text-[11px] num" style=${{ color: d >= 0 ? 'var(--verde)' : 'var(--rubro)' }}>${d >= 0 ? '▲' : '▼'} ${fmt(Math.abs(d), k === 'tb' ? 0 : 1)} no mês</div></div>`; })}</div>
+    <${MxHead} eb="Terras raras · preços" t="Mercado" right=${html`<${Tag} cor=${ctrl === 'ativo' ? 'var(--rubro)' : ctrl === 'suspenso' ? 'var(--verde)' : 'var(--muted)'}>${ctrl === 'ativo' ? 'China: controles renovados' : ctrl === 'suspenso' ? 'China: controles suspensos' : 'China: decisão pendente'}</${Tag}>`} />
+    <div className="grid gap-3 grid-cols-3">${['ndpr', 'dy', 'tb'].map(k => { const h = T.ph[k]; const d = h.length > 1 ? h[h.length - 1] - h[h.length - 2] : 0; return html`<div key=${k} className="mx-card panel min-w-0" title=${tips[k]} data-preco=${k}><div className="eyebrow truncate">${TR_NOMES[k]}</div><div className="num text-lg font-bold leading-tight">US$ ${fmt(T.preco[k], k === 'tb' ? 0 : 1)}</div><div className="text-xs num" style=${{ color: d >= 0 ? 'var(--verde)' : 'var(--rubro)' }}>${d >= 0 ? '▲' : '▼'} ${fmt(Math.abs(d), k === 'tb' ? 0 : 1)} no mês</div></div>`; })}</div>
     <${TrGrafico} g=${g} />
-    <p className="text-xs text-muted">Preços em US$/kg: ordem de grandeza de resumos de busca (2025–2026). A variação mensal e os choques são simulação. Controles chineses de exportação elevam os preços fora da China; um piso contratado ${T.recPiso > 0 ? `rende hoje R$ ${fmt(T.recPiso, 2)} bi/ano a mais` : 'só rende quando o mercado cai abaixo dele'}.</p>
+    <${MxDet} rot="Sobre os preços"><p className="text-xs text-muted">Preços em US$/kg: ordem de grandeza de resumos de busca (2025–2026). A variação mensal e os choques são simulação. Controles chineses de exportação elevam os preços fora da China; um piso contratado ${T.recPiso > 0 ? `rende hoje R$ ${fmt(T.recPiso, 2)} bi/ano a mais` : 'só rende quando o mercado cai abaixo dele'}.</p></${MxDet}>
   </section>`;
 }
 
@@ -21783,9 +21881,9 @@ function TrMesa({ g, upd, decidir }) {
   const seg = (rot, valores, atual, f, fmtv) => html`<div><div className="eyebrow mb-1">${rot}</div><div className="flex flex-wrap gap-2">${valores.map(v => html`<button key=${String(v)} type="button" className=${'btn btn-ghost !text-xs ' + (atual === v ? '!border-ouro text-ouro' : '')} aria-pressed=${atual === v} onClick=${() => f(v)}>${fmtv ? fmtv(v) : v}</button>`)}</div></div>`;
   const hook = (ac) => trHookAcordo(g, ac);
   return html`<section className="sec flex flex-col gap-4" data-tr="mesa">
-    <div className="flex items-baseline justify-between gap-2 flex-wrap"><h3 className="disp text-2xl font-extrabold uppercase">Mesa de negociação</h3><span className="eyebrow">cada rodada custa 1 ação</span></div>
-    <div className="flex flex-wrap gap-2" role="tablist" aria-label="Parceiro">${TR_PARC_K.map(k => { const r = trRel(g, k); return html`<button key=${k} type="button" role="tab" aria-selected=${par === k} data-parc=${k} className=${'btn btn-ghost flex-1 min-w-[96px] justify-center ' + (par === k ? '!border-ouro text-ouro' : '')} onClick=${() => mudaPar(k)}><span aria-hidden="true">${TR_PARC[k].em}</span> ${TR_PARC[k].nome}<span className="num text-[11px]" style=${{ color: corRel(r) }}>${sgn(r, 0)}</span></button>`; })}</div>
-    <div className="card p-3 flex flex-col gap-2"><div className="flex items-center gap-2 flex-wrap"><b>${P.nome}</b><${Tag} cor=${corRel(rel)}>${rotuloRel(rel)} (${sgn(rel, 0)})</${Tag}>${P.rival && html`<span className="text-xs text-muted">rival: ${TR_PARC[P.rival].nome} (${sgn(trRel(g, P.rival), 0)})</span>`}</div><p className="text-sm text-muted leading-snug">${P.perfil}</p></div>
+    <${MxHead} eb="Terras raras · acordos" t="Mesa de negociação" tip="Cada rodada de negociação custa 1 ação política." />
+    <div className="flex flex-wrap gap-2" role="tablist" aria-label="Parceiro">${TR_PARC_K.map(k => { const r = trRel(g, k); return html`<button key=${k} type="button" role="tab" aria-selected=${par === k} data-parc=${k} className=${'btn btn-ghost flex-1 min-w-[96px] justify-center ' + (par === k ? '!border-ouro text-ouro' : '')} onClick=${() => mudaPar(k)}><span aria-hidden="true">${TR_PARC[k].em}</span> ${TR_PARC[k].nome}<span className="num text-xs" style=${{ color: corRel(r) }}>${sgn(r, 0)}</span></button>`; })}</div>
+    <div className="mx-card panel flex flex-col gap-2"><div className="flex items-center gap-2 flex-wrap"><b>${P.nome}</b><${Tag} cor=${corRel(rel)}>${rotuloRel(rel)} (${sgn(rel, 0)})</${Tag}>${P.rival && html`<span className="text-xs text-muted">rival: ${TR_PARC[P.rival].nome} (${sgn(trRel(g, P.rival), 0)})</span>`}</div><p className="text-sm text-muted leading-snug">${P.perfil}</p></div>
     <div className="grid gap-4 sm:grid-cols-2" data-tr="termos">
       <div><div className="eyebrow mb-1 flex justify-between"><span>Volume contratado</span><span className="num">${off}% (livre: ${livre}%)</span></div><input type="range" min="10" max=${Math.max(10, Math.floor(livre / 5) * 5)} step="5" value=${off} onChange=${e => set('off', +e.target.value)} className="w-full" aria-label="Percentual da produção para o parceiro" style=${{ accentColor: 'var(--ouro)' }} /></div>
       ${seg('Processamento local exigido', ['nenhum', 'oxidos', 'imas'], t.proc, v => set('proc', v), v => TR_PROC_NOME[v])}
@@ -21798,7 +21896,7 @@ function TrMesa({ g, upd, decidir }) {
         ${P.contra.map(([k, n]) => html`<button key=${k} type="button" className=${'btn btn-ghost !text-xs ' + (t.contra.k === k ? '!border-ouro text-ouro' : '')} aria-pressed=${t.contra.k === k} onClick=${() => set('contra', { k, n: t.contra.n || 1 })}>${n}</button>`)}</div>
         ${t.contra.k && html`<div className="flex gap-2 mt-2 items-center"><span className="text-xs text-muted">Intensidade:</span>${[1, 2].map(n => html`<button key=${n} type="button" className=${'btn btn-ghost !text-xs ' + (t.contra.n === n ? '!border-ouro text-ouro' : '')} onClick=${() => set('contra', { k: t.contra.k, n })}>${TR_NIVEL[n]}</button>`)}</div>`}</div>
     </div>
-    <div className="card p-3 flex flex-col gap-2" data-tr="previa">
+    <div className="mx-card panel flex flex-col gap-2" data-tr="previa">
       <div className="eyebrow">Reação esperada (estimativa)</div>
       <div className="flex items-center gap-2 flex-wrap"><${Tag} cor=${prev[1]}>${prev[0]}</${Tag}><span className="text-xs text-muted num">saldo para ${P.nome}: ${sgn(u, 0)}</span></div>
       <${Bar} v=${clamp(u + 40, 0, 70)} max=${70} cor=${prev[1]} h=${6} label="Saldo da proposta para o parceiro" />
@@ -21808,7 +21906,7 @@ function TrMesa({ g, upd, decidir }) {
       ${dup && html`<p className="text-xs text-ambar">Já existe acordo em andamento com ${P.nome}.</p>`}
       <div className="flex flex-wrap gap-2"><button type="button" className="btn btn-gold" disabled=${g.acoes <= 0 || dup} data-tr-act="propor" onClick=${() => upd(n => { trProp(n, par, tt); })}>Propor (1 ação)</button><span className="text-xs text-muted self-center">Ações restantes: ${g.acoes}</span></div>
     </div>
-    ${neg && html`<div className="card p-3 flex flex-col gap-2 !border-ouro" data-tr="resultado" data-res=${neg.res}>
+    ${neg && html`<div className="mx-card panel flex flex-col gap-2 !border-ouro" data-tr="resultado" data-res=${neg.res}>
       <div className="eyebrow">Resposta de ${P.nome} · ${dataMes(neg.mes)}</div>
       ${neg.res === 'aceita' && html`<p className="text-sm"><b>Aceita.</b> ${neg.viaContra ? 'Contraproposta fechada.' : 'Os termos foram aceitos.'} O acordo precisa de aprovação do Congresso para valer (simulação).</p>`}
       ${neg.res === 'contra' && html`<div className="flex flex-col gap-2"><p className="text-sm"><b>Contraproposta.</b> ${P.nome} ${trV(par, 'aceita', 'aceitam')} se os termos forem ajustados: ${neg.diff.join('; ')}.</p><div className="flex flex-wrap gap-2"><button type="button" className="btn btn-gold" data-tr-act="aceita-contra" onClick=${() => upd(n => { trAceitaContra(n); })}>Aceitar contraproposta</button><button type="button" className="btn btn-ghost" onClick=${() => upd(n => { n.tr.neg = null; })}>Descartar</button></div></div>`}
@@ -21817,35 +21915,34 @@ function TrMesa({ g, upd, decidir }) {
       ${neg.res === 'semacao' && html`<p className="text-sm">Sem ações neste mês.</p>`}
       ${neg.ac && neg.ac.estado === 'negociado' && html`<button type="button" className="btn btn-pri self-start" disabled=${g.acoes <= 0} data-tr-act="enviar" onClick=${() => decidir(trTextoAcordo(neg.ac.par, neg.ac.termos), false, false, hook(neg.ac))}>Enviar ao Congresso (1 ação)</button>`}
     </div>`}
-    <p className="text-[11px] text-muted">${TR_SIM} Parceiros reais aparecem como países; não há falas de líderes estrangeiros.</p>
+    <p className="text-xs text-muted">${TR_SIM} Parceiros reais aparecem como países; não há falas de líderes estrangeiros.</p>
   </section>`;
 }
 
 function TrBarra({ rot, v, tip }) {
-  return html`<div title=${tip || ''}><div className="flex justify-between text-[11px] text-muted"><span>${rot}</span><span className="num">${v}</span></div><${Bar} v=${v} cor=${v >= 60 ? 'var(--rubro)' : v >= 40 ? 'var(--ambar)' : 'var(--verde)'} h=${5} label=${rot} /></div>`;
+  return html`<div title=${tip || ''}><div className="flex justify-between text-xs text-muted"><span>${rot}</span><span className="num">${v}</span></div><${Bar} v=${v} cor=${v >= 60 ? 'var(--rubro)' : v >= 40 ? 'var(--ambar)' : 'var(--verde)'} h=${5} label=${rot} /></div>`;
 }
 function TrConselho({ g, upd }) {
   const T = g.tr;
   return html`<section className="sec flex flex-col gap-3" data-tr="conselho">
-    <div className="flex items-baseline justify-between gap-2 flex-wrap"><h3 className="disp text-2xl font-extrabold uppercase">Conselho (CIMCE)</h3><span className="eyebrow">não gasta ação</span></div>
-    <p className="text-xs text-muted" title="Lei sancionada em 16/09/2026 (PL 2.780/2024): conselho na Presidência aprova ou veta projetos e mudanças de controle; até R$ 7 bi para industrialização; BNDES/Finep R$ 5 bi (2025).">A Política Nacional de Minerais Críticos e Estratégicos (lei de 16/09/2026) cria um conselho na Presidência que aprova, veta ou condiciona projetos e mudanças de controle. Os projetos são reais; custos, prazos e riscos abaixo são estimativas do jogo.</p>
+    <${MxHead} eb="Terras raras · não gasta ação" t="Conselho (CIMCE)" tip="Lei sancionada em 16/09/2026 (PL 2.780/2024): conselho na Presidência aprova ou veta projetos e mudanças de controle. Os projetos são reais; custos, prazos e riscos são estimativas do jogo." />
     <div className="grid gap-3 lg:grid-cols-2">${T.proj.map(p => { const [rot, cor] = TR_ESTADO_PROJ[p.estado]; const pendC = p.pend && !p.pend.res;
-      return html`<div key=${p.id} className="card p-3 flex flex-col gap-2 min-w-0" data-proj=${p.id} data-estado=${p.estado}>
+      return html`<div key=${p.id} className="mx-card panel flex flex-col gap-2 min-w-0" data-proj=${p.id} data-estado=${p.estado} style=${{ '--st': cor }}>
         <div className="flex flex-wrap items-center gap-2"><b className="leading-tight">${p.nome}</b><${Tag} cor=${cor}>${rot}</${Tag}>${p.proc ? html`<${Tag} cor="var(--anil)">processa no Brasil</${Tag}>` : p.cond ? html`<${Tag} cor="var(--anil)">condição: processar no Brasil${p.procFim ? ' em ' + dataCurta(p.procFim) : ''}</${Tag}>` : null}</div>
         <div className="text-xs text-muted">${p.mun} (${p.uf}) · ${p.emp}${p.ctrl === 'eua' ? ' · controle: capital americano' : ''}</div>
         <div className="text-xs">${p.nota}</div>
         <div className="grid grid-cols-2 gap-2"><${TrBarra} rot="Risco ambiental" v=${p.ra} tip="Estimativa do jogo." /><${TrBarra} rot="Risco hídrico e de rejeitos" v=${p.rh} tip=${p.rh >= 60 ? 'Poços de Caldas: água e rejeitos são o ponto sensível (reportado).' : 'Estimativa do jogo.'} /></div>
-        <div className="text-[11px] text-muted leading-snug">${p.estado === 'operando' ? `Produção ${fmt(p.pr / 1000, 1)} de ${fmt(p.cap / 1000, 1)} mil t/ano` : `Custo R$ ${fmt(p.custo, 1)} bi · obra ${p.obra} meses · ${fmt(p.cap / 1000, 1)} mil t/ano`} · ${p.fin}${p.estado === 'construcao' ? ` · entra em ${dataCurta(p.fim)}` : ''}</div>
+        <div className="text-xs text-muted leading-snug">${p.estado === 'operando' ? `Produção ${fmt(p.pr / 1000, 1)} de ${fmt(p.cap / 1000, 1)} mil t/ano` : `Custo R$ ${fmt(p.custo, 1)} bi · obra ${p.obra} meses · ${fmt(p.cap / 1000, 1)} mil t/ano`} · ${p.fin}${p.estado === 'construcao' ? ` · entra em ${dataCurta(p.fim)}` : ''}</div>
         ${p.estado === 'analise' && html`<div className="flex flex-col gap-2"><div className="flex flex-wrap gap-2">
           <button type="button" className="btn btn-pri !text-xs" data-tr-act="aprovar" onClick=${() => upd(n => { trDecideProj(n, p.id, 'aprovar'); })}>Aprovar</button>
           <button type="button" className="btn btn-ghost !text-xs" data-tr-act="condicionar" onClick=${() => upd(n => { trDecideProj(n, p.id, 'condicionar'); })}>Aprovar com condição</button>
           <button type="button" className="btn btn-ghost !text-xs !border-rubro" data-tr-act="vetar" onClick=${() => upd(n => { trDecideProj(n, p.id, 'vetar'); })}>Vetar</button></div>
-          <p className="text-[11px] text-muted">Condição: processar no Brasil (+25% de custo, +6 meses, mais empregos e sindicatos a favor). Veto: ambientalistas e indígenas aprovam; empresariado, mercado e investidores reagem mal.</p></div>`}
+          <p className="text-xs text-muted">Condição: processar no Brasil (+25% de custo, +6 meses, mais empregos e sindicatos a favor). Veto: ambientalistas e indígenas aprovam; empresariado, mercado e investidores reagem mal.</p></div>`}
         ${pendC && html`<div className="p-3 rounded-lg border border-ouro flex flex-col gap-2" data-tr="controle"><div className="text-sm"><b>Mudança de controle em análise:</b> venda à ${p.pend.para} (~${p.pend.val}, anunciada; fonte única, reportado).</div>
           <div className="flex flex-wrap gap-2"><button type="button" className="btn btn-pri !text-xs" data-tr-act="ctrl-aprovar" onClick=${() => upd(n => { trDecideControle(n, p.id, 'aprovar'); })}>Aprovar venda</button>
           <button type="button" className="btn btn-ghost !text-xs" data-tr-act="ctrl-condicionar" onClick=${() => upd(n => { trDecideControle(n, p.id, 'condicionar'); })}>Aprovar com processamento no Brasil</button>
           <button type="button" className="btn btn-ghost !text-xs !border-rubro" data-tr-act="ctrl-vetar" onClick=${() => upd(n => { trDecideControle(n, p.id, 'vetar'); })}>Vetar</button></div>
-          <p className="text-[11px] text-muted">Aprovar agrada Washington e pode irritar Pequim; vetar protege a soberania, esfria os EUA e pode custar o crédito da DFC.</p></div>`}
+          <p className="text-xs text-muted">Aprovar agrada Washington e pode irritar Pequim; vetar protege a soberania, esfria os EUA e pode custar o crédito da DFC.</p></div>`}
         ${p.pend && p.pend.res && html`<div className="text-xs text-muted">Venda de controle: ${p.pend.res === 'aprovar' ? 'aprovada' : p.pend.res === 'vetar' ? 'vetada' : 'aprovada com condição'} em ${dataCurta(p.pend.mes)}.</div>`}
       </div>`; })}</div>
   </section>`;
@@ -21854,14 +21951,14 @@ function TrConselho({ g, upd }) {
 function TrAcordos({ g, upd, decidir }) {
   const T = g.tr; const A = T.acordos.filter(a => a.estado !== 'descartado').slice().reverse(); const R = T.ret.filter(r => !r.fim);
   return html`<section className="sec flex flex-col gap-3" data-tr="acordos">
-    <h3 className="disp text-2xl font-extrabold uppercase">Acordos e retaliações</h3>
+    <${MxHead} eb="Terras raras · diplomacia" t="Acordos e retaliações" />
     ${R.length > 0 && html`<div className="flex flex-col gap-2" data-tr="retaliacoes">${R.map(r => { const s = trFatorRet(g, r); const p = trChanceFimRet(g, r); return html`<div key=${r.id} className="p-3 rounded-lg border border-rubro flex flex-col gap-2" data-ret=${r.id}>
       <div className="flex flex-wrap items-center gap-2"><b className="text-sm">${TR_RET[r.tipos[0]].nome}${r.tipos.length > 1 ? ' e outras medidas' : ''}</b><${Tag} cor="var(--rubro)">${TR_PARC[r.de].nome}</${Tag}><span className="text-xs text-muted num">intensidade ${fmt(s * 100, 0)}% de ${fmt(r.sev * 100, 0)}%</span></div>
       <${Bar} v=${s * 100} cor="var(--rubro)" h=${5} label="Intensidade da retaliação" />
       <div className="text-xs text-muted">Causa: ${r.causa}. ${r.tipos.map(tp => TR_RET[tp].nome).join(' · ')}. Desde ${dataCurta(r.ini)}; dura ~${mesesTxt(r.dur)}.</div>
       <button type="button" className="btn btn-ghost !text-xs self-start" disabled=${g.acoes <= 0} data-tr-act="fim-ret" onClick=${() => upd(n => { trNegociaFimRet(n, r.id); })}>Reabrir diálogo (1 ação · chance ${fmt(p * 100, 0)}%)</button></div>`; })}</div>`}
     ${A.length === 0 ? html`<p className="text-sm text-muted">Nenhum acordo de terras raras ainda. Use a mesa de negociação.</p>` : html`<ul className="flex flex-col gap-2">${A.map(a => { const [rot, cor] = TR_ESTADO_AC[a.estado] || ['', 'var(--muted)']; const t = a.termos; const P = TR_PARC[a.par]; const c = t.contra && t.contra.k ? P.contra.find(x => x[0] === t.contra.k) : null;
-      return html`<li key=${a.id} className="card p-3 flex flex-col gap-2" data-acordo=${a.id} data-estado=${a.estado}>
+      return html`<li key=${a.id} className="mx-card panel flex flex-col gap-2" data-acordo=${a.id} data-estado=${a.estado} style=${{ '--st': cor }}>
         <div className="flex flex-wrap items-center gap-2"><span aria-hidden="true">${P.em}</span><b className="text-sm">${P.nome}</b><${Tag} cor=${cor}>${rot}</${Tag}><span className="text-xs text-muted">${dataCurta(a.mes)}${a.fim ? ' · até ' + dataCurta(a.fim) : ''}</span></div>
         <div className="text-xs text-muted leading-snug">${t.off}% da produção · ${TR_PROC_NOME[t.proc]} · ${t.piso ? 'piso US$ ' + t.piso : 'sem piso'} · ${t.prazo} anos · BNDES/fundo ${t.fundo}%${t.excl ? ' · exclusividade' : ''}${c ? ' · ' + c[1].toLowerCase() + ' (' + TR_NIVEL[t.contra.n] + ')' : ''}</div>
         <div className="flex flex-wrap gap-2">
@@ -21874,35 +21971,44 @@ function TrAcordos({ g, upd, decidir }) {
 function TrEstatal({ g, decidir }) {
   const T = g.tr; const E = T.estatal;
   return html`<section className="sec flex flex-col gap-3" data-tr="estatal">
-    <h3 className="disp text-2xl font-extrabold uppercase">Estatal de terras raras</h3>
+    <${MxHead} eb="Terras raras · setor público" t="Estatal de terras raras" />
     ${E && E.estado === 'criada' && html`<div className="text-sm"><${Tag} cor="var(--verde)">criada</${Tag}> ${TR_ESTATAL_NOME} · ${E.inst === 'PEC' ? 'monopólio da União (PEC)' : 'empresa pública (PL)'} desde ${dataCurta(E.mes)}. Capta ${fmt(E.part * 100, 0)}% da renda do minério e financia uma planta de óxidos em Goiás.</div>`}
     ${E && E.estado === 'tramitacao' && html`<div className="text-sm"><${Tag} cor="var(--anil)">no Congresso</${Tag}> ${E.inst === 'PEC' ? 'PEC' : 'PL'} da estatal enviada em ${dataCurta(E.mes)}. Acompanhe na aba Poder → Congresso.</div>`}
     ${!E && html`<div className="flex flex-col gap-2"><p className="text-sm text-muted">Uma estatal controla mais receita e a cadeia, mas o mercado, o empresariado e os EUA reagem mal; sindicatos e nacionalistas gostam. O texto segue pelo fluxo normal do Congresso.</p>
       <div className="flex flex-wrap gap-2"><button type="button" className="btn btn-ghost !text-xs" disabled=${g.acoes <= 0} data-tr-act="estatal-pl" onClick=${() => decidir(trTextoEstatal('PL'), false, false, trHookEstatal('PL'))}>Propor por PL (1 ação)</button>
       <button type="button" className="btn btn-ghost !text-xs" disabled=${g.acoes <= 0} data-tr-act="estatal-pec" onClick=${() => decidir(trTextoEstatal('PEC'), false, false, trHookEstatal('PEC'))}>Propor por PEC, com monopólio (1 ação)</button></div>
-      <p className="text-[11px] text-muted">PL: empresa pública sem monopólio (quórum comum). PEC: monopólio da União sobre a lavra (art. 20, IX e 177; 308 votos na Câmara). Nome e empresa são hipotéticos (simulação).</p></div>`}
+      <p className="text-xs text-muted">PL: empresa pública sem monopólio (quórum comum). PEC: monopólio da União sobre a lavra (art. 20, IX e 177; 308 votos na Câmara). Nome e empresa são hipotéticos (simulação).</p></div>`}
   </section>`;
 }
 
 function TrLinha({ g }) {
   const T = g.tr;
   return html`<section className="sec flex flex-col gap-3" data-tr="linha">
-    <h3 className="disp text-2xl font-extrabold uppercase">Linha do tempo</h3>
+    <${MxHead} eb="Terras raras · histórico" t="Linha do tempo" />
     ${T.tl.length === 0 ? html`<p className="text-sm text-muted">Nada aconteceu ainda no setor.</p>` : html`<ul className="flex flex-col divide-y divide-line">${T.tl.slice(0, 14).map((x, i) => html`<li key=${i} className="py-2 flex gap-2 text-sm"><span className="num text-xs text-muted w-14 shrink-0">${dataCurta(x.mes)}</span><span className="flex-1 min-w-0" style=${{ color: x.cat === 'neg' ? 'var(--rubro)' : x.cat === 'pos' ? 'var(--verde)' : undefined }}>${x.txt}</span></li>`)}</ul>`}
     <details className="text-xs text-muted" data-tr="fatos"><summary className="cursor-pointer select-none font-semibold">Fatos reais e fontes (resumos de busca, 2025–2026)</summary>
       <ul className="flex flex-col gap-2 mt-2">${TR_FATOS.map(([a, b]) => html`<li key=${a}><b>${a}:</b> ${b}</li>`)}</ul></details>
   </section>`;
 }
 
+function TerrasResumo({ g }) {
+  const T = g.tr; const R = trReceita(g); const C = R.C; const E = trEmpregos(g); const ctrl = T.ctrl;
+  return html`<section aria-label="Resumo de terras raras" data-gv="terras-resumo"><div className="gv-kpis">
+    <${GvKpi} dado="tr-receita" ic="Gem" cor="var(--ouro)" k="Receita do setor" v=${'R$ ' + fmt(T.rec, 2) + ' bi'} s="por ano (estimativa do jogo)" />
+    <${GvKpi} dado="tr-pub" ic="Landmark" cor="var(--verde)" k="Receita pública" v=${'R$ ' + fmt(T.recPub, 2) + ' bi'} s="impostos, royalties e participações" />
+    <${GvKpi} dado="tr-emp" ic="Users" cor="var(--anil)" k="Empregos" v=${fmt(E.tot, 0)} s=${'diretos e indiretos' + (E.ob ? ' · ' + fmt(E.ob, 0) + ' em obras' : '')} />
+    <${GvKpi} dado="tr-aut" ic="Factory" cor=${corAprov(C.autonomia * 100)} k="Autonomia" v=${fmt(C.autonomia * 100, 0) + '%'} s="da produção separada no país" />
+    <${GvKpi} dado="tr-china" ic="ShieldAlert" cor=${ctrl === 'ativo' ? 'var(--rubro)' : ctrl === 'suspenso' ? 'var(--verde)' : 'var(--muted)'} k="Controles da China" sm=${true} v=${ctrl === 'ativo' ? 'Renovados' : ctrl === 'suspenso' ? 'Suspensos' : 'Pendente'} s="exportação de terras raras" />
+  </div></section>`;
+}
 function MundoTerras({ g, upd, decidir }) {
   useEffect(() => { if (!g.tr) upd(n => { ensureTR(n); }); }, [!!g.tr]);
   if (!g.tr) return null;
   const T = g.tr;
   return html`<div className="flex flex-col gap-6" data-mundo="terras">
-    <div className="flex flex-col gap-2">
-      <p className="text-sm text-muted">O Brasil tem a 2ª maior reserva de terras raras do mundo (estimativa revista de ~21 Mt para ~11 Mt, reportado) e produziu ~2 mil t em 2025, contra ~270 mil t da China (reportado). Hoje a disputa é por quem separa o óxido e fabrica o ímã.</p>
-      <p className="text-[11px] text-muted" data-tr="aviso">${TR_SIM}</p>
-    </div>
+    <${MxStyle} />
+    <${TerrasResumo} g=${g} />
+    <p className="gv-sub" data-tr="aviso">${TR_SIM}<${GvTip} txt="O Brasil tem a 2ª maior reserva de terras raras do mundo (estimativa revista de ~21 Mt para ~11 Mt, reportado) e produziu ~2 mil t em 2025, contra ~270 mil t da China (reportado). Hoje a disputa é por quem separa o óxido e fabrica o ímã." /></p>
     <${TrCadeia} g=${g} upd=${upd} />
     <div className="grid gap-6 lg:grid-cols-2">
       <${TrMercado} g=${g} />
@@ -21917,17 +22023,17 @@ function MundoTerras({ g, upd, decidir }) {
 
 function MundoPaises({ g, go }) {
   const M = g.mundo;
-  return html`<div className="flex flex-col gap-4">
-    <p className="text-sm text-muted">Relação bilateral de −100 a +100 e peso no comércio externo: ${ESTIMATIVA_JOGO}, sem pretensão de dados oficiais. Chips com a bandeira de cada país; a relação sobe com visitas, tratados e decisões, e cai com gafes e desfeitas.</p>
-    <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3" data-paises="1">${PAISES_DIP.map(p => { const r = M.pais[p.id].rel; const d = r - M.pais[p.id].r0;
-      return html`<li key=${p.id} className="card p-3 flex flex-col gap-2" data-pais=${p.id}>
-        <div className="flex items-center gap-2"><${ChipPais} p=${p} /><div className="min-w-0 flex-1"><div className="font-semibold leading-tight truncate">${p.nome}</div><div className="text-[11px] text-muted">${pesoRot(p)} · ${ESTIMATIVA_JOGO}</div></div>
+  return html`<section className="sec" data-mundo="paises" aria-labelledby="mpa-t">
+    <${MxHead} id="mpa-t" eb=${'Mundo · relação bilateral · ' + ESTIMATIVA_JOGO} t="Países" tip="Relação bilateral de −100 a +100 e peso no comércio externo: estimativas do jogo, sem pretensão de dados oficiais. A relação sobe com visitas, tratados e decisões, e cai com gafes e desfeitas." />
+    <ul className="mx-grid" data-paises="1" style=${{ padding: 0, margin: 0 }}>${PAISES_DIP.map(p => { const r = M.pais[p.id].rel; const d = r - M.pais[p.id].r0;
+      return html`<li key=${p.id} className="mx-card panel" style=${{ '--st': corRel(r) }} data-pais=${p.id}>
+        <div className="mx-h"><${ChipPais} p=${p} s=${26} /><div className="min-w-0"><div className="mx-t">${p.nome}</div><div className="mx-s">${pesoRot(p)}</div></div>
           <${Tag} cor=${corRel(r)}>${rotuloRel(r)}</${Tag}></div>
-        <div className="flex items-center gap-2"><div className="flex-1"><${Bar} v=${(r + 100) / 2} cor=${corRel(r)} h=${6} label=${'Relação com ' + p.nome} /></div><span className="num text-sm w-12 text-right">${sgn(r, 0)}</span></div>
-        <div className="text-xs text-muted leading-snug">${p.nota}</div>
-        <div className="flex items-center justify-between text-[11px] text-muted"><span>Agro ${Math.round(p.ag * 100)}% · indústria ${Math.round(p.ind * 100)}% do comércio</span><span className="num" style=${{ color: d >= 0 ? 'var(--verde)' : 'var(--rubro)' }}>${sgn(d, 0)} desde a posse</span></div>
+        <div className="flex items-center gap-3"><div className="flex-1"><${Bar} v=${(r + 100) / 2} cor=${corRel(r)} h=${6} label=${'Relação com ' + p.nome} /></div><span className="num text-lg font-semibold w-12 text-right" style=${{ color: corRel(r) }}>${sgn(r, 0)}</span></div>
+        <div className="gv-chips"><${MxChip}>agro ${Math.round(p.ag * 100)}%</${MxChip}><${MxChip}>indústria ${Math.round(p.ind * 100)}%</${MxChip}><${MxChip} c=${d >= 0 ? 'pos' : 'neg'} t="Variação da relação desde a posse">${sgn(d, 0)} desde a posse</${MxChip}></div>
+        <${MxDet} rot="Sobre o país"><p className="mx-txt">${p.nota}</p></${MxDet}>
       </li>`; })}</ul>
-  </div>`;
+  </section>`;
 }
 
 function MundoViagens({ g, upd }) {
@@ -21935,30 +22041,30 @@ function MundoViagens({ g, upd }) {
   const U = upd || ZERO; const v = M.visita; const ch = chanceViagem(g, sel);
   const emCurso = v && v.mes === g.mes; const agendada = v && v.mes > g.mes;
   const u = M.ultVisita;
-  return html`<div className="grid gap-6 lg:grid-cols-12">
-    <section className="lg:col-span-7 sec flex flex-col gap-4">
-      <h3 className="disp text-2xl font-extrabold uppercase">Visitas de Estado</h3>
-      <p className="text-sm text-muted">A viagem consome o mês inteiro seguinte: você terá só 2 ações, não responde à crise em pessoa (a cobrança por ignorá-la sobe um pouco), perde energia e ganha estresse. O resultado sai no fim desse mês.</p>
-      ${emCurso && html`<div className="p-3 rounded-lg border border-ouro text-sm" data-viagem="curso"><b>Em viagem:</b> ${PAIS_MAP[v.pais].nome}. O resultado sai quando você encerrar o mês.</div>`}
-      ${agendada && html`<div className="p-3 rounded-lg border border-line text-sm flex flex-wrap items-center gap-3" data-viagem="agendada"><span className="flex-1 min-w-0"><b>Agendada:</b> ${PAIS_MAP[v.pais].nome}, em ${dataMes(v.mes)}.</span>
-        ${!conf ? html`<button type="button" className="btn btn-ghost !text-xs" onClick=${() => setConf(true)}>Cancelar viagem</button>` : html`<span className="text-xs text-rubro">Cancelar é uma desfeita diplomática (relação −8).</span><button type="button" className="btn btn-ghost !text-xs !border-rubro" onClick=${() => { U(n => { cancelaViagem(n); }); setConf(false); }}>Confirmar cancelamento</button><button type="button" className="btn btn-ghost !text-xs" onClick=${() => setConf(false)}>Manter</button>`}</div>`}
-      ${!v && html`<div className="flex flex-col gap-3">
+  const tp = (x) => (x.tipo === 'gafe' ? 'gafe' : x.tipo === 'sem' ? 'sem acordo' : TIPOS_VISITA[x.tipo].nome);
+  return html`<div className="grid gap-6 lg:grid-cols-12" data-mundo="viagens">
+    <section className="lg:col-span-7 sec flex flex-col gap-4" aria-labelledby="mv-t">
+      <${MxHead} id="mv-t" eb="Mundo · diplomacia presidencial" t="Visitas de Estado" tip="A viagem consome o mês inteiro seguinte: você terá só 2 ações, não responde à crise em pessoa (a cobrança por ignorá-la sobe um pouco), perde energia e ganha estresse. O resultado sai no fim desse mês." />
+      ${emCurso && html`<div className="mx-card" style=${{ '--st': 'var(--ouro)' }} data-viagem="curso"><div className="mx-h nr"><span className="gv-ic" style=${{ '--c': 'var(--ouro)' }}><${Icon} n="Plane" s=${20} /></span><div><div className="mx-t">Em viagem: ${PAIS_MAP[v.pais].nome}</div><div className="mx-s">O resultado sai quando você encerrar o mês.</div></div></div></div>`}
+      ${agendada && html`<div className="mx-card" style=${{ '--st': 'var(--anil)' }} data-viagem="agendada"><div className="mx-h nr"><span className="gv-ic" style=${{ '--c': 'var(--anil)' }}><${Icon} n="CalendarCheck" s=${20} /></span><div><div className="mx-t">Agendada: ${PAIS_MAP[v.pais].nome}</div><div className="mx-s">${dataMes(v.mes)}</div></div></div>
+        <div className="mx-row">${!conf ? html`<button type="button" className="btn btn-ghost btn-sm" onClick=${() => setConf(true)}>Cancelar viagem</button>` : html`<span className="mx-s" style=${{ color: 'var(--rubro)' }}>Cancelar é uma desfeita diplomática (relação −8).</span><button type="button" className="btn btn-ghost btn-sm" style=${{ borderColor: 'var(--rubro)' }} onClick=${() => { U(n => { cancelaViagem(n); }); setConf(false); }}>Confirmar cancelamento</button><button type="button" className="btn btn-ghost btn-sm" onClick=${() => setConf(false)}>Manter</button>`}</div></div>`}
+      ${!v && html`<div className="flex flex-col gap-4">
         <label className="flex flex-col gap-1" htmlFor="viag-pais"><span className="eyebrow">Destino</span>
           <select id="viag-pais" value=${sel} onChange=${e => setSel(e.target.value)}>${PAISES_DIP.map(p => html`<option key=${p.id} value=${p.id}>${p.em} ${p.nome} (relação ${sgn(M.pais[p.id].rel, 0)})</option>`)}</select></label>
-        <div className="p-3 rounded-lg border border-line" data-chance="1">
-          <div className="flex justify-between text-sm mb-1"><span>Chance de acordo</span><span className="num font-semibold">${fmt(ch.p * 100, 0)}%</span></div>
+        <div className="mx-card" style=${{ '--st': ch.p > .5 ? 'var(--verde)' : 'var(--ambar)' }} data-chance="1">
+          <div className="flex justify-between items-baseline"><span className="mx-lab">Chance de acordo</span><span className="mx-num" style=${{ color: ch.p > .5 ? 'var(--verde)' : 'var(--ambar)' }}>${fmt(ch.p * 100, 0)}%</span></div>
           <${Bar} v=${ch.p * 100} cor=${ch.p > .5 ? 'var(--verde)' : 'var(--ambar)'} h=${6} label="Chance de acordo" />
-          <ul className="text-xs text-muted mt-2 grid sm:grid-cols-2 gap-x-4 gap-y-0.5">${ch.fat.map(f => html`<li key=${f.n} className="flex justify-between"><span>${f.n}</span><span className="num">${f.v >= 0 ? '+' : ''}${fmt(f.v * 100, 0)}</span></li>`)}</ul>
-          <p className="text-xs text-muted mt-2">Chance de gafe: ${fmt(ch.pg * 100, 0)}%. Itamaraty: competência ${fmt(ch.comp * 100, 0)}. O traço Carismático ajuda.</p>
+          <div className="gv-chips">${ch.fat.map(f => html`<${MxChip} key=${f.n} c=${f.v >= 0 ? 'pos' : 'neg'}>${f.n} ${f.v >= 0 ? '+' : ''}${fmt(f.v * 100, 0)}</${MxChip}>`)}</div>
+          <div className="gv-chips"><${MxChip}>gafe ${fmt(ch.pg * 100, 0)}%</${MxChip}><${MxChip} t="O traço Carismático ajuda">Itamaraty ${fmt(ch.comp * 100, 0)}</${MxChip}></div>
         </div>
-        <button type="button" className="btn btn-gold self-start" disabled=${g.mes >= 48} onClick=${() => U(n => { agendaViagem(n, sel); })}><${Icon} n="Plane" s=${16} /> Agendar visita para ${dataMes(Math.min(48, g.mes + 1))}</button>
+        <button type="button" className="btn btn-pri self-start" disabled=${g.mes >= 48} onClick=${() => U(n => { agendaViagem(n, sel); })}><${Icon} n="Plane" s=${16} /> Agendar visita para ${dataMes(Math.min(48, g.mes + 1))}</button>
       </div>`}
     </section>
-    <aside className="lg:col-span-5 sec flex flex-col gap-3">
-      <h3 className="disp text-2xl font-extrabold uppercase">Balanço</h3>
-      ${u ? html`<div className="p-3 rounded-lg border border-line text-sm" data-ult-visita="1"><div className="eyebrow">Última visita · ${dataMes(u.mes)}</div><div className="font-semibold mt-1">${PAIS_MAP[u.pais].nome}: ${u.tipo === 'gafe' ? 'gafe' : u.tipo === 'sem' ? 'sem acordo' : TIPOS_VISITA[u.tipo].nome}</div><p className="text-xs text-muted mt-1">${u.txt}</p></div>` : html`<p className="text-sm text-muted">Nenhuma visita concluída ainda.</p>`}
-      ${M.visitas.length > 0 && html`<ul className="text-sm flex flex-col gap-1">${M.visitas.slice().reverse().slice(0, 8).map((x, i) => html`<li key=${i} className="flex gap-2"><span className="num text-xs text-muted w-14 shrink-0">${dataCurta(x.mes)}</span><span className="flex-1">${PAIS_MAP[x.pais].em} ${PAIS_MAP[x.pais].nome}</span><${Tag} cor=${x.tipo === 'gafe' ? 'var(--rubro)' : x.tipo === 'sem' ? 'var(--muted)' : 'var(--verde)'}>${x.tipo === 'gafe' ? 'gafe' : x.tipo === 'sem' ? 'sem acordo' : TIPOS_VISITA[x.tipo].nome}</${Tag}></li>`)}</ul>`}
-      ${M.cancel > 0 && html`<p className="text-xs text-muted">Viagens canceladas no mandato: ${M.cancel}.</p>`}
+    <aside className="lg:col-span-5 sec flex flex-col gap-4" aria-labelledby="mv-b">
+      <${MxHead} id="mv-b" eb="Mundo · histórico" t="Balanço" />
+      ${u ? html`<div className="mx-card" style=${{ '--st': u.tipo === 'gafe' ? 'var(--rubro)' : u.tipo === 'sem' ? 'var(--muted)' : 'var(--verde)' }} data-ult-visita="1"><div className="eyebrow">Última visita · ${dataMes(u.mes)}</div><div className="mx-t">${PAIS_MAP[u.pais].nome}: ${tp(u)}</div><p className="mx-txt">${u.txt}</p></div>` : html`<p className="text-sm text-muted">Nenhuma visita concluída ainda.</p>`}
+      ${M.visitas.length > 0 && html`<ul className="mx-list">${M.visitas.slice().reverse().slice(0, 8).map((x, i) => html`<li key=${i}><span className="mx-date">${dataCurta(x.mes)}</span><span className="flex-1 min-w-0">${PAIS_MAP[x.pais].em} ${PAIS_MAP[x.pais].nome}</span><${Tag} cor=${x.tipo === 'gafe' ? 'var(--rubro)' : x.tipo === 'sem' ? 'var(--muted)' : 'var(--verde)'}>${tp(x)}</${Tag}></li>`)}</ul>`}
+      ${M.cancel > 0 && html`<p className="mx-s">Viagens canceladas no mandato: ${M.cancel}.</p>`}
     </aside>
   </div>`;
 }
@@ -21967,35 +22073,35 @@ function MundoBlocos({ g, upd }) {
   const M = g.mundo; const U = upd || ZERO; const [conf, setConf] = useState('');
   const nomeSt = (o, s) => (o.k === 'mercosul_ue' ? (s.st === 'membro' ? 'em vigor' : 'em tramitação') : s.st === 'membro' ? (o.k === 'onu' && s.assento ? 'membro com assento permanente' : 'membro') : s.st === 'candidato' ? 'candidato' : 'fora');
   const corSt = (s) => (s.st === 'membro' ? 'var(--verde)' : s.st === 'candidato' ? 'var(--ouro)' : 'var(--rubro)');
-  return html`<div className="flex flex-col gap-4">
-    <p className="text-sm text-muted">Cada ação em um bloco custa 1 ação política e 8 de energia, e só pode ser repetida conforme o prazo indicado. Sair de um organismo tem consequências pesadas: duas etapas de confirmação.</p>
-    <ul className="grid gap-4 lg:grid-cols-2" data-orgs="1">${ORGS.map(o => { const s = M.orgs[o.k]; const acs = ORG_ACOES.filter(a => a.org === o.k);
-      return html`<li key=${o.k} className="card p-4 flex flex-col gap-3" data-org=${o.k}>
-        <div className="flex items-center gap-2"><span className="text-2xl" aria-hidden="true">${o.em}</span><h4 className="font-semibold flex-1 leading-tight">${o.nome}</h4><${Tag} cor=${corSt(s)}>${nomeSt(o, s)}</${Tag}></div>
-        <p className="text-xs text-muted leading-snug">${o.cb}</p>
-        ${o.k === 'ocde' && s.st !== 'fora' && html`<ol className="text-xs flex flex-col gap-0.5" data-etapas="ocde">${OCDE_ETAPAS.map((e, i) => html`<li key=${i} style=${{ color: i <= s.etapa ? 'var(--verde)' : 'var(--muted)' }}>${i <= s.etapa ? '✓' : '○'} ${e}</li>`)}</ol>`}
-        ${o.k === 'mercosul_ue' && html`<ol className="text-xs flex flex-col gap-0.5" data-etapas="ue">${UE_ETAPAS.map((e, i) => html`<li key=${i} style=${{ color: i <= s.etapa ? 'var(--verde)' : 'var(--muted)' }}>${i <= s.etapa ? '✓' : '○'} ${e}</li>`)}</ol>`}
-        ${o.k === 'onu' && html`<div><div className="flex justify-between text-xs mb-1"><span>Campanha pelo assento permanente</span><span className="num">${fmt(M.onuCamp, 0)}/100</span></div><${Bar} v=${M.onuCamp} cor="var(--anil)" h=${6} label="Campanha pelo assento" /></div>`}
-        <div className="flex flex-col gap-2">${acs.map(a => { const r = a.req(g); const feito = !!M.blocoMes[o.k + ':' + a.k]; const dis = !r.ok || feito || g.acoes <= 0 || g.pes.energia < 8; const id = o.k + ':' + a.k;
+  return html`<section className="sec" data-mundo="blocos" aria-labelledby="mb-t">
+    <${MxHead} id="mb-t" eb="Mundo · organismos" t="Blocos e organismos" tip="Cada ação em um bloco custa 1 ação política e 8 de energia, e só pode ser repetida conforme o prazo indicado. Sair de um organismo tem consequências pesadas: duas etapas de confirmação." right=${html`<${MxChip} cor=${g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)'}>${g.acoes}/5 ações</${MxChip}>`} />
+    <ul className="mx-grid g2" data-orgs="1" style=${{ padding: 0, margin: 0 }}>${ORGS.map(o => { const s = M.orgs[o.k]; const acs = ORG_ACOES.filter(a => a.org === o.k);
+      return html`<li key=${o.k} className="mx-card panel" style=${{ '--st': corSt(s) }} data-org=${o.k}>
+        <div className="mx-h"><span className="gv-ic" style=${{ '--c': corSt(s), fontSize: 22 }} aria-hidden="true">${o.em}</span><h4 className="mx-t">${o.nome}</h4><${Tag} cor=${corSt(s)}>${nomeSt(o, s)}</${Tag}></div>
+        <p className="mx-txt c2" title=${o.cb}>${o.cb}</p>
+        ${o.k === 'ocde' && s.st !== 'fora' && html`<ol className="gv-chips" style=${{ listStyle: 'none', padding: 0, margin: 0 }} data-etapas="ocde">${OCDE_ETAPAS.map((e, i) => html`<li key=${i}><${MxChip} c=${i <= s.etapa ? 'pos' : ''}>${i <= s.etapa ? '✓' : '○'} ${e}</${MxChip}></li>`)}</ol>`}
+        ${o.k === 'mercosul_ue' && html`<ol className="gv-chips" style=${{ listStyle: 'none', padding: 0, margin: 0 }} data-etapas="ue">${UE_ETAPAS.map((e, i) => html`<li key=${i}><${MxChip} c=${i <= s.etapa ? 'pos' : ''}>${i <= s.etapa ? '✓' : '○'} ${e}</${MxChip}></li>`)}</ol>`}
+        ${o.k === 'onu' && html`<div><div className="flex justify-between text-sm mb-1"><span>Campanha pelo assento permanente</span><span className="num">${fmt(M.onuCamp, 0)}/100</span></div><${Bar} v=${M.onuCamp} cor="var(--anil)" h=${6} label="Campanha pelo assento" /></div>`}
+        <div className="flex flex-col gap-3">${acs.map(a => { const r = a.req(g); const feito = !!M.blocoMes[o.k + ':' + a.k]; const dis = !r.ok || feito || g.acoes <= 0 || g.pes.energia < 8; const id = o.k + ':' + a.k;
           return html`<div key=${a.k} className="flex flex-col gap-1">
-            ${a.perigo && conf === id ? html`<div className="flex flex-wrap items-center gap-2"><span className="text-xs text-rubro flex-1 min-w-0">${a.ef}</span><button type="button" className="btn btn-ghost !text-xs !border-rubro" onClick=${() => { U(n => { fazAcaoOrg(n, o.k, a.k); }); setConf(''); }}>Confirmar</button><button type="button" className="btn btn-ghost !text-xs" onClick=${() => setConf('')}>Voltar</button></div>` :
-            html`<button type="button" className=${'btn btn-ghost justify-start text-sm ' + (a.perigo ? '!text-rubro' : '')} disabled=${dis} title=${r.ok ? a.ef : (r.motivo || '')} data-acao-org=${id} onClick=${() => (a.perigo ? setConf(id) : U(n => { fazAcaoOrg(n, o.k, a.k); }))}><${Icon} n=${a.ic} s=${15} /> ${a.l}</button>`}
-            <div className="text-[11px] text-muted pl-1">${!r.ok ? (r.motivo || '') : a.ef}</div>
-            ${r.lista && html`<ul className="text-[11px] pl-1">${r.lista.map((x, i) => html`<li key=${i} style=${{ color: x[1] ? 'var(--verde)' : 'var(--rubro)' }}>${x[1] ? '✓' : '✗'} ${x[0]}</li>`)}</ul>`}
+            ${a.perigo && conf === id ? html`<div className="mx-row"><span className="mx-s flex-1 min-w-0" style=${{ color: 'var(--rubro)' }}>${a.ef}</span><button type="button" className="btn btn-ghost btn-sm" style=${{ borderColor: 'var(--rubro)' }} onClick=${() => { U(n => { fazAcaoOrg(n, o.k, a.k); }); setConf(''); }}>Confirmar</button><button type="button" className="btn btn-ghost btn-sm" onClick=${() => setConf('')}>Voltar</button></div>` :
+            html`<button type="button" className=${'btn btn-ghost btn-sm justify-start'} style=${a.perigo ? { color: 'var(--rubro)', borderColor: 'rgba(255,90,78,.4)' } : null} disabled=${dis} title=${r.ok ? a.ef : (r.motivo || '')} data-acao-org=${id} onClick=${() => (a.perigo ? setConf(id) : U(n => { fazAcaoOrg(n, o.k, a.k); }))}><${Icon} n=${a.ic} s=${15} /> ${a.l}</button>`}
+            <div className="mx-s pl-1">${!r.ok ? (r.motivo || '') : a.ef}</div>
+            ${r.lista && html`<div className="gv-chips pl-1">${r.lista.map((x, i) => html`<${MxChip} key=${i} c=${x[1] ? 'pos' : 'neg'}>${x[1] ? '✓' : '✗'} ${x[0]}</${MxChip}>`)}</div>`}
           </div>`; })}</div>
       </li>`; })}</ul>
     <${AvisoMsg} m=${M.msg && M.msg.mes === g.mes ? M.msg : null} />
-  </div>`;
+  </section>`;
 }
 
 function MundoTratados({ g }) {
   const M = g.mundo; const T = M.tratados.slice().reverse();
-  return html`<section className="sec flex flex-col gap-3">
-    <div className="flex items-baseline justify-between"><h3 className="disp text-2xl font-extrabold uppercase">Tratados do mandato</h3><span className="eyebrow num" data-n-tratados=${M.tratados.length}>${M.tratados.length} ${M.tratados.length === 1 ? 'assinado' : 'assinados'}</span></div>
-    <p className="text-xs text-muted">Visitas de Estado, decisões da Mesa diplomática e ações em blocos geram tratados. Eles contam para as conquistas e deixam efeitos permanentes na economia e nos grupos.</p>
-    ${T.length === 0 ? html`<p className="text-sm text-muted">Nenhum tratado assinado ainda.</p>` : html`<ul className="flex flex-col divide-y divide-line">${T.map(t => html`<li key=${t.id} className="py-2 flex flex-wrap items-center gap-2 text-sm">
-      <span className="num text-xs text-muted w-14 shrink-0">${dataCurta(t.mes)}</span>${t.pais && PAIS_MAP[t.pais] ? html`<${ChipPais} p=${PAIS_MAP[t.pais]} s=${18} />` : null}<span className="flex-1 min-w-0">${t.nome}</span>
-      <${Tag}>${t.tipo === 'declaracao' ? 'declaração' : TIPOS_VISITA[t.tipo] ? TIPOS_VISITA[t.tipo].nome : t.tipo}</${Tag}><span className="text-xs text-muted">${t.origem === 'visita' ? 'visita' : t.origem === 'decisao' ? 'mesa diplomática' : t.origem === 'medida' ? 'medida presidencial' : 'bloco'}</span></li>`)}</ul>`}
+  return html`<section className="sec" data-mundo="tratados" aria-labelledby="mt-t">
+    <${MxHead} id="mt-t" eb="Mundo · acordos" t="Tratados do mandato" tip="Visitas de Estado, decisões da Mesa diplomática e ações em blocos geram tratados. Eles contam para as conquistas e deixam efeitos permanentes na economia e nos grupos." right=${html`<${MxChip} c="ouro"><span data-n-tratados=${M.tratados.length}>${M.tratados.length} ${M.tratados.length === 1 ? 'assinado' : 'assinados'}</span></${MxChip}>`} />
+    ${T.length === 0 ? html`<p className="text-sm text-muted">Nenhum tratado assinado ainda.</p>` : html`<ul className="mx-grid" style=${{ padding: 0, margin: 0 }}>${T.map(t => html`<li key=${t.id} className="mx-card panel" style=${{ '--st': 'var(--verde)' }}>
+      <div className="mx-h">${t.pais && PAIS_MAP[t.pais] ? html`<${ChipPais} p=${PAIS_MAP[t.pais]} s=${24} />` : html`<span className="gv-ic" style=${{ '--c': 'var(--verde)' }}><${Icon} n="ScrollText" s=${18} /></span>`}<div className="mx-t">${t.nome}</div><span className="mx-date">${dataCurta(t.mes)}</span></div>
+      <div className="gv-chips"><${Tag}>${t.tipo === 'declaracao' ? 'declaração' : TIPOS_VISITA[t.tipo] ? TIPOS_VISITA[t.tipo].nome : t.tipo}</${Tag}><${MxChip}>${t.origem === 'visita' ? 'visita' : t.origem === 'decisao' ? 'mesa diplomática' : t.origem === 'medida' ? 'medida presidencial' : 'bloco'}</${MxChip}></div>
+    </li>`)}</ul>`}
   </section>`;
 }
 
@@ -22003,27 +22109,25 @@ function MesaDipCartao({ g, upd }) {
   const a = decisaoAtual(g); const U = upd || ZERO; const M = g.mundo;
   if (!a) return html`<div className="sec sec-sm text-sm text-muted">Sem decisão diplomática neste mês.</div>`;
   const res = M.mesa.resolvida;
-  return html`<div className="card overflow-hidden fade-in" data-mesadip=${a.d.id}>
-    <div className="p-4 sm:p-5 flex flex-col gap-3">
-      <div className="flex flex-wrap items-center gap-2"><span className="eyebrow">Mesa diplomática · ${dataMes(g.mes)}</span>${res ? html`<${Tag} cor="var(--verde)">decidida</${Tag}>` : html`<${Tag} cor="var(--anil)">não gasta ação</${Tag}>`}${M.mesa.p && PAIS_MAP[M.mesa.p] && html`<${ChipPais} p=${PAIS_MAP[M.mesa.p]} s=${18} />`}</div>
-      <h3 className="disp text-2xl font-extrabold uppercase leading-tight">${a.titulo}</h3>
-      <p className="text-[15px]">${a.texto}</p>
-      <div className="flex flex-col gap-2">${a.d.opcoes.map((o, i) => { const rs = resumoFxDip(o.fx, M.mesa.p);
-        return html`<button key=${i} type="button" className=${'card p-3 text-left transition ' + (res && M.mesa.esc === i ? '!border-ouro' : 'hover:border-muted')} disabled=${res} data-opcao-dip=${i} onClick=${() => U(n => { decideDip(n, i); })}>
-          <div className="font-semibold flex items-center gap-2">${o.l}${res && M.mesa.esc === i && html`<span className="text-ouro ml-auto"><${Icon} n="Check" s=${14} /></span>`}</div>
-          <div className="text-xs text-muted mt-1">${o.t}</div>
-          <div className="flex flex-wrap gap-1 mt-2">${rs.map((x, j) => html`<${Tag} key=${j} cor=${x.bom === true ? 'var(--verde)' : x.bom === false ? 'var(--rubro)' : 'var(--anil)'}>${x.t}</${Tag}>`)}</div></button>`; })}</div>
-      <p className="text-[11px] text-muted">Decisões citam governos e países, nunca falas de líderes estrangeiros. Efeitos de grupos e economia aparecem no balanço do mês.</p>
-    </div>
-  </div>`;
+  return html`<section className="sec fade-in flex flex-col gap-4" data-mesadip=${a.d.id}>
+    <${MxStyle} />
+    <${MxHead} eb=${'Mesa diplomática · ' + dataMes(g.mes)} t=${a.titulo} tip="Decisões citam governos e países, nunca falas de líderes estrangeiros. Efeitos de grupos e economia aparecem no balanço do mês." right=${html`<div className="mx-row">${res ? html`<${Tag} cor="var(--verde)">decidida</${Tag}>` : html`<${Tag} cor="var(--anil)">não gasta ação</${Tag}>`}${M.mesa.p && PAIS_MAP[M.mesa.p] && html`<${ChipPais} p=${PAIS_MAP[M.mesa.p]} s=${20} />`}</div>`} />
+    <p className="text-[15px]">${a.texto}</p>
+    <div className="mx-grid g2">${a.d.opcoes.map((o, i) => { const rs = resumoFxDip(o.fx, M.mesa.p); const esc = res && M.mesa.esc === i;
+      return html`<button key=${i} type="button" className="mx-act" style=${{ '--c': esc ? 'var(--ouro)' : 'var(--anil)', borderColor: esc ? 'var(--ouro)' : null }} disabled=${res} data-opcao-dip=${i} onClick=${() => U(n => { decideDip(n, i); })}>
+        <div className="mx-act-h"><span className="gv-ic" style=${{ '--c': esc ? 'var(--ouro)' : 'var(--anil)', width: 32, height: 32 }}><${Icon} n=${esc ? 'Check' : 'Scale'} s=${16} /></span><span>${o.l}</span></div>
+        <div className="mx-txt">${o.t}</div>
+        <div className="gv-chips">${rs.map((x, j) => html`<${MxChip} key=${j} c=${x.bom === true ? 'pos' : x.bom === false ? 'neg' : ''}>${x.t}</${MxChip}>`)}</div></button>`; })}</div>
+  </section>`;
 }
 function MundoMesa({ g, upd }) {
   const M = g.mundo; const H = M.hist.slice().reverse().slice(0, 8);
-  return html`<div className="grid gap-6 lg:grid-cols-12">
-    <div className="lg:col-span-8 min-w-0"><${MesaDipCartao} g=${g} upd=${upd} /></div>
-    <aside className="lg:col-span-4 sec"><h3 className="disp text-2xl font-extrabold uppercase mb-2">Histórico</h3>
-      ${H.length === 0 ? html`<p className="text-sm text-muted">Nenhuma decisão tomada ainda.</p>` : html`<ul className="flex flex-col gap-2 text-sm">${H.map((h, i) => { const d = DEC_MAP[h.id]; return html`<li key=${i}><span className="num text-xs text-muted">${dataCurta(h.mes)}</span> ${d.titulo.split('{P}').join(h.p && PAIS_MAP[h.p] ? PAIS_MAP[h.p].nome : '')}<div className="text-xs text-muted">${d.opcoes[h.op].l}</div></li>`; })}</ul>`}
-    </aside>
+  return html`<div className="flex flex-col gap-6" data-mundo="mesa">
+    <${MesaDipCartao} g=${g} upd=${upd} />
+    <section className="sec" aria-labelledby="mm-h">
+      <${MxHead} id="mm-h" eb="Mesa diplomática" t="Histórico" right=${html`<${MxChip}>${M.hist.length} ${M.hist.length === 1 ? 'decisão' : 'decisões'}</${MxChip}>`} />
+      ${H.length === 0 ? html`<p className="text-sm text-muted">Nenhuma decisão tomada ainda.</p>` : html`<${MxDet} rot=${'Ver as últimas ' + H.length}><ul className="mx-list">${H.map((h, i) => { const d = DEC_MAP[h.id]; return html`<li key=${i}><span className="mx-date">${dataCurta(h.mes)}</span><span className="flex-1 min-w-0">${d.titulo.split('{P}').join(h.p && PAIS_MAP[h.p] ? PAIS_MAP[h.p].nome : '')}</span><${MxChip}>${d.opcoes[h.op].l}</${MxChip}></li>`; })}</ul></${MxDet}>`}
+    </section>
   </div>`;
 }
 
@@ -22032,6 +22136,8 @@ function Diplomacia({ g, decidir, upd, chip, setChip }) {
   const c = CHIPS.mundo.some(x => x.k === chip) ? chip : 'panorama';
   const go = setChip || ZERO;
   return html`<${Subpagina} id="mundo" chips=${CHIPS.mundo} atual=${c} onSel=${go} rotulo="Áreas do Mundo" eyebrow="Mundo">
+    <div className="flex flex-col gap-6"><${MxStyle} />
+    ${c !== 'terras' && html`<${MundoResumo} g=${g} />`}
     ${c === 'panorama' && html`<${MundoPanorama} g=${g} decidir=${decidir || ZERO} go=${setChip ? setChip : null} />`}
     ${c === 'paises' && html`<${MundoPaises} g=${g} go=${setChip} />`}
     ${c === 'viagens' && html`<${MundoViagens} g=${g} upd=${upd} />`}
@@ -22039,43 +22145,69 @@ function Diplomacia({ g, decidir, upd, chip, setChip }) {
     ${c === 'tratados' && html`<${MundoTratados} g=${g} />`}
     ${c === 'mesa' && html`<${MundoMesa} g=${g} upd=${upd} />`}
     ${c === 'terras' && html`<${MundoTerras} g=${g} upd=${upd} decidir=${decidir || ZERO} />`}
+  </div>
   </${Subpagina}>`;
 }
 
 /* ============================== EU: VIDA PESSOAL ============================== */
+function EuResumo({ g }) {
+  const P = g.pes; const ap = aprovacao(g); const real = g.cfg.real; const B = g.eu.bast; const o = real ? null : bastOferta(g);
+  const nivel = real ? 'indisponível' : B.caixa <= 0 ? 'sem rastro' : B.expo < 25 ? 'sem ruído' : B.expo < 50 ? 'alguns sinais' : 'rastro visível';
+  return html`<section aria-label="Resumo pessoal" data-gv="eu-resumo"><div className="gv-kpis">
+    <${GvKpi} dado="eu-energia" ic="Zap" cor=${P.energia < 30 ? 'var(--rubro)' : 'var(--verde)'} k="Energia" v=${fmt(P.energia, 0)} s=${P.energia < 30 ? 'baixa: descanse' : 'de 100'} />
+    <${GvKpi} dado="eu-saude" ic="HeartPulse" cor=${corAprov(P.saude)} k="Saúde" v=${fmt(P.saude, 0)} s=${P.saude < 40 ? 'a equipe pede descanso' : 'de 100'} />
+    <${GvKpi} dado="eu-estresse" ic="Activity" cor=${P.estresse > 70 ? 'var(--rubro)' : 'var(--ambar)'} k="Estresse" v=${fmt(P.estresse, 0)} s=${P.estresse > 75 ? 'alto: corrói a saúde' : 'de 100'} />
+    <${GvKpi} dado="eu-aprov" ic="Heart" cor=${corAprov(P.aprovPes)} k="Aprovação pessoal" v=${fmt(P.aprovPes, 0) + '%'} s=${'governo ' + fmt(ap, 0) + '%'} />
+    <${GvKpi} dado="eu-bast" ic="EyeOff" cor=${o ? 'var(--ouro)' : 'var(--muted)'} k="Bastidores" sm=${true} v=${o ? 'Proposta na mesa' : nivel} s=${real ? 'só com personagem fictício' : B.inv ? 'investigação em curso' : B.inimigos + ' inimigos feitos'} />
+  </div></section>`;
+}
 const MEDIDAS_PES = (g) => { const P = g.pes; return [['Saúde', P.saude, corAprov(P.saude), 'HeartPulse'], ['Energia', P.energia, 'var(--verde)', 'Zap'], ['Humor', P.humor, corAprov(P.humor), 'Smile'], ['Estresse', P.estresse, P.estresse > 70 ? 'var(--rubro)' : 'var(--ambar)', 'Activity']]; };
 function EuCondicao({ g }) {
   const P = g.pes; const E = g.eu; const mult = multPlenario(g); const ap = aprovacao(g);
-  return html`<section className="lg:col-span-5 sec flex flex-col gap-4" data-secao-eu="condicao">
-    <div className="flex items-center gap-4">
-      <${Ef} nome=${g.cfg.nome} cor=${corPresidente(g.cfg)} papel="presidente" s=${72} p=${g.cfg} />
-      <div><div className="disp text-2xl font-extrabold uppercase leading-none">${g.cfg.nome}</div><div className="text-sm text-muted">${g.cfg.idade + Math.floor((g.mes - 1) / 12)} anos · Palácio da Alvorada</div></div>
-    </div>
-    ${MEDIDAS_PES(g).map(([l, v, c, i]) => html`<div key=${l}><div className="flex justify-between text-sm mb-1"><span className="flex items-center gap-2"><${Icon} n=${i} s=${14} /> ${l}</span><span className="num">${fmt(v, 0)}</span></div><${Bar} v=${v} cor=${c} label=${l} /></div>`)}
-    <div data-aprov-pes="1"><div className="flex justify-between text-sm mb-1"><span className="flex items-center gap-2"><${Icon} n="Heart" s=${14} /> Aprovação pessoal</span><span className="num">${fmt(P.aprovPes, 0)}% <span className="text-xs text-muted">· governo ${fmt(ap, 0)}%</span></span></div><${Bar} v=${P.aprovPes} cor=${corAprov(P.aprovPes)} label="Aprovação pessoal" />
-      <p className="text-xs text-muted mt-1">Mais calorosa que a do governo: sobe com carisma, humor, ações que humanizam e cai com escândalos que tocam o presidente.</p></div>
-    <div className="p-3 rounded-lg border border-line" data-mult-plenario=${mult}>
-      <div className="flex items-baseline justify-between"><div className="eyebrow">Multiplicador em plenário</div><div className="num text-2xl" style=${{ color: mult >= 1 ? 'var(--verde)' : 'var(--rubro)' }}>×${fmt(mult, 2)}</div></div>
-      <p className="text-xs text-muted mt-1">Saúde (40%), energia (30%) e humor (30%) definem de ×0,85 a ×1,20: o número multiplica o apoio do governo em cada votação do Congresso.</p>
-    </div>
-    <div className="p-3 rounded-lg border border-line" data-embalo=${E.embalo}>
-      <div className="flex items-baseline justify-between"><div className="eyebrow">Embalo do governo</div><div className="num text-2xl" style=${{ color: E.embalo > 0 ? 'var(--verde)' : E.embalo < 0 ? 'var(--rubro)' : 'var(--muted)' }}>${E.embalo > 0 ? '+' : ''}${E.embalo}</div></div>
-      <div className="flex gap-1 mt-2" aria-hidden="true">${[-3, -2, -1, 0, 1, 2, 3].map(n => html`<span key=${n} className="h-2 flex-1 rounded" style=${{ background: n === E.embalo ? (n > 0 ? 'var(--verde)' : n < 0 ? 'var(--rubro)' : 'var(--ouro)') : 'var(--line)' }}></span>`)}</div>
-      <p className="text-xs text-muted mt-1">Vitórias seguidas no Congresso elevam o embalo (votos mais fáceis e pequena alta de aprovação); derrotas o derrubam. Sem votação, ele se dissipa mês a mês.</p>
-    </div>
-    <div className="pt-3 border-t border-line"><div className="eyebrow">Conta bancária pessoal</div><div className="num text-2xl">R$ ${fmt(P.conta, 0)}</div><div className="text-xs text-muted">Salário líquido de R$ 31,5 mil/mês. Declarado ao TSE. Bem-estar e articulação pessoal saem daqui, sem gastar ação política.</div></div>
-    <p className="text-xs text-muted">${P.estresse > 75 ? 'Estresse alto reduz o efeito dos seus discursos e corrói a saúde.' : P.saude < 40 ? 'A equipe médica pede menos agenda e mais descanso.' : 'Presidente em forma para mais um mês de Brasília.'}</p>
-  </section>`;
+  const dica = P.estresse > 75 ? 'Estresse alto reduz o efeito dos seus discursos e corrói a saúde.' : P.saude < 40 ? 'A equipe médica pede menos agenda e mais descanso.' : 'Presidente em forma para mais um mês de Brasília.';
+  const embCor = E.embalo > 0 ? 'var(--verde)' : E.embalo < 0 ? 'var(--rubro)' : 'var(--muted)';
+  return html`<div className="flex flex-col gap-6" data-secao-eu="condicao">
+    <section className="sec" aria-labelledby="eu-cond">
+      <div className="mx-h nr mb-4" style=${{ gap: 16 }}>
+        <${Ef} nome=${g.cfg.nome} cor=${corPresidente(g.cfg)} papel="presidente" s=${64} p=${g.cfg} />
+        <div className="min-w-0"><div className="eyebrow">Eu · condição</div><h3 id="eu-cond" className="disp text-2xl font-extrabold uppercase leading-none">${g.cfg.nome}</h3><div className="mx-s mt-1">${g.cfg.idade + Math.floor((g.mes - 1) / 12)} anos · Palácio da Alvorada · ${dica}</div></div>
+      </div>
+      <div className="mx-grid g3">
+        ${MEDIDAS_PES(g).map(([l, v, c, i]) => html`<div key=${l} className="mx-card panel" style=${{ '--st': c }}>
+          <div className="mx-h"><span className="gv-ic" style=${{ '--c': c }}><${Icon} n=${i} s=${20} /></span><div className="mx-lab">${l}</div><span className="mx-num" style=${{ color: c }}>${fmt(v, 0)}</span></div>
+          <${Bar} v=${v} cor=${c} label=${l} h=${6} /></div>`)}
+        <div className="mx-card panel" style=${{ '--st': corAprov(P.aprovPes) }} data-aprov-pes="1">
+          <div className="mx-h"><span className="gv-ic" style=${{ '--c': corAprov(P.aprovPes) }}><${Icon} n="Heart" s=${20} /></span><div className="mx-lab">Aprovação pessoal<${GvTip} txt="Mais calorosa que a do governo: sobe com carisma, humor, ações que humanizam e cai com escândalos que tocam o presidente." /></div><span className="mx-num" style=${{ color: corAprov(P.aprovPes) }}>${fmt(P.aprovPes, 0)}%</span></div>
+          <${Bar} v=${P.aprovPes} cor=${corAprov(P.aprovPes)} label="Aprovação pessoal" h=${6} />
+          <div className="mx-s">governo ${fmt(ap, 0)}%</div></div>
+      </div>
+    </section>
+    <section className="sec" aria-labelledby="eu-efe">
+      <${MxHead} id="eu-efe" eb="Eu · efeitos no mandato" t="Do corpo ao plenário" tip="Plenário: saúde (40%), energia (30%) e humor (30%) definem de ×0,85 a ×1,20, e o número multiplica o apoio do governo em cada votação. Embalo: vitórias seguidas no Congresso elevam o embalo (votos mais fáceis e pequena alta de aprovação); derrotas o derrubam; sem votação, ele se dissipa mês a mês. Conta: salário líquido de R$ 31,5 mil/mês, declarado ao TSE; bem-estar e articulação pessoal saem daqui, sem gastar ação política." />
+      <div className="mx-grid g3">
+        <div className="mx-card panel" style=${{ '--st': mult >= 1 ? 'var(--verde)' : 'var(--rubro)' }} data-mult-plenario=${mult}>
+          <div className="mx-h nr"><span className="gv-ic" style=${{ '--c': mult >= 1 ? 'var(--verde)' : 'var(--rubro)' }}><${Icon} n="Landmark" s=${20} /></span><div><div className="mx-lab">Multiplicador em plenário</div><div className="mx-num" style=${{ color: mult >= 1 ? 'var(--verde)' : 'var(--rubro)' }}>×${fmt(mult, 2)}</div></div></div>
+          <div className="mx-s">de ×0,85 a ×1,20, conforme saúde, energia e humor</div></div>
+        <div className="mx-card panel" style=${{ '--st': embCor }} data-embalo=${E.embalo}>
+          <div className="mx-h nr"><span className="gv-ic" style=${{ '--c': embCor }}><${Icon} n="Flame" s=${20} /></span><div><div className="mx-lab">Embalo do governo</div><div className="mx-num" style=${{ color: embCor }}>${E.embalo > 0 ? '+' : ''}${E.embalo}</div></div></div>
+          <div className="mx-steps" aria-hidden="true">${[-3, -2, -1, 0, 1, 2, 3].map(n => html`<i key=${n} style=${{ background: n === E.embalo ? (n > 0 ? 'var(--verde)' : n < 0 ? 'var(--rubro)' : 'var(--ouro)') : null }}></i>`)}</div></div>
+        <div className="mx-card panel" style=${{ '--st': 'var(--ouro)' }}>
+          <div className="mx-h nr"><span className="gv-ic" style=${{ '--c': 'var(--ouro)' }}><${Icon} n="Wallet" s=${20} /></span><div><div className="mx-lab">Conta bancária pessoal</div><div className="mx-num">R$ ${fmt(P.conta, 0)}</div></div></div>
+          <div className="mx-s">paga o bem-estar e a articulação pessoal</div></div>
+      </div>
+    </section>
+  </div>`;
 }
 function Custo({ v }) { return v > 0 ? 'R$ ' + fmt(v, 0) : 'sem custo'; }
 function AgendaPrivada({ g, upd }) {
   const U = upd || ZERO; const L = bemEstarLista(g);
-  return html`<section className="lg:col-span-7 sec" data-secao-eu="bemestar">
-    <h3 className="disp text-2xl font-extrabold uppercase mb-1">Agenda privada</h3>
-    <p className="text-xs text-muted mb-3">Bem-estar pago da conta pessoal: não gasta ação política. Cada atividade pode ser feita uma vez por mês.</p>
-    <div className="grid sm:grid-cols-2 gap-2">${L.map(a => { const dis = !!g.pesMes[a.k] || g.pes.conta < a.custoReal;
-      return html`<button key=${a.k} type="button" disabled=${dis} data-bem=${a.k} onClick=${() => U(n => { fazBemEstar(n, a.k); })} className="card p-3 text-left hover:border-muted transition disabled:opacity-40">
-        <div className="flex items-center gap-2 font-semibold"><span className="text-ouro"><${Icon} n=${a.ic} /></span>${a.l}<span className="ml-auto num text-xs text-muted">${Custo({ v: a.custoReal })}</span></div><div className="text-xs text-muted mt-1">${a.d}</div></button>`; })}</div>
+  return html`<section className="sec" data-secao-eu="bemestar" aria-labelledby="eu-ag">
+    <${MxHead} id="eu-ag" eb="Eu · bem-estar" t="Agenda privada" tip="Bem-estar pago da conta pessoal: não gasta ação política. Cada atividade pode ser feita uma vez por mês." right=${html`<${MxChip} c="ouro">conta R$ ${fmt(g.pes.conta, 0)}</${MxChip}>`} />
+    <div className="mx-grid">${L.map(a => { const dis = !!g.pesMes[a.k] || g.pes.conta < a.custoReal; const feita = !!g.pesMes[a.k];
+      return html`<button key=${a.k} type="button" disabled=${dis} data-bem=${a.k} title=${a.d} onClick=${() => U(n => { fazBemEstar(n, a.k); })} className="mx-act" style=${{ '--c': feita ? 'var(--verde)' : 'var(--ouro)' }}>
+        <div className="mx-act-h"><span className="gv-ic" style=${{ '--c': feita ? 'var(--verde)' : 'var(--ouro)' }}><${Icon} n=${feita ? 'Check' : a.ic} s=${20} /></span><span>${a.l}</span></div>
+        <div className="mx-txt c2">${a.d}</div>
+        <div className="gv-chips"><${MxChip} c=${a.custoReal > 0 ? '' : 'pos'}>${Custo({ v: a.custoReal })}</${MxChip}>${feita && html`<${MxChip} c="pos">feito neste mês</${MxChip}>`}${!feita && g.pes.conta < a.custoReal && html`<${MxChip} c="neg">saldo insuficiente</${MxChip}>`}</div></button>`; })}</div>
   </section>`;
 }
 function EuArticulacao({ g, upd }) {
@@ -22083,115 +22215,122 @@ function EuArticulacao({ g, upd }) {
   const blocos = PARTIDOS.filter(P => P.cam + P.sen > 0 && P.id !== g.cfg.partido);
   const sel = blocos.some(b => b.id === pid) ? pid : (blocos[0] && blocos[0].id);
   const rel = g.cfg.religiao;
-  return html`<section className="lg:col-span-12 sec" data-secao-eu="articulacao">
-    <h3 className="disp text-2xl font-extrabold uppercase mb-1">Agenda pessoal de articulação</h3>
-    <p className="text-xs text-muted mb-3">Pagas da conta pessoal (sem ação política). Os efeitos estão escritos em cada cartão.</p>
-    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">${ARTICULACAO.map(a => html`<button key=${a.k} type="button" disabled=${!!g.pesMes['art_' + a.k] || g.pes.conta < a.custo} data-art=${a.k} onClick=${() => U(n => { fazArticulacao(n, a.k); })} className="card p-3 text-left hover:border-muted transition disabled:opacity-40">
-      <div className="flex items-center gap-2 font-semibold"><span className="text-ouro"><${Icon} n=${a.ic} /></span>${a.l}<span className="ml-auto num text-xs text-muted">R$ ${fmt(a.custo, 0)}</span></div><div className="text-xs text-muted mt-1">${a.d}</div></button>`)}
-      <div className="card p-3 flex flex-col gap-2" data-art="lider">
-        <div className="flex items-center gap-2 font-semibold"><span className="text-ouro"><${Icon} n="Church" /></span>Visita a um líder religioso<span className="ml-auto num text-xs text-muted">R$ ${fmt(CUSTO_LIDER, 0)}</span></div>
-        <div className="text-xs text-muted">Só mexe no grupo religioso visitado: +4,5 se bate com a sua religião (${rel}), +2,2 se não bate${rel === 'Sem religião / Ateu' ? '; como você não professa religião, o gesto vale +1,5 e soa protocolar' : ''}.</div>
-        <div className="flex flex-wrap gap-2">${LIDERES.map(L => html`<button key=${L.k} type="button" className="btn btn-ghost !text-xs" disabled=${!!g.pesMes.art_lider || g.pes.conta < CUSTO_LIDER} data-lider=${L.k} onClick=${() => U(n => { fazArticulacao(n, 'lider', L.k); })}>${L.l}</button>`)}</div></div>
-      <div className="card p-3 flex flex-col gap-2" data-art="bancada">
-        <div className="flex items-center gap-2 font-semibold"><span className="text-ouro"><${Icon} n="Utensils" /></span>Jantar com a bancada de um bloco<span className="ml-auto num text-xs text-muted">R$ ${fmt(CUSTO_BANCADA, 0)}</span></div>
-        <div className="text-xs text-muted">Relação com o bloco +4 na Câmara e +2 no Senado · estresse +2 · humor +2. Um jantar por bloco a cada mês.</div>
-        <div className="flex flex-wrap gap-2 items-center"><select aria-label="Bloco para o jantar" value=${sel} onChange=${e => setPid(e.target.value)}>${blocos.map(b => html`<option key=${b.id} value=${b.id}>${b.curto} (${b.cam} dep.)</option>`)}</select>
-          <button type="button" className="btn btn-ghost !text-xs" disabled=${!sel || !!g.pesMes['art_bancada_' + sel] || g.pes.conta < CUSTO_BANCADA} data-bancada=${sel} onClick=${() => U(n => { fazArticulacao(n, 'bancada', sel); })}>Jantar</button></div></div>
+  return html`<section className="sec" data-secao-eu="articulacao" aria-labelledby="eu-art">
+    <${MxHead} id="eu-art" eb="Eu · política pessoal" t="Agenda pessoal de articulação" tip="Pagas da conta pessoal (sem ação política). Os efeitos estão escritos em cada cartão." />
+    <div className="mx-grid">${ARTICULACAO.map(a => { const feita = !!g.pesMes['art_' + a.k]; const dis = feita || g.pes.conta < a.custo;
+      return html`<button key=${a.k} type="button" disabled=${dis} data-art=${a.k} title=${a.d} onClick=${() => U(n => { fazArticulacao(n, a.k); })} className="mx-act" style=${{ '--c': 'var(--anil)' }}>
+        <div className="mx-act-h"><span className="gv-ic" style=${{ '--c': 'var(--anil)' }}><${Icon} n=${feita ? 'Check' : a.ic} s=${20} /></span><span>${a.l}</span></div>
+        <div className="mx-txt c2">${a.d}</div>
+        <div className="gv-chips"><${MxChip}>R$ ${fmt(a.custo, 0)}</${MxChip}>${feita && html`<${MxChip} c="pos">feito neste mês</${MxChip}>`}</div></button>`; })}
+      <div className="mx-act" style=${{ '--c': 'var(--ouro)', cursor: 'default' }} data-art="lider">
+        <div className="mx-act-h"><span className="gv-ic" style=${{ '--c': 'var(--ouro)' }}><${Icon} n="Church" s=${20} /></span><span>Visita a um líder religioso<${GvTip} txt=${'Só mexe no grupo religioso visitado: +4,5 se bate com a sua religião (' + rel + '), +2,2 se não bate' + (rel === 'Sem religião / Ateu' ? '; como você não professa religião, o gesto vale +1,5 e soa protocolar' : '') + '.'} /></span></div>
+        <div className="gv-chips"><${MxChip}>R$ ${fmt(CUSTO_LIDER, 0)}</${MxChip}></div>
+        <div className="gv-acts">${LIDERES.map(L => html`<button key=${L.k} type="button" className="btn btn-ghost" disabled=${!!g.pesMes.art_lider || g.pes.conta < CUSTO_LIDER} data-lider=${L.k} onClick=${() => U(n => { fazArticulacao(n, 'lider', L.k); })}>${L.l}</button>`)}</div></div>
+      <div className="mx-act" style=${{ '--c': 'var(--verde)', cursor: 'default' }} data-art="bancada">
+        <div className="mx-act-h"><span className="gv-ic" style=${{ '--c': 'var(--verde)' }}><${Icon} n="Utensils" s=${20} /></span><span>Jantar com a bancada de um bloco<${GvTip} txt="Relação com o bloco +4 na Câmara e +2 no Senado · estresse +2 · humor +2. Um jantar por bloco a cada mês." /></span></div>
+        <div className="gv-chips"><${MxChip}>R$ ${fmt(CUSTO_BANCADA, 0)}</${MxChip}></div>
+        <div className="gv-acts"><select aria-label="Bloco para o jantar" value=${sel} onChange=${e => setPid(e.target.value)}>${blocos.map(b => html`<option key=${b.id} value=${b.id}>${b.curto} (${b.cam} dep.)</option>`)}</select>
+          <button type="button" className="btn btn-pri" disabled=${!sel || !!g.pesMes['art_bancada_' + sel] || g.pes.conta < CUSTO_BANCADA} data-bancada=${sel} onClick=${() => U(n => { fazArticulacao(n, 'bancada', sel); })}>Jantar</button></div></div>
     </div>
   </section>`;
 }
 function EuFamilia({ g }) {
   const f = g.eu.familia;
-  return html`<section className="sec flex flex-col gap-3" data-secao-eu="familia">
-    <h3 className="disp text-2xl font-extrabold uppercase">Família</h3>
-    ${f.modo === 'ni' ? html`<p className="text-sm text-muted" data-familia="ni">Família não informada. O jogo não inventa cônjuge nem filhos de pessoas reais; por isso não há eventos familiares nem medidor de aprovação do cônjuge nesta partida.</p>` : html`<div className="flex flex-col gap-3" data-familia="ficticia">
-      <p className="text-sm">${f.conjuge ? html`Cônjuge: <b>${f.conjuge.nome}</b>.` : 'Sem cônjuge.'} ${f.filhos > 0 ? `${f.filhos} ${f.filhos === 1 ? 'filho' : 'filhos'}.` : 'Sem filhos.'}</p>
-      ${f.conjuge && html`<div><div className="flex justify-between text-sm mb-1"><span>Aprovação do cônjuge</span><span className="num">${fmt(f.conjuge.aprov, 0)}</span></div><${Bar} v=${f.conjuge.aprov} cor=${corAprov(f.conjuge.aprov)} label="Aprovação do cônjuge" /></div>`}
-      <p className="text-xs text-muted">${(f.conjuge || f.filhos > 0) ? 'Família fictícia: eventos ocasionais mexem em humor e aprovação pessoal. A ação "Tempo em família" na Agenda privada recarrega as baterias.' : 'Defina cônjuge e filhos no início da partida para ter eventos familiares.'}</p>
+  return html`<section className="sec" data-secao-eu="familia" aria-labelledby="eu-fam">
+    <${MxHead} id="eu-fam" eb="Eu · vida pessoal" t="Família" tip=${f.modo === 'ni' ? 'O jogo não inventa cônjuge nem filhos de pessoas reais; por isso não há eventos familiares nem medidor de aprovação do cônjuge nesta partida.' : (f.conjuge || f.filhos > 0) ? 'Família fictícia: eventos ocasionais mexem em humor e aprovação pessoal. A ação "Tempo em família" na Agenda privada recarrega as baterias.' : 'Defina cônjuge e filhos no início da partida para ter eventos familiares.'} />
+    ${f.modo === 'ni' ? html`<div className="mx-card" data-familia="ni"><div className="mx-h nr"><span className="gv-ic"><${Icon} n="Users" s=${20} /></span><div><div className="mx-t">Família não informada</div><div className="mx-s">Sem eventos familiares nesta partida.</div></div></div></div>` : html`<div className="flex flex-col gap-3" data-familia="ficticia">
+      <div className="gv-chips"><${MxChip} c=${f.conjuge ? 'pos' : ''}>${f.conjuge ? 'Cônjuge: ' + f.conjuge.nome : 'Sem cônjuge'}</${MxChip}><${MxChip}>${f.filhos > 0 ? f.filhos + (f.filhos === 1 ? ' filho' : ' filhos') : 'Sem filhos'}</${MxChip}></div>
+      ${f.conjuge && html`<div className="mx-card panel" style=${{ '--st': corAprov(f.conjuge.aprov) }}><div className="flex justify-between text-sm"><span>Aprovação do cônjuge</span><span className="num">${fmt(f.conjuge.aprov, 0)}</span></div><${Bar} v=${f.conjuge.aprov} cor=${corAprov(f.conjuge.aprov)} label="Aprovação do cônjuge" /></div>`}
     </div>`}
   </section>`;
 }
 function EuFiliacao({ g, upd }) {
   const U = upd || ZERO; const F = g.eu.filiacao; const pode = podeTrocarPartido(g); const [conf, setConf] = useState('');
   const lista = PARTIDOS_JOGAVEIS.filter(p => p !== g.cfg.partido).map(p => ({ id: p, r: receptividade(g, p) })).sort((a, b) => b.r - a.r);
-  return html`<section className="sec flex flex-col gap-3" data-secao-eu="filiacao">
-    <div className="flex flex-wrap items-center gap-2"><h3 className="disp text-2xl font-extrabold uppercase flex-1">Filiação partidária</h3>${g.cfg.real && html`<${Tag} cor="var(--ouro)">simulação</${Tag}>`}</div>
-    <p className="text-xs text-muted">${g.cfg.real ? 'Simulação: a troca de legenda aqui é um exercício do jogo e não indica intenção da pessoa real. ' : ''}Uma troca por mandato, até o mês 40. A legenda antiga perde 30 pontos de relação, a nova ganha 20, a base se reconfigura, a imprensa noticia e a coerência com o programa passa a ser medida pelo novo partido.</p>
-    ${F.trocou ? html`<p className="text-sm" data-filiacao="trocou">Você trocou ${PMAP[F.de] ? 'do ' + PMAP[F.de].nome : 'de legenda'} para ${PMAP[F.para].nome} em ${dataMes(F.mes)}.</p>` : !pode.ok ? html`<p className="text-sm text-muted">${pode.motivo}</p>` : null}
-    <ul className="grid gap-2 sm:grid-cols-2" data-receptividade="1">${lista.map(x => { const P = PMAP[x.id];
-      return html`<li key=${x.id} className="card p-2 flex flex-wrap items-center gap-2 text-sm" data-partido-opcao=${x.id}>
-        <span className="flex-1 min-w-0 truncate" title=${P.full}>${NOME_JOGAVEL(x.id)}</span><${Tag} cor=${x.r >= 55 ? 'var(--verde)' : x.r >= 35 ? 'var(--ouro)' : 'var(--rubro)'}>${rotReceptividade(x.r)} · ${x.r}</${Tag}>
-        ${conf === x.id ? html`<button type="button" className="btn btn-ghost !text-xs !border-rubro" onClick=${() => { U(n => { trocaPartido(n, x.id); }); setConf(''); }}>Confirmar</button><button type="button" className="btn btn-ghost !text-xs" onClick=${() => setConf('')}>Voltar</button>` :
-        html`<button type="button" className="btn btn-ghost !text-xs" disabled=${!pode.ok} onClick=${() => setConf(x.id)}>Trocar</button>`}</li>`; })}</ul>
+  return html`<section className="sec" data-secao-eu="filiacao" aria-labelledby="eu-fil">
+    <${MxHead} id="eu-fil" eb="Eu · partido" t="Filiação partidária" tip=${(g.cfg.real ? 'Simulação: a troca de legenda aqui é um exercício do jogo e não indica intenção da pessoa real. ' : '') + 'Uma troca por mandato, até o mês 40. A legenda antiga perde 30 pontos de relação, a nova ganha 20, a base se reconfigura, a imprensa noticia e a coerência com o programa passa a ser medida pelo novo partido.'} right=${g.cfg.real ? html`<${Tag} cor="var(--ouro)">simulação</${Tag}>` : null} />
+    ${F.trocou ? html`<p className="text-sm mb-3" data-filiacao="trocou">Você trocou ${PMAP[F.de] ? 'do ' + PMAP[F.de].nome : 'de legenda'} para ${PMAP[F.para].nome} em ${dataMes(F.mes)}.</p>` : !pode.ok ? html`<p className="text-sm text-muted mb-3">${pode.motivo}</p>` : null}
+    <ul className="mx-grid" data-receptividade="1" style=${{ padding: 0, margin: 0 }}>${lista.map(x => { const P = PMAP[x.id]; const cor = x.r >= 55 ? 'var(--verde)' : x.r >= 35 ? 'var(--ouro)' : 'var(--rubro)';
+      return html`<li key=${x.id} className="mx-card panel" style=${{ '--st': cor }} data-partido-opcao=${x.id}>
+        <div className="mx-t" title=${P.full}>${NOME_JOGAVEL(x.id)}</div>
+        <div className="gv-chips"><${Tag} cor=${cor}>${rotReceptividade(x.r)} · ${x.r}</${Tag}></div>
+        <div className="gv-acts">${conf === x.id ? html`<button type="button" className="btn btn-pri" onClick=${() => { U(n => { trocaPartido(n, x.id); }); setConf(''); }}>Confirmar</button><button type="button" className="btn btn-ghost" onClick=${() => setConf('')}>Voltar</button>` :
+        html`<button type="button" className="btn btn-ghost" disabled=${!pode.ok} onClick=${() => setConf(x.id)}>Trocar</button>`}</div></li>`; })}</ul>
   </section>`;
 }
 function EuBastidores({ g, upd }) {
   const U = upd || ZERO;
-  if (g.cfg.real) return html`<section className="sec" data-secao-eu="bastidores" data-bast="indisponivel"><h3 className="disp text-2xl font-extrabold uppercase mb-2">Bastidores</h3><p className="text-sm text-muted">Indisponível com personagem real.</p></section>`;
+  if (g.cfg.real) return html`<section className="sec" data-secao-eu="bastidores" data-bast="indisponivel"><${MxStyle} /><${MxHead} eb="Eu · ficção" t="Bastidores" /><p className="text-sm text-muted">Indisponível com personagem real.</p></section>`;
   const B = g.eu.bast; const o = bastOferta(g);
   const nivel = B.caixa <= 0 ? null : B.expo < 25 ? 'sem ruído' : B.expo < 50 ? 'alguns sinais' : 'rastro visível';
-  return html`<section className="sec flex flex-col gap-4" data-secao-eu="bastidores" data-bast="ativo">
-    <div className="flex flex-wrap items-center gap-2"><h3 className="disp text-2xl font-extrabold uppercase flex-1">Bastidores</h3><${Tag} cor="var(--ouro)">ficção</${Tag}></div>
-    <p className="text-xs text-muted">Personagens, empresas e valores desta seção são inventados e existem só para o jogo. Aceitar dinheiro por fora cria um rastro oculto que pode virar operação policial, investigação e pedido de impeachment.</p>
-    ${o ? html`<div className="p-4 rounded-lg border border-ouro flex flex-col gap-3" data-oferta=${o.id}>
-      <div className="eyebrow">Proposta fora da agenda · ${o.emp}</div><h4 className="font-semibold text-lg leading-tight">${o.titulo}</h4><p className="text-sm">${o.texto}</p>
-      <div className="flex flex-wrap gap-2">
-        <button type="button" className="btn btn-ghost" data-bast-op="por_fora" onClick=${() => U(n => { bastResponde(n, 'por_fora'); })}>Aceitar por fora</button>
-        <button type="button" className="btn btn-ghost" data-bast-op="declarado" onClick=${() => U(n => { bastResponde(n, 'declarado'); })}>Aceitar e declarar</button>
-        <button type="button" className="btn btn-ghost" data-bast-op="recusa" onClick=${() => U(n => { bastResponde(n, 'recusa'); })}>Recusar</button></div>
-      <ul className="text-xs text-muted list-disc pl-5"><li>Por fora: ganho político e de bem-estar agora; cria um caixa oculto e rastro. Risco de operação da PF mais tarde.</li><li>Declarado: legal, mas rende constrangimento (escândalo +, aprovação pessoal −).</li><li>Recusar: história boa para a imprensa e um inimigo a mais, que pode vazar conversas.</li></ul>
-    </div>` : html`<p className="text-sm text-muted">Nenhuma proposta na mesa. Elas aparecem de vez em quando; ignorar uma não tem custo.</p>`}
-    <div className="grid sm:grid-cols-3 gap-3 text-sm" data-bast-estado="1">
-      <div><div className="eyebrow">Sinais de rastro</div><div className="font-semibold">${nivel || 'nada a esconder'}</div></div>
-      <div><div className="eyebrow">Inimigos feitos</div><div className="num">${B.inimigos}</div></div>
-      <div><div className="eyebrow">Investigação</div><div className="font-semibold">${B.inv ? 'em curso, fase ' + B.inv.fase : 'nenhuma'}</div></div>
+  const tile = (ic, cor, k, v) => html`<div className="mx-card panel" style=${{ '--st': cor }}><div className="mx-h nr"><span className="gv-ic" style=${{ '--c': cor }}><${Icon} n=${ic} s=${20} /></span><div className="min-w-0"><div className="mx-lab">${k}</div><div className="mx-t">${v}</div></div></div></div>`;
+  return html`<section className="sec flex flex-col gap-4" data-secao-eu="bastidores" data-bast="ativo" aria-labelledby="eu-bas">
+    <${MxStyle} />
+    <${MxHead} id="eu-bas" eb="Eu · ficção" t="Bastidores" tip="Personagens, empresas e valores desta seção são inventados e existem só para o jogo. Aceitar dinheiro por fora cria um rastro oculto que pode virar operação policial, investigação e pedido de impeachment." right=${html`<${Tag} cor="var(--ouro)">ficção</${Tag}>`} />
+    <div className="mx-grid g3" data-bast-estado="1">
+      ${tile('Footprints', nivel ? (B.expo < 25 ? 'var(--verde)' : B.expo < 50 ? 'var(--ambar)' : 'var(--rubro)') : 'var(--verde)', 'Sinais de rastro', nivel || 'nada a esconder')}
+      ${tile('Swords', B.inimigos ? 'var(--ambar)' : 'var(--muted)', 'Inimigos feitos', html`<span className="num">${B.inimigos}</span>`)}
+      ${tile('Siren', B.inv ? 'var(--rubro)' : 'var(--verde)', 'Investigação', B.inv ? 'em curso, fase ' + B.inv.fase : 'nenhuma')}
     </div>
-    ${B.hist.length > 0 && html`<ul className="text-xs text-muted flex flex-col gap-1">${B.hist.slice().reverse().slice(0, 5).map((h, i) => html`<li key=${i}>${dataCurta(h.mes)} · ${OFERTAS_BAST.find(x => x.id === h.id).titulo}: ${h.modo === 'por_fora' ? 'aceita por fora' : h.modo === 'declarado' ? 'aceita e declarada' : 'recusada'}</li>`)}</ul>`}
+    ${o ? html`<div className="mx-card panel" style=${{ '--st': 'var(--ouro)' }} data-oferta=${o.id}>
+      <div className="eyebrow">Proposta fora da agenda · ${o.emp}</div><h4 className="disp text-xl font-bold leading-tight">${o.titulo}</h4><p className="text-sm">${o.texto}</p>
+      <div className="gv-acts">
+        <button type="button" className="btn btn-ghost" data-bast-op="por_fora" onClick=${() => U(n => { bastResponde(n, 'por_fora'); })}>Aceitar por fora</button>
+        <button type="button" className="btn btn-pri" data-bast-op="declarado" onClick=${() => U(n => { bastResponde(n, 'declarado'); })}>Aceitar e declarar</button>
+        <button type="button" className="btn btn-ghost" data-bast-op="recusa" onClick=${() => U(n => { bastResponde(n, 'recusa'); })}>Recusar</button></div>
+      <${MxDet} rot="O que cada escolha faz"><ul className="text-xs text-muted list-disc pl-5"><li>Por fora: ganho político e de bem-estar agora; cria um caixa oculto e rastro. Risco de operação da PF mais tarde.</li><li>Declarado: legal, mas rende constrangimento (escândalo +, aprovação pessoal −).</li><li>Recusar: história boa para a imprensa e um inimigo a mais, que pode vazar conversas.</li></ul></${MxDet}>
+    </div>` : html`<div className="mx-card"><div className="mx-h nr"><span className="gv-ic"><${Icon} n="Inbox" s=${20} /></span><div><div className="mx-t">Nenhuma proposta na mesa</div><div className="mx-s">Elas aparecem de vez em quando; ignorar uma não tem custo.</div></div></div></div>`}
+    ${B.hist.length > 0 && html`<${MxDet} rot=${'Histórico (' + B.hist.length + ')'}><ul className="mx-list">${B.hist.slice().reverse().slice(0, 5).map((h, i) => html`<li key=${i}><span className="mx-date">${dataCurta(h.mes)}</span><span className="flex-1 min-w-0">${OFERTAS_BAST.find(x => x.id === h.id).titulo}</span><${MxChip}>${h.modo === 'por_fora' ? 'aceita por fora' : h.modo === 'declarado' ? 'aceita e declarada' : 'recusada'}</${MxChip}></li>`)}</ul></${MxDet}>`}
   </section>`;
 }
 function MarcosLista({ g }) {
   const feitos = Object.fromEntries((g.marcos || []).map(m => [m.id, m.mes]));
   const raro = Object.fromEntries(RARIDADES.map(r => [r.k, r]));
-  return html`<div className="flex flex-col gap-5" data-conquistas="1">
+  return html`<div className="flex flex-col gap-6" data-conquistas="1">
     ${CAT_CONQ.map(cat => { const L = MARCOS.filter(m => m.cat === cat); if (!L.length) return null;
-      return html`<div key=${cat}><div className="eyebrow mb-2">${cat} · ${L.filter(m => feitos[m.id] != null).length}/${L.length}</div>
-        <ul className="grid sm:grid-cols-2 gap-2">${L.map(m => { const R = raro[m.raro];
+      return html`<div key=${cat}><div className="eyebrow mb-3">${cat} · ${L.filter(m => feitos[m.id] != null).length}/${L.length}</div>
+        <ul className="mx-grid" style=${{ padding: 0, margin: 0 }}>${L.map(m => { const R = raro[m.raro];
           return feitos[m.id] != null ?
-            html`<li key=${m.id} className="flex gap-2 items-start p-2 rounded-lg border border-line" data-conq=${m.id} data-raro=${m.raro}>
-              <span className="mt-0.5 shrink-0" style=${{ color: R.cor }}><${Icon} n="Award" s=${16} /></span>
-              <div className="min-w-0"><div className="text-sm font-semibold leading-tight">${m.nome} <span className="num text-xs text-muted font-normal">${dataCurta(feitos[m.id])}</span> <${Tag} cor=${R.cor}>${R.nome}</${Tag}></div><div className="text-xs text-muted mt-0.5">${m.d}</div></div></li>` :
-            m.secreto ? html`<li key=${m.id} className="flex gap-2 items-start p-2 rounded-lg border border-line opacity-40" data-conq=${m.id} data-secreta="1">
-              <span className="mt-0.5 shrink-0"><${Icon} n="Lock" s=${16} /></span><div className="min-w-0"><div className="text-sm font-semibold leading-tight">?</div><div className="text-xs mt-0.5">Conquista secreta.</div></div></li>` :
-            html`<li key=${m.id} className="flex gap-2 items-start p-2 rounded-lg border border-line opacity-50" data-conq=${m.id} data-raro=${m.raro}>
-              <span className="mt-0.5 shrink-0"><${Icon} n="Lock" s=${16} /></span><div className="min-w-0"><div className="text-sm font-semibold leading-tight">${m.nome} <${Tag} cor=${R.cor}>${R.nome}</${Tag}></div><div className="text-xs mt-0.5">${m.d}</div></div></li>`; })}</ul></div>`; })}
+            html`<li key=${m.id} className="mx-card panel" style=${{ '--st': R.cor }} data-conq=${m.id} data-raro=${m.raro}>
+              <div className="mx-h"><span className="gv-ic" style=${{ '--c': R.cor }}><${Icon} n="Award" s=${20} /></span><div className="mx-t">${m.nome}</div><span className="mx-date">${dataCurta(feitos[m.id])}</span></div>
+              <p className="mx-txt">${m.d}</p><div className="gv-chips"><${Tag} cor=${R.cor}>${R.nome}</${Tag}></div></li>` :
+            m.secreto ? html`<li key=${m.id} className="mx-card dim" data-conq=${m.id} data-secreta="1">
+              <div className="mx-h nr"><span className="gv-ic"><${Icon} n="Lock" s=${18} /></span><div><div className="mx-t">?</div><div className="mx-s">Conquista secreta.</div></div></div></li>` :
+            html`<li key=${m.id} className="mx-card dim" data-conq=${m.id} data-raro=${m.raro}>
+              <div className="mx-h"><span className="gv-ic"><${Icon} n="Lock" s=${18} /></span><div className="mx-t">${m.nome}</div><${Tag} cor=${R.cor}>${R.nome}</${Tag}></div><p className="mx-txt">${m.d}</p></li>`; })}</ul></div>`; })}
   </div>`;
 }
 function EuConquistas({ g }) {
   const feitos = new Set((g.marcos || []).map(m => m.id));
-  return html`<section className="sec" data-secao-eu="conquistas">
-    <div className="flex flex-wrap items-center justify-between gap-2 mb-1"><h3 className="disp text-2xl font-extrabold uppercase">Marcos do mandato · Conquistas</h3><span className="eyebrow">${(g.marcos || []).length}/${MARCOS.length} desbloqueados</span></div>
-    <div className="flex flex-wrap gap-2 mb-4">${RARIDADES.map(r => html`<${Tag} key=${r.k} cor=${r.cor}>${r.nome}: ${MARCOS.filter(m => m.raro === r.k && feitos.has(m.id)).length}/${MARCOS.filter(m => m.raro === r.k).length}</${Tag}>`)}</div>
+  return html`<section className="sec" data-secao-eu="conquistas" aria-labelledby="eu-conq">
+    <${MxHead} id="eu-conq" eb="Eu · mandato" t="Marcos do mandato" right=${html`<${MxChip} c="ouro">${(g.marcos || []).length}/${MARCOS.length} desbloqueados</${MxChip}>`} />
+    <div className="gv-chips mb-5">${RARIDADES.map(r => html`<${Tag} key=${r.k} cor=${r.cor}>${r.nome}: ${MARCOS.filter(m => m.raro === r.k && feitos.has(m.id)).length}/${MARCOS.filter(m => m.raro === r.k).length}</${Tag}>`)}</div>
     <${MarcosLista} g=${g} />
   </section>`;
 }
 function VidaPessoal({ g, upd }) {
   ensureF4(g);
-  return html`<div className="grid gap-6 lg:grid-cols-12"><${EuCondicao} g=${g} /><${AgendaPrivada} g=${g} upd=${upd} /></div>`;
+  return html`<div className="flex flex-col gap-6"><${EuCondicao} g=${g} /><${AgendaPrivada} g=${g} upd=${upd} /></div>`;
+}
+function Promessas({ g }) {
+  return html`<section className="sec" aria-labelledby="prom-t"><${MxHead} id="prom-t" eb="Eu · mandato" t="Promessas de campanha" />
+    <ul className="mx-grid g3" style=${{ padding: 0, margin: 0 }}>${g.cfg.promessas.map(k => { const P = PROMESSAS.find(p => p.k === k); const ok = P.check(g); const cor = ok ? 'var(--verde)' : 'var(--muted)';
+      return html`<li key=${k} className="mx-card panel" style=${{ '--st': cor }}><div className="mx-h"><span className="gv-ic" style=${{ '--c': cor }}><${Icon} n=${ok ? 'CircleCheck' : 'Circle'} s=${20} /></span><div className="mx-t">${P.nome}</div></div><div className="gv-chips"><${MxChip} c=${ok ? 'pos' : ''}>${ok ? 'cumprida' : 'em andamento'}</${MxChip}><${MxChip}><span className="num">${P.prog(g)}</span></${MxChip}></div></li>`; })}</ul></section>`;
 }
 function Eu({ g, upd, chip, setChip }) {
   ensureF4(g);
-  const c = CHIPS.eu.some(x => x.k === chip) ? chip : null;
-  const mostra = (k) => c === null || c === k;
+  const c = CHIPS.eu.some(x => x.k === chip) ? chip : 'condicao';
   const corpo = html`<div className="flex flex-col gap-6">
-    ${mostra('condicao') && html`<div className="grid gap-6 lg:grid-cols-12"><${EuCondicao} g=${g} />${c === null ? html`<${AgendaPrivada} g=${g} upd=${upd} />` : html`<div className="lg:col-span-7 flex flex-col gap-6"><${Promessas} g=${g} /></div>`}</div>`}
-    ${c === 'bemestar' && html`<div className="grid gap-6 lg:grid-cols-12"><${AgendaPrivada} g=${g} upd=${upd} /></div>`}
-    ${mostra('bemestar') && html`<div className="grid gap-6 lg:grid-cols-12"><${EuArticulacao} g=${g} upd=${upd} /></div>`}
-    ${mostra('familia') && html`<div className="grid gap-6 lg:grid-cols-2 items-start"><${EuFamilia} g=${g} /><${EuFiliacao} g=${g} upd=${upd} /></div>`}
-    ${mostra('bastidores') && html`<${EuBastidores} g=${g} upd=${upd} />`}
-    ${mostra('conquistas') && html`<${EuConquistas} g=${g} />`}
-    ${c === null && html`<${Promessas} g=${g} />`}
+    <${MxStyle} />
+    <${EuResumo} g=${g} />
+    ${c === 'condicao' && html`<${EuCondicao} g=${g} />`}
+    ${c === 'condicao' && html`<${Promessas} g=${g} />`}
+    ${c === 'bemestar' && html`<${AgendaPrivada} g=${g} upd=${upd} />`}
+    ${c === 'bemestar' && html`<${EuArticulacao} g=${g} upd=${upd} />`}
+    ${c === 'familia' && html`<div className="grid gap-6 lg:grid-cols-2 items-start"><${EuFamilia} g=${g} /><${EuFiliacao} g=${g} upd=${upd} /></div>`}
+    ${c === 'bastidores' && html`<${EuBastidores} g=${g} upd=${upd} />`}
+    ${c === 'conquistas' && html`<${EuConquistas} g=${g} />`}
   </div>`;
-  if (c === null) return html`<div className="flex flex-col gap-6"><${CabecaSecao} eyebrow="Eu" titulo="Vida pessoal e mandato" />${corpo}</div>`;
   return html`<${Subpagina} id="eu" chips=${CHIPS.eu} atual=${c} onSel=${setChip || ZERO} rotulo="Áreas pessoais" eyebrow="Eu">${corpo}</${Subpagina}>`;
 }
 
