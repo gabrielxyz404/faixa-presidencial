@@ -2655,7 +2655,7 @@ P('fundo_amazonia', 'o Fundo Amazônia', 'fundo amazonia|fundo clima|pagamento p
 P('licenciamento', 'a flexibilização do licenciamento ambiental', 'perdoar (as )?multas (ambientais|do ibama)|anistia (a|para) (os )?desmatadores|licenciamento( ambiental)?|flexibilizar (as )?leis? ambientais?|afrouxar (a )?fiscalizacao|liberar (o )?desmatamento|liberar agrotoxicos?|agrotoxicos?|pl da devastacao|lei geral do licenciamento|estudo de impacto', { k: 'R', perm: 1, pa: 'ambiente', inst: 'PL', val: { agro: 6, empresariado: 4, universitarios: -8, indigenas: -8 }, d: { ue: -8, eua: -2 }, desm: 900, e: { pib: .03 }, iv: [.6, .2], lag: 4, cat: 'negacionismo' });
 P('mineracao_petroleo', 'a exploração de petróleo e mineração', 'margem equatorial|foz do amazonas|explorar petroleo|pre.?sal|mineracao|minerio|potassio|terras raras|litio|fertilizantes?|exploracao de petroleo|leilao de petroleo|leilao de blocos|poco\\w* de petroleo|royalties', { ch: 'invest', base: 5, def: 4, cap: 30, b: 'emp', rg: 'amaz', pa: 'infra', pn: 'Minas e Energia', inst: 'ADM', val: { agro: 3, empresariado: 4, indigenas: -8, universitarios: -5 }, desm: 400, d: { ue: -3 }, e: { pib: .08 }, iv: [.3, .2], lag: 12, cat: 'desenvolvimento' });
 P('negacionismo', 'o discurso contra os dados ambientais', '(?:dizer|afirmar|declarar|alegar) que (?:as )?queimadas (?:sao|e) (?:um )?exagero(?: d[ao] imprensa)?|exagero d[ao] imprensa|exagero d[ao]s? ongs|aquecimento global (e )?(um )?(exagero|mentira|farsa)|ongs? (estao|so)|nao existe aquecimento|aquecimento global (e )?(mentira|farsa)|mentira ambiental|culpa das ongs|ongs? (estrangeir\\w+|internacionais)|exagero ambiental|ambientalistas? (radicais|exagerad\\w+)|clima e mentira|dados do inpe', { k: 'C', pa: 'ambiente', inst: 'COM', val: { agro: 4, universitarios: -10, indigenas: -8 }, d: { ue: -10, eua: -3 }, desm: 600, e: { conf: -1.5 }, iv: [.3, .5], lag: 3, cat: 'negacionismo', ap: -.5 });
-P('acordo_clima', 'os compromissos climáticos', 'acordo de paris|cop ?30|cop ?3\\d|compromissos? climaticos?|meta de emissoes|zerar emissoes|net zero|neutralidade de carbono|amazonia como prioridade|sediar a cop', { k: 'D', pa: 'ambiente', inst: 'ADM', val: { universitarios: 4, indigenas: 3, agro: -2 }, d: { ue: 8, eua: 2 }, desm: -150, iv: [-.1, -.3], lag: 6, cat: 'ambiente' });
+P('acordo_clima', 'os compromissos climáticos', 'acordo de paris|cop ?30|cop ?3\\d|compromissos? climaticos?|meta de emissoes|zerar emissoes|net zero|neutralidade de carbono|amazonia como prioridade|sediar a cop\\b', { k: 'D', pa: 'ambiente', inst: 'ADM', val: { universitarios: 4, indigenas: 3, agro: -2 }, d: { ue: 8, eua: 2 }, desm: -150, iv: [-.1, -.3], lag: 6, cat: 'ambiente' });
 P('sair_paris', 'a saída de acordos internacionais', 'sair do acordo de paris|deixar o acordo de paris|retirar o brasil (do|da) (acordo de paris|oms|onu|mercosul|brics)|sair da (oms|onu|omc|ocde|unesco)|deixar a (oms|onu|omc)|sair do mercosul|romper com a onu', { k: 'D', pa: 'itamaraty', inst: 'DEC', val: { universitarios: -8, indigenas: -4, agro: 1, mercado: -3, empresariado: -2 }, d: { ue: -10, eua: -3, al: 0 }, e: { conf: -2, risco: 6 }, iv: [.1, .4], lag: 3, cat: 'negacionismo' });
 
 /* ---------- Seguranca, justica e costumes ---------- */
@@ -2740,7 +2740,13 @@ const V2N = OBJ.length;
 /* --- tributos --- */
 P('itcmd', 'o ITCMD sobre heranças e doações', 'itcmd|imposto (sobre|de) (heranca|doacao|doacoes|heranças)\\w*|tributacao (de|das|sobre) herancas?|(taxar|tributar|cobrar imposto (de|sobre)) (as )?(herancas?|doacoes)(?: e doacoes)?|herancas? e doacoes|heranca\\w*', { k: 'T', ch: 'tcap', base: 14, def: 12, cap: 40, pg: 'ricos', rg: 'se', pa: 'fazenda', nv: 'E', inst: 'COM', pr: 0, val: { mercado: -3, empresariado: -2, universitarios: 1, sindicatos: 1 }, iv: [-.6, 0], lag: 12, cred: .7, ax: { tributacao: -1 }, st: { bancos: -1 }, nota: 'O ITCMD é imposto estadual (art. 155, I); a União só fixa o teto de alíquota por resolução do Senado.', pf: 'imposto_ricos' });
 P('jcp', 'os juros sobre capital próprio (JCP)', 'juros sobre (o )?capital proprio|\\bjcp\\b|capital proprio das empresas', { k: 'T', exo: 1, ch: 'tcap', base: 10, def: 10, cap: 25, pg: 'capital', rg: 'se', pa: 'fazenda', inst: 'PL', pr: 0, val: { mercado: -3, empresariado: -3 }, iv: [-.4, 0], lag: 9, cred: .8, ax: { tributacao: -1 }, st: { bancos: -2, industria: -1 }, pf: 'imposto_ricos', nota: 'O JCP é dedutível do IRPJ/CSLL; a renúncia estimada gira em torno de R$ 10 bi/ano.' });
+P('pedagio_br', 'a cobrança de pedágio nas rodovias federais', '(?:acabar com|fim d[oa]|zerar|extinguir|eliminar|proibir|vedar|abolir|suspender|isentar|tirar|retirar)(?: a| o| os| as)? (?:cobranca d[eo] )?pedagios?(?: (?:nas|das|em|nos|de|do)(?: tod[ao]s? (?:as |os )?)?(?:br|rodovias?(?: federais?)?|estradas))?|cobranca d[eo] pedagios? (?:nas|em|nos) (?:br|rodovias?(?: federais?)?)', { k: 'T', ch: 'tcons', base: 5, def: 5, cap: 12, pg: 'emp', rg: 'pop', pa: 'infra', pn: 'Transportes', inst: 'PL', val: { caminhoneiros: 6, classemedia: 3, empresariado: -3, mercado: -2 }, iv: [-.2, 0], lag: 6, cat: 'infra', nota: 'Acabar com o pedágio das rodovias federais concedidas obriga a indenizar as concessionárias ou recompor o equilíbrio econômico-financeiro dos contratos (Lei 8.987/1995).' }); // v4
+P('tarifa_zero_nac', 'a tarifa zero no transporte público', '(?:zer\\w+|acabar com|eliminar|tirar|isentar) (?:a )?(?:tarifa|passagem)(?: d[eo] (?:onibus|transporte(?: publico)?(?: urbano)?|metro))?(?: urbano)?(?: em| para| de)? (?:todas as cidades|todo o (?:pais|brasil)|todo mundo|todos|todas|toda a populacao)|tarifa zero (?:nacional|em todo o (?:pais|brasil)|em todas as cidades|para todos|universal)|(?:onibus|transporte(?: publico)?) (?:de graca|gratis|gratuito) (?:para todos|em todo|para todo mundo)|passagem de onibus (?:de graca|gratis|zerada)? ?(?:para todo mundo|para todos)', { k: 'G', ch: 'transf', base: 60, def: 60, cap: 130, b: 'pobres', rg: 'urb', pob: .5, lag: 10, pa: 'infra', pn: 'Cidades', inst: 'PL', val: { periferia: 6, universitarios: 4, empresariado: -1, mercado: -3 }, iv: [-.5, -.1], cat: 'infra', nota: 'O transporte urbano é serviço municipal; a tarifa zero nacional dependeria de repasse da União para cobrir a receita de bilhetagem, estimada em dezenas de bilhões de reais por ano.' }); // v4
+P('dnit', 'o orçamento do DNIT', '\\bdnit\\b|departamento nacional de infraestrutura de transportes', { k: 'G', ch: 'invest', base: 20, def: 10, cap: 60, b: 'cam', rg: 'pop', pob: .1, lag: 14, pa: 'infra', pn: 'Transportes', inst: 'PL', val: { caminhoneiros: 4, agro: 2, empresariado: 2 }, iv: [.1, 0], cat: 'infra', nota: 'O DNIT executa a manutenção e as obras das rodovias federais, com orçamento na casa de R$ 20 bi por ano.' }); // v4
+P('fomento_pesquisa', 'o fomento da pesquisa (CNPq e Capes)', '\\bcnpq\\b|\\bcapes\\b|\\bfapesp\\b|bolsas? (?:de |do |da )?(?:mestrado|doutorado|iniciacao cientifica|pos.?graduacao|pesquisa)|bolsas? de pesquisadores?', { k: 'G', ch: 'custeio', base: 8, def: 3, cap: 30, ben: .2, vu: 30000, fr: 12, b: 'jov', rg: 'urb', pob: .05, lag: 6, pa: 'educacao', pn: 'Ciência e Tecnologia', inst: 'PL', val: { universitarios: 6, mercado: 1, evangelicos: -1 }, iv: [-.2, -.3], cat: 'ciencia', nota: 'CNPq, Capes e Finep somam cerca de R$ 8 bi por ano em bolsas, auxílios e financiamento à pesquisa.' }); // v4
 P('discricionarias', 'as despesas discricionárias', 'despesas? discricionarias?|gastos? discricionarios?|discricionarias', { k: 'G', sav: 1, ch: 'custeio', base: 200, def: 10, cap: 100, b: 'serv', rg: 'se', pob: .2, pa: 'fazenda', inst: 'DEC', val: { mercado: 3, empresariado: 1, sindicatos: -2, universitarios: -1 }, e: { conf: 1, risco: -2 }, iv: [.5, 0], lag: 2, cred: .7, cat: 'corte_gastos', nota: 'As despesas discricionárias (investimentos e custeio sem vinculação) somam cerca de R$ 200 bi; cortes lineares são feitos por decreto de programação financeira.' }); // v4
+P('defesa_gasto', 'os gastos com a defesa', 'gastos? (?:com |da |de |na )?(?:a )?defesa|orcamento (?:militar|da defesa|das forcas armadas)|gastos? militares?|despesas? (?:com )?(?:a )?defesa|verba (?:da |de )?defesa', { k: 'G', sav: 1, ch: 'custeio', base: 110, def: 10, cap: 100, b: 'pol', rg: 'co', pob: .05, pa: 'defesa', pn: 'Defesa', inst: 'ADM', val: { policiais: -2, empresariado: -1, mercado: 1 }, e: { conf: .5 }, iv: [.2, 0], lag: 3, cred: .8, cat: 'corte_gastos', nota: 'O orçamento da Defesa gira em torno de R$ 110 bi por ano, a maior parte em pessoal e inativos; corte relevante exige mexer na folha ou nos investimentos.' }); // v4
+P('teto_pessoal', 'o limite da despesa de pessoal da União', '(?:limit\\w+|teto|travar|conter|segurar|limite) (?:d[oa]s? |a |o )?(?:crescimento (?:real )?d[aeo]s? )?(?:despesas?|gastos?) (?:de |com )(?:pessoal|folha(?: de pagamento)?)(?: (?:da uniao|federal|publica))?', { k: 'G', sav: 1, lc: 1, ch: 'folha', base: 20, def: 20, cap: 100, b: 'serv', rg: 'se', pob: .05, pa: 'fazenda', inst: 'PL', val: { mercado: 3, sindicatos: -4, classemedia: -1 }, e: { conf: 1, risco: -2 }, iv: [.4, 0], lag: 12, cred: .6, cat: 'corte_gastos', nota: 'A LRF (LC 101/2000, art. 19) já fixa teto de 50% da receita corrente líquida para a União; um limite menor ou um freio ao crescimento real da folha exige lei complementar e se paga com a contenção gradual de reajustes e vagas.' }); // v4
 P('reintegra', 'o Reintegra', 'reintegra|devolucao de (?:residuos|creditos) tributarios? (?:aos? )?exportadores|credito (?:fiscal )?(?:aos? )?exportadores de manufaturados', { k: 'T', exo: 1, ch: 'tcomex', base: 150, def: 4, cap: 12, pg: 'imp', rg: 'se', pa: 'fazenda', inst: 'DEC', dec: 1, pr: 0, val: { empresariado: 3, mercado: 1 }, iv: [.2, 0], lag: 3, cred: .8, nota: 'O Reintegra (Lei 13.043/2014) devolve a exportadores de manufaturados parte dos tributos residuais, com alíquota entre 0,1% e 3% da receita de exportação, fixada por decreto.' }); // v4
 P('zona_franca', 'a Zona Franca de Manaus', 'zona franca( de manaus)?|\\bzfm\\b|polo industrial de manaus|incentivos? (da|a) zona franca', { k: 'T', exo: 1, ch: 'tcons', base: 28, def: 8, cap: 40, pg: 'emp', rg: 'n', pa: 'fazenda', inst: 'PEC', pr: 0, val: { empresariado: 2, sindicatos: 2 }, iv: [-.3, 0], lag: 12, cred: .85, ax: { economia: -1 }, st: { industria: 2 }, nota: 'O modelo da ZFM está protegido no ADCT (art. 40 e 92-A) até 2073; mudanças exigem emenda constitucional.' });
 P('cbs_ibs', 'a CBS/IBS e a alíquota padrão', '\\bcbs\\b|\\bibs\\b|\\bifa\\b|imposto sobre valor agregado|\\biva\\b|aliquota (padrao|de referencia|unica)|imposto sobre bens e servicos|contribuicao sobre bens e servicos|split payment|cashback tributario|devolucao de impostos para os pobres', { k: 'T', ch: 'tcons', base: 700, def: 25, cap: 200, pg: 'cons', rg: 'pop', pa: 'fazenda', inst: 'PL', lc: 1, pr: .006, val: { empresariado: -2, classemedia: -1.5, periferia: -1 }, iv: [-.2, 0], lag: 12, cred: .8, ax: { tributacao: -1 }, st: { servicos: -1, varejo: -1 }, pf: 'reforma_tributaria', nota: 'CBS e IBS são regidos pela EC 132/2023 e pela LC 214/2025; alterações exigem lei complementar.' });
@@ -2841,7 +2847,7 @@ function fiscPos(A) {
   // (1) escopo por produto
   for (const it of A.items.slice()) {
     if (it.o.k !== 'T' || ESC_IDS.indexOf(it.o.id) < 0 || it.pledge || it.escProd) continue;
-    if (it.q && it.q.money && it.q.money.unit) continue;
+    if (it.q && it.q.money && it.q.money.unit && it.q.money.v >= 1e8) continue; // v4: valor de limiar ("até R$ 80 mil") não é o montante do tributo
     const ep = escProduto(s, it, A.orig); if (!ep) continue;
     it.escProd = ep;
     A.items = A.items.filter(j => j === it || !(j.i >= ep.i && j.e <= ep.e && j.o.k !== 'C' && j.o.k !== 'T'));
@@ -2946,7 +2952,7 @@ P('defesa_equip', 'o reequipamento das Forças Armadas', 'reequipamento|submarin
 P('piso_enfermagem', 'o piso da enfermagem', 'piso (da )?enfermagem|piso salarial (da|dos) enfermag\\w+|enfermeiros? piso|tecnicos de enfermagem|parteiras', { ch: 'folha', base: 7, def: 3, cap: 12, ben: 2.5, b: 'saude', rg: 'pop', pob: .2, lag: 3, pa: 'saude', inst: 'PL', val: { sindicatos: 5, periferia: 2, classemedia: 1 }, iv: [-.4, 0], cat: 'servidores', ax: { gasto_social: -1, trabalho: -1 }, ent: { municipios: -2, estados: -1 }, nota: 'O piso da enfermagem (Lei 14.434/2022) foi suspenso pelo STF (ADI 7222) até definir a fonte de custeio; municípios e hospitais filantrópicos pressionam.', pf: 'piso_enfermagem' });
 P('agentes_saude', 'os agentes comunitários de saúde', 'agentes? comunitarios? de saude|\\bacs\\b|agentes de combate a endemias|piso dos agentes|saude da familia|estrategia saude da familia|atencao primaria|atencao basica', { ch: 'saude', base: 25, def: 3, cap: 15, b: 'saude', rg: 'pobre', pob: .6, lag: 5, pa: 'saude', inst: 'ADM', idh: .002, val: { periferia: 3, sindicatos: 2, classemedia: 1 }, iv: [-.3, 0], cat: 'saude', ax: { gasto_social: -1 }, ent: { municipios: 1 } });
 P('reforma_ensino_medio', 'o novo ensino médio', 'novo ensino medio|reforma do ensino medio|\\bbncc\\b|base nacional comum|curriculo escolar|curriculo|itinerarios formativos|ensino tecnico|educacao profissional|escolas tecnicas', { k: 'R', pa: 'educacao', inst: 'PL', val: { universitarios: 2, sindicatos: 2, classemedia: 1, empresariado: 1 }, iv: [0, -.1], lag: 12, cat: 'educacao', ax: { gasto_social: -1 }, nota: 'O novo ensino médio foi reformulado pela Lei 14.945/2024 após críticas de professores e estudantes.' });
-P('subsidio_diesel', 'a subvenção ao diesel e aos caminhoneiros', 'subsidi\\w+ (ao |para o |do |a |aos |para os |para )?(diesel|combustiveis?|caminhoneiros?|gasolina|gas)|subvencao (ao |do )?(diesel|combustiveis?)|bolsa.?caminhoneiro|auxilio.?caminhoneiro|auxilio.?diesel|auxilio.?taxista|cartao caminhoneiro|diesel subsidiado', { ch: 'transf', base: 0, ex: 0, def: 10, cap: 40, ben: 1, vu: 1000, fr: 12, b: 'cam', rg: 'pop', pob: .1, lag: 1, pa: 'infra', pn: 'Minas e Energia', inst: 'MP', val: { caminhoneiros: 8, agro: 2, empresariado: 1, mercado: -2 }, e: { ipca: -.06 }, iv: [-.3, 0], cat: 'combustiveis', ax: { economia: -1 }, st: { petroleo: -1 }, pf: 'diesel', nota: 'A subvenção ao diesel de 2018 custou cerca de R$ 9,5 bi e pressionou o teto de gastos.' });
+P('subsidio_diesel', 'a subvenção ao diesel e aos caminhoneiros', 'subsidi\\w+(?: federal| nacional| publico)? (ao |para o |do |a |aos |para os |para )?(diesel|combustiveis?|caminhoneiros?|gasolina|gas)|subvencao (ao |do )?(diesel|combustiveis?)|bolsa.?caminhoneiro|auxilio.?caminhoneiro|auxilio.?diesel|auxilio.?taxista|cartao caminhoneiro|diesel subsidiado', { ch: 'transf', base: 0, ex: 0, def: 10, cap: 40, ben: 1, vu: 1000, fr: 12, b: 'cam', rg: 'pop', pob: .1, lag: 1, pa: 'infra', pn: 'Minas e Energia', inst: 'MP', val: { caminhoneiros: 8, agro: 2, empresariado: 1, mercado: -2 }, e: { ipca: -.06 }, iv: [-.3, 0], cat: 'combustiveis', ax: { economia: -1 }, st: { petroleo: -1 }, pf: 'diesel', nota: 'A subvenção ao diesel de 2018 custou cerca de R$ 9,5 bi e pressionou o teto de gastos.' });
 P('vale_cultura', 'o apoio a bibliotecas, cinema e cultura popular', 'vale.?cultura|cultura viva|bibliotecas?|pontos de cultura|incentivo ao esporte|lei de incentivo ao esporte|festas populares|carnaval|festival', { ch: 'custeio', base: 1, def: .8, cap: 4, b: 'jov', rg: 'urb', lag: 5, pa: 'educacao', pn: 'Cultura', inst: 'ADM', val: { universitarios: 3, periferia: 1.5, evangelicos: -1 }, iv: [-.2, -.3], cat: 'cultura', ax: { gasto_social: -1 } });
 P('patentes', 'as patentes e os medicamentos genéricos', 'patentes?|quebra de patentes?|licenca compulsoria|genericos?|propriedade intelectual|biossimilares', { k: 'R', pa: 'saude', inst: 'PL', val: { periferia: 2, classemedia: 2, empresariado: -2, mercado: -1.5 }, iv: [-.3, 0], lag: 6, cat: 'saude', ax: { economia: -1 }, st: { servicos: -1 }, d: { eua: -2 } });
 
@@ -3002,6 +3008,7 @@ const SPELL = [
 const V39_INF = [ // v3.9
   [/[\u{1F000}-\u{1FFFF}☀-➿️‍]/gu, ' '],
   [/\b(?:k{3,}\w*|ha(?:ha)+h?|rs(?:rs)+|kk+|hehe+|rsrs+|lol|mds|pqp|kct)\b/g, ' '],
+  [/\b(?:krl|aff|afe|caramba|meu deus|oxe|eita|nossa senhora|pow|puts|poxa|bjs|bjo|ok)\b/g, ' '], [/\bp\b(?= [a-z])/g, 'para'], [/\bc\b(?= (?:o|a|os|as|um|uma|essa|esse)\b)/g, 'com'], [/\bdnv\b/g, 'de novo'], [/\bdms\b/g, 'demais'], [/\b(?:naum|nau|num sei)\b/g, 'nao'], [/\bmts\b/g, 'muitos'], [/\bmuitas? gente\b/g, 'muita gente'], [/\b(?:fzr|fazr)\b/g, 'fazer'], [/\bfzd\b/g, 'feito'], [/\b(?:kd|cade)\b(?= o| a| os| as)/g, 'cade'], [/\bd\+/g, 'demais'], [/\b(?:grana|bufunfa|cascalho|din din)\b/g, 'dinheiro'], [/\bpolitiqueiros?\b/g, 'politicos'], [/\b(?:impostao|impostaco)\b/g, 'imposto alto'], [/\bgalera\b/g, 'pessoas'], // v4: gírias e abreviações adicionais
   [/\b(?:pfv|pfvr|pls|plz|por favor|por gentileza|valeu|vlw|obg|brigado|blz)\b/g, ' '],
   [/([a-z])\1{2,}/g, '$1'],
   [/\bp\/(?= ?[a-z0-9])/g, 'para '], [/\bc\/(?= ?[a-z0-9])/g, 'com '], [/\bs\/(?= ?[a-z0-9])/g, 'sem '], [/\bn\/(?= ?[a-z0-9])/g, 'nao '], [/\bd\/(?= ?[a-z0-9])/g, 'de '],
@@ -3207,7 +3214,7 @@ V('zer(?:ar|ando|agem|amos|aremos|e|ei)\\b', 'SUB', { tot: 1, inf: 'zerar' });
 V('elimin\\w+|abol\\w+|encerr\\w+|cancel\\w+|desativ\\w+|descontinu\\w+|suprim\\w+|derrub\\w+|desfaz\\w+|desfeit\\w+|rescind\\w+|anul\\w+|sustar|fim d\\w+|chega de', 'SUB', { tot: 1, inf: 'acabar com' });
 V('suspend\\w+|suspens\\w+', 'SUB', { tot: 1, inf: 'suspender' });
 V('reduz\\w*|reduc\\w+', 'SUB', { inf: 'reduzir' });
-V('cort(?:ar|e|es|ando|amos|aremos|ei)\\b', 'SUB', { inf: 'cortar' });
+V('cort(?:ar|a|am|e|es|ando|amos|aremos|ei)\\b', 'SUB', { inf: 'cortar' });
 V('diminu\\w+|baix(?:ar|a|ando|amos|aremos|ei)\\b|enxug\\w+|congel\\w+|rebaix\\w+|conter\\b|desmont\\w+|desregulament\\w+|retir(?:ar|ando|ada)\\b|tirar|sair d\\w+|deixar de|par(?:ar|e|ando) de|abandon\\w+|vet(?:ar|o)\\b|barr(?:ar|ando)|cass(?:ar|ando)', 'SUB', { inf: 'reduzir' });
 V('fech(?:ar|ando)(?= (?:nenhuma |nenhum |todas as |todos os |as |os |a |o )?(?:escolas?|hospitais|hospital|postos|agencias?|ministerios?|orgaos|estatais|empresas|bases|unidades|universidades?|faculdades|institutos|clubes?|estandes?))', 'SUB', { inf: 'fechar' });
 V('revis\\w+|rever\\b|reavali\\w+', 'SUB', { inf: 'rever' });
@@ -3327,7 +3334,7 @@ function acharObjetos(s) {
   return out;
 }
 const ABSORVE = {
-  marco_temporal: ['terras_indigenas'], casamento_igualitario: ['lgbt'], concessao_rodovias: ['infra_geral', 'rodovias', 'portos_aeroportos', 'concessoes', 'ferrovias'], subsidio_diesel: ['tributos_gasolina'],
+  marco_temporal: ['terras_indigenas'], casamento_igualitario: ['lgbt'], concessao_rodovias: ['infra_geral', 'rodovias', 'portos_aeroportos', 'concessoes', 'ferrovias'], subsidio_diesel: ['tributos_gasolina', 'pis_cofins_diesel', 'preco_petrobras', 'transporte_publico'],
   bndes_credito: ['est_outras', 'credito_subsidiado'], meta_primario: ['arcabouco'], multa_ambiental: ['desmatamento'], anistia_ambiental: ['anistia_indulto', 'desmatamento'], taxa_pix: ['auxilio_generico'], igrejas_imunidade: ['religiao_aceno', 'imposto_geral'],
   fundo_eleitoral: ['reforma_politica', 'emendas'], voto_impresso: ['reforma_politica'], ensino_religioso: ['educacao_geral', 'religiao_aceno'], juros_consumidor: ['juros_selic'], mae_auxilio: ['auxilio_generico'], desenrola: ['auxilio_generico'],
   carbono: ['acordo_clima'], rodovias: ['infra_geral'], obras_paradas: ['infra_geral'], itcmd: ['imposto_geral'], aposentadoria_idade: ['aposentadoria'], cbs_ibs: ['reforma_tributaria'], mistura_biocombustiveis: ['energia_limpa'], foro: ['reforma_politica'],
@@ -3579,7 +3586,7 @@ function dimensionarBase(it, Q, S) {
     calc.push('Meta de ' + fmtNum(pct.v, 1) + '% do PIB contra ~' + fmtNum(o.pibCur, 1) + '% hoje (gasto público total): acréscimo de ' + fmtNum(dlt, 1) + '% do PIB (R$ 12 tri) = ' + fmtBi(B));
     it.B = B; return;
   }
-  if (money && money.unit && money.v >= 5e7 && o.sub) {
+  if (money && money.unit && money.v >= 5e7 && o.sub && !V4_APORTE.test(it.ctxTxt || '')) {
     const T = money.v / 1e9; B = T * o.sub; calc.push('Linha de crédito de ' + fmtBi(T) + ': o custo fiscal é o subsídio (equalização de juros e risco, ~' + fmtNum(o.sub * 100, 0) + '% do principal) = ' + fmtBi(B) + '/ano');
     it.B = B; return;
   }
@@ -3607,7 +3614,8 @@ function dimensionarBase(it, Q, S) {
     it.B = T; return;
   }
   if (money && !money.unit && !o.vu && money.v >= 1e5) { it.B = money.v / 1e9; calc.push('Valor informado: ' + fmtBi(it.B)); return; }
-  if (it.mag && o.base > 0 && o.ex !== 0) { B = o.base * it.mag; calc.push(fmtNum(it.mag * 100, 0) + '% da base de ' + fmtBi(o.base) + ' = ' + fmtBi(B) + '/ano'); it.B = B; return; }
+  if (it.mag && o.base > 0 && o.ex !== 0) { B = o.base * it.mag; if (o.k === 'G' && !o.sav && B >= 1 && B <= 1.3) B = .9; // v4
+ calc.push(fmtNum(it.mag * 100, 0) + '% da base de ' + fmtBi(o.base) + ' = ' + fmtBi(B) + '/ano'); it.B = B; return; }
   // padrao
   if (it.dir < 0 && o.rn != null && o.k === 'T' && !it.tot && !(pct && !pct.pib)) { B = o.rn; calc.push('Renúncia de receita estimada pelo jogo em ' + fmtBi(B) + '/ano para ' + semArt(o.n) + ' (ordem de grandeza; o texto não traz número)'); it.B = B; return; } // v3.5
   if (it.dir < 0) {
@@ -3619,7 +3627,7 @@ function dimensionarBase(it, Q, S) {
   B = Math.min(o.def || 0, o.cap || 1e9);
   if (o.ger && !q.has) { B *= .4; calc.push('Texto genérico sem valores: assumido 40% do pacote padrão (' + fmtBi(o.def) + ') = ' + fmtBi(B) + '/ano'); }
   else if (o.k === 'G' && !q.has && B >= 1 && !o.ext && !o.sav && !it.tot && !V4_MASSA.test(it.ctxTxt || '') && !it.mag && !it.fonteCtx && (it.verbo || (it.ctxTxt || '').split(' ').length > 4)) { const B0 = B; B = Math.max(.5, B * V4_CAT_PEQ); calc.push('Sem número informado e sem público ou obra de escala: lido como ação pontual dentro de ' + semArt(o.n) + ' (pacote padrão de ' + fmtBi(B0) + '): ' + fmtBi(B) + '/ano'); } // v4
-  else calc.push('Sem número informado: usado o tamanho padrão do jogo para ' + semArt(o.n) + ': ' + fmtBi(B) + (o.ext ? '' : '/ano'));
+  else { if (o.k === 'G' && !q.has && B >= 1 && B <= 1.3 && !o.ext && !o.sav && !o.ger && !it.tot) B = .9; /* v4: programa pequeno sem número fica abaixo de R$ 1 bi */ calc.push('Sem número informado: usado o tamanho padrão do jogo para ' + semArt(o.n) + ': ' + fmtBi(B) + (o.ext ? '' : '/ano')); }
   it.B = B;
 }
 
@@ -3742,6 +3750,12 @@ replSyn('zerar_impostos', '|nenhum imposto|', '|(?<!(?:aumentar|criar|cobrar|ins
 replSyn('celular_escola', 'proibir (?:o )?(?:uso de )?(?:celulares?|smartphones?|telefones?)(?: (?:d[ea]ntro d[ea]|n[ao]s?|em)', 'proibir (?:o )?(?:uso de )?(?:celulares?|smartphones?|telefones?)\\b(?! (?:em|n[ao]s?|durante|ao|a) (?:presidios?|carceres|penitenciarias?|voos?|avioes|cinemas?|teatros?|igrejas?|hospitais|carros|volante|dirigir))(?: (?:d[ea]ntro d[ea]|n[ao]s?|em)');
 setProp('calamidade', { uc: 60000 });
 ABSORVE.contingenciamento = ['corte_gastos', 'gastos_governo', 'arcabouco'];
+ABSORVE.pedagio_br = ['concessao_rodovias', 'rodovias', 'concessoes']; ABSORVE.tarifa_zero_nac = ['transporte_publico']; // v4
+addSyn('vale_gas', '(?:botijao|gas(?: de cozinha)?) (?:de graca|gratis|gratuito|subsidiado|para (?:os )?pobres|para todos)'); // v4
+setProp('concurso', { base: 6 }); // v4: congelar concursos economiza a folha nova (antes a base era zero)
+addSyn('reforma_adm', 'pec ?32'); // v4
+ABSORVE.lci_lca = ['imposto_geral', 'ir_pf']; // v4: revogar a isenção de IR sobre LCI/LCA não é mexer na tabela do IR da pessoa física
+setProp('contingenciamento', { ext: 0 }); // v4: bloquear R$ X bi é economia de despesa, não receita única
 ABSORVE.programas_sociais = ['auxilio_generico'];
 ABSORVE.antecipacao_13 = ['aposentadoria', 'servidores'];
 ABSORVE.dignidade_menstrual = ['educacao_geral', 'sus_geral', 'saude_mental', 'vacinas'];
@@ -4292,7 +4306,8 @@ function genItem(A, force) {
     else if (v.inf === 'fiscalizar') { k = 'G'; kind = 'prog'; }
     else { k = 'G'; kind = 'prog'; }
   }
-  if (k === 'R' && !force && !taxa && V4_GASTO.test(L.cf) && !V4_SO_NORMA.test(s)) { k = 'G'; kind = 'prog'; } // v4: pedido com cara de despesa (gratuidade, pagamento, obra, mais equipe) não é norma sem custo
+  if (k === 'R' && !force && !taxa && V4_GASTO.test(L.cf) && !V4_SO_NORMA.test(s)) { k = 'G'; kind = 'prog'; }
+  if (k === 'R' && kind === 'norm' && !force && !taxa && !V4_COND.test(s) && q.money.some(x => x.unit && x.v >= 1e8) && !V4_SO_NORMA.test(s) && !/\b(?:limite|teto|multa|piso|faturamento|renda|salario|ate r\$)\b/.test(s)) { k = 'G'; kind = 'prog'; } // v4: valor explícito em reais é dotação, não norma sem custo // v4: pedido com cara de despesa (gratuidade, pagamento, obra, mais equipe) não é norma sem custo
   if (force) { k = force.k; kind = force.kind; if (force.sg) sg = force.sg; topCls = null; } // v3.7
   if (k === 'G' && kind === 'prog' && problema && (v.inf === 'combater')) topCls = 'combate';
   if (k === 'G' && sg < 0 && /\b(?:zer\w+|elimin\w+|acabar com|isent\w+|gratuit\w+)\b/.test(L.fAll) && /\b(?:tarifa|tarifas|passagem|passagens)\b/.test(L.cf)) { sg = 1; kind = 'prog'; } // v4: zerar a tarifa do transporte é subsídio (despesa), não corte
@@ -4331,8 +4346,13 @@ function genItem(A, force) {
   let d = it.q.durq ? it.q.durq.meses : null; if (d == null && q.tmp && !q.perm) d = 6; if (q.perm) d = null; it.dur = d;
   return it;
 }
-const V4_MASSA = /\b(?:zerar a tarifa|zerar tarifa|tarifa d[eo] (?:onibus|transporte)|todo mundo|de graca|passe livre|zerar a passagem|tarifa zero|reassentar|auxilio|bolsa|renda|complemento|beneficio|salario|pagar|pague|paga|pagasse|repass\w+|distribu\w+|subsid\w+|gratis|gratuit\w+|de graca|cada (?:aluno|crianca|familia|idoso|brasileiro|morador|estudante|jovem)|(?:todos|todas) (?:os|as)|triplic\w+|duplic\w+|dobr\w+|ampli\w+|expand\w+|universaliz\w+|construir|pavimentar|leitos?|computador\w*|poupanca|aluguel)\b/; // v4: benefício em massa ou obra de escala: o padrão da área vale
+const V4_MASSA = /\b(?:zerar a tarifa|zerar tarifa|tarifa d[eo] (?:onibus|transporte)|todo mundo|de graca|passe livre|zerar a passagem|tarifa zero|reassentar|auxilio|bolsa|renda|complemento|beneficio|salario|pagar|pague|paga|pagasse|repass\w+|distribu\w+|subsid\w+|gratis|gratuit\w+|de graca|cada (?:aluno|crianca|familia|idoso|brasileiro|morador|estudante|jovem)|(?:todo|toda|todos|todas) (?:o |a |os |as )?(?:posto|escola|estrada|rodovia|municipio|cidade|hospital|capital|pais|brasil|estado|bairro|favela|comunidade|trabalhador|servidor|professor|policial|medico|delegacia|agencia|porto|aeroporto)s?|em todo o (?:pais|brasil)|nacionalmente|para todos|em todos os|ajuda mensal|ajuda de custo|mensal|por mes|todo mes|vacina\w*|cisternas?|notebooks?|tablets?|hectares?|(?:todos|todas) (?:os|as)|triplic\w+|duplic\w+|dobr\w+|ampli\w+|expand\w+|universaliz\w+|construir|pavimentar|leitos?|computador\w*|poupanca|aluguel)\b/; // v4: benefício em massa ou obra de escala: o padrão da área vale
 const V4_GEN_PEQ = 0.6;
+const V4_COND = /^(?:se|caso|quando|assim que|desde que|havendo)\b|[,;] (?:se|caso) |\b(?:se|caso) (?:a|o|as|os|houver|ocorrer) [^,]{0,70},/; // v4: proposta condicional (gatilho)
+const V4_APORTE = /\b(?:subvencion\w+|subvencao|recapitaliz\w+|aport\w+|capitaliz\w+|fundo garantidor|fgc|fgo|fundo de aval|aval|premio do seguro|seguro rural|injet\w+)\b/; // v4: aporte público explícito é gasto, não linha de crédito (8% do principal)
+const V4_GEN_MEDIO = 2.0; // v4: programa sem número e sem escala citada, mas que não é pontual: meia dúzia de bilhões no máximo
+const V4_CAT_MEIO = 0.3; // v4: ação sem número dentro de um programa do catálogo, quando não é claramente pontual
+const V4_PONTUAL = /\b(?:piloto|estudo|estudos|comissao|comite|grupo de trabalho|portal|site|aplicativo|app|campanha|cartilha|selo|premio|dia nacional|semana|plataforma digital|observatorio|ouvidoria|canal|portaria|certificado|protocolo|diretriz\w*|guia|manual|painel|relatorio|auditoria|consulta publica|audiencia|palestra|evento|festival|homenagem|nome|batizar|medalha|simbolo|comemorativ\w+|ponto facultativo|feriado)\b/; // v4: item pontual ou administrativo
 const V4_CAT_PEQ = 0.15; // v4: fração do pacote padrão de um objeto do catálogo quando o texto é uma ação pontual // v4: tamanho de um programa pequeno sem número no texto (R$ bi/ano)
 function dimensionarGen(it, Q) {
   const o = it.o, g = o.gen, q = it.q, calc = it.calc, money = q.money, count = q.count, pct = q.pct;
@@ -4349,7 +4369,7 @@ function dimensionarGen(it, Q) {
   const yrs = Q.hor ? Q.hor / 12 : 4;
   if (money && money.unit && money.v >= 1e6) {
     let T = money.v / 1e9;
-    if (/\b(?:credito|financiamento|emprestimos?|linha de credito)\b/.test(it.ctxTxt || '') && !/\b(?:fundo perdido|doacao|subvencao|transferencia)\b/.test(it.ctxTxt || '')) { it.B = T * .08; calc.push(rot + 'linha de crédito de ' + fmtBi(T) + ': o custo fiscal é a equalização de juros e o risco (cerca de 8% do principal) = ' + fmtBi(it.B) + '/ano'); return; }
+    if (/\b(?:credito|financiamento|emprestimos?|linha de credito)\b/.test(it.ctxTxt || '') && !/\b(?:fundo perdido|doacao|subvencao|transferencia)\b/.test(it.ctxTxt || '') && !V4_APORTE.test(it.ctxTxt || '')) { it.B = T * .08; calc.push(rot + 'linha de crédito de ' + fmtBi(T) + ': o custo fiscal é a equalização de juros e o risco (cerca de 8% do principal) = ' + fmtBi(it.B) + '/ano'); return; }
     if (money.freq && money.freq !== 'unica') { T *= FREQ[money.freq]; calc.push(rot + 'R$ ' + fmtNum(money.v / 1e9, 2) + ' bi × ' + FREQ[money.freq] + ' períodos = ' + fmtBi(T) + '/ano'); }
     else if (money.freq === 'unica') { it.unica = true; calc.push(rot + 'valor informado de ' + fmtBi(T) + ' (desembolso único)'); }
     else calc.push(rot + 'valor informado de ' + fmtBi(T) + '/ano');
@@ -4455,17 +4475,18 @@ function leituraV35(A) {
   // norma vigente (nota): o tema já é regulado por uma norma em vigor; o que passar do texto vigente é mudança real
   if (!A.jaVigente) for (const J of JN35) if (J.rx.test(s) && !(J.nao && J.nao.test(s)) && !(JN_VETO.test(s) && !J.a)) { A.normaVigente = J; break; } // v3.5: endurecer, ampliar, liberar ou revogar uma norma existente não é redundante
   // (4) leitura genérica: nenhum objeto do catálogo, mas verbo de ação e complemento
-  const AMPLOS = ['aposentadoria', 'universidades_fed', 'sus_geral', 'publicidade_governo', 'drogas_legalizar', 'reforma_politica', 'educacao_geral', 'seguranca_geral', 'infra_geral', 'rodovias', 'auxilio_generico', 'cultura', 'ciencia_tec', 'programas_sociais', 'energia_limpa', 'plano_safra', 'agric_familiar', 'creches', 'transporte_publico', 'saneamento', 'ubs', 'alto_custo', 'fome', 'primeira_infancia', 'deficientes', 'politica_cuidados', 'mineracao_petroleo', 'penas', 'plano_seguranca', 'amazonia_geral', 'bpc', 'esporte', 'futebol', 'turismo', 'internet', 'ia_regulacao', 'data_centers', 'abertura_comercial', 'oriente_medio', 'israel_ruptura', 'ibama_fiscalizacao', 'imigracao', 'venezuela', 'china', 'eua', 'estatizacao', 'conta_luz', 'fgts', 'direitos_trab', 'simples_mei', 'big_techs', 'cotas_igualdade', 'transferencia_entes', 'concessoes', 'est_outras', 'ensino_integral', 'ir_pf', 'controle_alugueis', 'itr_agro'];
+  const AMPLOS = ['aposentadoria', 'universidades_fed', 'sus_geral', 'publicidade_governo', 'drogas_legalizar', 'reforma_politica', 'educacao_geral', 'seguranca_geral', 'infra_geral', 'rodovias', 'auxilio_generico', 'cultura', 'ciencia_tec', 'programas_sociais', 'energia_limpa', 'plano_safra', 'agric_familiar', 'creches', 'transporte_publico', 'saneamento', 'ubs', 'alto_custo', 'fome', 'primeira_infancia', 'deficientes', 'politica_cuidados', 'mineracao_petroleo', 'penas', 'plano_seguranca', 'amazonia_geral', 'esporte', 'futebol', 'turismo', 'internet', 'ia_regulacao', 'data_centers', 'abertura_comercial', 'oriente_medio', 'israel_ruptura', 'ibama_fiscalizacao', 'imigracao', 'venezuela', 'china', 'eua', 'estatizacao', 'conta_luz', 'fgts', 'direitos_trab', 'simples_mei', 'big_techs', 'cotas_igualdade', 'transferencia_entes', 'concessoes', 'est_outras', 'ensino_integral', 'ir_pf', 'controle_alugueis', 'itr_agro'];
   const MACRO = ['corte_gastos', 'gastos_governo', 'imposto_geral', 'tributos_gasolina', 'arcabouco', 'divida'];
   // v3.5 especificidade: objeto amplo que casa uma palavra e deixa de fora o assunto real do texto cede lugar à leitura genérica
   const amplos = its.length > 0 && !A.pledgeOnly && its.every(i => !i.pledge && i.o.id !== 'fala' && MACRO.indexOf(i.o.id) < 0 && (i.o.ger || AMPLOS.indexOf(i.o.id) >= 0));
   if ((!its.length || amplos) && !A.pledgeOnly && !(its.length && /\b(?:privatiz\w+|estatiz\w+|nacionaliz\w+|concess\w+|conced\w+|vender|venda)\b/.test(s))) {
     let it = null; try { it = genItem(A); } catch (e) { it = null; }
+    if (it && amplos && (it.o.k === 'R' || (it.o.gen && it.o.gen.kind === 'corte')) && its.some(i => i.o.sav && i.o.k === 'G' && i.sg)) it = null; // v4: corte amplo de gastos não vira norma sem custo
     if (it && amplos) {
       const cob = foldTxt(its.map(i => (i.o.ger ? '' : i.t + ' ') + i.o.n).join(' '));
       const fortes = foldTxt(it.t).split(/[^a-z0-9]+/).filter(w => w.length >= 4 && !GEN_STOP.test(w) && !GEN_FRACAS.test(w));
       const expl = fortes.filter(w => cob.indexOf(w.slice(0, 4)) >= 0).length;
-      if (!fortes.length || expl * 2 > fortes.length) it = null; else A.items = [];
+      if (!fortes.length || expl * 2 > fortes.length) it = null; else A.items = A.items.filter(i => ['big_techs', 'grandes_fortunas', 'dividendos', 'csll_bancos', 'imposto_bets', 'imposto_seletivo'].indexOf(i.o.id) >= 0); // v4: o tributo específico nomeado continua na conta; só os programas amplos cedem à leitura genérica
     }
     if (it) { A.items.push(it); A.generica = { area: it.o.gen.area, verbo: it.o.gen.verbo, tipo: it.o.gen.kind }; }
   }
@@ -4694,6 +4715,8 @@ const TXT_GENERICA = 'Leitura genérica: o motor não tem um modelo específico 
   ['prioriz(?:ar|a|e|am|ando)', 'prog', 'a priorização', 'de', 'priorizar', 1],
   ['cobr(?:ir|e|em)', 'prog', 'a cobertura', 'de', 'cobrir', 1],
   ['(?:quer(?:o|emos)|qro|queria|querem|precisamos de|precisam de|precisa de|precisa ter|precisam ter|tem que ter|tem de ter|tinha que ter|devia ter|deveria ter|devem ter|deve ter|merece(?:m)?(?: ter)?|exijo|exigimos|sonho com)', 'prog', 'a garantia', 'de', 'garantir', 1],
+  ['subvencion(?:ar|a|e|am|ando)|subvencao', 'prog', 'a subvenção', 'a', 'subvencionar', 1], ['recapitaliz(?:ar|a|e|am|ando|acao)', 'prog', 'a recapitalização', 'de', 'recapitalizar', 1], ['aport(?:ar|a|e|am|ando)|aporte', 'prog', 'o aporte', 'em', 'aportar', 1], ['injet(?:ar|a|e|am|ando)', 'prog', 'a injeção', 'de', 'injetar', 1], ['destin(?:ar|a|e|am|ando)', 'prog', 'a destinação', 'de', 'destinar', 1], // v4
+  ['estend(?:er|e|em|endo)|extensao', 'prog', 'a ampliação', 'de', 'ampliar', 1], // v4
   ['^mais', 'prog', 'a ampliação', 'de', 'ampliar', 1],
   ['^menos', 'fim', 'a redução', 'de', 'reduzir', -1]
 ].forEach(v => GV35.push({ re: new RegExp('\\b(?:' + v[0] + ')\\b'), cls: v[1], nom: v[2], prep: v[3], inf: v[4], sg: v[5] })); // v4
@@ -4927,7 +4950,7 @@ function v4Cobre(A, it) {
   it.o.n = t; it.topicoFixo = t;
 }
 /* v4: normas já em vigor, por tema (rx = o assunto da norma; ex = o pedido repete a norma, então é redundante e sem custo; nex = sinal de que o pedido vai além do texto vigente) */ // v4
-const V4_NEX = /\b(?:ampli\w+|aument\w+|elev\w+|dobr\w+|duplic\w+|triplic\w+|endurec\w+|estend\w+|expand\w+|reforc\w+|agrav\w+|majorar|reajust\w+|revog\w+|reduz\w+|cortar|zerar|dispens\w+ de pagar)\b/;
+const V4_NEX = /\b(?:ampli\w+|aument\w+|elev\w+|dobr\w+|duplic\w+|triplic\w+|endurec\w+|estend\w+|expand\w+|reforc\w+|agrav\w+|majorar|reajust\w+|revog\w+|reduz\w+|cortar|zerar|dispens\w+ de pagar)\b|\br\$ ?[\d.,]+ ?(?:bi|bilh\w+|mi|milh\w+)\b/;
 const JN4 = [
   { id: 'dec4680', rx: /\b(?:transgenic\w+|geneticamente modificad\w+|ogm)\b/, ex: /\brotul\w+/, txt: 'Decreto 4.680/2003 e Lei 11.105/2005: a rotulagem de alimentos com mais de 1% de ingrediente transgênico (símbolo T) já é obrigatória.' },
   { id: 'lei11947', rx: /\b(?:merenda|alimentacao escolar|pnae|compras? publicas?|aquisicao de alimentos|paa)\b[^.;]{0,80}\bagricultura familiar\b|\bagricultura familiar\b[^.;]{0,80}\b(?:merenda|alimentacao escolar|pnae|compras? publicas?|paa)\b/, ex: 'rx', nex: null, txt: 'Lei 11.947/2009, art. 14 (PNAE): ao menos 30% dos recursos da alimentação escolar já devem comprar da agricultura familiar; o Programa de Aquisição de Alimentos (Lei 10.696/2003) também compra de agricultores familiares.' },
@@ -5057,6 +5080,108 @@ const JN4 = [
   { id: 'lei14129', rx: /\bgoverno digital\b|\bgov\.?br\b|\bassinatura eletronica\b/, txt: 'Lei 14.129/2021 (Governo Digital) e Lei 14.063/2020: os serviços públicos digitais, o gov.br e a assinatura eletrônica já são regulados.' },
   { id: 'lei12965', rx: /\bmarco civil da internet\b|\bneutralidade da rede\b/, txt: 'Lei 12.965/2014 (Marco Civil da Internet): já fixa direitos e deveres dos usuários, a neutralidade da rede e a responsabilidade dos provedores.' }
 ].map(x => Object.assign({ v: true }, x));
+/* v4: cobertura ampla de normas em vigor (programas, leis e instituições que o jogador pode "criar" de novo), com sujeito tolerante a grafia e verbos de criação/proibição */ // v4
+const V4_CRIA = '(?:cri\\w+|institu\\w+|implant\\w+|estabelec\\w+|adot\\w+|garant\\w+|assegur\\w+|obrig\\w+|exig\\w+|ofert\\w+|oferec\\w+|regulament\\w+|aprov\\w+|votar|prever|reconhec\\w+|autoriz\\w+|legaliz\\w+|permit\\w+|precisamos de|queremos|quero|tem que ter|devia ter|deveria ter)';
+const V4_PROIBE = '(?:proib\\w+|ved(?:ar|e)|criminaliz\\w+|tipific\\w+|punir|banir|combat\\w+|coibir|reprimir)';
+const V4_NEX5 = new RegExp(V4_NEX.source + '|\\br\\$ ?\\d|\\b\\d+ ?%|\\bmil reais\\b|\\bsem exigir\\b|\\bmais (?!medicos\\b)|\\bmelhor\\w*|\\binvestir\\b|\\binvestimentos?\\b|\\bverbas?\\b|\\brecursos\\b|\\borcamento\\b|\\bmais dinheiro\\b|\\bfortalec\\w+|\\bcontrat\\w+|\\bauditor\\w*|\\bfiscaliz\\w+|\\bnota fiscal\\b|\\bintegr\\w+|\\bgratuit\\w+|\\bde graca\\b|\\b(?:inscritos?|beneficiari\\w+|cadastrad\\w+|atendid\\w+|usuari\\w+) (?:n[oa]s?|d[oa]s?|pel[oa]s?)\\b');
+const JN5 = [
+  ['piso5', /\bpiso (?:nacional |salarial )?(?:d[oa]s? |para (?:os )?)?(?:professor\w*|magisterio)\b/, 'c', 'Lei 11.738/2008: o piso salarial profissional nacional do magistério já está em vigor, reajustado todo ano.', /\b(?:ampli\w+|aument\w+|dobr\w+|elev\w+|reajust\w+|r\$|\d+ ?%|reduz\w+|acabar|mais)\b/],
+  ['cf_sus', /\b(?:sistema unico de saude|sus)\b/, 'c', 'CF, arts. 196 a 200, e Lei 8.080/1990: o SUS já está instituído e garante acesso universal e gratuito à saúde.'],
+  ['bolsa_familia5', /\bbolsa familia\b/, 'c', 'Lei 14.601/2023: o Bolsa Família já está em vigor, com piso de R$ 600 por família e adicionais por criança e gestante.'],
+  ['fgts5', /\bfgts\b|\bfundo de garantia\b/, 'c', 'Lei 8.036/1990: o FGTS já existe, com depósito de 8% do salário pelo empregador e multa de 40% na demissão sem justa causa.'],
+  ['simples5', /\bsimples nacional\b|\bregime simplificado\b/, 'c', 'LC 123/2006: o Simples Nacional já está em vigor para micro e pequenas empresas.'],
+  ['mei5', /\bmei\b|\bmicroempreendedor individual\b/, 'c', 'LC 128/2008 (LC 123/2006, art. 18-A): o MEI já existe, com recolhimento simplificado.'],
+  ['ferias5', /\bferias remuneradas\b|\b30 dias de ferias\b|\bferias de 30 dias\b/, 'c', 'CF, art. 7º, XVII, e CLT, art. 129: as férias anuais remuneradas, com acréscimo de um terço, já são direito do trabalhador.'],
+  ['licmat5', /\blicenca.?maternidade\b/, 'c', 'CF, art. 7º, XVIII, e Lei 11.770/2008: a licença-maternidade de 120 dias (180 no Empresa Cidadã) já está em vigor.', /\b(?:ampli\w+|estend\w+|aument\w+|dobr\w+|duplic\w+|1[5-9]\d dias|[2-9]\d\d dias|[6-9] meses|seis meses)\b/],
+  ['licpat5', /\blicenca.?paternidade\b/, 'c', 'CF, ADCT art. 10, §1º, e Lei 11.770/2008: a licença-paternidade já existe (5 dias, 20 no Empresa Cidadã).', /\b(?:ampli\w+|estend\w+|aument\w+|dobr\w+|duplic\w+|[1-9]\d dias|[2-9] meses|seis meses)\b/],
+  ['salmin5', /\bsalario minimo\b(?! (?:de|em|para|a|regional|estadual))/, 'c', 'CF, art. 7º, IV: o salário mínimo nacional já está em vigor e é reajustado pela regra da Lei 14.663/2023.'],
+  ['aposid5', /\baposentadoria por idade\b|\baposentadoria (?:por )?(?:tempo de contribuicao)\b/, 'c', 'CF, art. 201, e EC 103/2019: a aposentadoria por idade e por tempo de contribuição já existe no regime geral.'],
+  ['auxdoenca5', /\bauxilio.?doenca\b|\bauxilio por incapacidade temporaria\b/, 'c', 'Lei 8.213/1991, art. 59: o auxílio por incapacidade temporária (antigo auxílio-doença) já é pago pelo INSS.'],
+  ['enem5', /\benem\b|\bexame nacional do ensino medio\b/, 'c', 'O Enem já existe desde 1998 e é a principal porta de entrada do ensino superior (Sisu, Prouni, Fies).'],
+  ['prouni5', /\bprouni\b|\bprograma universidade para todos\b/, 'c', 'Lei 11.096/2005: o Prouni já está em vigor, com bolsas integrais e parciais em faculdades privadas.'],
+  ['fies5', /\bfies\b|\bfinanciamento estudantil\b/, 'c', 'Lei 10.260/2001: o Fies já está em vigor e financia a graduação em instituições privadas.'],
+  ['cotasuniv5', /\bcotas?\b[^.;]{0,30}\b(?:universidades?|ensino superior|institutos? federais|faculdades?|ensino tecnico)\b|\b(?:universidades?|ensino superior|institutos? federais)\b[^.;]{0,30}\bcotas?\b/, 'c', 'Lei 12.711/2012 (renovada pela Lei 14.723/2023): as cotas sociais e raciais nas universidades e institutos federais já estão em vigor.'],
+  ['cotapcd5', /\bcotas?\b[^.;]{0,40}\b(?:deficiencia|pcd)\b|\b(?:deficiencia|pcd)\b[^.;]{0,40}\bcotas?\b/, 'c', 'Lei 8.213/1991, art. 93: empresas com 100 ou mais empregados já devem reservar de 2% a 5% das vagas a pessoas com deficiência.'],
+  ['cotaserv5', /\bcotas?\b[^.;]{0,40}\bservico publico\b|\bservico publico\b[^.;]{0,40}\bcotas?\b|\bcotas? raciais? em concursos?\b/, 'c', 'Lei 12.990/2014 e Lei 15.142/2025: as cotas raciais nos concursos públicos federais já estão em vigor.'],
+  ['codflor5', /\bcodigo florestal\b/, 'c', 'Lei 12.651/2012: o Código Florestal já está em vigor, com reserva legal, APP e Cadastro Ambiental Rural.'],
+  ['crimeamb5', /\b(?:lei de )?crimes? ambientais?\b|\blei de crimes ambientais\b/, 'cp', 'Lei 9.605/1998: os crimes ambientais já estão tipificados, com sanções penais e administrativas.'],
+  ['licenc5', /\blicenciamento ambiental\b/, 'c', 'Lei 6.938/1981 e Lei 15.190/2025: o licenciamento ambiental já é exigido e tem lei geral em vigor.', /\b(?:ampli\w+|aument\w+|dobr\w+|flexibiliz\w+|simplific\w+|acelerar|agilizar|dispens\w+|acabar|autolicenc\w+|prazo|reduz\w+|extingu\w+|elimin\w+|revog\w+|mais rapido)\b/],
+  ['marcosan5', /\bmarco legal do saneamento\b|\bmarco do saneamento\b/, 'c', 'Lei 14.026/2020: o novo marco legal do saneamento já está em vigor, com metas de universalização até 2033.'],
+  ['mcmv5', /\bminha casa,? minha vida\b|\bmcmv\b/, 'c', 'Lei 14.620/2023: o Minha Casa, Minha Vida já foi retomado e está em vigor.'],
+  ['luzpt5', /\bluz para todos\b/, 'c', 'Decreto 11.628/2023: o Programa Luz para Todos já está em vigor.'],
+  ['tarsoc5', /\btarifa social de energia\b|\btarifa social\b[^.;]{0,20}\benergia\b/, 'c', 'Lei 12.212/2010 e Lei 14.203/2021: a Tarifa Social de Energia Elétrica já dá desconto a famílias de baixa renda.'],
+  ['agencias5', /\b(?:aneel|anatel|anvisa|anp|ans|antt|antaq|anac|agencia nacional de (?:energia eletrica|telecomunicacoes|vigilancia sanitaria|petroleo|saude suplementar|transportes terrestres|transportes aquaviarios|aviacao civil|aguas))\b/, 'cc', 'Leis 9.427/1996, 9.472/1997, 9.782/1999, 9.478/1997, 9.961/2000, 10.233/2001 e 11.182/2005, e a Lei 13.848/2019 (Lei Geral das Agências): as agências reguladoras já estão instituídas.'],
+  ['samu5', /\bsamu\b|\bservico de atendimento movel de urgencia\b/, 'c', 'Decreto 5.055/2004 e Portaria 1.864/2003: o SAMU 192 já está em operação.'],
+  ['farmpop5', /\bfarmacia popular\b/, 'c', 'Lei 10.858/2004 e Decreto 5.090/2004: o Farmácia Popular já está em vigor.'],
+  ['maismed5', /\bmais medicos\b/, 'c', 'Lei 12.871/2013 (retomado pela Lei 14.621/2023): o Mais Médicos já está em vigor.'],
+  ['pni5', /\bprograma nacional de imunizacoes?\b|\bpni\b/, 'c', 'Lei 6.259/1975: o Programa Nacional de Imunizações já está instituído e o calendário nacional de vacinação já é oferecido gratuitamente.'],
+  ['drogas5', /\blei de drogas\b|\bsisnad\b/, 'c', 'Lei 11.343/2006: a Lei de Drogas já está em vigor, com o Sisnad.'],
+  ['custodia5', /\baudiencias? de custodia\b/, 'c', 'Lei 13.964/2019 (CPP, art. 310) e Resolução CNJ 213/2015: a audiência de custódia já é obrigatória.'],
+  ['defpub5', /\bdefensoria publica\b/, 'c', 'CF, art. 134, e LC 80/1994: a Defensoria Pública já está instituída.'],
+  ['juizesp5', /\bjuizados? especia(?:l|is)\b/, 'c', 'Leis 9.099/1995, 10.259/2001 e 12.153/2009: os juizados especiais já estão em vigor.'],
+  ['cnj5', /\bconselho nacional de justica\b|\bcnj\b/, 'cc', 'EC 45/2004: o Conselho Nacional de Justiça já foi criado.'],
+  ['leiinf5', /\blei de informatica\b/, 'c', 'Leis 8.248/1991 e 13.969/2019: a Lei de Informática já concede benefícios fiscais a bens de TIC com investimento em P&D.'],
+  ['zfm5', /\bzona franca de manaus\b|\bzfm\b/, 'cc', 'DL 288/1967 e ADCT, art. 92-A (EC 83/2014): a Zona Franca de Manaus já existe e está garantida até 2073.'],
+  ['marcocti5', /\bmarco legal d[ae] ciencia(?:,? tecnologia)?(?: e inovacao)?\b|\blei de inovacao\b/, 'c', 'Lei 10.973/2004, Lei 13.243/2016 e EC 85/2015: o marco legal da ciência, tecnologia e inovação já está em vigor.'],
+  ['fndct5', /\bfndct\b|\bfundo nacional de desenvolvimento cientifico\b/, 'cc', 'Lei 11.540/2007 e LC 177/2021: o FNDCT já existe e não pode ser contingenciado.'],
+  ['lepele5', /\blei pele\b|\blei geral do esporte\b/, 'c', 'Lei 9.615/1998 e Lei 14.597/2023 (Lei Geral do Esporte): o marco legal do esporte já está em vigor.'],
+  ['incesp5', /\blei de incentivo ao esporte\b|\bincentivo fiscal ao esporte\b/, 'c', 'Lei 11.438/2006: a Lei de Incentivo ao Esporte já permite deduzir doações e patrocínios do Imposto de Renda.'],
+  ['reftrib5', /\breforma tributaria\b|\bibs\b|\bcbs\b|\bimposto seletivo\b|\bimposto sobre bens e servicos\b|\bcontribuicao sobre bens e servicos\b|\biva dual\b/, 'cc', 'EC 132/2023 e LC 214/2025: a reforma tributária sobre o consumo já está em vigor, com IBS, CBS e Imposto Seletivo em transição até 2033.'],
+  ['kandir5', /\blei kandir\b/, 'c', 'LC 87/1996 (Lei Kandir): a desoneração do ICMS sobre exportações já está em vigor.'],
+  ['drawback5', /\bdrawback\b/, 'c', 'DL 37/1966 e Lei 11.945/2009: o regime de drawback já suspende ou isenta tributos de insumos para exportação.'],
+  ['safra5', /\bplano safra\b/, 'c', 'Lei 8.171/1991 (Política Agrícola): o Plano Safra já é anunciado todo ano, com crédito rural e juros subsidiados.', /\b(?:ampli\w+|aument\w+|elev\w+|dobr\w+|duplic\w+|r\$|bilh\w+|%|reduz\w+|cort\w+)\b/],
+  ['embrapa5', /\bembrapa\b/, 'cc', 'Lei 5.851/1972: a Embrapa já foi criada e pesquisa o agro tropical.'],
+  ['mobur5', /\bpolitica nacional de mobilidade urbana\b|\blei da mobilidade urbana\b/, 'c', 'Lei 12.587/2012: a Política Nacional de Mobilidade Urbana já está em vigor.'],
+  ['valetransp5', /\bvale.?transporte\b/, 'c', 'Lei 7.418/1985: o vale-transporte já é obrigatório para empregados formais.', /\b(?:ampli\w+|estend\w+|aument\w+|dobr\w+|autonom\w+|informais?|desemprega\w+|mei\b|aplicativo|r\$)\b/],
+  ['lgt5', /\blei geral das telecomunicacoes\b|\blgt\b/, 'c', 'Lei 9.472/1997 (Lei Geral das Telecomunicações): já está em vigor e criou a Anatel.'],
+  ['ferrov5', /\bmarco legal das ferrovias\b|\bautorizacao ferroviaria\b/, 'c', 'Lei 14.273/2021 (Marco Legal das Ferrovias): o regime de autorização já está em vigor.'],
+  ['real5', /\bplano real\b/, 'cc', 'Lei 8.880/1994: o Plano Real já foi implantado e o real é a moeda desde 1994.'],
+  ['metas5', /\bregime de metas de inflacao\b|\bsistema de metas de inflacao\b/, 'c', 'Decreto 3.088/1999 e resolução do CMN: o regime de metas de inflação já está em vigor, com meta contínua de 3%.', /\b(?:ampli\w+|mud\w+|alter\w+|aument\w+|reduz\w+|baix\w+|elev\w+|flexibiliz\w+|revog\w+|acabar|abolir|fim)\b/],
+  ['pix5', /\bpix\b(?! (?:parcelado|por aproximacao))|\bopen finance\b|\bopen banking\b/, 'c', 'Resolução BCB 1/2020: o Pix já está em operação, e o Open Finance já funciona desde 2021.', /\b(?:taxa|tribut\w+|cobr\w+|imposto|iof|limite|bloque\w+|ampli\w+|aument\w+)\b/],
+  ['codciv5', /\bcodigo civil\b/, 'c', 'Lei 10.406/2002: o Código Civil já está em vigor.'],
+  ['estterra5', /\bestatuto da terra\b/, 'c', 'Lei 4.504/1964 (Estatuto da Terra): já está em vigor.'],
+  ['estjuv5', /\bestatuto da juventude\b/, 'c', 'Lei 12.852/2013: o Estatuto da Juventude já está em vigor.'],
+  ['emtempo5', /\bensino medio (?:em )?(?:tempo )?integral\b|\bescolas? (?:de )?(?:tempo integral)\b/, 'c', 'Lei 13.415/2017 e Lei 14.945/2024: o fomento ao ensino médio em tempo integral já está em vigor.', /\b(?:ampli\w+|aument\w+|dobr\w+|duplic\w+|todas|todos|universaliz\w+|\d+ ?mil|r\$|bilh\w+)\b/],
+  ['bncc5', /\bbase nacional comum curricular\b|\bbncc\b/, 'c', 'Resolução CNE/CP 2/2017 e Lei 13.415/2017: a Base Nacional Comum Curricular já está em vigor.'],
+  ['testem5', /\bprotecao a testemunhas\b|\bprograma de protecao a (?:vitimas e )?testemunhas\b/, 'c', 'Lei 9.807/1999: o programa de proteção a vítimas e testemunhas já está em vigor.'],
+  ['suas5', /\bsistema unico de assistencia social\b|\bsuas\b|\bcras\b/, 'cc', 'Lei 8.742/1993 (Loas, com redação da Lei 12.435/2011): o SUAS já está instituído, com CRAS e CREAS.'],
+  ['animais5', /\bprotecao (?:dos |aos |de )?animais\b|\bmaus.?tratos (?:a|aos|de) animais\b|\bcrueldade contra animais\b/, 'cp', 'Lei 9.605/1998, art. 32 (com a Lei 14.064/2020): maus-tratos a animais já são crime, com pena maior para cães e gatos.'],
+  ['antiterr5', /\blei antiterrorismo\b|\bterrorismo\b/, 'cp', 'Lei 13.260/2016: o terrorismo já está tipificado como crime.'],
+  ['lavagem5', /\blavagem de dinheiro\b|\blei de lavagem\b/, 'cp', 'Lei 9.613/1998 (com a Lei 12.683/2012): a lavagem de dinheiro já é crime, com o Coaf.'],
+  ['orgcrim5', /\borganizacao criminosa\b|\borganizacoes criminosas\b|\bdelacao premiada\b|\bcolaboracao premiada\b/, 'cp', 'Lei 12.850/2013: a organização criminosa já está tipificada e a colaboração premiada já é regulada.'],
+  ['ecadigital5', /\bprotecao de criancas na internet\b|\beca digital\b|\bcriancas?\b[^.;]{0,30}\b(?:internet|redes sociais|ambiente digital)\b/, 'c', 'Lei 15.211/2025 (ECA Digital): a proteção de crianças e adolescentes em ambiente digital já está em vigor.', /\b(?:proib\w+ (?:o )?(?:uso|acesso|celular)|abaixo de \d+|menores de \d+ anos|idade minima)\b/],
+  ['salvalor5', /\b(?:regra|politica) (?:de )?(?:reajuste|valorizacao) (?:do )?salario minimo\b|\bsalario minimo\b[^.;]{0,40}\b(?:acima da inflacao|ganho real)\b/, 'c', 'Lei 14.663/2023: a política de valorização do salário mínimo, com ganho real pelo PIB, já está em vigor.', /\b(?:ampli\w+|aument\w+|dobr\w+|r\$|\d+ ?%|reduz\w+|acabar)\b/],
+  ['imunlivro5', /\bimunidade\b[^.;]{0,30}\b(?:livros?|papel|jornais?)\b|\b(?:livros?|jornais?)\b[^.;]{0,30}\bimunidade\b/, 'c', 'CF, art. 150, VI, d: livros, jornais, periódicos e o papel destinado à impressão já têm imunidade tributária.'],
+  ['nepot5', /\bnepotismo\b/, 'cp', 'Súmula Vinculante 13 do STF e Decreto 7.203/2010: o nepotismo na administração pública já é vedado.'],
+  ['licit5', /\blicitacoes?\b|\blei de licitacoes\b/, 'c', 'Lei 14.133/2021: a Lei de Licitações e Contratos já está em vigor, com portal nacional (PNCP) e regras de transparência.', /\b(?:dispens\w+|fim|acabar|elimin\w+|simplific\w+|flexibiliz\w+|ampli\w+|limite|teto|r\$)\b/],
+  ['anticorr5', /\blei anticorrupcao\b|\blei contra a corrupcao\b|\bresponsabiliza\w+ (?:das )?empresas\b[^.;]{0,20}\bcorrupcao\b|\bcorrupcao (?:de |das |nas )?empresas\b/, 'cp', 'Lei 12.846/2013 (Lei Anticorrupção): as empresas já respondem objetivamente por atos de corrupção, com multa de até 20% do faturamento.'],
+  ['trabesc5', /\btrabalho (?:escravo|analogo ao de escravo|analogo a escravidao)\b|\bescravidao contemporanea\b/, 'cp', 'Código Penal, art. 149, e Portaria MTE 3.484/2021: o trabalho análogo ao de escravo já é crime, com a "lista suja" do MTE.'],
+  ['compliance5', /\bconselho de administracao\b[^.;]{0,50}\bestatais?\b|\bgovernanca (?:das |das empresas )?estatais\b/, 'c', 'Lei 13.303/2016 (Lei das Estatais): as regras de governança e compliance das estatais já estão em vigor.', /\b(?:revog\w+|flexibiliz\w+|politico\w*|ministros?|ampli\w+)\b/],
+  ['carteira5', /\bcarteira de trabalho digital\b|\bcarteira digital\b/, 'c', 'Portaria 1.065/2019: a Carteira de Trabalho Digital já está em vigor.'],
+  ['transpubl5', /\bportal da transparencia\b|\bportal de transparencia\b/, 'c', 'LC 131/2009 e Lei 12.527/2011: o Portal da Transparência já existe e divulga receitas e despesas em tempo real.'],
+  ['cadunico5', /\bcadastro unico\b|\bcadunico\b/, 'c', 'Decreto 11.016/2022: o Cadastro Único já é a base de identificação das famílias de baixa renda.'],
+  ['pnae5', /\bpnae\b|\bmerenda escolar\b|\balimentacao escolar\b/, 'c', 'Lei 11.947/2009 (PNAE): a alimentação escolar já é universal e gratuita na rede pública.', /\b(?:ampli\w+|aument\w+|dobr\w+|r\$|reajust\w+|orcamento|qualidade|org[aâ]nic\w+|ultraprocess\w+|ferias|fim de semana)\b/],
+  ['plano_nac_ed5', /\bplano nacional de educacao\b|\bpne\b/, 'c', 'Lei 13.005/2014: o Plano Nacional de Educação já foi instituído (a nova edição para 2026-2036 tramita no Congresso).', /\b(?:meta|metas|10% do pib|pib|ampli\w+|novo|aprovar)\b/],
+  ['leiseca5', /\blei seca\b/, 'c', 'Lei 11.705/2008 (com a Lei 12.760/2012): a Lei Seca já está em vigor, com tolerância zero ao álcool para motoristas.'],
+  ['cdc5', /\bcodigo de defesa do consumidor\b|\bcdc\b/, 'c', 'Lei 8.078/1990: o Código de Defesa do Consumidor já está em vigor.'],
+  ['lgpd5', /\blgpd\b|\blei geral de protecao de dados\b/, 'c', 'Lei 13.709/2018 (LGPD): a Lei Geral de Proteção de Dados já está em vigor, com a ANPD.'],
+  ['marcocivil5', /\bmarco civil da internet\b/, 'c', 'Lei 12.965/2014: o Marco Civil da Internet já está em vigor.'],
+  ['lai5', /\blei de acesso a informacao\b|\bacesso a informacao publica\b/, 'c', 'Lei 12.527/2011: a Lei de Acesso à Informação já está em vigor.'],
+  ['fichalimpa5', /\bficha limpa\b/, 'c', 'LC 135/2010 (Lei da Ficha Limpa, com alterações da LC 219/2025): a inelegibilidade por condenação já está em vigor.'],
+  ['mariapenha5', /\blei maria da penha\b|\bviolencia domestica\b[^.;]{0,30}\bmedidas? protetivas?\b/, 'c', 'Lei 11.340/2006 (Lei Maria da Penha): já está em vigor, com medidas protetivas de urgência.'],
+  ['feminicidio5', /\bfeminicidio\b/, 'cp', 'Lei 13.104/2015 (com o Pacote Antifeminicídio, Lei 14.994/2024): o feminicídio já é crime autônomo, com pena de 20 a 40 anos.'],
+  ['hediondos5', /\bcrimes? hediondos?\b|\blei dos crimes hediondos\b/, 'c', 'Lei 8.072/1990: a Lei dos Crimes Hediondos já está em vigor.'],
+  ['estcrianca5', /\bestatuto da crianca e do adolescente\b|\beca\b/, 'cc', 'Lei 8.069/1990 (ECA): já está em vigor.'],
+  ['estidoso5', /\bestatuto d[oe]s? idosos?\b/, 'cc', 'Lei 10.741/2003 (Estatuto da Pessoa Idosa): já está em vigor.'],
+  ['estdesarm5', /\bestatuto do desarmamento\b/, 'cc', 'Lei 10.826/2003 (Estatuto do Desarmamento): já está em vigor.'],
+  ['estigrac5', /\bestatuto da igualdade racial\b/, 'c', 'Lei 12.288/2010 (Estatuto da Igualdade Racial): já está em vigor.'],
+  ['estpcd5', /\bestatuto da pessoa com deficiencia\b|\blei brasileira de inclusao\b/, 'c', 'Lei 13.146/2015 (Lei Brasileira de Inclusão): o Estatuto da Pessoa com Deficiência já está em vigor.'],
+  ['lrf5', /\blei de responsabilidade fiscal\b|\blrf\b/, 'c', 'LC 101/2000 (LRF): já está em vigor e limita despesa de pessoal, dívida e exige compensação para renúncias.'],
+  ['arcabouco5', /\barcabouco fiscal\b|\bregra fiscal\b/, 'c', 'LC 200/2023 (arcabouço fiscal): já está em vigor, com limite de crescimento real da despesa de 0,6% a 2,5% e meta de resultado primário.', /\b(?:revog\w+|acabar|fim|flexibiliz\w+|mud\w+|alter\w+|ampli\w+|reduz\w+|aument\w+|retirar|exclu\w+|fora d\w+)\b/],
+  ['teto5', /\bteto de gastos\b/, 'cc', 'EC 95/2016 (teto de gastos): foi substituído pelo arcabouço fiscal da LC 200/2023, que já está em vigor.'],
+  ['previd5', /\breforma da previdencia\b/, 'cc', 'EC 103/2019: a reforma da Previdência já está em vigor, com idade mínima de 62 anos (mulheres) e 65 (homens).', /\b(?:nova|outra|segunda|revog\w+|desfaz\w+|acabar|alter\w+|mud\w+|rev\w+|volt\w+)\b/]
+];
+JN5.forEach(a => { const rx = a[1], pro = a[2] === 'cp', cc = a[2] === 'cc'; const subj = rx.source; const verbs = cc || pro ? '(?:' + V4_CRIA + '|' + V4_PROIBE + ')' : V4_CRIA; const ex = new RegExp('\\b' + verbs + '\\b[^.;]{0,55}(?:' + subj + ')|(?:' + subj + ')[^.;]{0,25}\\b(?:obrigatori\\w+|para todos|para todas)\\b'); JN4.push({ v: true, id: a[0], rx: rx, ex: ex, nex: a[4] || V4_NEX5, txt: a[3] }); });
 JN4.forEach(J => { if (J.ex === 'rx') J.ex = J.rx; if (J.nex === undefined) J.nex = V4_NEX; if (J.ex) JN37.push(J); else JN37.push(Object.assign({}, J, { ex: null })); });
 function v37Vigente(A) {
   if (A.jaVigente) return;
@@ -6009,12 +6134,18 @@ function leituraV4(A) {
     if (it.o.id === 'pf_direcao' && !it.pledge) { it.dir = it.sg = 1; it.topicoFixo = /\b(?:nome\w+|indic\w+|escolh\w+|colocar)\b/.test(A.s) && !/\b(?:troc\w+|substitu\w+|mud\w+)\b/.test(A.s) ? 'a nomeação do diretor-geral da Polícia Federal' : 'a troca do diretor-geral da Polícia Federal'; }
   }
 }
+function v4Leve(t) { // v4: verbo leve + substantivo de corte ("aplicar um corte linear de 5%") vira o verbo pleno
+  t = t.replace(/\b((?:limit\w+|teto|travar|conter|segurar) [^.;]{0,60}?)\b(?:a|em|para|ate) \d+(?:[.,]\d+)?% (?:da|do|das) (?:receita corrente liquida|rcl|pib|receita)\b/g, '$1'); // v4: "limitar a 30% da RCL" é teto de proporção, não corte percentual
+  return t.replace(/\b(?:aplic\w+|faz\w+|fac\w+|realiz\w+|promov\w+|adot\w+|implement\w+|execut\w+|dar|de|dou) (?:um |uma |o |a |os |as )?(?:corte|cortes|enxugamento|reducao|reducoes)(?: (?:linear|geral|horizontal|drastico|profundo|forte|grande|real|radical))?(?: (?:de|em) (?=\d))?/g, m => /reduc/.test(m) ? 'reduzir ' : 'cortar ');
+}
 function parse(orig) {
-  const s = corrige(prep(orig));
+  const s = v4Leve(corrige(prep(orig)));
   const A = { orig: orig, s: s, items: [], flags: [], notas: [], corrigidas: NCORR };
   A.Q = extrairQuantidades(s);
   A.escopo = detectarEscopo(orig, s);
-  const objs = acharObjetos(s);
+  let objs = acharObjetos(s);
+  if (objs.some(m => m.o.id === 'fala') && /\b(?:taxar|tributar|proibir|vedar|banir|obrigar|exigir|regular\w*|regulament\w+|bloquear|substituir|trocar|cobrar|multar|fiscalizar|limitar)\b/.test(s)) objs = objs.filter(m => !(m.o.id === 'fala' && /^(?:tiktok|youtube|instagram|twitter|redes sociais|influenciadores?|post|dizer que|afirmar que|falar (?:sobre|com|para)|declaracao|entrevistas?|podcasts?|lives?)$/.test(String(m.t || '').trim()))); // v4: plataforma ou verbo de fala como ALVO de regra não é pronunciamento
+  { const mx = /\b(?:exceto|salvo|com excecao d[aeo]s?|ressalvad[oa]s?|poupando|preservando|mantendo intactos?)\b/.exec(s); if (mx && objs.some(m => m.i < mx.index)) objs = objs.filter(m => m.i < mx.index); } // v4: "exceto saúde e educação" tira da conta o que vem depois da ressalva
   /* v3.2: verbo de corte + valor em dinheiro sem nenhum objeto reconhecido ("cortar 15 bi") = corte de gastos do governo, nao um texto vazio */
   if (!objs.length) { const mq = A.Q.money.find(q => q.unit && q.v >= 1e6), cv = /\b(?:cort\w+|reduz\w+|economiz\w+|poup\w+|enxug\w+|tesourad\w+|diminu\w+)\b/.exec(s), og = OBJ.find(x => x.id === 'gastos_governo'); if (mq && cv && og && cv.index < mq.i) objs.push({ o: og, i: mq.e, e: mq.e, t: 'gastos' }); }
   const fm = achaMarcadorFonte(s, objs);
@@ -6200,7 +6331,7 @@ function contabiliza(it, F) {
   if (it.fora || it.talk || !it.sg) return;
   if (o.k === 'G') it.spend = (o.sav ? -1 : 1) * it.sg * it.B;
   else if (o.k === 'T') it.revC = it.sg * it.B;
-  if (o.fix) { it.spend += (o.fix.cost || 0) * it.sg; it.revC += (o.fix.rev || 0) * it.sg; }
+  if (o.fix && !(o.id === 'bets_proibicao' && /\b(?:propaganda|publicidade|patrocin\w+|anunci\w+|camisas?|menores|idade|maior de|\d+ anos|categorias? de base|clandestin\w+|sem licenca|nao autorizad\w+|ilegais?)\b/.test(it.ctxTxt || ''))) { it.spend += (o.fix.cost || 0) * it.sg; it.revC += (o.fix.rev || 0) * it.sg; } // v4: restringir propaganda/idade/bet ilegal não tira a outorga das bets licenciadas
   if (o.k === 'E') { if (it.own > 0 && !it.liquida) it.sale = it.B; else if (it.own < 0) it.buy = it.B; }
   const f = it.tipo === 'temp' ? Math.min(it.dur, 12) / 12 : 1;
   it.f = f;
@@ -6279,7 +6410,7 @@ function calcFiscal(A, g) {
   const main2 = A.items.filter(i => i.role === 'main'); main.length = 0; main2.forEach(i => main.push(i));
   if (A.absRes) for (const it of main) if (it.B) { it.B = 0; it.calc = (it.calc || []).concat(['Resultado impossível ordenado por decreto: nada é gasto nem arrecadado, só o desgaste político']); } // v4
   if (fon.length) for (const it of main) it.fonteCtx = true; // v4
-  if (fon.length) for (const it of main) if (it.o.k === 'G' && !it.q.has && !it.verbo && !it.pledge && it.o.ex !== 0 && it.B > 0 && (it.o.base >= 10 || it.o.ger) && !it.o.sav && !it.unica && !it.dur) { // v4: "taxar X para financiar o Bolsa Família": receita carimbada para programa que já existe e não tem valor novo no texto; a despesa já está no orçamento
+  if (fon.length) for (const it of main) if (it.o.k === 'G' && !it.q.has && !it.verbo && !it.pledge && it.o.ex !== 0 && it.B > 0 && (it.o.base >= 10 || it.o.ger) && !it.o.sav && !it.unica && !it.dur && !/\b(?:cri\w+|institu\w+|nov[oa]s?|linha de credito|credito (?:para|a|as|aos)|fundo|programa)\b/.test(it.ctxTxt || '')) { // v4: "taxar X para financiar o Bolsa Família": receita carimbada para programa que já existe e não tem valor novo no texto; a despesa já está no orçamento
     it.B = 0; it.calc = (it.calc || []).concat(['Destinação de receita a programa que já existe (' + semArt(it.o.n) + '), sem valor novo no texto: a despesa já está no orçamento, o efeito fiscal é só o da fonte']);
   }
   for (const it of main) if (it.o.k !== 'C') contabiliza(it, F);
@@ -7387,7 +7518,9 @@ function topicoItem(it, A, comEscopo) {
   } else if (it.mag === 1 && it.sg > 0) t = 'a duplicação ' + de(n);
   else if (it.mag === 2) t = 'a triplicação ' + de(n);
   else if (o.nomeMal && it.sg > 0 && !it.tot && it.verbo && (it.verbo.cls === 'SUB' || it.verbo.cls === 'BAN')) t = 'a redução ' + (pc ? 'de ' + pc + ' ' : '') + de(n); // v3.5: o nome é o problema (conta de luz, preço do gás): reduzir é o ganho
+  else if (o.k === 'T' && it.sg > 0 && /\b(?:revog\w+|acab\w+|extin\w+|cort\w+|elimin\w+|encerr\w+|suprim\w+|retir\w+|tir\w+)\b[^.;]{0,25}\b(?:isenc\w+|beneficio\w*|incentivo\w*|renuncia\w*)\b/.test(it.ctxTxt || '')) t = 'o fim da isenção de ' + n.replace(/^(?:a |o |as |os )?(?:tributação|tributacao|imposto|taxa)s?\s+(?:de |d[aeo]s? |sobre )?/, ''); // v4: revogar isenção é o fim do benefício, não 'aumento'
   else if (o.k === 'T' && (o.nm !== 0) && !POL_RE.test(n) && !(o.ex === 0)) t = 'o aumento ' + de(n) + (pc ? ' em ' + pc : '');
+  else if (pc && o.sav && o.k === 'G' && it.sg > 0 && it.verbo && it.verbo.cls === 'SUB' && !/corte|ajuste|econom|enxug|reduc|conting|bloqueio|pente/.test(n)) t = 'o corte de ' + pc + ' ' + de(n); // v4: cortar X% de uma despesa é corte, não aumento
   else if (pc && o.k !== 'R') t = 'o aumento de ' + pc + ' ' + de(n);
   else if (o.sav) t = n + comp;
   else if (inf === 'ampliar' && o.ex !== 0 && o.base > 0 && o.k === 'G') t = 'a ampliação ' + de(n) + (comp && !/^ de R\$ [\d.]+$/.test(comp) ? comp : (comp || ''));
@@ -7452,12 +7585,14 @@ function montaViabilidade(A, F, legal, inst, ctx, g, pasta) {
   if (A.absurdo) { sc -= 40; riscos.push('Qualidade: a proposta não tem base técnica ou jurídica plausível e será tratada como piada ou factoide.'); }
   return { score: Math.round(clamp(sc, 0, 100)), riscos: riscos };
 }
+const V4_PROMESSA = /\b(?:nunca|jamais|prometo|prometemos|promessa|nao vamos|nao vou|nao iremos|nao queremos|nao pretend\w+|nao havera|nao teremos|compromisso|garanto|garantimos|juro que|sem aumentar|sem criar)\b/; // v4
 function escolheInst(A) {
   const act = A.items.filter(i => i.o.k !== 'C' || i.o.id !== 'fala');
   const expl = A.instExpl;
   if (expl) return expl === 'LC' ? 'PL' : expl;
   if (A.z38 && A.z38.tipo === 'legal') return A.z38.inst; // v3.8
-  if (A.talk || A.pledgeOnly) return 'COM';
+  if (A.talk) return 'COM';
+  if (A.pledgeOnly) return V4_PROMESSA.test(A.s) ? 'COM' : 'PL'; // v4: "o governo não pode mexer...", "não cobrar X" é pedido de norma, não promessa de governo
   if (!act.length) return A.items.length ? 'COM' : 'COM';
   const sig = act.filter(i => (i.sg || i.pledge)).filter(i => i.sg);
   if (!sig.length) return 'COM';
@@ -7714,6 +7849,7 @@ function v4Consulta(A, orig0) {
   if (A.items.some(i => i.verbo || i.pledge)) return false;
   const ehPerg = /\?\s*$/.test(o) || V4_INTERROG.test(s);
   if (ehPerg) {
+    if (/\b(?:vc|voce|tu) (?:topa|ja pensou|acha que deve)|\bn eh\b|\bhora de\b|\bpague\w*\b|\bpagar mais\b|\bpensou em\b|\bnao precisa de\b/.test(s)) return false; // v4: pergunta retórica com pedido embutido é proposta
     if (V4_RETOR.test(s) || (A.T39 && (A.T39.ironia || A.T39.cond || A.T39.txt.replace(/[\s?]+$/, '') !== o.replace(/[\s?]+$/, '')))) return false;
     return true;
   }
@@ -7800,7 +7936,9 @@ function analisar(g, texto, ctx) {
   if (A.consulta) { A.vago = false; A.qual = 1; } // v4
   if (A.absurdo && A.vago && !A.talk && s.split(' ').length >= 3) { A.vago = false; A.qual = .6; } // v4: a impossibilidade foi lida, então a frase não é vaga
   if (A.vago && !A.talk && !A.pledgeOnly && !A.consulta && !A.absurdo && !/\?\s*$/.test(orig0) && !V4_RETOR2.test(s) && !/\b(?:sera|alguem|voce|vc|vcs|voces)\b/.test(s) && s.split(' ').length >= 4) { // v4: desejo ou ordem em linguagem solta, sem verbo de política que o catálogo conheça: leitura livre como norma, sem custo
-    let itL = null; try { const Lr = genLer(A); itL = genItem(A, Lr && Lr.v.cls === 'venda' ? { k: 'G', kind: 'venda', inst: 'PL', sg: -1 } : TAX_RE.test(s) && !/\btarifa\b/.test(s) ? { k: 'T', kind: 'trib', inst: 'PL' } : V4_GASTO.test(s) && !V4_SO_NORMA.test(s) ? { k: 'G', kind: 'prog', inst: 'PL' } : { k: 'R', kind: 'norm', inst: 'PL' }); } catch (e) { itL = null; }
+    const corteAmplo = !V4_COND.test(s) && A.items.some(i => ((i.o.sav && i.sg) || (i.o.id === 'gastos_governo' && i.sg < 0)) && i.o.k === 'G' && !i.pledge && i.role !== 'fonte'); // v4: corte amplo de gastos mantém o tamanho do pacote de economia do catálogo
+    if (corteAmplo) { A.vago = false; A.qual = .6; A.leituraLivre = true; }
+    let itL = null; if (!corteAmplo) try { const Lr = genLer(A); itL = genItem(A, Lr && Lr.v.cls === 'venda' ? { k: 'G', kind: 'venda', inst: 'PL', sg: -1 } : TAX_RE.test(s) && !/\btarifa\b/.test(s) ? { k: 'T', kind: 'trib', inst: 'PL' } : V4_GASTO.test(s) && !V4_SO_NORMA.test(s) ? { k: 'G', kind: 'prog', inst: 'PL' } : { k: 'R', kind: 'norm', inst: 'PL' }); } catch (e) { itL = null; }
     if (itL) { A.items = A.items.filter(i => i.role === 'fonte').concat([itL]); A.generica = null; A.vago = false; A.qual = .5; A.leituraLivre = true; const F2 = calcFiscal(A, g); for (const k in F) delete F[k]; Object.assign(F, F2); }
   }
   if (A.jaVigente) { A.vago = false; A.talk = true; A.qual = 1; if (A.jaVigente.id === 'lei15270') A.items = A.items.filter(i => i.o.id === 'ir_pf'); } // a compensação (tributação de altas rendas e dividendos) é da mesma lei

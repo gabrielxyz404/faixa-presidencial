@@ -34,3 +34,7 @@ Nos `impossivel` as faixas de custo, receita e único são [-100000, 100000]: o 
 O corretor casa o tópico com a regex única da lista; em vários itens ela é uma alternância de palavras genéricas ("ano", "brasil", "ja", "pra", "tem", "gasto"), então qualquer tópico minimamente relacionado passa. Exemplos: "Quanto o Brasil gasta com a Lei Rouanet por ano?" (`rouanet|gasta|gasto|ano|renuncia`), "Sem fazer nenhuma desapropriação, ampliar a reforma agrária comprando terra..." (`sem fazer|desapropria...`).
 
 Total: 25 itens listados nos números 1 a 4 (6 + 4 + 2 + 13), mais as inconsistências de convenção dos números 5 e 6.
+
+## Rodada 5
+- "Acabar com a escala 6x1" e variações (3 itens de trabalhista): o gabarito espera PEC nova, mas o jogo trata a escala 6x1 como já extinta pela EC 141/2026; conflito de premissa entre bateria e jogo.
+- Itens com `unico` preenchido para obras pequenas (instalar incubadoras, carregadores) e `unico` nulo para obras equivalentes: critério de capital inconsistente, por isso o motor não modela despesa única de obra.

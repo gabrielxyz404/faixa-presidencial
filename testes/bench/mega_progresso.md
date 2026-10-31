@@ -111,3 +111,60 @@ Entendimento dev: 36% (v3.9) -> 56% (v4). Efeito no save (mega sim): 60% -> 60% 
 | zoeira | 40% | 73% |
 
 Abaixo de 50% ao parar: ciencia_tecnologia 45, corte_gastos 40, cultura_esporte 43, economia 48, educacao 47, impostos 45, transporte 40.
+
+## Rodada 5
+
+Entendimento dev: 56,3% -> 57,7% (1211/2100). Efeito no save (mega sim): 61% (ok 471 de 776). cenarios.json: 239/3/6, a única diferença para a base é acelera_obra/custo m24 (ok -> inconclusivo). Benches antigos: dev 160/220, dev2 92/121, cft_dev 89/90, cft_dev2 60/60, zoeira_dev 72/80, zoeira_dev2 48/50, final_dev 123/150, justica_dev 40/40. ui_v39 6/6 e ui_v38 41/0, 0 erros de página (rodados antes das últimas edições de padrão de tamanho); regressao.py sem erros de página na build final.
+
+Mudanças gerais: verbo leve + substantivo de corte; ressalva 'exceto/salvo' tira o que vem depois; teto de proporção (limitar a N% da RCL) não é corte percentual; objetos defesa_gasto, teto_pessoal, fomento_pesquisa, pedagio_br, tarifa_zero_nac, dnit; cobertura ampla de normas em vigor (JN5, ~90 entradas com sujeito tolerante e verbos de criação/proibição, veto por valor, verbo de crescimento ou gratuidade); gírias (p, dnv, d+, naum, c); pergunta retórica com pedido embutido e promessas sem 'vamos' não viram comunicação; fala só como alvo de regra é descartada; propaganda/idade de bets não tira a outorga; limiar em R$ não impede escopo por produto; BPC deixou de ser objeto amplo; programa pequeno sem número fica abaixo de R$ 1 bi; valor explícito em R$ vira dotação (verbos subvencionar, recapitalizar, aportar, injetar, destinar); aporte público não é linha de crédito a 8%; corte amplo de gastos mantém o pacote de economia do catálogo; destino novo de um tributo carimbado não é zerado.
+
+Diagnóstico do sim com custo zero (a pedido): no dev, medidas aprovadas de custo zero mostram D de prim em m12 com média +0,32 (v3.9) e +0,5 (v4), mediana 0 e +0,42; o desvio é pequeno e consistente com o canal macro (confiança/risco -> arrecadação) e não com semente de RNG, mas não foi isolado por experimento controlado.
+
+| Tema | Entende v3.9 | Entende v4 | Δ | Efeito no save v3.9 | Efeito v4 | Δ |
+|---|---|---|---|---|---|---|
+| agro | 47% | 68% | +22 | 60% | 56% | -4 |
+| assistencia_social | 27% | 53% | +27 | 79% | 84% | +5 |
+| bets | 42% | 65% | +23 | 62% | 65% | +4 |
+| ciencia_tecnologia | 32% | 53% | +22 | 64% | 72% | +8 |
+| constituicao | 33% | 57% | +23 | 33% | 33% | +0 |
+| corte_gastos | 27% | 48% | +22 | 82% | 100% | +18 |
+| cultura_esporte | 28% | 48% | +20 | 62% | 62% | +0 |
+| desemprego | 40% | 60% | +20 | 73% | 73% | +0 |
+| direitos_humanos | 47% | 62% | +15 | 85% | 85% | +0 |
+| dolar | 37% | 58% | +22 | 25% | 50% | +25 |
+| economia | 35% | 50% | +15 | 50% | 57% | +7 |
+| educacao | 28% | 45% | +17 | 86% | 79% | -7 |
+| energia | 27% | 50% | +23 | 51% | 49% | -3 |
+| games | 38% | 63% | +25 | 50% | 38% | -12 |
+| grandes_empresas | 42% | 52% | +10 | 42% | 45% | +2 |
+| ia | 52% | 72% | +20 | 50% | 36% | -14 |
+| impostos | 18% | 47% | +28 | 35% | 46% | +11 |
+| inflacao | 42% | 55% | +13 | 57% | 57% | +0 |
+| infraestrutura | 43% | 65% | +22 | 75% | 75% | +0 |
+| justica | 48% | 70% | +22 | 50% | 50% | +0 |
+| medias_empresas | 32% | 57% | +25 | 57% | 67% | +10 |
+| meio_ambiente | 28% | 58% | +30 | 67% | 64% | -3 |
+| micro_empresas | 37% | 58% | +22 | 56% | 59% | +3 |
+| moradia | 38% | 57% | +18 | 84% | 81% | -3 |
+| previdencia | 33% | 53% | +20 | 60% | 55% | -5 |
+| privatizacoes | 32% | 62% | +30 | 100% | 100% | +0 |
+| regalias | 35% | 55% | +20 | 46% | 46% | +0 |
+| relacoes_exteriores | 18% | 48% | +30 | 44% | 48% | +4 |
+| saneamento | 40% | 62% | +22 | 50% | 67% | +17 |
+| saude | 52% | 68% | +17 | 82% | 100% | +18 |
+| seguranca | 23% | 52% | +28 | 73% | 64% | -9 |
+| setor_privado | 38% | 63% | +25 | 67% | 67% | +0 |
+| terras_raras | 30% | 67% | +37 | 38% | 38% | +0 |
+| trabalhista | 53% | 70% | +17 | 50% | 39% | -11 |
+| transporte | 27% | 47% | +20 | 64% | 75% | +11 |
+| **TOTAL** | 36% | 58% | +22 | 60% | 61% | +1 |
+
+| Tipo de proposta | v3.9 | v4 |
+|---|---|---|
+| bem | 39% | 55% |
+| ja_lei | 23% | 92% |
+| mal | 32% | 57% |
+| outro | 28% | 61% |
+| teor | 35% | 44% |
+| varias | 32% | 39% |
+| zoeira | 40% | 73% |
