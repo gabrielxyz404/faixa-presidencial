@@ -37,6 +37,8 @@
   @media (min-width: 1100px) { .med-kpis { grid-template-columns: repeat(6, minmax(0,1fr)); } }
   .med-kpi { font-size: 24px; font-weight: 700; margin-top: 2px; } .med-kpi small { font-size: 11px; color: var(--muted); font-weight: 500; }
   @media (max-width: 640px) { .med-fase b { font-size: 10px; } .med-fase small { font-size: 9px; } .med-mini, .med-pr th:last-child { display: none; } .med-card { padding: 14px; } }
+
+.selo-sim{display:inline-flex;align-items:center;font-family:var(--f-mono,'IBM Plex Mono',monospace);font-size:10.5px;line-height:1;letter-spacing:.04em;color:var(--muted);opacity:.75;border:1px solid var(--line);border-radius:999px;padding:2px 6px;text-transform:lowercase;font-weight:400;background:transparent}
 </style></head><body>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -11813,7 +11815,7 @@ function CfAnaliseMinistro({ dec, setDec, g, upd, onClose, semBase }) { // v3.8:
   const nivelCor = jur.nivel === 'ok' ? '#22c55e' : jur.nivel === 'controverso' ? '#e8923a' : '#e2553f';
   const cargo = cons.transv ? 'Casa Civil, com a AGU' : 'Ministério ' + (PASTA_DE[cons.pk] || 'da') + ' ' + cons.pasta;
   const quem = cons.ministro ? cons.ministro + ' (' + cargo + ')' : cargo + ' (titular a definir)';
-  const cab = html`<div className="flex flex-wrap items-center gap-2"><${Icon} n="Gavel" s=${16} /><b className="text-sm">Análise do ministro</b><${Tag} cor="#7aa2ff">simulado</${Tag}>
+  const cab = html`<div className="flex flex-wrap items-center gap-2"><${Icon} n="Gavel" s=${16} /><b className="text-sm">Análise do ministro</b><${SeloSim} a="o" />
       <span className="text-xs opacity-70">${quem} · competência ${fmt(cons.comp * 100, 0)}</span></div>`;
   const dispo = !semBase && jur.dispositivos && jur.dispositivos.length > 0 && html`<div className="mt-2"><button type="button" className="text-xs underline opacity-80" onClick=${() => setBase(!base)} aria-expanded=${base}>${base ? 'Ocultar' : 'Ver'} base jurídica (${jur.dispositivos.length})</button>
       ${base && html`<ul className="mt-1 flex flex-col gap-1" title=${MOTOR.CF.FONTE}>${jur.dispositivos.map((d, i) => html`<li key=${i} className="text-xs"><b>${d.art}</b> · ${d.tema}: ${d.efeito}</li>`)}</ul>`}</div>`;
@@ -11843,7 +11845,7 @@ function CfEmendas({ g }) {
     <div className="flex items-center justify-between mb-1"><h3 id="cf-em-t" className="font-semibold flex items-center gap-2"><${Icon} n="Scale" /> Emendas do mandato</h3><${Tag} cor="var(--muted)">numeração simulada</${Tag}></div>
     <p className="text-xs text-muted mb-2">A última emenda real considerada é a EC 141/2026 (fim da escala 6x1, promulgada em 16/10/2026 segundo a imprensa; dado não conferido em fonte oficial). As emendas aprovadas no jogo seguem a numeração a partir da EC 142, todas simuladas.</p>
     ${lista.length === 0 ? html`<p className="text-sm text-muted">Nenhuma PEC promulgada neste mandato. Emendas exigem 308 deputados e 49 senadores em dois turnos e não podem tocar cláusula pétrea.</p>` :
-      html`<ul className="flex flex-col divide-y divide-line">${lista.slice().reverse().map(e => html`<li key=${e.n} className="py-2 text-sm"><div className="flex flex-wrap items-center gap-2"><b className="num">EC nº ${e.n}/${e.ano}</b><${Tag} cor="var(--ouro)">simulada</${Tag}><span className="text-xs text-muted">${MESES[(e.mes - 1) % 12]} de ${e.ano}</span></div>
+      html`<ul className="flex flex-col divide-y divide-line">${lista.slice().reverse().map(e => html`<li key=${e.n} className="py-2 text-sm"><div className="flex flex-wrap items-center gap-2"><b className="num">EC nº ${e.n}/${e.ano}</b><${SeloSim} a="a" /><span className="text-xs text-muted">${MESES[(e.mes - 1) % 12]} de ${e.ano}</span></div>
         <div>${e.topic}</div>${e.arts && e.arts.length > 0 && html`<div className="text-xs text-muted">${e.arts.join(' · ')}</div>`}</li>`)}</ul>`}
     ${g.cf && g.cf.excecao && g.mes <= g.cf.excecao.ate && html`<p className="text-xs mt-2 p-2 rounded" style=${{ background: 'rgba(178,58,38,.08)' }} role="status">Em vigor: ${g.cf.excecao.tipo}. Enquanto durar, nenhuma PEC pode ser votada (art. 60, §1º).</p>`}
   </section>`;
@@ -16861,7 +16863,7 @@ function PostX({ p, mini }) {
         <b style=${{ overflowWrap: 'anywhere' }}>${a.nome}${a.sim && !a.fam ? ' · ' + [a.sigla, a.uf].filter(Boolean).join('-') : ''}</b>
         ${a.fam && html`<span className="text-muted text-xs">${a.area}${a.seg ? ' · ' + (a.seg >= 1 ? fmt(a.seg, 0) + ' mi' : fmt(a.seg * 1000, 0) + ' mil') + ' seguidores (aprox.)' : ''}</span>`}
         ${a.verif && html`<span style=${{ color: 'var(--anil)' }} title="Conta verificada (simulada)"><${Icon} n="BadgeCheck" s=${14} /></span>`}
-        ${a.sim && html`<span className="chip" style=${{ color: 'var(--ouro)', borderColor: 'var(--ouro)' }} title=${a.fam ? 'Pessoa real; o post é simulado pelo jogo e só trata da medida, a partir do viés público declarado' : a.pol ? 'Político real; o trecho é simulado pelo jogo e só trata de política' : 'Parlamentar real; o post é simulado pelo jogo e só reflete o voto simulado dele'}>simulado</span>`}
+        ${a.sim && html`<span className="chip selo-sim" title=${a.fam ? 'Pessoa real; o post é simulado pelo jogo e só trata da medida, a partir do viés público declarado' : a.pol ? 'Político real; o trecho é simulado pelo jogo e só trata de política' : 'Parlamentar real; o post é simulado pelo jogo e só reflete o voto simulado dele'}>simulado</span>`}
         ${a.af && html`<span className="chip" style=${{ color: 'var(--anil)', borderColor: 'var(--anil)' }} title="Afinidade informada com o Missão; a reação segue a pauta do partido, de forma simulada">afinidade Missão</span>`}
         ${a.handle && html`<span className="text-muted text-xs" style=${{ overflowWrap: 'anywhere' }}>@${a.handle}</span>`}
         ${p.mes != null && html`<span className="text-muted text-xs">· ${dataCurta(p.mes)}</span>`}
@@ -16895,7 +16897,7 @@ function FamososX({ g, upd }) { // v3.8
   if (FM) for (const p of FM.posts) { if (g.mes - p.mes > 4 || vistos.has(p.nome)) continue; vistos.add(p.nome); rec.push(p); }
   rec.sort((a, b) => (a.tom === 'neg' ? 0 : 1) - (b.tom === 'neg' ? 0 : 1) || b.mes - a.mes);
   return html`<section className="card p-4 flex flex-col gap-3" data-secao="x-famosos">
-    <div className="flex flex-wrap items-center gap-2"><b className="text-sm">Famosos e as suas medidas</b><${Tag} cor="var(--ouro)">simulado</${Tag}></div>
+    <div className="flex flex-wrap items-center gap-2"><b className="text-sm">Famosos e as suas medidas</b><${SeloSim} a="o" /></div>
     <p className="text-xs text-muted">Pessoas reais com viés público declarado comentam as medidas que você publica; os posts são simulados e tratam só da medida. Ataque ou apoio de famoso grande mexe de leve na aprovação do público que o segue. Convidar para live gasta 1 ação e pode suavizar o próximo ataque, se o viés dele não for oposto demais ao seu.</p>
     ${FM && FM.ult && FM.ult.mes === g.mes && html`<div className="text-sm p-3 rounded" role="status" data-fam-ult="1" style=${{ background: 'var(--panel2)' }}>${FM.ult.txt}</div>`}
     ${rec.length === 0 ? html`<p className="text-sm text-muted">Ninguém comentou ainda. Publique medidas para ver quem reage.</p>` : html`<ul className="grid gap-2 sm:grid-cols-2">${rec.slice(0, 6).map(p => { const f = FAMOSOS.find(x => x.n === p.nome); if (!f) return null; const pode = famLivePode(g, f);
@@ -17119,7 +17121,9 @@ function Est({ txt, rot = 'estimativa' }) {
   return html`<span className="chip cursor-help" style=${{ fontSize: '10px', padding: '0 6px', lineHeight: '16px', color: 'var(--ambar)', borderColor: 'var(--ambar)' }} title=${txt} tabIndex="0" role="note" aria-label=${rot + ': ' + txt} data-estimativa="1">${rot}</span>`;
 }
 const Real = ({ txt }) => html`<span className="chip cursor-help" style=${{ fontSize: '10px', padding: '0 6px', lineHeight: '16px', color: 'var(--verde)', borderColor: 'var(--verde)' }} title=${txt} tabIndex="0" role="note" data-base-real="1">base real</span>`;
-const Sim = ({ txt }) => html`<span className="chip cursor-help" style=${{ fontSize: '10px', padding: '0 6px', lineHeight: '16px' }} title=${txt || 'Evolução simulada pelo jogo a partir da posse.'} tabIndex="0" role="note" data-simulado="1">simulado</span>`;
+/* selo 'simulado' discreto: cinza, pequeno, sem cor de destaque (continua visível e com explicação ao passar o mouse) */
+const SeloSim = ({ a = 'o', txt }) => html`<span className="selo-sim" title=${txt || 'Conteúdo simulado pelo jogo.'} data-simulado="1">simulad${a}</span>`;
+const Sim = ({ txt }) => html`<span className="selo-sim cursor-help" title=${txt || 'Evolução simulada pelo jogo a partir da posse.'} tabIndex="0" role="note" data-simulado="1">simulado</span>`;
 
 /* ---- gráfico de linhas do mandato (SVG próprio, no estilo do Spark) com passagem do mouse/teclado por mês ---- */
 function GraficoLinhas({ titulo, series, compartilhado, id }) {
@@ -17869,7 +17873,7 @@ function ConversaGov({ g, upd, area, uf, onPlano }) {
         <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-2" role="group" aria-label="Temas da conversa">${A.topicos.map(t => html`<button key=${t.k} type="button" data-conv-tema=${t.k} aria-pressed=${!!U && U.t === t.k} disabled=${doMes || semAcoes || itv} title=${bloqueio}
           className=${'btn btn-ghost justify-start text-sm text-left ' + (U && U.t === t.k ? '!border-ouro text-ouro' : '')} onClick=${() => upd(n => { convAbre(n, area, uf, t.k); })}><${Icon} n=${t.ico} s=${15} /> ${t.nome}</button>`)}</div>
         ${U ? html`<div className="rounded-lg border border-line p-3 flex flex-col gap-2" data-conv-fala="1">
-          <div className="flex flex-wrap items-center gap-2"><${Ef} nome=${P.nome} cor=${PMAP[P.bloco].cor} papel="governador" s=${28} fk=${uf + '|governador|' + P.nome} /><b className="text-sm">${P.nome}</b><${Tag} cor="var(--ambar)">simulado</${Tag}><span className="num text-xs text-muted">mês ${U.mes} · ${T ? T.nome : ''}</span></div>
+          <div className="flex flex-wrap items-center gap-2"><${Ef} nome=${P.nome} cor=${PMAP[P.bloco].cor} papel="governador" s=${28} fk=${uf + '|governador|' + P.nome} /><b className="text-sm">${P.nome}</b><${SeloSim} a="o" /><span className="num text-xs text-muted">mês ${U.mes} · ${T ? T.nome : ''}</span></div>
           <p className="text-sm leading-relaxed">“${U.txt}”</p>
           <p className="text-[11px] text-muted">Posição de política pública simulada pelo jogo, com os números do estado; não é declaração real.</p>
           ${U.resp ? html`<div className="text-sm rounded border border-line p-2" data-conv-res="1">${U.res}</div>` : html`<div className="grid sm:grid-cols-3 gap-2" data-conv-resps="1">${resp.map(o => html`<button key=${o.k} type="button" className=${'btn text-left flex-col !items-start ' + (o.k === 'apoio' ? 'btn-pri' : 'btn-ghost')} data-conv-resp=${o.k}
@@ -25163,7 +25167,7 @@ function EntPergunta({ q, onResp, alvo }) {
   const [txt, setTxt] = useState('');
   const R = q.res; const rep = ENT_REP[q.rep]; const T = ENT_TEMAS[q.tema];
   return html`<div className="flex flex-col gap-3" data-ent-pergunta=${q.id}>
-    <div className="flex flex-wrap items-center gap-2"><span className="text-ouro"><${Icon} n="Mic" s=${16} /></span><span className="eyebrow">${rep.nome} · ${rep.veic}</span><${Tag}>${T.n}</${Tag}>${rep.pod && html`<${Tag} cor="var(--ouro)">simulado</${Tag}>`}${q.pegadinha && html`<${Tag} cor="var(--ambar)">pegadinha</${Tag}>`}</div>
+    <div className="flex flex-wrap items-center gap-2"><span className="text-ouro"><${Icon} n="Mic" s=${16} /></span><span className="eyebrow">${rep.nome} · ${rep.veic}</span><${Tag}>${T.n}</${Tag}>${rep.pod && html`<${SeloSim} a="o" />`}${q.pegadinha && html`<${Tag} cor="var(--ambar)">pegadinha</${Tag}>`}</div>
     <p className="text-base leading-snug">“${q.texto}”</p>
     ${!R ? html`<div className="flex flex-col gap-2">
       <div className="grid gap-2 lg:grid-cols-2">${q.ops.map(o => html`<button key=${o.k} type="button" className="btn btn-ghost text-left !items-start !justify-start flex-col gap-1 p-3" data-op=${o.k} title=${ENT_ARQ[o.k].dica} onClick=${() => onResp(o.k, '')}>
@@ -25209,7 +25213,7 @@ function EntConvites({ g, upd }) {
   const rv = E.rival && E.rival.mes >= g.mes - 1 ? E.rival : null; const RV = rv ? ENT_VEIC[rv.pod] : null; // v3.8
   return html`<div className="flex flex-col gap-3" data-ent="convites">
     ${rv && html`<div className="rounded-lg border p-3 flex flex-col gap-2" data-podrival=${rv.estado} style=${{ borderColor: 'var(--ouro)' }}>
-      <div className="flex flex-wrap items-center gap-2"><span className="text-ouro"><${Icon} n="Mic" s=${16} /></span><b>Repercussão em podcast</b><${Tag} cor="var(--ouro)">simulado</${Tag}><${Tag}>${RV.nome}</${Tag}></div>
+      <div className="flex flex-wrap items-center gap-2"><span className="text-ouro"><${Icon} n="Mic" s=${16} /></span><b>Repercussão em podcast</b><${SeloSim} a="o" /><${Tag}>${RV.nome}</${Tag}></div>
       <p className="text-sm"><b>${rv.quem.nome}</b> (${rv.quem.sigla}${rv.quem.uf ? '-' + rv.quem.uf : ''}, ${rv.quem.papel}) ${rv.tipo === 'defesa' ? 'defendeu' : 'criticou'} ${rv.topic}: “${rv.frase}”</p>
       <p className="text-xs text-muted">${rv.tipo === 'defesa' ? 'Pequena alta de aprovação' : 'Pequena queda de aprovação'} no público do podcast (${RV.pub}). A fala é simulada pelo jogo e só trata da medida.</p>
       ${rv.estado === 'aberta' ? html`<div className="flex flex-wrap gap-2 justify-end">
@@ -25219,7 +25223,7 @@ function EntConvites({ g, upd }) {
     </div>`}
     ${pend.length === 0 && html`<p className="text-sm text-muted">Nenhum convite pendente neste mês.${E.ultEntrev && E.ultEntrev.mes === g.mes ? ' Última entrevista: ' + sgn(E.ultEntrev.dap, 1) + ' p.p.' : ''}</p>`}
     ${pend.map(c => { const V = ENT_VEIC[c.veic]; const hostil = entHostil(g, c.veic); return html`<div key=${c.id} className="rounded-lg border border-line p-3 flex flex-col gap-2" data-convite=${c.veic}>
-      <div className="flex flex-wrap items-center gap-2"><span className="text-ouro"><${Icon} n=${V.ic} s=${16} /></span><b>${V.nome}</b><${Tag}>${V.tipo}</${Tag}>${V.pod && html`<${Tag} cor="var(--ouro)">simulado</${Tag}>`}${c.resposta && html`<${Tag} cor="var(--verde)">resposta ao convidado</${Tag}>`}${hostil && html`<${Tag} cor="var(--ambar)">linha oposta à sua</${Tag}>`}<${Tag}>alcance ${fmt(V.alc, 2)}×</${Tag}></div>
+      <div className="flex flex-wrap items-center gap-2"><span className="text-ouro"><${Icon} n=${V.ic} s=${16} /></span><b>${V.nome}</b><${Tag}>${V.tipo}</${Tag}>${V.pod && html`<${SeloSim} a="o" />`}${c.resposta && html`<${Tag} cor="var(--verde)">resposta ao convidado</${Tag}>`}${hostil && html`<${Tag} cor="var(--ambar)">linha oposta à sua</${Tag}>`}<${Tag}>alcance ${fmt(V.alc, 2)}×</${Tag}></div>
       <p className="text-sm text-muted">${V.ap}${V.pod ? ' Público: ' + V.pub + '. Podcast real; perguntas e falas simuladas pelo jogo.' : ''}</p>
       <p className="text-xs text-muted">${hostil ? 'Recusar um veículo hostil custa pouco; ir mal custa mais.' : 'Recusar faz você perder a vitrine junto ao público do veículo.'} Aceitar custa 1 ação e 6 de energia; são 3 a 5 perguntas em sequência.</p>
       <div className="flex gap-2 justify-end"><button type="button" className="btn btn-ghost text-sm" data-conv-recusar=${c.veic} onClick=${() => upd(n => { entRecusa(n, c.id); })}>Recusar</button>
@@ -25258,7 +25262,7 @@ function entCorpo(kind, g, upd) {
 }
 
 /* ============================== ELEIÇÕES (el*): INTERFACE 1 — peças reutilizáveis ============================== */
-const ElSim = () => html`<${Tag} cor="var(--ouro)">simulado</${Tag}>`;
+const ElSim = () => html`<${SeloSim} a="o" />`;
 const ElAviso = () => html`<p className="text-xs text-muted" data-el="aviso-pesq">${EL_AVISO_PESQ}</p>`;
 const elInstNome = (k) => (EL_INST.find(i => i.k === k) || { nome: k }).nome;
 function ElGrafPesq({ ger }) {
