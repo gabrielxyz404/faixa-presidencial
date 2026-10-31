@@ -12983,6 +12983,7 @@ function executaProposta(g, prop, resultado) {
     }
     g.pes.estresse = clamp(g.pes.estresse + 8, 0, 100);
   }
+  if (prop.icHook) { try { icResolve(g, prop, resultado); } catch (e) { if (typeof console !== 'undefined') console.warn('icResolve', e); } }
   if (prop.trHook) { try { trResolve(g, prop.trHook, resultado); } catch (e) { if (typeof console !== 'undefined') console.warn('trResolve', e); } }
   if (prop.gvHook) { try { gvResolve(g, prop.gvHook, resultado); } catch (e) { if (typeof console !== 'undefined') console.warn('gvResolve', e); } }
   if (resultado === 'aprovada') { try { tbAprovada(g, prop); } catch (e) { if (typeof console !== 'undefined') console.warn('tbAprovada', e); } }
@@ -13054,17 +13055,19 @@ function fimDoMes(g) {
   liquidaPendentes(g, notas);
   try { medidasMensal(g, notas); } catch (e) { if (typeof console !== 'undefined') console.warn('medidasMensal', e); } // v3.6
   AP.mark('medidas');
+  let ICM = null; try { ICM = icMensal(g, notas); } catch (e) { if (typeof console !== 'undefined') console.warn('icMensal', e); } // indústria e comércio exterior
   const prim = primario(g);
   const fazTec = g.cfg.ministros.fazenda === 'tecnico' ? 5 : g.cfg.ministros.fazenda === 'outsider' ? -6 : 0;
   const A3 = { cred: g.eco.cred, conf: g.eco.conf, risco: g.eco.risco, selic: g.eco.selic }; const F3 = f3Pre(g, notas);
   // economia
   const MX = mundoEcon(g);
+  if (ICM) { MX.pib += ICM.pib; MX.dol += ICM.dol; MX.agro += ICM.agro; MX.ipca = ICM.ipca; MX.des = ICM.des; MX.desm = ICM.desm; }
   const riscoT = 128 + ratingRisco(g) + Math.max(0, -prim) * .13 - Math.max(0, prim) * .08 + (E.divida - 75) * 2.4 + g.stf * .5 + g.escandalo * .5 - (E.conf - 50) * .8 + B.risco + F3.dRisco + MX.risco;
   E.risco = clamp(E.risco + (riscoT - E.risco) * .3 + rnd(-8, 8), 60, 2000);
   const dolT = 4.3 + E.risco / 170 + B.dol - (g.dip.eua + g.dip.ue - 110) / 400 + F3.dDol + MX.dol;
   E.dol = clamp(E.dol + (dolT - E.dol) * .25 + rnd(-.06, .06), 2.5, 12);
   const gap = E.pib - 2;
-  const ipcaT = 3.8 + (E.dol - 5.3) * 1.1 + Math.max(0, -prim - 60) / 100 * .35 + gap * .4 - (E.selic - 11) * .12 + B.ipca + F3.dIpca;
+  const ipcaT = 3.8 + (E.dol - 5.3) * 1.1 + Math.max(0, -prim - 60) / 100 * .35 + gap * .4 - (E.selic - 11) * .12 + B.ipca + F3.dIpca + (MX.ipca || 0);
   E.ipca = clamp(E.ipca + (ipcaT - E.ipca) * .09 + rnd(-.1, .1), -1, 40);
   const selicT = 10 + F3.bcK * (E.ipca - 3) + (E.risco - 200) / 100 * F3.bcR * .6 + F3.bcOff;
   const dif = selicT - E.selic; let passo = 0;
@@ -13080,7 +13083,7 @@ function fimDoMes(g) {
   const infraEff = O.infra / 100 * .6 + O.educacao * .002;
   const pibT = 2.6 + .3 * impFis - (E.selic - 10) * .22 + (E.conf - 50) * .03 + infraEff + B.pib + (g.dip.ue + g.dip.china + g.dip.eua + g.dip.merc - 225) / 400 + F3.dPib + MX.pib;
   E.pib = clamp(E.pib + (pibT - E.pib) * .2 + rnd(-.12, .12), -8, 9);
-  const desT = 6.3 - (E.pib - 1) * .9 + B.des; // desemprego de equilíbrio ~5,6% com PIB de 1,8% (PNAD 2026: 5,3%, mínima da série)
+  const desT = 6.3 - (E.pib - 1) * .9 + B.des + (MX.des || 0); // desemprego de equilíbrio ~5,6% com PIB de 1,8% (PNAD 2026: 5,3%, mínima da série)
   E.des = clamp(E.des + (desT - E.des) * .12 + rnd(-.05, .05), 2, 25);
   try { tbMensal(g); } catch (e) { if (typeof console !== 'undefined') console.warn('tbMensal', e); }
   const confT = 50 + prim / 14 - (g.stf - 30) * .2 - g.escandalo * .2 + fazTec + B.conf + (g.cfg.tracos.includes('tecnico') ? 5 : 0) + F3.dConf;
@@ -13101,7 +13104,7 @@ function fimDoMes(g) {
   gvMensal(g, notas);
   segConvMensal(g, notas); // deriva dos indicadores acertados nas conversas com governadores (segurança e saúde)
   AP.mark('seguranca');
-  const desmT = 6200 - g.cfg.ideo.env * 12 - O.ambiente * 30 + B.desm;
+  const desmT = 6200 - g.cfg.ideo.env * 12 - O.ambiente * 30 + B.desm + (MX.desm || 0);
   S.desm = clamp(S.desm + (desmT - S.desm) * .15, 200, 30000);
   S.idh = clamp(S.idh + .00002 * (O.educacao + O.saude) + (E.pib - 1.5) * .0002 - (S.pob - 23) * .00005, .5, .95);
   f3Social(g);
@@ -16403,9 +16406,9 @@ const SECOES = [
 ];
 const SECAO_KS = SECOES.map(s => s.k);
 const CHIPS = {
-  pais: [{ k: 'mapa', nome: 'Mapa' }, { k: 'economia', nome: 'Economia' }, { k: 'seguranca', nome: 'Segurança' }, { k: 'saude', nome: 'Saúde' }, { k: 'educacao', nome: 'Educação' }, { k: 'trabalho', nome: 'Trabalho' }, { k: 'infraestrutura', nome: 'Infraestrutura e transportes' }, { k: 'sociedade', nome: 'Sociedade' }, { k: 'justica', nome: 'Justiça' }],
+  pais: [{ k: 'mapa', nome: 'Mapa' }, { k: 'economia', nome: 'Economia' }, { k: 'industria', nome: 'Indústria' }, { k: 'seguranca', nome: 'Segurança' }, { k: 'saude', nome: 'Saúde' }, { k: 'educacao', nome: 'Educação' }, { k: 'trabalho', nome: 'Trabalho' }, { k: 'infraestrutura', nome: 'Infraestrutura e transportes' }, { k: 'sociedade', nome: 'Sociedade' }, { k: 'justica', nome: 'Justiça' }],
   poder: [{ k: 'congresso', nome: 'Congresso' }, { k: 'governo', nome: 'Governo' }, { k: 'stf', nome: 'STF' }, { k: 'oposicao', nome: 'Oposição' }],
-  mundo: [{ k: 'panorama', nome: 'Panorama' }, { k: 'paises', nome: 'Países' }, { k: 'viagens', nome: 'Visitas de Estado' }, { k: 'blocos', nome: 'Blocos' }, { k: 'tratados', nome: 'Tratados' }, { k: 'mesa', nome: 'Mesa diplomática' }, { k: 'terras', nome: 'Terras raras' }],
+  mundo: [{ k: 'panorama', nome: 'Panorama' }, { k: 'paises', nome: 'Países' }, { k: 'viagens', nome: 'Visitas de Estado' }, { k: 'blocos', nome: 'Blocos' }, { k: 'tratados', nome: 'Tratados' }, { k: 'mesa', nome: 'Mesa diplomática' }, { k: 'comercio', nome: 'Comércio exterior' }, { k: 'terras', nome: 'Terras raras' }],
   eu: [{ k: 'condicao', nome: 'Condição' }, { k: 'bemestar', nome: 'Bem-estar e agenda' }, { k: 'familia', nome: 'Família e partido' }, { k: 'bastidores', nome: 'Bastidores' }, { k: 'conquistas', nome: 'Conquistas' }]
 };
 function secDeHash(hash) {
@@ -16556,6 +16559,7 @@ function pendenciasMesa(g) {
   }
   try { const r = medResumoMesa(g); if (r && r.prob) L.push({ id: 'medidas', tipo: 'medidas', urg: 61, cat: 'Medidas em vigor', ic: 'ClipboardList', titulo: r.titulo, ctx: r.ctx, extra: null, abrir: 'medidas', btns: [] }); } catch (e) { } // v3.6
   pendenciasF4(g).forEach(x => L.push(x));
+  try { icPendencias(g).forEach(x => L.push(x)); } catch (e) { }
   entPendX(g, L);
   try { jusPend(g, L); } catch (e) { }
   return L.map((x, i) => Object.assign(x, { ord: i })).sort((a, b) => b.urg - a.urg || a.ord - b.ord);
@@ -16569,6 +16573,7 @@ function aindaPend(g, kind) {
   if (kind === 'viagem') return !!(g.mundo && (g.mundo.visita || (g.mundo.ultVisita && g.mundo.ultVisita.mes + 1 === g.mes)));
   if (kind === 'mesadip') return !!(g.mundo && g.mundo.mesa && !g.mundo.mesa.resolvida);
   if (kind === 'bastidores') return !!bastOferta(g);
+  if (kind === 'comercio') return !!(g.comex && g.comex.props.some(p => p.estado === 'aberta' && p.grande));
   if (kind === 'justica') return !!jusPendCaso(g);
   if (/^(ent|el)/.test(kind)) return entAindaPend(g, kind);
   return true;
@@ -16726,13 +16731,13 @@ function secaoDaPendencia(p) {
   const k = p.tipo || '';
   if (['stf', 'pauta', 'oposicao', 'desgaste', 'prioridade', 'abin', 'qq', 'entcol', 'entconv', 'elmun', 'elapurm', 'elsuc', 'elcand', 'elpesq', 'eldeb', 'elcamp', 'elapurg'].includes(k)) return 'poder';
   if (['crise', 'protesto', 'seguranca', 'governadores', 'justica'].includes(k)) return 'pais';
-  if (['viagem', 'mesadip', 'terras_raras'].includes(k)) return 'mundo';
+  if (['viagem', 'mesadip', 'terras_raras', 'comercio'].includes(k)) return 'mundo';
   if (['saude', 'estresse', 'bastidores', 'vida'].includes(k)) return 'eu';
   if (k === 'rede' || k === 'x' || /^(rede|x)[-_]/.test(k)) return 'x';
   return 'mesa';
 }
 // sub-aba onde cada pendência mora (para o selo nas sub-abas de País e Poder)
-const PEND_CHIP = { stf: 'stf', pauta: 'congresso', oposicao: 'oposicao', desgaste: 'governo', prioridade: 'governo', abin: 'governo', qq: 'imprensa', entcol: 'imprensa', entconv: 'imprensa', elmun: 'eleicoes', elapurm: 'eleicoes', elsuc: 'eleicoes', elcand: 'eleicoes', elpesq: 'eleicoes', eldeb: 'eleicoes', elcamp: 'eleicoes', elapurg: 'eleicoes', crise: 'mapa', protesto: 'sociedade', seguranca: 'seguranca', governadores: 'mapa', justica: 'justica', viagem: 'viagens', mesadip: 'mesa', terras_raras: 'terras', saude: 'condicao', estresse: 'bemestar', vida: 'familia', bastidores: 'bastidores' };
+const PEND_CHIP = { stf: 'stf', pauta: 'congresso', oposicao: 'oposicao', desgaste: 'governo', prioridade: 'governo', abin: 'governo', qq: 'imprensa', entcol: 'imprensa', entconv: 'imprensa', elmun: 'eleicoes', elapurm: 'eleicoes', elsuc: 'eleicoes', elcand: 'eleicoes', elpesq: 'eleicoes', eldeb: 'eleicoes', elcamp: 'eleicoes', elapurg: 'eleicoes', crise: 'mapa', protesto: 'sociedade', seguranca: 'seguranca', governadores: 'mapa', justica: 'justica', viagem: 'viagens', mesadip: 'mesa', terras_raras: 'terras', comercio: 'comercio', saude: 'condicao', estresse: 'bemestar', vida: 'familia', bastidores: 'bastidores' };
 let PEND_ABRIR = null; // pendência pedida fora da Mesa: a Mesa abre a gaveta dela ao montar
 function pendDaSecao(g, sec) { try { return g && g.cfg && !g.over ? pendenciasMesa(g).filter(p => secaoDaPendencia(p) === sec) : []; } catch (e) { return []; } }
 function contChips(L) { const c = {}; for (const p of L) { const k = PEND_CHIP[p.tipo]; if (k) c[k] = (c[k] || 0) + 1; } return c; }
@@ -16899,6 +16904,7 @@ function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino 
     : kind === 'mesadip' ? html`<${MesaDipCartao} g=${g} upd=${upd} />`
     : kind === 'bastidores' ? html`<${CartaoBastidores} g=${g} upd=${upd} />`
     : kind === 'justica' ? html`<${CartaoJustica} g=${g} upd=${upd} />`
+    : kind === 'comercio' ? html`<${ComPropostas} g=${g} upd=${upd} soGrandes=${true} />`
     : kind === 'contas' ? html`<${CartaoContas} g=${g} />` : entCorpo(kind, g, upd));
   const itemArt = art ? g.pauta.find(x => x.id === art) : null;
   const corAc = g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)';
@@ -17836,6 +17842,7 @@ function PaisSecao({ g, upd, decidir, chip, setChip, abrirPend }) {
     <div className="contents ps-root"><${PsStyle} />
     ${c === 'mapa' && html`<${PaisMapa} g=${g} />`}
     ${c === 'economia' && html`<div className="flex flex-col gap-6" data-pais="economia"><${EcoResumo} g=${g} /><${PainelUF} g=${g} area="economia" /><${Economia} g=${g} upd=${upd} decidir=${decidir} /><${FontesArea} area="economia" notas="Petrobras (fatia direta da União) e a carteira do BNDESPar são fatias distintas; a Caixa Seguridade já está dentro do patrimônio da Caixa. Valores marcados como estimativa vêm de cálculo do jogo sobre dados publicados e não de uma fonte direta." /></div>`}
+    ${c === 'industria' && html`<${PaisIndustria} g=${g} upd=${upd} decidir=${decidir} />`}
     ${c === 'seguranca' && html`<${PaisSeguranca} g=${g} upd=${upd} decidir=${decidir} />`}
     ${c === 'saude' && html`<${PaisSaude} g=${g} upd=${upd} decidir=${decidir} />`}
     ${c === 'educacao' && html`<${PaisEducacao} g=${g} upd=${upd} decidir=${decidir} />`}
@@ -22814,18 +22821,1111 @@ function Diplomacia({ g, decidir, upd, chip, setChip, abrirPend }) {
   const go = setChip || ZERO;
   return html`<${Subpagina} id="mundo" chips=${CHIPS.mundo} atual=${c} onSel=${go} rotulo="Áreas do Mundo" eyebrow="Mundo" pend=${pendDaSecao(g, 'mundo')} abrirPend=${abrirPend}>
     <div className="flex flex-col gap-6"><${MxStyle} />
-    ${c !== 'terras' && html`<${MundoResumo} g=${g} />`}
+    ${c !== 'terras' && c !== 'comercio' && html`<${MundoResumo} g=${g} />`}
     ${c === 'panorama' && html`<${MundoPanorama} g=${g} decidir=${decidir || ZERO} go=${setChip ? setChip : null} />`}
     ${c === 'paises' && html`<${MundoPaises} g=${g} go=${setChip} />`}
     ${c === 'viagens' && html`<${MundoViagens} g=${g} upd=${upd} />`}
     ${c === 'blocos' && html`<${MundoBlocos} g=${g} upd=${upd} />`}
     ${c === 'tratados' && html`<${MundoTratados} g=${g} />`}
     ${c === 'mesa' && html`<${MundoMesa} g=${g} upd=${upd} />`}
+    ${c === 'comercio' && html`<${MundoComercio} g=${g} upd=${upd} decidir=${decidir || ZERO} go=${setChip ? setChip : null} />`}
     ${c === 'terras' && html`<${MundoTerras} g=${g} upd=${upd} decidir=${decidir || ZERO} />`}
     <p className="text-xs text-muted" data-creditos-bandeiras="1">Bandeiras: pacote flag-icons (licença MIT), minificadas; algumas foram simplificadas e a do Mercosul é um desenho original do jogo.</p>
   </div>
   </${Subpagina}>`;
 }
+
+
+/* ============================== INDÚSTRIA E COMÉRCIO EXTERIOR: DADOS ============================== */
+// =====================================================================
+// dados_comercio.js — Módulo de DADOS: Indústria + Comércio exterior (Faixa Presidencial)
+// Gerado em out/2026. Ano-base 2025. Valores em US$ bi salvo indicação.
+// FONTES PRINCIPAIS: MDIC/Secex (balança comercial 2025: exp. US$348,7 bi, imp. US$280,4 bi,
+//   saldo US$68,3 bi), Comex Stat via imprensa, IBGE (PIB 2025 R$12,7 tri), CEBC (Brasil-China),
+//   Insper Agro Global, Conab, ANP, IBRAM/ANM, ABPA, Ibá, Anfavea, USGS, Austin Rating (PIB em US$).
+// CONVENÇÕES: est:true => valor estimado (método na fonte/nota). Nos produtos, 'est' refere-se ao
+//   valor exportado; 'est_campos' lista os demais campos que são aproximações (produção, consumo,
+//   preço de referência, volatilidade, participação de compradores, emprego e peso no IPCA).
+//   Preços de referência (preco_int) são médias aproximadas de 2025 e todos têm est:true.
+// pct_pib = exp_usd_bi / 2270 (PIB 2025 em US$ bi) x 100; câmbio médio usado: 5,58 R$/US$ (est.).
+// ISO3 fora de COM_PAISES estão em COM_PAISES_EXTRA (nome + iso2 para a bandeira).
+// frete_fator = (dist_km/2000)^0.6, mínimo 0,5; 1,0 = Argentina (2.000 km). Aproximação do jogo.
+// =====================================================================
+const IND_SETORES = [
+ {
+  "key": "agro",
+  "nome": "Agro",
+  "icon": "Wheat",
+  "tempo_meses": [
+   6,
+   12
+  ]
+ },
+ {
+  "key": "mineracao",
+  "nome": "Mineração",
+  "icon": "Pickaxe",
+  "tempo_meses": [
+   12,
+   36
+  ]
+ },
+ {
+  "key": "energia",
+  "nome": "Energia",
+  "icon": "Fuel",
+  "tempo_meses": [
+   12,
+   36
+  ]
+ },
+ {
+  "key": "industria",
+  "nome": "Indústria de transformação",
+  "icon": "Factory",
+  "tempo_meses": [
+   24,
+   48
+  ]
+ }
+];
+const IND_PRODUTOS = [
+ {"k":"soja_grao","nome":"Soja em grão","setor":"agro","icon":"Wheat","exp_usd_bi":43.5,"pct_exp":12.47,"pct_pib":1.92,"prod":171.5,"unid":"mi t","cons_int":56,"preco_int":{"valor":385,"unid":"US$/t","fonte":"CBOT soja ~US$10,4/bu média 2025 (est.)","est":true},"volat":0.045,"compradores":[{"pais":"CHN","pct":70},{"pais":"ESP","pct":3.5},{"pais":"NLD","pct":2.5},{"pais":"THA","pct":2.5},{"pais":"TUR","pct":2}],"emprego_mil":1800,"tempo_meses":[6,12],"impacto_amb":1,"grupos":["agro","empresariado","mercado","caminhoneiros","indigenas"],"ipca_peso":0,"estocavel":1,"fonte":"MDIC/Comex Stat 2025 (via imprensa); produção Conab safra 24/25; consumo = esmagamento (Abiove, est.)","est":false,"est_campos":["prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"farelo_soja","nome":"Farelo de soja","setor":"agro","icon":"Wheat","exp_usd_bi":7.6,"pct_exp":2.18,"pct_pib":0.33,"prod":43.5,"unid":"mi t","cons_int":20,"preco_int":{"valor":310,"unid":"US$/t","fonte":"CBOT farelo ~US$300-330/t (est.)","est":true},"volat":0.05,"compradores":[{"pais":"IDN","pct":12},{"pais":"NLD","pct":11},{"pais":"FRA","pct":9},{"pais":"THA","pct":9},{"pais":"KOR","pct":6}],"emprego_mil":60,"tempo_meses":[6,12],"impacto_amb":1,"grupos":["agro","empresariado"],"ipca_peso":0,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; produção Abiove (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"oleo_soja","nome":"Óleo de soja","setor":"agro","icon":"Droplet","exp_usd_bi":1.4,"pct_exp":0.4,"pct_pib":0.06,"prod":11.5,"unid":"mi t","cons_int":9.5,"preco_int":{"valor":1050,"unid":"US$/t","fonte":"CBOT óleo de soja (est.)","est":true},"volat":0.055,"compradores":[{"pais":"IND","pct":30},{"pais":"CHN","pct":20},{"pais":"BGD","pct":12},{"pais":"MAR","pct":6},{"pais":"EGY","pct":5}],"emprego_mil":40,"tempo_meses":[6,12],"impacto_amb":1,"grupos":["agro","empresariado","classemedia"],"ipca_peso":0.35,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; ABIOVE (produção/consumo est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"milho","nome":"Milho","setor":"agro","icon":"Wheat","exp_usd_bi":8.5,"pct_exp":2.44,"pct_pib":0.37,"prod":139.7,"unid":"mi t","cons_int":95,"preco_int":{"valor":205,"unid":"US$/t","fonte":"CBOT milho/Cepea-B3 (est.)","est":true},"volat":0.05,"compradores":[{"pais":"IRN","pct":14},{"pais":"EGY","pct":12},{"pais":"JPN","pct":10},{"pais":"VNM","pct":9},{"pais":"KOR","pct":8}],"emprego_mil":900,"tempo_meses":[6,12],"impacto_amb":1,"grupos":["agro","empresariado","caminhoneiros"],"ipca_peso":0.1,"estocavel":1,"fonte":"Insper Agro Global (jan/2026) para exportação; produção Conab 24/25 (inclui etanol de milho)","est":false,"est_campos":["prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"algodao","nome":"Algodão em pluma","setor":"agro","icon":"Shirt","exp_usd_bi":3.9,"pct_exp":1.12,"pct_pib":0.17,"prod":3.9,"unid":"mi t","cons_int":0.7,"preco_int":{"valor":1460,"unid":"US$/t","fonte":"ICE algodão ~66 c/lb (est.)","est":true},"volat":0.04,"compradores":[{"pais":"VNM","pct":20},{"pais":"BGD","pct":17},{"pais":"PAK","pct":13},{"pais":"CHN","pct":12},{"pais":"IDN","pct":9}],"emprego_mil":200,"tempo_meses":[6,12],"impacto_amb":2,"grupos":["agro","empresariado"],"ipca_peso":0,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Conab/Abrapa (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"cafe_verde","nome":"Café verde","setor":"agro","icon":"Coffee","exp_usd_bi":14,"pct_exp":4.01,"pct_pib":0.62,"prod":3.3,"unid":"mi t","cons_int":1.3,"preco_int":{"valor":7900,"unid":"US$/t","fonte":"ICE arábica ~US$3,6/lb (est.)","est":true},"volat":0.06,"compradores":[{"pais":"DEU","pct":14},{"pais":"USA","pct":13},{"pais":"ITA","pct":9},{"pais":"BEL","pct":7},{"pais":"JPN","pct":5}],"emprego_mil":3300,"tempo_meses":[6,12],"impacto_amb":1,"grupos":["agro","empresariado","classemedia"],"ipca_peso":0.6,"estocavel":1,"fonte":"DHL/MDIC: café US$14,9 bi (total, inclui solúvel); separação verde/solúvel estimada; Conab 2025 ~55 mi sacas","est":false,"est_campos":["prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"cafe_soluvel","nome":"Café solúvel","setor":"industria","icon":"Coffee","exp_usd_bi":0.9,"pct_exp":0.26,"pct_pib":0.04,"prod":0.09,"unid":"mi t","cons_int":0.04,"preco_int":{"valor":8800,"unid":"US$/t","fonte":"Média de exportação (est.)","est":true},"volat":0.04,"compradores":[{"pais":"USA","pct":18},{"pais":"RUS","pct":10},{"pais":"UKR","pct":6},{"pais":"ARG","pct":6},{"pais":"JPN","pct":5}],"emprego_mil":8,"tempo_meses":[24,48],"impacto_amb":1,"grupos":["agro","empresariado"],"ipca_peso":0,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Abics (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"acucar","nome":"Açúcar","setor":"agro","icon":"Candy","exp_usd_bi":10.6,"pct_exp":3.04,"pct_pib":0.47,"prod":40,"unid":"mi t","cons_int":12,"preco_int":{"valor":365,"unid":"US$/t","fonte":"ICE açúcar #11 ~16,5 c/lb (est.)","est":true},"volat":0.06,"compradores":[{"pais":"CHN","pct":14},{"pais":"IND","pct":8},{"pais":"BGD","pct":8},{"pais":"DZA","pct":7},{"pais":"MAR","pct":6},{"pais":"NGA","pct":6}],"emprego_mil":700,"tempo_meses":[6,12],"impacto_amb":2,"grupos":["agro","empresariado","classemedia"],"ipca_peso":0.35,"estocavel":1,"fonte":"MDIC/DHL: açúcar -24,1% em 2025 sobre base 2024 (~US$14 bi, est.); UNICA/Conab (prod. est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"etanol","nome":"Etanol","setor":"energia","icon":"Fuel","exp_usd_bi":1,"pct_exp":0.29,"pct_pib":0.04,"prod":36,"unid":"bi L","cons_int":35,"preco_int":{"valor":0.55,"unid":"US$/L","fonte":"Média de exportação / ESALQ (est.)","est":true},"volat":0.06,"compradores":[{"pais":"KOR","pct":20},{"pais":"USA","pct":15},{"pais":"NLD","pct":10},{"pais":"JPN","pct":8},{"pais":"COL","pct":6}],"emprego_mil":800,"tempo_meses":[12,36],"impacto_amb":1,"grupos":["agro","empresariado","caminhoneiros","classemedia"],"ipca_peso":0.55,"estocavel":0,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; ANP/UNICA (prod. total anidro+hidratado, est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"suco_laranja","nome":"Suco de laranja","setor":"agro","icon":"Citrus","exp_usd_bi":2.4,"pct_exp":0.69,"pct_pib":0.11,"prod":1,"unid":"mi t","cons_int":0.15,"preco_int":{"valor":5200,"unid":"US$/t","fonte":"ICE FCOJ (est.)","est":true},"volat":0.08,"compradores":[{"pais":"USA","pct":30},{"pais":"NLD","pct":20},{"pais":"BEL","pct":14},{"pais":"JPN","pct":8},{"pais":"DEU","pct":6}],"emprego_mil":100,"tempo_meses":[6,12],"impacto_amb":1,"grupos":["agro","empresariado"],"ipca_peso":0.1,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Cepea/CitrusBR (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"fumo","nome":"Fumo em folha","setor":"agro","icon":"Leaf","exp_usd_bi":2.4,"pct_exp":0.69,"pct_pib":0.11,"prod":0.7,"unid":"mi t","cons_int":0.05,"preco_int":{"valor":4600,"unid":"US$/t","fonte":"Valor médio de exportação (est.)","est":true},"volat":0.03,"compradores":[{"pais":"CHN","pct":14},{"pais":"BEL","pct":12},{"pais":"USA","pct":8},{"pais":"IDN","pct":6},{"pais":"TUR","pct":5}],"emprego_mil":150,"tempo_meses":[6,12],"impacto_amb":2,"grupos":["agro","empresariado"],"ipca_peso":0,"estocavel":1,"fonte":"Insper Agro (fumo em alta 2025); valor est.; Afubra (prod. est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"couro","nome":"Couros e peles","setor":"industria","icon":"Layers","exp_usd_bi":1.2,"pct_exp":0.34,"pct_pib":0.05,"prod":40,"unid":"mi un","cons_int":20,"preco_int":{"valor":18,"unid":"US$/m²","fonte":"Valor médio export (est.)","est":true},"volat":0.03,"compradores":[{"pais":"CHN","pct":38},{"pais":"ITA","pct":10},{"pais":"VNM","pct":7},{"pais":"USA","pct":6},{"pais":"MEX","pct":6}],"emprego_mil":45,"tempo_meses":[24,48],"impacto_amb":2,"grupos":["agro","empresariado"],"ipca_peso":0,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; CICB (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"bovina","nome":"Carne bovina","setor":"agro","icon":"Beef","exp_usd_bi":16.6,"pct_exp":4.76,"pct_pib":0.73,"prod":11.5,"unid":"mi t","cons_int":8,"preco_int":{"valor":6000,"unid":"US$/t","fonte":"Preço médio de exportação Secex (est.)","est":true},"volat":0.04,"compradores":[{"pais":"CHN","pct":48},{"pais":"USA","pct":12},{"pais":"CHL","pct":5},{"pais":"EGY","pct":3},{"pais":"ARE","pct":3}],"emprego_mil":500,"tempo_meses":[6,12],"impacto_amb":3,"grupos":["agro","empresariado","classemedia","periferia","indigenas"],"ipca_peso":2.2,"estocavel":1,"fonte":"DHL/MDIC 2025 (+42,5%); produção ABIEC/IBGE em equivalente carcaça (est.)","est":false,"est_campos":["prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"frango","nome":"Carne de frango","setor":"agro","icon":"Drumstick","exp_usd_bi":9.2,"pct_exp":2.64,"pct_pib":0.41,"prod":15.5,"unid":"mi t","cons_int":10.5,"preco_int":{"valor":1950,"unid":"US$/t","fonte":"Preço médio exp. ABPA (est.)","est":true},"volat":0.04,"compradores":[{"pais":"CHN","pct":11},{"pais":"JPN","pct":9},{"pais":"SAU","pct":8},{"pais":"ARE","pct":7},{"pais":"MEX","pct":6}],"emprego_mil":650,"tempo_meses":[6,12],"impacto_amb":1,"grupos":["agro","empresariado","classemedia","periferia"],"ipca_peso":1.1,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; ABPA (prod/consumo est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"suina","nome":"Carne suína","setor":"agro","icon":"Ham","exp_usd_bi":2.9,"pct_exp":0.83,"pct_pib":0.13,"prod":5.5,"unid":"mi t","cons_int":4.1,"preco_int":{"valor":2650,"unid":"US$/t","fonte":"Preço médio exp. ABPA (est.)","est":true},"volat":0.05,"compradores":[{"pais":"CHN","pct":20},{"pais":"PHL","pct":11},{"pais":"CHL","pct":9},{"pais":"JPN","pct":7},{"pais":"SGP","pct":6}],"emprego_mil":130,"tempo_meses":[6,12],"impacto_amb":2,"grupos":["agro","empresariado","classemedia"],"ipca_peso":0.5,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; ABPA (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"gado_vivo","nome":"Gado em pé","setor":"agro","icon":"Milk","exp_usd_bi":0.6,"pct_exp":0.17,"pct_pib":0.03,"prod":null,"unid":"n/d","cons_int":null,"preco_int":{"valor":1100,"unid":"US$/cab.","fonte":"Valor médio (est.)","est":true},"volat":0.05,"compradores":[{"pais":"TUR","pct":55},{"pais":"IRQ","pct":10},{"pais":"EGY","pct":8},{"pais":"LBN","pct":6},{"pais":"VNM","pct":4}],"emprego_mil":5,"tempo_meses":[6,12],"impacto_amb":2,"grupos":["agro"],"ipca_peso":0,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"ovos","nome":"Ovos e derivados","setor":"agro","icon":"Egg","exp_usd_bi":0.2,"pct_exp":0.06,"pct_pib":0.01,"prod":4.9,"unid":"bi dz","cons_int":4.7,"preco_int":{"valor":1.8,"unid":"US$/dz","fonte":"Valor médio (est.)","est":true},"volat":0.04,"compradores":[{"pais":"ARE","pct":20},{"pais":"JPN","pct":12},{"pais":"CHL","pct":10},{"pais":"MEX","pct":8},{"pais":"URY","pct":6}],"emprego_mil":60,"tempo_meses":[6,12],"impacto_amb":0,"grupos":["agro","periferia"],"ipca_peso":0.7,"estocavel":0,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; ABPA (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"frutas","nome":"Frutas (manga, uva, melão, limão)","setor":"agro","icon":"Apple","exp_usd_bi":1.3,"pct_exp":0.37,"pct_pib":0.06,"prod":41,"unid":"mi t","cons_int":38,"preco_int":{"valor":1100,"unid":"US$/t","fonte":"Média de exportação (est.)","est":true},"volat":0.04,"compradores":[{"pais":"NLD","pct":25},{"pais":"GBR","pct":10},{"pais":"ESP","pct":9},{"pais":"USA","pct":8},{"pais":"PRT","pct":6}],"emprego_mil":180,"tempo_meses":[6,12],"impacto_amb":1,"grupos":["agro","classemedia","periferia"],"ipca_peso":1.1,"estocavel":0,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Abrafrutas (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"cacau_choc","nome":"Cacau e chocolate","setor":"agro","icon":"Cookie","exp_usd_bi":0.45,"pct_exp":0.13,"pct_pib":0.02,"prod":0.2,"unid":"mi t","cons_int":0.28,"preco_int":{"valor":8800,"unid":"US$/t","fonte":"ICE cacau (queda em 2025; est.)","est":true},"volat":0.09,"compradores":[{"pais":"ARG","pct":15},{"pais":"USA","pct":12},{"pais":"CHL","pct":10},{"pais":"PRY","pct":8},{"pais":"URY","pct":6}],"emprego_mil":60,"tempo_meses":[6,12],"impacto_amb":1,"grupos":["agro","classemedia"],"ipca_peso":0.5,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Abicab/ICCO (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"mel","nome":"Mel natural","setor":"agro","icon":"Hexagon","exp_usd_bi":0.12,"pct_exp":0.03,"pct_pib":0.01,"prod":0.06,"unid":"mi t","cons_int":0.03,"preco_int":{"valor":3400,"unid":"US$/t","fonte":"Valor médio export (est.)","est":true},"volat":0.03,"compradores":[{"pais":"USA","pct":70},{"pais":"DEU","pct":10},{"pais":"GBR","pct":6},{"pais":"CAN","pct":4},{"pais":"BEL","pct":3}],"emprego_mil":5,"tempo_meses":[6,12],"impacto_amb":0,"grupos":["agro"],"ipca_peso":0.03,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; tarifas dos EUA em 2025 reduziram o volume","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"pescado","nome":"Pescado (tilápia, camarão, peixes)","setor":"agro","icon":"Fish","exp_usd_bi":0.35,"pct_exp":0.1,"pct_pib":0.02,"prod":1.4,"unid":"mi t","cons_int":1.2,"preco_int":{"valor":5200,"unid":"US$/t","fonte":"Valor médio export (est.)","est":true},"volat":0.04,"compradores":[{"pais":"USA","pct":40},{"pais":"CHN","pct":10},{"pais":"ESP","pct":8},{"pais":"PRT","pct":6},{"pais":"JPN","pct":5}],"emprego_mil":350,"tempo_meses":[6,12],"impacto_amb":1,"grupos":["agro","periferia"],"ipca_peso":0.7,"estocavel":0,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Peixe BR (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"arroz","nome":"Arroz (exporta e importa)","setor":"agro","icon":"Wheat","exp_usd_bi":0.55,"pct_exp":0.16,"pct_pib":0.02,"prod":12,"unid":"mi t","cons_int":10.5,"preco_int":{"valor":470,"unid":"US$/t","fonte":"Arroz Tailândia 5% FOB (est.); Brasil exporta ~0,5 bi e importa ~0,45 bi (ver COM_IMPORTS.arroz_imp)","est":true},"volat":0.04,"compradores":[{"pais":"VEN","pct":15},{"pais":"SEN","pct":12},{"pais":"PER","pct":10},{"pais":"CUB","pct":8},{"pais":"GBR","pct":6}],"emprego_mil":200,"tempo_meses":[6,12],"impacto_amb":2,"grupos":["agro","periferia","classemedia"],"ipca_peso":0.75,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Conab (prod. 24/25 ~12 mi t); IPCA peso aprox. (POF)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"minerio_ferro","nome":"Minério de ferro","setor":"mineracao","icon":"Pickaxe","exp_usd_bi":29,"pct_exp":8.32,"pct_pib":1.28,"prod":410,"unid":"mi t","cons_int":25,"preco_int":{"valor":100,"unid":"US$/t","fonte":"Platts 62% Fe ~US$100/t média 2025 (est.)","est":true},"volat":0.07,"compradores":[{"pais":"CHN","pct":68},{"pais":"JPN","pct":5},{"pais":"KOR","pct":3},{"pais":"NLD","pct":3},{"pais":"MYS","pct":3}],"emprego_mil":210,"tempo_meses":[12,36],"impacto_amb":3,"grupos":["empresariado","mercado","sindicatos","indigenas"],"ipca_peso":0,"estocavel":1,"fonte":"MDIC 2025 (US$28,9–29,0 bi; -3%); produção IBRAM/ANM (est.)","est":false,"est_campos":["prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"ouro","nome":"Ouro","setor":"mineracao","icon":"Gem","exp_usd_bi":6.6,"pct_exp":1.89,"pct_pib":0.29,"prod":75,"unid":"t","cons_int":60,"preco_int":{"valor":3430,"unid":"US$/oz","fonte":"LBMA média 2025 (est.)","est":true},"volat":0.05,"compradores":[{"pais":"CHE","pct":30},{"pais":"CAN","pct":20},{"pais":"GBR","pct":15},{"pais":"IND","pct":10},{"pais":"ARE","pct":6}],"emprego_mil":90,"tempo_meses":[12,36],"impacto_amb":3,"grupos":["mercado","empresariado","indigenas"],"ipca_peso":0,"estocavel":1,"fonte":"Imprensa/MDIC 2025 (~US$6,6 bi); produção ANM (est.)","est":false,"est_campos":["prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"cobre","nome":"Cobre (minério e concentrado)","setor":"mineracao","icon":"Pickaxe","exp_usd_bi":5,"pct_exp":1.43,"pct_pib":0.22,"prod":0.4,"unid":"mi t","cons_int":0.1,"preco_int":{"valor":9800,"unid":"US$/t","fonte":"LME cobre 2025 (est.)","est":true},"volat":0.06,"compradores":[{"pais":"CHN","pct":30},{"pais":"DEU","pct":15},{"pais":"JPN","pct":15},{"pais":"IND","pct":10},{"pais":"ESP","pct":8}],"emprego_mil":40,"tempo_meses":[12,36],"impacto_amb":2,"grupos":["empresariado","mercado","indigenas"],"ipca_peso":0,"estocavel":1,"fonte":"Comex Stat 2025 (minério de cobre ~US$5,0 bi, +20,5%); prod. ANM (est.)","est":false,"est_campos":["prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"aluminio","nome":"Alumínio e obras","setor":"mineracao","icon":"Layers","exp_usd_bi":2.4,"pct_exp":0.69,"pct_pib":0.11,"prod":1,"unid":"mi t","cons_int":1.2,"preco_int":{"valor":2600,"unid":"US$/t","fonte":"LME alumínio 2025 (est.)","est":true},"volat":0.05,"compradores":[{"pais":"USA","pct":30},{"pais":"NLD","pct":8},{"pais":"ARG","pct":7},{"pais":"MEX","pct":6},{"pais":"CHN","pct":4}],"emprego_mil":40,"tempo_meses":[12,36],"impacto_amb":2,"grupos":["empresariado","sindicatos"],"ipca_peso":0,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Abal (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"alumina_bauxita","nome":"Bauxita e alumina","setor":"mineracao","icon":"Mountain","exp_usd_bi":1.3,"pct_exp":0.37,"pct_pib":0.06,"prod":32,"unid":"mi t","cons_int":20,"preco_int":{"valor":380,"unid":"US$/t","fonte":"Alumina FOB Austrália (est.)","est":true},"volat":0.06,"compradores":[{"pais":"CAN","pct":20},{"pais":"NOR","pct":20},{"pais":"CHN","pct":15},{"pais":"ARE","pct":10},{"pais":"IRL","pct":8}],"emprego_mil":20,"tempo_meses":[12,36],"impacto_amb":3,"grupos":["empresariado","indigenas"],"ipca_peso":0,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; ANM (bauxita ~32 mi t, est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"niobio","nome":"Nióbio (ferro-nióbio)","setor":"mineracao","icon":"Atom","exp_usd_bi":2.3,"pct_exp":0.66,"pct_pib":0.1,"prod":0.11,"unid":"mi t","cons_int":0.003,"preco_int":{"valor":42000,"unid":"US$/t","fonte":"Preço ferro-nióbio (est.)","est":true},"volat":0.02,"compradores":[{"pais":"CHN","pct":25},{"pais":"USA","pct":20},{"pais":"NLD","pct":15},{"pais":"SGP","pct":12},{"pais":"JPN","pct":8}],"emprego_mil":9,"tempo_meses":[12,36],"impacto_amb":1,"grupos":["empresariado","mercado"],"ipca_peso":0,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Brasil ~90% do mundo (USGS); CBMM (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"manganes","nome":"Manganês","setor":"mineracao","icon":"Mountain","exp_usd_bi":0.7,"pct_exp":0.2,"pct_pib":0.03,"prod":3.2,"unid":"mi t","cons_int":1,"preco_int":{"valor":190,"unid":"US$/t","fonte":"Minério 44% CIF China (est.)","est":true},"volat":0.06,"compradores":[{"pais":"CHN","pct":45},{"pais":"NOR","pct":12},{"pais":"IND","pct":10},{"pais":"MYS","pct":6},{"pais":"USA","pct":4}],"emprego_mil":15,"tempo_meses":[12,36],"impacto_amb":2,"grupos":["empresariado"],"ipca_peso":0,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; ANM (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"terras_raras","nome":"Terras raras (concentrado)","setor":"mineracao","icon":"Magnet","exp_usd_bi":0.02,"pct_exp":0.01,"pct_pib":0,"prod":0.002,"unid":"mi t","cons_int":0.001,"preco_int":{"valor":76000,"unid":"US$/t","fonte":"Óxido NdPr (China) (est.)","est":true},"volat":0.09,"compradores":[{"pais":"CHN","pct":60},{"pais":"USA","pct":20},{"pais":"JPN","pct":10},{"pais":"KOR","pct":5},{"pais":"DEU","pct":5}],"emprego_mil":2,"tempo_meses":[12,36],"impacto_amb":3,"grupos":["empresariado","mercado","indigenas"],"ipca_peso":0,"estocavel":1,"fonte":"Estimativa: Brasil tem 2ª reserva do mundo (USGS, ~21 mi t) mas produção mínima; valor exportado est.","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"litio","nome":"Lítio (espodumênio/carbonato)","setor":"mineracao","icon":"BatteryCharging","exp_usd_bi":0.35,"pct_exp":0.1,"pct_pib":0.02,"prod":0.09,"unid":"mi t","cons_int":0,"preco_int":{"valor":820,"unid":"US$/t","fonte":"Espodumênio 6% (queda 2025; est.)","est":true},"volat":0.1,"compradores":[{"pais":"CHN","pct":75},{"pais":"KOR","pct":10},{"pais":"JPN","pct":5},{"pais":"USA","pct":5},{"pais":"DEU","pct":3}],"emprego_mil":4,"tempo_meses":[12,36],"impacto_amb":2,"grupos":["empresariado","mercado","indigenas"],"ipca_peso":0,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; ANM (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"niquel_ferroligas","nome":"Ferroligas e níquel","setor":"mineracao","icon":"Wrench","exp_usd_bi":1.2,"pct_exp":0.34,"pct_pib":0.05,"prod":2.5,"unid":"mi t","cons_int":1.6,"preco_int":{"valor":1800,"unid":"US$/t","fonte":"Valor médio export (est.)","est":true},"volat":0.06,"compradores":[{"pais":"NLD","pct":18},{"pais":"USA","pct":15},{"pais":"CHN","pct":10},{"pais":"JPN","pct":10},{"pais":"KOR","pct":7}],"emprego_mil":25,"tempo_meses":[12,36],"impacto_amb":2,"grupos":["empresariado","sindicatos"],"ipca_peso":0,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"rochas","nome":"Rochas ornamentais (granito, mármore)","setor":"mineracao","icon":"Mountain","exp_usd_bi":1,"pct_exp":0.29,"pct_pib":0.04,"prod":10.5,"unid":"mi t","cons_int":7.5,"preco_int":{"valor":380,"unid":"US$/t","fonte":"Valor médio export (est.)","est":true},"volat":0.03,"compradores":[{"pais":"USA","pct":55},{"pais":"CHN","pct":10},{"pais":"ITA","pct":6},{"pais":"CAN","pct":4},{"pais":"MEX","pct":3}],"emprego_mil":120,"tempo_meses":[12,36],"impacto_amb":1,"grupos":["empresariado"],"ipca_peso":0,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Abirochas (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"petroleo","nome":"Petróleo bruto","setor":"energia","icon":"Fuel","exp_usd_bi":44.5,"pct_exp":12.76,"pct_pib":1.96,"prod":1376,"unid":"mi bbl","cons_int":700,"preco_int":{"valor":69,"unid":"US$/bbl","fonte":"Brent média 2025 (est.)","est":true},"volat":0.08,"compradores":[{"pais":"CHN","pct":46},{"pais":"USA","pct":14},{"pais":"SGP","pct":8},{"pais":"PRT","pct":5},{"pais":"ESP","pct":4}],"emprego_mil":250,"tempo_meses":[12,36],"impacto_amb":3,"grupos":["empresariado","mercado","sindicatos","caminhoneiros"],"ipca_peso":0,"estocavel":1,"fonte":"MDIC 2025 (US$44,5 bi, -1%); ANP produção 2025 ~3,8 mi bpd (est.); consumo = refino nacional (est.)","est":false,"est_campos":["prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"combustiveis","nome":"Derivados de petróleo (óleo combustível, diesel, nafta)","setor":"energia","icon":"Fuel","exp_usd_bi":9,"pct_exp":2.58,"pct_pib":0.4,"prod":620,"unid":"mi bbl","cons_int":650,"preco_int":{"valor":640,"unid":"US$/t","fonte":"Média derivados (óleo comb./diesel) (est.)","est":true},"volat":0.07,"compradores":[{"pais":"SGP","pct":25},{"pais":"USA","pct":15},{"pais":"NLD","pct":8},{"pais":"ARG","pct":6},{"pais":"CHN","pct":5}],"emprego_mil":120,"tempo_meses":[12,36],"impacto_amb":3,"grupos":["empresariado","caminhoneiros","mercado","classemedia"],"ipca_peso":5.5,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; ANP (peso IPCA = gasolina+diesel+GLP, est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"celulose","nome":"Celulose","setor":"industria","icon":"TreePine","exp_usd_bi":7.6,"pct_exp":2.18,"pct_pib":0.33,"prod":25,"unid":"mi t","cons_int":5.5,"preco_int":{"valor":550,"unid":"US$/t","fonte":"BHKP China (Fastmarkets) (est.)","est":true},"volat":0.04,"compradores":[{"pais":"CHN","pct":42},{"pais":"USA","pct":14},{"pais":"NLD","pct":8},{"pais":"ITA","pct":6},{"pais":"BEL","pct":5}],"emprego_mil":130,"tempo_meses":[24,48],"impacto_amb":2,"grupos":["empresariado","agro"],"ipca_peso":0,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Ibá (prod. 2024 ~24,7 mi t)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"papel","nome":"Papel e papelão","setor":"industria","icon":"Newspaper","exp_usd_bi":2.3,"pct_exp":0.66,"pct_pib":0.1,"prod":11,"unid":"mi t","cons_int":9.5,"preco_int":{"valor":900,"unid":"US$/t","fonte":"Valor médio exportação (est.)","est":true},"volat":0.03,"compradores":[{"pais":"ARG","pct":20},{"pais":"USA","pct":9},{"pais":"CHL","pct":9},{"pais":"COL","pct":7},{"pais":"PRY","pct":6}],"emprego_mil":110,"tempo_meses":[24,48],"impacto_amb":1,"grupos":["empresariado","sindicatos"],"ipca_peso":0.4,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Ibá (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"madeira","nome":"Madeira e manufaturas","setor":"industria","icon":"TreePine","exp_usd_bi":3,"pct_exp":0.86,"pct_pib":0.13,"prod":150,"unid":"mi m³","cons_int":140,"preco_int":{"valor":260,"unid":"US$/m³","fonte":"Valor médio exp. (est.)","est":true},"volat":0.04,"compradores":[{"pais":"USA","pct":28},{"pais":"CHN","pct":14},{"pais":"DEU","pct":6},{"pais":"GBR","pct":5},{"pais":"MEX","pct":5}],"emprego_mil":250,"tempo_meses":[24,48],"impacto_amb":2,"grupos":["empresariado","agro","indigenas"],"ipca_peso":0,"estocavel":0,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Ibá (toras industriais, est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"moveis","nome":"Móveis","setor":"industria","icon":"Armchair","exp_usd_bi":0.7,"pct_exp":0.2,"pct_pib":0.03,"prod":null,"unid":"n/d","cons_int":null,"preco_int":null,"volat":0.02,"compradores":[{"pais":"USA","pct":35},{"pais":"URY","pct":8},{"pais":"ARG","pct":8},{"pais":"CHL","pct":7},{"pais":"GBR","pct":5}],"emprego_mil":270,"tempo_meses":[24,48],"impacto_amb":1,"grupos":["empresariado","sindicatos","classemedia"],"ipca_peso":1.9,"estocavel":0,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Abimóvel (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"aco_semi","nome":"Aço (semimanufaturados de ferro/aço)","setor":"industria","icon":"Hammer","exp_usd_bi":5.7,"pct_exp":1.63,"pct_pib":0.25,"prod":33,"unid":"mi t","cons_int":23,"preco_int":{"valor":450,"unid":"US$/t","fonte":"Placas/billets FOB (est.)","est":true},"volat":0.05,"compradores":[{"pais":"USA","pct":30},{"pais":"NLD","pct":10},{"pais":"MEX","pct":9},{"pais":"BEL","pct":8},{"pais":"TUR","pct":6}],"emprego_mil":110,"tempo_meses":[24,48],"impacto_amb":2,"grupos":["empresariado","sindicatos"],"ipca_peso":0,"estocavel":1,"fonte":"Brasil Agro/MDIC 2025 (US$5,7 bi, +7,9%); Aço Brasil (prod. 2025 ~33 mi t, est.)","est":false,"est_campos":["prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"aco_lam","nome":"Aço laminado e manufaturados","setor":"industria","icon":"Hammer","exp_usd_bi":2.9,"pct_exp":0.83,"pct_pib":0.13,"prod":null,"unid":"n/d","cons_int":null,"preco_int":{"valor":620,"unid":"US$/t","fonte":"HRC (est.)","est":true},"volat":0.05,"compradores":[{"pais":"USA","pct":20},{"pais":"ARG","pct":12},{"pais":"COL","pct":8},{"pais":"MEX","pct":7},{"pais":"CHL","pct":5}],"emprego_mil":90,"tempo_meses":[24,48],"impacto_amb":2,"grupos":["empresariado","sindicatos"],"ipca_peso":0,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"avioes","nome":"Aeronaves (Embraer)","setor":"industria","icon":"Plane","exp_usd_bi":4.9,"pct_exp":1.41,"pct_pib":0.22,"prod":244,"unid":"un","cons_int":10,"preco_int":{"valor":30000000,"unid":"US$/un","fonte":"Valor médio unit. aeronave (est.)","est":true},"volat":0.02,"compradores":[{"pais":"USA","pct":45},{"pais":"NLD","pct":10},{"pais":"IRL","pct":6},{"pais":"ARE","pct":5},{"pais":"SGP","pct":4}],"emprego_mil":20,"tempo_meses":[24,48],"impacto_amb":1,"grupos":["empresariado","sindicatos","mercado"],"ipca_peso":0,"estocavel":0,"fonte":"Comex Stat 2025 (aeronaves US$4,9 bi, +12,1%); 244 entregas Embraer (2025)","est":false,"est_campos":["prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"automoveis","nome":"Automóveis","setor":"industria","icon":"Car","exp_usd_bi":4.5,"pct_exp":1.29,"pct_pib":0.2,"prod":2.6,"unid":"mi un","cons_int":2.6,"preco_int":{"valor":18000,"unid":"US$/un","fonte":"Valor médio unit. export (est.)","est":true},"volat":0.03,"compradores":[{"pais":"ARG","pct":55},{"pais":"MEX","pct":7},{"pais":"COL","pct":6},{"pais":"URY","pct":5},{"pais":"CHL","pct":5}],"emprego_mil":130,"tempo_meses":[24,48],"impacto_amb":1,"grupos":["empresariado","sindicatos","classemedia"],"ipca_peso":3.8,"estocavel":0,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Anfavea (prod. 2025 ~2,6 mi un, est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"veiculos_pesados","nome":"Caminhões, ônibus e veículos pesados","setor":"industria","icon":"Truck","exp_usd_bi":1.4,"pct_exp":0.4,"pct_pib":0.06,"prod":0.18,"unid":"mi un","cons_int":0.16,"preco_int":{"valor":60000,"unid":"US$/un","fonte":"Valor médio unit. (est.)","est":true},"volat":0.03,"compradores":[{"pais":"ARG","pct":45},{"pais":"COL","pct":8},{"pais":"CHL","pct":7},{"pais":"MEX","pct":6},{"pais":"PER","pct":5}],"emprego_mil":45,"tempo_meses":[24,48],"impacto_amb":1,"grupos":["empresariado","sindicatos","caminhoneiros"],"ipca_peso":0,"estocavel":0,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Anfavea (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"autopecas","nome":"Autopeças","setor":"industria","icon":"Cog","exp_usd_bi":3.4,"pct_exp":0.98,"pct_pib":0.15,"prod":null,"unid":"n/d","cons_int":null,"preco_int":null,"volat":0.03,"compradores":[{"pais":"ARG","pct":25},{"pais":"USA","pct":20},{"pais":"MEX","pct":10},{"pais":"DEU","pct":6},{"pais":"PRY","pct":4}],"emprego_mil":250,"tempo_meses":[24,48],"impacto_amb":1,"grupos":["empresariado","sindicatos"],"ipca_peso":0.4,"estocavel":0,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Sindipeças (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"maq_agricolas","nome":"Máquinas agrícolas","setor":"industria","icon":"Tractor","exp_usd_bi":1.4,"pct_exp":0.4,"pct_pib":0.06,"prod":0.05,"unid":"mi un","cons_int":0.045,"preco_int":{"valor":95000,"unid":"US$/un","fonte":"Valor médio unit. (est.)","est":true},"volat":0.03,"compradores":[{"pais":"ARG","pct":30},{"pais":"USA","pct":12},{"pais":"PRY","pct":10},{"pais":"URY","pct":6},{"pais":"RUS","pct":5}],"emprego_mil":45,"tempo_meses":[24,48],"impacto_amb":1,"grupos":["agro","empresariado","sindicatos"],"ipca_peso":0,"estocavel":0,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Anfavea (colhedoras+tratores, est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"motores","nome":"Motores, geradores e turbinas","setor":"industria","icon":"Cog","exp_usd_bi":2.2,"pct_exp":0.63,"pct_pib":0.1,"prod":null,"unid":"n/d","cons_int":null,"preco_int":null,"volat":0.03,"compradores":[{"pais":"USA","pct":30},{"pais":"ARG","pct":12},{"pais":"MEX","pct":10},{"pais":"DEU","pct":6},{"pais":"CHN","pct":4}],"emprego_mil":60,"tempo_meses":[24,48],"impacto_amb":1,"grupos":["empresariado","sindicatos"],"ipca_peso":0,"estocavel":0,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Abimaq/WEG (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"maq_eletricas","nome":"Máquinas e equipamentos elétricos","setor":"industria","icon":"Zap","exp_usd_bi":3.5,"pct_exp":1,"pct_pib":0.15,"prod":null,"unid":"n/d","cons_int":null,"preco_int":null,"volat":0.03,"compradores":[{"pais":"USA","pct":20},{"pais":"ARG","pct":12},{"pais":"MEX","pct":9},{"pais":"CHL","pct":6},{"pais":"COL","pct":5}],"emprego_mil":110,"tempo_meses":[24,48],"impacto_amb":1,"grupos":["empresariado","sindicatos"],"ipca_peso":0,"estocavel":0,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Abinee (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"calcados","nome":"Calçados","setor":"industria","icon":"Footprints","exp_usd_bi":0.9,"pct_exp":0.26,"pct_pib":0.04,"prod":0.82,"unid":"bi pares","cons_int":0.78,"preco_int":{"valor":12,"unid":"US$/par","fonte":"Média export Abicalçados (est.)","est":true},"volat":0.02,"compradores":[{"pais":"USA","pct":20},{"pais":"ARG","pct":12},{"pais":"FRA","pct":6},{"pais":"COL","pct":5},{"pais":"URY","pct":5}],"emprego_mil":270,"tempo_meses":[24,48],"impacto_amb":0,"grupos":["empresariado","sindicatos","periferia","classemedia"],"ipca_peso":0.8,"estocavel":0,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Abicalçados (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"quimicos","nome":"Produtos químicos orgânicos e inorgânicos","setor":"industria","icon":"FlaskConical","exp_usd_bi":6.5,"pct_exp":1.86,"pct_pib":0.29,"prod":null,"unid":"n/d","cons_int":null,"preco_int":null,"volat":0.04,"compradores":[{"pais":"USA","pct":18},{"pais":"ARG","pct":12},{"pais":"CHN","pct":9},{"pais":"NLD","pct":6},{"pais":"CHL","pct":6}],"emprego_mil":330,"tempo_meses":[24,48],"impacto_amb":2,"grupos":["empresariado","sindicatos"],"ipca_peso":0,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Abiquim (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"plasticos","nome":"Plásticos e borracha","setor":"industria","icon":"Package","exp_usd_bi":3.7,"pct_exp":1.06,"pct_pib":0.16,"prod":6.8,"unid":"mi t","cons_int":7,"preco_int":{"valor":1300,"unid":"US$/t","fonte":"Resinas PE/PP (est.)","est":true},"volat":0.04,"compradores":[{"pais":"ARG","pct":25},{"pais":"USA","pct":10},{"pais":"COL","pct":8},{"pais":"CHL","pct":7},{"pais":"PRY","pct":6}],"emprego_mil":370,"tempo_meses":[24,48],"impacto_amb":2,"grupos":["empresariado","sindicatos"],"ipca_peso":0,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Abiplast (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"medicamentos","nome":"Medicamentos e farmacêuticos","setor":"industria","icon":"Pill","exp_usd_bi":1.5,"pct_exp":0.43,"pct_pib":0.07,"prod":null,"unid":"n/d","cons_int":null,"preco_int":null,"volat":0.02,"compradores":[{"pais":"ARG","pct":20},{"pais":"PRY","pct":10},{"pais":"URY","pct":8},{"pais":"COL","pct":6},{"pais":"MEX","pct":5}],"emprego_mil":140,"tempo_meses":[24,48],"impacto_amb":0,"grupos":["empresariado","classemedia","periferia"],"ipca_peso":3.2,"estocavel":0,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Interfarma (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"cimento_vidro","nome":"Cimento, vidro e cerâmica","setor":"industria","icon":"Building2","exp_usd_bi":1.1,"pct_exp":0.32,"pct_pib":0.05,"prod":62,"unid":"mi t","cons_int":62,"preco_int":{"valor":55,"unid":"US$/t","fonte":"Valor médio export (est.)","est":true},"volat":0.03,"compradores":[{"pais":"USA","pct":15},{"pais":"PRY","pct":10},{"pais":"ARG","pct":10},{"pais":"URY","pct":8},{"pais":"BOL","pct":6}],"emprego_mil":120,"tempo_meses":[24,48],"impacto_amb":2,"grupos":["empresariado","sindicatos"],"ipca_peso":0,"estocavel":0,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; SNIC (cimento ~62 mi t, est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"eletro_telecom","nome":"Eletrônicos e telecomunicações","setor":"industria","icon":"Smartphone","exp_usd_bi":1.6,"pct_exp":0.46,"pct_pib":0.07,"prod":null,"unid":"n/d","cons_int":null,"preco_int":null,"volat":0.03,"compradores":[{"pais":"ARG","pct":25},{"pais":"USA","pct":12},{"pais":"MEX","pct":8},{"pais":"PRY","pct":8},{"pais":"COL","pct":5}],"emprego_mil":120,"tempo_meses":[24,48],"impacto_amb":1,"grupos":["empresariado","sindicatos"],"ipca_peso":1.1,"estocavel":0,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; Abinee (est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"sebo_gorduras","nome":"Sebo e gorduras animais","setor":"agro","icon":"Droplet","exp_usd_bi":0.7,"pct_exp":0.2,"pct_pib":0.03,"prod":2,"unid":"mi t","cons_int":1.5,"preco_int":{"valor":900,"unid":"US$/t","fonte":"Valor médio exp. (est.)","est":true},"volat":0.05,"compradores":[{"pais":"CHN","pct":30},{"pais":"ARG","pct":15},{"pais":"NLD","pct":10},{"pais":"USA","pct":8},{"pais":"IDN","pct":6}],"emprego_mil":10,"tempo_meses":[6,12],"impacto_amb":1,"grupos":["agro"],"ipca_peso":0,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]},
+ {"k":"carvao_mineral","nome":"Carvão e coque","setor":"mineracao","icon":"Mountain","exp_usd_bi":0.1,"pct_exp":0.03,"pct_pib":0,"prod":5.5,"unid":"mi t","cons_int":30,"preco_int":{"valor":130,"unid":"US$/t","fonte":"Carvão térmico (est.)","est":true},"volat":0.07,"compradores":[{"pais":"ARG","pct":30},{"pais":"URY","pct":20},{"pais":"CHN","pct":15},{"pais":"IND","pct":10},{"pais":"PRY","pct":5}],"emprego_mil":10,"tempo_meses":[12,36],"impacto_amb":3,"grupos":["empresariado"],"ipca_peso":0,"estocavel":1,"fonte":"Estimativa: base MDIC/Comex Stat 2024 ajustada por variação 2025 reportada; checar Comex Stat; EPE (Brasil importa a maior parte, est.)","est":true,"est_campos":["exp_usd_bi","prod","cons_int","preco_int","volat","compradores","emprego_mil","ipca_peso"]}
+];
+const IND_NOVAS = [
+ {"k":"chips","nome":"Semicondutores / chips","setor":"industria","icon":"Cpu","nova":true,"exp_usd_bi":0,"pct_exp":0,"pct_pib":0,"prod":0.001,"unid":"bi un","cons_int":null,"imp_usd_bi":6,"dep_import_pct":97,"preco_int":null,"volat":0.06,"compradores":[],"emprego_mil":0.5,"tempo_meses":[24,48],"impacto_amb":1,"grupos":["empresariado","sindicatos","mercado"],"ipca_peso":0,"estocavel":true,"invest_inicio_rbi":12,"tempo_primeira_producao_meses":48,"nota":"Fábrica de ponta (fab) custa US$ 10–20 bi; no jogo, escalas de encapsulamento (OSAT) são mais baratas.","fonte":"Imp. est. MDIC (circuitos integrados ~US$6 bi); Brasil tem apenas encapsulamento/CEITEC; invest.: ordem de grandeza de fab/OSAT (est.)","est":true,"est_campos":["imp_usd_bi","dep_import_pct","preco_int","volat","invest_inicio_rbi","tempo_primeira_producao_meses","emprego_mil"]},
+ {"k":"fert_potassio","nome":"Fertilizante potássico (KCl)","setor":"industria","icon":"Sprout","nova":true,"exp_usd_bi":0,"pct_exp":0,"pct_pib":0,"prod":0.5,"unid":"mi t","cons_int":null,"imp_usd_bi":4.8,"dep_import_pct":97,"preco_int":{"valor":360,"unid":"US$/t","fonte":"KCl Brasil CFR (est.)","est":true},"volat":0.07,"compradores":[],"emprego_mil":3,"tempo_meses":[24,48],"impacto_amb":2,"grupos":["agro","empresariado","indigenas"],"ipca_peso":0,"estocavel":true,"invest_inicio_rbi":12,"tempo_primeira_producao_meses":48,"nota":"Reserva em Autazes/AM em disputa com povos indígenas Mura.","fonte":"Importação ~12–13 mi t/ano (MDIC/Datagro, est.); Autazes (AM) é o projeto de referência","est":true,"est_campos":["imp_usd_bi","dep_import_pct","preco_int","volat","invest_inicio_rbi","tempo_primeira_producao_meses","emprego_mil"]},
+ {"k":"fert_nitrogenados","nome":"Fertilizantes nitrogenados (ureia, amônia)","setor":"industria","icon":"Sprout","nova":true,"exp_usd_bi":0,"pct_exp":0,"pct_pib":0,"prod":1,"unid":"mi t","cons_int":null,"imp_usd_bi":5.2,"dep_import_pct":85,"preco_int":{"valor":420,"unid":"US$/t","fonte":"Ureia Granulada CFR Brasil (est.)","est":true},"volat":0.08,"compradores":[],"emprego_mil":4,"tempo_meses":[24,48],"impacto_amb":2,"grupos":["agro","empresariado","sindicatos"],"ipca_peso":0,"estocavel":true,"invest_inicio_rbi":8,"tempo_primeira_producao_meses":40,"nota":"Depende de gás natural barato.","fonte":"Imp. est. MDIC/Datagro; FAFENs/UFN-III (Petrobras)","est":true,"est_campos":["imp_usd_bi","dep_import_pct","preco_int","volat","invest_inicio_rbi","tempo_primeira_producao_meses","emprego_mil"]},
+ {"k":"fert_fosfatados","nome":"Fertilizantes fosfatados (MAP/TSP)","setor":"industria","icon":"Sprout","nova":true,"exp_usd_bi":0,"pct_exp":0,"pct_pib":0,"prod":2.4,"unid":"mi t","cons_int":null,"imp_usd_bi":4,"dep_import_pct":60,"preco_int":{"valor":650,"unid":"US$/t","fonte":"MAP CFR Brasil (est.)","est":true},"volat":0.07,"compradores":[],"emprego_mil":5,"tempo_meses":[24,48],"impacto_amb":2,"grupos":["agro","empresariado"],"ipca_peso":0,"estocavel":true,"invest_inicio_rbi":5,"tempo_primeira_producao_meses":36,"nota":"","fonte":"Imp. est.; produção local de fosfatados ~ 40% da demanda (Anda, est.)","est":true,"est_campos":["imp_usd_bi","dep_import_pct","preco_int","volat","invest_inicio_rbi","tempo_primeira_producao_meses","emprego_mil"]},
+ {"k":"baterias_litio","nome":"Baterias e lítio processado","setor":"industria","icon":"BatteryCharging","nova":true,"exp_usd_bi":0,"pct_exp":0,"pct_pib":0,"prod":0,"unid":"GWh","cons_int":null,"imp_usd_bi":1.8,"dep_import_pct":100,"preco_int":{"valor":110,"unid":"US$/kWh","fonte":"BNEF pack price (est.)","est":true},"volat":0.06,"compradores":[],"emprego_mil":0.4,"tempo_meses":[24,48],"impacto_amb":2,"grupos":["empresariado","sindicatos","mercado"],"ipca_peso":0,"estocavel":true,"invest_inicio_rbi":6,"tempo_primeira_producao_meses":36,"nota":"Combina com lítio exportado bruto (1/3 do valor fica no exterior).","fonte":"Imp. est. (baterias Li-íon, MDIC); Vale do Jequitinhonha como polo de lítio","est":true,"est_campos":["imp_usd_bi","dep_import_pct","preco_int","volat","invest_inicio_rbi","tempo_primeira_producao_meses","emprego_mil"]},
+ {"k":"paineis_solares","nome":"Painéis solares fotovoltaicos","setor":"industria","icon":"Sun","nova":true,"exp_usd_bi":0,"pct_exp":0,"pct_pib":0,"prod":0.3,"unid":"GW","cons_int":null,"imp_usd_bi":2.3,"dep_import_pct":95,"preco_int":{"valor":0.11,"unid":"US$/W","fonte":"Módulos TOPCon China FOB (est.)","est":true},"volat":0.05,"compradores":[],"emprego_mil":1.5,"tempo_meses":[24,36],"impacto_amb":1,"grupos":["empresariado","sindicatos","classemedia"],"ipca_peso":0,"estocavel":true,"invest_inicio_rbi":3,"tempo_primeira_producao_meses":24,"nota":"","fonte":"Imp. est. (Absolar/MDIC); poucas linhas de montagem locais","est":true,"est_campos":["imp_usd_bi","dep_import_pct","preco_int","volat","invest_inicio_rbi","tempo_primeira_producao_meses","emprego_mil"]},
+ {"k":"ifa","nome":"Insumos farmacêuticos (IFA) e fármacos","setor":"industria","icon":"Pill","nova":true,"exp_usd_bi":0,"pct_exp":0,"pct_pib":0,"prod":0.01,"unid":"mi t","cons_int":null,"imp_usd_bi":2.2,"dep_import_pct":92,"preco_int":null,"volat":0.03,"compradores":[],"emprego_mil":1.5,"tempo_meses":[24,48],"impacto_amb":0,"grupos":["empresariado","classemedia","periferia","sindicatos"],"ipca_peso":0,"estocavel":true,"invest_inicio_rbi":4,"tempo_primeira_producao_meses":36,"nota":"","fonte":"IFA ~90% importado (Abiquifi/Interfarma, est.); medicamentos US$ ~7 bi (Fazcomex/MDIC)","est":true,"est_campos":["imp_usd_bi","dep_import_pct","preco_int","volat","invest_inicio_rbi","tempo_primeira_producao_meses","emprego_mil"]},
+ {"k":"imas_terras_raras","nome":"Ímãs de terras raras (NdFeB)","setor":"industria","icon":"Magnet","nova":true,"exp_usd_bi":0,"pct_exp":0,"pct_pib":0,"prod":0,"unid":"t","cons_int":null,"imp_usd_bi":0.4,"dep_import_pct":100,"preco_int":null,"volat":0.09,"compradores":[],"emprego_mil":0.3,"tempo_meses":[24,48],"impacto_amb":2,"grupos":["empresariado","mercado"],"ipca_peso":0,"estocavel":true,"invest_inicio_rbi":5,"tempo_primeira_producao_meses":48,"nota":"Joint venture/exigência de beneficiamento local é opção da política.","fonte":"Imp. est.; Brasil tem a 2ª maior reserva mundial (USGS) mas não processa; China domina 90% da separação","est":true,"est_campos":["imp_usd_bi","dep_import_pct","preco_int","volat","invest_inicio_rbi","tempo_primeira_producao_meses","emprego_mil"]},
+ {"k":"h2_verde","nome":"Hidrogênio verde e derivados","setor":"industria","icon":"Atom","nova":true,"exp_usd_bi":0,"pct_exp":0,"pct_pib":0,"prod":0,"unid":"mi t","cons_int":null,"imp_usd_bi":0,"dep_import_pct":0,"preco_int":{"valor":5500,"unid":"US$/t","fonte":"H2 verde custo est. (est.)","est":true},"volat":0.07,"compradores":[],"emprego_mil":1,"tempo_meses":[36,48],"impacto_amb":0,"grupos":["empresariado","mercado","sindicatos"],"ipca_peso":0,"estocavel":true,"invest_inicio_rbi":20,"tempo_primeira_producao_meses":60,"nota":"Primeiros volumes via amônia verde para exportação (NLD, DEU).","fonte":"Projetos em CE (Pecém) e PE (Suape); custo e demanda ainda incertos (est.)","est":true,"est_campos":["imp_usd_bi","dep_import_pct","preco_int","volat","invest_inicio_rbi","tempo_primeira_producao_meses","emprego_mil"]},
+ {"k":"aco_verde","nome":"Aço verde (DRI/H2) e ferro briquetado","setor":"industria","icon":"Hammer","nova":true,"exp_usd_bi":0,"pct_exp":0,"pct_pib":0,"prod":0,"unid":"mi t","cons_int":null,"imp_usd_bi":0,"dep_import_pct":0,"preco_int":{"valor":900,"unid":"US$/t","fonte":"Prêmio de aço verde (est.)","est":true},"volat":0.06,"compradores":[],"emprego_mil":1,"tempo_meses":[24,48],"impacto_amb":1,"grupos":["empresariado","sindicatos"],"ipca_peso":0,"estocavel":true,"invest_inicio_rbi":15,"tempo_primeira_producao_meses":48,"nota":"Usa minério de ferro nacional e energia limpa.","fonte":"Hubs de ferro reduzido (CE/PA) em estudo (est.)","est":true,"est_campos":["imp_usd_bi","dep_import_pct","preco_int","volat","invest_inicio_rbi","tempo_primeira_producao_meses","emprego_mil"]},
+ {"k":"navios","nome":"Navios e estaleiros","setor":"industria","icon":"Ship","nova":true,"exp_usd_bi":0,"pct_exp":0,"pct_pib":0,"prod":0.05,"unid":"mi t DWT","cons_int":null,"imp_usd_bi":3.2,"dep_import_pct":90,"preco_int":null,"volat":0.04,"compradores":[],"emprego_mil":5,"tempo_meses":[24,48],"impacto_amb":1,"grupos":["empresariado","sindicatos","periferia"],"ipca_peso":0,"estocavel":true,"invest_inicio_rbi":8,"tempo_primeira_producao_meses":36,"nota":"","fonte":"Imp. 2025 inclui navio-plataforma US$2,66 bi (CEBC/MDIC); estaleiros brasileiros em retomada (est.)","est":true,"est_campos":["imp_usd_bi","dep_import_pct","preco_int","volat","invest_inicio_rbi","tempo_primeira_producao_meses","emprego_mil"]},
+ {"k":"trens","nome":"Trens e material rodante","setor":"industria","icon":"TrainFront","nova":true,"exp_usd_bi":0,"pct_exp":0,"pct_pib":0,"prod":0.1,"unid":"mil un","cons_int":null,"imp_usd_bi":0.5,"dep_import_pct":50,"preco_int":null,"volat":0.03,"compradores":[],"emprego_mil":2,"tempo_meses":[24,48],"impacto_amb":0,"grupos":["empresariado","sindicatos","classemedia"],"ipca_peso":0,"estocavel":true,"invest_inicio_rbi":5,"tempo_primeira_producao_meses":36,"nota":"","fonte":"Imp. est.; Brasil tem fabricantes de vagões, pouca capacidade de locomotivas e trens de passageiros (est.)","est":true,"est_campos":["imp_usd_bi","dep_import_pct","preco_int","volat","invest_inicio_rbi","tempo_primeira_producao_meses","emprego_mil"]}
+];
+const COM_IMPORTS = [
+ {"k":"diesel","nome":"Óleo diesel","setor":"energia","icon":"Fuel","imp_usd_bi":8.5,"fornecedores":[{"pais":"USA","pct":50},{"pais":"RUS","pct":20},{"pais":"IND","pct":10},{"pais":"ARE","pct":5},{"pais":"SAU","pct":3}],"preco_ref":{"valor":690,"unid":"US$/t","fonte":"Diesel S10 Golfo EUA (est.)","est":true},"ipca_peso":0.3,"estocavel":1,"prod_nacional":1,"autossuf_pct":80,"ind_k":"combustiveis","fonte":"StoneX/ANP: importação ~14,5 bi L em 2024; valor est. 2025","est":true},
+ {"k":"gas_natural","nome":"Gás natural (Bolívia, GNL)","setor":"energia","icon":"Flame","imp_usd_bi":3.4,"fornecedores":[{"pais":"BOL","pct":35},{"pais":"USA","pct":30},{"pais":"ARG","pct":15},{"pais":"QAT","pct":8},{"pais":"NGA","pct":5}],"preco_ref":{"valor":9,"unid":"US$/MMBtu","fonte":"Henry Hub/TTF mix (est.)","est":true},"ipca_peso":0.2,"estocavel":0,"prod_nacional":1,"autossuf_pct":70,"ind_k":null,"fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true},
+ {"k":"nafta","nome":"Nafta e GLP","setor":"energia","icon":"Flame","imp_usd_bi":4,"fornecedores":[{"pais":"USA","pct":55},{"pais":"ARG","pct":10},{"pais":"DZA","pct":8},{"pais":"NGA","pct":5},{"pais":"SAU","pct":5}],"preco_ref":{"valor":560,"unid":"US$/t","fonte":"Nafta CIF NWE (est.)","est":true},"ipca_peso":1.2,"estocavel":1,"prod_nacional":1,"autossuf_pct":60,"ind_k":null,"fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true},
+ {"k":"carvao","nome":"Carvão mineral e coque","setor":"mineracao","icon":"Mountain","imp_usd_bi":2.2,"fornecedores":[{"pais":"AUS","pct":30},{"pais":"USA","pct":25},{"pais":"RUS","pct":15},{"pais":"COL","pct":10},{"pais":"CAN","pct":8}],"preco_ref":{"valor":130,"unid":"US$/t","fonte":"Carvão térmico/met. (est.)","est":true},"ipca_peso":0,"estocavel":1,"prod_nacional":1,"autossuf_pct":15,"ind_k":"carvao_mineral","fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true},
+ {"k":"fert_potassio_imp","nome":"Cloreto de potássio","setor":"agro","icon":"Sprout","imp_usd_bi":4.8,"fornecedores":[{"pais":"CAN","pct":34},{"pais":"RUS","pct":25},{"pais":"BLR","pct":14},{"pais":"ISR","pct":7},{"pais":"DEU","pct":6}],"preco_ref":{"valor":360,"unid":"US$/t","fonte":"KCl CFR Brasil (est.)","est":true},"ipca_peso":0,"estocavel":1,"prod_nacional":0,"autossuf_pct":3,"ind_k":"fert_potassio","fonte":"Datagro/MDIC (volume) + preço est.","est":true},
+ {"k":"fert_ureia","nome":"Ureia e nitrogenados","setor":"agro","icon":"Sprout","imp_usd_bi":5.2,"fornecedores":[{"pais":"RUS","pct":24},{"pais":"QAT","pct":15},{"pais":"CHN","pct":10},{"pais":"DZA","pct":9},{"pais":"NGA","pct":8}],"preco_ref":{"valor":420,"unid":"US$/t","fonte":"Ureia CFR Brasil (est.)","est":true},"ipca_peso":0,"estocavel":1,"prod_nacional":1,"autossuf_pct":15,"ind_k":"fert_nitrogenados","fonte":"Datagro/MDIC; China ultrapassou a Rússia em volume total de fertilizantes em 2025 (CNA)","est":true},
+ {"k":"fert_fosfato_imp","nome":"MAP/TSP e fosfatados","setor":"agro","icon":"Sprout","imp_usd_bi":4,"fornecedores":[{"pais":"MAR","pct":30},{"pais":"RUS","pct":23},{"pais":"CHN","pct":15},{"pais":"SAU","pct":10},{"pais":"USA","pct":5}],"preco_ref":{"valor":650,"unid":"US$/t","fonte":"MAP CFR Brasil (est.)","est":true},"ipca_peso":0,"estocavel":1,"prod_nacional":1,"autossuf_pct":40,"ind_k":"fert_fosfatados","fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true},
+ {"k":"trigo","nome":"Trigo","setor":"agro","icon":"Wheat","imp_usd_bi":1.7,"fornecedores":[{"pais":"ARG","pct":80},{"pais":"PRY","pct":7},{"pais":"URY","pct":5},{"pais":"USA","pct":4},{"pais":"CAN","pct":3}],"preco_ref":{"valor":265,"unid":"US$/t","fonte":"Trigo CBOT/Rosário (est.)","est":true},"ipca_peso":0.65,"estocavel":1,"prod_nacional":1,"autossuf_pct":55,"ind_k":null,"fonte":"MDIC (est.); Brasil importa ~5–6 mi t/ano; Conab","est":true},
+ {"k":"arroz_imp","nome":"Arroz","setor":"agro","icon":"Wheat","imp_usd_bi":0.45,"fornecedores":[{"pais":"URY","pct":35},{"pais":"PRY","pct":25},{"pais":"ARG","pct":15},{"pais":"IND","pct":10},{"pais":"GUY","pct":8}],"preco_ref":{"valor":470,"unid":"US$/t","fonte":"Arroz tailandês 5% (est.)","est":true},"ipca_peso":0.75,"estocavel":1,"prod_nacional":1,"autossuf_pct":92,"ind_k":"arroz","fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true},
+ {"k":"azeite","nome":"Azeite de oliva","setor":"agro","icon":"Droplet","imp_usd_bi":1,"fornecedores":[{"pais":"PRT","pct":65},{"pais":"ESP","pct":20},{"pais":"ARG","pct":6},{"pais":"CHL","pct":4},{"pais":"ITA","pct":3}],"preco_ref":{"valor":5200,"unid":"US$/t","fonte":"Azeite extra virgem (queda em 2025; est.)","est":true},"ipca_peso":0.15,"estocavel":1,"prod_nacional":0,"autossuf_pct":0,"ind_k":null,"fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true},
+ {"k":"bacalhau","nome":"Bacalhau e pescados importados","setor":"agro","icon":"Fish","imp_usd_bi":0.4,"fornecedores":[{"pais":"NOR","pct":50},{"pais":"PRT","pct":20},{"pais":"CHN","pct":12},{"pais":"CHL","pct":8},{"pais":"RUS","pct":4}],"preco_ref":{"valor":9500,"unid":"US$/t","fonte":"Bacalhau seco salgado (est.)","est":true},"ipca_peso":0.2,"estocavel":1,"prod_nacional":0,"autossuf_pct":0,"ind_k":null,"fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true},
+ {"k":"vinho","nome":"Vinhos","setor":"agro","icon":"Wine","imp_usd_bi":0.55,"fornecedores":[{"pais":"CHL","pct":30},{"pais":"ARG","pct":20},{"pais":"PRT","pct":18},{"pais":"ITA","pct":12},{"pais":"FRA","pct":10}],"preco_ref":{"valor":5.5,"unid":"US$/L","fonte":"Valor médio import (est.)","est":true},"ipca_peso":0.25,"estocavel":1,"prod_nacional":1,"autossuf_pct":35,"ind_k":null,"fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true},
+ {"k":"malte","nome":"Cevada e malte","setor":"agro","icon":"Wheat","imp_usd_bi":0.65,"fornecedores":[{"pais":"ARG","pct":45},{"pais":"URY","pct":20},{"pais":"CAN","pct":12},{"pais":"DEU","pct":8},{"pais":"BEL","pct":5}],"preco_ref":{"valor":340,"unid":"US$/t","fonte":"Malte cervejeiro (est.)","est":true},"ipca_peso":0,"estocavel":1,"prod_nacional":1,"autossuf_pct":35,"ind_k":null,"fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true},
+ {"k":"batata","nome":"Batata (pré-frita e semente)","setor":"agro","icon":"Carrot","imp_usd_bi":0.4,"fornecedores":[{"pais":"BEL","pct":35},{"pais":"NLD","pct":25},{"pais":"ARG","pct":15},{"pais":"DEU","pct":10},{"pais":"CAN","pct":8}],"preco_ref":{"valor":900,"unid":"US$/t","fonte":"Valor médio import (est.)","est":true},"ipca_peso":0.7,"estocavel":0,"prod_nacional":1,"autossuf_pct":95,"ind_k":null,"fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true},
+ {"k":"leite_po","nome":"Leite em pó e laticínios","setor":"agro","icon":"Milk","imp_usd_bi":0.55,"fornecedores":[{"pais":"ARG","pct":45},{"pais":"URY","pct":30},{"pais":"NZL","pct":10},{"pais":"NLD","pct":5},{"pais":"CHL","pct":3}],"preco_ref":{"valor":3600,"unid":"US$/t","fonte":"GDT leite integral em pó (est.)","est":true},"ipca_peso":0.9,"estocavel":1,"prod_nacional":1,"autossuf_pct":95,"ind_k":null,"fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true},
+ {"k":"cacau_imp","nome":"Cacau e derivados","setor":"agro","icon":"Cookie","imp_usd_bi":0.3,"fornecedores":[{"pais":"CIV","pct":40},{"pais":"GHA","pct":25},{"pais":"ECU","pct":15},{"pais":"PER","pct":10},{"pais":"NGA","pct":5}],"preco_ref":{"valor":8800,"unid":"US$/t","fonte":"ICE cacau (est.)","est":true},"ipca_peso":0,"estocavel":1,"prod_nacional":1,"autossuf_pct":70,"ind_k":"cacau_choc","fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true},
+ {"k":"chips_imp","nome":"Circuitos integrados e semicondutores","setor":"industria","icon":"Cpu","imp_usd_bi":6,"fornecedores":[{"pais":"CHN","pct":30},{"pais":"TWN","pct":20},{"pais":"USA","pct":15},{"pais":"KOR","pct":10},{"pais":"MYS","pct":8}],"preco_ref":null,"ipca_peso":0,"estocavel":1,"prod_nacional":0,"autossuf_pct":3,"ind_k":"chips","fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true},
+ {"k":"eletronicos","nome":"Eletrônicos de consumo e computadores","setor":"industria","icon":"Smartphone","imp_usd_bi":22,"fornecedores":[{"pais":"CHN","pct":45},{"pais":"VNM","pct":10},{"pais":"USA","pct":8},{"pais":"MYS","pct":6},{"pais":"KOR","pct":5}],"preco_ref":null,"ipca_peso":1.1,"estocavel":0,"prod_nacional":1,"autossuf_pct":35,"ind_k":null,"fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true},
+ {"k":"telecom","nome":"Equipamentos de telecom","setor":"industria","icon":"Radio","imp_usd_bi":5.5,"fornecedores":[{"pais":"CHN","pct":48},{"pais":"USA","pct":12},{"pais":"VNM","pct":8},{"pais":"KOR","pct":6},{"pais":"FIN","pct":4}],"preco_ref":null,"ipca_peso":0,"estocavel":0,"prod_nacional":1,"autossuf_pct":30,"ind_k":null,"fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true},
+ {"k":"medicamentos_imp","nome":"Medicamentos","setor":"industria","icon":"Pill","imp_usd_bi":7.3,"fornecedores":[{"pais":"DEU","pct":15},{"pais":"USA","pct":14},{"pais":"CHE","pct":12},{"pais":"CHN","pct":8},{"pais":"IND","pct":6}],"preco_ref":null,"ipca_peso":3.2,"estocavel":0,"prod_nacional":1,"autossuf_pct":60,"ind_k":"medicamentos","fonte":"Fazcomex/Comex Stat (US$7,3 bi, 4ª posição; verificar ano exato)","est":true},
+ {"k":"ifa_imp","nome":"Insumos farmacêuticos (IFA)","setor":"industria","icon":"Pill","imp_usd_bi":2.2,"fornecedores":[{"pais":"CHN","pct":40},{"pais":"IND","pct":25},{"pais":"DEU","pct":8},{"pais":"ITA","pct":6},{"pais":"USA","pct":5}],"preco_ref":null,"ipca_peso":0,"estocavel":1,"prod_nacional":0,"autossuf_pct":8,"ind_k":"ifa","fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true},
+ {"k":"veiculos","nome":"Veículos (inclui híbridos e elétricos)","setor":"industria","icon":"Car","imp_usd_bi":13,"fornecedores":[{"pais":"CHN","pct":28},{"pais":"ARG","pct":25},{"pais":"MEX","pct":12},{"pais":"DEU","pct":8},{"pais":"KOR","pct":6}],"preco_ref":{"valor":22000,"unid":"US$/un","fonte":"Valor médio unit. importado (est.)","est":true},"ipca_peso":3.8,"estocavel":0,"prod_nacional":1,"autossuf_pct":85,"ind_k":"automoveis","fonte":"CEBC/MDIC: importação de carros elétricos/híbridos da China em alta em 2025","est":true},
+ {"k":"autopecas_imp","nome":"Autopeças","setor":"industria","icon":"Cog","imp_usd_bi":11,"fornecedores":[{"pais":"CHN","pct":22},{"pais":"DEU","pct":14},{"pais":"ARG","pct":12},{"pais":"USA","pct":11},{"pais":"MEX","pct":7}],"preco_ref":null,"ipca_peso":0.4,"estocavel":0,"prod_nacional":1,"autossuf_pct":75,"ind_k":"autopecas","fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true},
+ {"k":"maquinas","nome":"Máquinas e equipamentos","setor":"industria","icon":"Cog","imp_usd_bi":26,"fornecedores":[{"pais":"CHN","pct":32},{"pais":"USA","pct":16},{"pais":"DEU","pct":12},{"pais":"ITA","pct":6},{"pais":"JPN","pct":5}],"preco_ref":null,"ipca_peso":0,"estocavel":0,"prod_nacional":1,"autossuf_pct":60,"ind_k":null,"fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true},
+ {"k":"quimicos_imp","nome":"Produtos químicos e plásticos","setor":"industria","icon":"FlaskConical","imp_usd_bi":22,"fornecedores":[{"pais":"CHN","pct":24},{"pais":"USA","pct":20},{"pais":"DEU","pct":9},{"pais":"IND","pct":6},{"pais":"ARG","pct":5}],"preco_ref":{"valor":1300,"unid":"US$/t","fonte":"Resinas e químicos (est.)","est":true},"ipca_peso":0,"estocavel":1,"prod_nacional":1,"autossuf_pct":60,"ind_k":"quimicos","fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true},
+ {"k":"cobre_catodo","nome":"Cobre refinado (catodos)","setor":"mineracao","icon":"Pickaxe","imp_usd_bi":1.8,"fornecedores":[{"pais":"CHL","pct":50},{"pais":"PER","pct":15},{"pais":"COD","pct":8},{"pais":"ARG","pct":5},{"pais":"MEX","pct":4}],"preco_ref":{"valor":9800,"unid":"US$/t","fonte":"LME cobre (est.)","est":true},"ipca_peso":0,"estocavel":1,"prod_nacional":1,"autossuf_pct":40,"ind_k":"cobre","fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true},
+ {"k":"navio_plataforma","nome":"Plataformas e navios","setor":"industria","icon":"Ship","imp_usd_bi":3.2,"fornecedores":[{"pais":"CHN","pct":83},{"pais":"SGP","pct":8},{"pais":"KOR","pct":4},{"pais":"NLD","pct":3},{"pais":"NOR","pct":2}],"preco_ref":null,"ipca_peso":0,"estocavel":0,"prod_nacional":1,"autossuf_pct":50,"ind_k":"navios","fonte":"CEBC: navio-plataforma US$2,66 bi em 2025 puxou importações da China","est":true},
+ {"k":"paineis_solares_imp","nome":"Painéis solares","setor":"industria","icon":"Sun","imp_usd_bi":2.3,"fornecedores":[{"pais":"CHN","pct":90},{"pais":"VNM","pct":4},{"pais":"MYS","pct":3},{"pais":"USA","pct":2},{"pais":"KOR","pct":1}],"preco_ref":{"valor":0.11,"unid":"US$/W","fonte":"Módulos FOB China (est.)","est":true},"ipca_peso":0,"estocavel":0,"prod_nacional":1,"autossuf_pct":5,"ind_k":"paineis_solares","fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true},
+ {"k":"baterias_imp","nome":"Baterias de íons de lítio","setor":"industria","icon":"BatteryCharging","imp_usd_bi":1.8,"fornecedores":[{"pais":"CHN","pct":70},{"pais":"KOR","pct":10},{"pais":"JPN","pct":6},{"pais":"USA","pct":4},{"pais":"POL","pct":3}],"preco_ref":{"valor":110,"unid":"US$/kWh","fonte":"BNEF (est.)","est":true},"ipca_peso":0,"estocavel":0,"prod_nacional":1,"autossuf_pct":3,"ind_k":"baterias_litio","fonte":"Estimativa baseada em MDIC/Comex Stat 2024–2025 (via imprensa) e participações de origem; checar Comex Stat","est":true}
+];
+const COM_PAISES = [
+ {"k":"CHN","nome":"China","iso2":"cn","bloco":"BRICS","blocos":["BRICS"],"dist_km":19000,"frete_fator":3.86,"exp_br_usd_bi":100.1,"imp_br_usd_bi":70.9,"rival":"USA","compra":["soja_grao","petroleo","minerio_ferro","bovina","celulose","algodao","acucar","frango","cafe_verde","couro","fumo","litio","cobre","terras_raras"],"vende":[{"k":"eletronicos","preco_rel":0.95},{"k":"maquinas","preco_rel":0.9},{"k":"veiculos","preco_rel":0.85},{"k":"fert_ureia","preco_rel":0.95},{"k":"quimicos_imp","preco_rel":0.9},{"k":"paineis_solares_imp","preco_rel":0.9},{"k":"baterias_imp","preco_rel":0.9},{"k":"ifa_imp","preco_rel":0.85},{"k":"telecom","preco_rel":0.9},{"k":"chips_imp","preco_rel":1},{"k":"navio_plataforma","preco_rel":1}],"nota":"Exp.: MDIC 2025 (US$100,1 bi, ~28,7%); imp.: CEBC 2025 (US$70,9 bi); comércio total US$171 bi.","est":false},
+ {"k":"USA","nome":"Estados Unidos","iso2":"us","bloco":"USMCA","blocos":["USMCA"],"dist_km":8300,"frete_fator":2.35,"exp_br_usd_bi":37.7,"imp_br_usd_bi":42,"rival":"CHN","compra":["petroleo","aco_semi","celulose","cafe_verde","bovina","avioes","suco_laranja","madeira","combustiveis","rochas","ouro","mel","pescado"],"vende":[{"k":"diesel","preco_rel":1.05},{"k":"nafta","preco_rel":1},{"k":"chips_imp","preco_rel":1.05},{"k":"maquinas","preco_rel":1.1},{"k":"medicamentos_imp","preco_rel":1.1},{"k":"carvao","preco_rel":1},{"k":"fert_potassio_imp","preco_rel":1},{"k":"quimicos_imp","preco_rel":1.05},{"k":"gas_natural","preco_rel":1}],"nota":"Exp.: MDIC 2025 (US$37,7 bi, -6,6%; tarifaço de 2025). Imp.: estimativa (~15% do total).","est":false},
+ {"k":"ARG","nome":"Argentina","iso2":"ar","bloco":"Mercosul","blocos":["Mercosul"],"dist_km":2000,"frete_fator":1,"exp_br_usd_bi":18.1,"imp_br_usd_bi":12.9,"rival":null,"compra":["automoveis","veiculos_pesados","autopecas","milho","quimicos","plasticos","maq_agricolas","papel","calcados","eletro_telecom","medicamentos"],"vende":[{"k":"trigo","preco_rel":0.95},{"k":"veiculos","preco_rel":1},{"k":"leite_po","preco_rel":0.95},{"k":"malte","preco_rel":0.95},{"k":"gas_natural","preco_rel":1.1},{"k":"vinho","preco_rel":0.95},{"k":"arroz_imp","preco_rel":1},{"k":"carvao","preco_rel":1}],"nota":"Exp.: MDIC 2025 (US$18,1 bi, +31%); imp.: Tendata (4,6% de US$280,4 bi).","est":false},
+ {"k":"NLD","nome":"Países Baixos","iso2":"nl","bloco":"UE","blocos":["UE"],"dist_km":9800,"frete_fator":2.59,"exp_br_usd_bi":11.75,"imp_br_usd_bi":2.5,"rival":null,"compra":["soja_grao","farelo_soja","cafe_verde","suco_laranja","celulose","milho","petroleo","frutas","aco_semi"],"vende":[{"k":"batata","preco_rel":0.95},{"k":"quimicos_imp","preco_rel":1},{"k":"maquinas","preco_rel":1.1}],"nota":"Exp.: Istoé Dinheiro/MDIC 2025 (US$11,75 bi). Porta de entrada de Roterdã para a UE. Imp.: est.","est":false},
+ {"k":"ESP","nome":"Espanha","iso2":"es","bloco":"UE","blocos":["UE"],"dist_km":8000,"frete_fator":2.3,"exp_br_usd_bi":8.79,"imp_br_usd_bi":4.5,"rival":null,"compra":["soja_grao","milho","petroleo","celulose","cafe_verde","farelo_soja","frutas","pescado"],"vende":[{"k":"azeite","preco_rel":1},{"k":"vinho","preco_rel":1.05},{"k":"quimicos_imp","preco_rel":1},{"k":"maquinas","preco_rel":1.05}],"nota":"Exp.: Comtrade via Trading Economics 2025 (US$8,79 bi). Imp.: est.","est":false},
+ {"k":"MEX","nome":"México","iso2":"mx","bloco":"USMCA","blocos":["USMCA","ALADI"],"dist_km":7400,"frete_fator":2.19,"exp_br_usd_bi":7.73,"imp_br_usd_bi":4.5,"rival":null,"compra":["automoveis","autopecas","petroleo","frango","aco_semi","algodao","veiculos_pesados","quimicos","etanol"],"vende":[{"k":"veiculos","preco_rel":1},{"k":"eletronicos","preco_rel":1},{"k":"maquinas","preco_rel":1},{"k":"autopecas_imp","preco_rel":1}],"nota":"Exp.: Istoé Dinheiro/MDIC 2025 (US$7,73 bi). Imp.: est.","est":false},
+ {"k":"CHL","nome":"Chile","iso2":"cl","bloco":"ALADI","blocos":["ALADI","Mercosul associado"],"dist_km":2600,"frete_fator":1.17,"exp_br_usd_bi":7.21,"imp_br_usd_bi":3.9,"rival":null,"compra":["petroleo","combustiveis","bovina","frango","suina","automoveis","papel","plasticos","calcados","cacau_choc"],"vende":[{"k":"cobre_catodo","preco_rel":0.95},{"k":"vinho","preco_rel":0.9},{"k":"bacalhau","preco_rel":1},{"k":"nafta","preco_rel":1}],"nota":"Exp.: Exame/Kinvo 2025 (US$7,21 bi, +8,2%). Imp.: est.","est":false},
+ {"k":"CAN","nome":"Canadá","iso2":"ca","bloco":"USMCA","blocos":["USMCA"],"dist_km":8700,"frete_fator":2.42,"exp_br_usd_bi":7.25,"imp_br_usd_bi":4.2,"rival":null,"compra":["ouro","alumina_bauxita","cafe_verde","aco_semi","combustiveis","suco_laranja","autopecas"],"vende":[{"k":"fert_potassio_imp","preco_rel":0.95},{"k":"trigo","preco_rel":1},{"k":"malte","preco_rel":1},{"k":"quimicos_imp","preco_rel":1},{"k":"carvao","preco_rel":1}],"nota":"Exp.: Exame/Kinvo 2025 (US$7,25 bi, +14,8%). Potássio canadense lidera o mercado brasileiro. Imp.: est.","est":false},
+ {"k":"SGP","nome":"Singapura","iso2":"sg","bloco":"ASEAN","blocos":["ASEAN"],"dist_km":15500,"frete_fator":3.42,"exp_br_usd_bi":7.4,"imp_br_usd_bi":1.8,"rival":null,"compra":["petroleo","combustiveis","suina","niobio","celulose"],"vende":[{"k":"navio_plataforma","preco_rel":1},{"k":"chips_imp","preco_rel":1},{"k":"nafta","preco_rel":1}],"nota":"Exp.: est. (entre Canadá e México no ranking MDIC 2025); hub de petróleo.","est":true},
+ {"k":"IND","nome":"Índia","iso2":"in","bloco":"BRICS","blocos":["BRICS"],"dist_km":14000,"frete_fator":3.21,"exp_br_usd_bi":6.9,"imp_br_usd_bi":8.4,"rival":"CHN","compra":["oleo_soja","acucar","petroleo","ouro","cobre","algodao","manganes","cafe_verde"],"vende":[{"k":"diesel","preco_rel":0.95},{"k":"ifa_imp","preco_rel":0.8},{"k":"quimicos_imp","preco_rel":0.9},{"k":"fert_ureia","preco_rel":1},{"k":"maquinas","preco_rel":0.9}],"nota":"Exp.: est. (10ª posição, Istoé/MDIC); imp.: Tendata (3%).","est":true},
+ {"k":"JPN","nome":"Japão","iso2":"jp","bloco":"Outros","blocos":["Parceria CPTPP-observador"],"dist_km":20000,"frete_fator":3.98,"exp_br_usd_bi":5,"imp_br_usd_bi":6.1,"rival":null,"compra":["minerio_ferro","milho","frango","cafe_verde","suco_laranja","celulose","ouro"],"vende":[{"k":"veiculos","preco_rel":1.1},{"k":"maquinas","preco_rel":1.15},{"k":"autopecas_imp","preco_rel":1.1},{"k":"quimicos_imp","preco_rel":1.1},{"k":"baterias_imp","preco_rel":1.05}],"nota":"Exp.: est.; imp.: Tendata (2,16%).","est":true},
+ {"k":"DEU","nome":"Alemanha","iso2":"de","bloco":"UE","blocos":["UE"],"dist_km":10200,"frete_fator":2.66,"exp_br_usd_bi":5.2,"imp_br_usd_bi":14.3,"rival":null,"compra":["cafe_verde","cobre","soja_grao","farelo_soja","suco_laranja","celulose","aco_lam"],"vende":[{"k":"medicamentos_imp","preco_rel":1.15},{"k":"maquinas","preco_rel":1.2},{"k":"veiculos","preco_rel":1.15},{"k":"autopecas_imp","preco_rel":1.15},{"k":"quimicos_imp","preco_rel":1.1},{"k":"fert_potassio_imp","preco_rel":1}],"nota":"Exp.: NTT Data (1º sem. US$2,6 bi, dobrado, est.); imp.: Tendata (5,1%).","est":true},
+ {"k":"KOR","nome":"Coreia do Sul","iso2":"kr","bloco":"Outros","blocos":["Outros"],"dist_km":19500,"frete_fator":3.92,"exp_br_usd_bi":4.6,"imp_br_usd_bi":5.4,"rival":null,"compra":["minerio_ferro","milho","etanol","farelo_soja","litio","acucar","aco_semi"],"vende":[{"k":"baterias_imp","preco_rel":1.05},{"k":"eletronicos","preco_rel":1.1},{"k":"chips_imp","preco_rel":1},{"k":"veiculos","preco_rel":1.05},{"k":"navio_plataforma","preco_rel":1}],"nota":"Est. 2025 (base 2024).","est":true},
+ {"k":"ITA","nome":"Itália","iso2":"it","bloco":"UE","blocos":["UE"],"dist_km":9200,"frete_fator":2.5,"exp_br_usd_bi":3.4,"imp_br_usd_bi":7.1,"rival":null,"compra":["soja_grao","cafe_verde","celulose","couro","aco_semi","cacau_choc","cimento_vidro"],"vende":[{"k":"maquinas","preco_rel":1.15},{"k":"medicamentos_imp","preco_rel":1.1},{"k":"vinho","preco_rel":1.2},{"k":"quimicos_imp","preco_rel":1.05}],"nota":"Exp.: est.; imp.: Tendata (2,52%).","est":true},
+ {"k":"PRY","nome":"Paraguai","iso2":"py","bloco":"Mercosul","blocos":["Mercosul"],"dist_km":1100,"frete_fator":0.7,"exp_br_usd_bi":4.3,"imp_br_usd_bi":1,"rival":null,"compra":["combustiveis","cimento_vidro","plasticos","quimicos","maq_agricolas","medicamentos","milho"],"vende":[{"k":"arroz_imp","preco_rel":0.97},{"k":"trigo","preco_rel":0.95},{"k":"leite_po","preco_rel":1}],"nota":"Est. 2025 (base 2024). Energia de Itaipu não entra nesta conta.","est":true},
+ {"k":"URY","nome":"Uruguai","iso2":"uy","bloco":"Mercosul","blocos":["Mercosul"],"dist_km":1700,"frete_fator":0.91,"exp_br_usd_bi":2.9,"imp_br_usd_bi":1.9,"rival":null,"compra":["combustiveis","automoveis","plasticos","quimicos","carvao_mineral","papel","moveis"],"vende":[{"k":"arroz_imp","preco_rel":0.97},{"k":"leite_po","preco_rel":0.95},{"k":"malte","preco_rel":1},{"k":"trigo","preco_rel":1}],"nota":"Est. 2025.","est":true},
+ {"k":"BEL","nome":"Bélgica","iso2":"be","bloco":"UE","blocos":["UE"],"dist_km":9500,"frete_fator":2.55,"exp_br_usd_bi":3.8,"imp_br_usd_bi":1.9,"rival":null,"compra":["soja_grao","cafe_verde","celulose","fumo","suco_laranja","aco_semi","farelo_soja"],"vende":[{"k":"batata","preco_rel":0.95},{"k":"quimicos_imp","preco_rel":1}],"nota":"Est. 2025.","est":true},
+ {"k":"FRA","nome":"França","iso2":"fr","bloco":"UE","blocos":["UE"],"dist_km":9000,"frete_fator":2.47,"exp_br_usd_bi":2.8,"imp_br_usd_bi":5.4,"rival":null,"compra":["soja_grao","farelo_soja","cafe_verde","petroleo","celulose","aco_lam"],"vende":[{"k":"medicamentos_imp","preco_rel":1.15},{"k":"maquinas","preco_rel":1.15},{"k":"vinho","preco_rel":1.4},{"k":"veiculos","preco_rel":1.1}],"nota":"Est. 2025.","est":true},
+ {"k":"GBR","nome":"Reino Unido","iso2":"gb","bloco":"Outros","blocos":["Acordo bilateral"],"dist_km":9300,"frete_fator":2.51,"exp_br_usd_bi":3.1,"imp_br_usd_bi":2.9,"rival":null,"compra":["cafe_verde","celulose","frango","suco_laranja","frutas","ouro","pescado"],"vende":[{"k":"medicamentos_imp","preco_rel":1.1},{"k":"maquinas","preco_rel":1.1},{"k":"veiculos","preco_rel":1.1}],"nota":"Est. 2025.","est":true},
+ {"k":"PRT","nome":"Portugal","iso2":"pt","bloco":"UE","blocos":["UE","CPLP"],"dist_km":7600,"frete_fator":2.23,"exp_br_usd_bi":2.8,"imp_br_usd_bi":1.4,"rival":null,"compra":["petroleo","soja_grao","milho","celulose","cafe_verde","rochas"],"vende":[{"k":"azeite","preco_rel":0.95},{"k":"bacalhau","preco_rel":1},{"k":"vinho","preco_rel":1}],"nota":"Est. 2025.","est":true},
+ {"k":"TUR","nome":"Turquia","iso2":"tr","bloco":"Outros","blocos":["Outros"],"dist_km":10500,"frete_fator":2.7,"exp_br_usd_bi":2.6,"imp_br_usd_bi":1.8,"rival":null,"compra":["gado_vivo","minerio_ferro","aco_semi","soja_grao","milho","acucar"],"vende":[{"k":"quimicos_imp","preco_rel":1},{"k":"maquinas","preco_rel":0.95}],"nota":"Est. 2025.","est":true},
+ {"k":"SAU","nome":"Arábia Saudita","iso2":"sa","bloco":"Golfo","blocos":["Golfo"],"dist_km":12500,"frete_fator":3,"exp_br_usd_bi":3,"imp_br_usd_bi":2.2,"rival":null,"compra":["frango","acucar","milho","bovina","ovos"],"vende":[{"k":"fert_fosfato_imp","preco_rel":0.95},{"k":"nafta","preco_rel":1},{"k":"fert_ureia","preco_rel":0.95}],"nota":"Est. 2025. Maior comprador de frango do mundo árabe.","est":true},
+ {"k":"ARE","nome":"Emirados Árabes Unidos","iso2":"ae","bloco":"BRICS","blocos":["BRICS","Golfo"],"dist_km":14000,"frete_fator":3.21,"exp_br_usd_bi":3.9,"imp_br_usd_bi":1.6,"rival":null,"compra":["frango","bovina","acucar","ouro","aluminio","ovos","alumina_bauxita"],"vende":[{"k":"diesel","preco_rel":1},{"k":"nafta","preco_rel":1},{"k":"fert_ureia","preco_rel":0.95}],"nota":"Est. 2025.","est":true},
+ {"k":"IRN","nome":"Irã","iso2":"ir","bloco":"BRICS","blocos":["BRICS"],"dist_km":14500,"frete_fator":3.28,"exp_br_usd_bi":2.8,"imp_br_usd_bi":0.1,"rival":null,"compra":["milho","soja_grao","farelo_soja","bovina","acucar"],"vende":[{"k":"fert_ureia","preco_rel":0.9}],"nota":"Est. 2025. Embargos/sanções não modelados.","est":true},
+ {"k":"EGY","nome":"Egito","iso2":"eg","bloco":"BRICS","blocos":["BRICS"],"dist_km":10800,"frete_fator":2.75,"exp_br_usd_bi":3.2,"imp_br_usd_bi":0.5,"rival":null,"compra":["milho","bovina","gado_vivo","acucar","oleo_soja","frango"],"vende":[{"k":"fert_ureia","preco_rel":1}],"nota":"Est. 2025.","est":true},
+ {"k":"MYS","nome":"Malásia","iso2":"my","bloco":"ASEAN","blocos":["ASEAN"],"dist_km":15500,"frete_fator":3.42,"exp_br_usd_bi":2.9,"imp_br_usd_bi":3,"rival":null,"compra":["minerio_ferro","milho","farelo_soja","soja_grao","petroleo"],"vende":[{"k":"chips_imp","preco_rel":1},{"k":"eletronicos","preco_rel":0.95},{"k":"paineis_solares_imp","preco_rel":0.95}],"nota":"Est. 2025.","est":true},
+ {"k":"VNM","nome":"Vietnã","iso2":"vn","bloco":"ASEAN","blocos":["ASEAN"],"dist_km":17200,"frete_fator":3.64,"exp_br_usd_bi":3,"imp_br_usd_bi":3.2,"rival":null,"compra":["algodao","milho","farelo_soja","soja_grao","couro","fumo","bovina"],"vende":[{"k":"eletronicos","preco_rel":0.9},{"k":"telecom","preco_rel":0.9},{"k":"paineis_solares_imp","preco_rel":0.9}],"nota":"Est. 2025.","est":true},
+ {"k":"THA","nome":"Tailândia","iso2":"th","bloco":"ASEAN","blocos":["ASEAN"],"dist_km":16000,"frete_fator":3.48,"exp_br_usd_bi":2.4,"imp_br_usd_bi":2.7,"rival":null,"compra":["soja_grao","farelo_soja","milho","acucar","cafe_verde"],"vende":[{"k":"eletronicos","preco_rel":0.95},{"k":"quimicos_imp","preco_rel":1},{"k":"arroz_imp","preco_rel":0.95}],"nota":"Est. 2025.","est":true},
+ {"k":"IDN","nome":"Indonésia","iso2":"id","bloco":"ASEAN","blocos":["ASEAN","BRICS"],"dist_km":15800,"frete_fator":3.46,"exp_br_usd_bi":3,"imp_br_usd_bi":2.9,"rival":null,"compra":["farelo_soja","acucar","soja_grao","milho","algodao","etanol"],"vende":[{"k":"quimicos_imp","preco_rel":0.95},{"k":"eletronicos","preco_rel":0.95}],"nota":"Est. 2025.","est":true},
+ {"k":"BGD","nome":"Bangladesh","iso2":"bd","bloco":"Outros","blocos":["Outros"],"dist_km":15500,"frete_fator":3.42,"exp_br_usd_bi":2,"imp_br_usd_bi":0.3,"rival":null,"compra":["oleo_soja","algodao","acucar","soja_grao","milho"],"vende":[],"nota":"Est. 2025.","est":true},
+ {"k":"RUS","nome":"Rússia","iso2":"ru","bloco":"BRICS","blocos":["BRICS"],"dist_km":11500,"frete_fator":2.86,"exp_br_usd_bi":2.6,"imp_br_usd_bi":9.5,"rival":null,"compra":["bovina","acucar","cafe_soluvel","suina","frutas","fumo"],"vende":[{"k":"fert_ureia","preco_rel":0.9},{"k":"fert_fosfato_imp","preco_rel":0.95},{"k":"fert_potassio_imp","preco_rel":0.9},{"k":"diesel","preco_rel":0.85},{"k":"carvao","preco_rel":0.9}],"nota":"Exp.: est.; imp.: Tendata (3,4%). Maior fornecedor de fertilizantes em 2025 em valor; China passou em volume nos 10 meses (CNA).","est":true},
+ {"k":"NGA","nome":"Nigéria","iso2":"ng","bloco":"Outros","blocos":["Outros"],"dist_km":7900,"frete_fator":2.28,"exp_br_usd_bi":1.6,"imp_br_usd_bi":2.7,"rival":null,"compra":["acucar","cimento_vidro","aco_lam","combustiveis","bovina"],"vende":[{"k":"nafta","preco_rel":0.95},{"k":"gas_natural","preco_rel":1},{"k":"cacau_imp","preco_rel":1}],"nota":"Est. 2025.","est":true},
+ {"k":"COL","nome":"Colômbia","iso2":"co","bloco":"ALADI","blocos":["ALADI"],"dist_km":4300,"frete_fator":1.58,"exp_br_usd_bi":3.5,"imp_br_usd_bi":0.7,"rival":null,"compra":["automoveis","veiculos_pesados","papel","plasticos","aco_lam","calcados","autopecas"],"vende":[{"k":"carvao","preco_rel":0.95},{"k":"cacau_imp","preco_rel":1}],"nota":"Est. 2025.","est":true},
+ {"k":"PER","nome":"Peru","iso2":"pe","bloco":"ALADI","blocos":["ALADI","Mercosul associado"],"dist_km":3900,"frete_fator":1.49,"exp_br_usd_bi":3.6,"imp_br_usd_bi":1.2,"rival":null,"compra":["automoveis","veiculos_pesados","combustiveis","plasticos","arroz","papel"],"vende":[{"k":"cobre_catodo","preco_rel":0.95},{"k":"bacalhau","preco_rel":1},{"k":"gas_natural","preco_rel":1}],"nota":"Est. 2025.","est":true},
+ {"k":"BOL","nome":"Bolívia","iso2":"bo","bloco":"Mercosul","blocos":["Mercosul (em adesão)"],"dist_km":2200,"frete_fator":1.06,"exp_br_usd_bi":2.4,"imp_br_usd_bi":2,"rival":null,"compra":["combustiveis","plasticos","quimicos","automoveis","maq_agricolas"],"vende":[{"k":"gas_natural","preco_rel":0.9}],"nota":"Est. 2025. Gás natural boliviano é a principal importação.","est":true},
+ {"k":"ZAF","nome":"África do Sul","iso2":"za","bloco":"BRICS","blocos":["BRICS"],"dist_km":7500,"frete_fator":2.21,"exp_br_usd_bi":2.3,"imp_br_usd_bi":1,"rival":null,"compra":["automoveis","frango","milho","combustiveis","aco_lam","eletro_telecom"],"vende":[{"k":"carvao","preco_rel":1},{"k":"quimicos_imp","preco_rel":1}],"nota":"Est. 2025.","est":true},
+ {"k":"MAR","nome":"Marrocos","iso2":"ma","bloco":"Outros","blocos":["Outros"],"dist_km":6500,"frete_fator":2.03,"exp_br_usd_bi":2.4,"imp_br_usd_bi":3,"rival":null,"compra":["milho","acucar","soja_grao","algodao","combustiveis"],"vende":[{"k":"fert_fosfato_imp","preco_rel":0.95}],"nota":"Est. 2025. Maior fornecedor de fosfatados.","est":true},
+ {"k":"DZA","nome":"Argélia","iso2":"dz","bloco":"Outros","blocos":["Outros"],"dist_km":8200,"frete_fator":2.33,"exp_br_usd_bi":1.5,"imp_br_usd_bi":1,"rival":null,"compra":["acucar","milho","bovina","soja_grao"],"vende":[{"k":"fert_ureia","preco_rel":0.95},{"k":"nafta","preco_rel":0.95}],"nota":"Est. 2025.","est":true},
+ {"k":"CHE","nome":"Suíça","iso2":"ch","bloco":"Outros","blocos":["EFTA"],"dist_km":9700,"frete_fator":2.58,"exp_br_usd_bi":1.2,"imp_br_usd_bi":3.5,"rival":null,"compra":["ouro","cafe_verde","aluminio","niobio"],"vende":[{"k":"medicamentos_imp","preco_rel":1.2},{"k":"maquinas","preco_rel":1.2},{"k":"quimicos_imp","preco_rel":1.1}],"nota":"Est. 2025. Hub de ouro.","est":true},
+ {"k":"AUS","nome":"Austrália","iso2":"au","bloco":"Outros","blocos":["CPTPP"],"dist_km":14500,"frete_fator":3.28,"exp_br_usd_bi":0.7,"imp_br_usd_bi":1.9,"rival":null,"compra":["etanol","couro","aco_lam","autopecas"],"vende":[{"k":"carvao","preco_rel":1},{"k":"cobre_catodo","preco_rel":1},{"k":"bacalhau","preco_rel":1}],"nota":"Est. 2025.","est":true},
+ {"k":"PHL","nome":"Filipinas","iso2":"ph","bloco":"ASEAN","blocos":["ASEAN"],"dist_km":18000,"frete_fator":3.74,"exp_br_usd_bi":1.2,"imp_br_usd_bi":0.4,"rival":null,"compra":["suina","frango","farelo_soja","milho","acucar"],"vende":[],"nota":"Est. 2025.","est":true},
+ {"k":"PAK","nome":"Paquistão","iso2":"pk","bloco":"Outros","blocos":["Outros"],"dist_km":14300,"frete_fator":3.26,"exp_br_usd_bi":1.3,"imp_br_usd_bi":0.3,"rival":null,"compra":["acucar","soja_grao","oleo_soja","algodao","milho"],"vende":[],"nota":"Est. 2025.","est":true}
+];
+const COM_PAISES_EXTRA = {"QAT":{"nome":"Catar","iso2":"qa"},"BLR":{"nome":"Belarus","iso2":"by"},"ISR":{"nome":"Israel","iso2":"il"},"TWN":{"nome":"Taiwan","iso2":"tw"},"NZL":{"nome":"Nova Zelândia","iso2":"nz"},"CIV":{"nome":"Costa do Marfim","iso2":"ci"},"GHA":{"nome":"Gana","iso2":"gh"},"ECU":{"nome":"Equador","iso2":"ec"},"COD":{"nome":"RD Congo","iso2":"cd"},"NOR":{"nome":"Noruega","iso2":"no"},"POL":{"nome":"Polônia","iso2":"pl"},"FIN":{"nome":"Finlândia","iso2":"fi"},"GUY":{"nome":"Guiana","iso2":"gy"},"IRL":{"nome":"Irlanda","iso2":"ie"},"UKR":{"nome":"Ucrânia","iso2":"ua"},"IRQ":{"nome":"Iraque","iso2":"iq"},"LBN":{"nome":"Líbano","iso2":"lb"},"SEN":{"nome":"Senegal","iso2":"sn"},"CUB":{"nome":"Cuba","iso2":"cu"},"VEN":{"nome":"Venezuela","iso2":"ve"}};
+const COM_BLOCOS = [
+ {"k":"Mercosul","nome":"Mercosul","icone":"bandeira","membros":["ARG","URY","PRY","BOL"],"tarifa_interna_pct":0,"tec_media_pct":11,"desconto_pp":100,"regra":"Comércio interno com 0% de tarifa para bens com regra de origem; membros pagam a TEC (~11% média) a terceiros. Frete curto (rodoviário) dá vantagem competitiva em manufaturados.","fonte":"Tratado de Assunção/TEC Mercosul (valores aproximados)","est":true},
+ {"k":"UE","nome":"União Europeia","icone":"bandeira","membros":["NLD","ESP","DEU","ITA","BEL","FRA","PRT"],"tarifa_padrao_pct":8,"desconto_pp":0,"desconto_pp_com_acordo":6,"regra":"Sem acordo: tarifa média ~8% sobre agro brasileiro, com cotas para carne/açúcar/etanol. Com acordo UE–Mercosul (tratado de livre comércio, exige Congresso no jogo): -6 p.p. e cotas ampliadas. O texto foi concluído em dez/2024 e a assinatura/ratificação seguia em andamento em 2026 (verificar status).","fonte":"Comissão Europeia / MDIC (resumo simplificado)","est":true},
+ {"k":"BRICS","nome":"BRICS","icone":"Globe2","membros":["CHN","IND","RUS","ZAF","EGY","ARE","IRN","IDN"],"tarifa_padrao_pct":9,"desconto_pp":2,"regra":"Sem tarifa preferencial formal. Bônus de relação diplomática (+prazo/-burocracia) e possibilidade de acordos em moeda local; a China tem preferência política nas compras de commodities.","fonte":"Resumo do jogo (sem área de livre comércio real)","est":true},
+ {"k":"USMCA","nome":"USMCA (EUA, México, Canadá)","icone":"bandeira","membros":["USA","MEX","CAN"],"tarifa_padrao_pct":10,"desconto_pp":0,"regra":"Mercado único entre os três membros; para o Brasil valem tarifas bilaterais. Em 2025 os EUA aplicaram tarifa adicional de até 40% (total ~50%) sobre o Brasil, com muitas exceções (aviões, suco de laranja, energia e, depois, carne e café). México tem tarifa de 7%–20% (ACE-55 para autos).","fonte":"Imprensa 2025 (MDIC/USTR), regra simplificada; checar status vigente","est":true},
+ {"k":"ASEAN","nome":"ASEAN","icone":"Globe2","membros":["SGP","MYS","VNM","THA","IDN","PHL"],"tarifa_padrao_pct":7,"desconto_pp":0,"regra":"Sem acordo comercial com o Brasil; tarifas médias de 5%–10% (Tailândia/Vietnã mais altas em agro). Singapura é hub logístico (tarifa 0%).","fonte":"Estimativa","est":true},
+ {"k":"Golfo","nome":"Conselho do Golfo (GCC)","icone":"Globe2","membros":["SAU","ARE"],"tarifa_padrao_pct":5,"desconto_pp":0,"regra":"Tarifa comum externa de ~5%; Mercosul negocia acordo com os Emirados.","fonte":"Estimativa","est":true},
+ {"k":"ALADI","nome":"ALADI/ACE (América do Sul)","icone":"Globe2","membros":["CHL","COL","PER","MEX"],"tarifa_padrao_pct":2,"desconto_pp":6,"regra":"Acordos de complementação econômica reduzem a tarifa a quase zero em muitos itens.","fonte":"ALADI (simplificado)","est":true},
+ {"k":"Outros","nome":"Sem bloco","icone":"Globe2","membros":[],"tarifa_padrao_pct":10,"desconto_pp":0,"regra":"Tarifa-padrão da OMC; negociação caso a caso.","fonte":"Estimativa","est":true}
+];
+const COM_REF = {
+ "ano": 2025,
+ "pib_brl_tri": {
+  "valor": 12.7,
+  "fonte": "IBGE, Contas Nacionais Trimestrais (3/mar/2026): PIB 2025 R$12,7 tri, +2,3%",
+  "est": false
+ },
+ "cambio_medio_brl_usd": {
+  "valor": 5.58,
+  "fonte": "Estimativa a partir do PIB em US$ (Austin Rating, ~US$2,27 tri) / R$12,7 tri (~5,59); média PTAX 2025 não verificada no BCB",
+  "est": true
+ },
+ "pib_usd_bi": {
+  "valor": 2270,
+  "fonte": "Austin Rating/imprensa (US$2,268 tri, 11ª economia); arredondado",
+  "est": true
+ },
+ "exp_total_usd_bi": {
+  "valor": 348.7,
+  "fonte": "MDIC/Secex, balança comercial 2025 (recorde; +3,5%)",
+  "est": false
+ },
+ "imp_total_usd_bi": {
+  "valor": 280.4,
+  "fonte": "MDIC/Secex 2025 (recorde; +6,7%)",
+  "est": false
+ },
+ "saldo_usd_bi": {
+  "valor": 68.3,
+  "fonte": "MDIC/Secex 2025 (US$68,293 bi; -7,9% vs 2024)",
+  "est": false
+ },
+ "pct_exp_pib": 15.4,
+ "ipca_2025_pct": {
+  "valor": null,
+  "fonte": "não coletado",
+  "est": true
+ },
+ "nota": "pct_pib de cada produto = exp_usd_bi / 2.270 (PIB em US$ bi) x 100. A fonte primária (Comex Stat) não foi acessível pela rede da sessão: valores por produto vêm de imprensa e resumos que citam o MDIC; o restante é estimativa marcada est:true."
+};
+
+if (typeof module !== "undefined") module.exports = { IND_SETORES, IND_PRODUTOS, IND_NOVAS, COM_IMPORTS, COM_PAISES, COM_PAISES_EXTRA, COM_BLOCOS, COM_REF };
+
+
+/* ============================== INDÚSTRIA E COMÉRCIO EXTERIOR: LÓGICA ==============================
+   Estado: g.indu (projetos aprovados de produção) e g.comex (preços, estoques, acordos, propostas). Criados de forma preguiçosa (saves antigos funcionam).
+   Unidades internas: US$ bi por ano "a preço de referência" (índice de preço = 1); R$ só na interface e nas medidas. Pessoas reais: nenhuma fala nova.
+   Regras principais (todas simples e limitadas, para não quebrar o equilíbrio do jogo):
+   - Produção = base × (1 + reforço dos projetos) × eventos × (1 − corte por importação). Reforço dos projetos satura em +50% (tanh).
+   - Estoque: produção + importações − consumo − exportações. Falta de estoque corta venda à vista, depois falta no mercado interno e sobe o preço.
+   - Preço interno = média ponderada (produção local, contratos de compra, importação à vista), normalizada para 1 no estado inicial.
+   - Efeitos macro entram como deslocamento do ALVO de PIB, desemprego, IPCA, dólar e desmatamento (voltam sozinhos se a causa some). */
+const IC_USD = COM_REF.cambio_medio_brl_usd.valor;
+const IC_SALDO0 = COM_REF.saldo_usd_bi.valor;
+const IC_EXP0 = COM_REF.exp_total_usd_bi.valor;
+const IC_PIB_USD = COM_REF.pib_usd_bi.valor;
+const IC_SETORES = IND_SETORES.concat([{ key: 'nova', nome: 'Nova indústria', icon: 'Sprout', tempo_meses: [24, 48] }]);
+const IC_SETOR_MAP = Object.fromEntries(IC_SETORES.map(s => [s.key, s]));
+const IC_CROWD = { agro: .8, mineracao: 1.0, energia: 1.2, industria: 1.0, nova: 1.5 }; // investimento privado atraído por R$ 1 público
+const IC_CARGA = { agro: .06, mineracao: .12, energia: .15, industria: .18, nova: .18 }; // carga tributária efetiva sobre o valor produzido (estimativa)
+const IC_PROD = {};
+for (const p of IND_PRODUTOS) IC_PROD[p.k] = Object.assign({ kind: 'exp' }, p);
+for (const p of IND_NOVAS) IC_PROD[p.k] = Object.assign({}, p, { kind: 'nova', setor: 'nova', setorOrig: p.setor });
+const IC_IMP = {}; for (const p of COM_IMPORTS) IC_IMP[p.k] = p;
+const IC_BLOCO = Object.fromEntries(COM_BLOCOS.map(b => [b.k, b]));
+const IC_DIST_EXTRA = { QAT: 12500, BLR: 10500, ISR: 10300, TWN: 17500, NZL: 14500, CIV: 6500, GHA: 6600, ECU: 4500, COD: 8500, NOR: 9800, POL: 10400, FIN: 10800, GUY: 3100, IRL: 8300, UKR: 10900, IRQ: 11800, LBN: 10300, SEN: 5300, CUB: 6500, VEN: 3600 };
+const IC_PAIS = {};
+for (const c of COM_PAISES) IC_PAIS[c.k] = Object.assign({}, c, { compra: c.compra.slice(), vende: c.vende.map(v => Object.assign({}, v)) });
+for (const k of Object.keys(COM_PAISES_EXTRA)) { const e = COM_PAISES_EXTRA[k]; const d = IC_DIST_EXTRA[k] || 9000; IC_PAIS[k] = { k, nome: e.nome, iso2: e.iso2, bloco: 'Outros', blocos: [], dist_km: d, frete_fator: Math.max(.5, Math.pow(d / 2000, .6)), compra: [], vende: [], rival: null, est: true, extra: true }; }
+// compradores e fornecedores citados nos dados passam a ser lista de compra/venda do país
+for (const p of IND_PRODUTOS) for (const b of (p.compradores || [])) { const c = IC_PAIS[b.pais]; if (c && !c.compra.includes(p.k)) c.compra.push(p.k); }
+for (const p of COM_IMPORTS) for (const f of (p.fornecedores || [])) { const c = IC_PAIS[f.pais]; if (c && !c.vende.some(v => v.k === p.k)) c.vende.push({ k: p.k, preco_rel: 1 }); }
+// exemplo do arroz (Portugal mais caro, China mais barata): estimativa do jogo
+[['PRT', 'arroz_imp', 1.12], ['CHN', 'arroz_imp', .72], ['IND', 'arroz_imp', .9], ['GUY', 'arroz_imp', .95]].forEach(([c, k, r]) => { const P = IC_PAIS[c]; const v = P.vende.find(x => x.k === k); if (v) v.preco_rel = r; else P.vende.push({ k, preco_rel: r, est: true }); });
+const IC_COMPRADORES_PADRAO = ['ARG', 'USA', 'MEX', 'CHL', 'COL', 'DEU', 'CHN', 'URY', 'PRY', 'PER'];
+const IC_COORD = { BRA: [-52, -10], CHN: [104, 35], USA: [-98, 39], ARG: [-64, -34], NLD: [5, 52], ESP: [-4, 40], MEX: [-102, 23], CHL: [-71, -33], CAN: [-100, 56], SGP: [104, 1], IND: [78, 22], JPN: [138, 37], DEU: [10, 51], KOR: [127, 37], ITA: [12, 42], PRY: [-58, -23], URY: [-56, -33], BEL: [4.5, 50.5], FRA: [2, 47], GBR: [-2, 54], PRT: [-8, 39.5], TUR: [35, 39], SAU: [45, 24], ARE: [54, 24], IRN: [53, 32], EGY: [30, 27], MYS: [102, 4], VNM: [106, 16], THA: [101, 15], IDN: [113, -2], BGD: [90, 24], RUS: [90, 60], NGA: [8, 9], COL: [-74, 4], PER: [-75, -10], BOL: [-64, -17], ZAF: [25, -29], MAR: [-6, 32], DZA: [3, 28], CHE: [8, 47], AUS: [134, -25], PHL: [122, 13], PAK: [70, 30], QAT: [51, 25.3], BLR: [28, 53.5], ISR: [35, 31], TWN: [121, 23.7], NZL: [172, -41], CIV: [-5.5, 7.5], GHA: [-1.5, 8], ECU: [-78, -1.5], COD: [23, -3], NOR: [9, 61], POL: [19, 52], FIN: [26, 64], GUY: [-59, 5], IRL: [-8, 53], UKR: [32, 49], IRQ: [44, 33], LBN: [36, 34], SEN: [-14.5, 14.5], CUB: [-79, 22], VEN: [-66, 7] };
+// país do comércio -> id em PAISES_DIP (relações já existentes no Mundo)
+const IC_DIPID = (() => { const R = {}; for (const p of PAISES_DIP) R[p.iso] = p.id; return R; })();
+const icDipId = (c) => IC_DIPID[String(c.iso2 || '').toUpperCase()] || null;
+
+/* mercados: um por produto exportador/nova indústria; importações ligadas (ind_k) entram no mesmo mercado */
+const IC_MERC = {};
+for (const k of Object.keys(IC_PROD)) IC_MERC[k] = { k, dom: IC_PROD[k], imps: [] };
+for (const i of COM_IMPORTS) { const mk = (i.ind_k && IC_PROD[i.ind_k]) ? i.ind_k : i.k; if (!IC_MERC[mk]) IC_MERC[mk] = { k: mk, dom: null, imps: [] }; IC_MERC[mk].imps.push(i); }
+const IC_MK = Object.keys(IC_MERC);
+const IC_BASE = {};
+for (const mk of IC_MK) {
+  const m = IC_MERC[mk], p = m.dom;
+  const EV0 = p && p.kind === 'exp' ? p.exp_usd_bi : 0;
+  let IM0 = m.imps.reduce((s, i) => s + i.imp_usd_bi, 0);
+  if (p && p.kind === 'nova' && !m.imps.length) IM0 = p.imp_usd_bi || 0;
+  let CV0;
+  if (m.imps.length && m.imps.some(i => i.autossuf_pct != null)) CV0 = m.imps.reduce((s, i) => s + i.imp_usd_bi * Math.min(i.autossuf_pct, 97) / (100 - Math.min(i.autossuf_pct, 97)), 0);
+  else if (p && p.kind === 'exp') CV0 = (p.prod > 0 && p.cons_int > 0 && p.prod > p.cons_int) ? EV0 * clamp(p.cons_int / (p.prod - p.cons_int), .05, 8) : Math.max(EV0 * 2, .03);
+  else CV0 = 0;
+  const PV0 = EV0 + CV0, C0 = CV0 + IM0;
+  const shI = C0 > 0 ? IM0 / C0 : 0;
+  const ipca = p && p.ipca_peso != null ? p.ipca_peso : (m.imps[0] ? m.imps[0].ipca_peso || 0 : 0);
+  const nome = p ? p.nome : m.imps[0].nome || m.imps[0].k;
+  IC_BASE[mk] = { EV0, CV0, PV0, IM0, C0, shI, base0: (1 - shI) + shI * 1.06, ipca, nome, vol: (p && p.volat) || .04, setor: p ? p.setor : (m.imps[0].setor || 'industria') };
+}
+const IC_NOMES_IMP = { chips_imp: 'Semicondutores', eletronicos: 'Eletrônicos', telecom: 'Equipamentos de telecom', medicamentos_imp: 'Medicamentos', ifa_imp: 'Insumos farmacêuticos (IFA)', veiculos: 'Veículos', autopecas_imp: 'Autopeças', maquinas: 'Máquinas e equipamentos', quimicos_imp: 'Químicos', cobre_catodo: 'Cobre catódo', navio_plataforma: 'Navios e plataformas', paineis_solares_imp: 'Painéis solares', baterias_imp: 'Baterias' };
+
+/* ---- utilidades ---- */
+const icPct = (v, d = 1) => fmt(v, d) + '%';
+const icUsd = (v) => 'US$ ' + fmt(v, Math.abs(v) < 100 ? 1 : 0) + ' bi';
+const icBrl = (usd) => 'R$ ' + fmt(usd * IC_USD, Math.abs(usd * IC_USD) < 10 ? 1 : 0) + ' bi';
+const icNomeTxt = (p) => String(p.nome).replace(/\s*\(.*?\)/g, '').replace(/\s*\/.*$/, '').replace(/^(.)/, (m) => m.toLowerCase());
+const icSeed = (g) => String(g.seed != null ? g.seed : 'x');
+function icRandN() { return (Math.random() + Math.random() + Math.random() - 1.5) * 2; }
+function icFis(p, usd) { // equivalente físico (aproximado) de US$ bi/ano a preço de referência
+  const pr = p && p.preco_int; if (!pr || !pr.valor || usd == null) return null;
+  const u = String(pr.unid || '').replace('US$/', '');
+  const T = { t: ['mi t', 1000], bbl: ['mi barris', 1000], oz: ['mi oz', 1000], 'un.': ['mil unid.', 1e6], un: ['mil unid.', 1e6], L: ['bi L', 1], 'cab.': ['mil cab.', 1e6], 'm²': ['mi m²', 1000], 'm³': ['mi m³', 1000], dz: ['bi dz', 1], par: ['bi pares', 1] }[u];
+  if (!T) return null;
+  return { v: usd * T[1] / pr.valor, u: T[0] };
+}
+function icFisTxt(p, usd) { const f = icFis(p, usd); return f ? fmt(f.v, f.v < 10 ? 1 : 0) + ' ' + f.u : null; }
+function icPrecoTxt(p, mult) { // preço em unidade natural quando existe; senão índice
+  const pr = p && p.preco_int;
+  if (pr && pr.valor) { const v = pr.valor * mult; return 'US$ ' + fmt(v, v < 1 ? 2 : v < 100 ? 1 : 0) + ' ' + String(pr.unid).replace('US$', '').replace(/^\//, '/'); }
+  return 'índice ' + fmt(mult * 100, 0);
+}
+const icRefProd = (k) => IC_PROD[k] || IC_IMP[k] || (IC_MERC[k] && IC_MERC[k].dom) || null;
+const icPrecoRefDe = (k) => { const x = IC_PROD[k] || IC_IMP[k]; if (!x) return null; if (x.preco_int) return x; if (x.preco_ref) return { preco_int: x.preco_ref }; return x; };
+function icMkDe(k) { if (IC_MERC[k]) return k; const i = IC_IMP[k]; return i ? ((i.ind_k && IC_PROD[i.ind_k]) ? i.ind_k : i.k) : k; }
+
+/* ---- estado preguiçoso ---- */
+function ensureIC(g) {
+  if (!g.indu) g.indu = { v: 1, proj: [], inv: {}, seq: 0, nots: [] };
+  if (!g.comex) {
+    const C = g.comex = { v: 1, idx: {}, hist: {}, est: {}, cut: {}, scar: {}, ev: [], news: [], acordos: [], props: [], neg: {}, rel: {}, tratados: [], exigeProc: false, seq: 0, fl: {}, tot: {}, mac: { pib: 0, des: 0, ipca: 0, dol: 0, desm: 0, agro: 0 }, recAp: 0, saldoH: [], mesIni: g.mes };
+    for (const mk of IC_MK) {
+      const B = IC_BASE[mk]; C.est[mk] = .1 * Math.max(B.PV0, B.C0); C.cut[mk] = 0; C.scar[mk] = 0;
+      const w = []; let x = 1; for (let i = 0; i < 12; i++) { x = clamp(x + .06 * (1 - x) + x * B.vol * .8 * ((hashStr(icSeed(g) + '|h|' + mk + '|' + i) - .5) * 3.4), .55, 1.9); w.push(x); }
+      const f = w[11]; C.hist[mk] = w.map(v => v / f); C.idx[mk] = 1;
+    }
+  }
+  const C = g.comex; if (!C.fl || !C.fl[IC_MK[0]]) icTick(g, null, 'calc');
+  return g;
+}
+const icRel = (g, c) => { const id = icDipId(c); if (id && g.mundo && g.mundo.pais && g.mundo.pais[id]) return g.mundo.pais[id].rel; return (g.comex.rel[c.k] != null ? g.comex.rel[c.k] : 10); };
+function icMudaRel(g, c, d) { const id = icDipId(c); if (id && g.mundo && g.mundo.pais && g.mundo.pais[id]) mundoRel(g, id, d); else g.comex.rel[c.k] = clamp((g.comex.rel[c.k] != null ? g.comex.rel[c.k] : 10) + d, -100, 100); }
+const icTratado = (g, bloco) => (g.comex.tratados || []).some(t => t.bloco === bloco && t.estado === 'vigente');
+
+/* ---- reforço de produção por projetos aprovados ---- */
+const icRamp = (g, j) => { const x = clamp((g.mes - (j.mes + j.atraso)) / Math.max(1, j.dur), 0, 1); return x * x * (3 - 2 * x); };
+function icBoost(g, p) { let s = 0; for (const j of g.indu.proj) if (j.ativo && j.k === p.k && j.ef) s += j.ef * icRamp(g, j); return .5 * Math.tanh(s / .5); }
+const icNovaCap = (p) => Math.max((p.imp_usd_bi || 0) * (p.dep_import_pct || 0) / 100, (p.invest_inicio_rbi || 5) / IC_USD * .6);
+function icNovaProd(g, p) { let S = 0; for (const j of g.indu.proj) if (j.ativo && j.k === p.k && j.S) S += j.S * icRamp(g, j); return S <= 0 ? 0 : icNovaCap(p) * (1 - Math.exp(-S / ((p.invest_inicio_rbi || 5) * 1.3))); }
+// base anual (R$ bi) sobre a qual vale a renúncia de imposto
+function icBaseTributo(p) { const B = IC_BASE[p.k]; return (p.kind === 'nova' ? Math.max(B.IM0, .3) : B.PV0) * IC_USD * (IC_CARGA[p.setor] || .12); }
+// efeito esperado de uma ação: { ef (fração de produção, produtos existentes), S (pontos de apoio, nova indústria), dur, atraso }
+function icEfeitoAcao(p, tipo, v, pct) {
+  const set = IC_SETOR_MAP[p.setor], B = IC_BASE[p.k], PVR = Math.max(B.PV0 * IC_USD, .5);
+  const [t0, t1] = p.tempo_meses || set.tempo_meses;
+  const tam = p.kind === 'nova' ? clamp(v / Math.max(p.invest_inicio_rbi || 5, 1), 0, 1) : clamp(v / (.06 * PVR), 0, 1);
+  const dur = Math.round(t1 - (t1 - t0) * tam * .8);
+  const atraso = p.kind === 'nova' ? Math.round((p.tempo_primeira_producao_meses || 36) * .35) : 1 + Math.round((t0 > 12 ? 3 : 1));
+  let ef = 0, S = 0;
+  if (p.kind === 'nova') { S = tipo === 'inv' ? v : tipo === 'cred' ? .5 * v : (pct || 1) * (p.invest_inicio_rbi || 5) * .6; }
+  else ef = (tipo === 'inv' ? .6 : tipo === 'cred' ? .35 : .5) * v / PVR;
+  return { ef, S, dur, atraso, crowd: IC_CROWD[p.setor] || 1 };
+}
+const icProjAtivos = (g, k) => g.indu.proj.filter(j => j.ativo && j.k === k);
+
+/* ---- eventos de mercado ---- */
+const IC_EVENTOS = {
+  seca: { nome: 'Seca', peso: .3, dur: [3, 5] },
+  guerra: { nome: 'Guerra encarece energia e insumos', peso: .2, dur: [4, 6] },
+  china: { nome: 'Crise na China', peso: .25, dur: [3, 5] },
+  recorde: { nome: 'Safra recorde', peso: .25, dur: [4, 6] }
+};
+const icEvAtivo = (g, t) => g.comex.ev.find(e => e.tipo === t && e.ate >= g.mes);
+function icEvProd(g, mk) {
+  const B = IC_BASE[mk], p = IC_MERC[mk].dom; if (!p || p.setor !== 'agro') return 1;
+  let f = 1; if (icEvAtivo(g, 'seca')) f *= .94; if (icEvAtivo(g, 'recorde')) f *= 1.04; return f;
+}
+function icXdem(g, mk) { let f = 1; if (mk === 'terras_raras' && g.comex.exigeProc) f *= .6; return f; }
+function icEventos(g, notas) {
+  const C = g.comex;
+  C.ev = C.ev.filter(e => e.ate >= g.mes);
+  if (Math.random() > .15) return;
+  let r = Math.random(), tipo = 'seca', ac = 0;
+  for (const k of Object.keys(IC_EVENTOS)) { ac += IC_EVENTOS[k].peso; if (r <= ac) { tipo = k; break; } }
+  if (icEvAtivo(g, tipo)) return;
+  const E = IC_EVENTOS[tipo], dur = E.dur[0] + Math.floor(Math.random() * (E.dur[1] - E.dur[0] + 1));
+  C.ev.push({ tipo, mes: g.mes, ate: g.mes + dur });
+  const choque = (cond, f) => { for (const mk of IC_MK) if (cond(mk, IC_BASE[mk], IC_MERC[mk])) C.idx[mk] = clamp(C.idx[mk] * f, .5, 2.2); };
+  let txt;
+  if (tipo === 'seca') { choque((mk, B) => B.setor === 'agro', 1.07); txt = 'Seca atinge as lavouras: a produção agrícola cai nos próximos meses e os preços sobem.'; }
+  else if (tipo === 'guerra') { choque((mk, B, m) => B.setor === 'energia' || /fert|trigo|diesel|gas|nafta/.test(mk), 1.14); txt = 'Nova escalada de guerra encarece petróleo, gás, fertilizantes e trigo no mundo.'; }
+  else if (tipo === 'china') { choque((mk, B) => B.setor === 'mineracao' || mk === 'soja_grao', .92); txt = 'Crise na China: a demanda por minério e soja esfria e os preços recuam; compras chinesas ficam mais seletivas.'; }
+  else { choque((mk, B) => B.setor === 'agro', .95); txt = 'Safra recorde no mundo: a produção brasileira sobe, mas os preços agrícolas recuam.'; }
+  C.news.unshift({ mes: g.mes, tipo, txt }); if (C.news.length > 10) C.news.length = 10;
+  if (notas) notas.push({ t: tipo === 'recorde' ? 'pos' : 'neg', x: txt });
+  try { linhaAdd(g, 'COMÉRCIO', txt); } catch (e) { }
+}
+function icPrecos(g) {
+  const C = g.comex;
+  for (const mk of IC_MK) {
+    const B = IC_BASE[mk];
+    C.idx[mk] = clamp(C.idx[mk] + .08 * (1 - C.idx[mk]) + C.idx[mk] * B.vol * .5 * icRandN(), .5, 2.2);
+    const h = C.hist[mk]; h.push(C.idx[mk]); if (h.length > 24) h.shift();
+  }
+}
+
+/* ---- acordos: preço máximo que o comprador paga e preço pedido pelo vendedor ---- */
+function icTarifa(g, c) {
+  const B = IC_BLOCO[c.bloco]; if (!B) return 10;
+  let t = B.tarifa_interna_pct != null ? B.tarifa_interna_pct : (B.tarifa_padrao_pct != null ? B.tarifa_padrao_pct : 10);
+  t -= (B.desconto_pp || 0);
+  if (icTratado(g, c.bloco)) t -= (B.desconto_pp_com_acordo != null ? B.desconto_pp_com_acordo : 5);
+  const S = (g.mundo && g.mundo.sanc) || [];
+  if (c.k === 'USA' && S.some(s => s.ev === 'tarifa_eua')) t += 25;
+  return clamp(t, 0, 60);
+}
+function icFretePct(p, c) {
+  const pr = p && (p.preco_int || p.preco_ref); const v = pr && pr.valor && /t$|bbl|oz|L|m/.test(pr.unid) ? pr.valor : null;
+  const peso = v == null ? .3 : v < 1000 ? 1 : v < 10000 ? .45 : .15;
+  return .012 * c.frete_fator * peso;
+}
+function icDem(g, iso, k) { // demanda do país pelo produto: muda por trimestre e com eventos
+  let f = .97 + .08 * hashStr(icSeed(g) + '|dem|' + iso + '|' + k + '|' + Math.floor(g.mes / 3));
+  if (iso === 'CHN' && icEvAtivo(g, 'china')) f *= .88;
+  const S = (g.mundo && g.mundo.sanc) || [];
+  if (iso === 'CHN' && S.some(s => s.ev === 'china_cota') && /soja|bovina/.test(k)) f *= .9;
+  return f;
+}
+function icBuyerLista(k) { // compradores do produto exportado, com participação (%) nos dados
+  const p = IC_PROD[k]; const L = []; const vis = new Set();
+  for (const b of (p.compradores || [])) if (IC_PAIS[b.pais]) { L.push({ iso: b.pais, pct: b.pct }); vis.add(b.pais); }
+  for (const c of Object.values(IC_PAIS)) if (!vis.has(c.k) && c.compra.includes(k)) L.push({ iso: c.k, pct: 1.5 });
+  if (!L.length) for (const iso of IC_COMPRADORES_PADRAO) L.push({ iso, pct: 3 });
+  return L;
+}
+function icShareUsd(k, iso) { const p = IC_PROD[k]; const b = icBuyerLista(k).find(x => x.iso === iso); const ev = Math.max(p.exp_usd_bi, .1); return b ? Math.max(.01, ev * b.pct / 100) : .02; }
+const IC_DUR_V = { 1: 1, 2: 1.02, 4: 1.05 }, IC_DUR_C = { 1: 1, 2: .98, 4: .95 };
+function icPrecoMaxVenda(g, k, iso, anos, qtd) {
+  const p = IC_PROD[k], c = IC_PAIS[iso], idx = g.comex.idx[k] || 1;
+  const vTar = (10 - icTarifa(g, c)) / 100, fr = icFretePct(p, c);
+  const relF = 1 + clamp(icRel(g, c), -100, 100) / 100 * .05;
+  const base = icShareUsd(k, iso), over = qtd / Math.max(base, .02);
+  const volF = over > 1.5 ? Math.max(.6, 1 - .12 * (over - 1.5)) : 1;
+  return idx * (1 + .6 * vTar) * relF * icDem(g, iso, k) * (IC_DUR_V[anos] || 1) * volF * (1 - fr * .5) * icXdem(g, k) ** .5;
+}
+function icPrecoPedidoCompra(g, ik, iso, anos, qtd) { // preço "posto no Brasil" (múltiplo do preço de referência) pedido pelo vendedor
+  const i = IC_IMP[ik], c = IC_PAIS[iso], mk = icMkDe(ik), idx = g.comex.idx[mk] || 1;
+  const v = c.vende.find(x => x.k === ik); const rel = v ? v.preco_rel : 1;
+  const fr = icFretePct(i, c), t = icTarifa(g, c);
+  const relF = 1 - clamp(icRel(g, c), -100, 100) / 100 * .04;
+  const f0 = (i.fornecedores || []).find(x => x.pais === iso); const base = Math.max(i.imp_usd_bi * (f0 ? f0.pct : 3) / 100, i.imp_usd_bi * .15, .05);
+  const over = qtd / base, volF = over > 2 ? 1 + .025 * Math.min(4, over - 2) : 1;
+  return idx * rel * (1 + fr) * (1 + .5 * t / 100) * relF * (IC_DUR_C[anos] || 1) * volF;
+}
+function icFreteEPrazo(i, c) { return { frete: icFretePct(i, c), dias: Math.round(7 + c.dist_km / 450) }; }
+// avalia a proposta de venda do jogador. rodada = contrapropostas já feitas nesta negociação
+function icAvaliaVenda(g, k, iso, qtd, preco, anos, rodada) {
+  const max = icPrecoMaxVenda(g, k, iso, anos, qtd), base = icShareUsd(k, iso), r = preco / max;
+  if (qtd > 4 * Math.max(base, .05)) return { res: 'rejeita', max, motivo: 'O volume proposto é maior do que o país consegue absorver.' };
+  if (r <= 1.005) return { res: 'aceita', max };
+  if (rodada < 2 && r <= 1.1) return { res: 'contra', max, contra: Math.round((max + (preco - max) * .3) * 1000) / 1000, motivo: 'O preço está acima do que o país paga hoje.' };
+  if (rodada >= 2 && r <= 1.03) return { res: 'aceita', max };
+  return { res: 'rejeita', max, motivo: rodada >= 2 ? 'Última rodada: sem acordo no preço.' : 'O preço está muito acima do mercado.' };
+}
+const icAcaoOk = (g) => g.acoes > 0 && g.pes.energia >= 10 && !g.over;
+function icGastaAcao(g) { g.acoes = Math.max(0, g.acoes - 1); g.pes.energia = clamp(g.pes.energia - 6, 0, 100); g.pes.estresse = clamp(g.pes.estresse + 1, 0, 100); }
+// reação de EUA e China a um acordo forte com o rival
+function icGeopolitica(g, c, qtd, anos) {
+  if (!c.rival) return null;
+  const forca = qtd * Math.min(anos, 2);
+  if (forca < .8) return null;
+  const R = IC_PAIS[c.rival]; if (!R) return null;
+  const d = -clamp(1 + forca * .8, 1, 5);
+  icMudaRel(g, R, d);
+  return { pais: R, d };
+}
+function icContrata(g, o) { // cria o acordo (tipo venda|compra). o: { tipo, k, iso, qtd, preco, anos, origem }
+  ensureIC(g); const C = g.comex, c = IC_PAIS[o.iso];
+  const a = { id: 'ac' + (++C.seq), tipo: o.tipo, k: o.k, mk: icMkDe(o.k), pais: o.iso, qtd: o.qtd, preco: o.preco, anos: o.anos, m0: g.mes, mFim: g.mes + o.anos * 12, estado: 'ativo', origem: o.origem || 'jogador' };
+  C.acordos.push(a);
+  icGastaAcao(g);
+  icMudaRel(g, c, clamp(.8 + o.qtd * 1.2, .8, 3.5));
+  const geo = o.tipo === 'venda' ? icGeopolitica(g, c, o.qtd, o.anos) : null;
+  const nome = o.tipo === 'venda' ? IC_PROD[o.k].nome : IC_IMP[o.k].nome || o.k;
+  try { linhaAdd(g, 'COMÉRCIO', (o.tipo === 'venda' ? 'Contrato de venda de ' : 'Contrato de compra de ') + nome + ' com ' + c.nome + ' por ' + o.anos + (o.anos === 1 ? ' ano' : ' anos') + '.'); } catch (e) { }
+  if (geo) { g.comex.news.unshift({ mes: g.mes, tipo: 'geo', txt: 'O acordo com ' + c.nome + ' irritou ' + geo.pais.nome + ': a relação piorou ' + fmt(-geo.d, 1) + ' ponto' + (-geo.d === 1 ? '' : 's') + '.' }); }
+  const gr = IC_PROD[o.k] && IC_PROD[o.k].grupos; if (gr && o.tipo === 'venda') for (const kk of gr.slice(0, 2)) dgrp(g, kk, clamp(o.qtd * .3, .1, 1));
+  icTick(g, null, 'calc');
+  return a;
+}
+function icCancela(g, id) {
+  const C = g.comex, a = C.acordos.find(x => x.id === id && x.estado === 'ativo'); if (!a) return null;
+  const rest = Math.max(0, a.mFim - g.mes) / 12, multa = clamp(.08 * a.qtd * a.preco * rest, .01, 5);
+  a.estado = 'cancelado'; a.mCancel = g.mes; a.multa = multa;
+  g.fiscal.extra += multa * g.eco.dol;
+  icMudaRel(g, IC_PAIS[a.pais], -clamp(3 + a.qtd * 2, 3, 8));
+  icGastaAcao(g);
+  try { linhaAdd(g, 'COMÉRCIO', 'Contrato com ' + IC_PAIS[a.pais].nome + ' cancelado antes do fim; multa de ' + icBrl(multa) + '.'); } catch (e) { }
+  icTick(g, null, 'calc');
+  return a;
+}
+
+/* ---- propostas recebidas ---- */
+function icPropostasNovas(g, notas) {
+  const C = g.comex;
+  for (const p of C.props) if (p.estado === 'aberta' && g.mes > p.exp) { p.estado = 'expirada'; if (p.grande) icMudaRel(g, IC_PAIS[p.pais], -1); }
+  C.props = C.props.filter(p => p.estado === 'aberta' || g.mes - p.exp < 3);
+  const abertas = C.props.filter(p => p.estado === 'aberta').length;
+  if (abertas >= 6) return;
+  const n = (Math.random() < .55 ? 1 : 0) + (Math.random() < .2 ? 1 : 0);
+  for (let i = 0; i < n; i++) {
+    const L = Object.values(IC_PAIS).filter(c => c.compra.length && icRel(g, c) > -50 && !(c.k === 'CHN' && icEvAtivo(g, 'china') && Math.random() < .6));
+    if (!L.length) return;
+    const ws = L.map(c => Math.max(.2, (c.exp_br_usd_bi || 1)) * (1 + icRel(g, c) / 100)); let r = Math.random() * ws.reduce((a, b) => a + b, 0), c = L[0];
+    for (let j = 0; j < L.length; j++) { r -= ws[j]; if (r <= 0) { c = L[j]; break; } }
+    const ks = c.compra.filter(k => IC_PROD[k] && IC_PROD[k].exp_usd_bi >= .1); if (!ks.length) continue;
+    const k = ks[Math.floor(Math.random() * ks.length)];
+    const anos = [1, 2, 4][Math.floor(Math.random() * 3)];
+    const qtd = Math.round(icShareUsd(k, c.k) * (.4 + Math.random() * 1.3) * 100) / 100;
+    if (qtd < .02) continue;
+    const preco = Math.round(icPrecoMaxVenda(g, k, c.k, anos, qtd) * (.93 + Math.random() * .07) * 1000) / 1000;
+    const grande = qtd >= 1.2 || qtd * anos >= 3;
+    if (C.props.some(p => p.estado === 'aberta' && p.pais === c.k && p.k === k)) continue;
+    const pr = { id: 'pr' + (++C.seq), pais: c.k, k, qtd, preco, anos, mes: g.mes, exp: g.mes + 3, grande, rodada: 0, estado: 'aberta' };
+    C.props.push(pr);
+    if (notas && grande) notas.push({ t: 'neu', x: c.nome + ' propõe comprar ' + IC_PROD[k].nome.toLowerCase() + ' por ' + anos + (anos === 1 ? ' ano' : ' anos') + ' (' + icUsd(qtd) + ' por ano). Veja em Mundo, Comércio exterior.' });
+  }
+}
+// reavalia a contraproposta do jogador a uma proposta recebida
+function icNegociaProposta(g, id, preco) {
+  const C = g.comex, p = C.props.find(x => x.id === id && x.estado === 'aberta'); if (!p) return null;
+  const max = icPrecoMaxVenda(g, p.k, p.pais, p.anos, p.qtd), r = preco / max;
+  if (preco <= p.preco * 1.005) { p.res = 'aceita'; return p; }
+  if (p.rodada < 2 && r <= 1.08) { p.rodada++; p.preco = Math.round(Math.max(max * .97, p.preco + (preco - p.preco) * .45) * 1000) / 1000; p.res = 'contra'; p.msg = 'Contraproposta: o país sobe o preço, mas não até o pedido.'; }
+  else { p.res = 'recusa'; p.msg = p.rodada >= 2 ? 'Sem acordo: o país encerra a negociação.' : 'O preço pedido está acima do que o país paga.'; p.estado = 'recusada'; }
+  return p;
+}
+function icAceitaProposta(g, id) {
+  const p = g.comex.props.find(x => x.id === id && x.estado === 'aberta'); if (!p) return null;
+  p.estado = 'aceita'; return icContrata(g, { tipo: 'venda', k: p.k, iso: p.pais, qtd: p.qtd, preco: p.preco, anos: p.anos, origem: 'proposta' });
+}
+function icRejeitaProposta(g, id) { const p = g.comex.props.find(x => x.id === id && x.estado === 'aberta'); if (!p) return; p.estado = 'rejeitada'; if (p.grande) icMudaRel(g, IC_PAIS[p.pais], -.5); }
+function icPendencias(g) {
+  const L = []; if (!g.comex) return L;
+  for (const p of g.comex.props) if (p.estado === 'aberta' && p.grande) {
+    const c = IC_PAIS[p.pais], pr = IC_PROD[p.k];
+    L.push({ id: 'com-' + p.id, tipo: 'comercio', urg: 52 + Math.min(10, p.qtd * 3), cat: 'Mundo · comércio', ic: 'Ship', titulo: c.nome + ' quer comprar ' + pr.nome.toLowerCase(), ctx: icUsd(p.qtd) + ' por ano durante ' + p.anos + (p.anos === 1 ? ' ano' : ' anos') + ', a ' + icPrecoTxt(pr, p.preco) + '. Vale até ' + dataCurta(p.exp) + '.', extra: 'Aceitar, negociar ou recusar.', abrir: 'comercio', btns: [] });
+  }
+  return L;
+}
+
+/* ---- fluxo de um mercado (função pura sobre o estado) ---- */
+function icFlow(g, mk) {
+  const C = g.comex, m = IC_MERC[mk], B = IC_BASE[mk], p = m.dom, idx = C.idx[mk] || 1;
+  const boost = p && p.kind === 'exp' ? icBoost(g, p) : 0, novaAno = p && p.kind === 'nova' ? icNovaProd(g, p) : 0;
+  const cut = C.cut[mk] || 0;
+  const pf = p && p.kind === 'exp' ? (1 + boost) * icEvProd(g, mk) * (1 - cut) : 1;
+  const Dsup = (B.PV0 * pf + novaAno) / 12;
+  const vendas = C.acordos.filter(a => a.estado === 'ativo' && a.tipo === 'venda' && a.mk === mk), compras = C.acordos.filter(a => a.estado === 'ativo' && a.tipo === 'compra' && a.mk === mk);
+  const Exc = vendas.reduce((s, a) => s + a.qtd / 12, 0), Imc = compras.reduce((s, a) => s + a.qtd / 12, 0);
+  const subst = B.IM0 > 0 ? clamp((Dsup - B.PV0 / 12) / (B.IM0 / 12), 0, 1) : 0;
+  const Dh = B.C0 / 12 * (1 - .1 * (idx - 1));
+  const Ims = Math.max(0, B.IM0 / 12 * (1 - subst) - Imc);
+  let Xs = Math.max(0, B.EV0 / 12 * icXdem(g, mk) - Exc);
+  const est0 = C.est[mk] || 0;
+  let est1 = est0 + Dsup + Imc + Ims - Dh - Exc - Xs, def = 0, ex = 0, cutNew = 0;
+  if (est1 < 0) { def = -est1; const cx = Math.min(Xs, def); Xs -= cx; def -= cx; est1 = 0; }
+  const cap = .25 * Math.max(B.PV0, B.C0, .02);
+  if (est1 > cap) {
+    ex = est1 - cap; est1 = cap;
+    const canX = B.EV0 > 0 ? B.EV0 / 12 * .5 : (p && p.kind === 'nova' ? Dsup : 0);
+    const sx = Math.min(ex, canX); Xs += sx; ex -= sx;
+    if (ex > 1e-4 && Dsup > 0) cutNew = Math.min(.5, ex / Dsup);
+  }
+  const sf = Dh > 0 ? clamp(def / Dh, 0, 1) : 0, scarNovo = (C.scar[mk] || 0) * .5 + sf;
+  const impVol = Imc + Ims;
+  const shImp = Dh > 0 ? clamp(impVol / Dh, 0, 1) : (impVol > 0 ? 1 : 0);
+  const pSpot = idx * 1.06;
+  const pImp = impVol > 0 ? (compras.reduce((s, a) => s + a.qtd / 12 * a.preco, 0) + Ims * pSpot) / impVol : pSpot;
+  const pLoc = 1 + .35 * (idx - 1) + .9 * scarNovo;
+  const pLocEf = (B.CV0 > 0 && pImp < pLoc) ? pLoc + .4 * (pImp - pLoc) : pLoc;
+  const pdom = ((B.CV0 > 0 || B.PV0 > 0) ? (1 - shImp) * pLocEf + shImp * pImp : pImp) / B.base0;
+  const expRev = vendas.reduce((s, a) => s + a.qtd / 12 * a.preco, 0) + Xs * idx;
+  const impCost = compras.reduce((s, a) => s + a.qtd / 12 * a.preco, 0) + Ims * idx;
+  const dSaldo = expRev - impCost - (B.EV0 - B.IM0) / 12;
+  const dVal = p && p.kind === 'exp' ? (pf - 1) * B.PV0 : novaAno;
+  const jobs = p ? (p.kind === 'nova' ? novaAno * 2 : (p.emprego_mil || 0) * (pf - 1) * .5) : 0;
+  return { mk, idx, pf, boost, cut, novaAno, Dsup, Dh, Exc, Imc, Ims, Xs, est: est1, def, sf, cutNew, scarNovo, shImp, pImp, pLoc, pdom, expAno: expRev * 12, impAno: impCost * 12, dSaldoAno: dSaldo * 12, dVal, jobs, estMeses: B.C0 > 0 ? est1 / (B.C0 / 12) : (B.PV0 > 0 ? est1 / (B.PV0 / 12) : 0), tot: (B.EV0 - B.IM0) * (idx - 1) };
+}
+const icFlowDe = (g, mk) => (g.comex.fl && g.comex.fl[mk]) || icFlow(g, mk);
+
+/* ---- projetos ligados a medidas aprovadas ---- */
+function icResolve(g, prop, resultado) {
+  const H = prop.icHook; if (!H || resultado !== 'aprovada') return;
+  ensureIC(g);
+  const k = prop.scale != null ? prop.scale : 1, I = g.indu, C = g.comex;
+  const M = (typeof medDoProp === 'function') ? medDoProp(g, prop) : null;
+  if (H.tipo === 'tlc') {
+    const B = IC_BLOCO[H.bloco]; if (!B || C.tratados.some(t => t.bloco === H.bloco && t.estado === 'vigente')) return;
+    C.tratados.push({ bloco: H.bloco, mes: g.mes, estado: 'vigente', mid: M ? M.id : null });
+    dgrp(g, 'agro', 2 * k); dgrp(g, 'empresariado', 1.5 * k); dgrp(g, 'mercado', 1 * k); dgrp(g, 'sindicatos', -1 * k);
+    const rivalDe = { USMCA: 'CHN', BRICS: 'USA' }[H.bloco];
+    if (rivalDe) icMudaRel(g, IC_PAIS[rivalDe], -4 * k);
+    for (const kk of B.membros || []) if (IC_PAIS[kk]) icMudaRel(g, IC_PAIS[kk], 3 * k);
+    C.news.unshift({ mes: g.mes, tipo: 'tlc', txt: 'Tratado de livre comércio com ' + B.nome + ' entra em vigor: tarifas menores para o Brasil.' });
+    try { linhaAdd(g, 'COMÉRCIO', 'Tratado de livre comércio com ' + B.nome + ' aprovado.'); } catch (e) { }
+    icTick(g, null, 'calc'); return;
+  }
+  if (H.tipo === 'proc') {
+    C.exigeProc = true;
+    const q = IC_PROD.imas_terras_raras;
+    I.proj.push({ id: 'pj' + (++I.seq), k: q.k, tipo: 'proc', v: 0, S: q.invest_inicio_rbi * .6, mes: g.mes, atraso: 6, dur: 30, ef: 0, ativo: true, mid: M ? M.id : null, nm: 'Processamento obrigatório no Brasil' });
+    dgrp(g, 'universitarios', 2 * k); dgrp(g, 'sindicatos', 1.5 * k); dgrp(g, 'mercado', -1 * k);
+    C.news.unshift({ mes: g.mes, tipo: 'proc', txt: 'Terras raras: exportar só com processamento no Brasil. Vendas e preço caem agora; a indústria de ímãs ganha impulso.' });
+    icTick(g, null, 'calc'); return;
+  }
+  const p = IC_PROD[H.k]; if (!p) return;
+  const v = (H.v || 0) * k, E = icEfeitoAcao(p, H.tipo, v, H.pct);
+  const j = { id: 'pj' + (++I.seq), k: p.k, tipo: H.tipo, v, pct: H.pct || null, mes: g.mes, atraso: E.atraso, dur: E.dur, ef: E.ef, S: E.S, crowd: E.crowd, ativo: true, mid: M ? M.id : null };
+  I.proj.push(j);
+  if (H.tipo === 'inv' || H.tipo === 'cred') I.inv[p.k] = (I.inv[p.k] || 0) + v;
+  const gan = clamp(.4 + v * .08, .3, 2) * (H.tipo === 'isen' ? 1.2 : 1);
+  for (const kk of (p.grupos || [])) if ((p.impacto_amb >= 2 && (kk === 'indigenas')) ) dgrp(g, kk, -.4 * p.impacto_amb * k); else dgrp(g, kk, gan);
+  const msg = (H.tipo === 'inv' ? 'Investimento' : H.tipo === 'cred' ? 'Crédito do BNDES' : H.tipo === 'imp' ? 'Redução de impostos' : 'Isenção') + ' em ' + icNomeTxt(p) + ' aprovado: produção responde em ' + E.dur + ' meses, após ' + E.atraso + ' de regulamentação.';
+  I.nots.unshift({ mes: g.mes, x: msg }); if (I.nots.length > 12) I.nots.length = 12;
+  try { linhaAdd(g, 'INDÚSTRIA', msg); } catch (e) { }
+  icTick(g, null, 'calc');
+}
+function icProjetosSync(g, notas) {
+  const I = g.indu; const ok = ['ativa', 'suspensa', 'consolidada', 'aguardando'];
+  for (const j of I.proj) {
+    if (!j.ativo) continue;
+    if (j.mid) { const M = medL(g).find(x => x.id === j.mid); if (M && !ok.includes(M.estado)) { j.ativo = false; if (notas) notas.push({ t: 'neu', x: 'Projeto de ' + icNomeTxt(IC_PROD[j.k]) + ' perde efeito: a medida deixou de valer.' }); continue; } }
+    if (!j.fim && icRamp(g, j) >= .999) { j.fim = g.mes; const p = IC_PROD[j.k]; for (const kk of (p.grupos || []).slice(0, 3)) dgrp(g, kk, .5); if (notas) notas.push({ t: 'pos', x: 'A produção de ' + icNomeTxt(p) + ' atingiu o novo patamar com o projeto aprovado.' }); }
+  }
+}
+
+/* ---- passo mensal / recálculo ---- */
+function icTick(g, notas, modo) {
+  const C = g.comex, I = g.indu; if (!C || !I) return;
+  const mes = modo !== 'calc';
+  if (mes) { icProjetosSync(g, notas); icPrecos(g); icEventos(g, notas); icPropostasNovas(g, notas); icFimAcordos(g, notas); }
+  const fl = {}; let sDV = 0, sSaldo = 0, sTot = 0, sJobs = 0, sAmb = 0, sIpca = 0, sRec = 0, sAgroW = 0, sAgroB = 0, sExp = 0, sExpB = 0, sImp = 0;
+  for (const mk of IC_MK) {
+    const F = icFlow(g, mk), B = IC_BASE[mk], p = IC_MERC[mk].dom; const prev = (C.fl && C.fl[mk]) || null;
+    F.trend = prev ? (F.pf > prev.pf + .0004 ? 1 : F.pf < prev.pf - .0004 ? -1 : 0) : 0; if (prev && !mes) F.trend = prev.trend;
+    fl[mk] = F;
+    if (mes) { C.est[mk] = F.est; C.cut[mk] = clamp((C.cut[mk] || 0) * .8 + F.cutNew, 0, .5); C.scar[mk] = F.scarNovo; }
+    sDV += F.dVal; sSaldo += F.dSaldoAno; sTot += F.tot; sJobs += F.jobs - (p && p.kind === 'exp' ? (p.emprego_mil || 0) * 0 : 0);
+    if (p) sAmb += (p.impacto_amb || 0) * Math.max(0, F.dVal); sIpca += B.ipca * (F.pdom - 1);
+    sRec += F.dVal * IC_USD * (IC_CARGA[p ? p.setor : 'industria'] || .12) + ((p && (p.setor === 'mineracao' || p.setor === 'energia')) ? .04 * (F.expAno - B.EV0) * IC_USD : 0);
+    if (B.setor === 'agro' && B.EV0 > 0) { sAgroW += B.EV0 * (F.idx - 1); sAgroB += B.EV0; }
+    sExp += F.expAno; sExpB += B.EV0; sImp += F.impAno;
+  }
+  C.fl = fl;
+  let pibObra = 0; for (const j of I.proj) if (j.ativo && j.v > 0 && g.mes >= j.mes && g.mes < j.mes + j.atraso + j.dur) pibObra += j.v * (1 + (j.crowd || 1)) * .5 / PIB_NOMINAL * 100 / Math.max(1, j.dur / 12);
+  const pibProd = sDV * IC_USD * .45 / PIB_NOMINAL * 100, pibTot = sTot * IC_USD * .15 / PIB_NOMINAL * 100;
+  C.mac = {
+    pib: clamp(pibProd + pibObra + pibTot, -.8, .8),
+    des: clamp(-sJobs / 108000 * 100, -1.2, 1.2),
+    ipca: clamp(sIpca * .6, -.6, .6),
+    dol: clamp(-.006 * sSaldo, -.35, .35),
+    desm: clamp(sAmb * 25, 0, 2000),
+    agro: sAgroB > 0 ? clamp(sAgroW / sAgroB * 1.2, -.5, .5) : 0
+  };
+  const rec = clamp(sRec, -30, 60);
+  if (mes && g.fiscal) { g.fiscal.receita += rec - (C.recAp || 0); C.recAp = rec; }
+  const expTot = IC_EXP0 + (sExp - sExpB), saldoAno = IC_SALDO0 + sSaldo;
+  C.tot = { expAno: expTot, impAno: IC_EXP0 - IC_SALDO0 + (sImp - (IC_EXP0 - IC_SALDO0 >= 0 ? 0 : 0)), saldoAno, saldoMes: saldoAno / 12, dSaldoAno: sSaldo, pctPib: expTot / IC_PIB_USD * 100, jobs: sJobs, dVal: sDV, rec, ipca: C.mac.ipca };
+  C.tot.impAno = expTot - saldoAno;
+  if (mes) { C.saldoH.push(saldoAno); if (C.saldoH.length > 24) C.saldoH.shift(); }
+}
+function icFimAcordos(g, notas) {
+  for (const a of g.comex.acordos) if (a.estado === 'ativo' && g.mes >= a.mFim) { a.estado = 'encerrado'; if (notas) notas.push({ t: 'neu', x: 'Contrato de ' + (a.tipo === 'venda' ? 'venda' : 'compra') + ' com ' + IC_PAIS[a.pais].nome + ' chegou ao fim. Renove em Comércio exterior se quiser.' }); }
+  if (g.comex.acordos.length > 60) g.comex.acordos = g.comex.acordos.filter(a => a.estado === 'ativo').concat(g.comex.acordos.filter(a => a.estado !== 'ativo').slice(-30));
+}
+// chamado por fimDoMes antes da economia: avança mercado, produção e acordos; devolve os deslocamentos de alvo
+function icMensal(g, notas) {
+  ensureIC(g);
+  icTick(g, notas, 'mes');
+  // reação de produtores a importação barata e corte de produção
+  for (const mk of IC_MK) { const p = IC_MERC[mk].dom; const c = g.comex.cut[mk] || 0; if (p && p.kind === 'exp' && c > .02) { for (const kk of (p.grupos || []).slice(0, 2)) dgrp(g, kk, -Math.min(1.2, c * 8)); if (!g.comex['av_' + mk] || g.mes - g.comex['av_' + mk] >= 6) { g.comex['av_' + mk] = g.mes; if (notas) notas.push({ t: 'neg', x: 'Produtores de ' + icNomeTxt(p) + ' reclamam: com tanta oferta, a produção nacional encolhe ' + fmt(c * 100, 0) + '% e empregos somem.' }); } } }
+  // estoques zerados com contratos de venda geram falta no mercado interno
+  for (const mk of IC_MK) { const F = g.comex.fl[mk]; if (F && F.sf > .05 && IC_MERC[mk].dom && (!g.comex['fa_' + mk] || g.mes - g.comex['fa_' + mk] >= 4)) { g.comex['fa_' + mk] = g.mes; if (notas) notas.push({ t: 'neg', x: 'Falta de ' + icNomeTxt(IC_MERC[mk].dom) + ' no mercado interno: o estoque acabou e o preço sobe.' }); } }
+  return g.comex.mac;
+}
+
+/* ============================== INDÚSTRIA: INTERFACE (País → Indústria) ============================== */
+const IC_CSS = `
+.ic-tabs{display:flex;flex-wrap:wrap;gap:8px}
+.ic-tab{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;border:1px solid var(--line2);background:var(--panel);color:var(--muted);font-size:14px;font-weight:600;cursor:pointer}
+.ic-tab:hover{color:var(--fg)}
+.ic-tab[aria-selected=true]{background:var(--ouro);border-color:var(--ouro);color:#1a1403}
+.ic-tab:focus-visible,.ic-opt:focus-visible{outline:2px solid var(--ouro);outline-offset:2px}
+.ic-card .mx-num{font-size:24px}
+.ic-trend{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600}
+.ic-det{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:1000px){.ic-det{grid-template-columns:minmax(0,1fr)}}
+.ic-nums{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ic-opt{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);background:transparent;color:var(--fg);font-size:13px;cursor:pointer}
+.ic-opt[aria-checked=true],.ic-opt[aria-pressed=true]{border-color:var(--ouro);color:var(--ouro)}
+.ic-opt:disabled{opacity:.5;cursor:not-allowed}
+input.ic-in{width:84px!important;display:inline-block;border:1px solid var(--line2);border-radius:8px;background:transparent;color:var(--fg);padding:5px 8px;font-size:14px}
+.ic-in.w{width:100%}
+.ic-tbl{width:100%;border-collapse:collapse;font-size:14px}
+.ic-tbl th{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line2);white-space:nowrap}
+.ic-tbl td{padding:10px;border-top:1px solid var(--line);vertical-align:middle}
+.ic-tbl tr:first-child td{border-top:0}
+.ic-tw{overflow-x:auto;max-width:100%}
+.ic-pick{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:8px}
+.ic-pk{display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:10px;border:1px solid var(--line2);background:var(--panel2);color:var(--fg);font-size:13px;text-align:left;cursor:pointer;min-width:0}
+.ic-pk:hover{border-color:var(--muted)}
+.ic-pk[aria-pressed=true]{border-color:var(--ouro);color:var(--ouro)}
+.ic-pk span.t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ic-res{padding:12px 14px;border-radius:12px;border:1px solid var(--line2);border-left:4px solid var(--c,var(--muted));background:var(--panel2);display:flex;flex-direction:column;gap:8px}
+.ic-map{width:100%;height:auto;display:block;border-radius:12px;background:var(--panel2);border:1px solid var(--line2)}
+.ic-leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted)}
+.ic-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.ic-seg{display:flex;flex-wrap:wrap;gap:8px}
+`;
+function ComPais({ k, tam = 16, sem }) {
+  const c = IC_PAIS[k]; if (!c) return html`<span>${k}</span>`;
+  const iso = c.iso2, ok = typeof Bandeira === 'function' && typeof BANDEIRAS !== 'undefined' && BANDEIRAS[iso];
+  return html`<span className="inline-flex items-center gap-1.5 min-w-0" data-com-rotulo=${k}>${ok ? html`<${Bandeira} iso=${iso} tam=${tam} nome=${c.nome} />` : null}${sem ? null : html`<span className="truncate">${c.nome}</span>`}</span>`;
+}
+function IcEst({ est, t }) { return est ? html`<span className="chip" style=${{ color: 'var(--ambar)', borderColor: 'var(--ambar)' }} title=${t || 'Valor estimado pelo jogo: veja Fontes e notas.'} data-estimativa="1">estimativa</span>` : null; }
+const IC_COR_SET = { agro: 'var(--verde)', mineracao: 'var(--ambar)', energia: 'var(--anil)', industria: 'var(--ouro)', nova: 'var(--rubro)' };
+const icCorEst = (m) => (m >= 1.2 ? 'var(--verde)' : m >= .5 ? 'var(--ambar)' : 'var(--rubro)');
+function IcTrend({ t }) { return html`<span className="ic-trend" style=${{ color: t > 0 ? 'var(--verde)' : t < 0 ? 'var(--rubro)' : 'var(--muted)' }} title="Tendência da produção"><${Icon} n=${t > 0 ? 'TrendingUp' : t < 0 ? 'TrendingDown' : 'Minus'} s=${14} />${t > 0 ? 'subindo' : t < 0 ? 'caindo' : 'estável'}</span>`; }
+// substitutos de redação para produtos cujo nome faz o motor ler outra política (vapes, minerais críticos, política naval, ferrovias): testados com a sonda
+const IC_ALT = {
+  niobio: { loc: 'na mineração de nióbio', obj: 'a mineração de nióbio', tax: 'a produção de ferroligas' },
+  litio: { loc: 'na mineração de lítio', obj: 'a mineração de lítio', tax: 'a mineração de metais leves' },
+  terras_raras: { loc: 'na mineração de terras raras', obj: 'a mineração de terras raras', tax: 'a atividade mineradora de metais raros' },
+  baterias_litio: { loc: 'em fábricas de baterias', obj: 'a fabricação de baterias' },
+  imas_terras_raras: { loc: 'em fábricas de ímãs', obj: 'a fabricação de ímãs' },
+  navios: { loc: 'na construção naval', obj: 'a construção naval' },
+  trens: { loc: 'na produção de material rodante ferroviário', obj: 'a produção de material rodante ferroviário', tax: 'a indústria de vagões e locomotivas' },
+  fumo: { loc: 'na produção de folha seca para exportação', obj: 'a produção de folha seca para exportação' }
+};
+function icTextoAcao(p, acao, v) {
+  const n = icNomeTxt(p), A = IC_ALT[p.k] || {};
+  const loc = A.loc || `na produção de ${n}`, obj = A.obj || `a produção de ${n}`, tax = A.tax || obj;
+  if (acao === 'inv') return `Investir ${orcFmtV(v)} ${loc}`;
+  if (acao === 'cred') return `Liberar ${orcFmtV(v)} em crédito do BNDES para ${obj}`;
+  if (acao === 'imp') return `Desonerar ${tax} em ${orcFmtV(v)} por ano`;
+  return `Desonerar totalmente ${tax}, com renúncia fiscal de ${orcFmtV(v)} por ano`;
+}
+const icArred = (v) => Math.max(.5, Math.round(v * 2) / 2);
+const IC_ACOES = [['inv', 'Investir', 'TrendingUp'], ['imp', 'Baixar impostos', 'Percent'], ['isen', 'Isentar', 'BadgeCheck'], ['cred', 'Crédito do BNDES', 'Landmark']];
+
+function IndDetalhe({ g, p, decidir, fechar }) {
+  const C = g.comex, I = g.indu, F = C.fl[p.k], B = IC_BASE[p.k];
+  const [acao, setAcao] = useState(p.kind === 'nova' ? 'isen' : 'inv'); const [bi, setBi] = useState(5); const [pct, setPct] = useState(50);
+  const base = icBaseTributo(p);
+  const v = acao === 'inv' || acao === 'cred' ? bi : icArred(base * (acao === 'isen' ? 1 : pct / 100));
+  const texto = icTextoAcao(p, acao, v);
+  const motor = useMemo(() => { try { return analisaLocal(g, texto) || null; } catch (e) { return null; } }, [g.mes, texto]);
+  const dir = acao === 'inv' || acao === 'cred';
+  const sentidoOk = !!motor && !motor.vago && (dir ? motor.cost > 0 : motor.rev < 0);
+  const semAcoes = !icAcaoOk(g);
+  const E = icEfeitoAcao(p, acao, v, acao === 'isen' ? 1 : pct / 100);
+  const efAtual = I.proj.filter(j => j.ativo && j.k === p.k).reduce((s, j) => s + (j.ef || 0), 0);
+  const dBoost = p.kind === 'nova' ? 0 : .5 * Math.tanh((efAtual + E.ef) / .5) - .5 * Math.tanh(efAtual / .5);
+  const sCur = I.proj.filter(j => j.ativo && j.k === p.k).reduce((s, j) => s + (j.S || 0), 0);
+  const capNova = p.kind === 'nova' ? icNovaCap(p) * ((1 - Math.exp(-(sCur + E.S) / ((p.invest_inicio_rbi || 5) * 1.3))) - (1 - Math.exp(-sCur / ((p.invest_inicio_rbi || 5) * 1.3)))) : 0;
+  const dVal = p.kind === 'nova' ? capNova : dBoost * B.PV0;
+  const empleos = p.kind === 'nova' ? dVal * 2 : (p.emprego_mil || 0) * dBoost;
+  const priv = v * E.crowd;
+  const hist = C.hist[p.k] || [];
+  const var12 = hist.length > 1 ? (hist[hist.length - 1] / hist[0] - 1) * 100 : 0;
+  const bu = p.kind === 'exp' ? icBuyerLista(p.k).slice(0, 5) : [];
+  const projs = icProjAtivos(g, p.k);
+  const prodFis = p.prod != null && p.unid ? fmt(p.prod * F.pf + (p.kind === 'nova' ? F.novaAno : 0), p.prod < 10 ? 2 : 0) + ' ' + p.unid : null;
+  const consFis = p.cons_int != null && p.unid ? fmt(p.cons_int, p.cons_int < 10 ? 2 : 0) + ' ' + p.unid : null;
+  const titulo = semAcoes ? (g.acoes <= 0 ? 'Sem ações políticas neste mês' : 'Energia esgotada') : !sentidoOk ? 'O motor não leu este texto como a medida pretendida: escolha outro valor' : 'Custa 1 ação política e passa pelo parecer da Casa Civil e pelo Congresso quando exigido';
+  const opt = (on) => 'ic-opt';
+  return html`<section className="sec" data-ind-detalhe=${p.k} aria-label=${'Detalhe: ' + p.nome}>
+    <${MxHead} eb=${'Indústria · ' + IC_SETOR_MAP[p.setor].nome} t=${p.nome} right=${html`<div className="flex items-center gap-2"><${IcEst} est=${p.est} /><button type="button" className="btn btn-ghost btn-sm" onClick=${fechar} data-ind-fechar="1"><${Icon} n="X" s=${14} /> Fechar</button></div>`} />
+    <div className="ic-det">
+      <div className="flex flex-col gap-4 min-w-0">
+        <div className="ic-nums">
+          <div className="mx-box"><div className="eyebrow">Exportação</div><div className="num text-xl font-semibold">${icUsd(F.expAno)}</div><div className="mx-s">por ano · ${fmt(F.expAno / IC_PIB_USD * 100, 2)}% do PIB</div></div>
+          <div className="mx-box"><div className="eyebrow">Produção</div><div className="num text-xl font-semibold">${prodFis || icUsd(B.PV0 * F.pf + F.novaAno)}</div><div className="mx-s">${prodFis ? 'por ano ' : ''}<${IcTrend} t=${F.trend} />${F.boost > .001 ? ' · +' + fmt(F.boost * 100, 1) + '% por projetos' : ''}</div></div>
+          <div className="mx-box"><div className="eyebrow">Consumo interno</div><div className="num text-xl font-semibold">${consFis || icUsd(B.C0)}</div><div className="mx-s">${p.kind === 'nova' ? 'Importa ' + icUsd(B.IM0) + ' por ano (' + (p.dep_import_pct || 0) + '% de dependência)' : 'preço interno ' + sgn((F.pdom - 1) * 100, 1) + '% vs. base'}</div></div>
+          <div className="mx-box"><div className="eyebrow">Estoque</div><div className="num text-xl font-semibold" style=${{ color: icCorEst(F.estMeses) }}>${fmt(F.estMeses, 1)} meses</div><div className="mx-s">${p.estocavel ? 'de consumo guardados' : 'pouco estocável'}${F.sf > .05 ? ' · FALTA no mercado' : ''}</div></div>
+        </div>
+        <div className="mx-box" data-ind-preco="1">
+          <div className="flex items-center justify-between gap-3 flex-wrap"><div><div className="eyebrow">Preço mundial · 24 meses</div><div className="num text-lg font-semibold">${p.preco_int && p.preco_int.valor ? icPrecoTxt(p, F.idx) : 'índice ' + fmt(F.idx * 100, 0)} <span className="mx-s" style=${{ color: 'var(--muted)' }}>${sgn(var12, 1)}% no período</span></div></div><${Spark} data=${hist} cor=${var12 >= 0 ? 'var(--verde)' : 'var(--rubro)'} w=${180} hh=${44} /></div>
+          ${p.preco_int && p.preco_int.fonte ? html`<div className="mx-s mt-2">Referência: ${p.preco_int.fonte}</div>` : null}
+        </div>
+        ${bu.length ? html`<div className="mx-box"><div className="eyebrow mb-2">Principais compradores</div><ul className="mx-list">${bu.map(b => html`<li key=${b.iso}><${ComPais} k=${b.iso} /><span className="num ml-auto">${fmt(b.pct, b.pct % 1 ? 1 : 0)}%</span></li>`)}</ul></div>` : null}
+        <div className="text-sm text-muted leading-relaxed">${p.nota ? p.nota + ' ' : ''}Efeito de investimento leva de ${(p.tempo_meses || IC_SETOR_MAP[p.setor].tempo_meses)[0]} a ${(p.tempo_meses || IC_SETOR_MAP[p.setor].tempo_meses)[1]} meses. ${(p.emprego_mil || 0) > 0 ? 'Emprega cerca de ' + fmt(p.emprego_mil * 1000, 0) + ' pessoas hoje. ' : ''}${p.impacto_amb >= 2 ? 'Expansão tem custo ambiental alto.' : p.impacto_amb === 1 ? 'Expansão tem custo ambiental moderado.' : ''}</div>
+        ${projs.length ? html`<div className="mx-box" data-ind-projetos="1"><div className="eyebrow mb-2">Projetos aprovados neste produto</div><ul className="mx-list">${projs.map(j => html`<li key=${j.id}><b>${j.nm || ({ inv: 'Investimento', cred: 'Crédito do BNDES', imp: 'Redução de impostos', isen: 'Isenção' }[j.tipo])}</b>${j.v ? html`<span className="num">${orcFmtV(j.v)}${j.tipo === 'imp' || j.tipo === 'isen' ? '/ano' : ''}</span>` : null}<span className="mx-s ml-auto">${icRamp(g, j) >= .999 ? 'em pleno efeito' : 'produção sobe até ' + dataCurta(j.mes + j.atraso + j.dur)}</span></li>`)}</ul></div>` : null}
+        ${p.k === 'terras_raras' ? html`<div className="mx-s">O processamento no Brasil e a venda aos parceiros ficam em Mundo, Comércio exterior.</div>` : null}
+      </div>
+      <div className="mx-box flex flex-col gap-4 min-w-0" data-ind-acoes="1">
+        <div className="eyebrow">Ação do governo</div>
+        <div role="radiogroup" aria-label="Tipo de ação" className="flex flex-wrap gap-2">${IC_ACOES.map(([k2, n2, ic]) => html`<button key=${k2} type="button" role="radio" aria-checked=${acao === k2} data-ind-acao=${k2} className="ic-opt" onClick=${() => setAcao(k2)}><${Icon} n=${ic} s=${14} /> ${n2}</button>`)}</div>
+        ${dir ? html`<div><div className="eyebrow mb-1.5">Quanto</div><div className="flex flex-wrap items-center gap-1.5" role="radiogroup" aria-label="Valor em bilhões de reais">
+          ${[1, 5, 10, 20].map(x => html`<button key=${x} type="button" role="radio" aria-checked=${bi === x} data-ind-bi=${x} className="ic-opt" onClick=${() => setBi(x)}>R$ ${x} bi</button>`)}
+          <label className="inline-flex items-center gap-1 text-xs text-muted">outro <input type="number" min="0.5" max="50" step="0.5" value=${bi} data-ind-outro="1" aria-label="Valor em bilhões de reais" className="ic-in" onChange=${e => setBi(Math.round(Math.min(50, Math.max(.5, parseFloat(e.target.value) || 1)) * 2) / 2)} /> bi</label></div></div>`
+        : acao === 'imp' ? html`<div><div className="eyebrow mb-1.5">Redução da carga sobre o produto</div><div className="flex flex-wrap items-center gap-1.5" role="radiogroup" aria-label="Percentual de redução">${[25, 50, 75].map(x => html`<button key=${x} type="button" role="radio" aria-checked=${pct === x} data-ind-pct=${x} className="ic-opt" onClick=${() => setPct(x)}>${x}%</button>`)}</div><div className="mx-s mt-1.5">${pct}% de ${orcFmtV(icArred(base))} de impostos por ano = renúncia de ${orcFmtV(v)} por ano (estimativa)</div></div>`
+        : html`<div className="mx-s">Isenção total dos impostos federais sobre ${icNomeTxt(p)}: renúncia estimada de ${orcFmtV(v)} por ano.${p.kind === 'nova' ? ' Para a indústria nova, a isenção atrai o investimento inicial.' : ''}</div>`}
+        <div className="flex flex-col gap-2 mx-box" style=${{ background: 'var(--panel)' }} aria-live="polite" data-ind-previa="1">
+          <div className="eyebrow">Prévia antes de confirmar</div>
+          <div className="text-sm italic leading-snug" data-ind-texto="1">“${texto}”</div>
+          ${motor ? html`<div className="flex flex-wrap gap-1.5"><${Tag} cor=${sentidoOk ? 'var(--verde)' : 'var(--rubro)'}>${INST_NOME[motor.inst] || motor.inst}${precisaCongresso(motor.inst) ? ' · precisa do Congresso' : ' · sem votação'}</${Tag}><${Tag}>${dir ? 'despesa +R$ ' + fmt(Math.abs(motor.cost || 0), 1) + ' bi' : 'renúncia −R$ ' + fmt(Math.abs(motor.rev || 0), 1) + ' bi/ano'}</${Tag}></div>` : html`<p className="text-xs text-muted">O motor não conseguiu ler este texto.</p>`}
+          <ul className="text-sm flex flex-col gap-1" data-ind-efeito="1">
+            ${p.kind === 'nova' ? html`<li>Capacidade nova de até <b>${icUsd(capNova)}</b> por ano; a fábrica só começa a produzir em cerca de <b>${E.atraso}</b> meses.</li>` : html`<li>Produção <b>${sgn(dBoost * 100, 1)}%</b> (≈ ${icUsd(dBoost * B.PV0)} por ano), subindo ao longo de <b>${E.dur}</b> meses depois de ${E.atraso} de regulamentação.</li>`}
+            <li>Emprego <b>+${fmt(empleos, empleos < 10 ? 1 : 0)} mil</b> vagas · investimento privado atraído <b>R$ ${fmt(priv, 1)} bi</b></li>
+            <li>Mais produção rende PIB, arrecadação e saldo comercial; ${p.impacto_amb > 0 ? 'o custo ambiental ' + (p.impacto_amb >= 2 ? 'é alto' : 'é moderado') + '.' : 'sem custo ambiental relevante.'}</li>
+          </ul>
+          <button type="button" className="btn btn-pri mt-1 justify-center" data-ind-confirm=${p.k} disabled=${semAcoes || !sentidoOk || !decidir} title=${titulo} onClick=${() => decidir(texto, false, false, null, { tipo: acao, k: p.k, v, pct: acao === 'isen' ? 1 : pct / 100 })}><${Icon} n=${IC_ACOES.find(a => a[0] === acao)[2]} s=${15} /> ${IC_ACOES.find(a => a[0] === acao)[1]} · ${orcFmtV(v)}${dir ? '' : '/ano'} · 1 ação</button>
+        </div>
+      </div>
+    </div>
+  </section>`;
+}
+function IndCartao({ g, p, sel, onSel }) {
+  const C = g.comex, F = C.fl[p.k], B = IC_BASE[p.k];
+  const bu = p.kind === 'exp' ? icBuyerLista(p.k)[0] : null;
+  const pct = F.expAno / IC_PIB_USD * 100;
+  const cor = IC_COR_SET[p.setor];
+  return html`<button type="button" className="mx-act ic-card" style=${{ '--c': cor }} aria-pressed=${sel} data-ind-prod=${p.k} onClick=${() => onSel(p.k)}>
+    <div className="mx-act-h"><span className="gv-ic" style=${{ '--c': cor }}><${Icon} n=${p.icon || 'Package'} s=${18} /></span><span className="min-w-0" style=${{ overflowWrap: 'anywhere' }}>${p.nome}</span><${IcTrend} t=${F.trend} /></div>
+    ${p.kind === 'nova' ? html`<div><div className="mx-num">${F.novaAno > .005 ? icUsd(F.novaAno) : 'sem produção'}</div><div className="mx-s">${F.novaAno > .005 ? 'por ano, substitui importação' : 'importa ' + icUsd(B.IM0) + ' por ano'}</div></div>`
+    : html`<div><div className="mx-num">${icUsd(F.expAno)}</div><div className="mx-s">exportados por ano</div></div>`}
+    <div className="flex flex-wrap gap-1.5"><span className="gv-chip ouro" data-ind-pib="1">${pct < .005 ? '<0,01' : fmt(pct, 2)}% do PIB</span><span className="gv-chip" style=${{ color: icCorEst(F.estMeses) }}>estoque ${fmt(F.estMeses, 1)} m</span><${IcEst} est=${p.est} /></div>
+    <div className="mx-s flex items-center gap-1.5 min-w-0">${bu ? html`<span>Maior comprador:</span><${ComPais} k=${bu.iso} />` : (p.kind === 'nova' ? 'Nova indústria: começa do zero' : 'Sem comprador principal')}</div>
+  </button>`;
+}
+function PaisIndustria({ g, upd, decidir }) {
+  useEffect(() => { if (!g.comex || !g.indu) upd(n => { ensureIC(n); }); }, [!!g.comex && !!g.indu]);
+  const [setor, setSetor] = useState('agro'); const [sel, setSel] = useState(null);
+  const ref = useRef(null);
+  if (!g.comex || !g.indu || !g.comex.fl[IC_MK[0]]) return null;
+  const C = g.comex, I = g.indu, T = C.tot;
+  const lista = Object.values(IC_PROD).filter(p => p.setor === setor).sort((a, b) => (C.fl[b.k].expAno + C.fl[b.k].novaAno + IC_BASE[b.k].IM0 * .1) - (C.fl[a.k].expAno + C.fl[a.k].novaAno + IC_BASE[a.k].IM0 * .1));
+  const invTot = Object.values(I.inv).reduce((a, b) => a + b, 0), renuncia = I.proj.filter(j => j.ativo && (j.tipo === 'imp' || j.tipo === 'isen')).reduce((s, j) => s + (j.v || 0), 0);
+  const nProj = new Set(I.proj.filter(j => j.ativo).map(j => j.k)).size, nProd = Object.keys(IC_PROD).length;
+  const P = sel && IC_PROD[sel] ? IC_PROD[sel] : null;
+  const escolhe = (k) => { setSel(k === sel ? null : k); setTimeout(() => { try { const el = document.querySelector('[data-ind-detalhe]'); if (el && el.scrollIntoView) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) { } }, 60); };
+  return html`<div className="flex flex-col gap-6" data-pais="industria" data-ind-root="1">
+    <style>${IC_CSS}</style>
+    <section aria-label="Resumo da indústria" data-gv="ind-resumo"><div className="gv-kpis">
+      <${GvKpi} dado="ind-exp" ic="Ship" cor="var(--ouro)" k="Exportações" v=${icUsd(T.expAno)} s="por ano, total do país" />
+      <${GvKpi} dado="ind-pib" ic="PieChart" cor="var(--anil)" k="Exportações no PIB" v=${fmt(T.pctPib, 1) + '%'} s=${'de US$ ' + fmt(IC_PIB_USD / 1000, 2) + ' tri'} />
+      <${GvKpi} dado="ind-saldo" ic="Scale" cor=${T.saldoAno >= 0 ? 'var(--verde)' : 'var(--rubro)'} k="Balança comercial" v=${(T.saldoAno >= 0 ? '+' : '−') + icUsd(Math.abs(T.saldoAno))} s=${sgn(T.dSaldoAno, 1) + ' bi/ano pelas suas medidas e pelo mercado'} />
+      <${GvKpi} dado="ind-setores" ic="Factory" cor="var(--verde)" k="Setores" v=${IC_SETORES.length} s=${nProd + ' produtos · ' + nProj + ' com projeto'} />
+      <${GvKpi} dado="ind-inv" ic="HandCoins" cor="var(--ambar)" k="Investido no mandato" v=${'R$ ' + fmt(invTot, 1) + ' bi'} s=${renuncia > 0 ? '+ R$ ' + fmt(renuncia, 1) + ' bi/ano em isenções' : 'investimento e crédito do BNDES'} />
+    </div></section>
+    <section className="sec" aria-label="Setores e produtos">
+      <${MxHead} eb="País · Indústria" t="Produtos e setores" tip="Valores de 2025 (MDIC, Conab, ANP, IBRAM e outras fontes; veja Fontes e notas). Tag estimativa: valor aproximado pelo jogo. Investir, baixar impostos, isentar ou liberar crédito do BNDES aumentam a produção depois do tempo do setor; a produção alimenta o que o país pode vender em Mundo, Comércio exterior." right=${html`<${PsAcoes} g=${g} />`} />
+      <div className="ic-tabs mb-4" role="tablist" aria-label="Setores">${IC_SETORES.map(s => html`<button key=${s.key} type="button" role="tab" aria-selected=${setor === s.key} className="ic-tab" data-ind-setor=${s.key} onClick=${() => { setSetor(s.key); setSel(null); }}><${Icon} n=${s.icon} s=${16} /> ${s.nome}</button>`)}</div>
+      <div className="mx-s mb-3">Efeito de uma medida neste setor: ${IC_SETOR_MAP[setor].tempo_meses[0]} a ${IC_SETOR_MAP[setor].tempo_meses[1]} meses${setor === 'nova' ? '. Começa do zero: sem investimento ou isenção, nada é produzido.' : '.'}</div>
+      ${P && P.setor === setor ? html`<div className="mb-4" ref=${ref}><${IndDetalhe} key=${P.k} g=${g} p=${P} decidir=${decidir} fechar=${() => setSel(null)} /></div>` : null}
+      <div className="mx-grid g3" data-ind-grid=${setor}>${lista.map(p => html`<${IndCartao} key=${p.k} g=${g} p=${p} sel=${sel === p.k} onSel=${escolhe} />`)}</div>
+    </section>
+    ${I.nots.length ? html`<section className="sec sec-sm" data-ind-notas="1"><div className="eyebrow mb-2">Últimas decisões</div><ul className="mx-list">${I.nots.slice(0, 4).map((x, i) => html`<li key=${i}><span className="mx-date">${dataCurta(x.mes)}</span><span className="flex-1 min-w-0">${x.x}</span></li>`)}</ul></section>` : null}
+    <${NotaFim} area="industria"><p><b className="text-fg">Fontes.</b> Exportações por produto: MDIC/Secex (Comex Stat) 2025, Insper Agro Global, Conab, ANP, IBRAM/ANM, Abiove, ABPA, Ibá, Anfavea e USGS; PIB: IBGE (R$ 12,7 tri) e Austin Rating (US$ 2,27 tri). Parte dos valores (produção, consumo, preços de referência, volatilidade, participação dos compradores, emprego e peso no IPCA) é estimativa do jogo, marcada com a etiqueta estimativa.</p><p>${COM_REF.nota}</p><p>Regras do jogo: o efeito de cada ação sobre a produção, o emprego, a arrecadação e o investimento privado é simulado e limitado; não corresponde a estudo real. ${AVISO_SIM}</p></${NotaFim}>
+  </div>`;
+}
+
+/* ============================== COMÉRCIO EXTERIOR: INTERFACE (Mundo → Comércio exterior) ============================== */
+const IC_TERRA = [[-168,66],[-162,70],[-141,70],[-125,70],[-95,72],[-82,69],[-78,62],[-93,58],[-82,52],[-79,57],[-65,60],[-60,55],[-56,52],[-66,45],[-70,42],[-76,37],[-81,31],[-80,25],[-83,29],[-90,30],[-97,27],[-97,21],[-92,18],[-88,21],[-87,15],[-83,10],[-79,9],[-83,8.5],[-86,12],[-92,15],[-97,16],[-105,20],[-110,24],[-112,29],[-115,30],[-110,23],[-117,32],[-121,35],[-124,40],[-124,48],[-130,55],[-140,60],[-150,60],[-160,58],[-166,61]];
+const IC_POLIS = [
+  IC_TERRA,
+  [[-73,78],[-60,82],[-30,83],[-20,78],[-20,70],[-42,60],[-50,64],[-55,70],[-68,76]],
+  [[-80,9],[-72,12],[-62,11],[-52,5],[-50,0],[-44,-2],[-35,-5],[-35,-9],[-39,-15],[-41,-22],[-48,-26],[-53,-34],[-58,-35],[-57,-39],[-62,-40],[-65,-45],[-68,-50],[-69,-54],[-72,-52],[-74,-45],[-73,-37],[-71,-30],[-70,-18],[-76,-14],[-81,-6],[-80,-1],[-78,3]],
+  [[-10,36],[-9,43],[-2,44],[-4,48],[2,51],[8,54],[10,57],[6,62],[14,68],[26,71],[40,68],[60,70],[75,73],[100,77],[115,74],[140,72],[170,70],[180,66],[165,60],[160,53],[156,51],[142,53],[135,44],[128,39],[126,35],[122,40],[118,38],[122,31],[120,24],[110,20],[108,12],[105,9],[100,13],[98,8],[103,1],[98,16],[93,19],[89,22],[80,15],[77,8],[73,17],[67,24],[57,25],[56,27],[50,30],[48,29],[51,25],[56,24],[59,22],[53,16],[43,13],[39,21],[35,28],[34,31],[36,36],[30,36],[27,37],[26,40],[23,37],[19,40],[13,45],[16,41],[9,44],[3,43],[-2,37]],
+  [[-17,21],[-10,30],[-6,36],[10,37],[11,33],[20,31],[32,31],[34,27],[43,12],[51,12],[44,3],[40,-3],[39,-10],[40,-16],[35,-24],[32,-29],[27,-34],[20,-35],[17,-30],[12,-17],[13,-9],[9,-1],[9,4],[-2,5],[-8,4],[-13,8],[-17,14]],
+  [[114,-22],[122,-18],[130,-12],[136,-12],[142,-11],[146,-19],[153,-26],[150,-37],[141,-38],[135,-35],[129,-32],[115,-34],[113,-26]],
+  [[-5,50],[1,51],[-1,56],[-5,58],[-6,55]], [[130,31],[135,34],[140,36],[142,40],[141,45],[138,38],[131,34]], [[95,5],[105,-6],[115,-8],[120,-8],[106,-2]], [[172,-34],[178,-38],[174,-41],[168,-46]], [[44,-25],[50,-15],[48,-13],[44,-17]]
+];
+const IC_MW = 720, IC_MH = 360;
+const icXY = (c) => [(c[0] + 180) / 360 * IC_MW, (78 - c[1]) / 136 * IC_MH];
+function MapaComercio({ g }) {
+  const C = g.comex; const paisV = new Set(), paisC = new Set(), paisP = new Set();
+  for (const a of C.acordos) if (a.estado === 'ativo') (a.tipo === 'venda' ? paisV : paisC).add(a.pais);
+  for (const p of C.props) if (p.estado === 'aberta') paisP.add(p.pais);
+  const br = icXY(IC_COORD.BRA);
+  const par = [...new Set([...paisV, ...paisC])];
+  return html`<div data-com-mapa="1">
+    <svg className="ic-map" viewBox=${'0 0 ' + IC_MW + ' ' + IC_MH} role="img" aria-label=${'Mapa-múndi: ' + par.length + ' países com acordos ativos e ' + paisP.size + ' com propostas abertas'}>
+      <g fill="rgba(255,255,255,.07)" stroke="rgba(255,255,255,.16)" strokeWidth="0.8" strokeLinejoin="round">${IC_POLIS.map((poly, i) => html`<path key=${i} d=${'M' + poly.map(c => icXY(c).map(v => v.toFixed(1)).join(' ')).join(' L') + ' Z'} />`)}</g>
+      ${par.map(k => { const q = icXY(IC_COORD[k] || [0, 0]); const mx = (q[0] + br[0]) / 2, my = Math.min(q[1], br[1]) - Math.abs(q[0] - br[0]) * .18 - 10; return html`<path key=${'l' + k} d=${`M${br[0].toFixed(1)} ${br[1].toFixed(1)} Q${mx.toFixed(1)} ${my.toFixed(1)} ${q[0].toFixed(1)} ${q[1].toFixed(1)}`} fill="none" stroke=${paisV.has(k) && paisC.has(k) ? 'var(--ouro)' : paisV.has(k) ? 'var(--verde)' : 'var(--anil)'} strokeWidth="1.3" opacity=".7" />`; })}
+      ${Object.keys(IC_PAIS).filter(k => IC_COORD[k]).map(k => { const q = icXY(IC_COORD[k]); const v = paisV.has(k), c = paisC.has(k), pr = paisP.has(k); const cor = v && c ? 'var(--ouro)' : v ? 'var(--verde)' : c ? 'var(--anil)' : 'rgba(255,255,255,.35)';
+        return html`<g key=${k} data-mapa-pais=${k} data-mapa-ativo=${v || c ? '1' : '0'}><title>${IC_PAIS[k].nome}${v ? ' · vendemos' : ''}${c ? ' · compramos' : ''}${pr ? ' · proposta aberta' : ''}</title>${pr ? html`<circle cx=${q[0]} cy=${q[1]} r="7.5" fill="none" stroke="var(--ambar)" strokeWidth="1.4" />` : null}<circle cx=${q[0]} cy=${q[1]} r=${v || c ? 4.2 : 2.2} fill=${cor} /></g>`; })}
+      <circle cx=${br[0]} cy=${br[1]} r="5.5" fill="var(--ouro)" stroke="#000" strokeWidth="1.2" /><text x=${br[0] + 8} y=${br[1] + 4} fontSize="12" fill="var(--fg)" fontWeight="700">Brasil</text>
+    </svg>
+    <div className="ic-leg mt-2"><span><i className="ic-dot" style=${{ background: 'var(--verde)' }}></i>vendemos</span><span><i className="ic-dot" style=${{ background: 'var(--anil)' }}></i>compramos</span><span><i className="ic-dot" style=${{ background: 'var(--ouro)' }}></i>as duas coisas</span><span><i className="ic-dot" style=${{ background: 'transparent', border: '2px solid var(--ambar)' }}></i>proposta aberta</span><span>Mapa esquemático.</span></div>
+  </div>`;
+}
+const icPctMerc = (g, k, preco) => (preco / (g.comex.idx[icMkDe(k)] || 1) - 1) * 100;
+function ComProposta({ g, upd, pr }) {
+  const [neg, setNeg] = useState(false); const [pc, setPc] = useState(105);
+  const P = IC_PROD[pr.k], c = IC_PAIS[pr.pais]; const ok = icAcaoOk(g);
+  const max = icPrecoMaxVenda(g, pr.k, pr.pais, pr.anos, pr.qtd);
+  return html`<li className="mx-card" style=${{ '--st': pr.grande ? 'var(--ambar)' : 'var(--line2)' }} data-com-proposta=${pr.id} data-grande=${pr.grande ? '1' : '0'}>
+    <div className="mx-h"><span className="gv-ic" style=${{ '--c': 'var(--ambar)' }}><${Icon} n=${P.icon || 'Package'} s=${18} /></span><div className="min-w-0"><div className="mx-t flex items-center gap-2 flex-wrap"><${ComPais} k=${pr.pais} /> quer comprar ${P.nome.toLowerCase()}</div><div className="mx-s">${pr.grande ? 'Proposta grande · ' : ''}vale até ${dataCurta(pr.exp)}</div></div><${IcEst} est=${P.est} /></div>
+    <div className="flex flex-wrap gap-1.5"><span className="gv-chip">${icUsd(pr.qtd)} por ano${icFisTxt(P, pr.qtd) ? ' (' + icFisTxt(P, pr.qtd) + ')' : ''}</span><span className="gv-chip">${pr.anos} ${pr.anos === 1 ? 'ano' : 'anos'}</span><span className="gv-chip ouro">${icPrecoTxt(P, pr.preco)}</span><span className=${'gv-chip ' + (icPctMerc(g, pr.k, pr.preco) >= 0 ? 'pos' : 'neg')}>${sgn(icPctMerc(g, pr.k, pr.preco), 1)}% vs. mercado</span></div>
+    ${pr.msg ? html`<div className="text-sm" data-com-pr-msg="1">${pr.msg}</div>` : null}
+    ${neg ? html`<div className="flex flex-wrap items-center gap-2 text-sm">Contraproposta: <input type="number" className="ic-in" value=${pc} min="90" max="130" step="1" data-com-pr-preco="1" aria-label="Preço pedido em percentual da oferta" onChange=${e => setPc(parseFloat(e.target.value) || 100)} /> % da oferta (${icPrecoTxt(P, pr.preco * pc / 100)}) <span className="text-muted text-xs">rodada ${pr.rodada + 1} de até 3</span></div>` : null}
+    <div className="flex flex-wrap gap-2">
+      <button type="button" className="btn btn-pri btn-sm" disabled=${!ok} data-com-pr-aceitar=${pr.id} onClick=${() => upd(n => { ensureIC(n); icAceitaProposta(n, pr.id); })}><${Icon} n="Check" s=${14} /> Aceitar · 1 ação</button>
+      ${!neg ? html`<button type="button" className="btn btn-ghost btn-sm" data-com-pr-negociar=${pr.id} onClick=${() => setNeg(true)}><${Icon} n="ArrowRightLeft" s=${14} /> Negociar</button>` : html`<button type="button" className="btn btn-ghost btn-sm" data-com-pr-enviar=${pr.id} onClick=${() => upd(n => { ensureIC(n); icNegociaProposta(n, pr.id, pr.preco * pc / 100); })}><${Icon} n="Send" s=${14} /> Enviar contraproposta</button>`}
+      <button type="button" className="btn btn-ghost btn-sm" data-com-pr-rejeitar=${pr.id} onClick=${() => upd(n => { ensureIC(n); icRejeitaProposta(n, pr.id); })}><${Icon} n="X" s=${14} /> Recusar</button>
+    </div></li>`;
+}
+function ComPropostas({ g, upd, soGrandes }) {
+  const L = g.comex.props.filter(p => p.estado === 'aberta' && (!soGrandes || p.grande));
+  const rec = g.comex.props.filter(p => p.estado === 'recusada' && p.msg && g.mes - p.mes < 4).slice(-2);
+  if (!L.length) return html`<p className="text-sm text-muted" data-com-sem-propostas="1">Nenhuma proposta de compra aberta. Países procuram o Brasil todo mês; relações melhores trazem mais propostas.</p>`;
+  return html`<ul className="mx-grid g2" style=${{ padding: 0 }}>${L.map(pr => html`<${ComProposta} key=${pr.id} g=${g} upd=${upd} pr=${pr} />`)}</ul>`;
+}
+function ComTerras({ g, upd, decidir, go }) {
+  useEffect(() => { if (!g.tr) upd(n => { ensureTR(n); }); }, [!!g.tr]);
+  const C = g.comex; const texto = 'Exigir que as terras raras exportadas sejam processadas no Brasil, com beneficiamento local e joint venture para fabricar ímãs';
+  const motor = useMemo(() => { try { return analisaLocal(g, texto) || null; } catch (e) { return null; } }, [g.mes]);
+  return html`<div className="mx-box flex flex-col gap-3" data-com-terras="1">
+    <div className="eyebrow">Terras raras · cadeia produtiva</div>
+    ${g.tr ? html`<${TerrasResumo} g=${g} />` : null}
+    <p className="text-sm text-muted leading-relaxed">O Brasil tem a 2ª maior reserva do mundo, mas vende concentrado bruto. Quem separa os óxidos e faz os ímãs ganha o valor. Exigir processamento no Brasil reduz o volume e o preço que os compradores aceitam agora, e dá impulso à nova indústria de ímãs (Indústria, Nova indústria).</p>
+    ${C.exigeProc ? html`<${Tag} cor="var(--verde)">Exigência de processamento em vigor: vendas ${fmt((1 - icXdem(g, 'terras_raras')) * 100, 0)}% menores, ímãs em construção</${Tag}>` : html`<div className="flex flex-col gap-2"><div className="text-sm italic" data-com-terras-texto="1">“${texto}”</div>
+      ${motor ? html`<div className="flex flex-wrap gap-1.5"><${Tag}>${INST_NOME[motor.inst] || motor.inst}${precisaCongresso(motor.inst) ? ' · precisa do Congresso' : ' · sem votação'}</${Tag}></div>` : null}
+      <button type="button" className="btn btn-pri btn-sm self-start" disabled=${!icAcaoOk(g) || !decidir} data-com-exigir-proc="1" onClick=${() => decidir(texto, false, false, null, { tipo: 'proc' })}><${Icon} n="Factory" s=${14} /> Exigir processamento no Brasil · 1 ação</button></div>`}
+    <div><button type="button" className="btn btn-ghost btn-sm" data-com-terras-mesa="1" onClick=${() => go && go('terras')}><${Icon} n="Gem" s=${14} /> Abrir a mesa de Terras raras (acordos, conselho e estatal)</button></div>
+  </div>`;
+}
+function ComVender({ g, upd, decidir, go }) {
+  const [setor, setSetor] = useState('todos'); const [k, setK] = useState(null); const [iso, setIso] = useState(null);
+  const [qm, setQm] = useState(1); const [pc, setPc] = useState(100); const [anos, setAnos] = useState(2); const [res, setRes] = useState(null);
+  const C = g.comex; const ok = icAcaoOk(g);
+  const prods = Object.values(IC_PROD).filter(p => p.kind === 'exp' && p.exp_usd_bi >= .01 && (setor === 'todos' || p.setor === setor)).sort((a, b) => b.exp_usd_bi - a.exp_usd_bi);
+  const P = k ? IC_PROD[k] : null; const F = P ? C.fl[icMkDe(k)] : null;
+  const compr = P ? icBuyerLista(k).map(b => ({ iso: b.iso, pct: b.pct, c: IC_PAIS[b.iso], sh: icShareUsd(k, b.iso) })).sort((a, b) => b.sh - a.sh).slice(0, 12) : [];
+  const sel = iso && P ? compr.find(b => b.iso === iso) : null;
+  const qtd = sel ? Math.round(sel.sh * qm * 100) / 100 : 0;
+  const maxP = sel ? icPrecoMaxVenda(g, k, iso, anos, qtd) : 0, preco = Math.round(maxP * pc / 100 * 1000) / 1000;
+  const escolheProd = (x) => { setK(x); setIso(null); setRes(null); };
+  const escolhePais = (x) => { setIso(x); setRes(null); setQm(1); setPc(100); };
+  const prevEst = useMemo(() => { if (!sel || !P) return null; const mk = icMkDe(k); const a = { id: 'tmp', tipo: 'venda', k, mk, pais: iso, qtd, preco, anos, estado: 'ativo' }; C.acordos.push(a); let f; try { f = icFlow(g, mk); } finally { C.acordos.pop(); } return f; }, [k, iso, qtd, preco, anos, g.mes, C.acordos.length]);
+  const envia = () => {
+    const rod = (res && res.rodada) || 0; const r = icAvaliaVenda(g, k, iso, qtd, preco, anos, rod);
+    setRes(Object.assign({}, r, { rodada: r.res === 'contra' ? rod + 1 : rod, qtd, preco, anos, iso, k }));
+  };
+  const fecha = (pcontr) => { const pr = pcontr != null ? pcontr : res.preco; upd(n => { ensureIC(n); icContrata(n, { tipo: 'venda', k, iso, qtd: res.qtd, preco: pr, anos: res.anos }); }); setRes(null); setIso(null); };
+  return html`<div className="flex flex-col gap-4" data-com-vender="1">
+    <div className="ic-tabs" role="group" aria-label="Filtrar produtos por setor">${[['todos', 'Todos']].concat(IC_SETORES.filter(s => s.key !== 'nova').map(s => [s.key, s.nome])).map(([key, nome]) => html`<button key=${key} type="button" className="ic-tab" aria-selected=${setor === key} onClick=${() => setSetor(key)}>${nome}</button>`)}</div>
+    <div className="ic-pick" data-com-picker="vender">${prods.map(p => html`<button key=${p.k} type="button" className="ic-pk" aria-pressed=${k === p.k} data-com-prod=${p.k} onClick=${() => escolheProd(p.k)}><${Icon} n=${p.icon || 'Package'} s=${16} /><span className="t">${p.nome}</span><span className="num ml-auto text-xs text-muted">${fmt(C.fl[p.k].expAno, 1)}</span></button>`)}</div>
+    ${P ? html`<section className="flex flex-col gap-4" data-com-produto=${k}>
+      <div className="flex flex-wrap items-center gap-3"><h4 className="disp text-xl font-bold">${P.nome}</h4><${IcEst} est=${P.est} /><span className="gv-chip ouro">mercado: ${icPrecoTxt(P, F.idx)}</span><span className="gv-chip" style=${{ color: icCorEst(F.estMeses) }}>estoque ${fmt(F.estMeses, 1)} meses</span><span className="gv-chip">exportamos ${icUsd(F.expAno)}/ano</span>${F.sf > .05 ? html`<span className="gv-chip neg">falta no mercado interno</span>` : null}</div>
+      <div className="ic-tw"><table className="ic-tbl"><thead><tr><th>Comprador</th><th>Paga hoje</th><th>Vs. mercado</th><th>Frete</th><th>Relação</th><th>Volume típico</th><th></th></tr></thead><tbody>
+        ${compr.map(b => { const mp = icPrecoMaxVenda(g, k, b.iso, 1, b.sh); const rel = icRel(g, b.c); return html`<tr key=${b.iso} data-com-pais=${b.iso}>
+          <td><${ComPais} k=${b.iso} /></td><td className="num">${icPrecoTxt(P, mp)}</td><td className="num" style=${{ color: mp >= F.idx ? 'var(--verde)' : 'var(--rubro)' }}>${sgn((mp / F.idx - 1) * 100, 1)}%</td>
+          <td className="num">${fmt(icFretePct(P, b.c) * 100, 1)}%</td><td><${Tag} cor=${corRel(rel)}>${rotuloRel(rel)}</${Tag}></td><td className="num">${icUsd(b.sh)}/ano</td>
+          <td><button type="button" className="btn btn-ghost btn-sm" data-com-propor=${b.iso} aria-pressed=${iso === b.iso} onClick=${() => escolhePais(b.iso)}>Propor</button></td></tr>`; })}
+      </tbody></table></div>
+      ${sel ? html`<div className="mx-box flex flex-col gap-4" data-com-form="venda">
+        <div className="flex items-center gap-2 flex-wrap"><div className="eyebrow">Proposta a</div><b><${ComPais} k=${iso} /></b></div>
+        <div><div className="eyebrow mb-1.5">Quantidade por ano</div><div className="flex flex-wrap items-center gap-1.5" role="radiogroup" aria-label="Quantidade">${[.5, 1, 1.5, 2].map(x => html`<button key=${x} type="button" role="radio" aria-checked=${qm === x} className="ic-opt" data-com-qtd=${x} onClick=${() => { setQm(x); setRes(null); }}>${x * 100}% do volume típico</button>`)}</div><div className="mx-s mt-1">${icUsd(qtd)} por ano${icFisTxt(P, qtd) ? ' (' + icFisTxt(P, qtd) + ')' : ''}</div></div>
+        <div><div className="eyebrow mb-1.5">Preço</div><div className="flex flex-wrap items-center gap-2"><input type="number" className="ic-in" value=${pc} min="80" max="130" step="1" data-com-preco="1" aria-label="Preço proposto em percentual do que o país paga" onChange=${e => { setPc(parseFloat(e.target.value) || 100); setRes(null); }} /> % do que o país paga hoje<span className="num">= ${icPrecoTxt(P, preco)}</span><span className="mx-s">(o país paga até ${icPrecoTxt(P, maxP)})</span></div></div>
+        <div><div className="eyebrow mb-1.5">Duração</div><div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Duração do contrato">${[1, 2, 4].map(x => html`<button key=${x} type="button" role="radio" aria-checked=${anos === x} className="ic-opt" data-com-anos=${x} onClick=${() => { setAnos(x); setRes(null); }}>${x} ${x === 1 ? 'ano' : 'anos'}</button>`)}</div><div className="mx-s mt-1">Mais longo = preço melhor (+${fmt(((IC_DUR_V[anos] || 1) - 1) * 100, 0)}% aqui), mas prende o Brasil: cancelar custa multa e piora a relação.</div></div>
+        ${prevEst ? html`<div className="mx-s" data-com-previa="1">Efeito no estoque: ${fmt(F.estMeses, 1)} → ${fmt(prevEst.estMeses, 1)} meses${prevEst.sf > .05 ? ' · FALTA no mercado interno: o preço sobe' : ''}. Preço interno ${sgn((prevEst.pdom - 1) * 100, 1)}%.</div>` : null}
+        <button type="button" className="btn btn-pri self-start" data-com-enviar="1" onClick=${envia}><${Icon} n="Send" s=${15} /> Enviar proposta</button>
+        ${res ? html`<div className="ic-res" style=${{ '--c': res.res === 'aceita' ? 'var(--verde)' : res.res === 'contra' ? 'var(--ambar)' : 'var(--rubro)' }} data-com-resposta=${res.res} role="status">
+          <b>${res.res === 'aceita' ? 'A proposta foi aceita' : res.res === 'contra' ? 'Contraproposta recebida' : 'Proposta recusada'}</b>
+          <span className="text-sm">${res.res === 'aceita' ? 'O país aceita comprar nas condições acima. Falta assinar o contrato.' : res.res === 'contra' ? res.motivo + ' O país oferece ' + icPrecoTxt(P, res.contra) + ' (rodada ' + res.rodada + ' de 2).' : res.motivo}</span>
+          <div className="flex flex-wrap gap-2">
+            ${res.res === 'aceita' ? html`<button type="button" className="btn btn-pri btn-sm" disabled=${!ok} data-com-fechar="1" onClick=${() => fecha()}><${Icon} n="Handshake" s=${14} /> Assinar contrato · 1 ação</button>` : null}
+            ${res.res === 'contra' ? html`<button type="button" className="btn btn-pri btn-sm" disabled=${!ok} data-com-aceitar-contra="1" onClick=${() => fecha(res.contra)}><${Icon} n="Check" s=${14} /> Aceitar contraproposta · 1 ação</button><button type="button" className="btn btn-ghost btn-sm" data-com-nova-rodada="1" onClick=${() => { setPc(Math.round(res.contra / maxP * 1000) / 10 * 1.0); }}>Negociar de novo</button>` : null}
+          </div></div>` : null}
+      </div>` : null}
+      ${P.k === 'terras_raras' ? html`<${ComTerras} g=${g} upd=${upd} decidir=${decidir} go=${go} />` : null}
+    </section>` : html`<p className="text-sm text-muted">Escolha um produto para ver quais países querem comprar, quanto pagam e propor um contrato.</p>`}
+  </div>`;
+}
+function ComComprar({ g, upd }) {
+  const [k, setK] = useState(null); const [iso, setIso] = useState(null); const [qm, setQm] = useState(1); const [anos, setAnos] = useState(2);
+  const C = g.comex; const ok = icAcaoOk(g);
+  const prods = COM_IMPORTS.slice().sort((a, b) => b.imp_usd_bi - a.imp_usd_bi);
+  const I = k ? IC_IMP[k] : null; const mk = k ? icMkDe(k) : null; const F = mk ? C.fl[mk] : null; const B = mk ? IC_BASE[mk] : null;
+  const vend = I ? Object.values(IC_PAIS).filter(c => c.vende.some(v => v.k === k)) : [];
+  const nomeI = (i) => IC_NOMES_IMP[i.k] || i.nome || i.k;
+  const sel = iso ? IC_PAIS[iso] : null;
+  const baseQ = I ? Math.max(I.imp_usd_bi * .5, .05) : 0;
+  const qtd = Math.round(baseQ * qm * 100) / 100;
+  const preco = sel ? Math.round(icPrecoPedidoCompra(g, k, iso, anos, qtd) * 1000) / 1000 : 0;
+  const prev = useMemo(() => { if (!sel) return null; const a = { id: 'tmp', tipo: 'compra', k, mk, pais: iso, qtd, preco, anos, estado: 'ativo' }; C.acordos.push(a); let f; try { f = icFlow(g, mk); } finally { C.acordos.pop(); } return f; }, [k, iso, qtd, preco, anos, g.mes, C.acordos.length]);
+  const dPreco = prev ? (prev.pdom / F.pdom - 1) * 100 : 0;
+  const dIpca = prev ? B.ipca * (prev.pdom - F.pdom) : 0;
+  return html`<div className="flex flex-col gap-4" data-com-comprar="1">
+    <div className="ic-pick" data-com-picker="comprar">${prods.map(i => html`<button key=${i.k} type="button" className="ic-pk" aria-pressed=${k === i.k} data-com-imp=${i.k} onClick=${() => { setK(i.k); setIso(null); setQm(1); }}><${Icon} n=${i.icon || 'Package'} s=${16} /><span className="t">${nomeI(i)}</span><span className="num ml-auto text-xs text-muted">${fmt(i.imp_usd_bi, 1)}</span></button>`)}</div>
+    ${I ? html`<section className="flex flex-col gap-4" data-com-produto=${k}>
+      <div className="flex flex-wrap items-center gap-3"><h4 className="disp text-xl font-bold">${nomeI(I)}</h4><${IcEst} est=${I.est} /><span className="gv-chip">importamos ${icUsd(F.impAno)}/ano</span><span className="gv-chip" data-com-preco-interno=${k} style=${{ color: F.pdom <= 1 ? 'var(--verde)' : 'var(--ambar)' }}>preço interno ${sgn((F.pdom - 1) * 100, 1)}%</span><span className="gv-chip" style=${{ color: icCorEst(F.estMeses) }}>estoque ${fmt(F.estMeses, 1)} meses</span>${I.autossuf_pct != null ? html`<span className="gv-chip">produção nacional cobre ${I.autossuf_pct}%</span>` : null}<span className="gv-chip">peso no IPCA ${fmt(I.ipca_peso || 0, 2)}%</span></div>
+      <div className="ic-tw"><table className="ic-tbl"><thead><tr><th>Vendedor</th><th>Preço no Brasil</th><th>Vs. mercado</th><th>Frete</th><th>Prazo</th><th>Relação</th><th></th></tr></thead><tbody>
+        ${vend.map(c => { const p1 = icPrecoPedidoCompra(g, k, c.k, 1, baseQ); const fp = icFreteEPrazo(I, c); const rel = icRel(g, c); return html`<tr key=${c.k} data-com-vendedor=${c.k}>
+          <td><${ComPais} k=${c.k} /></td><td className="num">${icPrecoTxt(icPrecoRefDe(k), p1)}</td><td className="num" style=${{ color: p1 <= F.idx * 1.06 ? 'var(--verde)' : 'var(--rubro)' }}>${sgn((p1 / F.idx - 1) * 100, 1)}%</td><td className="num">${fmt(fp.frete * 100, 1)}%</td><td className="num">${fp.dias} dias</td><td><${Tag} cor=${corRel(rel)}>${rotuloRel(rel)}</${Tag}></td>
+          <td><button type="button" className="btn btn-ghost btn-sm" data-com-comprar-de=${c.k} aria-pressed=${iso === c.k} onClick=${() => setIso(c.k)}>Comprar</button></td></tr>`; })}
+      </tbody></table></div>
+      ${sel ? html`<div className="mx-box flex flex-col gap-4" data-com-form="compra">
+        <div className="flex items-center gap-2 flex-wrap"><div className="eyebrow">Compra de</div><b><${ComPais} k=${iso} /></b></div>
+        <div><div className="eyebrow mb-1.5">Quantidade por ano</div><div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Quantidade">${[.5, 1, 2, 4].map(x => html`<button key=${x} type="button" role="radio" aria-checked=${qm === x} className="ic-opt" data-com-qtd=${x} onClick=${() => setQm(x)}>${icUsd(Math.round(Math.max(I.imp_usd_bi * .5, .05) * x * 100) / 100)}</button>`)}</div><div className="mx-s mt-1">${icUsd(qtd)} por ano${icFisTxt(icPrecoRefDe(k), qtd) ? ' (' + icFisTxt(icPrecoRefDe(k), qtd) + ')' : ''}; hoje o Brasil importa ${icUsd(I.imp_usd_bi)} por ano.</div></div>
+        <div><div className="eyebrow mb-1.5">Duração</div><div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Duração do contrato">${[1, 2, 4].map(x => html`<button key=${x} type="button" role="radio" aria-checked=${anos === x} className="ic-opt" data-com-anos=${x} onClick=${() => setAnos(x)}>${x} ${x === 1 ? 'ano' : 'anos'}</button>`)}</div><div className="mx-s mt-1">Contrato mais longo tem preço melhor (${fmt(((IC_DUR_C[anos] || 1) - 1) * 100, 0)}%), mas prende o Brasil.</div></div>
+        <div className="text-sm leading-relaxed" data-com-previa="1">Preço fechado: <b>${icPrecoTxt(icPrecoRefDe(k), preco)}</b> posto no Brasil (${sgn((preco / F.idx - 1) * 100, 1)}% vs. mercado). Preço interno de ${nomeI(I).toLowerCase()}: <b>${sgn((F.pdom - 1) * 100, 1)}% → ${sgn((prev.pdom - 1) * 100, 1)}%</b> (${sgn(dPreco, 1)}%). Efeito no IPCA: <b>${sgn(dIpca, 2)} pp</b>. ${prev.cutNew > .01 || (g.comex.cut[mk] || 0) > .01 ? 'Importar muito barato derruba a produção nacional e o emprego do setor.' : ''}</div>
+        <button type="button" className="btn btn-pri self-start" disabled=${!ok} data-com-fechar-compra="1" onClick=${() => { upd(n => { ensureIC(n); icContrata(n, { tipo: 'compra', k, iso, qtd, preco, anos }); }); setIso(null); }}><${Icon} n="ShoppingCart" s=${15} /> Fechar compra · 1 ação</button>
+      </div>` : null}
+    </section>` : html`<p className="text-sm text-muted">Escolha o que importar para ver os países que vendem, com preço no Brasil, frete e prazo.</p>`}
+  </div>`;
+}
+const IC_TLC = [
+  { bloco: 'UE', t: 'Aprovar o acordo de livre comércio entre o Mercosul e a União Europeia' },
+  { bloco: 'USMCA', t: 'Aprovar o acordo de livre comércio entre o Mercosul e o USMCA (Estados Unidos, México e Canadá)' },
+  { bloco: 'ASEAN', t: 'Aprovar o acordo de livre comércio entre o Mercosul e a ASEAN' },
+  { bloco: 'Golfo', t: 'Aprovar o acordo de livre comércio entre o Mercosul e os países do Golfo' }
+];
+function ComAcordos({ g, upd, decidir }) {
+  const C = g.comex; const ativos = C.acordos.filter(a => a.estado === 'ativo'); const velhos = C.acordos.filter(a => a.estado !== 'ativo').slice(-8).reverse();
+  const [conf, setConf] = useState(null);
+  const nome = (a) => a.tipo === 'venda' ? IC_PROD[a.k].nome : (IC_NOMES_IMP[a.k] || IC_IMP[a.k].nome || a.k);
+  const ok = icAcaoOk(g);
+  return html`<div className="flex flex-col gap-6" data-com-acordos="1">
+    <section className="sec"><${MxHead} eb="Contratos" t="Acordos ativos" right=${html`<${MxChip}>${ativos.length} ${ativos.length === 1 ? 'contrato' : 'contratos'}</${MxChip}>`} tip="Contratos de compra e venda são atos do governo: não passam pelo Congresso e custam 1 ação para assinar. Cancelar antes do fim custa multa (8% do que falta) e piora a relação." />
+      ${ativos.length === 0 ? html`<p className="text-sm text-muted">Nenhum contrato ativo. Venda ou compre em Vender e Comprar.</p>` : html`<div className="ic-tw"><table className="ic-tbl"><thead><tr><th>Tipo</th><th>Produto</th><th>País</th><th>Volume/ano</th><th>Preço</th><th>Fim</th><th></th></tr></thead><tbody>${ativos.map(a => { const rest = Math.max(0, a.mFim - g.mes) / 12; const multa = clamp(.08 * a.qtd * a.preco * rest, .01, 5); return html`<tr key=${a.id} data-com-acordo=${a.id}>
+        <td><${Tag} cor=${a.tipo === 'venda' ? 'var(--verde)' : 'var(--anil)'}>${a.tipo === 'venda' ? 'venda' : 'compra'}</${Tag}></td><td>${nome(a)}</td><td><${ComPais} k=${a.pais} /></td><td className="num">${icUsd(a.qtd)}</td><td className="num">${icPrecoTxt(icPrecoRefDe(a.k), a.preco)}</td><td className="num">${dataCurta(a.mFim)}</td>
+        <td>${conf === a.id ? html`<span className="flex flex-wrap gap-1.5 items-center"><span className="text-xs">Multa ${icBrl(multa)}</span><button type="button" className="btn btn-sm" style=${{ borderColor: 'var(--rubro)', color: 'var(--rubro)' }} data-com-cancelar-ok=${a.id} disabled=${!ok} onClick=${() => { upd(n => { ensureIC(n); icCancela(n, a.id); }); setConf(null); }}>Confirmar</button><button type="button" className="btn btn-ghost btn-sm" onClick=${() => setConf(null)}>Voltar</button></span>` : html`<button type="button" className="btn btn-ghost btn-sm" data-com-cancelar=${a.id} onClick=${() => setConf(a.id)}>Cancelar</button>`}</td></tr>`; })}</tbody></table></div>`}
+      ${velhos.length ? html`<${MxDet} rot=${'Histórico (' + velhos.length + ')'}><ul className="mx-list">${velhos.map(a => html`<li key=${a.id}><span className="mx-date">${dataCurta(a.m0)}</span><span className="flex-1 min-w-0">${a.tipo === 'venda' ? 'Venda' : 'Compra'} de ${nome(a)} com ${IC_PAIS[a.pais].nome}</span><${Tag} cor=${a.estado === 'cancelado' ? 'var(--rubro)' : 'var(--muted)'}>${a.estado}${a.multa ? ' · multa ' + icBrl(a.multa) : ''}</${Tag}></li>`)}</ul></${MxDet}>` : null}
+    </section>
+    <section className="sec" data-com-tratados="1"><${MxHead} eb="Congresso" t="Tratados de livre comércio" tip="Tratados mudam a tarifa de todo o bloco, passam pelo parecer e pelo Congresso e custam 1 ação para enviar. Acordo forte com os EUA irrita a China, e o contrário também." />
+      <div className="mx-grid g2">${IC_TLC.map(x => { const B = IC_BLOCO[x.bloco]; const vig = icTratado(g, x.bloco); const c0 = Object.values(IC_PAIS).find(c => c.bloco === x.bloco); const t0 = c0 ? icTarifa(g, c0) : 0; const t1 = Math.max(0, t0 - (vig ? 0 : (B.desconto_pp_com_acordo != null ? B.desconto_pp_com_acordo : 5)));
+        return html`<div key=${x.bloco} className="mx-card" style=${{ '--st': vig ? 'var(--verde)' : 'var(--line2)' }} data-com-tlc-card=${x.bloco}>
+          <div className="mx-h nr"><span className="gv-ic" style=${{ '--c': 'var(--ouro)' }}><${Icon} n="Handshake" s=${18} /></span><div className="mx-t">${B.nome}</div></div>
+          <div className="mx-s">${B.regra}</div>
+          <div className="flex flex-wrap gap-1.5"><span className="gv-chip">tarifa ${fmt(t0, 0)}%${vig ? ' (já com tratado)' : ' → ' + fmt(t1, 0) + '%'}</span><${IcEst} est=${B.est} /></div>
+          ${vig ? html`<${Tag} cor="var(--verde)">Em vigor</${Tag}>` : html`<button type="button" className="btn btn-ghost btn-sm self-start" disabled=${!ok || !decidir} data-com-tlc=${x.bloco} onClick=${() => decidir(x.t, false, false, null, { tipo: 'tlc', bloco: x.bloco })}><${Icon} n="FileText" s=${14} /> Enviar tratado ao Congresso · 1 ação</button>`}</div>`; })}</div>
+    </section></div>`;
+}
+function ComGeral({ g, upd }) {
+  const C = g.comex;
+  return html`<div className="flex flex-col gap-6" data-com-geral="1">
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] items-start">
+      <section className="sec min-w-0"><${MxHead} eb="Comércio exterior" t="Mapa de acordos" /><${MapaComercio} g=${g} /></section>
+      <section className="sec min-w-0"><${MxHead} eb="Mercado" t="Notícias" />
+        ${C.ev.filter(e => e.ate >= g.mes).length ? html`<div className="flex flex-wrap gap-1.5 mb-3">${C.ev.filter(e => e.ate >= g.mes).map(e => html`<${Tag} key=${e.tipo} cor="var(--ambar)">${IC_EVENTOS[e.tipo].nome} até ${dataCurta(e.ate)}</${Tag}>`)}</div>` : null}
+        ${C.news.length === 0 ? html`<p className="text-sm text-muted">Sem eventos. Os preços mundiais mudam todo mês e podem ser afetados por seca, guerra e crise na China.</p>` : html`<ul className="mx-list">${C.news.slice(0, 5).map((x, i) => html`<li key=${i}><span className="mx-date">${dataCurta(x.mes)}</span><span className="flex-1 min-w-0">${x.txt}</span></li>`)}</ul>`}
+      </section>
+    </div>
+    <section className="sec" data-com-propostas="1"><${MxHead} eb="Países procuram o Brasil" t="Propostas recebidas" right=${html`<${MxChip}>${C.props.filter(p => p.estado === 'aberta').length} abertas</${MxChip}>`} tip="Propostas grandes também aparecem na Mesa, em Precisa de você. As pequenas ficam só aqui. Aceitar custa 1 ação; recusar é grátis. Você pode negociar até 3 vezes." />
+      <${ComPropostas} g=${g} upd=${upd} /></section>
+  </div>`;
+}
+function MundoComercio({ g, upd, decidir, go }) {
+  useEffect(() => { if (!g.comex || !g.indu) upd(n => { ensureIC(n); }); }, [!!g.comex && !!g.indu]);
+  const [aba, setAba] = useState('geral');
+  if (!g.comex || !g.indu || !g.comex.fl[IC_MK[0]]) return null;
+  const C = g.comex, T = C.tot;
+  const ativos = C.acordos.filter(a => a.estado === 'ativo'); const abertas = C.props.filter(p => p.estado === 'aberta'); const vol = ativos.reduce((s, a) => s + a.qtd, 0);
+  const ABAS = [['geral', 'Visão geral', 'Globe'], ['vender', 'Vender', 'Ship'], ['comprar', 'Comprar', 'ShoppingCart'], ['acordos', 'Contratos e tratados', 'Handshake']];
+  return html`<div className="flex flex-col gap-6" data-mundo="comercio" data-com-root="1">
+    <style>${IC_CSS}</style>
+    <section aria-label="Resumo do comércio exterior" data-gv="com-resumo"><div className="gv-kpis">
+      <${GvKpi} dado="com-saldo-mes" ic="Scale" cor=${T.saldoMes >= 0 ? 'var(--verde)' : 'var(--rubro)'} k="Balança no mês" v=${(T.saldoMes >= 0 ? '+' : '−') + icUsd(Math.abs(T.saldoMes))} s="exportações menos importações" />
+      <${GvKpi} dado="com-saldo-ano" ic="TrendingUp" cor=${T.saldoAno >= 0 ? 'var(--verde)' : 'var(--rubro)'} k="Balança em 12 meses" v=${(T.saldoAno >= 0 ? '+' : '−') + icUsd(Math.abs(T.saldoAno))} s=${'ritmo atual · base 2025: +US$ ' + fmt(IC_SALDO0, 1) + ' bi'} />
+      <${GvKpi} dado="com-acordos" ic="Handshake" cor="var(--ouro)" k="Acordos ativos" v=${ativos.length} s=${ativos.length ? icUsd(vol) + ' por ano em contratos' : 'nenhum contrato'} />
+      <${GvKpi} dado="com-propostas" ic="Inbox" cor="var(--ambar)" k="Propostas recebidas" v=${abertas.length} s=${abertas.filter(p => p.grande).length + ' grandes na Mesa'} />
+      <${GvKpi} dado="com-ipca" ic="Flame" cor=${Math.abs(C.mac.ipca) < .1 ? 'var(--muted)' : C.mac.ipca > 0 ? 'var(--ambar)' : 'var(--verde)'} k="Efeito no IPCA" v=${sgn(C.mac.ipca, 2) + ' pp'} s="preços de importados e alimentos" />
+    </div></section>
+    <div className="ic-tabs" role="tablist" aria-label="Comércio exterior">${ABAS.map(([k2, n2, ic]) => html`<button key=${k2} type="button" role="tab" aria-selected=${aba === k2} className="ic-tab" data-com-aba=${k2} onClick=${() => setAba(k2)}><${Icon} n=${ic} s=${16} /> ${n2}</button>`)}<span className="ml-auto self-center"><${PsAcoes} g=${g} /></span></div>
+    ${aba === 'geral' && html`<${ComGeral} g=${g} upd=${upd} />`}
+    ${aba === 'vender' && html`<${ComVender} g=${g} upd=${upd} decidir=${decidir} go=${go} />`}
+    ${aba === 'comprar' && html`<${ComComprar} g=${g} upd=${upd} />`}
+    ${aba === 'acordos' && html`<${ComAcordos} g=${g} upd=${upd} decidir=${decidir} />`}
+    <${NotaFim} area="comercio"><p><b className="text-fg">Fontes.</b> Balança de 2025: MDIC/Secex (exportações US$ 348,7 bi, importações US$ 280,4 bi, saldo US$ 68,3 bi); parceiros: MDIC e CEBC (Brasil–China). Preços de referência, volatilidade, tarifas dos blocos, frete (distância) e participação de cada comprador são estimativas do jogo (etiqueta estimativa). ${COM_REF.nota}</p><p>Regras: preço de venda = mercado mundial × vantagem tarifária do bloco × relação × demanda do país × duração, menos frete. Preço interno = média ponderada entre produção nacional e importações (contratos e mercado à vista). Estoque = produção + importação − consumo − exportação. Contratos são atos do governo e não passam pelo Congresso; tratados de livre comércio passam. Embargos e sanções não são simulados aqui. ${AVISO_SIM}</p></${NotaFim}>
+  </div>`;
+}
+
+Object.assign(GAVETA_TIT, { comercio: 'Comércio exterior' });
 
 /* ============================== EU: VIDA PESSOAL ============================== */
 function EuResumo({ g }) {
@@ -29352,9 +30452,9 @@ function App() {
   }, [jaG]);
 
   const [refino, setRefino] = useState(null); // texto devolvido pelo parecer à caixa de decisão
-  const decidir = async (texto, fromEvento, fromProtesto, trHook) => {
+  const decidir = async (texto, fromEvento, fromProtesto, trHook, icHook) => {
     if (!g || g.acoes <= 0 || elSemGoverno(g)) return;
-    const marca = (prop) => { minMarca(prop, texto); gvMarca(gRef.current || g, prop, texto); prop.fromEvento = !!fromEvento; tbMarca(prop, texto); if (trHook) trMarcaProp(gRef.current || g, prop, trHook); if (fromProtesto) ajustaConcessao(prop, gRef.current.protesto); return prop; };
+    const marca = (prop) => { minMarca(prop, texto); gvMarca(gRef.current || g, prop, texto); prop.fromEvento = !!fromEvento; tbMarca(prop, texto); if (trHook) trMarcaProp(gRef.current || g, prop, trHook); if (icHook) prop.icHook = icHook; if (fromProtesto) ajustaConcessao(prop, gRef.current.protesto); return prop; };
     if (ia.motor === 'local') {
       const prop = marca(analisaLocal(g, texto));
       setDec({ stage: 'parecer', prop });
