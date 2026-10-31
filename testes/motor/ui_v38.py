@@ -206,9 +206,9 @@ with sync_playwright() as p:
     pg.evaluate("location.hash='#/poder/imprensa'"); pg.wait_for_timeout(900)
     click(pg, 'Convites de entrevista', 700)
     cv = pg.locator('[data-convite=flow]')
-    ok('convite de podcast real aparece com chip simulado', cv.count() == 1 and 'simulado' in cv.inner_text().lower(), cv.inner_text().replace('\n', ' ')[:200] if cv.count() else '')
+    ok('convite de podcast real aparece (selo removido a pedido)', cv.count() == 1, cv.inner_text().replace('\n', ' ')[:200] if cv.count() else '')
     if got:
-        ok('card "Repercussão em podcast" com chip simulado e 3 respostas', pg.locator('[data-podrival]').count() == 1 and pg.locator('[data-rival-convite]').count() == 1 and pg.locator('[data-rival-x]').count() == 1 and pg.locator('[data-rival-ignorar]').count() == 1 and 'simulado' in pg.locator('[data-podrival]').inner_text().lower(), pg.locator('[data-podrival]').inner_text().replace('\n', ' ')[:300])
+        ok('card "Repercussão em podcast" com 3 respostas (selo removido a pedido)', pg.locator('[data-podrival]').count() == 1 and pg.locator('[data-rival-convite]').count() == 1 and pg.locator('[data-rival-x]').count() == 1 and pg.locator('[data-rival-ignorar]').count() == 1, pg.locator('[data-podrival]').inner_text().replace('\n', ' ')[:300])
     pg.screenshot(path=OUT + '/v38_podcast_rival.png')
     cv.scroll_into_view_if_needed(); pg.wait_for_timeout(300)
     pg.screenshot(path=OUT + '/v38_podcast.png')
