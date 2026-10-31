@@ -17300,9 +17300,9 @@ const TB_CSS = `
 @media (max-width:1100px){.tb-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .tb-kpi{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--panel2);min-width:0}
 .tb-kpi .v{font-family:var(--f-mono);font-size:24px;font-weight:600;line-height:1.15}
-.tb-kpi .s{font-size:11px;color:var(--muted);margin-top:3px}
+.tb-kpi .s{font-size:12px;color:var(--muted);margin-top:3px}
 .tb-tbl{width:100%;border-collapse:collapse;font-size:13px}
-.tb-tbl th{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);font-weight:500}
+.tb-tbl th{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);font-weight:500}
 .tb-tbl th.r,.tb-tbl td.r{text-align:right}
 .tb-tbl td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
 .tb-tbl tr:last-child td{border-bottom:0}
@@ -17315,26 +17315,27 @@ const TB_CSS = `
 .tb-tip.esq .tb-tipbox{left:-6px;transform:none}
 .tb-bar{display:block;width:100%;height:auto;border-radius:6px;overflow:hidden}
 .tb-leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;margin-top:8px}
-.tb-est{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ambar);border:1px solid var(--ambar);border-radius:999px;padding:0 6px;margin-left:6px;white-space:nowrap}
+.tb-est{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ambar);border:1px solid var(--ambar);border-radius:999px;padding:0 6px;margin-left:6px;white-space:nowrap}
 .tb-rules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px}
-.tb-rule{border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:0;background:var(--panel2)}
-.tb-rule .n{font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.tb-rule{border:1px solid var(--line2);border-radius:10px;padding:8px 10px;min-width:0;background:var(--panel2)}
+.tb-rule .n{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .tb-rule .v{font-size:13px;margin-top:2px}
 .tb-levs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 @media (max-width:1150px){.tb-levs{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.tb-lev{border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--panel2);display:flex;flex-direction:column;gap:8px;min-width:0}
-.tb-lev h5{font-family:var(--f-disp);font-weight:800;text-transform:uppercase;font-size:16px;line-height:1.1;display:flex;align-items:center;gap:7px}
+.tb-lev{border:1px solid var(--line2);border-top:3px solid var(--st,var(--line2));border-radius:12px;padding:14px;background:var(--panel2);display:flex;flex-direction:column;gap:8px;min-width:0}
+.tb-lev h5{font-weight:600;font-size:15px;line-height:1.25;margin:0}
+.tb-lev:hover{border-color:var(--muted);border-top-color:var(--st,var(--muted))}
 .tb-sel{width:100%;background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:13px}
 .tb-sel:focus{outline:2px solid var(--ouro);outline-offset:1px}
 .tb-prev{display:flex;flex-wrap:wrap;gap:5px}
-.tb-pc{font-family:var(--f-mono);font-size:10.5px;padding:2px 7px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
-.tb-motor{font-size:11px;color:var(--muted);line-height:1.4;border-top:1px dashed var(--line);padding-top:7px}
+.tb-pc{font-family:var(--f-mono);font-size:12px;padding:2px 7px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.tb-motor{font-size:12px;color:var(--muted);line-height:1.4;border-top:1px dashed var(--line);padding-top:7px}
 .tb-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:8px;font-weight:700;font-size:12px;padding:8px 12px;background:var(--verde);color:#04130b;border:0;cursor:pointer}
 .tb-btn[disabled]{opacity:.45;cursor:not-allowed}
-.tb-inst{font-family:var(--f-mono);font-size:10.5px;padding:1px 7px;border-radius:5px;background:var(--panel);border:1px solid var(--ouro);color:var(--ouro)}
+.tb-inst{font-family:var(--f-mono);font-size:12px;padding:1px 7px;border-radius:5px;background:var(--panel);border:1px solid var(--ouro);color:var(--ouro)}
 `;
 function TbTip({ txt, lado }) {
-  return html`<span className=${'tb-tip ' + (lado || '')} tabIndex="0" role="note" aria-label=${txt} data-tb-tip="1" title=${txt}>i<span className="tb-tipbox" aria-hidden="true">${txt}</span></span>`;
+  return html`<${GvTip} txt=${txt} lado=${lado} />`;
 }
 function tbFonteTxt(k, extra) {
   const f = TB_FONTE[k]; if (!f) return extra || '';
@@ -17364,11 +17365,7 @@ function TbComposicao({ g }) {
   const form = [{ k: 'f', nome: 'Formais', v: V.formal, cor: '#2bb06c' }, { k: 'i', nome: 'Informais', v: V.infMi, cor: '#ff5a4e' }, { k: 'd', nome: 'Desocupados', v: V.desoc, cor: TB_COR_DES }];
   const T = g.trab;
   return html`<section className="sec tb-c7 min-w-0" data-tb="composicao">
-    <div className="flex flex-wrap items-end justify-between gap-2 mb-3">
-      <div><h3 className="disp text-2xl font-extrabold uppercase">Composição do emprego</h3>
-        <p className="text-xs text-muted">Quem trabalha em cada posição, em milhões de pessoas. A soma fecha com a desocupação do motor econômico (${fmt(g.eco.des)}%).</p></div>
-      <span className="chip" style=${{ color: 'var(--ouro)', borderColor: 'var(--ouro)' }}>${dataCurta(g.mes)}</span>
-    </div>
+    <${MxHead} eb="Trabalho · emprego" t="Composição do emprego" tip=${'Quem trabalha em cada posição, em milhões de pessoas. A soma fecha com a desocupação do motor econômico (' + fmt(g.eco.des) + '%).'} right=${html`<${MxChip} c="ouro">${dataCurta(g.mes)}</${MxChip}>`} />
     <div className="eyebrow mb-1">Base real · PNAD Contínua jun–ago/2026 ${html`<${TbTip} txt=${tbFonteTxt('pnad', 'Setor público, empregadores, familiar auxiliar e MEI ocupado são estimativas do jogo; conta própria e app foram separados do total de 26,1 mi.')} lado="esq" />`}</div>
     <${TbBarra} itens=${ref} total=${TB_REF.ft} alt=${'Composição real da força de trabalho: ' + ref.map(i => `${i.nome} ${fmt(i.v, 1)} milhões`).join(', ')} />
     <div className="eyebrow mt-3 mb-1">No jogo agora · ${dataCurta(g.mes)}</div>
@@ -17386,10 +17383,21 @@ function TbComposicao({ g }) {
         <tr><td className="font-bold">Desocupados</td><td className="r num font-bold" data-tb="desoc">${fmt(V.desoc, 2)}</td><td className="r num text-muted">${fmt(V.taxa, 1)}% da força</td><td className="r num text-muted">${fmt(TB_REF.desoc, 1)}</td><td></td><td></td></tr>
         <tr><td className="font-bold">Força de trabalho</td><td className="r num font-bold" data-tb="ft">${fmt(V.ft, 2)}</td><td></td><td className="r num text-muted">${fmt(TB_REF.ft, 1)}</td><td></td><td></td></tr>
       </tbody></table></div>
-    <p className="text-[11px] text-muted mt-3 leading-relaxed">A base real tem desocupação de ${fmt(TB_REF.taxa)}%; o motor do jogo parte de um desemprego maior, então a coluna "base real" é reescalada para o mesmo total de ocupados do jogo. Índice de custo do trabalho: <b className="num text-fg">${fmt(T.cc, 1)}</b> (100 = início do mandato).</p>
+    <p className="text-xs text-muted mt-3 leading-relaxed">A base real tem desocupação de ${fmt(TB_REF.taxa)}%; o motor do jogo parte de um desemprego maior, então a coluna "base real" é reescalada para o mesmo total de ocupados do jogo. Índice de custo do trabalho: <b className="num text-fg">${fmt(T.cc, 1)}</b> (100 = início do mandato).</p>
   </section>`;
 }
 
+function TbResumo({ g }) {
+  if (!g.trab) return null;
+  const V = tbVista(g); const T = g.trab; const cg = T.cagedAc && T.cagedAc.length ? T.caged : 0;
+  return html`<${PdKpis} area="trabalho" itens=${[
+    { dado: 'des', ic: 'Briefcase', cor: V.taxa <= TB_REF.taxa + .05 ? 'var(--verde)' : V.taxa > 7 ? 'var(--rubro)' : 'var(--ambar)', k: 'Desocupação', v: fmt(V.taxa) + '%', s: 'real ' + fmt(TB_REF.taxa) + '% (jun–ago/2026)' },
+    { dado: 'inf', ic: 'Users', cor: V.inf > TB_REF.inf + .3 ? 'var(--rubro)' : V.inf < TB_REF.inf - .3 ? 'var(--verde)' : 'var(--anil)', k: 'Informalidade', v: fmt(V.inf, 1) + '%', s: fmt(V.infMi, 1) + ' mi de pessoas' },
+    { dado: 'rend', ic: 'Wallet', cor: 'var(--ouro)', k: 'Rendimento médio', v: 'R$ ' + fmt(V.rend, 0), s: 'real R$ ' + fmt(TB_REF.rend, 0) },
+    { dado: 'caged', ic: 'ChartColumn', cor: cg >= 0 ? 'var(--verde)' : 'var(--rubro)', k: 'Saldo do Caged', v: (cg >= 0 ? '+' : '−') + fmt(Math.abs(cg), 0) + ' mil', s: 'empregos com carteira no mês' },
+    { dado: 'acoes', ic: 'Zap', cor: g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)', k: 'Ações do mês', v: g.acoes + '/5', s: 'cada alavanca gasta 1 ação' }
+  ]} />`;
+}
 function TbKpis({ g }) {
   const V = tbVista(g); const T = g.trab;
   const cg = T.cagedAc && T.cagedAc.length ? T.caged : 0;
@@ -17401,9 +17409,9 @@ function TbKpis({ g }) {
     { id: 'massa', r: 'Massa salarial', v: 'R$ ' + fmt(V.massa, 1) + ' bi', s: `real R$ ${fmt(TB_REF.massa, 1)} bi`, tip: tbFonteTxt('pnad', 'Massa de rendimento real habitual; +4,8% em 12 meses.') },
     { id: 'caged', r: 'Saldo do Caged no mês', v: (cg >= 0 ? '+' : '−') + fmt(Math.abs(cg), 0) + ' mil', s: `real: 12 meses ${fmt(TB_REF.caged12, 1)} mil`, tip: tbFonteTxt('caged', 'Saldo do jogo é estimativa: variação dos empregos com carteira × 1,22 (estoque celetista do Caged é 48,2 mi contra 39,5 mi da PNAD).') }
   ];
-  return html`<div className="tb-kpis" data-tb="kpis">${k.map(x => html`<div key=${x.id} className="tb-kpi" data-tb-kpi=${x.id} title=${x.tip}>
-    <div className="eyebrow">${x.r}<${TbTip} txt=${x.tip} lado=${x.id === 'caged' || x.id === 'massa' ? 'dir' : ''} /></div>
-    <div className="v" style=${x.cor ? { color: x.cor } : null}>${x.v}</div><div className="s">${x.s}</div></div>`)}</div>`;
+  return html`<div className="mx-grid g3" data-tb="kpis">${k.map(x => html`<div key=${x.id} className="mx-card panel" style=${{ '--st': x.cor || 'var(--line2)' }} data-tb-kpi=${x.id}>
+    <div className="mx-lab">${x.r}<${TbTip} txt=${x.tip} lado=${x.id === 'caged' || x.id === 'massa' ? 'dir' : ''} /></div>
+    <div className="mx-num" style=${x.cor ? { color: x.cor } : null}>${x.v}</div><div className="mx-s">${x.s}</div></div>`)}</div>`;
 }
 
 function TbIndicadores({ g }) {
@@ -17426,8 +17434,7 @@ function TbIndicadores({ g }) {
     ['Abono salarial: gasto anual', 'R$ ' + fmt(TB_REF.abonoCusto * (1 + .15 * R.abono), 1) + ' bi', 'R$ ' + fmt(TB_REF.abonoCusto, 1) + ' bi', 'abono']
   ];
   return html`<section className="sec tb-c7 min-w-0" data-tb="indicadores">
-    <h3 className="disp text-2xl font-extrabold uppercase mb-1">Indicadores, fontes e datas</h3>
-    <p className="text-xs text-muted mb-3">Passe o mouse (ou o foco) no "i" para ver a fonte e a data. Linhas marcadas como estimativa não têm dado oficial para o período.</p>
+    <${MxHead} eb="Trabalho · dados" t="Indicadores, fontes e datas" tip="Passe o mouse (ou o foco) no “?” para ver a fonte e a data. Linhas marcadas como estimativa não têm dado oficial para o período." />
     <div className="overflow-x-auto"><table className="tb-tbl"><thead><tr><th>Indicador</th><th className="r">Jogo</th><th className="r">Base real</th><th>Fonte</th></tr></thead>
     <tbody>${L.map(r => html`<tr key=${r[0]}><td>${r[0]}${r[5] ? html`<span className="tb-est">estimativa</span>` : null}</td><td className="r num">${r[1]}</td><td className="r num text-muted">${r[2]}</td>
       <td className="text-xs text-muted"><span className="inline-flex items-center">${TB_FONTE[r[3]].t.split(',')[0]}<${TbTip} txt=${tbFonteTxt(r[3], r[4])} lado="dir" /></span></td></tr>`)}</tbody></table></div>
@@ -17468,12 +17475,11 @@ function TbRegras({ g }) {
   const T = g.trab; const regras = tbRegras(g);
   const pend = T.fila.filter(f => f.tipo !== 'renda').length;
   return html`<section className="sec tb-c5 min-w-0" data-tb="regras">
-    <h3 className="disp text-2xl font-extrabold uppercase mb-1">Regras em vigor</h3>
-    <p className="text-xs text-muted mb-3">Valem em ${dataCurta(g.mes)}. O que você aprova aqui muda a regra e o texto muda junto.</p>
+    <${MxHead} eb="Trabalho · legislação" t="Regras em vigor" tip=${'Valem em ' + dataCurta(g.mes) + '. O que você aprova aqui muda a regra e o texto muda junto.'} />
     <div className="tb-rules">${regras.map(r => html`<div key=${r[0]} className="tb-rule"><div className="n">${r[0]}<${TbTip} txt=${r[2] ? tbFonteTxt(r[2]) : (r[3] || '')} lado="dir" /></div><div className="v">${r[1]}</div></div>`)}</div>
     <div className="eyebrow mt-4 mb-1">Suas medidas no mercado de trabalho</div>
     ${T.medidas.length === 0 ? html`<p className="text-xs text-muted">Nenhuma medida trabalhista aprovada até agora.</p>` : html`<ul className="flex flex-col gap-2" data-tb="medidas">${T.medidas.slice(0, 5).map((m, i) => html`<li key=${i} className="text-xs"><b>${dataCurta(m.mes)} · ${m.nome}</b> <span className="text-muted">(${m.inst})</span><div className="text-muted">${m.nota}</div></li>`)}</ul>`}
-    ${pend > 0 ? html`<p className="text-[11px] text-muted mt-2">${pend} fluxo${pend > 1 ? 's' : ''} de transição entre posições em andamento (os efeitos aparecem ao longo de cerca de 12 meses).</p>` : null}
+    ${pend > 0 ? html`<p className="text-xs text-muted mt-2">${pend} fluxo${pend > 1 ? 's' : ''} de transição entre posições em andamento (os efeitos aparecem ao longo de cerca de 12 meses).</p>` : null}
   </section>`;
 }
 
@@ -17501,27 +17507,23 @@ function TbAlavanca({ g, L, decidir }) {
   }, [g.mes, texto]);
   const chips = v != null ? tbPrevChips(g, L.id, v) : [];
   const nota = v != null ? (tbEfeito(g, L.id, v) || {}).nota : '';
-  return html`<div className="tb-lev" data-tb-lever=${L.id}>
-    <h5><${Icon} n=${L.icone} s=${16} />${L.nome}</h5>
+  return html`<div className="tb-lev" style=${{ '--st': 'var(--anil)' }} data-tb-lever=${L.id}>
+    <div className="mx-h nr"><span className="gv-ic" style=${{ '--c': 'var(--anil)' }}><${Icon} n=${L.icone} s=${18} /></span><h5>${L.nome}</h5></div>
     <div className="text-xs"><span className="text-muted">Hoje:</span> ${L.atual(g)}</div>
     ${vals.length === 0 ? html`<p className="text-xs text-muted">Sem opção disponível agora.</p>` : html`<div className="flex flex-col gap-2">
       <select className="tb-sel" aria-label=${'Opção para ' + L.nome} value=${i} onChange=${e => setSel(parseInt(e.target.value, 10))} data-tb-sel=${L.id}>${vals.map((o, k) => html`<option key=${k} value=${k}>${o.rot}</option>`)}</select>
       <div className="flex flex-wrap items-center gap-2 text-xs"><span className="tb-inst" data-tb-inst=${L.id}>${inst}</span><span className="text-muted">Base legal</span><${TbTip} txt=${L.base} lado="dir" /></div>
       <div className="text-xs italic text-muted leading-snug" data-tb-texto=${L.id}>“${texto}”</div>
-      <div className="tb-prev" aria-label="Prévia em cerca de 12 meses" data-tb-prev=${L.id}>${chips.length ? chips.map((c, k) => html`<span key=${k} className="tb-pc" style=${{ color: c.c, borderColor: c.c }}>${c.t}</span>`) : html`<span className="text-[11px] text-muted">Sem efeito direto sobre a composição.</span>`}</div>
-      ${nota ? html`<div className="text-[11px] text-muted leading-snug">${nota}</div>` : null}
+      <div className="tb-prev" aria-label="Prévia em cerca de 12 meses" data-tb-prev=${L.id}>${chips.length ? chips.map((c, k) => html`<span key=${k} className="gv-chip" style=${{ color: c.c, borderColor: c.c }}>${c.t}</span>`) : html`<span className="text-xs text-muted">Sem efeito direto sobre a composição.</span>`}</div>
+      ${nota ? html`<div className="text-xs text-muted leading-snug">${nota}</div>` : null}
       ${motor ? html`<div className="tb-motor" data-tb-motor=${L.id}>Leitura do motor: <b className="text-fg">${motor.inst}</b> · ${motor.topic}${motor.cost ? ` · despesa ${motor.cost > 0 ? '' : '−'}R$ ${fmt(Math.abs(motor.cost), 1)} bi/ano` : ''}${motor.rev ? ` · receita ${motor.rev > 0 ? '+' : '−'}R$ ${fmt(Math.abs(motor.rev), 1)} bi/ano` : ''}${motor.corr ? ' · efeitos estimados pelo módulo (o motor não tem objeto próprio)' : ''}${motor.vago ? ' · o motor achou o texto vago' : ''}</div>` : null}
-      <button type="button" className="tb-btn" disabled=${semAcoes} data-tb-act=${L.id} title=${semAcoes ? (g.acoes <= 0 ? 'Sem ações políticas neste mês' : 'Energia esgotada') : 'Custa 1 ação política e passa pelo parecer da Casa Civil'} onClick=${() => decidir(texto)}><${Icon} n="Send" s=${14} />Propor (${inst})</button>
+      <button type="button" className="btn btn-pri btn-sm self-start" disabled=${semAcoes} data-tb-act=${L.id} title=${semAcoes ? (g.acoes <= 0 ? 'Sem ações políticas neste mês' : 'Energia esgotada') : 'Custa 1 ação política e passa pelo parecer da Casa Civil'} onClick=${() => decidir(texto)}><${Icon} n="Send" s=${14} />Propor (${inst})</button>
     </div>`}
   </div>`;
 }
 function TbAlavancas({ g, decidir }) {
   return html`<section className="sec tb-c12 min-w-0" data-tb="alavancas">
-    <div className="flex flex-wrap items-end justify-between gap-2 mb-1">
-      <div><h3 className="disp text-2xl font-extrabold uppercase">Alavancas</h3>
-        <p className="text-xs text-muted">Cada controle monta o texto da proposta com o instrumento exigido pela Constituição e envia pelo mesmo caminho da caixa de decisão (parecer, Congresso e STF). Você também pode digitar o texto livre na Mesa.</p></div>
-      <span className="chip" style=${{ color: g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)', borderColor: g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)' }}>${g.acoes}/5 ações</span>
-    </div>
+    <${MxHead} eb="Trabalho · ações" t="Alavancas" tip="Cada controle monta o texto da proposta com o instrumento exigido pela Constituição e envia pelo mesmo caminho da caixa de decisão (parecer, Congresso e STF). Você também pode digitar o texto livre na Mesa." right=${html`<${PsAcoes} g=${g} />`} />
     ${TB_GRUPOS_LEV.map(gr => html`<div key=${gr} className="mt-4"><div className="eyebrow mb-2">${gr}</div>
       <div className="tb-levs">${TB_LEV.filter(L => L.grupo === gr).map(L => html`<${TbAlavanca} key=${L.id} g=${g} L=${L} decidir=${decidir} />`)}</div></div>`)}
   </section>`;
@@ -17531,10 +17533,7 @@ function Trabalho({ g, decidir }) {
   return html`<div className="flex flex-col gap-5" data-tb="raiz">
     <style>${TB_CSS}</style>
     <section className="sec">
-      <div className="flex flex-wrap items-end justify-between gap-2 mb-3">
-        <div><h3 className="disp text-3xl font-extrabold uppercase">Mercado de trabalho</h3>
-          <p className="text-xs text-muted">Base real: PNAD Contínua, trimestre jun–ago/2026 (divulgada em 29/09/2026). A composição acompanha o desemprego do motor, mês a mês.</p></div>
-      </div>
+      <${MxHead} eb="País · Trabalho" t="Mercado de trabalho" tip="Base real: PNAD Contínua, trimestre jun–ago/2026 (divulgada em 29/09/2026). A composição acompanha o desemprego do motor, mês a mês." />
       <${TbKpis} g=${g} />
     </section>
     <${OrcamentoArea} g=${g} decidir=${decidir} area="trabalho" />
@@ -17548,25 +17547,96 @@ function Trabalho({ g, decidir }) {
   </div>`;
 }
 
+/* ============================== PAÍS v2: mesma linguagem do Poder → Governo ============================== */
+/* Faixa de 5 indicadores, blocos com eyebrow + título + "?", cartões com borda de status, chips e detalhes recolhidos.
+   Reaproveita GV_CSS / PD_CSS / MX_CSS (GvKpi, PdKpis, MxHead, MxDet, MxChip). Sem fonte mono. */
+const PS_CSS = `
+.ps-root .eyebrow,.ps-root .chip{font-size:12px}
+.ps-conv{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.6fr);gap:16px;align-items:start}
+@media (max-width:1000px){.ps-conv{grid-template-columns:minmax(0,1fr)}}
+.mx-act[aria-pressed=true]{border-color:var(--ouro);border-top-color:var(--ouro)}
+.mx-act .gv-ic{width:34px;height:34px}
+.mx-card.sel{border-color:var(--ouro);border-top-color:var(--ouro)}
+.ps-go{margin-top:auto}
+.ps-rank{display:flex;flex-direction:column;gap:2px}
+`;
+function PsStyle() { return html`<style>${GV_CSS}${PD_CSS}${MX_CSS}${PS_CSS}</style>`; }
+const psSemAcoes = (g) => g.acoes <= 0 || g.pes.energia < 10;
+const psTitulo = (g) => (psSemAcoes(g) ? (g.acoes <= 0 ? 'Sem ações políticas neste mês' : 'Energia esgotada') : 'Custa 1 ação política e passa pelo parecer da Casa Civil');
+const PS_COR = { saude: 'var(--verde)', educacao: 'var(--anil)', infratransp: 'var(--ambar)', justica: 'var(--ouro)', seguranca: 'var(--rubro)' };
+function PsAcoes({ g }) { return html`<span className=${'gv-chip ' + (g.acoes > 0 ? 'ouro' : 'neg')}>${g.acoes}/5 ações</span>`; }
+// cartão de programa: ícone, título, efeito em uma linha, botão. O cartão inteiro é o botão (data-prog) que manda a proposta ao motor.
+function PsProg({ g, a, pa, cor, decidir }) {
+  const off = psSemAcoes(g) || !decidir;
+  return html`<button key=${a.l} type="button" className="mx-act" style=${{ '--c': cor }} data-prog=${pa} disabled=${off} title=${psTitulo(g)} onClick=${() => decidir(a.t)}>
+    <span className="mx-act-h"><span className="gv-ic" style=${{ '--c': cor }}><${Icon} n=${a.i} s=${18} /></span><span>${a.l}</span><span></span></span>
+    <span className="mx-txt c2">${a.t}</span>
+    <span className="gv-chips"><span className="gv-chip ouro">1 ação</span><span className="gv-chip">parecer da Casa Civil</span></span>
+    <span className="btn btn-pri btn-sm self-start ps-go" aria-hidden="true"><${Icon} n="Send" s=${14} /> Propor</span>
+  </button>`;
+}
+function PsProgramas({ g, pa, grupos, decidir, jus, eb, titulo }) {
+  const cor = PS_COR[pa] || 'var(--ouro)';
+  return html`<section className="sec" data-programas=${jus ? null : pa} data-jus=${jus || null}>
+    <${MxHead} eb=${eb || 'Programas'} t=${titulo || 'Programas'} tip="Programas prontos, abaixo do orçamento. Cada um gasta 1 ação do mês e passa pelo motor de decisão (parecer da Casa Civil, custo e Congresso)." right=${html`<${PsAcoes} g=${g} />`} />
+    ${grupos.map(G => html`<div key=${G.h || 'g'} className="mb-5 last:mb-0">${G.h ? html`<div className="eyebrow mb-2">${G.h}</div>` : null}<div className="mx-grid">${G.itens.map(a => html`<${PsProg} key=${a.l} g=${g} a=${a} pa=${pa} cor=${cor} decidir=${decidir} />`)}</div></div>`)}
+  </section>`;
+}
+// faixa de 5 indicadores das áreas com base real por estado: quantos estão melhores/piores que a base, o estado mais crítico e as ações do mês
+function psAreaKpis(g, area, D, inds, cards, nProg, ic) {
+  const bom = cards.filter(c => c.cor === 'var(--verde)').length, mal = cards.filter(c => c.cor === 'var(--rubro)').length;
+  const R = inds.length ? pufRank(g, area, D, inds[0]) : []; const pior = R[0];
+  return [
+    { dado: 'indicadores', ic, cor: 'var(--anil)', k: 'Indicadores', v: cards.length, s: 'com base real e mapa por estado' },
+    { dado: 'acima', ic: 'TrendingUp', cor: bom ? 'var(--verde)' : 'var(--muted)', k: 'Acima da base real', v: bom, s: bom ? 'melhor que o dado oficial' : 'nenhum melhor que o oficial' },
+    { dado: 'abaixo', ic: 'TrendingDown', cor: mal ? 'var(--rubro)' : 'var(--muted)', k: 'Abaixo da base real', v: mal, s: mal ? 'pior que o dado oficial' : 'nenhum pior que o oficial' },
+    { dado: 'critico', ic: 'MapPin', cor: 'var(--ambar)', k: 'Estado mais crítico', v: pior ? pior.u : '—', s: pior ? nomeUF(pior.u) + ' · ' + D.fontes[inds[0]].nome + ' ' + pufFmt(D, inds[0], pior.v) : 'sem dado por estado' },
+    { dado: 'acoes', ic: 'Zap', cor: g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)', k: 'Ações do mês', v: g.acoes + '/5', s: nProg + ' programas prontos abaixo' }
+  ];
+}
+function MapaResumo({ g }) {
+  const apr = aprovEstados(g); const nac = aprovacao(g); const L = Object.keys(apr).sort((a, b) => apr[b] - apr[a]);
+  const top = L[0], low = L[L.length - 1]; const nat = UF_INFO[g.cfg.estado] ? g.cfg.estado : null; const acima = L.filter(u => apr[u] >= 50).length;
+  return html`<${PdKpis} area="mapa" itens=${[
+    { dado: 'nacional', ic: 'Vote', cor: corAprov(nac), k: 'Aprovação nacional', v: fmt(nac, 0) + '%', s: 'média dos 27 estados' },
+    { dado: 'reduto', ic: 'ShieldCheck', cor: 'var(--verde)', k: 'Maior reduto', v: top, s: UF_INFO[top].nome + ' · ' + fmt(apr[top], 0) + '%' },
+    { dado: 'resistencia', ic: 'ShieldAlert', cor: 'var(--rubro)', k: 'Maior resistência', v: low, s: UF_INFO[low].nome + ' · ' + fmt(apr[low], 0) + '%' },
+    { dado: 'natal', ic: 'House', cor: nat ? corAprov(apr[nat]) : 'var(--muted)', k: 'Estado natal', v: nat ? fmt(apr[nat], 0) + '%' : '—', s: nat ? UF_INFO[nat].nome : 'não definido' },
+    { dado: 'acima', ic: 'MapPin', cor: 'var(--anil)', k: 'Estados acima de 50%', v: acima + '/27', s: 'aprovação estimada' }
+  ]} />`;
+}
+function EcoResumo({ g }) {
+  const E = g.eco; const prim = primario(g);
+  return html`<${PdKpis} area="economia" itens=${[
+    { dado: 'pib', ic: 'TrendingUp', cor: E.pib >= 2 ? 'var(--verde)' : 'var(--ambar)', k: 'PIB', v: fmt(E.pib) + '%', s: 'crescimento anual' },
+    { dado: 'ipca', ic: 'Flame', cor: E.ipca <= 4.5 ? 'var(--verde)' : 'var(--ambar)', k: 'Inflação IPCA', v: fmt(E.ipca) + '%', s: 'meta 3% ± 1,5' },
+    { dado: 'selic', ic: 'Percent', cor: E.selic <= 11 ? 'var(--verde)' : 'var(--ambar)', k: 'Taxa Selic', v: fmt(E.selic, 2) + '%', s: 'definida pelo Copom' },
+    { dado: 'des', ic: 'Users', cor: E.des <= 7 ? 'var(--verde)' : 'var(--ambar)', k: 'Desemprego', v: fmt(E.des) + '%', s: 'PNAD Contínua' },
+    { dado: 'prim', ic: 'Landmark', cor: prim >= 0 ? 'var(--verde)' : prim > -60 ? 'var(--ambar)' : 'var(--rubro)', k: 'Resultado primário', v: sgn(prim, 0) + ' bi', s: 'dívida bruta ' + fmt(E.divida) + '% do PIB' }
+  ]} />`;
+}
 function Pais({ g, upd, decidir, chip, setChip, abrirPend }) {
   if (chip === 'transportes') chip = 'infraestrutura'; // Transportes foi fundido com Infraestrutura (saves e links antigos)
   const c = CHIPS.pais.some(x => x.k === chip) ? chip : 'mapa';
   return html`<${Subpagina} id="pais" chips=${CHIPS.pais} atual=${c} onSel=${setChip} rotulo="Áreas do país" eyebrow="País" pend=${pendDaSecao(g, 'pais')} abrirPend=${abrirPend}>
+    <div className="contents ps-root"><${PsStyle} />
     ${c === 'mapa' && html`<${PaisMapa} g=${g} />`}
-    ${c === 'economia' && html`<div className="flex flex-col gap-6"><${PainelUF} g=${g} area="economia" /><${Economia} g=${g} upd=${upd} decidir=${decidir} /><${FontesArea} area="economia" notas="Petrobras (fatia direta da União) e a carteira do BNDESPar são fatias distintas; a Caixa Seguridade já está dentro do patrimônio da Caixa. Valores marcados como estimativa vêm de cálculo do jogo sobre dados publicados e não de uma fonte direta." /></div>`}
+    ${c === 'economia' && html`<div className="flex flex-col gap-6" data-pais="economia"><${EcoResumo} g=${g} /><${PainelUF} g=${g} area="economia" /><${Economia} g=${g} upd=${upd} decidir=${decidir} /><${FontesArea} area="economia" notas="Petrobras (fatia direta da União) e a carteira do BNDESPar são fatias distintas; a Caixa Seguridade já está dentro do patrimônio da Caixa. Valores marcados como estimativa vêm de cálculo do jogo sobre dados publicados e não de uma fonte direta." /></div>`}
     ${c === 'seguranca' && html`<${PaisSeguranca} g=${g} upd=${upd} decidir=${decidir} />`}
     ${c === 'saude' && html`<${PaisSaude} g=${g} upd=${upd} decidir=${decidir} />`}
     ${c === 'educacao' && html`<${PaisEducacao} g=${g} upd=${upd} decidir=${decidir} />`}
-    ${c === 'trabalho' && html`<div className="flex flex-col gap-6"><${PainelUF} g=${g} area="trabalho" /><${Trabalho} g=${g} decidir=${decidir} /><${FontesArea} area="trabalho" notas=${html`<${OrcFonte} area="trabalho" />`} /></div>`}
+    ${c === 'trabalho' && html`<div className="flex flex-col gap-6"><${TbResumo} g=${g} /><${PainelUF} g=${g} area="trabalho" /><${Trabalho} g=${g} decidir=${decidir} /><${FontesArea} area="trabalho" notas=${html`<${OrcFonte} area="trabalho" />`} /></div>`}
     ${c === 'infraestrutura' && html`<${PaisInfra} g=${g} upd=${upd} decidir=${decidir} />`}
     ${c === 'sociedade' && html`<${Sociedade} g=${g} upd=${upd} setChip=${setChip} decidir=${decidir} />`}
     ${c === 'justica' && html`<${PaisJustica} g=${g} upd=${upd} decidir=${decidir} />`}
+    </div>
   </${Subpagina}>`;
 }
 function PaisMapa({ g }) {
-  return html`<div className="grid gap-6 lg:grid-cols-12">
-    <section className="lg:col-span-12 sec min-w-0"><${MapaBrasil} g=${g} /></section>
-    <section className="lg:col-span-5 sec min-w-0"><h3 className="disp text-2xl font-extrabold uppercase mb-4">Por região</h3><${MapaRegioes} g=${g} /></section>
+  return html`<div className="flex flex-col gap-6" data-pais="mapa">
+    <${MapaResumo} g=${g} />
+    <section className="sec min-w-0"><${MapaBrasil} g=${g} /></section>
+    <section className="sec min-w-0"><${MxHead} eb="Mapa · regiões" t="Por região" tip="Aprovação média do governo em cada região, com o peso de cada uma no eleitorado." /><${MapaRegioes} g=${g} /></section>
   </div>`;
 }
 // notas de fonte recolhidas, sempre no fim da aba
@@ -18059,9 +18129,9 @@ function Parlamentares({ g }) {
 
 /* ============================== FASE 3: UI (ECONOMIA, SOCIEDADE, MAPA) ============================== */
 function Est({ txt, rot = 'estimativa' }) {
-  return html`<span className="chip cursor-help" style=${{ fontSize: '10px', padding: '0 6px', lineHeight: '16px', color: 'var(--ambar)', borderColor: 'var(--ambar)' }} title=${txt} tabIndex="0" role="note" aria-label=${rot + ': ' + txt} data-estimativa="1">${rot}</span>`;
+  return html`<span className="chip cursor-help" style=${{ fontSize: '12px', padding: '0 6px', lineHeight: '18px', color: 'var(--ambar)', borderColor: 'var(--ambar)' }} title=${txt} tabIndex="0" role="note" aria-label=${rot + ': ' + txt} data-estimativa="1">${rot}</span>`;
 }
-const Real = ({ txt }) => html`<span className="chip cursor-help" style=${{ fontSize: '10px', padding: '0 6px', lineHeight: '16px', color: 'var(--verde)', borderColor: 'var(--verde)' }} title=${txt} tabIndex="0" role="note" data-base-real="1">base real</span>`;
+const Real = ({ txt }) => html`<span className="chip cursor-help" style=${{ fontSize: '12px', padding: '0 6px', lineHeight: '18px', color: 'var(--verde)', borderColor: 'var(--verde)' }} title=${txt} tabIndex="0" role="note" data-base-real="1">base real</span>`;
 /* selo 'simulado' discreto: cinza, pequeno, sem cor de destaque (continua visível e com explicação ao passar o mouse) */
 const SeloSim = () => null; // selo removido das telas a pedido; o aviso geral fica no rodapé e nos posts do X
 const Sim = () => null;
@@ -18119,11 +18189,10 @@ function CartaoCredibilidade({ g }) {
   const cor = E.cred >= 55 ? 'var(--verde)' : E.cred >= 40 ? 'var(--ouro)' : 'var(--rubro)';
   const prim = primario(g), meta = trajetoriaPrim(g);
   return html`<section className="sec flex flex-col gap-3 min-w-0" data-cartao="credibilidade" aria-labelledby="cred-t">
-    <div className="flex flex-wrap items-baseline justify-between gap-2"><h3 id="cred-t" className="disp text-2xl font-extrabold uppercase">Credibilidade fiscal</h3><span className="num text-3xl" style=${{ color: cor }}>${fmt(E.cred, 0)}<span className="text-sm text-muted">/100</span></span></div>
+    <${MxHead} id="cred-t" eb="Economia · fiscal" t="Credibilidade fiscal" tip=${'Cai quando o primário piora além da trajetória do arcabouço (hoje ' + sgn(prim, 0) + ' bi contra ' + sgn(meta, 0) + ' bi), quando o gasto obrigatório cresce, quando o BC é atacado ou quando uma medida parece intervenção. Sobe com custeio crível, revisão de gastos e superávit.'} right=${html`<span className="num text-3xl" style=${{ color: cor }}>${fmt(E.cred, 0)}<span className="text-sm text-muted">/100</span></span>`} />
     <${Bar} v=${E.cred} cor=${cor} label="Credibilidade fiscal" />
-    <p className="text-sm text-muted">Cai quando o primário piora além da trajetória do arcabouço (hoje ${sgn(prim, 0)} bi contra ${sgn(meta, 0)} bi), quando o gasto obrigatório cresce, quando o BC é atacado ou quando uma medida parece intervenção. Sobe com custeio crível, revisão de gastos e superávit.</p>
-    <div className="flex flex-wrap items-center gap-1.5 text-xs" aria-label="Cadeia de efeitos" data-ciclo="1">${CAUSAL.map((c, i) => html`<span key=${c} className="flex items-center gap-1.5"><span className="chip">${c}</span>${i < CAUSAL.length - 1 && html`<span className="text-muted" aria-hidden="true">→</span>`}</span>`)}</div>
-    <p className="text-xs text-muted">O efeito chega ao risco, ao dólar e à confiança com defasagem de <b>6 a 12 meses</b>. Credibilidade que pesa hoje sobre o risco: <span className="num text-fg">${fmt(ce, 0)}</span> (média de 6 a 12 meses atrás)${Math.abs(dif) >= 1 ? (dif < 0 ? ': o pior ainda vem aí.' : ': a melhora ainda vai aparecer.') : '.'}</p>
+    <div className="flex flex-wrap items-center gap-1.5 text-xs" aria-label="Cadeia de efeitos" data-ciclo="1">${CAUSAL.map((c, i) => html`<span key=${c} className="flex items-center gap-1.5"><span className="gv-chip">${c}</span>${i < CAUSAL.length - 1 && html`<span className="text-muted" aria-hidden="true">→</span>`}</span>`)}</div>
+    <${MxDet} rot="Defasagem do efeito">O efeito chega ao risco, ao dólar e à confiança com defasagem de <b>6 a 12 meses</b>. Credibilidade que pesa hoje sobre o risco: <span className="num text-fg">${fmt(ce, 0)}</span> (média de 6 a 12 meses atrás)${Math.abs(dif) >= 1 ? (dif < 0 ? ': o pior ainda vem aí.' : ': a melhora ainda vai aparecer.') : '.'}</${MxDet}>
   </section>`;
 }
 function CartaoRatingMeta({ g }) {
@@ -18131,23 +18200,21 @@ function CartaoRatingMeta({ g }) {
   const cor = M.status === 'descumprida' ? 'var(--rubro)' : M.status === 'dentro da banda' ? 'var(--ambar)' : 'var(--verde)';
   const efeito = ratingRisco(g);
   return html`<section className="sec flex flex-col gap-3 min-w-0" data-cartao="rating-meta" aria-labelledby="rat-t">
-    <h3 id="rat-t" className="disp text-2xl font-extrabold uppercase">Nota do país e meta fiscal</h3>
-    <div className="grid grid-cols-3 gap-2">${Object.keys(R.n).map(k => html`<div key=${k} className="rounded-lg border border-line p-2" data-rating=${k}><div className="eyebrow">${RATING_NOME[k]}</div><div className="num text-2xl">${RATING_ESCALA[k][R.n[k]]}</div><div className="text-xs text-muted">perspectiva ${ratingPersp(R, k)}</div></div>`)}</div>
-    <p className="text-xs text-muted">Revisão a cada 6 meses (próxima em ${prox} ${prox === 1 ? 'mês' : 'meses'}), pesando dívida, primário e crescimento. Grau de investimento é BBB- (S&P e Fitch) ou Baa3 (Moody's). Efeito atual sobre o risco-país: <span className="num text-fg">${efeito === 0 ? '0' : sgn(efeito, 0)} pts</span>.</p>
-    <div className="rounded-lg border border-line p-3" data-meta-fiscal=${M.status}>
-      <div className="flex flex-wrap items-baseline justify-between gap-2"><div className="eyebrow">Meta fiscal ${M.ano}: superávit de ${fmt(M.pct, 1)}% do PIB</div><span className="chip" style=${{ color: cor, borderColor: cor }}>${M.status}</span></div>
-      <div className="num text-2xl mt-1" style=${{ color: cor }}>${sgn(M.prim, 0)} bi <span className="text-sm text-muted">projetado, meta de ${sgn(M.bi, 1)} bi</span></div>
-      <div className="text-xs text-muted mt-1">Banda de ±0,25% do PIB: de ${sgn(M.piso, 1)} a ${sgn(M.teto, 1)} bi. ${M.status === 'descumprida' ? 'Faltam R$ ' + fmt(M.faltaPiso, 0) + ' bi para o piso da banda: a lei exige contingenciamento e a credibilidade fiscal cai no fechamento do ano.' : M.status === 'dentro da banda' ? 'Dentro da tolerância, mas ainda faltam R$ ' + fmt(M.falta, 0) + ' bi para o centro da meta.' : 'Meta atingida no centro da banda.'}</div>
+    <${MxHead} id="rat-t" eb="Economia · mercado" t="Nota do país e meta fiscal" tip=${'Revisão a cada 6 meses (próxima em ' + prox + (prox === 1 ? ' mês' : ' meses') + '), pesando dívida, primário e crescimento. Grau de investimento é BBB- (S&P e Fitch) ou Baa3 (Moody\'s). Efeito atual sobre o risco-país: ' + (efeito === 0 ? '0' : sgn(efeito, 0)) + ' pts.'} />
+    <div className="mx-grid g3">${Object.keys(R.n).map(k => html`<div key=${k} className="mx-card" style=${{ '--st': 'var(--anil)' }} data-rating=${k}><div className="mx-lab">${RATING_NOME[k]}</div><div className="mx-num">${RATING_ESCALA[k][R.n[k]]}</div><div className="mx-s">perspectiva ${ratingPersp(R, k)}</div></div>`)}</div>
+    <div className="mx-card" style=${{ '--st': cor }} data-meta-fiscal=${M.status}>
+      <div className="flex flex-wrap items-baseline justify-between gap-2"><div className="mx-lab">Meta fiscal ${M.ano}: superávit de ${fmt(M.pct, 1)}% do PIB</div><${MxChip} cor=${cor}>${M.status}</${MxChip}></div>
+      <div className="mx-num" style=${{ color: cor }}>${sgn(M.prim, 0)} bi <span className="text-sm text-muted font-normal">projetado, meta de ${sgn(M.bi, 1)} bi</span></div>
+      <${MxDet} rot="Banda de tolerância">Banda de ±0,25% do PIB: de ${sgn(M.piso, 1)} a ${sgn(M.teto, 1)} bi. ${M.status === 'descumprida' ? 'Faltam R$ ' + fmt(M.faltaPiso, 0) + ' bi para o piso da banda: a lei exige contingenciamento e a credibilidade fiscal cai no fechamento do ano.' : M.status === 'dentro da banda' ? 'Dentro da tolerância, mas ainda faltam R$ ' + fmt(M.falta, 0) + ' bi para o centro da meta.' : 'Meta atingida no centro da banda.'}</${MxDet}>
     </div>
   </section>`;
 }
 function CartaoExterno({ g }) {
   const E = g.eco, d = E.commod - (E.commodPrev != null ? E.commodPrev : E.commod);
-  return html`<div className="sec sec-sm flex flex-col gap-1" data-tile="commodities">
-    <div className="eyebrow">Commodities</div>
-    <div className="num text-2xl">${fmt(E.commod, 0)} <span className="text-sm" style=${{ color: d >= 0 ? 'var(--verde)' : 'var(--rubro)' }}>${d >= 0 ? '▲' : '▼'} ${fmt(Math.abs(d), 1)}</span></div>
-    <div className="text-xs text-muted">choque externo que você não controla</div>
-    <div className="text-[11px] text-muted">Alta ajuda o agro, a balança e o câmbio, mas pressiona a comida no IPCA.</div>
+  return html`<div className="mx-card" style=${{ '--st': 'var(--anil)' }} data-tile="commodities">
+    <div className="mx-lab">Commodities</div>
+    <div className="mx-num">${fmt(E.commod, 0)} <span className="text-sm" style=${{ color: d >= 0 ? 'var(--verde)' : 'var(--rubro)' }}>${d >= 0 ? '▲' : '▼'} ${fmt(Math.abs(d), 1)}</span></div>
+    <div className="mx-s">choque externo que você não controla<${GvTip} txt="Alta ajuda o agro, a balança e o câmbio, mas pressiona a comida no IPCA." lado="dir" /></div>
     <${Spark} data=${g.hist.commod} cor="var(--anil)" w=${130} hh=${28} />
   </div>`;
 }
@@ -18163,9 +18230,8 @@ function CartaoContasPais({ g }) {
     ['Bolsa (Ibovespa-like)', fmt(E.ibov, 1) + ' pts', 'sim', 'Índice do jogo: 100 = posse. Sobe com crescimento, credibilidade e confiança; cai com risco e juros altos.']
   ];
   return html`<section className="sec flex flex-col gap-3 min-w-0" data-cartao="contas-pais" aria-labelledby="cp-t">
-    <h3 id="cp-t" className="disp text-2xl font-extrabold uppercase">Contas do país</h3>
+    <${MxHead} id="cp-t" eb="Economia · balanço" t="Contas do país" tip="“Base real” marca números que partem de dados publicados (fonte e ano ao passar o mouse); “simulado” é evolução calculada pelo jogo." />
     <table className="text-sm w-full"><tbody>${L.map(([l, v, t, tip]) => html`<tr key=${l} className="border-b border-line"><td className="py-1.5 text-muted">${l}</td><td className="num text-right whitespace-nowrap">${v}</td><td className="text-right pl-2 w-[1%]">${t === 'real' ? html`<${Real} txt=${tip} />` : html`<${Sim} txt=${tip} />`}</td></tr>`)}</tbody></table>
-    <p className="text-[11px] text-muted">“Base real” marca números que partem de dados publicados (fonte e ano ao passar o mouse); “simulado” é evolução calculada pelo jogo.</p>
   </section>`;
 }
 function CartaoBC({ g, upd }) {
@@ -18173,19 +18239,18 @@ function CartaoBC({ g, upd }) {
   const jaCriticou = B.critMes === g.mes, disp = bcDisponivel(g);
   const aviso = g.mes < BC_MES_TROCA ? `O mandato do comando atual vai até o mês ${BC_MES_TROCA}: nessa data o jogo simula a troca de presidente (simplificação do jogo, sem relação com o calendário real do BC).` : B.escolhido ? `Presidente indicado no mês ${B.desde}${B.auto ? ' (por omissão)' : ''}.` : `Mandato encerrado: indique o novo presidente até o mês ${BC_MES_LIMITE}, ou o Senado escolhe um nome de carreira (perfil moderado).`;
   return html`<section className="sec flex flex-col gap-3 min-w-0" data-cartao="bc" aria-labelledby="bc-t">
-    <div className="flex flex-wrap items-baseline justify-between gap-2"><h3 id="bc-t" className="disp text-2xl font-extrabold uppercase">Banco Central</h3><span className="num text-2xl">Selic ${fmt(E.selic, 2)}%</span></div>
-    <p className="text-sm text-muted">O BC é autônomo (LC 179/2021): o Copom define a Selic e você não pode mexer nela. Perfil atual: <b className="text-fg">${P.nome}</b>. ${P.d}</p>
-    <p className="text-xs text-muted" data-bc-aviso="1">${aviso}</p>
+    <${MxHead} id="bc-t" eb="Economia · juros" t="Banco Central" tip="O BC é autônomo (LC 179/2021): o Copom define a Selic e você não pode mexer nela." right=${html`<span className="num text-2xl">Selic ${fmt(E.selic, 2)}%</span>`} />
+    <p className="text-sm text-muted">Perfil atual: <b className="text-fg">${P.nome}</b>. ${P.d}</p>
     <div className="flex flex-wrap gap-2">
       <button type="button" className="btn btn-ghost !text-xs" disabled=${jaCriticou} title=${jaCriticou ? 'Uma crítica por mês' : 'Aprovação sobe um pouco; risco e credibilidade pagam. A Selic não muda.'} onClick=${() => upd && upd(n => { bcCriticar(n); })}><${Icon} n="Megaphone" s=${13} /> Criticar o BC em público</button>
     </div>
-    <div className="text-[11px] text-muted">Criticar agrada a base popular (aprovação geral e periferia, sindicalizados e trabalhadores com carteira), mas eleva o risco, derruba a credibilidade e reduz o efeito se repetido. A Selic fica intocada.</div>
+    <${MxDet} rot="Mandato e efeito das críticas"><p data-bc-aviso="1">${aviso}</p><p className="text-muted">Criticar agrada a base popular (aprovação geral e periferia, sindicalizados e trabalhadores com carteira), mas eleva o risco, derruba a credibilidade e reduz o efeito se repetido. A Selic fica intocada.</p></${MxDet}>
     ${(disp || B.escolhido) && html`<div className="flex flex-col gap-2 pt-2 border-t border-line" data-bc-indicar="1">
       <div className="eyebrow">${disp ? 'Indicar presidente do BC' : 'Presidente do BC'}</div>
-      <div className="grid gap-2 sm:grid-cols-3">${Object.keys(BC_PERFIS).map(k => { const Q = BC_PERFIS[k]; const atual = B.escolhido && B.perfil === k; return html`<div key=${k} className=${'rounded-lg border p-2 flex flex-col gap-1 ' + (atual ? 'border-ouro' : 'border-line')}>
-        <div className="font-semibold text-sm">${Q.nome}</div><div className="text-[11px] text-muted flex-1">${Q.d}</div>
-        <div className="text-[11px]">Credibilidade ${sgn(Q.cred, 0)} · reação à inflação ×${fmt(Q.k, 2)}</div>
-        ${disp ? html`<button type="button" className="btn btn-ghost !text-xs" onClick=${() => upd && upd(n => { bcIndicar(n, k); })}>Indicar</button>` : atual && html`<${Tag} cor="var(--ouro)">em exercício</${Tag}>`}</div>`; })}</div>
+      <div className="mx-grid g3">${Object.keys(BC_PERFIS).map(k => { const Q = BC_PERFIS[k]; const atual = B.escolhido && B.perfil === k; return html`<div key=${k} className=${'mx-card ' + (atual ? 'sel' : '')} style=${{ '--st': atual ? 'var(--ouro)' : 'var(--line2)' }}>
+        <div className="mx-t">${Q.nome}</div><div className="mx-s flex-1">${Q.d}</div>
+        <div className="gv-chips"><${MxChip}>credibilidade ${sgn(Q.cred, 0)}</${MxChip}><${MxChip}>inflação ×${fmt(Q.k, 2)}</${MxChip}></div>
+        ${disp ? html`<button type="button" className="btn btn-ghost !text-xs self-start" onClick=${() => upd && upd(n => { bcIndicar(n, k); })}>Indicar</button>` : atual && html`<${Tag} cor="var(--ouro)">em exercício</${Tag}>`}</div>`; })}</div>
     </div>`}
   </section>`;
 }
@@ -18194,11 +18259,10 @@ function GruposEconomia({ g }) {
   const SN = { infl: 'inflação', juros: 'juros', des: 'desemprego', seg: 'segurança', cost: 'costumes' };
   const tot = GRUPOS.reduce((a, G) => a + G.w, 0);
   return html`<section className="sec min-w-0" data-cartao="grupos-economia" aria-labelledby="ge-t">
-    <h3 id="ge-t" className="disp text-2xl font-extrabold uppercase mb-1">Como cada grupo sente a economia</h3>
-    <p className="text-xs text-muted mb-3">${GRUPOS.length} grupos, do mais fiel ao mais hostil. Peso é a participação na média ponderada da aprovação (soma ${tot}); os grupos se sobrepõem. “Sensível a” mostra a que cada grupo reage: variações em relação às condições da posse.</p>
+    <${MxHead} id="ge-t" eb="Economia · eleitorado" t="Como cada grupo sente a economia" tip=${GRUPOS.length + ' grupos, do mais fiel ao mais hostil. Peso é a participação na média ponderada da aprovação (soma ' + tot + '); os grupos se sobrepõem. “Sensível a” mostra a que cada grupo reage: variações em relação às condições da posse.'} />
     <div className="overflow-x-auto"><table className="text-sm w-full min-w-[520px]"><thead><tr className="text-left text-muted text-xs"><th className="py-1 font-medium">Grupo</th><th className="font-medium text-right">Aprovação</th><th className="font-medium text-right">Peso</th><th className="font-medium pl-3">Sensível a</th></tr></thead><tbody>
       ${lista.map(G => { const v = g.groups[G.k]; const sens = Object.keys(G.sens).filter(k => G.sens[k] >= .6).sort((a, b) => G.sens[b] - G.sens[a]).map(k => SN[k]); return html`<tr key=${G.k} className="border-t border-line" data-grupo=${G.k}>
-        <td className="py-1.5"><span aria-hidden="true">${G.em}</span> ${G.nome}${G.de && html` <span className="text-[10px] text-muted">novo</span>`}</td>
+        <td className="py-1.5"><span aria-hidden="true">${G.em}</span> ${G.nome}${G.de && html` <span className="text-xs text-muted">novo</span>`}</td>
         <td className="text-right"><span className="num" style=${{ color: corAprov(v) }}>${fmt(v, 0)}%</span></td><td className="num text-right text-muted">${G.w}</td>
         <td className="pl-3 text-xs">${sens.length ? sens.join(' · ') : 'pouco sensível'}</td></tr>`; })}
     </tbody></table></div>
@@ -18208,20 +18272,19 @@ function CartaoPatrimonio({ g, decidir }) {
   const P = g.patr, total = patrTotal(g), sem = g.acoes <= 0;
   const linhas = ATIVOS_ORDEM.map(k => ativoCfg(k));
   return html`<section className="lg:col-span-12 sec min-w-0" data-cartao="patrimonio" aria-labelledby="pat-t">
-    <div className="flex flex-wrap items-baseline justify-between gap-2 mb-1"><h3 id="pat-t" className="disp text-2xl font-extrabold uppercase">Patrimônio da União</h3><span className="text-sm text-muted">Estatais e participações · total sem dupla contagem: <span className="num text-fg">${bi(total)}</span></span></div>
-    <p className="text-xs text-muted mb-3">Venda em fatias: 25%, 50% ou 100% da participação que a União ainda tem. A medida passa pelo parecer e pelo Congresso como qualquer lei. A receita é não recorrente e abate a dívida; os dividendos futuros diminuem. Vendido até agora: ${bi(P.vendido)} · dividendos perdidos: ${bi(P.divPerda)}/ano.</p>
-    <div className="flex flex-col divide-y divide-line">${linhas.map(A => {
+    <${MxHead} id="pat-t" eb="Economia · estatais" t="Patrimônio da União" tip=${'Venda em fatias: 25%, 50% ou 100% da participação que a União ainda tem. A medida passa pelo parecer e pelo Congresso como qualquer lei. A receita é não recorrente e abate a dívida; os dividendos futuros diminuem. Vendido até agora: ' + bi(P.vendido) + ' · dividendos perdidos: ' + bi(P.divPerda) + '/ano.'} right=${html`<${MxChip} t="total sem dupla contagem">Total ${bi(total)}</${MxChip}>`} />
+    <div className="flex flex-col gap-3">${linhas.map(A => {
       const d = A.d, fr = frAtivo(g, A.k), v = valorAtivo(g, A.k), vb = valorBase(A.k), D = DIV_ATIVOS[A.k];
       const via = A.via === 'União' ? 'da União' : 'da ' + A.via;
       const txt = (p) => `Vender ${p}% da participação ${via} ${A.de}`;
       const podeVender = fr > 0 && vb != null && !sem;
-      return html`<div key=${A.k} className="py-3 flex flex-col gap-2" data-ativo=${A.k}>
+      return html`<div key=${A.k} className="mx-card" style=${{ '--st': fr <= 0 ? 'var(--anil)' : A.k === 'correios' ? 'var(--rubro)' : fr < 1 ? 'var(--ouro)' : 'var(--verde)' }} data-ativo=${A.k}>
         <div className="flex flex-wrap items-center gap-2"><span className="text-xl" aria-hidden="true">${A.em}</span><span className="font-semibold">${A.nome}</span>
           ${A.dentro && html`<${Tag}>dentro da Caixa: não somado</${Tag}>`}${fr <= 0 && html`<${Tag} cor="var(--anil)">vendida</${Tag}>`}${fr > 0 && fr < 1 && html`<${Tag} cor="var(--ouro)">restam ${fmt(fr * 100, 0)}% da fatia</${Tag}>`}
           ${A.k === 'correios' && html`<${Tag} cor="var(--rubro)">passivo</${Tag}>`}</div>
         <div className="grid gap-x-6 gap-y-1 sm:grid-cols-3 text-sm">
-          <div><div className="eyebrow">Valor da fatia</div>${vb == null ? html`<div className="text-muted">sem valor de mercado</div>` : html`<div className="num">${v < 0 ? '−' : ''}${bi(v)}</div><div className="text-[11px] text-muted">${d.tipo}, ${d.data.split('-').reverse().join('/')}${A.cotada ? ' · marcado pela bolsa simulada' : ''}</div>`}</div>
-          <div><div className="eyebrow">Dividendos à União</div>${D && D.inf != null ? html`<div className="num">${bi(D.inf)} em ${d.anoDiv}</div><div className="text-[11px] text-muted">${D.met}</div>` : html`<div className="text-muted">não informado</div>${D && D.est != null && html`<div className="text-[11px] text-muted flex items-center gap-1 flex-wrap"><${Est} txt=${'Cálculo do jogo: ' + D.met} /> perda fiscal de ${bi(D.est)}/ano numa venda total</div>`}`}</div>
+          <div><div className="eyebrow">Valor da fatia</div>${vb == null ? html`<div className="text-muted">sem valor de mercado</div>` : html`<div className="num">${v < 0 ? '−' : ''}${bi(v)}</div><div className="text-xs text-muted">${d.tipo}, ${d.data.split('-').reverse().join('/')}${A.cotada ? ' · marcado pela bolsa simulada' : ''}</div>`}</div>
+          <div><div className="eyebrow">Dividendos à União</div>${D && D.inf != null ? html`<div className="num">${bi(D.inf)} em ${d.anoDiv}</div><div className="text-xs text-muted">${D.met}</div>` : html`<div className="text-muted">não informado</div>${D && D.est != null && html`<div className="text-xs text-muted flex items-center gap-1 flex-wrap"><${Est} txt=${'Cálculo do jogo: ' + D.met} /> perda fiscal de ${bi(D.est)}/ano numa venda total</div>`}`}</div>
           <div className="flex flex-wrap items-center gap-1.5 sm:justify-end">${vb == null ? html`<span className="text-xs text-muted">venda indisponível</span>` : [25, 50, 100].map(p => html`<button key=${p} type="button" className="btn btn-ghost !text-xs" disabled=${!podeVender} title=${sem ? 'Sem ações neste mês' : fr <= 0 ? 'Já vendida' : 'Gera uma medida no parecer'} onClick=${() => decidir(txt(p))}><${Icon} n="Gavel" s=${13} /> ${p}%</button>`)}</div>
         </div>
         <details className="text-xs text-muted"><summary className="cursor-pointer">Fonte e notas</summary><p className="mt-1 leading-relaxed">${d.nota}</p><p className="mt-1">Fontes: ${(d.f || []).map(id => { const F = IND_DADOS.fontes.find(x => x.id === id); return F ? F.t : id; }).join(' · ')}</p></details>
@@ -18244,20 +18307,21 @@ function Economia({ g, upd, decidir }) {
   ];
   const setOrc = (k, v) => upd(n => { n.orc[k] = v; });
   return html`<div className="grid gap-6 lg:grid-cols-12">
-    <section className="lg:col-span-12 grid gap-3 grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
-      ${ind.map(i => html`<div key=${i.k} className="sec sec-sm flex flex-col gap-1">
-        <div className="eyebrow">${i.nome}</div>
-        <div className="num text-2xl" style=${{ color: i.bom ? 'var(--fg)' : 'var(--ambar)' }}>${i.v}</div>
-        <div className="text-xs text-muted">${i.sub}</div>
+    <section className="lg:col-span-12 sec min-w-0" data-eco="indicadores">
+      <${MxHead} eb="Economia · termômetro" t="Indicadores" tip="Oito números que movem a aprovação e o mercado. Verde quando a meta ou a referência está sendo cumprida, âmbar quando não; a linha mostra o histórico do mandato." />
+      <div className="mx-grid g3">${ind.map(i => html`<div key=${i.k} className="mx-card" style=${{ '--st': i.bom ? 'var(--verde)' : 'var(--ambar)' }}>
+        <div className="mx-lab">${i.nome}</div>
+        <div className="mx-num" style=${{ color: i.bom ? 'var(--fg)' : 'var(--ambar)' }}>${i.v}</div>
+        <div className="mx-s">${i.sub}</div>
         <${Spark} data=${i.h} cor=${i.bom ? 'var(--verde)' : 'var(--ambar)'} w=${130} hh=${28} />
       </div>`)}
-      <${CartaoExterno} g=${g} />
+      <${CartaoExterno} g=${g} /></div>
     </section>
     <div className="lg:col-span-12"><${GraficosMandato} g=${g} /></div>
     <div className="lg:col-span-6 flex flex-col gap-6 min-w-0"><${CartaoCredibilidade} g=${g} /><${CartaoRatingMeta} g=${g} /><${CartaoBC} g=${g} upd=${upd} /></div>
     <div className="lg:col-span-6 min-w-0"><${CartaoContasPais} g=${g} /></div>
     <section className="lg:col-span-5 sec flex flex-col gap-4">
-      <h3 className="disp text-2xl font-extrabold uppercase">Contas públicas</h3>
+      <${MxHead} eb="Economia · fiscal" t="Contas públicas" tip="As participações da União estão no painel Patrimônio da União, abaixo, com venda em fatias de 25%, 50% e 100%." />
       <div className="grid grid-cols-2 gap-4">
         <div><div className="eyebrow">Resultado primário</div><div className="num text-3xl" style=${{ color: prim >= 0 ? 'var(--verde)' : prim > -60 ? 'var(--ambar)' : 'var(--rubro)' }}>${sgn(prim, 0)} bi</div><div className="text-xs text-muted">${prim >= 0 ? 'superávit' : 'déficit'} projetado no ano</div></div>
         <div><div className="eyebrow">Dívida bruta</div><div className="num text-3xl">${fmt(E.divida)}%</div><div className="text-xs text-muted">do PIB</div></div>
@@ -18266,12 +18330,9 @@ function Economia({ g, upd, decidir }) {
       <table className="text-sm w-full"><tbody>
         ${[['Base herdada', g.fiscal.base], ['Novas receitas', g.fiscal.receita], ['Novas despesas', -g.fiscal.custo], ['Orçamento setorial', -orcCusto(g)], ['Emendas e extras do ano', -g.fiscal.extra], ['Efeito do PIB na arrecadação', (E.pib - 2) * 18]].map(([l, v]) => html`<tr key=${l} className="border-b border-line"><td className="py-1.5 text-muted">${l}</td><td className="num text-right" style=${{ color: v >= 0 ? 'var(--verde)' : 'var(--rubro)' }}>${sgn(v, 1)}</td></tr>`)}
       </tbody></table>
-      <div className="eyebrow">Estatais</div>
-      <p className="text-xs text-muted">As participações da União estão no painel Patrimônio da União, abaixo, com venda em fatias de 25%, 50% e 100%.</p>
     </section>
     <section className="lg:col-span-7 sec">
-      <div className="flex flex-wrap items-baseline justify-between gap-2 mb-1"><h3 className="disp text-2xl font-extrabold uppercase">Orçamento setorial</h3><span className="num text-sm" style=${{ color: orcCusto(g) > 0 ? 'var(--rubro)' : 'var(--verde)' }}>${orcCusto(g) >= 0 ? '+' : '−'} ${bi(orcCusto(g))}/ano</span></div>
-      <p className="text-sm text-muted mb-4">Variação sobre o orçamento herdado. Mais recursos melhoram os índices sociais e agradam grupos, mas pioram o déficit.</p>
+      <${MxHead} eb="Economia · despesa" t="Orçamento setorial" tip="Variação sobre o orçamento herdado. Mais recursos melhoram os índices sociais e agradam grupos, mas pioram o déficit." right=${html`<${MxChip} cor=${orcCusto(g) > 0 ? 'var(--rubro)' : 'var(--verde)'}>${orcCusto(g) >= 0 ? '+' : '−'} ${bi(orcCusto(g))}/ano</${MxChip}>`} />
       <div className="flex flex-col gap-4">${Object.keys(ORC_BASE).map(k => html`<div key=${k}>
         <div className="flex justify-between text-sm mb-1"><label htmlFor=${'orc-' + k} className="font-medium">${ORC_NOMES[k]} <span className="text-muted text-xs">base ${bi(ORC_BASE[k])}</span></label>
           <span className="num" style=${{ color: g.orc[k] > 0 ? 'var(--verde)' : g.orc[k] < 0 ? 'var(--rubro)' : 'var(--muted)' }}>${g.orc[k] > 0 ? '+' : ''}${g.orc[k]}% · ${sgn(ORC_BASE[k] * g.orc[k] / 100, 1)} bi</span></div>
@@ -18291,13 +18352,12 @@ function PainelIndicadores({ g }) {
     return { K, cur, p, dv, cor, seta: Math.abs(dv) < eps ? '→' : dv > 0 ? '▲' : '▼', ano: indFonteAno(K) };
   });
   return html`<section className="sec min-w-0" data-cartao="indicadores" aria-labelledby="ind-t">
-    <h3 id="ind-t" className="disp text-2xl font-extrabold uppercase mb-1">O país desde a posse</h3>
-    <p className="text-xs text-muted mb-3">O ponto de partida é o dado oficial mais recente; daí em diante, a evolução é simulada pelo jogo a partir do orçamento, da economia e das suas medidas.</p>
-    <div className="grid gap-3 sm:grid-cols-2">${L.map(({ K, cur, p, dv, cor, seta, ano }) => html`<div key=${K.k} className="rounded-lg border border-line p-3 flex flex-col gap-1" data-indicador=${K.k}>
-      <div className="flex justify-between items-baseline gap-2"><span className="eyebrow">${K.nome}</span>${ano && html`<span className="text-[10px] text-muted">dado de posse: ${ano}</span>`}</div>
+    <${MxHead} id="ind-t" eb="Sociedade · indicadores" t="O país desde a posse" tip="O ponto de partida é o dado oficial mais recente; daí em diante, a evolução é simulada pelo jogo a partir do orçamento, da economia e das suas medidas." />
+    <div className="mx-grid">${L.map(({ K, cur, p, dv, cor, seta, ano }) => html`<div key=${K.k} className="mx-card" style=${{ '--st': cor }} data-indicador=${K.k}>
+      <div className="flex justify-between items-baseline gap-2"><span className="eyebrow">${K.nome}</span>${ano && html`<span className="text-xs text-muted">dado de posse: ${ano}</span>`}</div>
       <div className="flex items-baseline gap-2 flex-wrap"><span className="num text-2xl">${(K.pre || '') + fmt(cur, K.d)}<span className="text-xs text-muted">${K.u}</span></span><span className="num text-sm" style=${{ color: cor }} aria-label=${'Desde a posse: ' + sgn(dv, K.d)}>${seta} ${sgn(dv, K.d)}</span></div>
-      <div className="text-[11px] text-muted">posse: ${(K.pre || '') + fmt(p, K.d)}${K.u}</div>
-      <div className="text-[11px] leading-snug"><span className="text-muted">O que mexe:</span> ${K.mexe}</div></div>`)}</div>
+      <div className="text-xs text-muted">posse: ${(K.pre || '') + fmt(p, K.d)}${K.u}</div>
+      <div className="text-xs leading-snug"><span className="text-muted">O que mexe:</span> ${K.mexe}</div></div>`)}</div>
   </section>`;
 }
 const fmtN = (v, d) => (v == null ? '—' : fmt(v, d));
@@ -18305,13 +18365,13 @@ function TabelaRegioes({ g }) {
   const A = abismoRegional(g);
   const dg = ((g.soc.idh - g.indPosse.idh) * 1000);
   return html`<section className="sec min-w-0" data-cartao="regioes" aria-labelledby="reg-t">
-    <h3 id="reg-t" className="disp text-2xl font-extrabold uppercase mb-1">Regiões</h3>
+    <${MxHead} id="reg-t" eb="Sociedade · regiões" t="Regiões" tip="IDHM, esgoto e Ideb regionais: média das UFs ponderada pela população. Pobreza regional de 2024 (IBGE)." />
     <div className="overflow-x-auto"><table className="text-sm w-full min-w-[560px]"><thead><tr className="text-left text-muted text-xs"><th className="py-1 font-medium">Região</th><th className="font-medium text-right">População</th><th className="font-medium text-right">PIB per capita</th><th className="font-medium text-right">IDHM</th><th className="font-medium text-right">Pobreza <${Est} txt="Taxa regional de 2024 (IBGE, Síntese de Indicadores Sociais 2025), US$ 6,85/dia; evolui com a pobreza nacional do jogo." /></th><th className="font-medium text-right">Esgoto</th><th className="font-medium text-right">Ideb</th><th className="font-medium text-right">Homicídios</th></tr></thead><tbody>
       ${A.R.map(r => html`<tr key=${r.reg} className="border-t border-line" data-regiao=${r.reg}><td className="py-1.5">${r.nome}</td><td className="num text-right">${fmt(r.pop / 1e6, 1)} mi</td><td className="num text-right">R$ ${fmt(r.pibpc, 0)}</td><td className="num text-right">${fmt(r.idhm, 3)}</td><td className="num text-right">${fmt(r.pob)}%</td><td className="num text-right">${fmt(r.esgoto)}%</td><td className="num text-right">${fmt(r.ideb)}</td><td className="num text-right">${fmtN(r.hom, 1)}</td></tr>`)}
     </tbody></table></div>
     <div className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1" data-abismo="1"><span className="eyebrow">Abismo regional</span><span className="num text-2xl">${fmt(A.gap, 3)}</span><span className="text-xs text-muted">diferença de IDHM entre ${A.max.nome} e ${A.min.nome}</span></div>
     <p className="text-xs text-muted mt-1">Quanto mais largo o abismo, mais o eleitor das regiões atrasadas se sente deixado para trás: acima de 0,050 há uma pequena penalidade de aprovação (até 2,5 p.p.) nas regiões abaixo da média${A.gap > .05 ? `; hoje a penalidade vale ${fmt(-penalAbismo(g, A.min.reg), 1)} p.p. em ${A.min.nome}` : '; hoje não há penalidade'}.</p>
-    <p className="text-[11px] text-muted mt-1">IDHM, esgoto e Ideb regionais: média das UFs ponderada pela população (cálculo do jogo). PIB per capita de 2023, atualizado pelo PIB nominal simulado. Homicídios: mortes violentas do jogo. Variação nacional do IDH desde a posse: ${sgn(dg, 1)} milésimos.</p>
+    <p className="text-xs text-muted mt-1">IDHM, esgoto e Ideb regionais: média das UFs ponderada pela população (cálculo do jogo). PIB per capita de 2023, atualizado pelo PIB nominal simulado. Homicídios: mortes violentas do jogo. Variação nacional do IDH desde a posse: ${sgn(dg, 1)} milésimos.</p>
   </section>`;
 }
 const COL_UF = [
@@ -18325,8 +18385,7 @@ function TabelaEstados({ g, onUF }) {
   rows.sort((a, b) => (ord.k === 'uf' ? a.uf.localeCompare(b.uf) * ord.dir : ((a[ord.k] == null ? -1 : a[ord.k]) - (b[ord.k] == null ? -1 : b[ord.k])) * ord.dir) || a.uf.localeCompare(b.uf));
   const troca = (k) => setOrd(o => (o.k === k ? { k, dir: -o.dir } : { k, dir: k === 'uf' ? 1 : -1 }));
   return html`<section className="sec min-w-0" data-cartao="estados" aria-labelledby="est-t">
-    <h3 id="est-t" className="disp text-2xl font-extrabold uppercase mb-1">Estados</h3>
-    <p className="text-xs text-muted mb-2">Ordene pelas colunas. Clique em um estado para abri-lo em País › Mapa.</p>
+    <${MxHead} id="est-t" eb="Sociedade · estados" t="Estados" tip="Ordene pelas colunas. Clique em um estado para abri-lo em País › Mapa." />
     <div className="overflow-x-auto"><table className="text-sm w-full min-w-[520px]" data-tabela-estados="1"><thead><tr className="text-left text-muted text-xs">${COL_UF.map(C => html`<th key=${C.k} className=${'py-1 font-medium ' + (C.txt ? '' : 'text-right')} aria-sort=${ord.k === C.k ? (ord.dir > 0 ? 'ascending' : 'descending') : 'none'}>
       <button type="button" className="hover:text-fg" onClick=${() => troca(C.k)} data-ordena=${C.k}>${C.nome}${ord.k === C.k ? (ord.dir > 0 ? ' ▲' : ' ▼') : ''}</button>${C.est && html` <${Est} txt="Pobreza por UF = taxa da região (IBGE, 2024); o IBGE não publica a taxa estadual nas fontes usadas. Evolui com a pobreza nacional do jogo." />`}</th>`)}</tr></thead><tbody>
       ${rows.map(x => html`<tr key=${x.uf} className="border-t border-line hover:bg-[var(--panel2)] cursor-pointer" data-uf=${x.uf} onClick=${() => onUF && onUF(x.uf)}>
@@ -18339,11 +18398,11 @@ function BrasilNoMundo({ g }) {
   const M = mundoLinhas(g), N = notaPais(g);
   const rk = M.rk;
   return html`<section className="sec min-w-0 flex flex-col gap-4" data-cartao="mundo" aria-labelledby="mun-t">
-    <h3 id="mun-t" className="disp text-2xl font-extrabold uppercase">Brasil no mundo</h3>
+    <${MxHead} id="mun-t" eb="Sociedade · comparação" t="Brasil no mundo" tip="IDH, PIB em US$ e percepção de corrupção, com a nota própria do jogo." />
     <div className="grid gap-3 sm:grid-cols-3">
-      <div className="rounded-lg border border-line p-3"><div className="eyebrow">IDH</div><div className="num text-2xl">${rk.rank}º${rk.lim ? ' ' + rk.lim : ''}</div><div className="text-[11px] text-muted">de 193 países (HDR 2025, dados de 2023); no ano da posse: ${IND_DADOS.nac.idh.rank}º</div></div>
-      <div className="rounded-lg border border-line p-3"><div className="eyebrow">PIB nominal em US$</div><div className="num text-2xl">${M.rankPib}º de ${M.nPib}</div><div className="text-[11px] text-muted">entre os países da lista; Brasil a US$ ${fmt(pibUsd(g) / 1000, 2)} tri (PIB nominal simulado ÷ dólar)</div></div>
-      <div className="rounded-lg border border-line p-3"><div className="eyebrow">Percepção de corrupção</div><div className="num text-2xl">${fmt(M.ipcJogo, 0)}<span className="text-sm text-muted">/100</span></div><div className="text-[11px] text-muted">IPC real de ${IND_DADOS.nac.ipc.ano}: ${IND_DADOS.nac.ipc.v}, ${IND_DADOS.nac.ipc.rank}º de ${IND_DADOS.nac.ipc.n}. O índice do jogo cai com escândalos e tensão com o STF. Posição entre os países da lista com IPC: ${M.rankIpc}º de ${M.comIpc.length}.</div></div>
+      <div className="mx-box"><div className="eyebrow">IDH</div><div className="num text-2xl">${rk.rank}º${rk.lim ? ' ' + rk.lim : ''}</div><div className="text-xs text-muted">de 193 países (HDR 2025, dados de 2023); no ano da posse: ${IND_DADOS.nac.idh.rank}º</div></div>
+      <div className="mx-box"><div className="eyebrow">PIB nominal em US$</div><div className="num text-2xl">${M.rankPib}º de ${M.nPib}</div><div className="text-xs text-muted">entre os países da lista; Brasil a US$ ${fmt(pibUsd(g) / 1000, 2)} tri (PIB nominal simulado ÷ dólar)</div></div>
+      <div className="mx-box"><div className="eyebrow">Percepção de corrupção</div><div className="num text-2xl">${fmt(M.ipcJogo, 0)}<span className="text-sm text-muted">/100</span></div><div className="text-xs text-muted">IPC real de ${IND_DADOS.nac.ipc.ano}: ${IND_DADOS.nac.ipc.v}, ${IND_DADOS.nac.ipc.rank}º de ${IND_DADOS.nac.ipc.n}. O índice do jogo cai com escândalos e tensão com o STF. Posição entre os países da lista com IPC: ${M.rankIpc}º de ${M.comIpc.length}.</div></div>
     </div>
     <div className="overflow-x-auto"><table className="text-sm w-full min-w-[320px]" data-ranking-idh="1"><thead><tr className="text-left text-muted text-xs"><th className="py-1 font-medium">Posição</th><th className="font-medium">País</th><th className="font-medium text-right">IDH</th></tr></thead><tbody>
       ${M.topo.map(m => html`<tr key=${m.iso} className="border-t border-line"><td className="py-1 num">${m.rank}º</td><td>${m.nome}</td><td className="num text-right">${fmt(m.idh, 3)}</td></tr>`)}
@@ -18351,8 +18410,8 @@ function BrasilNoMundo({ g }) {
       ${M.viz.map(m => html`<tr key=${m.iso} className=${'border-t border-line ' + (m.eu ? 'font-bold' : '')} style=${m.eu ? { background: 'var(--panel2)' } : null} data-eu=${m.eu ? '1' : undefined}><td className="py-1 num">${m.rank}º</td><td>${m.nome}${m.eu ? ' (você)' : ''}</td><td className="num text-right">${fmt(m.idh, 3)}</td></tr>`)}
     </tbody></table></div>
     <div data-nota-pais="1">
-      <div className="flex flex-wrap items-baseline justify-between gap-2"><div><div className="eyebrow">Nota do país · índice próprio do jogo</div><div className="text-[11px] text-muted">Média de 8 componentes de 0 a 100. Não é um índice oficial.</div></div><span className="num text-4xl" style=${{ color: corAprov(N.nota) }}>${fmt(N.nota, 0)}</span></div>
-      <div className="grid gap-x-6 gap-y-2 sm:grid-cols-2 mt-3">${N.comp.map(c => html`<div key=${c.k}><div className="flex justify-between text-sm"><span>${c.nome}</span><span className="num" style=${{ color: corAprov(c.v) }}>${fmt(c.v, 0)}</span></div><${Bar} v=${c.v} cor=${corAprov(c.v)} h=${5} label=${c.nome} /><div className="text-[11px] text-muted">${c.det}</div></div>`)}</div>
+      <div className="flex flex-wrap items-baseline justify-between gap-2"><div><div className="eyebrow">Nota do país · índice próprio do jogo</div><div className="text-xs text-muted">Média de 8 componentes de 0 a 100. Não é um índice oficial.</div></div><span className="num text-4xl" style=${{ color: corAprov(N.nota) }}>${fmt(N.nota, 0)}</span></div>
+      <div className="grid gap-x-6 gap-y-2 sm:grid-cols-2 mt-3">${N.comp.map(c => html`<div key=${c.k}><div className="flex justify-between text-sm"><span>${c.nome}</span><span className="num" style=${{ color: corAprov(c.v) }}>${fmt(c.v, 0)}</span></div><${Bar} v=${c.v} cor=${corAprov(c.v)} h=${5} label=${c.nome} /><div className="text-xs text-muted">${c.det}</div></div>`)}</div>
     </div>
   </section>`;
 }
@@ -18372,31 +18431,28 @@ function RodapeFontes({ extra }) {
     <ul className="mt-2 flex flex-col gap-1 text-xs text-muted list-disc pl-4">${NOTAS_FONTES.map((x, i) => html`<li key=${i}>${x}</li>`)}</ul>
     ${extra ? html`<div className="mt-2 text-xs text-muted leading-relaxed">${extra}</div>` : null}
     <div className="eyebrow mt-3 mb-1">Fontes (com o ano dos dados)</div>
-    <ul className="grid gap-x-6 gap-y-0.5 sm:grid-cols-2 text-[11px]">${F.map(f => html`<li key=${f.id}><a href=${f.u} target="_blank" rel="noopener noreferrer" className="underline decoration-dotted hover:text-ouro">${f.t}</a> <span className="text-muted">· ${f.ano}</span></li>`)}</ul>
+    <ul className="grid gap-x-6 gap-y-0.5 sm:grid-cols-2 text-xs">${F.map(f => html`<li key=${f.id}><a href=${f.u} target="_blank" rel="noopener noreferrer" className="underline decoration-dotted hover:text-ouro">${f.t}</a> <span className="text-muted">· ${f.ano}</span></li>`)}</ul>
   </details></footer>`;
 }
 function Sociedade({ g, upd, setChip, decidir }) {
   const S = g.soc;
   const grupos = GRUPOS.slice().sort((a, b) => g.groups[b.k] - g.groups[a.k]);
   const irUF = (uf) => { if (upd) upd(n => { n.ui = n.ui || {}; n.ui.uf = uf; }); if (setChip) setChip('mapa'); };
-  return html`<div className="grid gap-6 lg:grid-cols-12">
-    <section className="lg:col-span-7 sec">
-      <h3 className="disp text-2xl font-extrabold uppercase mb-1">Aprovação por grupo social</h3>
-      <p className="text-xs text-muted mb-4">Peso eleitoral entre parênteses. Ordenado do mais fiel ao mais hostil.</p>
-      <div className="grid sm:grid-cols-2 gap-x-6 gap-y-3">${grupos.map(G => html`<div key=${G.k} className="flex items-center gap-3">
-        <span className="text-2xl w-8 text-center" aria-hidden="true">${G.em}</span>
-        <div className="flex-1 min-w-0"><div className="flex justify-between text-sm"><span className="truncate">${G.nome} <span className="text-muted text-xs">(${G.w})</span></span><span className="num" style=${{ color: corAprov(g.groups[G.k]) }}>${fmt(g.groups[G.k], 0)}%</span></div>
-        <${Bar} v=${g.groups[G.k]} cor=${corAprov(g.groups[G.k])} h=${6} label=${G.nome} /></div></div>`)}</div>
+  const N = notaPais(g);
+  return html`<div className="flex flex-col gap-6" data-pais="sociedade">
+    <${PdKpis} area="sociedade" itens=${[
+      { dado: 'idh', ic: 'Landmark', cor: 'var(--anil)', k: 'IDH', v: S.idh.toFixed(3).replace('.', ','), s: 'desenvolvimento humano' },
+      { dado: 'pobreza', ic: 'HeartHandshake', cor: 'var(--rubro)', k: 'Pobreza', v: fmt(S.pob) + '%', s: 'da população' },
+      { dado: 'homicidios', ic: 'Siren', cor: 'var(--ambar)', k: 'Homicídios', v: fmt(S.hom), s: 'por 100 mil hab.' },
+      { dado: 'desmat', ic: 'Trees', cor: 'var(--verde)', k: 'Desmatamento', v: fmt(S.desm, 0), s: 'km²/ano (PRODES)' },
+      { dado: 'nota', ic: 'Gauge', cor: corAprov(N.nota), k: 'Nota do país', v: fmt(N.nota, 0), s: 'índice próprio do jogo' }
+    ]} />
+    <section className="sec" data-soc="grupos">
+      <${MxHead} eb="Sociedade · eleitorado" t="Aprovação por grupo social" tip="Peso eleitoral entre parênteses. Ordenado do mais fiel ao mais hostil." />
+      <div className="mx-grid g3">${grupos.map(G => html`<div key=${G.k} className="mx-card" style=${{ '--st': corAprov(g.groups[G.k]), gap: 8, padding: 12 }}>
+        <div className="mx-h nr"><span className="text-2xl" aria-hidden="true">${G.em}</span><div className="min-w-0"><div className="mx-t">${G.nome}</div><div className="mx-s">peso ${G.w}</div></div></div>
+        <div className="flex items-center gap-3"><span className="num text-xl font-semibold" style=${{ color: corAprov(g.groups[G.k]) }}>${fmt(g.groups[G.k], 0)}%</span><div className="flex-1"><${Bar} v=${g.groups[G.k]} cor=${corAprov(g.groups[G.k])} h=${6} label=${G.nome} /></div></div></div>`)}</div>
     </section>
-    <aside className="lg:col-span-5 flex flex-col gap-4">
-      <div className="sec grid grid-cols-2 gap-4">
-        <h3 className="col-span-2 disp text-2xl font-extrabold uppercase">Índices sociais</h3>
-        <div><div className="eyebrow">IDH</div><div className="num text-2xl">${S.idh.toFixed(3).replace('.', ',')}</div></div>
-        <div><div className="eyebrow">Pobreza</div><div className="num text-2xl">${fmt(S.pob)}%</div><div className="text-xs text-muted">da população</div></div>
-        <div><div className="eyebrow">Homicídios</div><div className="num text-2xl">${fmt(S.hom)}</div><div className="text-xs text-muted">por 100 mil hab.</div></div>
-        <div><div className="eyebrow">Desmatamento</div><div className="num text-2xl">${fmt(S.desm, 0)}</div><div className="text-xs text-muted">km²/ano (PRODES)</div></div>
-      </div>
-    </aside>
     ${decidir && html`<div className="lg:col-span-12"><${OrcamentoArea} g=${g} decidir=${decidir} area="sociedade" /></div>`}
     <div className="lg:col-span-12"><${PainelIndicadores} g=${g} /></div>
     <div className="lg:col-span-12"><${TabelaRegioes} g=${g} /></div>
@@ -18407,7 +18463,7 @@ function Sociedade({ g, upd, setChip, decidir }) {
 }
 
 function MapaRegioes({ g }) {
-  return html`<div className="flex flex-col gap-2">${REGIOES.map(r => { const v = aprovRegiao(g, r.k); return html`<div key=${r.k}><div className="flex justify-between text-sm"><span>${r.nome} <span className="text-muted text-xs">${r.pop}% dos eleitores</span></span><span className="num" style=${{ color: corAprov(v) }}>${fmt(v, 0)}%</span></div><${Bar} v=${v} cor=${corAprov(v)} h=${5} label=${r.nome} /></div>`; })}</div>`;
+  return html`<div className="mx-grid g3">${REGIOES.map(r => { const v = aprovRegiao(g, r.k); const c = corAprov(v); return html`<div key=${r.k} className="mx-card" style=${{ '--st': c }} data-regiao-card=${r.k}><div className="mx-lab">${r.nome}</div><div className="mx-num" style=${{ color: c }}>${fmt(v, 0)}%</div><${Bar} v=${v} cor=${c} h=${6} label=${r.nome} /><div className="mx-s">${r.pop}% dos eleitores</div></div>`; })}</div>`;
 }
 
 /* ---- mapa interativo dos 27 estados ---- */
@@ -18492,7 +18548,7 @@ function MapaBrasil({ g }) {
   const I = UF_INFO[sel], v = vals[sel], dif = apr[sel] - nacional, dr = Math.round(dif);
   const difTxt = Math.abs(dif) < 0.5 ? 'Em linha com a média nacional' : `${dr > 0 ? '+' : '−'}${Math.abs(dr)} p.p. ${dr > 0 ? 'acima' : 'abaixo'} da média nacional`;
   const D = ufDados(g, sel);
-  const lista = (titulo, ufs, cor) => html`<div className="min-w-0">
+  const lista = (titulo, ufs, cor) => html`<div className="min-w-0 mx-box">
     <div className="eyebrow mb-1" style=${{ color: cor }}>${titulo}</div>
     <div className="flex flex-col">${ufs.map(u => html`<button key=${u} type="button" onClick=${() => setSel(u)} aria-pressed=${u === sel}
       className=${'flex w-full items-center gap-2 text-left text-sm px-2 py-1 rounded ' + (u === sel ? 'bg-[var(--panel2)]' : 'hover:bg-[var(--panel2)]')}>
@@ -18500,9 +18556,7 @@ function MapaBrasil({ g }) {
   const stops = [20, 35, 50, 65, 80];
   const rot = (i) => (ehAprov ? stops[i] + '%' : (C.pre || '') + fmt(C.lo + (C.hi - C.lo) * i / 4, C.d) + (C.u || ''));
   return html`<div>
-    <h3 className="disp text-2xl font-extrabold uppercase mb-1">${ehAprov ? 'Aprovação por estado' : C.nome + ' por estado'}</h3>
-    <div className="flex flex-wrap gap-2 mb-3" role="group" aria-label="Camada do mapa" data-camadas="1">${MAPA_CAMADAS.map(x => html`<button key=${x.k} type="button" aria-pressed=${x.k === camada} onClick=${() => setCamada(x.k)} className=${'btn btn-ghost !text-xs ' + (x.k === camada ? '!border-ouro text-ouro' : '')}>${x.nome}</button>`)}</div>
-    <p className="text-xs text-muted mb-4">Clique em um estado para ver os detalhes.</p>
+    <${MxHead} eb="Mapa do Brasil" t=${ehAprov ? 'Aprovação por estado' : C.nome + ' por estado'} tip="Clique em um estado para ver os detalhes. Escolha a camada para trocar o que o mapa mostra." right=${html`<div className="flex flex-wrap gap-2" role="group" aria-label="Camada do mapa" data-camadas="1">${MAPA_CAMADAS.map(x => html`<button key=${x.k} type="button" aria-pressed=${x.k === camada} onClick=${() => setCamada(x.k)} className=${'btn btn-ghost !text-xs ' + (x.k === camada ? '!border-ouro text-ouro' : '')}>${x.nome}</button>`)}</div>`} />
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
       <div className="min-w-0">
         <${MapaUF} cor=${corDe} rotulo=${uf => `${UF_INFO[uf].nome}: ${txtV(uf)}${ehAprov ? ' de aprovação' : ' (' + C.nome + ')'}`} aria=${ehAprov ? 'Mapa do Brasil por estado, colorido pela aprovação do presidente' : 'Mapa do Brasil por estado, colorido por ' + C.nome}
@@ -18523,15 +18577,15 @@ function MapaBrasil({ g }) {
           <div className="text-sm mt-1">${ehAprov ? difTxt : C.nome + ': ' + C.un}</div>
           <div className="flex flex-wrap gap-x-5 gap-y-1 text-sm text-muted mt-2"><span><span className="num text-fg">${fmt(I.eleit, I.eleit < 1 ? 2 : 1)}%</span> do eleitorado</span><span>Nº <span className="num text-fg">${rank.indexOf(sel) + 1}</span> de 27${ehAprov ? '' : ' em ' + C.nome}</span>${!ehAprov && html`<span>aprovação <span className="num text-fg">${fmt(apr[sel], 0)}%</span></span>`}</div>
         </div>
-        <div className="rounded-lg border border-line p-3 grid grid-cols-2 gap-x-4 gap-y-2 text-sm" data-uf-card=${sel}>
+        <div className="mx-box grid grid-cols-2 gap-x-4 gap-y-2 text-sm" data-uf-card=${sel}>
           <div><div className="eyebrow">IDHM</div><div className="num">${fmt(D.idhm, 3)}</div></div>
           <div><div className="eyebrow">PIB per capita</div><div className="num">R$ ${fmt(D.pibpc, 0)}</div></div>
           <div><div className="eyebrow">Pobreza <${Est} txt="Taxa da região (IBGE, 2024); sem dado estadual nas fontes." /></div><div className="num">${fmt(D.pob)}%</div></div>
-          <div><div className="eyebrow">Homicídios</div><div className="num">${fmtN(D.hom, 1)} <span className="text-[11px] text-muted">por 100 mil</span></div></div>
+          <div><div className="eyebrow">Homicídios</div><div className="num">${fmtN(D.hom, 1)} <span className="text-xs text-muted">por 100 mil</span></div></div>
           <div><div className="eyebrow">Esgoto</div><div className="num">${fmt(D.esgoto)}%</div></div>
           <div><div className="eyebrow">Ideb</div><div className="num">${fmt(D.ideb)}</div></div>
-          <div><div className="eyebrow">Expectativa de vida ${D.evEst && html`<${Est} txt="Perfil relativo da Revisão 2018 do IBGE, reescalado ao valor nacional de 2024 (76,6 anos). RR, AP e DF usam o dado da Revisão 2024." />`}</div><div className="num">${fmt(D.ev)} <span className="text-[11px] text-muted">anos</span></div></div>
-          <div><div className="eyebrow">Mortalidade infantil <${Est} txt="Perfil relativo da Revisão 2018 do IBGE, reescalado ao valor nacional de 2024 (12,3 por mil)." /></div><div className="num">${fmt(D.mi)} <span className="text-[11px] text-muted">por mil</span></div></div>
+          <div><div className="eyebrow">Expectativa de vida ${D.evEst && html`<${Est} txt="Perfil relativo da Revisão 2018 do IBGE, reescalado ao valor nacional de 2024 (76,6 anos). RR, AP e DF usam o dado da Revisão 2024." />`}</div><div className="num">${fmt(D.ev)} <span className="text-xs text-muted">anos</span></div></div>
+          <div><div className="eyebrow">Mortalidade infantil <${Est} txt="Perfil relativo da Revisão 2018 do IBGE, reescalado ao valor nacional de 2024 (12,3 por mil)." /></div><div className="num">${fmt(D.mi)} <span className="text-xs text-muted">por mil</span></div></div>
         </div>
         <${PoderesUF} g=${g} uf=${sel} />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -18594,7 +18648,7 @@ function pufRank(g, area, D, k) {
 function RankingUF({ g, area, ind, onUF, selUF, n = 5, titulo, melhores }) {
   const D = pufDados(area); if (!D || !D.fontes || !D.fontes[ind]) return null;
   const R = pufRank(g, area, D, ind); const L = melhores ? R.slice().reverse().slice(0, n) : R.slice(0, n);
-  return html`<div className="min-w-0" data-rank-uf=${melhores ? 'melhores' : 'piores'}>
+  return html`<div className="min-w-0 mx-box" data-rank-uf=${melhores ? 'melhores' : 'piores'}>
     <div className="eyebrow mb-1" style=${{ color: melhores ? 'var(--verde)' : 'var(--rubro)' }}>${titulo || (melhores ? 'Melhores' : 'Mais críticos')}</div>
     <div className="flex flex-col">${L.map((x, i) => html`<button key=${x.u} type="button" onClick=${() => onUF && onUF(x.u)} aria-pressed=${x.u === selUF}
       className=${'flex w-full items-center gap-2 text-left text-sm px-2 py-1 rounded ' + (x.u === selUF ? 'bg-[var(--panel2)]' : 'hover:bg-[var(--panel2)]')}>
@@ -18621,8 +18675,7 @@ function PainelUF({ g, area, cfg, onUF, selUF, extra }) {
   const cs = cmp(ind, vSel, vBR);
   const cols = { display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 3.6rem 3.6rem 2.6rem', gap: '.5rem', alignItems: 'center' };
   return html`<section className="sec" data-puf=${area}>
-    <div className="mb-3"><h3 className="disp text-2xl font-extrabold uppercase">${tit}</h3>
-      <p className="text-xs text-muted">${cfg.sub || 'Escolha um indicador, clique em um estado e compare com a média do Brasil. Verde = melhor, vermelho = pior. Os valores acompanham o jogo mês a mês.'}</p></div>
+    <${MxHead} eb="País · mapa por estado" t=${tit} tip=${cfg.sub || 'Escolha um indicador, clique em um estado e compare com a média do Brasil. Verde = melhor, vermelho = pior. Os valores acompanham o jogo mês a mês.'} />
     <div role="radiogroup" aria-label="Indicador do mapa" className="flex flex-wrap gap-2 mb-4" data-puf-inds="1">${inds.map(k => html`<button key=${k} type="button" role="radio" aria-checked=${k === ind} onClick=${() => setInd(k)} className=${'btn btn-ghost !text-xs ' + (k === ind ? '!border-ouro text-ouro' : '')}>${D.fontes[k].nome}</button>`)}</div>
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
       <div className="min-w-0">
@@ -18644,9 +18697,9 @@ function PainelUF({ g, area, cfg, onUF, selUF, extra }) {
           <div className="text-sm mt-1">${F.nome} <span className="text-muted">· ${F.unidade} · ref. ${F.ano}</span></div>
           <div className="text-sm mt-1" style=${{ color: cs.c }}>${vBR != null ? 'Brasil: ' + pufFmt(D, ind, vBR) + (cs.t ? ' · ' + cs.t : '') : ''}${posMelhor ? ' · Nº ' + posMelhor + ' de ' + R.length : ''}</div>
         </div>
-        <div className="rounded-lg border border-line p-3 flex flex-col gap-1" data-puf-tabela="1">
-          <div className="text-[10px] uppercase tracking-wider text-muted" style=${cols}><span>Indicador</span><span className="text-right">${sel}</span><span className="text-right">Brasil</span><span className="text-right">Ano</span></div>
-          ${inds.map(k => { const Fk = D.fontes[k]; const v = val(k, sel), b = val(k, 'BR'); const c = cmp(k, v, b); return html`<button key=${k} type="button" onClick=${() => setInd(k)} aria-pressed=${k === ind} title=${Fk.nome + ' (' + Fk.unidade + ')'} className=${'text-left text-sm rounded px-1 py-0.5 ' + (k === ind ? 'bg-[var(--panel2)]' : 'hover:bg-[var(--panel2)]')} style=${cols}><span className="min-w-0 truncate">${Fk.nome}</span><span className="num text-right" style=${{ color: c.c }}>${pufFmt(D, k, v)}</span><span className="num text-right text-muted">${pufFmt(D, k, b)}</span><span className="num text-right text-[10px] text-muted">${Fk.ano}</span></button>`; })}
+        <div className="mx-box flex flex-col gap-1" data-puf-tabela="1">
+          <div className="text-xs uppercase tracking-wider text-muted" style=${cols}><span>Indicador</span><span className="text-right">${sel}</span><span className="text-right">Brasil</span><span className="text-right">Ano</span></div>
+          ${inds.map(k => { const Fk = D.fontes[k]; const v = val(k, sel), b = val(k, 'BR'); const c = cmp(k, v, b); return html`<button key=${k} type="button" onClick=${() => setInd(k)} aria-pressed=${k === ind} title=${Fk.nome + ' (' + Fk.unidade + ')'} className=${'text-left text-sm rounded px-1 py-0.5 ' + (k === ind ? 'bg-[var(--panel2)]' : 'hover:bg-[var(--panel2)]')} style=${cols}><span className="min-w-0 truncate">${Fk.nome}</span><span className="num text-right" style=${{ color: c.c }}>${pufFmt(D, k, v)}</span><span className="num text-right text-muted">${pufFmt(D, k, b)}</span><span className="num text-right text-xs text-muted">${Fk.ano}</span></button>`; })}
         </div>
         ${cfg.rankFora ? null : html`<${RankingUF} g=${g} area=${area} ind=${ind} onUF=${setSel} selUF=${sel} n=${5} />`}
         ${extra || null}
@@ -18849,29 +18902,25 @@ function ConversaGov({ g, upd, area, uf, onPlano }) {
     { k: 'plano', l: area === 'seg' ? 'Propor plano conjunto' : 'Propor pacto estadual', d: area === 'seg' ? 'abre a negociação abaixo com as ofertas do tema' : T ? `R$ ${fmt(T.custo * 2, 1)} bi · melhora mais forte e duradoura` : '', ico: 'Handshake' }
   ];
   return html`<section className="sec" data-conv=${area}>
-    <div className="flex flex-wrap items-end justify-between gap-2 mb-3">
-      <div><h3 className="disp text-2xl font-extrabold uppercase">Conversar com o governador</h3>
-        <p className="text-xs text-muted">${titulo} · ${nomeUF(uf)}. Escolha um tema (1 ação, uma conversa por estado por mês). Selecione outro estado no mapa ou na tabela.</p></div>
-      <${Tag} cor=${g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)'}>${g.acoes}/5 ações</${Tag}>
-    </div>
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,.8fr)_minmax(0,1.6fr)]">
-      <div className="flex flex-col gap-2 min-w-0" data-conv-gov=${uf}>
+    <${MxHead} eb=${'Governadores · ' + titulo} t="Conversar com o governador" tip=${titulo + ' · ' + nomeUF(uf) + '. Escolha um tema (1 ação, uma conversa por estado por mês). Selecione outro estado no mapa ou na tabela.'} right=${html`<${PsAcoes} g=${g} />`} />
+    <div className="ps-conv">
+      <div className="mx-card panel" style=${{ '--st': PMAP[P.bloco].cor }} data-conv-gov=${uf}>
         <div className="flex items-center gap-3"><${Ef} nome=${P.nome} cor=${PMAP[P.bloco].cor} papel="governador" s=${56} fk=${uf + '|governador|' + P.nome} />
-          <div className="min-w-0"><div className="font-semibold leading-tight">${P.nome}</div><div className="text-xs text-muted">Governador(a) ${deUF(uf)}</div></div></div>
-        <div className="flex flex-wrap gap-1.5"><${Tag} cor=${PMAP[P.bloco].cor}>${sg(P.sigla)}</${Tag}>${area === 'seg' ? html`<${Tag} cor=${gvRotCor(P.rot)}>${P.rot}</${Tag}>` : null}<${Tag}>${CONV_AL_NOME[al]}</${Tag}></div>
-        <div className="rounded border border-line p-2 flex items-center justify-between"><span className="eyebrow">Relação com você</span><span className="num text-xl" style=${{ color: gvCorRel(S.rel) }}>${Math.round(S.rel)}</span></div>
-        ${area === 'seg' ? html`<div className="text-[11px] text-muted">Perfil na segurança estimado pelo jogo (partido e atuação pública); não representa a pessoa real.</div>` : html`<div className="text-[11px] text-muted">Posição de política pública simulada pelo jogo a partir do alinhamento do partido; não representa a pessoa real.</div>`}
+          <div className="min-w-0"><div className="mx-t">${P.nome}</div><div className="mx-s">Governador(a) ${deUF(uf)}</div></div></div>
+        <div className="gv-chips"><${Tag} cor=${PMAP[P.bloco].cor}>${sg(P.sigla)}</${Tag}>${area === 'seg' ? html`<${Tag} cor=${gvRotCor(P.rot)}>${P.rot}</${Tag}>` : null}<${Tag}>${CONV_AL_NOME[al]}</${Tag}></div>
+        <div className="mx-box flex items-center justify-between"><span className="eyebrow">Relação com você</span><span className="num text-xl" style=${{ color: gvCorRel(S.rel) }}>${Math.round(S.rel)}</span></div>
+        <${MxDet} rot="Sobre este perfil">${area === 'seg' ? 'Perfil na segurança estimado pelo jogo (partido e atuação pública); não representa a pessoa real.' : 'Posição de política pública simulada pelo jogo a partir do alinhamento do partido; não representa a pessoa real.'}</${MxDet}>
       </div>
       <div className="min-w-0 flex flex-col gap-3">
-        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-2" role="group" aria-label="Temas da conversa">${A.topicos.map(t => html`<button key=${t.k} type="button" data-conv-tema=${t.k} aria-pressed=${!!U && U.t === t.k} disabled=${doMes || semAcoes || itv} title=${bloqueio}
-          className=${'btn btn-ghost justify-start text-sm text-left ' + (U && U.t === t.k ? '!border-ouro text-ouro' : '')} onClick=${() => upd(n => { convAbre(n, area, uf, t.k); })}><${Icon} n=${t.ico} s=${15} /> ${t.nome}</button>`)}</div>
-        ${U ? html`<div className="rounded-lg border border-line p-3 flex flex-col gap-2" data-conv-fala="1">
+        <div className="mx-grid g3" role="group" aria-label="Temas da conversa">${A.topicos.map(t => html`<button key=${t.k} type="button" data-conv-tema=${t.k} aria-pressed=${!!U && U.t === t.k} disabled=${doMes || semAcoes || itv} title=${bloqueio}
+          className="mx-act" style=${{ '--c': U && U.t === t.k ? 'var(--ouro)' : 'var(--anil)' }} onClick=${() => upd(n => { convAbre(n, area, uf, t.k); })}><span className="mx-act-h"><span className="gv-ic" style=${{ '--c': 'var(--anil)' }}><${Icon} n=${t.ico} s=${18} /></span><span>${t.nome}</span><span></span></span></button>`)}</div>
+        ${U ? html`<div className="mx-card panel" style=${{ '--st': 'var(--ouro)' }} data-conv-fala="1">
           <div className="flex flex-wrap items-center gap-2"><${Ef} nome=${P.nome} cor=${PMAP[P.bloco].cor} papel="governador" s=${28} fk=${uf + '|governador|' + P.nome} /><b className="text-sm">${P.nome}</b><${SeloSim} a="o" /><span className="num text-xs text-muted">mês ${U.mes} · ${T ? T.nome : ''}</span></div>
           <p className="text-sm leading-relaxed">“${U.txt}”</p>
-          <p className="text-[11px] text-muted">Posição de política pública simulada pelo jogo, com os números do estado; não é declaração real.</p>
-          ${U.resp ? html`<div className="text-sm rounded border border-line p-2" data-conv-res="1">${U.res}</div>` : html`<div className="grid sm:grid-cols-3 gap-2" data-conv-resps="1">${resp.map(o => html`<button key=${o.k} type="button" className=${'btn text-left flex-col !items-start ' + (o.k === 'apoio' ? 'btn-pri' : 'btn-ghost')} data-conv-resp=${o.k}
-            onClick=${() => { upd(n => { convResponde(n, area, uf, o.k); }); if (o.k === 'plano' && onPlano && T) onPlano(uf, T); }}><span className="flex items-center gap-1.5 text-sm font-semibold"><${Icon} n=${o.ico} s=${15} /> ${o.l}</span><span className="text-[11px] opacity-80 font-normal">${o.d}</span></button>`)}</div>`}
-        </div>` : html`<p className="text-sm text-muted">Escolha um tema para ouvir a posição do governador ${deUF(uf)}.</p>`}
+          <p className="mx-s">Posição de política pública simulada pelo jogo, com os números do estado; não é declaração real.</p>
+          ${U.resp ? html`<div className="mx-box text-sm" data-conv-res="1">${U.res}</div>` : html`<div className="mx-grid c3" data-conv-resps="1">${resp.map(o => html`<button key=${o.k} type="button" className="mx-act" style=${{ '--c': o.k === 'apoio' ? 'var(--ouro)' : o.k === 'cobrar' ? 'var(--rubro)' : 'var(--anil)' }} data-conv-resp=${o.k}
+            onClick=${() => { upd(n => { convResponde(n, area, uf, o.k); }); if (o.k === 'plano' && onPlano && T) onPlano(uf, T); }}><span className="mx-act-h"><span className="gv-ic" style=${{ '--c': o.k === 'apoio' ? 'var(--ouro)' : o.k === 'cobrar' ? 'var(--rubro)' : 'var(--anil)' }}><${Icon} n=${o.ico} s=${18} /></span><span>${o.l}</span><span></span></span><span className="mx-txt">${o.d}</span><span className=${'btn btn-sm self-start ps-go ' + (o.k === 'apoio' ? 'btn-pri' : 'btn-ghost')} aria-hidden="true">Escolher</span></button>`)}</div>`}
+        </div>` : html`<div className="pd-vazio"><${Icon} n="MessageCircle" s=${20} /> Escolha um tema para ouvir a posição do governador ${deUF(uf)}.</div>`}
       </div>
     </div>
   </section>`;
@@ -19003,15 +19052,12 @@ function OrcamentoArea({ g, decidir, area }) {
   const mudaAlvo = (k) => { setAlvoK(k); const a = A.alvos.find(x => x.k === k); if (a && a.so) setModo('cut'); };
   const pcts = [2, 5, 10];
   return html`<section className="sec" data-orcamento=${area}>
-    <div className="flex flex-wrap items-end justify-between gap-2 mb-3">
-      <div><h3 className="disp text-2xl font-extrabold uppercase">Orçamento da área</h3><p className="text-xs text-muted">${M.titulo}: ${M.pasta}. Invista ou corte; o texto vai ao motor, que decide o instrumento, o custo e o efeito.</p></div>
-      <${Tag} cor=${g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)'}>${g.acoes}/5 ações</${Tag}>
-    </div>
+    <${MxHead} eb=${'País · ' + M.titulo} t="Orçamento da área" tip=${M.titulo + ': ' + M.pasta + '. Invista ou corte; o texto vai ao motor, que decide o instrumento, o custo e o efeito.'} right=${html`<${PsAcoes} g=${g} />`} />
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
       <div className="flex flex-col gap-4 min-w-0">
         <div className="grid grid-cols-2 gap-3" data-orc-num="1">
-          <div className="rounded-lg border border-line p-3 min-w-0"><div className="eyebrow">${M.baseRot}</div><div className="num text-2xl font-semibold text-ouro">${base != null ? 'R$ ' + fmt(base, base < 100 ? 2 : 1) + ' bi' : 'sem total federal'}</div><div className="text-[11px] text-muted">por ano · valor real, não muda no jogo</div></div>
-          <div className="rounded-lg border border-line p-3 min-w-0"><div className="eyebrow">Seus ajustes neste mandato</div><div className="num text-2xl font-semibold" style=${{ color: Math.abs(ajuste) < .05 ? 'var(--fg)' : ajuste > 0 ? 'var(--ouro)' : 'var(--verde)' }}>${Math.abs(ajuste) < .05 ? 'nenhum' : (ajuste > 0 ? '+' : '−') + 'R$ ' + fmt(Math.abs(ajuste), 1) + ' bi'}</div><div className="text-[11px] text-muted">${med.L.length} medida${med.L.length === 1 ? '' : 's'} em vigor${jogo != null && Math.abs(ajuste) >= .05 ? ' · no jogo R$ ' + fmt(jogo, 1) + ' bi' : ''}</div></div>
+          <div className="mx-box min-w-0"><div className="eyebrow">${M.baseRot}</div><div className="num text-2xl font-semibold text-ouro">${base != null ? 'R$ ' + fmt(base, base < 100 ? 2 : 1) + ' bi' : 'sem total federal'}</div><div className="text-xs text-muted">por ano · valor real, não muda no jogo</div></div>
+          <div className="mx-box min-w-0"><div className="eyebrow">Seus ajustes neste mandato</div><div className="num text-2xl font-semibold" style=${{ color: Math.abs(ajuste) < .05 ? 'var(--fg)' : ajuste > 0 ? 'var(--ouro)' : 'var(--verde)' }}>${Math.abs(ajuste) < .05 ? 'nenhum' : (ajuste > 0 ? '+' : '−') + 'R$ ' + fmt(Math.abs(ajuste), 1) + ' bi'}</div><div className="text-xs text-muted">${med.L.length} medida${med.L.length === 1 ? '' : 's'} em vigor${jogo != null && Math.abs(ajuste) >= .05 ? ' · no jogo R$ ' + fmt(jogo, 1) + ' bi' : ''}</div></div>
         </div>
         <ul className="text-xs text-muted flex flex-col gap-0.5" data-orc-linhas="1">${M.linhas.map(l => html`<li key=${l[0]} className="flex justify-between gap-3"><span>${l[0]}</span><span className="num" style=${{ color: l[2] ? 'var(--' + l[2] + ')' : 'var(--fg)' }}>${l[1]}</span></li>`)}</ul>
         ${med.L.length > 0 && html`<ul className="text-xs flex flex-col gap-0.5" data-orc-medidas="1">${med.L.slice(0, 3).map(x => html`<li key=${x.id} className="flex justify-between gap-3"><span className="truncate">${x.nm || x.topic}</span><span className="num" style=${{ color: x.fis.custo > 0 ? 'var(--ouro)' : 'var(--verde)' }}>${x.fis.custo > 0 ? '+' : '−'}R$ ${fmt(Math.abs(x.fis.custo), 1)} bi</span></li>`)}</ul>`}
@@ -19024,10 +19070,10 @@ function OrcamentoArea({ g, decidir, area }) {
           ${[1, 5, 10, 20].map(v => html`<button key=${v} type="button" role="radio" aria-checked=${q.t === 'bi' && q.v === v} data-orc-bi=${v} className=${chipBtn(q.t === 'bi' && q.v === v)} onClick=${() => setQ({ t: 'bi', v })}>R$ ${v} bi</button>`)}
           ${baseAlvo ? pcts.map(p => html`<button key=${'p' + p} type="button" role="radio" aria-checked=${q.t === 'pct' && q.v === p} data-orc-pct=${p} className=${chipBtn(q.t === 'pct' && q.v === p)} title=${p + '% de ' + baseNome + ' (R$ ' + fmt(baseAlvo, 1) + ' bi)'} onClick=${() => setQ({ t: 'pct', v: p })}>${p}%</button>`) : null}
           <label className="inline-flex items-center gap-1 text-xs text-muted">outro <input type="number" min="0.5" max="50" step="0.5" value=${bi} data-orc-outro="1" aria-label="Valor em bilhões de reais" className="w-16 rounded border border-line bg-transparent px-1.5 py-1 text-fg num" onChange=${e => { const v = Math.round(Math.min(50, Math.max(0.5, parseFloat(e.target.value) || 1)) * 2) / 2; setQ({ t: 'bi', v }); }} /> bi</label>
-        </div>${baseAlvo && q.t === 'pct' ? html`<div className="text-[11px] text-muted mt-1">${q.v}% de ${baseNome} (R$ ${fmt(baseAlvo, 1)} bi) = ${orcFmtV(bi)}</div>` : null}</div>
+        </div>${baseAlvo && q.t === 'pct' ? html`<div className="text-xs text-muted mt-1">${q.v}% de ${baseNome} (R$ ${fmt(baseAlvo, 1)} bi) = ${orcFmtV(bi)}</div>` : null}</div>
         ${temCont && html`<label className="flex items-center gap-2 text-xs"><input type="checkbox" checked=${cont} data-orc-cont="1" onChange=${e => setCont(e.target.checked)} /> Contingenciar (congelar por decreto, reversível) em vez de cortar em lei</label>`}
       </div>
-      <div className="flex flex-col gap-3 min-w-0 rounded-lg border border-line p-4" data-orc-previa="1" aria-live="polite">
+      <div className="flex flex-col gap-3 min-w-0 mx-box" data-orc-previa="1" aria-live="polite">
         <div className="eyebrow">Prévia antes de confirmar</div>
         <div className="text-sm italic leading-snug" data-orc-texto="1">“${texto}”</div>
         ${motor ? html`<div className="flex flex-wrap gap-1.5" data-orc-motor="1">
@@ -19039,7 +19085,7 @@ function OrcamentoArea({ g, decidir, area }) {
         <div className="flex flex-col gap-1" data-orc-ef="1"><div className="eyebrow">Indicadores esperados (${dir > 0 ? 'com a verba' : 'com o corte'}, em meses)</div>
           <div className="flex flex-wrap gap-1.5">${efs.map(e => { const ar = e.d * dir; const bom = ar * e.b > 0; return html`<span key=${e.n} className="chip" style=${{ color: bom ? 'var(--verde)' : 'var(--rubro)', borderColor: bom ? 'var(--verde)' : 'var(--rubro)' }}>${ar > 0 ? '▲' : '▼'} ${e.n}</span>`; })}</div></div>
         ${(grupos.gan.length + grupos.per.length) > 0 ? html`<div className="text-xs leading-relaxed" data-orc-grupos="1">${grupos.gan.length ? html`<div><span className="text-muted">Tendem a ganhar:</span> ${grupos.gan.map(x => x.nome || x.quem).join(', ')}</div>` : null}${grupos.per.length ? html`<div><span className="text-muted">Tendem a perder:</span> ${grupos.per.map(x => x.nome || x.quem).join(', ')}</div>` : null}</div>` : null}
-        <p className="text-[11px] text-muted leading-snug">Leitura do motor em modo de consulta: não gasta ação. Os efeitos reais aparecem depois do parecer, do Congresso e da implantação.</p>
+        <p className="text-xs text-muted leading-snug">Leitura do motor em modo de consulta: não gasta ação. Os efeitos reais aparecem depois do parecer, do Congresso e da implantação.</p>
         <button type="button" className=${'btn mt-auto justify-center ' + (m === 'inv' ? 'btn-pri' : 'btn-ghost')} data-orc-confirm=${area} disabled=${semAcoes || !sentidoOk || !decidir} title=${titulo} style=${m === 'cut' ? { borderColor: 'var(--rubro)', color: 'var(--rubro)' } : null} onClick=${() => decidir(texto)}><${Icon} n=${m === 'inv' ? 'TrendingUp' : 'Scissors'} s=${15} /> ${m === 'inv' ? 'Investir ' : usaCont ? 'Contingenciar ' : 'Cortar '}${orcFmtV(bi)} · ${T.nome}</button>
       </div>
     </div>
@@ -19064,6 +19110,7 @@ function PaisSeguranca({ g, upd, decidir }) {
     setTimeout(() => { const el = document.querySelector('[data-secao="governadores"]'); if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 80);
   };
   return html`<div className="flex flex-col gap-6" data-pais="seguranca">
+    <${SegurancaPublica} g=${g} decidir=${decidir} sel=${sel} setSel=${setSel} parte="resumo" />
     <${SegurancaPublica} g=${g} decidir=${decidir} sel=${sel} setSel=${setSel} parte="topo" />
     <${OrcamentoArea} g=${g} decidir=${decidir} area="seguranca" />
     <${ConversaGov} g=${g} upd=${upd} area="seg" uf=${sel} onPlano=${abrePlano} />
@@ -19075,35 +19122,7 @@ function PaisSeguranca({ g, upd, decidir }) {
   </div>`;
 }
 function PaisSaude({ g, upd, decidir }) {
-  const [sel, setSel] = useState(g.cfg.estado && ELEITOS.gov[g.cfg.estado] ? g.cfg.estado : 'SP');
-  const [indR, setIndR] = useState(null);
-  const D = SAUDE_UF; const inds = pufInds(D); const ind = inds.includes(indR) ? indR : inds[0];
-  const semAcoes = g.acoes <= 0 || g.pes.energia < 10;
-  const prog = (a) => html`<button key=${a.l} className="btn btn-ghost justify-start text-sm text-left" disabled=${semAcoes} title=${semAcoes ? (g.acoes <= 0 ? 'Sem ações políticas neste mês' : 'Energia esgotada') : 'Custa 1 ação política e passa pelo parecer da Casa Civil'} onClick=${() => decidir(a.t)}><${Icon} n=${a.i} s=${15} /> ${a.l}</button>`;
-  return html`<div className="flex flex-col gap-6" data-pais="saude">
-    <section className="sec">
-      <div className="flex flex-wrap items-end justify-between gap-2 mb-3">
-        <div><h3 className="disp text-2xl font-extrabold uppercase">Saúde</h3><p className="text-xs text-muted">Situação nacional no jogo, com a linha de base real logo abaixo de cada número.</p></div>
-        <${Tag} cor=${g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)'}>${g.acoes}/5 ações</${Tag}>
-      </div>
-      ${inds.length === 0 ? html`<p className="text-sm text-muted">Indicadores de saúde em preparação.</p>` : html`<div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">${inds.slice(0, 6).map(k => { const F = D.fontes[k]; const v = pufVal(g, 'saude', D, k, 'BR'), r = D.BR[k]; const pior = Number.isFinite(r) && v != null ? ((F.melhor === 'menor') === (v > r) ? Math.abs(v - r) / Math.abs(r) > .03 : false) : false; const melhor = Number.isFinite(r) && v != null ? ((F.melhor === 'menor') === (v < r) ? Math.abs(v - r) / Math.abs(r) > .03 : false) : false;
-        return html`<div key=${k} className="rounded-lg border border-line p-3 min-w-0"><div className="eyebrow">${F.nome}</div><div className="num text-2xl font-semibold" style=${{ color: pior ? 'var(--rubro)' : melhor ? 'var(--verde)' : 'var(--fg)' }}>${pufFmt(D, k, v)}</div><div className="text-[11px] text-muted">${F.unidade}</div><div className="text-[11px] text-muted mt-1">Real ${F.ano}: <span className="num">${pufFmt(D, k, r)}</span></div></div>`; })}</div>`}
-    </section>
-    <${OrcamentoArea} g=${g} decidir=${decidir} area="saude" />
-    <section className="sec" data-programas="saude">
-      <h3 className="disp text-2xl font-extrabold uppercase mb-1">Programas</h3>
-      <p className="text-xs text-muted mb-3">Programas prontos, abaixo do orçamento. Cada um gasta 1 ação do mês e passa pelo motor de decisão (parecer da Casa Civil, custo e Congresso).</p>
-      <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-2">${SAU_PROG.map(prog)}</div>
-    </section>
-    <${PainelUF} g=${g} area="saude" cfg=${{ rankFora: true }} selUF=${sel} onUF=${setSel} />
-    <${ConversaGov} g=${g} upd=${upd} area="sau" uf=${sel} />
-    ${inds.length > 0 && html`<section className="sec">
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-3"><h3 className="disp text-2xl font-extrabold uppercase">Ranking dos estados</h3>
-        <div role="radiogroup" aria-label="Indicador do ranking" className="flex flex-wrap gap-1">${inds.map(k => html`<button key=${k} type="button" role="radio" aria-checked=${k === ind} onClick=${() => setIndR(k)} className=${'btn btn-ghost !text-xs ' + (k === ind ? '!border-ouro text-ouro' : '')}>${D.fontes[k].nome}</button>`)}</div></div>
-      <div className="grid sm:grid-cols-2 gap-6"><${RankingUF} g=${g} area="saude" ind=${ind} onUF=${setSel} selUF=${sel} n=${8} /><${RankingUF} g=${g} area="saude" ind=${ind} onUF=${setSel} selUF=${sel} n=${8} melhores=${true} /></div>
-    </section>`}
-    <${FontesArea} area="saude" notas=${html`<${OrcFonte} area="saude" />`} />
-  </div>`;
+  return html`<${PaisAreaAcao} g=${g} upd=${upd} decidir=${decidir} pa="saude" conv="sau" dp="saude" titulo="Saúde" sub="Situação nacional no jogo, com a linha de base real logo abaixo de cada número." grupos=${[{ itens: SAU_PROG }]} notas=${html`<${OrcFonte} area="saude" />`} orc="saude" />`;
 }
 const EDU_PROG = [
   { l: 'Ampliar o Pé-de-Meia', t: 'Ampliar o Pé-de-Meia, com mais bolsas para estudantes do ensino médio público permanecerem na escola', i: 'Wallet' },
@@ -19142,33 +19161,26 @@ function PaisAreaAcao({ g, upd, decidir, pa, conv, dp, titulo, sub, grupos, nota
   const [sel, setSel] = useState(g.cfg.estado && ELEITOS.gov[g.cfg.estado] ? g.cfg.estado : 'SP');
   const [indR, setIndR] = useState(ind0 || null);
   const D = pufDados(pa); const inds = pufInds(D); const ind = inds.includes(indR) ? indR : inds[0];
-  const semAcoes = g.acoes <= 0 || g.pes.energia < 10;
   const extras = PAIS_EXTRAS[pa] || [];
-  const prog = (a) => html`<button key=${a.l} className="btn btn-ghost justify-start text-sm text-left" data-prog=${pa} disabled=${semAcoes} title=${semAcoes ? (g.acoes <= 0 ? 'Sem ações políticas neste mês' : 'Energia esgotada') : 'Custa 1 ação política e passa pelo parecer da Casa Civil'} onClick=${() => decidir(a.t)}><${Icon} n=${a.i} s=${15} /> ${a.l}</button>`;
-  const card = (c) => html`<div key=${c.nome} className="rounded-lg border border-line p-3 min-w-0" data-kpi=${pa}><div className="eyebrow">${c.nome}</div><div className="num text-2xl font-semibold" style=${{ color: c.cor || 'var(--fg)' }}>${c.v}</div><div className="text-[11px] text-muted">${c.un}</div><div className="text-[11px] text-muted mt-1">${c.real}</div></div>`;
+  const card = (c) => html`<div key=${c.nome} className="mx-card panel" style=${{ '--st': c.cor || 'var(--line2)' }} data-kpi=${pa}><div className="mx-lab">${c.nome}</div><div className="mx-num" style=${{ color: c.cor || 'var(--fg)' }}>${c.v}</div><div className="mx-s">${c.un}</div><div className="mx-s">${c.real}</div></div>`;
   const kD = inds.map(k => { const F = D.fontes[k]; const v = pufVal(g, pa, D, k, 'BR'), r = D.BR[k]; const ok = Number.isFinite(r) && v != null; const dir = F.melhor === 'menor' ? -1 : 1; const rel = ok ? (v - r) / Math.abs(r) * dir : 0;
     return { nome: F.nome, un: F.unidade, v: pufFmt(D, k, v), cor: rel > .03 ? 'var(--verde)' : rel < -.03 ? 'var(--rubro)' : null, real: html`Real ${F.ano}: <span className="num">${pufFmt(D, k, r)}</span>` }; });
   const kE = extras.map(e => { const v = e.jogo ? e.jogo(g) : null; const rel = v != null ? (v - e.real) / e.real : 0; return { nome: e.nome, un: e.un, v: fmt(v != null ? v : e.real, 1), cor: rel > .03 ? 'var(--verde)' : rel < -.03 ? 'var(--rubro)' : null, real: html`Real ${e.ano}: <span className="num">${fmt(e.real, 1)}</span>${v == null ? html` <${Tag}>dado nacional fixo</${Tag}>` : ''}` }; });
+  const todos = kD.concat(kE); const nProg = grupos.reduce((n, G) => n + G.itens.length, 0);
+  const icArea = { saude: 'HeartPulse', educacao: 'GraduationCap', infratransp: 'Construction' }[pa] || 'Gauge';
   return html`<div className="flex flex-col gap-6" data-pais=${dp}>
-    <section className="sec">
-      <div className="flex flex-wrap items-end justify-between gap-2 mb-3">
-        <div><h3 className="disp text-2xl font-extrabold uppercase">${titulo}</h3><p className="text-xs text-muted">${sub}</p></div>
-        <${Tag} cor=${g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)'}>${g.acoes}/5 ações</${Tag}>
-      </div>
-      ${kD.length + kE.length === 0 ? html`<p className="text-sm text-muted">Indicadores em preparação.</p>` : html`<div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">${kD.concat(kE).map(card)}</div>`}
-    </section>
+    <section className="flex flex-col gap-6" data-pais-topo="1"><${PdKpis} area=${pa} itens=${psAreaKpis(g, pa, D, inds, todos, nProg, icArea)} />
+    <div className="sec min-w-0">
+      <${MxHead} eb=${'País · ' + titulo} t="Situação nacional" tip=${sub} right=${html`<${PsAcoes} g=${g} />`} />
+      ${todos.length === 0 ? html`<p className="text-sm text-muted">Indicadores em preparação.</p>` : html`<div className="mx-grid g3">${todos.map(card)}</div>`}
+    </div></section>
     ${orc && html`<${OrcamentoArea} g=${g} decidir=${decidir} area=${orc} />`}
-    <section className="sec" data-programas=${pa}>
-      <h3 className="disp text-2xl font-extrabold uppercase mb-1">Programas</h3>
-      <p className="text-xs text-muted mb-3">Programas prontos, abaixo do orçamento. Cada um gasta 1 ação do mês e passa pelo motor de decisão (parecer da Casa Civil, custo e Congresso).</p>
-      ${grupos.map(G => html`<div key=${G.h || 'g'} className="mb-4 last:mb-0">${G.h ? html`<div className="eyebrow mb-2">${G.h}</div>` : null}<div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-2">${G.itens.map(prog)}</div></div>`)}
-    </section>
+    <${PsProgramas} g=${g} pa=${pa} grupos=${grupos} decidir=${decidir} eb=${'Programas · ' + titulo} />
     <${PainelUF} g=${g} area=${pa} cfg=${{ rankFora: true, ind0 }} selUF=${sel} onUF=${setSel} />
     <${ConversaGov} g=${g} upd=${upd} area=${conv} uf=${sel} />
     ${inds.length > 0 && html`<section className="sec">
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-3"><h3 className="disp text-2xl font-extrabold uppercase">Ranking dos estados</h3>
-        <div role="radiogroup" aria-label="Indicador do ranking" className="flex flex-wrap gap-1">${inds.map(k => html`<button key=${k} type="button" role="radio" aria-checked=${k === ind} onClick=${() => setIndR(k)} className=${'btn btn-ghost !text-xs ' + (k === ind ? '!border-ouro text-ouro' : '')}>${D.fontes[k].nome}</button>`)}</div></div>
-      <div className="grid sm:grid-cols-2 gap-6"><${RankingUF} g=${g} area=${pa} ind=${ind} onUF=${setSel} selUF=${sel} n=${8} /><${RankingUF} g=${g} area=${pa} ind=${ind} onUF=${setSel} selUF=${sel} n=${8} melhores=${true} /></div>
+      <${MxHead} eb="Estados" t="Ranking dos estados" tip="Clique em um estado para abri-lo no mapa e na conversa com o governador. Escolha o indicador ao lado." right=${html`<div role="radiogroup" aria-label="Indicador do ranking" className="flex flex-wrap gap-1">${inds.map(k => html`<button key=${k} type="button" role="radio" aria-checked=${k === ind} onClick=${() => setIndR(k)} className=${'btn btn-ghost !text-xs ' + (k === ind ? '!border-ouro text-ouro' : '')}>${D.fontes[k].nome}</button>`)}</div>`} />
+      <div className="mx-grid g2"><${RankingUF} g=${g} area=${pa} ind=${ind} onUF=${setSel} selUF=${sel} n=${8} /><${RankingUF} g=${g} area=${pa} ind=${ind} onUF=${setSel} selUF=${sel} n=${8} melhores=${true} /></div>
     </section>`}
     <${FontesArea} area=${pa} notas=${html`<span>${notas || ''}${extras.length ? html`<span className="block mt-2"><b className="text-fg">Dados nacionais fora do mapa por estado:</b></span>` : null}${extras.length ? html`<span className="block mt-1">${extras.map(e => html`<span key=${e.nome} className="block mb-1">${e.nome} (${e.un}): ${fmt(e.real, 1)}, ${e.fonte}, dados de ${e.ano}. <a className="underline" href=${e.url} target="_blank" rel="noopener noreferrer">fonte</a></span>`)}</span>` : null}</span>`} />
   </div>`;
@@ -19462,10 +19474,10 @@ function JusCaso({ g, upd, c }) {
   const U = upd || ZERO; const arq = c.fase === 'arquivado';
   const btn = (k, B, cls, extra) => { const imp = jusPodeAgir(g, c, k);
     return html`<button key=${k} type="button" className=${'btn btn-ghost text-left justify-start !text-xs ' + cls} data-jus-acao=${k} disabled=${!!imp} title=${imp || B.desc} onClick=${() => U(n => { jusAcao(n, c.id, k); })}>${B.nome}${extra ? html` <span className="num opacity-70">${extra}</span>` : ''}</button>`; };
-  return html`<li className="rounded-lg border border-line p-4 flex flex-col gap-3 min-w-0" data-caso=${c.id} data-fase=${c.fase}>
+  return html`<li className="pd-card" style=${{ '--st': JUS_FASE_COR[c.fase] || 'var(--line2)' }} data-caso=${c.id} data-fase=${c.fase}>
     <div className="flex flex-wrap items-start justify-between gap-2">
       <div className="min-w-0"><div className="eyebrow">${dataCurta(c.mes)} · ${c.orgaos.join(' + ')}${c.sigilo ? ' · sigilo' : ''}${c.forca ? ' · força-tarefa' : ''}</div><h4 className="font-semibold text-lg leading-tight">${jusRotulo(c)}</h4></div>
-      <div className="flex flex-wrap gap-1.5"><${Tag} cor=${JUS_FASE_COR[c.fase]}>${c.fase}</${Tag}>${c.gov && html`<${Tag} cor="var(--rubro)">atinge o governo</${Tag}>`}${c.trava >= g.mes && !arq && html`<${Tag} cor="var(--anil)">travado até ${dataCurta(c.trava)}</${Tag}>`}</div>
+      <div className="flex flex-wrap gap-1.5"><${MxChip} cor=${JUS_FASE_COR[c.fase]}>${c.fase}</${MxChip}>${c.gov && html`<${MxChip} cor="var(--rubro)">atinge o governo</${MxChip}>`}${c.trava >= g.mes && !arq && html`<${MxChip} cor="var(--anil)">travado até ${dataCurta(c.trava)}</${MxChip}>`}</div>
     </div>
     <p className="text-sm">Apura ${c.esquema}. Envolve ${c.alvo}.${c.preso ? ' Prisão decretada: o suplente do ' + c.sig + ' assumiu a vaga.' : ''}${c.motivo ? ' Arquivado: ' + c.motivo + '.' : ''}</p>
     <div className="grid grid-cols-3 gap-3 text-sm">
@@ -19478,13 +19490,13 @@ function JusCaso({ g, upd, c }) {
       <div className="flex flex-col gap-1.5"><div className="eyebrow" style=${{ color: 'var(--verde)' }}>Avançar</div>${['acelerar', 'forca_tarefa'].map(k => btn(k, JUS_AVAN[k], '!border-verde'))}
         ${c.pend && html`<button type="button" className="btn btn-ghost !text-xs justify-start" data-jus-ignorar="1" onClick=${() => U(n => { const x = ensureJus(n).casos.find(q => q.id === c.id); if (x) { x.pend = false; if (x.gov) n.escandalo = clamp(n.escandalo + 1, 0, 100); } })}>Deixar seguir sem intervir</button>`}</div>
     </div>`}
-    ${c.log.length > 0 && html`<ul className="text-[11px] text-muted flex flex-wrap gap-x-3">${c.log.slice(-4).map((l, i) => html`<li key=${i}>${dataCurta(l.mes)}: ${l.t}</li>`)}</ul>`}
+    ${c.log.length > 0 && html`<ul className="text-xs text-muted flex flex-wrap gap-x-3">${c.log.slice(-4).map((l, i) => html`<li key=${i}>${dataCurta(l.mes)}: ${l.t}</li>`)}</ul>`}
   </li>`;
 }
 function CartaoJustica({ g, upd }) {
   const c = jusPendCaso(g);
   if (!c) return html`<p className="text-sm text-muted">Nenhum caso novo aguarda decisão. Veja os casos abertos em País, Justiça.</p>`;
-  return html`<ul className="flex flex-col gap-3" data-mesa-justica="1"><${JusCaso} g=${g} upd=${upd} c=${c} /></ul>`;
+  return html`<div><${PsStyle} /><ul className="flex flex-col gap-3" data-mesa-justica="1"><${JusCaso} g=${g} upd=${upd} c=${c} /></ul></div>`;
 }
 const jusFmtBi = (v) => 'R$ ' + v.toFixed(1).replace('.', ',') + ' bi';
 const JUS_HIST = [
@@ -19501,13 +19513,20 @@ function PaisJustica({ g, upd, decidir }) {
   const J = jusDe(g); const ab = jusAbertos(g), ar = jusArquivados(g); const med = jusMedidasPend(g);
   const bi = (p) => JUS_CUSTO.total * p / 100; const hab = (p) => bi(p) * 1000 / JUS_POP_MI;
   return html`<div className="flex flex-col gap-6" data-pais="justica">
+    <${PdKpis} area="justica" itens=${[
+      { dado: 'custo', ic: 'Banknote', cor: 'var(--ouro)', k: 'Custo do Judiciário', v: jusFmtBi(JUS_CUSTO.total), s: String(JUS_CUSTO.pibPct).replace('.', ',') + '% do PIB · ano-base ' + JUS_CUSTO.ano },
+      { dado: 'abertos', ic: 'FileSearch', cor: ab.length ? 'var(--ambar)' : 'var(--muted)', k: 'Casos abertos', v: ab.length, s: ar.length + (ar.length === 1 ? ' arquivado' : ' arquivados') + ' nesta partida' },
+      { dado: 'bloq-avan', ic: 'Scale', cor: 'var(--anil)', k: 'Bloqueio · avanço', v: (J.nBloq || 0) + ' · ' + (J.nAvan || 0), s: 'ações suas nos casos' },
+      { dado: 'stf-pf', ic: 'Gavel', cor: corRisco(g.stf), k: 'Relação com STF e PF', v: fmt(g.stf, 0) + '/100', s: 'tensão com o STF · PF ' + (J.pfCorte >= g.mes ? 'com verba cortada' : (J.pfOrc || 0) > 0 ? 'reforçada em R$ ' + fmt(J.pfOrc, 1) + ' bi' : 'sem mudança') },
+      { dado: 'acoes', ic: 'Zap', cor: g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)', k: 'Ações do mês', v: g.acoes + '/5', s: 'no máximo uma por caso' }
+    ]} />
     <section className="sec" data-jus="custos">
-      <div className="flex flex-wrap items-end justify-between gap-2 mb-3"><div><h3 className="disp text-2xl font-extrabold uppercase">Quanto custa a Justiça</h3><p className="text-xs text-muted">Poder Judiciário inteiro, CNJ, Justiça em Números (ano-base ${JUS_CUSTO.ano}).</p></div><${Tag} cor=${g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)'}>${g.acoes}/5 ações</${Tag}></div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="rounded-lg border border-line p-3"><div className="eyebrow">Despesa total</div><div className="num text-2xl font-semibold text-ouro">${jusFmtBi(JUS_CUSTO.total)}</div><div className="text-[11px] text-muted">${String(JUS_CUSTO.pibPct).replace('.', ',')}% do PIB · recorde da série</div></div>
-        <div className="rounded-lg border border-line p-3"><div className="eyebrow">Pessoal</div><div className="num text-2xl font-semibold">${jusFmtBi(JUS_CUSTO.pessoal)}</div><div className="text-[11px] text-muted">${String(JUS_CUSTO.pessoalPct).replace('.', ',')}% do total</div></div>
-        <div className="rounded-lg border border-line p-3"><div className="eyebrow">Verbas indenizatórias</div><div className="num text-2xl font-semibold">${jusFmtBi(JUS_CUSTO.verbas)}</div><div className="text-[11px] text-muted">os "penduricalhos": diárias, passagens, auxílio-moradia e outros</div></div>
-        <div className="rounded-lg border border-line p-3"><div className="eyebrow">Por habitante</div><div className="num text-2xl font-semibold">R$ ${JUS_CUSTO.hab.toFixed(2).replace('.', ',')}</div><div className="text-[11px] text-muted">por ano</div></div>
+      <${MxHead} eb="Justiça · custos" t="Quanto custa a Justiça" tip=${'Poder Judiciário inteiro, CNJ, Justiça em Números (ano-base ' + JUS_CUSTO.ano + ').'} right=${html`<${PsAcoes} g=${g} />`} />
+      <div className="mx-grid g3">
+        <div className="mx-card" style=${{ '--st': 'var(--ouro)' }}><div className="mx-lab">Despesa total</div><div className="mx-num" style=${{ color: 'var(--ouro)' }}>${jusFmtBi(JUS_CUSTO.total)}</div><div className="mx-s">${String(JUS_CUSTO.pibPct).replace('.', ',')}% do PIB · recorde da série</div></div>
+        <div className="mx-card" style=${{ '--st': 'var(--anil)' }}><div className="mx-lab">Pessoal</div><div className="mx-num">${jusFmtBi(JUS_CUSTO.pessoal)}</div><div className="mx-s">${String(JUS_CUSTO.pessoalPct).replace('.', ',')}% do total</div></div>
+        <div className="mx-card" style=${{ '--st': 'var(--rubro)' }}><div className="mx-lab">Verbas indenizatórias</div><div className="mx-num">${jusFmtBi(JUS_CUSTO.verbas)}</div><div className="mx-s">os “penduricalhos”: diárias, passagens, auxílio-moradia e outros</div></div>
+        <div className="mx-card" style=${{ '--st': 'var(--line2)' }}><div className="mx-lab">Por habitante</div><div className="mx-num">R$ ${JUS_CUSTO.hab.toFixed(2).replace('.', ',')}</div><div className="mx-s">por ano</div></div>
       </div>
       <div className="mt-4 overflow-x-auto"><table className="w-full text-sm" data-jus-ramos="1"><thead><tr className="text-left text-muted text-xs"><th className="py-1 pr-2 font-normal">Ramo</th><th className="py-1 px-2 font-normal text-right">Parcela</th><th className="py-1 px-2 font-normal text-right">Despesa 2025</th><th className="py-1 pl-2 font-normal text-right">Por habitante</th><th className="py-1 pl-2 font-normal">Base</th></tr></thead>
         <tbody>${JUS_RAMOS.map(r => html`<tr key=${r.k} className="border-t border-line"><td className="py-1.5 pr-2">${r.nome}</td><td className="py-1.5 px-2 text-right num">${r.pct.toFixed(1).replace('.', ',')}%</td><td className="py-1.5 px-2 text-right num">${jusFmtBi(bi(r.pct))}</td><td className="py-1.5 pl-2 text-right num">R$ ${hab(r.pct).toFixed(0)}</td><td className="py-1.5 pl-2"><${Tag} cor=${r.v ? 'var(--verde)' : 'var(--ambar)'}>${r.v ? 'CNJ 2024' : 'estimativa'}</${Tag}></td></tr>`)}</tbody></table></div>
@@ -19515,21 +19534,15 @@ function PaisJustica({ g, upd, decidir }) {
     </section>
     <${OrcamentoArea} g=${g} decidir=${decidir} area="justica" />
     ${J.ult && html`<div className=${'p-3 rounded-lg border text-sm ' + (J.ult.back ? 'border-rubro' : 'border-verde')} data-jus="resultado"><b>${dataCurta(J.ult.mes)} · Operação ${J.ult.nome}:</b> ${J.ult.res}</div>`}
-    <section className="sec" data-jus="acoes-gov">
-      <h3 className="disp text-2xl font-extrabold uppercase mb-1">Programas: ações do governo</h3>
-      <p className="text-xs text-muted mb-3">Medidas que você pode tomar a qualquer hora, sem depender de um caso aberto. Cada uma gasta 1 ação do mês e passa pelo motor de decisão (parecer da Casa Civil, custo e Congresso).</p>
-      <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-2">${JUS_GOV.map(a => html`<button key=${a.l} className="btn btn-ghost justify-start text-sm text-left" data-prog="justica" disabled=${semAcoes || !decidir} title=${semAcoes ? (g.acoes <= 0 ? 'Sem ações políticas neste mês' : 'Energia esgotada') : 'Custa 1 ação política e passa pelo parecer da Casa Civil'} onClick=${() => decidir(a.t)}><${Icon} n=${a.i} s=${15} /> ${a.l}</button>`)}</div>
-    </section>
+    <${PsProgramas} g=${g} pa="justica" grupos=${[{ itens: JUS_GOV }]} decidir=${decidir} jus="acoes-gov" eb="Justiça · governo" titulo="Programas: ações do governo" />
     <section className="sec" data-jus="casos">
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-1"><h3 className="disp text-2xl font-extrabold uppercase">Casos de corrupção abertos</h3><span className="eyebrow">${ab.length} abertos · ${ar.length} arquivados</span></div>
-      <p className="text-xs text-muted mb-3">Casos fictícios, gerados nesta partida: o risco de novos escândalos sobe com o nível de escândalo (${Math.round(g.escandalo)}) e com atalhos em Bastidores. Cada ação gasta 1 ação política, no máximo uma por caso a cada mês.</p>
-      ${ab.length === 0 ? html`<p className="text-sm text-muted" data-jus="vazio">Nenhuma investigação aberta agora. Elas surgem com o escândalo do governo e os bastidores; você também pode agir pelas ações acima.</p>` : html`<ul className="grid lg:grid-cols-2 gap-4">${ab.map(c => html`<${JusCaso} key=${c.id} g=${g} upd=${upd} c=${c} />`)}</ul>`}
-      ${ar.length > 0 && html`<div className="mt-5"><div className="eyebrow mb-2">Arquivados nesta partida</div><ul className="grid lg:grid-cols-2 gap-4">${ar.map(c => html`<${JusCaso} key=${c.id} g=${g} upd=${upd} c=${c} />`)}</ul></div>`}
+      <${MxHead} eb="Justiça · investigações" t="Casos de corrupção abertos" tip=${'Casos fictícios, gerados nesta partida: o risco de novos escândalos sobe com o nível de escândalo (' + Math.round(g.escandalo) + ') e com atalhos em Bastidores. Cada ação gasta 1 ação política, no máximo uma por caso a cada mês.'} right=${html`<div className="flex flex-wrap gap-2"><${MxChip} c="ouro">${ab.length} abertos</${MxChip}><${MxChip}>${ar.length} arquivados</${MxChip}></div>`} />
+      ${ab.length === 0 ? html`<div className="pd-vazio" data-jus="vazio"><${Icon} n="Inbox" s=${20} /> Nenhuma investigação aberta agora. Elas surgem com o escândalo do governo e os bastidores; você também pode agir pelas ações acima.</div>` : html`<ul className="pd-grid" style=${{ '--w': '440px' }}>${ab.map(c => html`<${JusCaso} key=${c.id} g=${g} upd=${upd} c=${c} />`)}</ul>`}
+      ${ar.length > 0 && html`<div className="mt-5"><div className="eyebrow mb-2">Arquivados nesta partida</div><ul className="pd-grid" style=${{ '--w': '440px' }}>${ar.map(c => html`<${JusCaso} key=${c.id} g=${g} upd=${upd} c=${c} />`)}</ul></div>`}
     </section>
     <section className="sec" data-jus="historico">
-      <h3 className="disp text-2xl font-extrabold uppercase mb-1">Arquivo histórico</h3>
-      <p className="text-xs text-muted mb-3">Casos reais, só com fatos públicos e situação oficial conhecida. Pessoas só aparecem onde há desfecho oficial público; casos ainda em investigação citam apenas instituições.</p>
-      <div className="flex flex-col gap-2">${JUS_HIST.map(h => html`<details key=${h.id} className="rounded-lg border border-line p-3" data-hist=${h.id}><summary className="cursor-pointer font-semibold">${h.nome} <span className="text-xs text-muted font-normal">· ${h.ano} · ${h.orgao}</span></summary>
+      <${MxHead} eb="Justiça · memória" t="Arquivo histórico" tip="Casos reais, só com fatos públicos e situação oficial conhecida. Pessoas só aparecem onde há desfecho oficial público; casos ainda em investigação citam apenas instituições." />
+      <div className="flex flex-col gap-2">${JUS_HIST.map(h => html`<details key=${h.id} className="mx-box" data-hist=${h.id}><summary className="cursor-pointer font-semibold">${h.nome} <span className="text-xs text-muted font-normal">· ${h.ano} · ${h.orgao}</span></summary>
         <div className="mt-2 text-sm flex flex-col gap-1.5"><p>${h.fato}</p><p><b>Situação oficial:</b> ${h.status}</p><ul className="text-xs text-muted flex flex-col gap-0.5">${h.fontes.map(f => html`<li key=${f[1]}>Fonte: <a className="underline" href=${f[1]} target="_blank" rel="noopener noreferrer">${f[0]}</a></li>`)}</ul></div></details>`)}</div>
     </section>
     <${NotaFim} area="justica">
@@ -19613,26 +19626,26 @@ function SegDetalhe({ g, u }) {
       <div className="text-sm text-muted">mortes violentas por 100 mil hab. · 2024: ${fmt(R.mvi_taxa_2024, 1)} · Atlas 2024: ${fmt(R.atlas_homicidio_taxa_2024, 1)}</div>
     </div>
     <div className="grid grid-cols-2 gap-3">
-      <div className="rounded-lg border border-line p-3"><div className="eyebrow">Letalidade policial</div><div className="num text-xl">${fmt(X.letal, 2)}</div><div className="text-[11px] text-muted">por 100 mil hab. · 2025: ${fmt(R.letalidade_policial_taxa_derivada, 2)} (${nPt(R.letalidade_policial)} mortes)</div></div>
-      <div className="rounded-lg border border-line p-3"><div className="eyebrow">População prisional</div><div className="num text-xl">${fmt(X.presos, 0)}</div><div className="text-[11px] text-muted">por 100 mil hab. · 2025: ${fmt(R.pop_prisional_taxa, 0)} (${nPt(R.pop_prisional)} presos)</div></div>
+      <div className="mx-box"><div className="eyebrow">Letalidade policial</div><div className="num text-xl">${fmt(X.letal, 2)}</div><div className="text-xs text-muted">por 100 mil hab. · 2025: ${fmt(R.letalidade_policial_taxa_derivada, 2)} (${nPt(R.letalidade_policial)} mortes)</div></div>
+      <div className="mx-box"><div className="eyebrow">População prisional</div><div className="num text-xl">${fmt(X.presos, 0)}</div><div className="text-xs text-muted">por 100 mil hab. · 2025: ${fmt(R.pop_prisional_taxa, 0)} (${nPt(R.pop_prisional)} presos)</div></div>
     </div>
     <div>
       <div className="flex justify-between text-sm"><span className="eyebrow">Crime organizado</span><span className="num" style=${{ color: corSeg(SEG_CAMADAS[2], X.controle) }}>${fmt(X.controle, 0)} / 100</span></div>
       <${Bar} v=${X.controle} cor=${corSeg(SEG_CAMADAS[2], X.controle)} h=${7} label=${'Pressão do crime organizado em ' + I.nome} />
-      <div className="text-[11px] text-muted mt-1">Índice do jogo calculado a partir de dados públicos (hegemonia, facções listadas, milícia e mortes violentas).</div>
+      <div className="text-xs text-muted mt-1">Índice do jogo calculado a partir de dados públicos (hegemonia, facções listadas, milícia e mortes violentas).</div>
     </div>
     <div className="grid grid-cols-3 gap-2 text-center">
-      <div className="rounded-lg border border-line p-2"><div className="num text-lg">${nPt(R.policiais_mortos)}</div><div className="text-[11px] text-muted">policiais mortos (2025)</div></div>
-      <div className="rounded-lg border border-line p-2"><div className="num text-lg">${fmt(R.roubo_celular_taxa, 1)}</div><div className="text-[11px] text-muted">roubos de celular por 100 mil (2025)</div></div>
-      <div className="rounded-lg border border-line p-2"><div className="num text-lg">${fmt(R.estupro_taxa, 1)}</div><div className="text-[11px] text-muted">estupros por 100 mil (2025)</div></div>
+      <div className="mx-box !p-2"><div className="num text-lg">${nPt(R.policiais_mortos)}</div><div className="text-xs text-muted">policiais mortos (2025)</div></div>
+      <div className="mx-box !p-2"><div className="num text-lg">${fmt(R.roubo_celular_taxa, 1)}</div><div className="text-xs text-muted">roubos de celular por 100 mil (2025)</div></div>
+      <div className="mx-box !p-2"><div className="num text-lg">${fmt(R.estupro_taxa, 1)}</div><div className="text-xs text-muted">estupros por 100 mil (2025)</div></div>
     </div>
     <div className="flex flex-col gap-3">
       <div className="eyebrow">Facções e grupos armados</div>
       ${grupos.length === 0 ? html`<p className="text-sm text-muted">Nenhuma facção listada nas fontes consultadas.</p>` : grupos.map(G => html`<div key=${G.key} className="flex flex-col gap-1.5">
-        <div className="flex flex-wrap items-center gap-2"><${Tag} cor=${corNivel(G.nivel)}>${segNivelCurto(G.nivel)}</${Tag}>${segNivelDet(G.nivel) && html`<span className="text-[11px] text-muted">${segNivelDet(G.nivel)}</span>`}</div>
+        <div className="flex flex-wrap items-center gap-2"><${Tag} cor=${corNivel(G.nivel)}>${segNivelCurto(G.nivel)}</${Tag}>${segNivelDet(G.nivel) && html`<span className="text-xs text-muted">${segNivelDet(G.nivel)}</span>`}</div>
         <div className="flex flex-wrap gap-1.5">${G.nomes.map(n => html`<${Tag} key=${n} cor=${segNac(n) ? FACCOES[segNac(n)].cor : 'var(--fg)'}>${n}</${Tag}>`)}</div>
       </div>`)}
-      ${R.milicia ? html`<div className="flex flex-wrap items-center gap-2"><${Tag} cor="var(--ambar)">milícia documentada</${Tag}><span className="text-[11px] text-muted">Grupos de milicianos atuam no estado conforme a fonte (detalhes em "Fontes e notas", no fim da aba).</span></div>` : null}
+      ${R.milicia ? html`<div className="flex flex-wrap items-center gap-2"><${Tag} cor="var(--ambar)">milícia documentada</${Tag}><span className="text-xs text-muted">Grupos de milicianos atuam no estado conforme a fonte (detalhes em "Fontes e notas", no fim da aba).</span></div>` : null}
     </div>
   </div>`;
 }
@@ -19668,7 +19681,7 @@ function SegurancaPublica({ g, decidir, sel: selP, setSel: setSelP, parte }) {
       : html`<div className="num" style=${{ color: corSeg(cam, cam.val(g, u)) }}>${fmt(cam.val(g, u), cam.d)} · ${cam.nome.toLowerCase()}</div>`}
     <div className="text-muted">${segResumoFac(u)}</div></div>`;
   const rotulo = (u) => (cam.cat ? `${nomeUF(u)}: ${segRotuloFac(u)}` : `${nomeUF(u)}: ${fmt(cam.val(g, u), cam.d)}, ${cam.nome.toLowerCase()}`);
-  const rankLista = (titulo, campo, d, cor) => html`<div className="min-w-0">
+  const rankLista = (titulo, campo, d, cor) => html`<div className="min-w-0 mx-box">
     <div className="eyebrow mb-1" style=${{ color: cor }}>${titulo}</div>
     <div className="flex flex-col">${segTop(g, 8, campo).map((u, i) => html`<button key=${u} type="button" onClick=${() => setSel(u)} aria-pressed=${u === sel}
       className=${'flex w-full items-center gap-2 text-left text-sm px-2 py-1 rounded ' + (u === sel ? 'bg-[var(--panel2)]' : 'hover:bg-[var(--panel2)]')}>
@@ -19687,24 +19700,17 @@ function SegurancaPublica({ g, decidir, sel: selP, setSel: setSelP, parte }) {
   const btn = (a) => html`<button key=${a.l} className="btn btn-ghost justify-start text-sm text-left" disabled=${semAcoes} title=${semAcoes ? (g.acoes <= 0 ? 'Sem ações políticas neste mês' : 'Energia esgotada') : 'Custa 1 ação política e passa pelo parecer da Casa Civil'} onClick=${() => decidir(a.t)}><${Icon} n=${a.i} s=${15} /> ${a.l}</button>`;
   const topo = html`<div className="flex flex-col gap-4">
     <section className="sec">
-      <div className="flex flex-wrap items-end justify-between gap-2 mb-3">
-        <div><h3 className="disp text-2xl font-extrabold uppercase">Segurança Pública</h3>
-          <p className="text-xs text-muted">Situação nacional no jogo, com a linha de base real de 2025 logo abaixo de cada número.</p></div>
-        <${Tag} cor=${g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)'}>${g.acoes}/5 ações</${Tag}>
-      </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">${kpis.map(k => { const r = (k.v - k.real) / k.real; const c = r > .03 ? 'var(--rubro)' : r < -.03 ? 'var(--verde)' : 'var(--fg)'; return html`<div key=${k.l} className="rounded-lg border border-line p-3 min-w-0">
-        <div className="eyebrow">${k.l}</div>
-        <div className="num text-2xl font-semibold" style=${{ color: c }}>${fmt(k.v, k.d)}</div>
-        <div className="text-[11px] text-muted">${k.un}</div>
-        <div className="text-[11px] text-muted mt-1">Real 2025: <span className="num">${fmt(k.real, k.rd)}</span></div></div>`; })}</div>
+      <${MxHead} eb="País · Segurança Pública" t="Situação nacional" tip="Situação nacional no jogo, com a linha de base real de 2025 logo abaixo de cada número." right=${html`<${PsAcoes} g=${g} />`} />
+      <div className="mx-grid c3">${kpis.map(k => { const r = (k.v - k.real) / k.real; const c = r > .03 ? 'var(--rubro)' : r < -.03 ? 'var(--verde)' : null; return html`<div key=${k.l} className="mx-card panel" style=${{ '--st': c || 'var(--line2)' }}>
+        <div className="mx-lab">${k.l}</div>
+        <div className="mx-num" style=${{ color: c || 'var(--fg)' }}>${fmt(k.v, k.d)}</div>
+        <div className="mx-s">${k.un}</div>
+        <div className="mx-s">Real 2025: <span className="num">${fmt(k.real, k.rd)}</span></div></div>`; })}</div>
     </section>
     <div className="grid gap-6 lg:grid-cols-12">
       <section className="lg:col-span-7 sec min-w-0">
-        <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <h3 className="disp text-2xl font-extrabold uppercase">Mapa por estado</h3>
-          <div role="radiogroup" aria-label="Camada do mapa" className="flex flex-wrap gap-1">${SEG_CAMADAS.map(c => html`<button key=${c.k} id=${'seg-cam-' + c.k} type="button" role="radio" aria-checked=${camada === c.k} tabIndex=${camada === c.k ? 0 : -1} onKeyDown=${trocaCamada} onClick=${() => setCamada(c.k)}
-            className=${'btn btn-ghost text-xs ' + (camada === c.k ? '!border-ouro text-ouro' : '')}>${c.nome}</button>`)}</div>
-        </div>
+        <${MxHead} eb="Segurança · mapa" t="Mapa por estado" tip="Escolha a camada; clique em um estado para ver o painel ao lado." right=${html`<div role="radiogroup" aria-label="Camada do mapa" className="flex flex-wrap gap-1">${SEG_CAMADAS.map(c => html`<button key=${c.k} id=${'seg-cam-' + c.k} type="button" role="radio" aria-checked=${camada === c.k} tabIndex=${camada === c.k ? 0 : -1} onKeyDown=${trocaCamada} onClick=${() => setCamada(c.k)}
+            className=${'btn btn-ghost text-xs ' + (camada === c.k ? '!border-ouro text-ouro' : '')}>${c.nome}</button>`)}</div>`} />
         <${MapaUF} cor=${u => (cam.cat ? segCorFaccao(u) : corSeg(cam, cam.val(g, u)))} rotulo=${rotulo} tip=${tip} tipW=${220}
           hatch=${cam.cat ? (u => !!SEG_REAL.uf[u].milicia) : null} aria=${'Mapa do Brasil por estado, camada ' + cam.nome}
           selecionado=${sel} onSel=${setSel} />
@@ -19729,22 +19735,19 @@ function SegurancaPublica({ g, decidir, sel: selP, setSel: setSelP, parte }) {
   </div>`;
   const opsBloco = html`<div className="flex flex-col gap-4">
     <div className="grid gap-6 lg:grid-cols-12">
-      <section className="lg:col-span-7 sec min-w-0">
-        <h3 className="disp text-2xl font-extrabold uppercase mb-1">Os mais críticos</h3>
-        <p className="text-xs text-muted mb-3">Clique em um estado para abri-lo no mapa e no painel.</p>
-        <div className="grid sm:grid-cols-2 gap-5">
+      <section className="lg:col-span-5 sec min-w-0">
+        <${MxHead} eb="Segurança · ranking" t="Os mais críticos" tip="Clique em um estado para abri-lo no mapa e no painel." />
+        <div className="grid sm:grid-cols-2 gap-3">
           ${rankLista('Mortes violentas (por 100 mil)', 'mvi', 1, 'var(--rubro)')}
           ${rankLista('Pressão do crime organizado (0 a 100)', 'controle', 0, 'var(--ambar)')}
         </div>
       </section>
-      <aside className="lg:col-span-5 sec min-w-0">
-        <h3 className="disp text-2xl font-extrabold uppercase mb-1">Operações federais</h3>
-        <p className="text-xs text-muted mb-3">Cada operação gasta 1 ação do mês e passa pelo motor de decisão. Estado selecionado: <b className="text-fg">${I.nome}</b>.</p>
-        <div className="flex flex-col gap-2">${ops.map(btn)}</div>
-        <div className="eyebrow mt-4 mb-2">Programas nacionais</div>
-        <div className="flex flex-col gap-2">${nacionais.map(btn)}</div>
-        <p className="text-[11px] text-muted mt-3">Medidas de linha dura derrubam as mortes violentas em cerca de 6 meses, mas elevam a letalidade policial e podem provocar retaliação de facção. Planos de inteligência agem mais devagar e reduzem a pressão do crime organizado. Medidas sem estado citado atingem o país, com mais força nos 8 estados de maior pressão.</p>
-      </aside>
+      <section className="lg:col-span-7 sec min-w-0" data-seg="operacoes">
+        <${MxHead} eb=${'Segurança · ' + I.nome} t="Operações federais" tip=${'Cada operação gasta 1 ação do mês e passa pelo motor de decisão. Estado selecionado: ' + I.nome + '. Medidas de linha dura derrubam as mortes violentas em cerca de 6 meses, mas elevam a letalidade policial e podem provocar retaliação de facção. Planos de inteligência agem mais devagar e reduzem a pressão do crime organizado. Medidas sem estado citado atingem o país, com mais força nos 8 estados de maior pressão.'} right=${html`<${PsAcoes} g=${g} />`} />
+        <div className="mx-grid">${ops.map(a => html`<${PsProg} key=${a.l} g=${g} a=${a} pa="seguranca" cor="var(--rubro)" decidir=${decidir} />`)}</div>
+        <div className="eyebrow mt-5 mb-2">Programas nacionais</div>
+        <div className="mx-grid">${nacionais.map(a => html`<${PsProg} key=${a.l} g=${g} a=${a} pa="seguranca" cor="var(--anil)" decidir=${decidir} />`)}</div>
+      </section>
     </div>
   </div>`;
   // fontes e notas: tudo que antes ficava no painel do estado e no meio da aba, agora recolhido no fim
@@ -19759,7 +19762,16 @@ function SegurancaPublica({ g, decidir, sel: selP, setSel: setSelP, parte }) {
     ${R.faccoes.length > 0 && html`<div className="eyebrow mt-3 mb-1">Facções listadas e fonte de cada uma</div><ul className="flex flex-col gap-1">${R.faccoes.map((f, i) => html`<li key=${i}>${f.nome} <span className="text-muted">· ${f.nivel} · ${(SEG_FONTE[f.fonte_id] || {}).titulo || f.fonte_id}</span></li>`)}</ul>`}
     ${R.notas ? html`<div className="eyebrow mt-3 mb-1">Notas da pesquisa</div><p className="leading-relaxed">${R.notas}</p>` : null}
   </details>`;
-  return parte === 'ops' ? opsBloco : parte === 'fontes' ? fontesFim : topo;
+  const gres = g.govs ? gvResumo(g) : { acordos: 0, interv: null };
+  const rk = (k) => { const r = (k.v - k.real) / k.real; return r > .03 ? 'var(--rubro)' : r < -.03 ? 'var(--verde)' : 'var(--anil)'; };
+  const resumo = html`<${PdKpis} area="seguranca" itens=${[
+    { dado: 'mvi', ic: 'Siren', cor: rk(kpis[0]), k: 'Mortes violentas', v: fmt(nac.mvi, 1), s: 'por 100 mil · real 2025: ' + fmt(NAC.mvi_taxa, 2) },
+    { dado: 'letalidade', ic: 'ShieldAlert', cor: rk(kpis[1]), k: 'Intervenção policial', v: fmt(nac.mdip, 0), s: 'mortes no ano · real 2025: ' + fmt(NAC.letalidade_policial, 0) },
+    { dado: 'presos', ic: 'Lock', cor: rk(kpis[3]), k: 'População prisional', v: fmt(nac.presos, 0), s: 'presos por 100 mil hab.' },
+    { dado: 'acordos', ic: 'Handshake', cor: gres.acordos ? 'var(--verde)' : 'var(--muted)', k: 'Acordos com governadores', v: gres.acordos, s: gres.interv ? 'intervenção federal ' + emUF(gres.interv) : 'nenhuma intervenção federal' },
+    { dado: 'acoes', ic: 'Zap', cor: g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)', k: 'Ações do mês', v: g.acoes + '/5', s: 'cada operação gasta 1 ação' }
+  ]} />`;
+  return parte === 'resumo' ? resumo : parte === 'ops' ? opsBloco : parte === 'fontes' ? fontesFim : topo;
 }
 
 /* ============================== GOVERNADORES x CRIME ORGANIZADO (prefixo gv) ============================== */
@@ -20350,15 +20362,15 @@ function GvTermos({ t, setT, C }) {
     }
     return html`<button key=${id} type="button" aria-pressed=${on} disabled=${bloq} data-gv-item=${id} onClick=${() => tog(lado, id)}
       className=${'flex items-center gap-2 text-left text-xs rounded border px-2 py-1.5 ' + (on ? 'border-ouro text-ouro bg-[var(--panel2)]' : 'border-line hover:bg-[var(--panel2)]') + (bloq ? ' opacity-40' : '')} title=${o.d || o.n}>
-      <${Icon} n=${o.ico} s=${14} /><span className="flex-1 min-w-0">${o.c}</span>${dica && html`<span className="text-[10px]" style=${{ color: dica[1] }}>${dica[0]}</span>`}</button>`;
+      <${Icon} n=${o.ico} s=${14} /><span className="flex-1 min-w-0">${o.c}</span>${dica && html`<span className="text-xs" style=${{ color: dica[1] }}>${dica[0]}</span>`}</button>`;
   };
   return html`<div className="grid sm:grid-cols-2 gap-3">
     <div className="flex flex-col gap-1.5">
       <div className="eyebrow">Ofertas da União (até 3) <span className="text-muted">· ${nIt}/3</span></div>
       <div className="flex flex-wrap gap-1" role="group" aria-label="Verba do Fundo Nacional de Segurança Pública">
-        ${GV_VERBA.map(f => html`<button key=${f} type="button" data-gv-verba=${f} aria-pressed=${t.f === f} onClick=${() => setF(f)} className=${'text-[11px] rounded border px-2 py-1 num ' + (t.f === f ? 'border-ouro text-ouro' : 'border-line hover:bg-[var(--panel2)]')}>${f === 0 ? 'Sem verba' : C ? gvMi(gvVerbaBi(C.u, f)) : 'verba x' + f}</button>`)}
+        ${GV_VERBA.map(f => html`<button key=${f} type="button" data-gv-verba=${f} aria-pressed=${t.f === f} onClick=${() => setF(f)} className=${'text-xs rounded border px-2 py-1 num ' + (t.f === f ? 'border-ouro text-ouro' : 'border-line hover:bg-[var(--panel2)]')}>${f === 0 ? 'Sem verba' : C ? gvMi(gvVerbaBi(C.u, f)) : 'verba x' + f}</button>`)}
       </div>
-      <div className="text-[10px] text-muted">Verba do Fundo Nacional de Segurança Pública, por ano${C ? '' : ' (proporcional ao porte de cada estado)'}.</div>
+      <div className="text-xs text-muted">Verba do Fundo Nacional de Segurança Pública, por ano${C ? '' : ' (proporcional ao porte de cada estado)'}.</div>
       ${Object.keys(GV_OF).map(id => chip('of', id, GV_OF[id]))}
     </div>
     <div className="flex flex-col gap-1.5">
@@ -20371,7 +20383,7 @@ function GvProb({ p }) {
   const seg = (v, cor, rot) => v > .005 && html`<div style=${{ width: v * 100 + '%', background: cor }} className="h-full" title=${rot + ' ' + gvPct(v)}></div>`;
   return html`<div>
     <div className="flex h-3 rounded overflow-hidden border border-line">${seg(p.aceita, 'var(--verde)', 'aceita')}${seg(p.contra, 'var(--ambar)', 'contraproposta')}${seg(p.recusa, 'var(--rubro)', 'recusa')}</div>
-    <div className="flex justify-between text-[11px] num mt-1"><span style=${{ color: 'var(--verde)' }}>aceita ${gvPct(p.aceita)}</span><span style=${{ color: 'var(--ambar)' }}>contraproposta ${gvPct(p.contra)}</span><span style=${{ color: 'var(--rubro)' }}>recusa ${gvPct(p.recusa)}</span></div></div>`;
+    <div className="flex justify-between text-xs num mt-1"><span style=${{ color: 'var(--verde)' }}>aceita ${gvPct(p.aceita)}</span><span style=${{ color: 'var(--ambar)' }}>contraproposta ${gvPct(p.contra)}</span><span style=${{ color: 'var(--rubro)' }}>recusa ${gvPct(p.recusa)}</span></div></div>`;
 }
 function GvResultado({ g, u, upd }) {
   const n = g.govs && g.govs.ult; if (!n || n.uf !== u) return null;
@@ -20379,7 +20391,7 @@ function GvResultado({ g, u, upd }) {
   const cor = n.res === 'aceita' ? 'var(--verde)' : n.res === 'contra' ? 'var(--ambar)' : 'var(--rubro)';
   const tit = n.res === 'aceita' ? (n.viaContra ? 'Contraproposta aceita: acordo fechado' : 'Acordo fechado') : n.res === 'contra' ? 'Contraproposta do governador' : n.res === 'recusada_por_voce' ? 'Contraproposta dispensada' : n.publica ? 'Recusa pública' : 'Recusa reservada';
   return html`<div className="rounded-lg border p-3 flex flex-col gap-2" style=${{ borderColor: cor }} data-gv-res=${n.res} role="status">
-    <div className="flex items-center justify-between"><b style=${{ color: cor }}>${tit}</b><span className="text-[11px] text-muted num">mês ${n.mes} · utilidade ${n.U} x resistência ${n.T}</span></div>
+    <div className="flex items-center justify-between"><b style=${{ color: cor }}>${tit}</b><span className="text-xs text-muted num">mês ${n.mes} · utilidade ${n.U} x resistência ${n.T}</span></div>
     <div className="text-xs text-muted">Proposta: ${gvTermosTxt(n.termos)}.</div>
     ${n.res === 'contra' && html`<div className="text-sm">${P.nome} aceita se a União concordar em <b>${gvContraTxt(u, n.contra)}</b>.</div>
       <div className="flex gap-2"><button type="button" className="btn btn-pri !text-xs" data-gv-act="aceita-contra" onClick=${() => upd(x => { gvAceitaContra(x, u); })}>Aceitar a contraproposta</button>
@@ -20390,14 +20402,14 @@ function GvResultado({ g, u, upd }) {
 function GvAcordo({ g, u, upd }) {
   const S = g.govs.uf[u]; const ac = S.ac; if (!ac) return null;
   const q = gvQual(g, ac); const x = g.seg.uf[u]; const dm = (x.mvi / ac.mvi0 - 1) * 100; const dl = (x.letal / ac.let0 - 1) * 100;
-  return html`<div className="rounded-lg border border-line p-3 flex flex-col gap-2" data-gv-acordo=${ac.id}>
+  return html`<div className="mx-box flex flex-col gap-2" data-gv-acordo=${ac.id}>
     <div className="flex items-center justify-between"><div className="eyebrow">Acordo em vigor ${ac.origem === 'consorcio' ? '(consórcio regional)' : ''}</div>${ac.susp ? html`<${Tag} cor="var(--rubro)">suspenso pela intervenção</${Tag}>` : html`<${Tag} cor="var(--verde)">mês ${ac.meses} de 24</${Tag}>`}</div>
     <div className="text-xs">${gvTermosTxt(ac.t)}.</div>
     <div className="grid grid-cols-4 gap-2 text-center text-xs">
-      <div><div className="num text-base">${gvPct(q)}</div><div className="text-[10px] text-muted">qualidade da execução</div></div>
-      <div><div className="num text-base">${bi(ac.custoAp)}</div><div className="text-[10px] text-muted">custo por ano</div></div>
-      <div><div className="num text-base" style=${{ color: dm <= 0 ? 'var(--verde)' : 'var(--rubro)' }}>${sgn(dm, 1)}%</div><div className="text-[10px] text-muted">mortes violentas desde a assinatura</div></div>
-      <div><div className="num text-base">${sgn(dl, 0)}%</div><div className="text-[10px] text-muted">letalidade policial</div></div>
+      <div><div className="num text-base">${gvPct(q)}</div><div className="text-xs text-muted">qualidade da execução</div></div>
+      <div><div className="num text-base">${bi(ac.custoAp)}</div><div className="text-xs text-muted">custo por ano</div></div>
+      <div><div className="num text-base" style=${{ color: dm <= 0 ? 'var(--verde)' : 'var(--rubro)' }}>${sgn(dm, 1)}%</div><div className="text-xs text-muted">mortes violentas desde a assinatura</div></div>
+      <div><div className="num text-base">${sgn(dl, 0)}%</div><div className="text-xs text-muted">letalidade policial</div></div>
     </div>
     <div><button type="button" className="btn btn-ghost !text-xs" data-gv-act="encerra-acordo" onClick=${() => upd(n => { gvEncerraAcordo(n, u); })}>Encerrar acordo (relação −8)</button></div>
   </div>`;
@@ -20416,7 +20428,7 @@ function GvIntervencao({ g, u, decidir }) {
           ${li(c.esgotadas, 'Medidas menos gravosas esgotadas (houve negociação e não há acordo em vigor)')}
           ${li(true, 'Decreto submetido ao Congresso (CF, art. 36, §1º): votação nas duas Casas')}
         </ul>
-        <div className="text-[11px] text-muted">${P.nome} (${P.sigla}) e o partido reagem com fúria; resultado incerto (pode reduzir os crimes ou elevar a letalidade e gerar escândalo); duração de 6 meses, renovável; PECs travadas enquanto durar. Sem os dois requisitos, o STF tende a suspender.</div>
+        <div className="text-xs text-muted">${P.nome} (${P.sigla}) e o partido reagem com fúria; resultado incerto (pode reduzir os crimes ou elevar a letalidade e gerar escândalo); duração de 6 meses, renovável; PECs travadas enquanto durar. Sem os dois requisitos, o STF tende a suspender.</div>
         <div><button type="button" className="btn btn-ghost !text-xs" data-gv-act="interv" disabled=${semAcao} onClick=${() => decidir(gvTextoInterv(u, false))}>Decretar intervenção ${emUF(u)} (leva ao Congresso)</button></div>`}
   </div>`;
 }
@@ -20432,24 +20444,24 @@ function GvPainel({ g, u, upd, decidir, preset, semInterv }) {
       <div className="eyebrow">${nomeUF(u)} · governador${P.sigla ? '' : ''}</div>
       <div className="disp text-3xl font-extrabold uppercase leading-tight">${P.nome}</div>
       <div className="flex flex-wrap gap-1.5 mt-1"><${Tag}>${sg(P.sigla)}</${Tag}><${Tag} cor=${gvRotCor(P.rot)}>${P.rot}</${Tag}><${Tag}>partido na ${GV_ST[C.own ? 'base' : status((g.parties[P.bloco] || { rel: 50 }).rel)]}</${Tag}>${P.ala.map(a => html`<${Tag} key=${a}>${a}</${Tag}>`)}${P.amb > .5 && html`<${Tag} cor="var(--ouro)">olho em 2030</${Tag}>`}<${Tag} cor=${S.postura === 'hostil' || S.postura === 'culpa' ? 'var(--rubro)' : 'var(--muted)'}>postura: ${S.postura}</${Tag}></div>
-      <div className="text-[11px] text-muted mt-1">Perfil na segurança pública estimado pelo jogo (partido e atuação pública); não representa a pessoa real.</div>
+      <div className="text-xs text-muted mt-1">Perfil na segurança pública estimado pelo jogo (partido e atuação pública); não representa a pessoa real.</div>
     </div>
     <div className="grid grid-cols-4 gap-2 text-center">
-      <div className="rounded border border-line p-2"><div className="num text-lg" style=${{ color: gvCorRel(S.rel) }}>${Math.round(S.rel)}</div><div className="text-[10px] text-muted">relação com você</div></div>
-      <div className="rounded border border-line p-2"><div className="num text-lg">${fmt(X.mvi, 1)}</div><div className="text-[10px] text-muted">mortes violentas (${sgn(dm, 1)} vs 2025)</div></div>
-      <div className="rounded border border-line p-2"><div className="num text-lg">${fmt(X.controle, 0)}</div><div className="text-[10px] text-muted">crime organizado</div></div>
-      <div className="rounded border border-line p-2"><div className="num text-lg">${fmt(C.aprov, 0)}%</div><div className="text-[10px] text-muted">sua aprovação aqui</div></div>
+      <div className="rounded border border-line p-2"><div className="num text-lg" style=${{ color: gvCorRel(S.rel) }}>${Math.round(S.rel)}</div><div className="text-xs text-muted">relação com você</div></div>
+      <div className="rounded border border-line p-2"><div className="num text-lg">${fmt(X.mvi, 1)}</div><div className="text-xs text-muted">mortes violentas (${sgn(dm, 1)} vs 2025)</div></div>
+      <div className="rounded border border-line p-2"><div className="num text-lg">${fmt(X.controle, 0)}</div><div className="text-xs text-muted">crime organizado</div></div>
+      <div className="rounded border border-line p-2"><div className="num text-lg">${fmt(C.aprov, 0)}%</div><div className="text-xs text-muted">sua aprovação aqui</div></div>
     </div>
     <div className="text-xs text-muted">${segHegemonia(u) ? 'Facção com hegemonia: ' + segHegemonia(u) + '. ' : 'Sem facção hegemônica declarada. '}${segHegemonia(u) || X.mvi > 25 ? 'A gravidade do quadro torna o governador mais disposto a negociar.' : ''}</div>
     <${GvAcordo} g=${g} u=${u} upd=${upd} />
     ${interv ? html`<div className="text-sm p-3 rounded border border-line">Estado sob intervenção federal: o governador não negocia.</div>` : html`<div className="flex flex-col gap-3">
-      <div className="flex flex-wrap items-center gap-2"><span className="eyebrow">Propostas prontas</span>${GV_PADROES.map(x => html`<button key=${x.k} type="button" className="btn btn-ghost !text-[11px]" data-gv-padrao=${x.k} onClick=${() => setT(JSON.parse(JSON.stringify(x.t)))}>${x.nome}</button>`)}<button type="button" className="btn btn-ghost !text-[11px]" onClick=${() => setT(gvT0())}>Limpar</button></div>
+      <div className="flex flex-wrap items-center gap-2"><span className="eyebrow">Propostas prontas</span>${GV_PADROES.map(x => html`<button key=${x.k} type="button" className="btn btn-ghost !text-xs" data-gv-padrao=${x.k} onClick=${() => setT(JSON.parse(JSON.stringify(x.t)))}>${x.nome}</button>`)}<button type="button" className="btn btn-ghost !text-xs" onClick=${() => setT(gvT0())}>Limpar</button></div>
       <${GvTermos} t=${t} setT=${setT} C=${Object.assign({}, C, { u })} />
-      <div className="rounded-lg border border-line p-3 flex flex-col gap-2" data-gv-previa="1">
+      <div className="mx-box flex flex-col gap-2" data-gv-previa="1">
         <div className="eyebrow">Prévia da resposta</div>
         ${pv ? html`<${GvProb} p=${pv.p} />
-          <ul className="grid sm:grid-cols-2 gap-x-4 gap-y-0.5">${fat.map(f => html`<li key=${f.k} className="flex justify-between text-[11px]"><span className="truncate">${f.txt}</span><span className="num" style=${{ color: f.pts >= 0 ? 'var(--verde)' : 'var(--rubro)' }}>${sgn(f.pts, 0)}</span></li>`)}</ul>
-          <div className="text-[11px] text-muted">Resistência do governador: ${fmt(pv.T, 0)} pontos (autonomia, oposição e proximidade de 2030). Soma das vantagens: ${fmt(pv.U, 0)}.</div>` : html`<div className="text-xs text-muted">${v}</div>`}
+          <ul className="grid sm:grid-cols-2 gap-x-4 gap-y-0.5">${fat.map(f => html`<li key=${f.k} className="flex justify-between text-xs"><span className="truncate">${f.txt}</span><span className="num" style=${{ color: f.pts >= 0 ? 'var(--verde)' : 'var(--rubro)' }}>${sgn(f.pts, 0)}</span></li>`)}</ul>
+          <div className="text-xs text-muted">Resistência do governador: ${fmt(pv.T, 0)} pontos (autonomia, oposição e proximidade de 2030). Soma das vantagens: ${fmt(pv.U, 0)}.</div>` : html`<div className="text-xs text-muted">${v}</div>`}
       </div>
       <div className="flex flex-wrap items-center gap-2"><button type="button" className="btn btn-pri" data-gv-act="propor" disabled=${!!v || g.acoes <= 0} title="Custa 1 ação política" onClick=${() => upd(n => { gvNegocia(n, u, t); })}>Propor acordo (1 ação)</button>${g.acoes <= 0 && html`<span className="text-xs text-muted">Sem ações neste mês.</span>`}</div>
     </div>`}
@@ -20468,7 +20480,7 @@ function GvConsorcios({ g, upd }) {
     <${GvTermos} t=${t} setT=${setT} C=${null} />
     ${previas && html`<div className="flex flex-wrap gap-1.5">${previas.map(x => html`<span key=${x.u} className="chip num" style=${{ color: x.p >= .6 ? 'var(--verde)' : x.p >= .3 ? 'var(--ambar)' : 'var(--rubro)', borderColor: 'var(--line)' }} title=${gvPerfil(x.u).nome + ' · ' + gvPerfil(x.u).rot}>${x.u} ${gvPct(x.p)}</span>`)}</div>`}
     <div className="flex flex-wrap items-center gap-2"><button type="button" className="btn btn-pri" data-gv-act="reuniao" disabled=${!!v || g.acoes <= 0} onClick=${() => upd(n => { gvReuniao(n, reg, t); })}>Convocar reunião (1 ação)</button>${v && html`<span className="text-xs text-muted">${v}</span>`}</div>
-    ${ult && html`<div className="rounded-lg border border-line p-3 flex flex-col gap-1.5" data-gv-cons-res=${reg}>
+    ${ult && html`<div className="mx-box flex flex-col gap-1.5" data-gv-cons-res=${reg}>
       <div className="flex justify-between"><b className="text-sm">Última reunião (mês ${ult.mes})</b><span className="text-xs num text-muted">${ult.nA} adesões · ${ult.nC} querem negociar · ${ult.nR} recusas</span></div>
       <div className="text-xs text-muted">${gvTermosTxt(ult.termos)}.</div>
       <div className="flex flex-wrap gap-1.5">${Object.keys(ult.res).map(u => { const r = ult.res[u].r; return html`<span key=${u} className="chip num" style=${{ color: r === 'aceita' ? 'var(--verde)' : r === 'contra' ? 'var(--ambar)' : 'var(--rubro)', borderColor: 'var(--line)' }}>${u} ${r === 'aceita' ? 'adere' : r === 'contra' ? 'negocia' : 'recusa'}</span>`; })}</div>
@@ -20486,35 +20498,31 @@ function GvSecao({ g, upd, decidir, parte, sel: selP, setSel: setSelP, preset })
   const posts = (g.x && g.x.posts ? g.x.posts : []).filter(p => p.a && p.a.tipo === 'governador').slice(0, 4);
   const cols = { display: 'grid', gridTemplateColumns: '2.2rem minmax(0,1.4fr) 5.6rem 4.2rem 4.4rem minmax(0,1fr) 5rem', gap: '.5rem', alignItems: 'center' };
   const reunioes = html`<div className="grid gap-6 lg:grid-cols-12">
-      <div className="lg:col-span-7 sec min-w-0"><h4 className="disp text-xl font-extrabold uppercase mb-1">Reuniões regionais</h4><${GvConsorcios} g=${g} upd=${upd} /></div>
-      <aside className="lg:col-span-5 sec min-w-0" data-gv-repercussao="1"><h4 className="disp text-xl font-extrabold uppercase mb-1">Repercussão</h4>
+      <div className="lg:col-span-7 sec min-w-0"><${MxHead} eb="Segurança · consórcios" t="Reuniões regionais" tip="Reúna governadores de uma região para negociar acordos conjuntos de segurança." /><${GvConsorcios} g=${g} upd=${upd} /></div>
+      <aside className="lg:col-span-5 sec min-w-0" data-gv-repercussao="1"><${MxHead} eb="Segurança · reação" t="Repercussão" tip="O que governadores e imprensa dizem das suas decisões de segurança." />
         <ul className="flex flex-col gap-1 mb-3">${G.log.slice(0, 7).map((l, i) => html`<li key=${i} className="text-xs flex gap-2"><span className="num text-muted shrink-0">mês ${l.mes}</span><span style=${{ color: l.cat === 'pos' ? 'var(--verde)' : l.cat === 'neg' ? 'var(--rubro)' : undefined }}>${l.txt}</span></li>`)}${G.log.length === 0 && html`<li className="text-xs text-muted">Nenhuma repercussão ainda. Negocie com um governador.</li>`}</ul>
         ${posts.length > 0 && html`<div className="eyebrow mb-1">Governadores na rede X</div><ul className="flex flex-col divide-y divide-line">${posts.map((p, i) => html`<${PostX} key=${p.id || i} p=${p} mini=${true} />`)}</ul>`}
-        <p className="text-[11px] text-muted mt-2">Falas dos governadores são simuladas pelo jogo (selo "simulado"), só sobre política de segurança pública.</p>
+        <p className="text-xs text-muted mt-2">Falas dos governadores são simuladas pelo jogo (selo "simulado"), só sobre política de segurança pública.</p>
       </aside>
     </div>`;
   if (parte === 'reunioes') return html`<section className="flex flex-col gap-4" data-secao="reunioes">${reunioes}</section>`;
-  if (parte === 'interv') return html`<section className="sec" data-secao="intervencao"><h4 className="disp text-xl font-extrabold uppercase mb-1">Intervenção federal</h4><p className="text-xs text-muted mb-3">Estado selecionado: <b className="text-fg">${nomeUF(sel)}</b>.</p><${GvIntervencao} g=${g} u=${sel} decidir=${decidir} /></section>`;
+  if (parte === 'interv') return html`<section className="sec" data-secao="intervencao"><${MxHead} eb="Segurança · último recurso" t="Intervenção federal" tip=${'Estado selecionado: ' + nomeUF(sel) + '.'} right=${html`<${MxChip}>${nomeUF(sel)}</${MxChip}>`} /><${GvIntervencao} g=${g} u=${sel} decidir=${decidir} /></section>`;
   return html`<section className=${'flex flex-col gap-4' + (parte ? '' : ' mt-8')} data-secao="governadores">
-    <div className="flex flex-wrap items-end justify-between gap-2">
-      <div><h3 className="disp text-2xl font-extrabold uppercase">Governadores e crime organizado</h3>
-        <p className="text-xs text-muted max-w-3xl">Segurança pública é competência dos estados. Negocie acordos com cada governador, reúna os consórcios regionais e, como último recurso, decrete a intervenção federal. Governadores reagem em público e disputam crédito e culpa pelos números.</p></div>
-      <div className="flex flex-wrap gap-2"><${Tag} cor="var(--verde)">${res.acordos} acordos em vigor</${Tag}>${res.interv && html`<${Tag} cor="var(--rubro)">intervenção ${emUF(res.interv)}</${Tag}>`}<${Tag} cor=${g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)'}>${g.acoes}/5 ações</${Tag}></div>
-    </div>
+    <${MxHead} eb="Segurança · federalismo" t="Governadores e crime organizado" tip="Segurança pública é competência dos estados. Negocie acordos com cada governador, reúna os consórcios regionais e, como último recurso, decrete a intervenção federal. Governadores reagem em público e disputam crédito e culpa pelos números." right=${html`<div className="flex flex-wrap gap-2"><${MxChip} c="pos">${res.acordos} acordos em vigor</${MxChip}>${res.interv && html`<${MxChip} c="neg">intervenção ${emUF(res.interv)}</${MxChip}>`}<${PsAcoes} g=${g} /></div>`} />
     <div className="grid gap-6 lg:grid-cols-12">
       <div className="lg:col-span-7 sec min-w-0">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-2"><div className="eyebrow">Os 27 governos estaduais</div>
-          <div role="group" aria-label="Região" className="flex flex-wrap gap-1">${[['todos', 'Todos'], ...REGIOES.map(r => [r.k, r.nome])].map(([k, n]) => html`<button key=${k} type="button" aria-pressed=${fr === k} onClick=${() => setFr(k)} className=${'btn btn-ghost !text-[11px] ' + (fr === k ? '!border-ouro text-ouro' : '')}>${n}</button>`)}</div></div>
-        <div className="text-[10px] uppercase tracking-wider text-muted px-2 pb-1" style=${cols}><span>UF</span><span>Governador</span><span>Perfil</span><span>Relação</span><span>Mortes viol.</span><span>Facção hegemônica</span><span>Acordo</span></div>
+          <div role="group" aria-label="Região" className="flex flex-wrap gap-1">${[['todos', 'Todos'], ...REGIOES.map(r => [r.k, r.nome])].map(([k, n]) => html`<button key=${k} type="button" aria-pressed=${fr === k} onClick=${() => setFr(k)} className=${'btn btn-ghost !text-xs ' + (fr === k ? '!border-ouro text-ouro' : '')}>${n}</button>`)}</div></div>
+        <div className="text-xs uppercase tracking-wider text-muted px-2 pb-1" style=${cols}><span>UF</span><span>Governador</span><span>Perfil</span><span>Relação</span><span>Mortes viol.</span><span>Facção hegemônica</span><span>Acordo</span></div>
         <div className="flex flex-col" data-gv-lista="1">${lista.map(u => { const P = gvPerfil(u); const S = G.uf[u]; const X = g.seg.uf[u]; const heg = segHegemonia(u); const itv = gvIntervUF(g) === u;
           return html`<button key=${u} type="button" onClick=${() => setSel(u)} aria-pressed=${u === sel} data-gv-uf=${u} className=${'w-full text-left text-sm px-2 py-1.5 rounded ' + (u === sel ? 'bg-[var(--panel2)]' : 'hover:bg-[var(--panel2)]')} style=${cols}>
             <span className="num text-xs text-muted">${u}</span>
-            <span className="min-w-0 truncate">${P.nome} <span className="text-[11px] text-muted">${sg(P.sigla)}</span></span>
-            <span className="text-[11px]" style=${{ color: gvRotCor(P.rot) }}>${P.rot}</span>
+            <span className="min-w-0 truncate">${P.nome} <span className="text-xs text-muted">${sg(P.sigla)}</span></span>
+            <span className="text-xs" style=${{ color: gvRotCor(P.rot) }}>${P.rot}</span>
             <span className="num" style=${{ color: gvCorRel(S.rel) }}>${Math.round(S.rel)}</span>
             <span className="num">${fmt(X.mvi, 1)}</span>
-            <span className="text-[11px] text-muted truncate">${heg ? heg.replace(/\s*\(.*\)/, '') : '—'}</span>
-            <span className="text-[11px]">${itv ? html`<span style=${{ color: 'var(--rubro)' }}>intervenção</span>` : S.ac ? html`<span style=${{ color: S.ac.susp ? 'var(--rubro)' : 'var(--verde)' }}>${S.ac.origem === 'consorcio' ? 'consórcio' : 'ativo'}</span>` : html`<span className="text-muted">—</span>`}</span></button>`; })}</div>
+            <span className="text-xs text-muted truncate">${heg ? heg.replace(/\s*\(.*\)/, '') : '—'}</span>
+            <span className="text-xs">${itv ? html`<span style=${{ color: 'var(--rubro)' }}>intervenção</span>` : S.ac ? html`<span style=${{ color: S.ac.susp ? 'var(--rubro)' : 'var(--verde)' }}>${S.ac.origem === 'consorcio' ? 'consórcio' : 'ativo'}</span>` : html`<span className="text-muted">—</span>`}</span></button>`; })}</div>
       </div>
       <aside className="lg:col-span-5 sec min-w-0"><${GvPainel} key=${sel + '|' + (preset && preset.uf === sel ? preset.n : 0)} g=${g} u=${sel} upd=${upd} decidir=${decidir} preset=${preset} semInterv=${!!parte} /></aside>
     </div>
