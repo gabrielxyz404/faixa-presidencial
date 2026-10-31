@@ -12302,14 +12302,14 @@ function CfAnaliseMinistro({ dec, setDec, g, upd, onClose, semBase }) { // v3.8:
 /* ---------- Poder → STF: emendas do mandato ---------- */
 function CfEmendas({ g }) {
   const lista = g.emendas || [];
-  return html`<section className="sec" aria-labelledby="cf-em-t" data-secao="cf-emendas">
-    <div className="flex items-center justify-between mb-1"><h3 id="cf-em-t" className="font-semibold flex items-center gap-2"><${Icon} n="Scale" /> Emendas do mandato</h3><${Tag} cor="var(--muted)">numeração simulada</${Tag}></div>
-    <p className="text-xs text-muted mb-2">A última emenda real considerada é a EC 141/2026 (fim da escala 6x1, promulgada em 16/10/2026 segundo a imprensa; dado não conferido em fonte oficial). As emendas aprovadas no jogo seguem a numeração a partir da EC 142, todas simuladas.</p>
-    ${lista.length === 0 ? html`<p className="text-sm text-muted">Nenhuma PEC promulgada neste mandato. Emendas exigem 308 deputados e 49 senadores em dois turnos e não podem tocar cláusula pétrea.</p>` :
-      html`<ul className="flex flex-col divide-y divide-line">${lista.slice().reverse().map(e => html`<li key=${e.n} className="py-2 text-sm"><div className="flex flex-wrap items-center gap-2"><b className="num">EC nº ${e.n}/${e.ano}</b><${SeloSim} a="a" /><span className="text-xs text-muted">${MESES[(e.mes - 1) % 12]} de ${e.ano}</span></div>
-        <div>${e.topic}</div>${e.arts && e.arts.length > 0 && html`<div className="text-xs text-muted">${e.arts.join(' · ')}</div>`}</li>`)}</ul>`}
-    ${g.cf && g.cf.excecao && g.mes <= g.cf.excecao.ate && html`<p className="text-xs mt-2 p-2 rounded" style=${{ background: 'rgba(255,90,78,.08)' }} role="status">Em vigor: ${g.cf.excecao.tipo}. Enquanto durar, nenhuma PEC pode ser votada (art. 60, §1º).</p>`}
-  </section>`;
+  return html`<${PdSec} eyebrow="Constituição · PECs" titulo="Emendas do mandato" dado="emendas" secao="cf-emendas" id="cf-em-t" dir="esq" tip="A última emenda real considerada é a EC 141/2026 (fim da escala 6x1, promulgada em 16/10/2026 segundo a imprensa; dado não conferido em fonte oficial). As emendas aprovadas no jogo seguem a numeração a partir da EC 142, todas simuladas. Emendas exigem 308 deputados e 49 senadores em dois turnos e não podem tocar cláusula pétrea."
+    right=${html`<span className="gv-chip">numeração simulada</span>`}>
+    ${lista.length === 0 ? html`<div className="pd-vazio"><${Icon} n="ScrollText" s=${20} /> Nenhuma PEC promulgada neste mandato.</div>` :
+      html`<ul className="pd-grid" style=${{ '--w': '280px' }}>${lista.slice().reverse().map(e => html`<li key=${e.n} className="pd-card" style=${{ '--st': 'var(--anil)' }}>
+        <div className="gv-chips"><span className="gv-chip num">EC nº ${e.n}/${e.ano}</span><span className="gv-chip">${MESES[(e.mes - 1) % 12]} de ${e.ano}</span></div>
+        <h4>${e.topic}</h4>${e.arts && e.arts.length > 0 && html`<div className="pd-s">${e.arts.join(' · ')}</div>`}</li>`)}</ul>`}
+    ${g.cf && g.cf.excecao && g.mes <= g.cf.excecao.ate && html`<p className="text-sm mt-3 p-3 rounded" style=${{ background: 'rgba(255,90,78,.08)' }} role="status">Em vigor: ${g.cf.excecao.tipo}. Enquanto durar, nenhuma PEC pode ser votada (art. 60, §1º).</p>`}
+  </${PdSec}>`;
 }
 /*CF-UI-END*/
 
@@ -15841,13 +15841,18 @@ function CartaoPoderes({ g }) {
   const nos = { pl: [100, 28], co: [30, 128], st: [170, 128] };
   const lin = (a, b, v, k) => html`<line key=${k} x1=${nos[a][0]} y1=${nos[a][1]} x2=${nos[b][0]} y2=${nos[b][1]} stroke=${corTensao(v)} strokeWidth=${2 + v / 20} strokeLinecap="round"></line>`;
   const no = (k, nome, em) => html`<g key=${k}><circle cx=${nos[k][0]} cy=${nos[k][1]} r="15" fill="var(--panel2)" stroke="var(--line)"></circle><text x=${nos[k][0]} y=${nos[k][1] + 4} textAnchor="middle" fontSize="11" fill="var(--fg)">${em}</text><text x=${nos[k][0]} y=${nos[k][1] + (k === 'pl' ? -21 : 30)} textAnchor="middle" fontSize="9.5" fill="var(--muted)">${nome}</text></g>`;
-  return html`<div className="sec" data-poderes="1"><h3 className="disp text-xl font-extrabold uppercase mb-2">Equilíbrio dos Poderes</h3>
-    <svg viewBox="0 0 200 160" className="w-full block" style=${{ maxWidth: 260, margin: '0 auto' }} role="img" aria-label=${'Triângulo de tensão entre Planalto, Congresso e STF. ' + arestas.map(([n, v]) => n + ' ' + Math.round(v)).join(', ')}>
+  const imp = [['Planalto × Congresso', Pd.pc, 'Landmark'], ['Planalto × STF', g.stf, 'Scale'], ['Congresso × STF', Pd.cs, 'Gavel']];
+  return html`<${PdSec} eyebrow="Oposição · instituições" titulo="Equilíbrio dos Poderes" dado="poderes" secao="poderes" id="pod-t" dir="esq" tip="Tensão entre os três Poderes. Quanto maior, mais o risco de impeachment e de crises sobe." sub=${poderesStatus(g)}>
+    <div className="pd-two" style=${{ gridTemplateColumns: 'minmax(0,1fr) minmax(0,2fr)' }} data-poderes="1">
+      <svg viewBox="0 0 200 160" className="w-full block" style=${{ maxWidth: 260, margin: '0 auto' }} role="img" aria-label=${'Triângulo de tensão entre Planalto, Congresso e STF. ' + arestas.map(([n, v]) => n + ' ' + Math.round(v)).join(', ')}>
       ${lin('pl', 'co', Pd.pc, 'a')}${lin('pl', 'st', g.stf, 'b')}${lin('co', 'st', Pd.cs, 'c')}${no('pl', 'Planalto', 'P')}${no('co', 'Congresso', 'C')}${no('st', 'STF', 'S')}
     </svg>
-    <div className="flex flex-col gap-2 mt-2">${arestas.map(([n, v]) => html`<div key=${n}><div className="flex justify-between text-xs mb-0.5"><span>${n}</span><span className="num" style=${{ color: corTensao(v) }}>${fmt(v, 0)}</span></div><${Bar} v=${v} cor=${corTensao(v)} h=${5} label=${n} /></div>`)}</div>
-    <p className="text-sm mt-3" role="status">${poderesStatus(g)}</p>
-  </div>`;
+      <div className="pd-grid" style=${{ '--w': '220px' }}>${arestas.map(([n, v], i) => html`<article key=${n} className="pd-card" style=${{ '--st': corTensao(v) }} data-poder-aresta=${n}>
+        <div className="pd-h"><span className="gv-ic" style=${{ '--c': corTensao(v) }}><${Icon} n=${imp[i][2]} s=${20} /></span><div className="pd-n">${n}</div><span className="pd-big" style=${{ color: corTensao(v) }}>${fmt(v, 0)}</span></div>
+        <${Bar} v=${v} cor=${corTensao(v)} h=${6} label=${n} />
+        <div className="gv-chips"><span className=${'gv-chip ' + (v >= 60 ? 'neg' : v >= 35 ? 'ouro' : 'pos')}>${v >= 60 ? 'tensão alta' : v >= 35 ? 'atrito' : 'harmonia'}</span></div></article>`)}</div>
+    </div>
+  </${PdSec}>`;
 }
 
 /* ---- linha do mandato ---- */
@@ -15998,22 +16003,25 @@ function ArticularModal({ g, upd, item, onClose }) {
 function CartaoPauta({ g, upd, votarItem }) {
   const [art, setArt] = useState(null);
   const linha = (it, naGaveta) => {
-    const pj = !naGaveta ? projecaoItem(g, it) : null; const restoMp = it.mp ? MP_PRAZO - (it.meses || 0) : null;
-    return html`<li key=${it.id} className="p-3 rounded-lg border border-line flex flex-col gap-2" data-pauta-item=${it.id}>
-      <div className="flex flex-wrap items-center gap-2"><${Tag} cor=${it.mp ? 'var(--rubro)' : 'var(--anil)'}>${it.inst}${it.mp ? ' · em vigor' : ''}</${Tag}><span className="text-sm font-semibold flex-1 min-w-0">${it.prop.topic}</span><span className="num text-xs text-muted">${it.meses || 0} ${(it.meses || 0) === 1 ? 'mês' : 'meses'} em tramitação</span></div>
-      ${pj && html`<div className="text-sm"><span className="num">Câmara ${pj.v.totC}/${pj.q.c} · Senado ${pj.v.totS}/${pj.q.s}</span> · <b style=${{ color: pj.passa ? 'var(--verde)' : 'var(--rubro)' }}>${pj.passa ? `passa com folga de ${pj.folga}` : `faltam ${-pj.folga}`}</b>${it.mp && html` · <span className="text-rubro">caduca em ${restoMp} ${restoMp === 1 ? 'mês' : 'meses'}</span>`}</div>`}
-      ${naGaveta ? html`<div className="text-xs text-muted">Na gaveta: sem desgaste e sem andamento.</div>` : html`<div className="text-xs text-muted">Bônus de apoio: <span className="num">${sgn(it.apoioBonus || 0, 0)}</span>${it.mp ? '' : ' (−3 por mês sem trabalho; arquivada após 3 meses)'}</div>`}
-      <div className="flex flex-wrap gap-2">
-        ${!naGaveta && html`<button className="btn btn-ghost !text-xs" disabled=${g.acoes <= 0} onClick=${() => setArt(it.id)}><${Icon} n="Handshake" s=${13} /> Articular · 1 ação</button><button className="btn btn-ghost !text-xs" onClick=${() => votarItem(it.id)}><${Icon} n="Vote" s=${13} /> Levar a voto</button>`}
-        ${!it.mp && html`<button className="btn btn-ghost !text-xs" disabled=${naGaveta ? g.pauta.length >= PAUTA_MAX : g.gaveta.length >= GAVETA_MAX} onClick=${() => upd(n => { moveGaveta(n, it.id, !naGaveta); })}><${Icon} n="Archive" s=${13} /> ${naGaveta ? 'Tirar da gaveta' : 'Gaveta'}</button>`}
-        <button className="btn btn-ghost !text-xs" onClick=${() => upd(n => { retiraItem(n, it.id); })}><${Icon} n="Trash2" s=${13} /> Retirar</button>
+    const pj = !naGaveta ? projecaoItem(g, it) : null; const restoMp = it.mp ? MP_PRAZO - (it.meses || 0) : null; const m = it.meses || 0;
+    return html`<li key=${it.id} className="pd-card" style=${{ '--st': naGaveta ? 'var(--muted)' : pj.passa ? 'var(--verde)' : 'var(--rubro)' }} data-pauta-item=${it.id}>
+      <div className="gv-chips"><span className=${'gv-chip ' + (it.mp ? 'neg' : '')}>${it.inst}${it.mp ? ' · em vigor' : ''}</span><span className="gv-chip">${m} ${m === 1 ? 'mês' : 'meses'} tramitando</span>
+        ${pj && html`<span className=${'gv-chip ' + (pj.passa ? 'pos' : 'neg')}>${pj.passa ? `passa com folga de ${pj.folga}` : `faltam ${-pj.folga}`}</span>`}${it.mp && pj && html`<span className="gv-chip neg">caduca em ${restoMp} ${restoMp === 1 ? 'mês' : 'meses'}</span>`}${naGaveta && html`<span className="gv-chip">na gaveta</span>`}</div>
+      <h4>${it.prop.topic}</h4>
+      ${pj ? html`<div className="flex flex-col gap-2" data-pauta-proj="1"><${PdVoto} rot="Câmara" v=${pj.v.totC} q=${pj.q.c} total=${513} /><${PdVoto} rot="Senado" v=${pj.v.totS} q=${pj.q.s} total=${81} /></div>` : html`<div className="pd-s">Sem desgaste e sem andamento enquanto estiver na gaveta.</div>`}
+      ${!naGaveta && html`<${PdDet} rot="Detalhes"><div>Bônus de apoio: <span className="num">${sgn(it.apoioBonus || 0, 0)}</span>${it.mp ? '' : ' (−3 por mês sem trabalho; arquivada após 3 meses).'}</div></${PdDet}>`}
+      <div className="gv-acts mt-auto">
+        ${!naGaveta && html`<button className="btn btn-pri" onClick=${() => votarItem(it.id)}><${Icon} n="Vote" s=${14} /> Levar a voto</button><button className="btn btn-ghost" disabled=${g.acoes <= 0} onClick=${() => setArt(it.id)}><${Icon} n="Handshake" s=${13} /> Articular · 1 ação</button>`}
+        ${!it.mp && html`<button className="btn btn-ghost" disabled=${naGaveta ? g.pauta.length >= PAUTA_MAX : g.gaveta.length >= GAVETA_MAX} onClick=${() => upd(n => { moveGaveta(n, it.id, !naGaveta); })}><${Icon} n="Archive" s=${13} /> ${naGaveta ? 'Tirar da gaveta' : 'Gaveta'}</button>`}
+        <button className="btn btn-ghost" onClick=${() => upd(n => { retiraItem(n, it.id); })}><${Icon} n="Trash2" s=${13} /> Retirar</button>
       </div></li>`;
   };
   const itemArt = art ? g.pauta.find(x => x.id === art) : null;
   return html`<section className="sec" aria-labelledby="pauta-t" data-pauta="1">
-    <div className="flex flex-wrap items-baseline justify-between gap-2 mb-3"><h3 id="pauta-t" className="disp text-xl font-extrabold uppercase">Pauta do Congresso</h3><span className="text-xs text-muted num">${g.pauta.length}/${PAUTA_MAX} na pauta · ${g.gaveta.length}/${GAVETA_MAX} na gaveta</span></div>
-    ${g.pauta.length === 0 ? html`<p className="text-sm text-muted">Nada tramitando. No parecer de um PL, MP ou PEC, escolha “Enviar e tramitar” para articular os votos com calma. MPs valem desde o envio, mas caducam em 4 meses sem votação.</p>` : html`<ul className="flex flex-col gap-2">${g.pauta.map(it => linha(it, false))}</ul>`}
-    ${g.gaveta.length > 0 && html`<div className="mt-4"><div className="eyebrow mb-2">Gaveta</div><ul className="flex flex-col gap-2">${g.gaveta.map(it => linha(it, true))}</ul></div>`}
+    <div className="gv-sec-h"><div><div className="eyebrow">Congresso · tramitação</div><h3 id="pauta-t" className="disp text-2xl font-extrabold uppercase">Pauta do Congresso<${GvTip} lado="esq" txt="No parecer de um PL, MP ou PEC, escolha “Enviar e tramitar” para articular os votos com calma. MPs valem desde o envio, mas caducam em 4 meses sem votação. A barra marca os votos previstos; o traço branco é o mínimo exigido." /></h3></div>
+      <span className="gv-chip num">${g.pauta.length}/${PAUTA_MAX} na pauta</span></div>
+    ${g.pauta.length === 0 ? html`<div className="pd-vazio"><${Icon} n="Inbox" s=${20} /> Nada tramitando por ora.</div>` : html`<ul className="pd-grid" style=${{ '--w': '380px' }}>${g.pauta.map(it => linha(it, false))}</ul>`}
+    ${g.gaveta.length > 0 && html`<div className="mt-5"><div className="eyebrow mb-2">Gaveta · ${g.gaveta.length}/${GAVETA_MAX}</div><ul className="pd-grid" style=${{ '--w': '380px' }}>${g.gaveta.map(it => linha(it, true))}</ul></div>`}
     ${itemArt && html`<${ArticularModal} g=${g} upd=${upd} item=${itemArt} onClose=${(levar) => { setArt(null); if (levar) votarItem(levar); }} />`}
   </section>`;
 }
@@ -17564,19 +17572,109 @@ function PoderGoverno({ g, upd, decidir }) {
 }
 function PoderSTF({ g, upd }) {
   const [stfIdx, setStfIdx] = useState(null);
-  return html`<div className="grid gap-6 lg:grid-cols-12 items-start">
-    <div className="lg:col-span-5 min-w-0 flex flex-col gap-6"><${CartaoVagaSTF} g=${g} onIndicar=${setStfIdx} /><${CfEmendas} g=${g} /></div>
-    <div className="lg:col-span-7 min-w-0"><${CartaoSTF} g=${g} onIndicar=${setStfIdx} upd=${upd} /></div>
-    <div className="lg:col-span-12 min-w-0"><${NotaFim} area="stf"><p>Composição real em out/2026 (fontes: Wikipédia, Senado, imprensa). Indicações, votos do Senado e do plenário do STF, afinidade e independência são simulados. O garantismo e o viés político dos ministros em exercício têm perfil baseado em votos públicos em casos emblemáticos, com variação simulada nesta partida; candidatos e indicados do jogador têm perfil sorteado. Ministros só votam: nunca falam.</p>
+  const cad = g.stfCadeiras || []; const jaMes = g.stfNomMes === g.mes;
+  const vagas = cad.filter(c => c.vaga).length; const seus = cad.filter(c => !c.vaga && c.seu).length;
+  const derr = (g.log || []).filter(l => l.res === 'derrubada').length;
+  const prox = STF_APOS.map(a => ({ a, c: cad.find(c => !c.vaga && c.nome === a.nome) })).filter(x => x.c && x.a.mes > g.mes).sort((x, y) => x.a.mes - y.a.mes)[0];
+  const dossie = (nome) => upd(n => { pedirDossie(n, nome); });
+  const stFase = vagas === 0 ? 'sem vaga' : jaMes ? 'feita neste mês' : 'disponível';
+  return html`<div className="flex flex-col gap-6" data-pd="stf">
+    <style>${GV_CSS}${PD_CSS}</style>
+    <${PdKpis} area="stf" itens=${[
+      { dado: 'tensao', ic: 'Scale', cor: corRisco(g.stf), k: 'Tensão com o STF', v: fmt(g.stf, 0) + '/100', s: g.stf > 60 ? 'ameaça à democracia' : g.stf > 35 ? 'relação fria' : 'convivência normal' },
+      { dado: 'vagas', ic: 'Gavel', cor: vagas ? 'var(--ouro)' : 'var(--verde)', k: 'Vagas abertas', v: vagas, s: vagas ? (jaMes ? 'indicação feita neste mês' : 'uma indicação por mês') : 'composição completa' },
+      { dado: 'ministros', ic: 'Users', cor: 'var(--anil)', k: 'Ministros em exercício', v: (cad.length - vagas) + '/' + cad.length, s: seus ? seus + (seus === 1 ? ' indicado por você' : ' indicados por você') : 'nenhum indicado por você' },
+      { dado: 'derrubadas', ic: 'FileX', cor: derr ? 'var(--rubro)' : 'var(--muted)', k: 'Medidas derrubadas', v: derr, s: derr ? 'no plenário do Supremo' : 'nenhuma até agora' },
+      { dado: 'aposentadoria', ic: 'CalendarClock', cor: 'var(--muted)', k: 'Próxima aposentadoria', sm: true, v: prox ? (STF_CURTO[prox.a.nome] || prox.a.nome) : 'Nenhuma', s: prox ? 'compulsória em ' + dataCurtaAno(prox.a.mes) : 'até o fim do mandato' }
+    ]} />
+    <${PdSec} eyebrow="Supremo Tribunal Federal" titulo="Ministros" dado="ministros" id="stf-t" dir="esq" tip=${(g.stf > 60 ? 'Ministros falam em “ameaça à democracia”. Medidas no limite da Constituição serão derrubadas sem hesitação. ' : g.stf > 35 ? 'Relação fria: o Supremo observa cada decreto com lupa. ' : 'Convivência institucional normal entre os Poderes. ') + 'Afinidade com o governo é simulada a partir de quem indicou cada ministro.'}
+      right=${html`<span className="gv-chip" style=${{ color: corRisco(g.stf), borderColor: corRisco(g.stf) }}>tensão ${fmt(g.stf, 0)}/100</span>`}>
+      <div className="mb-4"><${Bar} v=${g.stf} cor=${corRisco(g.stf)} label="Tensão com o STF" /></div>
+      <div className="pd-grid" style=${{ '--w': '290px' }} data-stf-grid="1">${cad.map((c, i) => {
+        if (c.vaga) { const m = mesesVaga(g, c);
+          return html`<article key=${'v' + i} className="pd-card vaga" style=${{ '--st': 'var(--ouro)' }} role="region" aria-label=${'Cadeira vaga no STF: ' + c.de} data-stf-vaga=${c.de}>
+            <div className="pd-h"><span className="gv-ic" style=${{ '--c': 'var(--ouro)' }}><${Icon} n="Gavel" s=${20} /></span><div className="min-w-0"><div className="pd-n">Vaga de ${c.de}</div><div className="pd-s">aberta há ${m} ${m === 1 ? 'mês' : 'meses'}</div></div><span></span></div>
+            <div className="gv-chips"><span className=${'gv-chip ' + (m >= 3 ? 'neg' : 'ouro')}>${m >= 3 ? 'tensão +2 por mês' : 'pauta obrigatória'}</span></div>
+            <div className="gv-acts mt-auto"><button className="btn btn-pri" disabled=${jaMes} title=${jaMes ? 'Uma indicação por mês' : ''} onClick=${() => setStfIdx(i)}><${Icon} n="Gavel" s=${14} /> Indicar ministro(a)</button></div></article>`; }
+        const af = afinidadeSTF(g, c); const id = idadeSTF(c.nasc, g.mes);
+        return html`<article key=${c.nome} className=${'pd-card'} style=${{ '--st': c.seu ? 'var(--ouro)' : corAtr(af) }} data-stf-min=${c.nome}>
+          <div className="pd-h"><${Ef} nome=${c.nome} cor=${c.seu ? 'var(--ouro)' : 'var(--anil)'} papel="stf" destaque=${!!c.seu} s=${44} fk=${fotoStf(c.nome)} />
+            <div className="min-w-0"><div className="pd-n">${c.nome}</div><div className="pd-s">${id != null ? id + ' anos · ' : ''}indicado por ${c.indicadoPor}</div></div><span className="pd-big" style=${{ color: corAtr(af) }} title=${afinidadeSTFFonte(g, c)}>${fmt(af, 0)}</span></div>
+          <div className="gv-meter" style=${{ gridTemplateColumns: '72px minmax(0,1fr)' }} title=${afinidadeSTFFonte(g, c)}><span>Afinidade</span><${Bar} v=${af} cor=${corAtr(af)} h=${6} label=${'Afinidade simulada de ' + c.nome} /></div>
+          ${c.seu && html`<div className="gv-chips"><span className="gv-chip ouro">indicado por você</span></div>`}
+          <${PdDet} rot="Perfil e dossiê"><${FichaPessoa} pessoa=${{ nome: c.nome, indicadoPor: c.indicadoPor }} pasta="stf" g=${g} onDossie=${dossie} chaves=${TRACOS_STF} sem="barras" compacta /></${PdDet}>
+        </article>`; })}</div>
+    </${PdSec}>
+    <div className="grid gap-6 lg:grid-cols-2 items-start">
+      <${PdSec} eyebrow="Supremo · Senado" titulo="Fluxo da indicação" dado="fluxo" id="fluxo-t" dir="esq" tip="Uma indicação por mês. Indicados com 70 anos ou mais são barrados pelo limite constitucional. O Senado vota na CCJ e no plenário (41 votos); o voto de cada senador depende da relação do bloco com o governo, da origem do nome, do clima político e do currículo e da popularidade do indicado. Tudo simulado."
+        right=${html`<span className=${'gv-chip ' + (vagas && !jaMes ? 'ouro' : '')}>${stFase}</span>`}>
+        <div className="pd-grid" style=${{ '--w': '170px' }} data-stf-fluxo="1">${[['Indicação', 'Você escolhe um nome para a cadeira vaga.', 'UserPlus', 'var(--ouro)'], ['Sabatina na CCJ', 'Os senadores arguem o indicado.', 'MessagesSquare', 'var(--anil)'], ['Plenário do Senado', 'Aprovação exige 41 votos.', 'Vote', 'var(--verde)']].map(([t, d, ic, cor], i) => html`<div key=${t} className="pd-card pd-step" style=${{ '--st': cor, '--c': cor }}>
+          <div className="pd-h" style=${{ gridTemplateColumns: 'auto minmax(0,1fr)' }}><span className="nb">${i + 1}</span><div className="pd-n">${t}</div></div><div className="pd-s">${d}</div></div>`)}</div>
+        ${g.stfUltima && html`<p className="pd-s mt-3">Última indicação: ${g.stfUltima.de ? 'cadeira de ' + g.stfUltima.de : 'registrada'}.</p>`}
+      </${PdSec}>
+      <${CfEmendas} g=${g} />
+    </div>
+    <${NotaFim} area="stf"><p>Composição real em out/2026 (fontes: Wikipédia, Senado, imprensa). Indicações, votos do Senado e do plenário do STF, afinidade e independência são simulados. O garantismo e o viés político dos ministros em exercício têm perfil baseado em votos públicos em casos emblemáticos, com variação simulada nesta partida; candidatos e indicados do jogador têm perfil sorteado. Ministros só votam: nunca falam.</p>
       ${(g.stfCadeiras || []).some(c => !c.vaga && fotoUri(fotoStf(c.nome))) && html`<div><div className="eyebrow mb-1">Créditos das fotos dos ministros (Wikimedia Commons)</div>
         <ul className="flex flex-col gap-0.5">${(g.stfCadeiras || []).filter(c => !c.vaga && FOTO_ST.cred && FOTO_ST.cred[fotoStf(c.nome)]).map(c => { const k = FOTO_ST.cred[fotoStf(c.nome)];
           return html`<li key=${c.nome}>${c.nome}: <a className="underline" href=${k.url} target="_blank" rel="noopener noreferrer">${k.autor}</a>, ${k.licenca}</li>`; })}</ul></div>`}
-    </${NotaFim}></div>
+    </${NotaFim}>
     ${stfIdx != null && html`<${ModalSTF} g=${g} upd=${upd} idx=${stfIdx} onClose=${() => setStfIdx(null)} />`}
   </div>`;
 }
-function PoderOposicao({ g }) {
-  return html`<div className="grid gap-6 lg:grid-cols-2 items-start"><${CartaoOposicao} g=${g} /><${CartaoPoderes} g=${g} /></div>`;
+const PD_AMEACA = {
+  queda: ['TrendingDown', 'var(--rubro)', ['eleicoes', 'Ver pesquisas'], ['governo', 'Ver Governo']],
+  cpi: ['Search', 'var(--ambar)', ['congresso', 'Ver base no Congresso'], ['imprensa', 'Ver Imprensa']],
+  convoca: ['UserRoundX', 'var(--ambar)', ['governo', 'Ver ministros'], ['congresso', 'Ver Congresso']],
+  obstrucao: ['Ban', 'var(--rubro)', ['congresso', 'Ver pauta'], ['congresso', 'Ver base']],
+  impeach: ['Siren', 'var(--rubro)', ['congresso', 'Ver base no Congresso'], ['stf', 'Ver STF']],
+  frente: ['Users', 'var(--ambar)', ['congresso', 'Ver base no Congresso'], ['governo', 'Ver Governo']],
+  rua: ['Megaphone', 'var(--ambar)', ['imprensa', 'Ver Imprensa'], ['governo', 'Ver Governo']],
+  narrativa: ['Newspaper', 'var(--ambar)', ['imprensa', 'Ver Imprensa'], ['eleicoes', 'Ver pesquisas']]
+};
+const PD_ROTA = { congresso: 'Congresso', governo: 'Governo', stf: 'STF', eleicoes: 'Eleições', imprensa: 'Imprensa' };
+function PoderOposicao({ g, ir }) {
+  const O = g.oposicao; const c = liderOposicao(g.cfg); const bl = PMAP[bloco(c.partido)]; const ap = aprovacao(g); const imp = riscoImpeachment(g);
+  const go = (k) => { if (ir) ir(k); };
+  const cpiOk = O.feitos.some(f => f.k === 'cpi'); const cpiObj = O.objetivos.find(o => o.k === 'cpi');
+  const ped = O.pedidoImp && g.mes - O.pedidoImp < 4;
+  const ameacas = O.objetivos.map(ob => ({ k: ob.k, prog: ob.prog, feita: false })).concat(O.feitos.slice(-3).map(f => ({ k: f.k, prog: 100, feita: true })));
+  return html`<div className="flex flex-col gap-6" data-pd="oposicao">
+    <style>${GV_CSS}${PD_CSS}</style>
+    <${PdKpis} area="oposicao" itens=${[
+      { dado: 'lider', ic: 'UserRound', cor: bl.cor, k: 'Líder da oposição', sm: true, v: c.nome, s: sg(c.partido) + ' · simulação' },
+      { dado: 'forca', ic: 'Swords', cor: corRisco(O.forca), k: 'Força da oposição', v: fmt(O.forca, 0), s: 'de 100 pontos' },
+      { dado: 'impeachment', ic: 'Siren', cor: corRisco(imp), k: 'Risco de impeachment', v: fmt(imp, 0) + '%', s: ped ? 'pedido protocolado' : imp >= 30 ? 'atenção redobrada' : 'baixo por ora' },
+      { dado: 'cpi', ic: 'Search', cor: cpiOk ? 'var(--rubro)' : cpiObj ? 'var(--ambar)' : 'var(--verde)', k: 'CPI', sm: true, v: cpiOk ? 'Instalada' : cpiObj ? Math.round(cpiObj.prog) + '% da meta' : 'Sem pedido', s: cpiOk ? 'conquista da oposição' : cpiObj ? 'meta da oposição' : 'nenhuma em curso' },
+      { dado: 'intencao', ic: 'Vote', cor: ap >= O.intencao ? 'var(--verde)' : 'var(--rubro)', k: 'Intenção em 2030', v: fmt(O.intencao, 0) + '%', s: 'sua aprovação: ' + fmt(ap, 0) + '%' }
+    ]} />
+    <${PdSec} eyebrow="Oposição · liderança" titulo="Rumo a 2030" dado="lider" id="op-t" dir="esq" tip="Simulação do jogo: nada aqui descreve falas ou atos reais de ninguém. “A oposição” é um personagem coletivo fictício; o líder é o nome mais cotado do campo contrário." right=${html`<span className="gv-chip" role="status">${leituraOposicao(g)}</span>`}>
+      <article className="pd-card" style=${{ '--st': bl.cor }} data-oposicao=${c.nome}>
+        <div className="pd-h" style=${{ gridTemplateColumns: 'auto minmax(0,1fr) auto' }}><${Ef} nome=${c.nome} cor=${bl.cor} papel="presidente" s=${56} fk=${fotoPres(c.nome)} />
+          <div className="min-w-0"><div className="pd-n text-lg">${c.nome}</div><div className="gv-chips mt-1"><${LogoPartido} bloco=${bl.id} sigla=${c.partido} tam=${22} /><span className="gv-chip">${sg(c.partido)}</span><span className="gv-chip">liderança da oposição</span></div></div>
+          <div className="flex gap-6 text-center"><div><div className="pd-big" style=${{ color: corAprov(ap) }}>${fmt(ap, 0)}%</div><div className="pd-s">sua aprovação</div></div><div><div className="pd-big" style=${{ color: 'var(--rubro)' }}>${fmt(O.intencao, 0)}%</div><div className="pd-s">intenção 2030</div></div></div></div>
+        <div className="gv-meter" style=${{ gridTemplateColumns: '110px minmax(0,1fr) 28px' }}><span>Força</span><${Bar} v=${O.forca} cor="var(--rubro)" h=${6} label="Força da oposição" /><span className="num">${fmt(O.forca, 0)}</span></div>
+      </article>
+    </${PdSec}>
+    <${PdSec} eyebrow="Oposição · ameaças" titulo="Ameaças ao governo" dado="ameacas" id="am-t" dir="esq" tip="Metas atuais da oposição e o risco de impeachment. As ações levam você ao painel onde a ameaça pode ser enfrentada." right=${html`<span className="gv-chip">${O.objetivos.length} metas em curso</span>`}>
+      <div className="pd-grid" style=${{ '--w': '300px' }}>
+        <article className="pd-card" style=${{ '--st': corRisco(imp) }} data-ameaca="impeachment">
+          <div className="pd-h"><span className="gv-ic" style=${{ '--c': corRisco(imp) }}><${Icon} n="Siren" s=${20} /></span><h4>Impeachment</h4><span className="pd-big" style=${{ color: corRisco(imp) }}>${fmt(imp, 0)}%</span></div>
+          <${Bar} v=${imp} cor=${corRisco(imp)} h=${6} label="Risco de impeachment" />
+          <div className="gv-chips"><span className=${'gv-chip ' + (ped ? 'neg' : '')}>${ped ? 'pedido protocolado' : 'sem pedido recente'}</span><span className="gv-chip">342 votos abrem</span></div>
+          <div className="gv-acts mt-auto"><button type="button" className="btn btn-pri" onClick=${() => go('congresso')}><${Icon} n="Landmark" s=${14} /> Ver base no Congresso</button><button type="button" className="btn btn-ghost" onClick=${() => go('governo')}>Ver Governo</button></div>
+        </article>
+        ${ameacas.map(ob => { const D = OBJ_OP.find(x => x.k === ob.k); const M = PD_AMEACA[ob.k] || ['Target', 'var(--ambar)', ['congresso', 'Ver Congresso'], ['governo', 'Ver Governo']]; const cor = ob.feita ? 'var(--muted)' : M[1];
+          return html`<article key=${ob.k + (ob.feita ? 'f' : '')} className="pd-card" style=${{ '--st': cor }} data-ameaca=${ob.k}>
+            <div className="pd-h"><span className="gv-ic" style=${{ '--c': cor }}><${Icon} n=${ob.feita ? 'CircleCheck' : M[0]} s=${20} /></span><h4>${D.nome}</h4><span className="pd-big" style=${{ color: cor }}>${Math.round(ob.prog)}%</span></div>
+            <${Bar} v=${ob.prog} cor=${cor} h=${6} label=${D.nome} />
+            <div className="gv-chips"><span className=${'gv-chip ' + (ob.feita ? 'neg' : 'ouro')}>${ob.feita ? 'conquistada' : 'em andamento'}</span></div>
+            ${!ob.feita && html`<div className="gv-acts mt-auto"><button type="button" className="btn btn-pri" onClick=${() => go(M[2][0])}>${M[2][1]}</button><button type="button" className="btn btn-ghost" onClick=${() => go(M[3][0])}>${M[3][1]}</button></div>`}
+          </article>`; })}
+      </div>
+    </${PdSec}>
+    <${CartaoPoderes} g=${g} />
+  </div>`;
 }
 function Poder({ g, upd, decidir, votarItem, chip, setChip, abrirPend }) {
   const c = CHIPS.poder.some(x => x.k === chip) ? chip : 'congresso';
@@ -17584,7 +17682,7 @@ function Poder({ g, upd, decidir, votarItem, chip, setChip, abrirPend }) {
     ${c === 'congresso' && html`<${Congresso} g=${g} upd=${upd} decidir=${decidir} votarItem=${votarItem} />`}
     ${c === 'governo' && html`<${PoderGoverno} g=${g} upd=${upd} decidir=${decidir} />`}
     ${c === 'stf' && html`<${PoderSTF} g=${g} upd=${upd} />`}
-    ${c === 'oposicao' && html`<${PoderOposicao} g=${g} />`}
+    ${c === 'oposicao' && html`<${PoderOposicao} g=${g} ir=${setChip} />`}
     ${c === 'eleicoes' && html`<${ElPainel} g=${g} upd=${upd} />`}
     ${c === 'imprensa' && html`<${EntImprensa} g=${g} upd=${upd} />`}
     ${c === 'figuras' && html`<${ElFiguras} g=${g} />`}
@@ -17749,6 +17847,60 @@ function Manchete({ f }) {
     ${f.sub && html`<div className="text-xs text-muted leading-snug mt-0.5">${f.sub}</div>`}</li>`;
 }
 
+/* ---- Poder v2: blocos visuais compartilhados (Congresso, STF, Oposição, Eleições, Figuras) ---- */
+const PD_CSS = `
+.pd-two{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:24px;align-items:start}
+@media (min-width:1101px){.pd-two>:first-child{position:sticky;top:12px}}
+@media (max-width:1100px){.pd-two{grid-template-columns:minmax(0,1fr)}}
+.pd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,var(--w,300px)),1fr));gap:12px;align-items:stretch}
+.pd-card{display:flex;flex-direction:column;gap:10px;padding:14px;background:var(--panel2);border:1px solid var(--line2);border-top:3px solid var(--st,var(--line2));border-radius:12px;min-width:0;list-style:none}
+.pd-card:hover{border-color:var(--muted);border-top-color:var(--st,var(--muted))}
+.pd-card.sel{border-color:var(--ouro);border-top-color:var(--ouro)}
+.pd-card.vaga{border-style:dashed;border-top-style:solid}
+.pd-card h4{font-family:var(--f-disp);font-size:17px;font-weight:700;line-height:1.25;margin:0;overflow-wrap:anywhere}
+.pd-h{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center}
+.pd-n{font-weight:600;font-size:15px;line-height:1.25;overflow-wrap:anywhere}
+.pd-s{font-size:12px;color:var(--muted);line-height:1.35}
+.pd-big{font-family:var(--f-disp);font-size:22px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.pd-voto{display:grid;grid-template-columns:58px minmax(0,1fr) auto;gap:8px;align-items:center;font-size:12px;color:var(--muted)}
+.pd-vb{position:relative;height:8px;border-radius:4px;background:var(--line)}
+.pd-vb i{display:block;height:100%;border-radius:4px;background:var(--c,var(--verde))}
+.pd-vb b{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--fg);opacity:.85;border-radius:1px}
+.pd-bar3{display:flex;height:10px;border-radius:5px;overflow:hidden;background:var(--line)}
+.pd-tri{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.pd-tri>div{padding:10px 6px;background:var(--panel2);border:1px solid var(--line2);border-radius:10px;text-align:center}
+.pd-tri .v{font-family:var(--f-disp);font-size:26px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.pd-tri .l{font-size:12px;color:var(--muted)}
+.pd-seg{display:inline-flex;gap:6px;flex-wrap:wrap}
+.pd-seg button{padding:6px 12px;font-size:13px}
+.pd-row{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,2fr) 52px;gap:10px;align-items:center;font-size:14px}
+.pd-row .nm{min-width:0;display:flex;align-items:center;gap:8px;overflow-wrap:anywhere}
+.pd-dot{width:10px;height:10px;border-radius:50%;flex:none;display:inline-block}
+.pd-list{display:flex;flex-direction:column;gap:6px;max-height:560px;overflow-y:auto;padding-right:4px}
+.pd-city{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:center;padding:8px 12px;background:var(--panel2);border:1px solid var(--line2);border-radius:10px;cursor:pointer;text-align:left;color:var(--fg);font:inherit}
+.pd-city:hover{border-color:var(--muted)}
+.pd-city.sel{border-color:var(--ouro)}
+.pd-step{position:relative}
+.pd-step .nb{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:13px;background:color-mix(in srgb,var(--c,var(--muted)) 18%,transparent);color:var(--c,var(--muted))}
+.pd-filtros{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.pd-filtros input,.pd-filtros select{width:auto;min-width:200px;max-width:280px}
+.pd-vazio{display:flex;align-items:center;gap:12px;padding:14px;border:1px dashed var(--line2);border-radius:12px;color:var(--muted);font-size:14px}
+`;
+function PdSec({ eyebrow, titulo, tip, dir, sub, right, children, dado, id, secao, css, cls }) {
+  return html`<section className=${'sec min-w-0 ' + (cls || '')} data-pd-sec=${dado || ''} data-secao=${secao} aria-labelledby=${id}>
+    ${css && html`<style>${GV_CSS}${PD_CSS}</style>`}<div className="gv-sec-h"><div><div className="eyebrow">${eyebrow}</div><h3 id=${id} className="disp text-2xl font-extrabold uppercase">${titulo}${tip && html`<${GvTip} txt=${tip} lado=${dir} />`}</h3>${sub && html`<p className="gv-sub">${sub}</p>`}</div>${right}</div>${children}</section>`;
+}
+function PdKpis({ area, itens }) {
+  return html`<section aria-label=${'Resumo: ' + area} data-pd="resumo" data-pd-area=${area}><div className="gv-kpis">${itens.map(k => html`<${GvKpi} key=${k.dado} ...${k} />`)}</div></section>`;
+}
+function PdVoto({ rot, v, q, total }) {
+  const ok = v >= q;
+  return html`<div className="pd-voto"><span>${rot}</span><div className="pd-vb" role="meter" aria-valuenow=${v} aria-valuemin="0" aria-valuemax=${total} aria-label=${rot + ': ' + v + ' de ' + q + ' votos necessários'}><i style=${{ width: clamp(v / total * 100, 0, 100) + '%', '--c': ok ? 'var(--verde)' : 'var(--rubro)' }}></i><b style=${{ left: (q / total * 100) + '%' }}></b></div><span className="num" style=${{ color: ok ? 'var(--verde)' : 'var(--rubro)' }}>${v}/${q}</span></div>`;
+}
+function PdDet({ rot, children }) {
+  return html`<details className="gv-det"><summary><span className="gv-car"><${Icon} n="ChevronRight" s=${14} /></span> ${rot}</summary><div className="gv-det-b">${children}</div></details>`;
+}
+
 /* ============================== GOVERNO & CONGRESSO ============================== */
 function Congresso({ g, upd, decidir, votarItem }) {
   const [casa, setCasa] = useState('cam');
@@ -17764,52 +17916,58 @@ function Congresso({ g, upd, decidir, votarItem }) {
     n.negMes[pid]++;
   });
   const ordem = PARTIDOS.filter(P => P[casa] > 0).sort((a, b) => b[casa] - a[casa]);
-  return html`<div className="grid gap-6 lg:grid-cols-12">
-    <section className="lg:col-span-5 sec flex flex-col gap-4 min-w-0" aria-label="Plenário">
-      <div className="flex gap-2">${[['cam', 'Câmara · 513'], ['sen', 'Senado · 81']].map(([k, l]) => html`<button key=${k} type="button" onClick=${() => setCasa(k)} aria-pressed=${casa === k} className=${'btn btn-ghost text-sm ' + (casa === k ? '!border-ouro text-ouro' : '')}>${l}</button>`)}</div>
-      <div className="flex justify-center"><${Hemiciclo} g=${g} casa=${casa} /></div>
-      <div className="flex h-3 rounded-full overflow-hidden" aria-hidden="true">
-        <div style=${{ width: B.base / total * 100 + '%', background: 'var(--verde)' }}></div><div style=${{ width: B.indep / total * 100 + '%', background: 'var(--ouro)' }}></div><div style=${{ width: B.opos / total * 100 + '%', background: 'var(--rubro)' }}></div>
-      </div>
-      <div className="grid grid-cols-3 gap-2 text-center">
-        <div><div className="num text-2xl text-verde">${B.base}</div><div className="eyebrow">Base aliada</div></div>
-        <div><div className="num text-2xl text-ouro">${B.indep}</div><div className="eyebrow">Centrão / indep.</div></div>
-        <div><div className="num text-2xl text-rubro">${B.opos}</div><div className="eyebrow">Oposição</div></div>
-      </div>
-      <div className="text-xs text-muted">Leis e MPs exigem ${casa === 'cam' ? '257' : '41'} votos; PECs, ${casa === 'cam' ? '308' : '49'} em dois turnos. Impeachment abre com 342 deputados e cassa com 54 senadores.</div>
-    </section>
-    <section className="lg:col-span-7 sec min-w-0">
-      <div className="flex flex-wrap items-baseline justify-between gap-2 mb-3">
-        <h3 className="disp text-2xl font-extrabold uppercase">Articulação política</h3>
-        <span className="text-xs text-muted">Relação ${casa === 'cam' ? 'com as bancadas da Câmara' : 'com as bancadas do Senado'}</span>
-      </div>
-      <div className="flex flex-col divide-y divide-line">
-        ${ordem.map(P => { const st = g.parties[P.id]; const rel = casa === 'cam' ? st.rel : st.relS; const s = status(rel); const proprio = P.id === g.cfg.partido; const c = custoEmenda(g, P.id);
-      return html`<div key=${P.id} className="py-3 flex flex-col gap-2">
-            <div className="flex flex-wrap items-center gap-2">
-              <${LogoPartido} bloco=${P.id} tam=${40} />
-              <span className="font-semibold" title=${P.full || ''}>${P.nome}</span>
-              ${proprio && html`<${Tag} cor="var(--ouro)">seu partido</${Tag}>`}
-              <${Tag} cor=${s === 'base' ? 'var(--verde)' : s === 'indep' ? 'var(--ouro)' : 'var(--rubro)'}>${s === 'base' ? 'base' : s === 'indep' ? 'independente' : 'oposição'}</${Tag}>
-              ${st.min > 0 && html`<${Tag}>${st.min} ministério${st.min > 1 ? 's' : ''}</${Tag}>`}
-              <span className="ml-auto num text-sm text-muted">${P[casa]} ${casa === 'cam' ? 'dep.' : 'sen.'}</span>
-            </div>
-            ${(P.membros.length > 1 || P.id === 'OUTROS') && html`<div className="text-[11px] text-muted leading-tight -mt-1">${P.full}</div>`}
-            ${jusSuplentes(g, casa, P.id).length > 0 && html`<div className="text-[11px] text-muted leading-tight -mt-1" data-cadeira-suplente=${P.id}>${P[casa]} cadeiras · ${jusSuplentes(g, casa, P.id).length} ocupada${jusSuplentes(g, casa, P.id).length > 1 ? 's' : ''} por suplente</div>`}
-            <div className="flex items-center gap-3"><div className="flex-1"><${Bar} v=${rel} cor=${s === 'base' ? 'var(--verde)' : s === 'indep' ? 'var(--ouro)' : 'var(--rubro)'} h=${6} label=${'Relação com ' + P.nome} /></div><span className="num text-xs w-8 text-right">${fmt(rel, 0)}</span></div>
-            ${!proprio && P[casa] > 0 && html`<div className="flex flex-wrap gap-2">
-              ${casa === 'cam' ? html`
-                <button type="button" className="btn btn-ghost !text-xs" onClick=${() => negociar(P.id, 'emenda')}><${Icon} n="CircleDollarSign" s=${13} /> Liberar emendas · ${bi(c)}</button>
-                <button type="button" className="btn btn-ghost !text-xs" disabled=${st.min >= 3 || g.extras.length >= MINISTERIOS_EXTRA.length} onClick=${() => negociar(P.id, 'ministerio')}><${Icon} n="Building2" s=${13} /> Ceder ministério</button>` : html`
-                <button type="button" className="btn btn-ghost !text-xs" onClick=${() => negociar(P.id, 'pauta')}><${Icon} n="MapPin" s=${13} /> Pauta estadual · R$ 1 bi</button>
-                <button type="button" className="btn btn-ghost !text-xs" disabled=${(g.negMes[P.id] || 0) >= 1} onClick=${() => negociar(P.id, 'agencia')}><${Icon} n="Award" s=${13} /> Indicação p/ agência</button>`}
-            </div>`}
-          </div>`; })}
-      </div>
-      ${g.extras.length > 0 && html`<div className="mt-3 pt-3 border-t border-line text-xs text-muted">Ministérios loteados: ${g.extras.map(e => `${e.m} (${PMAP[e.p].nome})`).join(' · ')}</div>`}
-    </section>
-    <div className="lg:col-span-12 min-w-0"><${CartaoPauta} g=${g} upd=${upd} votarItem=${votarItem || (() => { })} /></div>
-    <section className="lg:col-span-12 sec min-w-0"><${Parlamentares} g=${g} /></section>
+  const Bc = bancadas(g, 'cam'), Bs = bancadas(g, 'sen'); const uv = g.ultVoto;
+  const relMed = PARTIDOS.reduce((a, P) => a + P.cam * g.parties[P.id].rel, 0) / 513;
+  const nPass = g.pauta.filter(it => projecaoItem(g, it).passa).length;
+  const okC = Bc.base >= 257, okS = Bs.base >= 41;
+  const rotS = (x) => (x === 'base' ? 'base' : x === 'indep' ? 'independente' : 'oposição');
+  const clS = (x) => (x === 'base' ? 'pos' : x === 'indep' ? 'ouro' : 'neg');
+  return html`<div className="flex flex-col gap-6" data-pd="congresso">
+    <style>${GV_CSS}${PD_CSS}</style>
+    <${PdKpis} area="congresso" itens=${[
+      { dado: 'camara', ic: 'Landmark', cor: okC ? 'var(--verde)' : 'var(--ambar)', k: 'Base na Câmara', v: Bc.base + '/513', s: okC ? 'maioria para leis (257)' : 'faltam ' + (257 - Bc.base) + ' para leis' },
+      { dado: 'senado', ic: 'Building2', cor: okS ? 'var(--verde)' : 'var(--ambar)', k: 'Base no Senado', v: Bs.base + '/81', s: okS ? 'maioria para leis (41)' : 'faltam ' + (41 - Bs.base) + ' para leis' },
+      { dado: 'pauta', ic: 'ListChecks', cor: g.pauta.length ? 'var(--ouro)' : 'var(--muted)', k: 'Itens na pauta', v: g.pauta.length, s: g.pauta.length ? nPass + ' com votos hoje' : 'nada tramitando' },
+      { dado: 'ultvoto', ic: uv ? (uv.derrota ? 'ThumbsDown' : 'ThumbsUp') : 'Vote', cor: uv ? (uv.derrota ? 'var(--rubro)' : 'var(--verde)') : 'var(--muted)', k: 'Último voto', sm: true, v: uv ? (uv.derrota ? 'Derrota' : 'Aprovada') : 'Sem votação', s: uv ? dataCurta(uv.mes) : 'ainda não houve' },
+      { dado: 'relacao', ic: 'Handshake', cor: corAtr(relMed), k: 'Relação média', v: fmt(relMed, 0), s: 'com as bancadas, por cadeira' }
+    ]} />
+    <div className="pd-two">
+      <${PdSec} eyebrow="Congresso · plenário" titulo="Plenário" dado="plenario" id="pl-t" dir="esq" tip=${'Leis e MPs exigem ' + (casa === 'cam' ? '257' : '41') + ' votos; PECs, ' + (casa === 'cam' ? '308' : '49') + ' em dois turnos. Impeachment abre com 342 deputados e cassa com 54 senadores. Passe o cursor sobre um assento para ver o parlamentar.'}
+        right=${html`<div className="pd-seg" role="group" aria-label="Casa legislativa">${[['cam', 'Câmara · 513'], ['sen', 'Senado · 81']].map(([k, l]) => html`<button key=${k} type="button" onClick=${() => setCasa(k)} aria-pressed=${casa === k} className=${'btn btn-ghost ' + (casa === k ? '!border-ouro text-ouro' : '')}>${l}</button>`)}</div>`}>
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-center"><${Hemiciclo} g=${g} casa=${casa} /></div>
+          <div className="pd-bar3" aria-hidden="true"><div style=${{ width: B.base / total * 100 + '%', background: 'var(--verde)' }}></div><div style=${{ width: B.indep / total * 100 + '%', background: 'var(--ouro)' }}></div><div style=${{ width: B.opos / total * 100 + '%', background: 'var(--rubro)' }}></div></div>
+          <div className="pd-tri">
+            <div><div className="v" style=${{ color: 'var(--verde)' }}>${B.base}</div><div className="l">Base aliada</div></div>
+            <div><div className="v" style=${{ color: 'var(--ouro)' }}>${B.indep}</div><div className="l">Centrão / indep.</div></div>
+            <div><div className="v" style=${{ color: 'var(--rubro)' }}>${B.opos}</div><div className="l">Oposição</div></div>
+          </div>
+        </div>
+      </${PdSec}>
+      <${PdSec} eyebrow="Congresso · bancadas" titulo="Articulação política" dado="bancadas" id="art-t" dir="dir" tip=${'Relação do governo com as bancadas ' + (casa === 'cam' ? 'da Câmara' : 'do Senado') + '. Liberar emendas, ceder ministérios e outras ofertas sobem a relação, mas custam caixa, desgaste ou escândalo.'}
+        right=${html`<span className="gv-chip">${casa === 'cam' ? 'Câmara' : 'Senado'}</span>`}>
+        <div className="pd-grid" style=${{ '--w': '270px' }}>
+          ${ordem.map(P => { const st = g.parties[P.id]; const rel = casa === 'cam' ? st.rel : st.relS; const s = status(rel); const proprio = P.id === g.cfg.partido; const c = custoEmenda(g, P.id); const sup = jusSuplentes(g, casa, P.id).length;
+            return html`<article key=${P.id} className="pd-card" style=${{ '--st': corStatus(s) }} data-partido=${P.id}>
+              <div className="pd-h"><${LogoPartido} bloco=${P.id} tam=${36} />
+                <div className="min-w-0"><div className="pd-n" title=${P.full || ''}>${P.nome}</div><div className="pd-s num">${P[casa]} ${casa === 'cam' ? 'deputados' : 'senadores'}</div></div>
+                <span className="pd-big" style=${{ color: corStatus(s) }}>${fmt(rel, 0)}</span></div>
+              <${Bar} v=${rel} cor=${corStatus(s)} h=${6} label=${'Relação com ' + P.nome} />
+              <div className="gv-chips"><span className=${'gv-chip ' + clS(s)}>${rotS(s)}</span>${proprio && html`<span className="gv-chip ouro">seu partido</span>`}${st.min > 0 && html`<span className="gv-chip">${st.min} ministério${st.min > 1 ? 's' : ''}</span>`}${sup > 0 && html`<span className="gv-chip" data-cadeira-suplente=${P.id} title=${P[casa] + ' cadeiras'}>${sup} cadeira${sup > 1 ? 's' : ''} com suplente</span>`}</div>
+              ${!proprio && P[casa] > 0 && html`<div className="gv-acts">
+                ${casa === 'cam' ? html`
+                  <button type="button" className="btn btn-ghost" title=${'Liberar emendas · ' + bi(c)} onClick=${() => negociar(P.id, 'emenda')}><${Icon} n="CircleDollarSign" s=${13} /> Emendas · ${bi(c)}</button>
+                  <button type="button" className="btn btn-ghost" title="Ceder um ministério ao partido" disabled=${st.min >= 3 || g.extras.length >= MINISTERIOS_EXTRA.length} onClick=${() => negociar(P.id, 'ministerio')}><${Icon} n="Building2" s=${13} /> Ministério</button>` : html`
+                  <button type="button" className="btn btn-ghost" title="Pauta estadual · R$ 1 bi" onClick=${() => negociar(P.id, 'pauta')}><${Icon} n="MapPin" s=${13} /> Pauta · R$ 1 bi</button>
+                  <button type="button" className="btn btn-ghost" title="Indicação para agência reguladora" disabled=${(g.negMes[P.id] || 0) >= 1} onClick=${() => negociar(P.id, 'agencia')}><${Icon} n="Award" s=${13} /> Agência</button>`}
+              </div>`}
+            </article>`; })}
+        </div>
+        ${g.extras.length > 0 && html`<div className="mt-3 pt-3 border-t border-line text-sm text-muted">Ministérios loteados: ${g.extras.map(e => `${e.m} (${PMAP[e.p].nome})`).join(' · ')}</div>`}
+      </${PdSec}>
+    </div>
+    <${CartaoPauta} g=${g} upd=${upd} votarItem=${votarItem || (() => { })} />
+    <${Parlamentares} g=${g} />
   </div>`;
 }
 
@@ -17838,12 +17996,11 @@ function Parlamentares({ g }) {
   const blocos = PARTIDOS.filter(P => P[casa] > 0);
   // suplentes de parlamentares presos em casos fictícios: aparecem como uma linha a mais, sem nome nem estado; ninguém sai da lista
   const supsVis = uf === 'all' && !nq ? jusSuplentes(g, casa).filter(x => bl === 'all' || x.p === bl) : [];
-  return html`<div>
-    <div className="flex flex-wrap items-baseline justify-between gap-2 mb-1">
-      <h3 className="disp text-2xl font-extrabold uppercase">Parlamentares</h3>
-      <span className="num text-sm" role="status" aria-live="polite" data-parl-contagem="1">${supsVis.length ? `${achados.length} cadeiras · ${supsVis.length} ocupada${supsVis.length > 1 ? 's' : ''} por suplente` : `${achados.length} parlamentar${achados.length === 1 ? '' : 'es'}`}</span>
+  return html`<section className="sec min-w-0" data-pd-sec="parlamentares" aria-labelledby="parl-t">
+    <div className="gv-sec-h">
+      <div><div className="eyebrow">Congresso · elenco</div><h3 id="parl-t" className="disp text-2xl font-extrabold uppercase">Parlamentares<${GvTip} lado="esq" txt="Eleitos em 2026 (TSE); no Senado, um terço eleito em 2022. Cada parlamentar tem uma posição em nove eixos: a do bloco, calibrada pelas votações de 2023 a 2026, ajustada pela ala de quem tem atuação pública conhecida e por sinais do nome de urna e da ocupação. Nas votações, o voto soma convicção e fidelidade ao bloco. Tudo simulado." /></h3></div>
+      <span className="num text-sm text-muted" role="status" aria-live="polite" data-parl-contagem="1">${supsVis.length ? `${achados.length} cadeiras · ${supsVis.length} ocupada${supsVis.length > 1 ? 's' : ''} por suplente` : `${achados.length} parlamentar${achados.length === 1 ? '' : 'es'}`}</span>
     </div>
-    <p className="text-xs text-muted mb-3">Eleitos em 2026 (TSE); no Senado, um terço eleito em 2022. Cada parlamentar tem uma posição em nove eixos: a do bloco, calibrada pelas votações de 2023 a 2026, ajustada pela ala de quem tem atuação pública conhecida e por sinais do nome de urna e da ocupação. Nas votações, o voto soma convicção (o quanto a medida combina com essa posição), relação com o governo, custo eleitoral e o humor do estado; quanto mais ideológica a medida, menos cargos e emendas compram o voto. A fidelidade abaixo é a disposição em pauta neutra. As bancadas (ruralista, evangélica, da bala e outras) são estimadas por partido, estado e ocupação declarada ao TSE e pressionam o voto de cada integrante. Votos simulados.</p>
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-4">
       <label htmlFor="parl-busca" className="flex flex-col gap-1"><span className="eyebrow">Buscar por nome</span>
         <input id="parl-busca" type="text" value=${q} placeholder="Digite um nome" autoComplete="off" onChange=${e => { setQ(e.target.value); setLim(60); }} /></label>
@@ -17854,21 +18011,21 @@ function Parlamentares({ g }) {
       <label htmlFor="parl-uf" className="flex flex-col gap-1"><span className="eyebrow">Estado</span>
         <select id="parl-uf" value=${uf} onChange=${e => { setUf(e.target.value); setLim(60); }}><option value="all">Todos os estados</option>${ufs.map(u => html`<option key=${u} value=${u}>${u} · ${UF_INFO[u].nome}</option>`)}</select></label>
     </div>
-    ${achados.length === 0 ? html`<div className="text-sm text-muted py-4">Nenhum parlamentar encontrado com esses filtros.</div>` : html`<div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-      ${vis.map(({ L, i, f }) => html`<div key=${casa + i} className="flex flex-col gap-1.5 p-2.5 rounded-lg min-w-0" style=${{ background: 'var(--panel2)' }}>
+    ${achados.length === 0 ? html`<div className="text-sm text-muted py-4">Nenhum parlamentar encontrado com esses filtros.</div>` : html`<div className="pd-grid" style=${{ '--w': '300px' }}>
+      ${vis.map(({ L, i, f }) => html`<div key=${casa + i} className="pd-card !gap-2 !p-3" style=${{ '--st': PMAP[L.bloco].cor }}>
         <div className="flex items-center gap-2 min-w-0"><${Ef} nome=${L.nome} cor=${PMAP[L.bloco].cor} papel=${casa === 'sen' ? 'senador' : 'deputado'} s=${32} p=${L} /><span className="font-medium truncate flex-1 min-w-0" title=${L.nome}>${L.nome}</span><${LogoPartido} bloco=${L.bloco} sigla=${L.sigla} tam=${22} /><${Tag} cor=${PMAP[L.bloco].cor}>${sg(L.sigla)}</${Tag}><span className="num text-xs text-muted">${L.uf}</span></div>
         <div className="flex items-center gap-2"><div className="flex-1"><${Bar} v=${f} cor=${corStatus(status(f))} h=${4} label=${'Fidelidade de ' + L.nome} /></div><span className="num text-xs w-7 text-right">${f}</span></div>
-        ${L.pos && html`<div className="text-[11px] text-muted leading-tight cursor-help" title=${dicaPosicao(L)} data-posicao="1">${L.pos.alas.length ? html`<span className="text-fg">${L.pos.alas.map(a => ALAS[a].nome).join(' · ')}</span> · ` : ''}econ. ${nivelPos(L.pos.v[0], 'eco')} · costumes ${nivelPos(L.pos.v[5], 'cos')} · segurança ${nivelPos(L.pos.v[6], 'seg')}</div>`}
-        ${L.fr && L.fr.f.length > 0 && html`<div className="flex flex-wrap gap-1" data-bancada="1">${L.fr.f.slice(0, 2).map(x => html`<span key=${x} className="chip" style=${{ fontSize: '10px', padding: '0 6px', lineHeight: '16px' }} title="Estimativa do jogo: partido, estado e ocupação declarada ao TSE. Não é a lista oficial da frente.">${FRENTE_ROT[x]} (estimativa)</span>`)}</div>`}
-        ${casa === 'sen' && html`<div className="text-[11px] text-muted leading-tight">eleito em ${L.ano}${L.gov ? html` · <span className="text-ambar">${NOTA_SUPLENTE}</span>` : null}</div>`}
+        ${L.pos && html`<div className="text-xs text-muted leading-tight cursor-help" title=${dicaPosicao(L)} data-posicao="1">${L.pos.alas.length ? html`<span className="text-fg">${L.pos.alas.map(a => ALAS[a].nome).join(' · ')}</span> · ` : ''}econ. ${nivelPos(L.pos.v[0], 'eco')} · costumes ${nivelPos(L.pos.v[5], 'cos')} · segurança ${nivelPos(L.pos.v[6], 'seg')}</div>`}
+        ${L.fr && L.fr.f.length > 0 && html`<div className="flex flex-wrap gap-1" data-bancada="1">${L.fr.f.slice(0, 2).map(x => html`<span key=${x} className="chip" style=${{ fontSize: '12px', padding: '0 6px', lineHeight: '18px' }} title="Estimativa do jogo: partido, estado e ocupação declarada ao TSE. Não é a lista oficial da frente.">${FRENTE_ROT[x]} (estimativa)</span>`)}</div>`}
+        ${casa === 'sen' && html`<div className="text-xs text-muted leading-tight">eleito em ${L.ano}${L.gov ? html` · <span className="text-ambar">${NOTA_SUPLENTE}</span>` : null}</div>`}
       </div>`)}
       ${supsVis.map(x => html`<div key=${x.id} className="flex flex-col gap-1.5 p-2.5 rounded-lg min-w-0 border border-dashed border-line" data-suplente=${x.p} data-suplente-casa=${x.casa} style=${{ background: 'var(--panel2)' }}>
         <div className="flex items-center gap-2 min-w-0"><span className="shrink-0" aria-hidden="true"><${Icon} n="UserRound" s=${28} /></span><span className="font-medium truncate flex-1 min-w-0">Suplente do ${x.sig}</span><${Tag} cor=${PMAP[x.p].cor}>suplente</${Tag}></div>
-        <div className="text-[11px] text-muted leading-tight">Sem nome e sem estado. Assumiu em ${dataCurta(x.mes)} a vaga de um ${x.cargo} do ${x.sig} preso na Operação ${x.op}. A vaga continua com o partido, e um dos nomes listados do partido está afastado, sem indicação de qual.</div>
+        <div className="text-xs text-muted leading-tight">Sem nome e sem estado. Assumiu em ${dataCurta(x.mes)} a vaga de um ${x.cargo} do ${x.sig} preso na Operação ${x.op}. A vaga continua com o partido, e um dos nomes listados do partido está afastado, sem indicação de qual.</div>
       </div>`)}
     </div>`}
     ${achados.length > lim && html`<div className="flex items-center justify-center gap-3 mt-4"><span className="text-xs text-muted num">mostrando ${vis.length} de ${achados.length}</span><button type="button" className="btn btn-ghost text-sm" onClick=${() => setLim(l => l + 60)}>Mostrar mais 60</button></div>`}
-  </div>`;
+  </section>`;
 }
 
 /* ============================== FASE 3: UI (ECONOMIA, SOCIEDADE, MAPA) ============================== */
@@ -27142,13 +27299,19 @@ function ElGrafPesq({ ger }) {
 function ElPesqView({ g, ger, pq }) {
   const ord = ger.cands.slice().sort((a, b) => (pq.p1[b.id] || 0) - (pq.p1[a.id] || 0)); const I = EL_INST.find(i => i.k === pq.inst);
   const meu = ger.cands.find(c => c.id === pq.meu);
-  return html`<div className="flex flex-col gap-3" data-pesq=${pq.inst + pq.mes}>
-    <div className="flex flex-wrap items-center gap-2"><b>${I.nome}</b><${ElSim} /><${Tag}>${pq.dia}/${String(((pq.mes - 1) % 12) + 1).padStart(2, '0')}/${elAno(pq.mes)}</${Tag}><${Tag}>${pq.n} entrevistas</${Tag}><${Tag}>margem ±${fmt(pq.margem, 1)} p.p.</${Tag}></div>
-    <div className="scroll-x"><table className="w-full text-sm"><thead><tr className="text-muted text-xs"><th className="text-left font-normal py-1">Candidato</th><th className="text-right font-normal">Intenção</th><th className="text-right font-normal">Rejeição</th></tr></thead><tbody>
-      ${ord.map(c => html`<tr key=${c.id} className="border-t border-line"><td className="py-1.5 flex items-center gap-2"><span className="inline-block w-2.5 h-2.5 rounded-full" style=${{ background: elCorCand(c) }}></span>${c.nome} <span className="text-xs text-muted">${c.sigla}</span>${c.sit && html`<${Tag} cor="var(--anil)">governo</${Tag}>`}</td><td className="num text-right">${fmt(pq.p1[c.id] || 0, 1)}%</td><td className="num text-right text-muted">${pq.rej[c.id]}%</td></tr>`)}
-      <tr className="border-t border-line text-muted text-xs"><td className="py-1">Indecisos / brancos e nulos</td><td className="num text-right">${pq.ind}% / ${pq.bn}%</td><td></td></tr></tbody></table></div>
-    ${meu && Object.keys(pq.seg).length > 0 && html`<div><div className="eyebrow mb-1">Cenários de 2º turno · ${meu.nome}</div><ul className="grid sm:grid-cols-3 gap-2">${Object.keys(pq.seg).map(k => { const r = ger.cands.find(c => c.id === k); const v = pq.seg[k]; return html`<li key=${k} className="rounded border border-line p-2 text-sm"><div className="text-xs text-muted">contra ${r.nome}</div><div className="num"><span style=${{ color: v[0] >= v[1] ? 'var(--verde)' : 'var(--rubro)' }}>${fmt(v[0], 1)}%</span> × ${fmt(v[1], 1)}%</div></li>`; })}</ul></div>`}
-    <div className="text-sm">Avaliação do governo: <b className="num">${pq.ava.otimoBom}%</b> ótimo/bom · <b className="num">${pq.ava.regular}%</b> regular · <b className="num">${pq.ava.ruimPessimo}%</b> ruim/péssimo</div>
+  const mx = Math.max(10, ...ord.map(c => pq.p1[c.id] || 0)) * 1.1; const av = pq.ava;
+  return html`<div className="flex flex-col gap-4" data-pesq=${pq.inst + pq.mes}>
+    <style>${GV_CSS}${PD_CSS}</style>
+    <div className="gv-chips"><b>${I.nome}</b><${ElSim} /><span className="gv-chip">${pq.dia}/${String(((pq.mes - 1) % 12) + 1).padStart(2, '0')}/${elAno(pq.mes)}</span><span className="gv-chip">${pq.n} entrevistas</span><span className="gv-chip">margem ±${fmt(pq.margem, 1)} p.p.</span></div>
+    <div className="flex flex-col gap-3">${ord.map(c => html`<div key=${c.id} className="pd-row" data-pesq-cand=${c.id}>
+      <div className="nm"><span className="pd-dot" style=${{ background: elCorCand(c) }}></span><div className="min-w-0"><div className="font-medium leading-tight">${c.nome} <span className="pd-s">${c.sigla}</span>${c.sit && html` <span className="gv-chip">governo</span>`}</div><div className="pd-s">rejeição ${pq.rej[c.id]}%</div></div></div>
+      <div className="pd-vb" style=${{ height: 10 }} role="meter" aria-valuenow=${Math.round(pq.p1[c.id] || 0)} aria-valuemin="0" aria-valuemax="100" aria-label=${'Intenção de voto em ' + c.nome}><i style=${{ width: clamp((pq.p1[c.id] || 0) / mx * 100, 0, 100) + '%', '--c': elCorCand(c) }}></i></div>
+      <span className="num text-right font-semibold">${fmt(pq.p1[c.id] || 0, 1)}%</span></div>`)}</div>
+    <div className="pd-s">Indecisos ${pq.ind}% · brancos e nulos ${pq.bn}%</div>
+    ${meu && Object.keys(pq.seg).length > 0 && html`<div><div className="eyebrow mb-2">Cenários de 2º turno · ${meu.nome}</div><ul className="pd-grid" style=${{ '--w': '200px' }}>${Object.keys(pq.seg).map(k => { const r = ger.cands.find(c => c.id === k); const v = pq.seg[k]; return html`<li key=${k} className="pd-card !p-3" style=${{ '--st': v[0] >= v[1] ? 'var(--verde)' : 'var(--rubro)' }}><div className="pd-s">contra ${r.nome}</div><div className="num font-semibold"><span style=${{ color: v[0] >= v[1] ? 'var(--verde)' : 'var(--rubro)' }}>${fmt(v[0], 1)}%</span> × ${fmt(v[1], 1)}%</div></li>`; })}</ul></div>`}
+    <div><div className="eyebrow mb-2">Avaliação do governo</div>
+      <div className="pd-bar3" role="img" aria-label=${'Ótimo ou bom ' + av.otimoBom + '%, regular ' + av.regular + '%, ruim ou péssimo ' + av.ruimPessimo + '%'}><div style=${{ width: av.otimoBom + '%', background: 'var(--verde)' }}></div><div style=${{ width: av.regular + '%', background: 'var(--ouro)' }}></div><div style=${{ width: av.ruimPessimo + '%', background: 'var(--rubro)' }}></div></div>
+      <div className="gv-chips mt-2"><span className="gv-chip pos num">${av.otimoBom}% ótimo/bom</span><span className="gv-chip ouro num">${av.regular}% regular</span><span className="gv-chip neg num">${av.ruimPessimo}% ruim/péssimo</span></div></div>
     <${ElAviso} />
   </div>`;
 }
@@ -27279,48 +27442,62 @@ function ElPopBarra({ g, id }) { const p = elPopDe(g, id); return html`<span cla
 function ElVisao({ g, upd, ir }) {
   const E = g.el; const pj = elPJ(g); const marcos = elMarcos(g).filter(x => x.m >= g.mes - 2).slice(0, 7); const leg = E.leg; const trocas = elMudancasCongresso(g);
   return html`<div className="grid gap-6 lg:grid-cols-12 items-start" data-el="visao">
-    <section className="lg:col-span-5 sec flex flex-col gap-3 min-w-0"><h3 className="disp text-2xl font-extrabold uppercase">Calendário eleitoral</h3>
-      <ul className="flex flex-col gap-1">${marcos.map((x, i) => html`<li key=${i} className="flex gap-2 text-sm items-baseline"><span className="num text-xs w-16 shrink-0" style=${{ color: x.m < g.mes ? 'var(--muted)' : x.m === g.mes ? 'var(--ouro)' : 'var(--fg)' }}>${dataCurta(x.m)}</span><span className=${x.m < g.mes ? 'text-muted' : ''}>${x.t}</span></li>`)}</ul>
-      <p className="text-xs text-muted">O jogo não acaba na eleição: o que acaba é o personagem (dois mandatos, derrota, impeachment ou saúde). As eleições se repetem no ciclo real: municipais em 2032, 2036…; gerais em 2034, 2038…</p></section>
-    <section className="lg:col-span-4 sec flex flex-col gap-3 min-w-0"><h3 className="disp text-2xl font-extrabold uppercase">Seu personagem</h3>
-      <div className="flex items-center gap-3"><${Ef} nome=${pj.nome} cor=${PMAP[pj.bloco] ? PMAP[pj.bloco].cor : '#7d8b86'} papel=${E.pj ? 'deputado' : 'presidente'} s=${52} /><div className="min-w-0"><div className="font-semibold">${pj.nome}</div><div className="text-xs text-muted">${pj.sigla} · ${E.pj ? (E.pj.tipo === 'candidato' ? 'candidato(a) à Presidência (modo leve)' : 'líder de oposição / aliado (modo leve)') : 'presidente em exercício (governo pleno)'}</div></div></div>
-      ${E.pj ? html`<p className="text-xs text-muted">No modo leve você não decide medidas de governo: usa o X, entrevistas, apoia candidatos e faz campanha. Vence uma eleição presidencial e o governo pleno volta.</p>` : html`<p className="text-xs text-muted">Mandato consecutivo nº ${E.mandatos} de 2. Presidente em exercício: ${g.cfg.nome}.</p>`}
-      <${ElPopBarra} g=${g} id=${pj.id} />
-      <div><div className="eyebrow mb-1">Linha do tempo de personagens</div><ul className="flex flex-col gap-1">${E.din.slice().reverse().map((d, i) => html`<li key=${i} className="text-xs flex gap-2"><span className="num text-muted w-24 shrink-0">${dataCurta(d.de)}–${d.ate ? dataCurta(d.ate) : 'agora'}</span><span><b>${d.nome}</b> (${d.sigla}) · ${d.papel}${d.fim ? ' · fim: ' + d.fim : ''}</span></li>`)}</ul></div></section>
-    <section className="lg:col-span-3 sec flex flex-col gap-3 min-w-0"><h3 className="disp text-2xl font-extrabold uppercase">Congresso</h3>
-      <p className="text-sm">${leg ? html`Legislatura <b>${leg.rot}</b> desde ${dataCurta(leg.desde)}.` : html`Elenco <b>real eleito em 2026</b> (2027–2030).`}</p>
-      ${trocas.length > 0 ? html`<p className="text-sm">${trocas.filter(t => t.ativo).length} suplente(s) em exercício; ${trocas.filter(t => !t.ativo).length} a assumir.</p>` : html`<p className="text-xs text-muted">Nenhum suplente de prefeito ainda.</p>`}
-      ${E.govs && Object.keys(E.govs).length > 0 && html`<p className="text-xs text-muted">Governadores simulados após a última eleição geral.</p>`}</section>
+    <style>${GV_CSS}${PD_CSS}</style>
+    <${PdSec} cls="lg:col-span-5" eyebrow="Eleições · calendário" titulo="Calendário eleitoral" dado="calendario" id="cal-t" dir="esq" tip="O jogo não acaba na eleição: o que acaba é o personagem (dois mandatos, derrota, impeachment ou saúde). As eleições se repetem no ciclo real: municipais em 2032, 2036…; gerais em 2034, 2038…">
+      <ul className="flex flex-col gap-2">${marcos.map((x, i) => html`<li key=${i} className="flex gap-3 items-center"><span className="gv-chip num shrink-0" style=${{ minWidth: 72, justifyContent: 'center', color: x.m < g.mes ? 'var(--muted)' : x.m === g.mes ? 'var(--ouro)' : 'var(--fg)', borderColor: x.m === g.mes ? 'var(--ouro)' : undefined }}>${dataCurta(x.m)}</span><span className=${'text-sm ' + (x.m < g.mes ? 'text-muted' : '')}>${x.t}</span></li>`)}</ul>
+    </${PdSec}>
+    <${PdSec} cls="lg:col-span-4" eyebrow="Eleições · personagem" titulo="Seu personagem" dado="personagem" id="pj-t" dir="esq" tip=${E.pj ? 'No modo leve você não decide medidas de governo: usa o X, entrevistas, apoia candidatos e faz campanha. Vence uma eleição presidencial e o governo pleno volta.' : 'Mandato consecutivo nº ' + E.mandatos + ' de 2. Presidente em exercício: ' + g.cfg.nome + '.'}>
+      <article className="pd-card" style=${{ '--st': PMAP[pj.bloco] ? PMAP[pj.bloco].cor : '#7d8b86' }}>
+        <div className="pd-h" style=${{ gridTemplateColumns: 'auto minmax(0,1fr)' }}><${Ef} nome=${pj.nome} cor=${PMAP[pj.bloco] ? PMAP[pj.bloco].cor : '#7d8b86'} papel=${E.pj ? 'deputado' : 'presidente'} s=${52} /><div className="min-w-0"><div className="pd-n">${pj.nome}</div><div className="pd-s">${pj.sigla} · ${E.pj ? (E.pj.tipo === 'candidato' ? 'candidato(a) à Presidência (modo leve)' : 'líder de oposição / aliado (modo leve)') : 'presidente em exercício (governo pleno)'}</div></div></div>
+        <${ElPopBarra} g=${g} id=${pj.id} />
+        <${PdDet} rot=${'Linha do tempo (' + E.din.length + ')'}><ul className="flex flex-col gap-1">${E.din.slice().reverse().map((d, i) => html`<li key=${i} className="text-sm flex gap-2"><span className="num text-muted w-24 shrink-0">${dataCurta(d.de)}–${d.ate ? dataCurta(d.ate) : 'agora'}</span><span><b>${d.nome}</b> (${d.sigla}) · ${d.papel}${d.fim ? ' · fim: ' + d.fim : ''}</span></li>`)}</ul></${PdDet}>
+      </article>
+    </${PdSec}>
+    <${PdSec} cls="lg:col-span-3" eyebrow="Eleições · elenco" titulo="Congresso" dado="elenco" id="el-cg-t" dir="dir" tip="Parlamentares eleitos em 2026 ocupam o mandato de 2027 a 2030. Suplentes de prefeitos eleitos assumem as cadeiras trocadas.">
+      <div className="gv-chips">
+        <span className="gv-chip ouro">${leg ? 'legislatura ' + leg.rot : 'elenco real de 2026'}</span>
+        ${trocas.length > 0 ? html`<span className="gv-chip">${trocas.filter(t => t.ativo).length} suplente(s) em exercício</span><span className="gv-chip">${trocas.filter(t => !t.ativo).length} a assumir</span>` : html`<span className="gv-chip">sem suplentes de prefeito</span>`}
+        ${E.govs && Object.keys(E.govs).length > 0 && html`<span className="gv-chip">governadores simulados</span>`}</div>
+      <p className="pd-s mt-3">${leg ? 'Desde ' + dataCurta(leg.desde) + '.' : 'Mandato de 2027 a 2030.'}</p>
+    </${PdSec}>
   </div>`;
 }
 /* ---------- municipais ---------- */
 function ElMunicipal({ g, upd }) {
   const E = g.el; const m = E.mun; const [sel, setSel] = useState('sao-paulo'); const [fil, setFil] = useState('');
   const rel = g.mes - 48 * elCiclo(g.mes);
-  if (!m || m.c !== elCiclo(g.mes)) return html`<div className="sec" data-el="mun-vazio"><h3 className="disp text-2xl font-extrabold uppercase mb-2">Municipais ${elAnoMun(g.mes)}</h3><p className="text-sm text-muted">As pré-candidaturas aparecem em ${dataMes(48 * elCiclo(g.mes) + 15)}. Nas 26 capitais e nas 20 maiores cidades você poderá apoiar candidatos (figuras sem mandato, deputados que se lançam e prefeitos), a partir das convenções de julho.</p>
-    ${E.munHist.length > 0 && html`<p className="text-sm mt-2">Última: ${E.munHist[0].ano}, balanço: ${Object.keys(E.munHist[0].depois).sort((a, b) => E.munHist[0].depois[b] - E.munHist[0].depois[a]).slice(0, 3).map(k => PMAP[k].curto + ' ' + E.munHist[0].depois[k]).join(', ')}.</p>`}</div>`;
+  if (!m || m.c !== elCiclo(g.mes)) return html`<${PdSec} css=${true} eyebrow="Eleições · municipais" titulo=${'Municipais ' + elAnoMun(g.mes)} dado="mun-vazio" id="mun-v" dir="esq" tip="Nas 26 capitais e nas 20 maiores cidades você poderá apoiar candidatos (figuras sem mandato, deputados que se lançam e prefeitos), a partir das convenções de julho.">
+    <div className="pd-vazio" data-el="mun-vazio"><${Icon} n="CalendarClock" s=${20} /> As pré-candidaturas aparecem em ${dataMes(48 * elCiclo(g.mes) + 15)}.</div>
+    ${E.munHist.length > 0 && html`<p className="text-sm mt-3">Última: ${E.munHist[0].ano}, balanço: ${Object.keys(E.munHist[0].depois).sort((a, b) => E.munHist[0].depois[b] - E.munHist[0].depois[a]).slice(0, 3).map(k => PMAP[k].curto + ' ' + E.munHist[0].depois[k]).join(', ')}.</p>`}</${PdSec}>`;
   const ct = EL_CIDADES.find(c => c.id === sel) || EL_CIDADES[0]; const S = m.cidades[ct.id]; const janela = elMunJanela(g);
   const lista = EL_CIDADES.filter(c => !fil || norm(c.nome + c.uf).includes(norm(fil)));
   const ult = (m.pesq[ct.id] || []).slice(-1)[0];
   const trocas = elMudancasCongresso(g); const proj = trocas.length ? elProjecaoTrocas(g) : null;
   return html`<div className="flex flex-col gap-6" data-el="municipal">
-    <div className="flex flex-wrap items-center gap-2"><h3 className="disp text-2xl font-extrabold uppercase">Municipais ${m.ano}</h3><${Tag} cor="var(--ouro)">${m.fase === 'pre' ? 'pré-campanha' : m.fase === 'seg' ? '2º turno' : m.fase === 'fim' ? 'encerrada' : ''}</${Tag}><${ElSim} /><span className="text-xs text-muted">${m.apoios} apoio(s) · apoiar custa 1 ação e 8 de energia${janela ? '' : ' (janela de apoio: julho a outubro)'}</span></div>
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] items-start">
-      <section className="sec min-w-0"><input type="text" aria-label="Buscar cidade" placeholder="Buscar cidade ou UF" value=${fil} onChange=${e => setFil(e.target.value)} className="mb-2" />
-        <div className="scroll-x" style=${{ maxHeight: 560, overflowY: 'auto' }}><table className="w-full text-sm"><thead><tr className="text-muted text-xs"><th className="text-left font-normal py-1">Cidade</th><th className="text-right font-normal">Eleit. (mil)</th><th className="text-left font-normal pl-2">Situação</th></tr></thead><tbody>
-          ${lista.map(c => { const s = m.cidades[c.id]; const W = s.venc ? s.cands.find(x => x.id === s.venc) : null; return html`<tr key=${c.id} className=${'border-t border-line cursor-pointer ' + (c.id === sel ? 'bg-[var(--panel2)]' : '')} data-cidade=${c.id} onClick=${() => setSel(c.id)}><td className="py-1.5">${c.nome} <span className="text-xs text-muted">${c.uf}${c.cap ? ' · capital' : ''}</span></td><td className="num text-right">${c.eleit.toLocaleString('pt-BR')}</td><td className="pl-2 text-xs">${W ? html`<span style=${{ color: PMAP[W.bloco].cor }}>${W.sigla}</span>` : s.fin ? '2º turno' : s.apoio ? 'apoio' : ''}${s.apoio && W ? (s.apoio === W.id ? ' ✓' : ' ✗') : ''}</td></tr>`; })}</tbody></table></div></section>
-      <section className="sec min-w-0 flex flex-col gap-3" data-el="cidade"><div className="flex flex-wrap items-center gap-2"><h4 className="disp text-xl font-extrabold uppercase">${ct.nome}</h4><${Tag}>${ct.uf}</${Tag}><span className="text-xs text-muted">eleitorado ~${ct.eleit.toLocaleString('pt-BR')} mil (aprox.)</span></div>
-        <ul className="flex flex-col divide-y divide-line">${S.cands.map(cd => { const pv = ult ? ult.sh[cd.id] : null; const r1 = S.r1 ? S.r1[cd.id] : null; const r2 = S.r2 ? S.r2[cd.id] : null; const apoiado = S.apoio === cd.id; const naFin = !S.fin || S.fin.includes(cd.id); const pode = janela && !S.venc || janela && S.fin && S.fin.includes(cd.id) && !S.r2;
-          return html`<li key=${cd.id} className="py-2 flex flex-wrap items-center gap-2" data-cand=${cd.id}><div className="min-w-0 flex-1"><div className="font-medium flex flex-wrap items-center gap-2"><span className="inline-block w-2.5 h-2.5 rounded-full" style=${{ background: PMAP[cd.bloco].cor }}></span>${cd.nome}<${Tag}>${cd.sigla}</${Tag}>${cd.tipo !== 'gen' && html`<${ElSim} />`}${cd.tipo === 'dep' && html`<${Tag}>dep. federal</${Tag}>`}${cd.tipo === 'sen' && html`<${Tag}>senador(a)</${Tag}>`}${cd.tipo === 'fig' && html`<${Tag}>sem mandato</${Tag}>`}${cd.tipo === 'est' && html`<${Tag}>dep. estadual</${Tag}>`}${cd.inc && html`<${Tag}>prefeitura atual</${Tag}>`}${apoiado && html`<${Tag} cor="var(--verde)">seu apoio</${Tag}>`}</div>
-            <div className="text-xs text-muted">${pv != null ? 'pesquisa ' + fmt(pv, 1) + '% · ' : ''}${r1 != null ? '1º turno ' + fmt(r1, 1) + '%' : ''}${r2 != null ? ' · 2º turno ' + fmt(r2, 1) + '%' : ''}${S.venc === cd.id ? ' · ELEITO(A)' : ''}</div></div>
-            <button type="button" className="btn btn-ghost text-sm" disabled=${!pode || apoiado || g.acoes <= 0 || g.pes.energia < 8} data-apoiar=${cd.id} onClick=${() => upd(n => { elMunApoia(n, ct.id, cd.id); })}>Apoiar</button></li>`; })}</ul>
+    <style>${GV_CSS}${PD_CSS}</style>
+    <div className="gv-sec-h" style=${{ marginBottom: 0 }}><div><div className="eyebrow">Eleições · municipais</div><h3 className="disp text-2xl font-extrabold uppercase">Municipais ${m.ano}<${GvTip} lado="esq" txt=${'Apoiar um candidato custa 1 ação e 8 de energia' + (janela ? '.' : ' e só é possível na janela de julho a outubro.') + ' Pesquisas e resultados são simulados.'} /></h3></div><div className="gv-chips"><span className="gv-chip ouro">${m.fase === 'pre' ? 'pré-campanha' : m.fase === 'seg' ? '2º turno' : m.fase === 'fim' ? 'encerrada' : 'campanha'}</span><${ElSim} /><span className="gv-chip">${m.apoios} apoio(s)</span></div></div>
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] items-start">
+      <section className="sec min-w-0" aria-label="Cidades"><input type="text" aria-label="Buscar cidade" placeholder="Buscar cidade ou UF" value=${fil} onChange=${e => setFil(e.target.value)} className="mb-3" />
+        <div className="pd-list">
+          ${lista.map(c => { const s = m.cidades[c.id]; const W = s.venc ? s.cands.find(x => x.id === s.venc) : null; return html`<button type="button" key=${c.id} className=${'pd-city ' + (c.id === sel ? 'sel' : '')} data-cidade=${c.id} aria-pressed=${c.id === sel} onClick=${() => setSel(c.id)}>
+            <span className="font-medium">${c.nome} <span className="pd-s">${c.uf}${c.cap ? ' · capital' : ''}</span></span>
+            <span className="text-sm text-right">${W ? html`<span style=${{ color: PMAP[W.bloco].cor }}>${W.sigla}</span>` : s.fin ? '2º turno' : s.apoio ? 'apoio' : ''}${s.apoio && W ? (s.apoio === W.id ? ' ✓' : ' ✗') : ''}</span>
+            <span className="pd-s num">${c.eleit.toLocaleString('pt-BR')} mil eleitores</span></button>`; })}</div></section>
+      <section className="sec min-w-0 flex flex-col gap-4" data-el="cidade"><div className="gv-sec-h" style=${{ marginBottom: 0 }}><div><div className="eyebrow">Cidade selecionada</div><h4 className="disp text-2xl font-extrabold uppercase">${ct.nome}</h4></div><div className="gv-chips"><span className="gv-chip">${ct.uf}</span><span className="gv-chip num">~${ct.eleit.toLocaleString('pt-BR')} mil eleitores</span></div></div>
+        <ul className="pd-grid" style=${{ '--w': '250px' }}>${S.cands.map(cd => { const pv = ult ? ult.sh[cd.id] : null; const r1 = S.r1 ? S.r1[cd.id] : null; const r2 = S.r2 ? S.r2[cd.id] : null; const apoiado = S.apoio === cd.id; const pode = janela && !S.venc || janela && S.fin && S.fin.includes(cd.id) && !S.r2;
+          return html`<li key=${cd.id} className=${'pd-card' + (apoiado ? ' sel' : '')} style=${{ '--st': PMAP[cd.bloco].cor }} data-cand=${cd.id}>
+            <div className="pd-h" style=${{ gridTemplateColumns: 'auto minmax(0,1fr) auto' }}><span className="pd-dot" style=${{ background: PMAP[cd.bloco].cor }}></span><div className="pd-n">${cd.nome}</div>${pv != null && html`<span className="pd-big">${fmt(pv, 0)}%</span>`}</div>
+            <div className="gv-chips"><span className="gv-chip">${cd.sigla}</span>${cd.tipo !== 'gen' && html`<${ElSim} />`}${cd.tipo === 'dep' && html`<span className="gv-chip">dep. federal</span>`}${cd.tipo === 'sen' && html`<span className="gv-chip">senador(a)</span>`}${cd.tipo === 'fig' && html`<span className="gv-chip">sem mandato</span>`}${cd.tipo === 'est' && html`<span className="gv-chip">dep. estadual</span>`}${cd.inc && html`<span className="gv-chip">prefeitura atual</span>`}${apoiado && html`<span className="gv-chip pos">seu apoio</span>`}${S.venc === cd.id && html`<span className="gv-chip ouro">eleito(a)</span>`}</div>
+            ${pv != null && html`<${Bar} v=${pv} max=${Math.max(40, pv)} cor=${PMAP[cd.bloco].cor} h=${6} label=${'Pesquisa: ' + cd.nome} />`}
+            <div className="pd-s">${r1 != null ? '1º turno ' + fmt(r1, 1) + '%' : ''}${r2 != null ? ' · 2º turno ' + fmt(r2, 1) + '%' : ''}${r1 == null && r2 == null ? (pv != null ? 'pesquisa simulada' : 'sem pesquisa ainda') : ''}</div>
+            <div className="gv-acts mt-auto"><button type="button" className="btn btn-pri" disabled=${!pode || apoiado || g.acoes <= 0 || g.pes.energia < 8} data-apoiar=${cd.id} onClick=${() => upd(n => { elMunApoia(n, ct.id, cd.id); })}>Apoiar</button></div></li>`; })}</ul>
         ${S.apoio && janela && html`<button type="button" className="btn btn-pri text-sm self-start" disabled=${S.visita >= 3 || g.acoes <= 0} data-visita=${ct.id} onClick=${() => upd(n => { elMunVisita(n, ct.id); })}><${Icon} n="MapPin" s=${14} /> Fazer campanha na cidade (${S.visita}/3) · 1 ação</button>`}
         ${(m.pesq[ct.id] || []).length > 0 && html`<div><div className="eyebrow mb-1">Pesquisas simuladas</div><ul className="flex flex-col gap-1">${m.pesq[ct.id].slice(-3).reverse().map((p, i) => html`<li key=${i} className="text-xs"><b>${elInstNome(p.inst)}</b> (${p.dia}/${String(((p.mes - 1) % 12) + 1).padStart(2, '0')}, ±${fmt(98 / Math.sqrt(p.n), 1)} p.p.): ${S.cands.map(c => c.nome.split(' ')[0] + ' ' + fmt(p.sh[c.id], 0) + '%').join(' · ')}</li>`)}</ul><${ElAviso} /></div>`}
       </section></div>
     ${m.res && html`<section className="sec flex flex-col gap-3" data-el="mun-resultado"><h3 className="disp text-2xl font-extrabold uppercase">Balanço: prefeituras por bloco</h3>
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start"><div className="min-w-0"><${MapaUF} cor=${u => { const ct = EL_CIDADES.find(c => c.cap && c.uf === u); if (!ct) return 'var(--panel2)'; const S = m.cidades[ct.id]; const W = S.cands.find(c => c.id === S.venc); return W ? PMAP[W.bloco].cor : 'var(--panel2)'; }} rotulo=${u => { const ct = EL_CIDADES.find(c => c.cap && c.uf === u); if (!ct) return UF_INFO[u].nome + ': sem eleição de prefeito'; const S = m.cidades[ct.id]; const W = S.cands.find(c => c.id === S.venc); return ct.nome + ': ' + (W ? W.nome + ' (' + W.sigla + ')' : 'indefinido'); }} aria="Mapa do Brasil: partido que venceu em cada capital" selecionado=${ct.uf} onSel=${u => { const c2 = EL_CIDADES.find(c => c.cap && c.uf === u); if (c2) setSel(c2.id); }} tip=${u => { const c2 = EL_CIDADES.find(c => c.cap && c.uf === u); if (!c2) return html`<div>${UF_INFO[u].nome}: sem prefeito</div>`; const S = m.cidades[c2.id]; const W = S.cands.find(c => c.id === S.venc); return html`<div><div className="font-bold text-sm">${c2.nome}</div><div>${W ? W.nome + ' · ' + W.sigla : ''}</div></div>`; }} /><p className="text-xs text-muted mt-2">Cor = bloco do prefeito eleito na capital.</p></div>
       <div className="min-w-0 flex flex-col gap-2">
-      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">${Object.keys(m.res.depois).sort((a, b) => m.res.depois[b] - m.res.depois[a]).map(k => html`<div key=${k} className="rounded border border-line p-2"><div className="text-sm font-semibold" style=${{ color: PMAP[k].cor }}>${PMAP[k].curto}</div><div className="num">${m.res.depois[k]} <span className="text-xs text-muted">(antes ~${m.res.antes[k] || 0}, aprox.)</span></div></div>`)}</div>
+      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">${Object.keys(m.res.depois).sort((a, b) => m.res.depois[b] - m.res.depois[a]).map(k => html`<div key=${k} className="pd-card !p-3" style=${{ '--st': PMAP[k].cor }}><div className="text-sm font-semibold" style=${{ color: PMAP[k].cor }}>${PMAP[k].curto}</div><div className="num">${m.res.depois[k]} <span className="text-xs text-muted">(antes ~${m.res.antes[k] || 0}, aprox.)</span></div></div>`)}</div>
       <p className="text-sm">Seus apoios: <b>${m.res.nApoio}</b> de ${m.res.nTotApoio} venceram. Leitura para o campo do governo: <b className="num">${sgn(m.res.ref * 10, 0)}</b> prefeituras líquidas.</p></div></div></section>`}
     ${trocas.length > 0 && html`<section className="sec flex flex-col gap-3" data-el="trocas"><h3 className="disp text-2xl font-extrabold uppercase">Parlamentares que viram prefeitos</h3>
       <div className="scroll-x"><table className="w-full text-sm"><thead><tr className="text-muted text-xs"><th className="text-left font-normal py-1">Titular</th><th className="text-left font-normal">Suplente</th><th className="text-left font-normal">Casa</th><th className="text-right font-normal">Fidelidade</th><th className="text-left font-normal pl-2">Quando</th></tr></thead><tbody>
@@ -27331,23 +27508,29 @@ function ElMunicipal({ g, upd }) {
 /* ---------- presidencial ---------- */
 function ElPresidencial({ g, upd }) {
   const E = g.el; const ger = E.ger; const [pq, setPq] = useState(null); const rel = ger ? g.mes - 48 * ger.c : 0;
-  if (!ger || ger.c !== elCiclo(g.mes)) return html`<div className="sec" data-el="pres-vazio"><h3 className="disp text-2xl font-extrabold uppercase mb-2">Eleição presidencial ${elAnoGer(g.mes)}</h3><p className="text-sm text-muted">A pré-campanha começa em ${dataMes(48 * elCiclo(g.mes) + 37)}, com pesquisas, escolha de sucessor (se o presidente for inelegível), alianças, campanha e debates.</p>
-    ${E.gerHist.length > 0 && html`<p className="text-sm mt-2">Última eleição (${E.gerHist[0].ano}): ${E.gerHist[0].venc} (${E.gerHist[0].sigla}).</p>`}</div>`;
+  if (!ger || ger.c !== elCiclo(g.mes)) return html`<${PdSec} css=${true} eyebrow="Eleições · presidência" titulo=${'Eleição presidencial ' + elAnoGer(g.mes)} dado="pres-vazio" id="pres-v" dir="esq" tip="A pré-campanha traz pesquisas, escolha de sucessor (se o presidente for inelegível), alianças, campanha e debates.">
+    <div className="pd-vazio" data-el="pres-vazio"><${Icon} n="CalendarClock" s=${20} /> A pré-campanha começa em ${dataMes(48 * elCiclo(g.mes) + 37)}.</div>
+    ${E.gerHist.length > 0 && html`<p className="text-sm mt-3">Última eleição (${E.gerHist[0].ano}): ${E.gerHist[0].venc} (${E.gerHist[0].sigla}).</p>`}</${PdSec}>`;
   const ult = ger.pesq[0]; const meu = elMeu(ger);
   const ordC = ger.cands.slice().sort((a, b) => (ult ? (ult.p1[b.id] || 0) - (ult.p1[a.id] || 0) : 0));
   const precisaSuc = E.mandatos >= 2 && !E.pj && ger.sucAuto && rel <= 43;
   const marcaLida = () => upd(n => { n.el.ger.pesq.forEach(p => { p.lida = true; }); });
+  const maxP = ult ? Math.max(10, ...ordC.map(c => ult.p1[c.id] || 0)) * 1.1 : 100;
   return html`<div className="flex flex-col gap-6" data-el="presidencial">
+    <style>${GV_CSS}${PD_CSS}</style>
     <div className="flex flex-wrap items-center gap-2"><h3 className="disp text-2xl font-extrabold uppercase">Presidência ${ger.ano}</h3><${ElSim} /><${Tag}>${ger.fase === 'fim' ? 'encerrada' : rel >= 44 ? 'campanha oficial' : 'pré-campanha'}</${Tag}>${meu && html`<${Tag} cor="var(--verde)">você apoia ${meu.nome}</${Tag}>`}${E.mandatos >= 2 && !E.pj && html`<${Tag} cor="var(--ambar)">inelegível (2 mandatos)</${Tag}>`}</div>
     ${ger.apoioPres && html`<div className="rounded-lg border border-line p-3 text-sm" data-el="apoio-pres">Apoio automático de ${ger.apoioPres.nome}: ${ger.apoioPres.ativo ? 'ativo (mesmo campo). Parte da aprovação do governo vira intenção de voto para o sucessor, com palanques nos estados de maior aprovação, mas a rejeição também é herdada.' : 'sem efeito (campos diferentes).'}</div>`}
     ${precisaSuc && html`<section className="sec"><h4 className="disp text-xl font-extrabold uppercase mb-2">Sucessão</h4><${ElSucessao} g=${g} upd=${upd} /></section>`}
     ${E.pj && !ger.meuId && rel <= 43 && html`<section className="sec"><h4 className="disp text-xl font-extrabold uppercase mb-2">Candidatura</h4><${ElCandidatura} g=${g} upd=${upd} /></section>`}
     <div className="grid gap-6 lg:grid-cols-12 items-start">
-      <section className="lg:col-span-7 sec flex flex-col gap-3 min-w-0"><div className="flex items-center justify-between"><h4 className="disp text-xl font-extrabold uppercase">Pesquisas</h4>${ger.pesq.some(p => !p.lida) && html`<button type="button" className="btn btn-ghost text-xs" onClick=${marcaLida}>Marcar como lidas</button>`}</div>
+      <section className="lg:col-span-7 sec flex flex-col gap-3 min-w-0"><div className="flex items-center justify-between"><div><div className="eyebrow">Presidência · pesquisas</div><h4 className="disp text-2xl font-extrabold uppercase">Pesquisas<${GvTip} lado="esq" txt="Pesquisas simuladas pelo jogo. A linha mostra a evolução da intenção de voto dos seis primeiros; abaixo, o detalhe de cada pesquisa." /></h4></div>${ger.pesq.some(p => !p.lida) && html`<button type="button" className="btn btn-ghost text-xs" onClick=${marcaLida}>Marcar como lidas</button>`}</div>
         ${ger.pesq.length === 0 ? html`<p className="text-sm text-muted">A primeira pesquisa sai em ${dataMes(48 * ger.c + 37)}.</p>` : html`<${ElGrafPesq} ger=${ger} /><div className="chipnav" role="group" aria-label="Pesquisas">${ger.pesq.slice(0, 8).map((p, i) => html`<button key=${i} type="button" aria-selected=${(pq == null ? 0 : pq) === i} onClick=${() => setPq(i)}>${elInstNome(p.inst)} ${p.dia}/${String(((p.mes - 1) % 12) + 1).padStart(2, '0')}${p.so2 ? ' · 2º turno' : ''}</button>`)}</div><${ElPesqView} g=${g} ger=${ger} pq=${ger.pesq[pq == null ? 0 : pq]} />`}</section>
-      <section className="lg:col-span-5 sec flex flex-col gap-3 min-w-0"><h4 className="disp text-xl font-extrabold uppercase">Candidatos</h4>
-        <ul className="flex flex-col divide-y divide-line">${ordC.map(c => html`<li key=${c.id} className="py-2 flex items-center gap-3" data-candidato=${c.id}><${Ef} nome=${c.nome} cor=${elCorCand(c)} papel=${c.sit ? 'presidente' : 'deputado'} s=${40} /><div className="min-w-0 flex-1"><div className="font-medium flex flex-wrap items-center gap-2">${c.nome}<${Tag} cor=${elCorCand(c)}>${c.sigla}</${Tag}>${!c.sit && html`<${ElSim} />`}${c.sit && html`<${Tag} cor="var(--anil)">${c.sucessor ? 'sucessor(a) do governo' : 'governo'}</${Tag}>`}</div>
-          <div className="text-xs text-muted">${EL_CAMP_NOME[c.camp]} · ${EL_EST_TXT[c.estilo] || c.estilo} · rejeição ${Math.round(elRejeicao(g, ger, c))}%${c.id === ger.meuId ? ' · SEU CANDIDATO' : ''}</div></div><span className="num text-sm">${ult ? fmt(ult.p1[c.id] || 0, 1) + '%' : ''}</span></li>`)}</ul></section>
+      <section className="lg:col-span-5 sec flex flex-col gap-3 min-w-0"><div><div className="eyebrow">Presidência · disputa</div><h4 className="disp text-2xl font-extrabold uppercase">Candidatos</h4></div>
+        <ul className="flex flex-col gap-3">${ordC.map(c => html`<li key=${c.id} className="pd-card !p-3" style=${{ '--st': elCorCand(c) }} data-candidato=${c.id}>
+          <div className="pd-h"><${Ef} nome=${c.nome} cor=${elCorCand(c)} papel=${c.sit ? 'presidente' : 'deputado'} s=${40} /><div className="min-w-0"><div className="pd-n">${c.nome}</div><div className="gv-chips mt-1"><span className="gv-chip" style=${{ color: elCorCand(c) }}>${c.sigla}</span>${!c.sit && html`<${ElSim} />`}${c.sit && html`<span className="gv-chip">${c.sucessor ? 'sucessor(a) do governo' : 'governo'}</span>`}${c.id === ger.meuId && html`<span className="gv-chip pos">seu candidato</span>`}</div></div><span className="pd-big">${ult ? fmt(ult.p1[c.id] || 0, 1) + '%' : ''}</span></div>
+          ${ult && html`<${Bar} v=${ult.p1[c.id] || 0} max=${maxP} cor=${elCorCand(c)} h=${6} label=${'Intenção de voto em ' + c.nome} />`}
+          <div className="pd-s">${EL_CAMP_NOME[c.camp]} · ${EL_EST_TXT[c.estilo] || c.estilo} · rejeição ${Math.round(elRejeicao(g, ger, c))}%</div></li>`)}</ul>
+      </section>
     </div>
     ${rel >= 43 && elCampPode(g) && meu && html`<section className="sec"><h4 className="disp text-xl font-extrabold uppercase mb-2">Campanha</h4><${ElCampanha} g=${g} upd=${upd} /></section>`}
     ${rel >= 43 && html`<section className="sec"><h4 className="disp text-xl font-extrabold uppercase mb-2">Debates</h4><${ElDebates} g=${g} upd=${upd} /></section>`}
@@ -27361,21 +27544,46 @@ function ElAliados({ g, upd }) {
   const base = useMemo(() => elPessoas().filter(p => naoEhJogador(g, p.nome) && (p.cargo !== 'dep' || ministros.includes(p.nome))), [g.mes]);
   const siglas = Object.entries(base.reduce((m, p) => { const s = p.sigla || ''; m[s] = (m[s] || 0) + 1; return m; }, {})).sort((x, y) => y[1] - x[1]); // filtro por partido, além do campo ideológico
   const lista = base.filter(p => (campo === 'todos' || p.camp === campo) && (part === 'todos' || (p.sigla || '') === part) && (!q || norm(p.nome).includes(norm(q)))).map(p => ({ p, pop: elPopDe(g, p.id), min: ministros.includes(p.nome) })).sort((a, b) => (b.pop.rec * .55 + b.pop.apr * .45) - (a.pop.rec * .55 + a.pop.apr * .45)).slice(0, 30);
-  return html`<div className="flex flex-col gap-3" data-el="aliados"><p className="text-sm text-muted">Visibilidade de políticos, usada nas pesquisas e na escolha de sucessor. Nomear ministro(a), dar o palco, fazer campanha junto, promover no X e apoiar em 2028 aumentam o reconhecimento e a aprovação do nome. ${elLeve(g) ? 'No modo leve você só observa.' : 'Cada ação custa 1 ação política, uma vez por mês por pessoa.'}</p>
-    <div className="flex flex-wrap gap-2 items-center"><input type="text" aria-label="Buscar pessoa" placeholder="Buscar pessoa" value=${q} onChange=${e => setQ(e.target.value)} /><div className="chipnav" role="group" aria-label="Campo">${[['todos', 'Todos'], ...Object.entries(EL_CAMP_NOME)].map(([k, n]) => html`<button key=${k} type="button" aria-selected=${campo === k} onClick=${() => setCampo(k)}>${cap(n)}</button>`)}</div><select aria-label="Partido" data-el="filtro-partido" value=${part} onChange=${e => setPart(e.target.value)}><option value="todos">Todos os partidos</option>${siglas.map(([s, n]) => html`<option key=${s || 'sp'} value=${s}>${s ? sg(s) : 'Sem partido'} (${n})</option>`)}</select></div>
-    <div className="scroll-x"><table className="w-full text-sm"><thead><tr className="text-muted text-xs"><th className="text-left font-normal py-1">Nome</th><th className="text-left font-normal">Cargo</th><th className="text-right font-normal">Reconh.</th><th className="text-right font-normal">Aprov.</th><th></th></tr></thead><tbody>
-      ${lista.map(({ p, pop, min }) => html`<tr key=${p.id} className="border-t border-line" data-pessoa=${p.id}><td className="py-1.5"><span className="font-medium">${p.nome}</span> <span className="text-xs text-muted">${p.sigla ? sg(p.sigla) : 'sem partido'}-${p.uf}</span>${min && html` <${Tag} cor="var(--ouro)">ministro(a)</${Tag}>`}</td><td className="text-xs text-muted">${p.cargo === 'gov' ? 'governador(a)' : p.cargo === 'sen' ? 'senador(a)' : p.cargo === 'dep' ? 'dep. federal' : p.cargo === 'est' ? 'dep. estadual' : p.cargo === 'pref' ? 'prefeito(a)/vereador(a)' : 'sem mandato'}</td><td className="num text-right">${Math.round(pop.rec)}</td><td className="num text-right">${Math.round(pop.apr)}</td>
-        <td className="text-right whitespace-nowrap">${!elLeve(g) && Object.keys(elAliadoAcoes).map(k => html`<button key=${k} type="button" className="btn btn-ghost text-xs ml-1" title=${elAliadoAcoes[k].rot} disabled=${g.acoes <= 0 || E.acoesAliado[p.id] === g.mes} data-aliado=${k} onClick=${() => upd(n => { elAliadoAcao(n, p.id, k); })}>${k === 'palco' ? 'Palco' : k === 'agenda' ? 'Agenda' : 'X'}</button>`)}</td></tr>`)}</tbody></table></div></div>`;
+  const cargoTxt = (c) => (c === 'gov' ? 'governador(a)' : c === 'sen' ? 'senador(a)' : c === 'dep' ? 'dep. federal' : c === 'est' ? 'dep. estadual' : c === 'pref' ? 'prefeito(a)/vereador(a)' : 'sem mandato');
+  return html`<${PdSec} css=${true} eyebrow="Eleições · aliados" titulo="Aliados e sucessores" dado="aliados" id="ali-t" dir="esq" tip=${'Visibilidade de políticos, usada nas pesquisas e na escolha de sucessor. Nomear ministro(a), dar o palco, fazer campanha junto, promover no X e apoiar em 2028 aumentam o reconhecimento e a aprovação do nome. ' + (elLeve(g) ? 'No modo leve você só observa.' : 'Cada ação custa 1 ação política, uma vez por mês por pessoa.')} right=${html`<span className="gv-chip num">${lista.length} nomes</span>`}>
+    <div data-el="aliados" className="flex flex-col gap-4">
+    <div className="pd-filtros"><input type="text" aria-label="Buscar pessoa" placeholder="Buscar pessoa" value=${q} onChange=${e => setQ(e.target.value)} /><div className="chipnav" role="group" aria-label="Campo">${[['todos', 'Todos'], ...Object.entries(EL_CAMP_NOME)].map(([k, n]) => html`<button key=${k} type="button" aria-selected=${campo === k} onClick=${() => setCampo(k)}>${cap(n)}</button>`)}</div><select aria-label="Partido" data-el="filtro-partido" value=${part} onChange=${e => setPart(e.target.value)}><option value="todos">Todos os partidos</option>${siglas.map(([s, n]) => html`<option key=${s || 'sp'} value=${s}>${s ? sg(s) : 'Sem partido'} (${n})</option>`)}</select></div>
+    <ul className="pd-grid" style=${{ '--w': '290px' }}>${lista.map(({ p, pop, min }) => html`<li key=${p.id} className="pd-card" style=${{ '--st': p.sigla && PMAP[bloco(p.sigla)] ? PMAP[bloco(p.sigla)].cor : 'var(--line2)' }} data-pessoa=${p.id}>
+      <div className="pd-h"><${Ef} nome=${p.nome} cor=${p.sigla && PMAP[bloco(p.sigla)] ? PMAP[bloco(p.sigla)].cor : '#7d8b86'} papel="famoso" s=${40} /><div className="min-w-0"><div className="pd-n">${p.nome}</div><div className="pd-s">${p.sigla ? sg(p.sigla) : 'sem partido'}-${p.uf} · ${cargoTxt(p.cargo)}</div></div>${min && html`<span className="gv-chip ouro">ministro(a)</span>`}</div>
+      <div className="flex flex-col gap-1.5">
+        <div className="gv-meter" style=${{ gridTemplateColumns: '104px minmax(0,1fr) 28px' }}><span>Reconhecimento</span><${Bar} v=${pop.rec} cor="var(--anil)" h=${6} label=${'Reconhecimento de ' + p.nome} /><span className="num">${Math.round(pop.rec)}</span></div>
+        <div className="gv-meter" style=${{ gridTemplateColumns: '104px minmax(0,1fr) 28px' }}><span>Aprovação</span><${Bar} v=${pop.apr} cor=${corAtr(pop.apr)} h=${6} label=${'Aprovação de ' + p.nome} /><span className="num">${Math.round(pop.apr)}</span></div></div>
+      ${!elLeve(g) && html`<div className="gv-acts mt-auto">${Object.keys(elAliadoAcoes).map(k => html`<button key=${k} type="button" className="btn btn-ghost" title=${elAliadoAcoes[k].rot} disabled=${g.acoes <= 0 || E.acoesAliado[p.id] === g.mes} data-aliado=${k} onClick=${() => upd(n => { elAliadoAcao(n, p.id, k); })}>${k === 'palco' ? 'Palco' : k === 'agenda' ? 'Agenda' : 'X'}</button>`)}</div>`}
+    </li>`)}</ul></div>
+  </${PdSec}>`;
 }
 function ElDinastia({ g }) {
   const E = g.el;
-  return html`<div className="flex flex-col gap-2" data-el="dinastia"><h3 className="disp text-2xl font-extrabold uppercase">Linha do tempo de personagens</h3><ol className="flex flex-col gap-2">${E.din.map((d, i) => html`<li key=${i} className="rounded border border-line p-3 text-sm"><b>${d.nome}</b> (${d.sigla}) · ${d.papel} · ${dataCurta(d.de)} a ${d.ate ? dataCurta(d.ate) : 'agora'}${d.fim ? ' · ' + d.fim : ''}</li>`)}</ol></div>`;
+  return html`<${PdSec} css=${true} eyebrow="Eleições · personagens" titulo="Linha do tempo de personagens" dado="dinastia" id="din-t" dir="esq" tip="Cada mandato, derrota ou saída do personagem que você controla fica registrado aqui.">
+    <ol className="pd-grid" style=${{ '--w': '280px' }} data-el="dinastia">${E.din.map((d, i) => html`<li key=${i} className="pd-card" style=${{ '--st': i === E.din.length - 1 ? 'var(--ouro)' : 'var(--line2)' }}>
+      <div className="pd-n">${d.nome}</div><div className="gv-chips"><span className="gv-chip">${d.sigla}</span><span className="gv-chip">${d.papel}</span>${d.fim && html`<span className="gv-chip neg">${d.fim}</span>`}</div>
+      <div className="pd-s num">${dataCurta(d.de)} a ${d.ate ? dataCurta(d.ate) : 'agora'}</div></li>`)}</ol>
+  </${PdSec}>`;
 }
 function ElPainel({ g, upd }) {
   const [aba, setAba] = useState('visao');
   const abas = [{ k: 'visao', nome: 'Visão geral' }, { k: 'mun', nome: 'Municipais' }, { k: 'pres', nome: 'Presidência' }, { k: 'aliados', nome: 'Aliados e sucessores' }, { k: 'din', nome: 'Personagens' }];
   if (!g.el) return null;
-  return html`<div className="flex flex-col gap-4" data-el="painel"><${ChipsNav} id="elp" chips=${abas} atual=${aba} onSel=${setAba} rotulo="Eleições" /><p className="text-xs text-muted" data-el="aviso-geral">${EL_AVISO_PESQ}</p>
+  const E = g.el; const pj = elPJ(g); const ap = aprovacao(g);
+  const ger = E.ger && E.ger.c === elCiclo(g.mes) ? E.ger : null; const ult = ger && ger.pesq[0];
+  const lider = ult ? ger.cands.slice().sort((a, b) => (ult.p1[b.id] || 0) - (ult.p1[a.id] || 0))[0] : null;
+  const mc = elMarcos(g).find(x => x.m >= g.mes);
+  return html`<div className="flex flex-col gap-6" data-el="painel">
+    <style>${GV_CSS}${PD_CSS}</style>
+    <${PdKpis} area="eleicoes" itens=${[
+      { dado: 'marco', ic: 'CalendarClock', cor: 'var(--ouro)', k: 'Próximo marco', v: mc ? dataCurta(mc.m) : '—', s: mc ? mc.t : 'sem marcos próximos' },
+      { dado: 'personagem', ic: 'UserRound', cor: PMAP[pj.bloco] ? PMAP[pj.bloco].cor : 'var(--muted)', k: 'Seu personagem', sm: true, v: pj.nome, s: E.pj ? 'modo leve' : 'presidente em exercício' },
+      { dado: 'mandato', ic: 'Landmark', cor: 'var(--anil)', k: 'Mandato', v: E.mandatos + '/2', s: 'mandatos consecutivos' },
+      { dado: 'aprovacao', ic: 'ThumbsUp', cor: corAprov(ap), k: 'Sua aprovação', v: fmt(ap, 0) + '%', s: 'média dos grupos' },
+      { dado: 'pesquisa', ic: 'Vote', cor: lider ? elCorCand(lider) : 'var(--muted)', k: 'Líder nas pesquisas', sm: true, v: lider ? lider.nome : 'Sem pesquisa', s: lider ? fmt(ult.p1[lider.id] || 0, 1) + '% · ' + elInstNome(ult.inst) : 'a pré-campanha ainda não começou' }
+    ]} />
+    <${ChipsNav} id="elp" chips=${abas} atual=${aba} onSel=${setAba} rotulo="Eleições" />
+    <div className="pd-s flex items-center gap-2" data-el="aviso-geral"><${Icon} n="Info" s=${14} /> Pesquisas e candidatos são simulados<${GvTip} txt=${EL_AVISO_PESQ} /></div>
     <div id="elp-pan" role="tabpanel" aria-labelledby=${'elp-chip-' + aba} key=${aba}>
       ${aba === 'visao' && html`<${ElVisao} g=${g} upd=${upd} />`}${aba === 'mun' && html`<${ElMunicipal} g=${g} upd=${upd} />`}${aba === 'pres' && html`<${ElPresidencial} g=${g} upd=${upd} />`}
       ${aba === 'aliados' && html`<${ElAliados} g=${g} upd=${upd} />`}${aba === 'din' && html`<${ElDinastia} g=${g} />`}</div></div>`;
@@ -27396,19 +27604,36 @@ function elFigurasNomeaveis(pasta, g) {
 }
 function ElFiguras({ g, onJogar, memo }) {
   const [camp, setCamp] = useState('todos'); const [q, setQ] = useState(''); const [tp, setTp] = useState('todos');
-  const L = elFigurasOk(g).filter(f => (camp === 'todos' || f.camp === camp) && (tp === 'todos' || f.tipo === tp) && (!q || norm(f.nome + f.sigla + f.uf).includes(norm(q))));
+  const todas = elFigurasOk(g);
+  const L = todas.filter(f => (camp === 'todos' || f.camp === camp) && (tp === 'todos' || f.tipo === tp) && (!q || norm(f.nome + f.sigla + f.uf).includes(norm(q))));
   const rotT = { fig: 'sem mandato', est: 'dep. estadual', pref: 'prefeito(a)/vereador(a)' };
-  return html`<div className="flex flex-col gap-3" data-el="figuras"><p className="text-sm text-muted">Pessoas reais sem mandato federal em 2027 (perdedores de 2026, ex-ministros, líderes) e deputados estaduais notáveis, da pesquisa de 29/10/2026. Dados vindos de resumos de busca: o que não foi confirmado leva a nota “incerto”. O mandato dos eleitos segue o elenco oficial do jogo.</p>
-    <div className="flex flex-wrap gap-2 items-center"><input type="text" aria-label="Buscar figura" placeholder="Buscar nome, partido ou UF" value=${q} onChange=${e => setQ(e.target.value)} /><div className="chipnav" role="group" aria-label="Campo">${[['todos', 'Todos'], ...Object.entries(EL_CAMP_NOME)].map(([k, n]) => html`<button key=${k} type="button" aria-selected=${camp === k} onClick=${() => setCamp(k)}>${cap(n)}</button>`)}</div>
-      <div className="chipnav" role="group" aria-label="Tipo">${[['todos', 'Todos'], ['fig', 'Sem mandato'], ['est', 'Dep. estaduais'], ['pref', 'Prefeitos']].map(([k, n]) => html`<button key=${k} type="button" aria-selected=${tp === k} onClick=${() => setTp(k)}>${n}</button>`)}</div></div>
-    <div className="text-xs text-muted" role="status">${L.length} figura(s)</div>
-    <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">${L.map(f => { const p = elPessoas().find(x => x.id === f.id); const e28 = elElegivel(p, 2028, false), e30 = elElegivel(p, 2030, true); return html`<li key=${f.id} className="card p-3 flex flex-col gap-2" data-figura=${f.id}>
-      <div className="flex items-start gap-3"><${Ef} nome=${f.nome} cor=${f.sigla && PMAP[bloco(f.sigla)] ? PMAP[bloco(f.sigla)].cor : '#7d8b86'} papel="famoso" s=${44} /><div className="min-w-0 flex-1"><div className="font-semibold leading-tight">${f.nome}</div><div className="flex flex-wrap gap-1 mt-1"><${Tag}>${f.sigla ? sg(f.sigla) : 'sem partido'}</${Tag}><${Tag}>${f.uf}</${Tag}><${Tag} cor="var(--ouro)">${rotT[f.tipo]}</${Tag}><${Tag}>${EL_CAMP_NOME[f.camp]}</${Tag}>${f.inc && html`<span title=${f.inc}><${Tag} cor="var(--ambar)">incerto</${Tag}></span>`}</div></div></div>
-      <div className="text-xs text-muted">${f.cargo}</div>
-      <div className="flex flex-wrap gap-1"><span title=${e28.nota || 'Sem impedimento conhecido'}><${Tag} cor=${e28.ok ? 'var(--verde)' : 'var(--rubro)'}>2028: ${e28.ok ? 'elegível' : 'inelegível'}</${Tag}></span><span title=${e30.nota || 'Sem impedimento conhecido'}><${Tag} cor=${e30.ok ? 'var(--verde)' : 'var(--rubro)'}>2030: ${e30.ok ? 'elegível' : 'inelegível'}${e30.incerto ? ' (incerto)' : ''}</${Tag}></span></div>
+  const nT = (t) => todas.filter(f => f.tipo === t).length;
+  const el30 = g ? todas.filter(f => { const p = elPessoas().find(x => x.id === f.id); return p && elElegivel(p, 2030, true).ok; }).length : 0;
+  const filtros = html`<div className="pd-filtros"><input type="text" aria-label="Buscar figura" placeholder="Buscar nome, partido ou UF" value=${q} onChange=${e => setQ(e.target.value)} style=${{ maxWidth: 280 }} /><span className="eyebrow">Campo</span><div className="chipnav" role="group" aria-label="Campo">${[['todos', 'Todos'], ...Object.entries(EL_CAMP_NOME)].map(([k, n]) => html`<button key=${k} type="button" aria-selected=${camp === k} onClick=${() => setCamp(k)}>${cap(n)}</button>`)}</div>
+      <span className="eyebrow">Tipo</span><div className="chipnav" role="group" aria-label="Tipo">${[['todos', 'Todos'], ['fig', 'Sem mandato'], ['est', 'Dep. estaduais'], ['pref', 'Prefeitos']].map(([k, n]) => html`<button key=${k} type="button" aria-selected=${tp === k} onClick=${() => setTp(k)}>${n}</button>`)}</div></div>`;
+  const lista = html`<ul className="pd-grid" style=${{ '--w': '300px' }}>${L.map(f => { const p = elPessoas().find(x => x.id === f.id); const e28 = elElegivel(p, 2028, false), e30 = elElegivel(p, 2030, true); const cor = f.sigla && PMAP[bloco(f.sigla)] ? PMAP[bloco(f.sigla)].cor : '#7d8b86';
+    return html`<li key=${f.id} className="pd-card" style=${{ '--st': cor }} data-figura=${f.id}>
+      <div className="pd-h"><${Ef} nome=${f.nome} cor=${cor} papel="famoso" s=${44} /><div className="min-w-0"><div className="pd-n">${f.nome}</div><div className="pd-s">${f.cargo}</div></div><span></span></div>
+      <div className="gv-chips"><span className="gv-chip">${f.sigla ? sg(f.sigla) : 'sem partido'}</span><span className="gv-chip">${f.uf}</span><span className="gv-chip ouro">${rotT[f.tipo]}</span><span className="gv-chip">${EL_CAMP_NOME[f.camp]}</span>${f.inc && html`<span className="gv-chip" style=${{ color: 'var(--ambar)' }} title=${f.inc}>incerto</span>`}</div>
+      <div className="gv-chips"><span title=${e28.nota || 'Sem impedimento conhecido'} className=${'gv-chip ' + (e28.ok ? 'pos' : 'neg')}>2028: ${e28.ok ? 'elegível' : 'inelegível'}</span><span title=${e30.nota || 'Sem impedimento conhecido'} className=${'gv-chip ' + (e30.ok ? 'pos' : 'neg')}>2030: ${e30.ok ? 'elegível' : 'inelegível'}${e30.incerto ? ' (incerto)' : ''}</span></div>
       ${f.tipo === 'fig' && g && html`<${ElPopBarra} g=${g} id=${f.id} />`}
-      ${onJogar && html`<button type="button" className="btn btn-ghost text-sm justify-center mt-auto" aria-label=${'Jogar como ' + f.nome} onClick=${() => onJogar(f)}><${Icon} n="Play" s=${14} /> Jogar</button>`}
-    </li>`; })}</ul></div>`;
+      ${onJogar && html`<div className="gv-acts mt-auto"><button type="button" className="btn btn-pri" aria-label=${'Jogar como ' + f.nome} onClick=${() => onJogar(f)}><${Icon} n="Play" s=${14} /> Jogar</button></div>`}
+    </li>`; })}</ul>`;
+  const tip = 'Pessoas reais sem mandato federal em 2027 (perdedores de 2026, ex-ministros, líderes) e deputados estaduais notáveis, da pesquisa de 29/10/2026. Dados vindos de resumos de busca: o que não foi confirmado leva a nota “incerto”. O mandato dos eleitos segue o elenco oficial do jogo.';
+  if (!g) return html`<div className="flex flex-col gap-4" data-el="figuras"><style>${GV_CSS}${PD_CSS}</style><div className="pd-s flex items-center gap-2"><${Icon} n="Info" s=${14} /> Figuras políticas da pesquisa de 29/10/2026<${GvTip} txt=${tip} /></div>${filtros}<div className="pd-s" role="status">${L.length} figura(s)</div>${lista}</div>`;
+  return html`<div className="flex flex-col gap-6" data-el="figuras">
+    <style>${GV_CSS}${PD_CSS}</style>
+    <${PdKpis} area="figuras" itens=${[
+      { dado: 'total', ic: 'Users', cor: 'var(--anil)', k: 'Figuras', v: todas.length, s: 'na pesquisa de 29/10/2026' },
+      { dado: 'sem-mandato', ic: 'UserRoundX', cor: 'var(--ouro)', k: 'Sem mandato', v: nT('fig'), s: 'perdedores, ex-ministros, líderes' },
+      { dado: 'estaduais', ic: 'Building2', cor: 'var(--ambar)', k: 'Dep. estaduais', v: nT('est'), s: 'notáveis' },
+      { dado: 'prefeitos', ic: 'MapPin', cor: 'var(--verde)', k: 'Prefeitos', v: nT('pref'), s: 'e vereadores' },
+      { dado: 'elegiveis', ic: 'BadgeCheck', cor: 'var(--verde)', k: 'Elegíveis em 2030', v: el30, s: 'sem impedimento conhecido' }
+    ]} />
+    <${PdSec} eyebrow="Poder · figuras" titulo="Figuras políticas" dado="figuras" id="fig-t" dir="esq" tip=${tip} right=${html`<span className="gv-chip num" role="status">${L.length} figura(s)</span>`}>
+      <div className="flex flex-col gap-4">${filtros}${lista}</div>
+    </${PdSec}>
+  </div>`;
 }
 function ElFigurasInicio({ onEscolher }) { return html`<${ElFiguras} g=${null} onJogar=${f => onEscolher(elCfgDeFigura(f), 1, NOTA_IDEO_PARTIDO)} />`; }
 /* ---------- fim de personagem ---------- */
