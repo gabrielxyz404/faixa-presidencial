@@ -2005,6 +2005,7 @@ function novoJogo(cfg) {
   ensureTR(g);
   ensureGv(g);
   ensureConv(g);
+  ensureJus(g);
   ensureMin(g);
   ensureCf(g);
   entEnsure(g); elEnsure(g);
@@ -12613,6 +12614,7 @@ function fimDoMes(g) {
   }
   mundoMensal(g, notas);
   try { trMensal(g, notas); } catch (e) { if (typeof console !== 'undefined') console.warn('trMensal', e); }
+  try { jusMensal(g, notas); } catch (e) { if (typeof console !== 'undefined') console.warn('jusMensal', e); }
   // vida pessoal
   const P = g.pes;
   const crises = (g.evento && !g.eventoOk ? 1 : 0);
@@ -15510,7 +15512,7 @@ const SECOES = [
 ];
 const SECAO_KS = SECOES.map(s => s.k);
 const CHIPS = {
-  pais: [{ k: 'mapa', nome: 'Mapa' }, { k: 'economia', nome: 'Economia' }, { k: 'seguranca', nome: 'Segurança' }, { k: 'saude', nome: 'Saúde' }, { k: 'educacao', nome: 'Educação' }, { k: 'trabalho', nome: 'Trabalho' }, { k: 'infraestrutura', nome: 'Infraestrutura' }, { k: 'transportes', nome: 'Transportes' }, { k: 'sociedade', nome: 'Sociedade' }],
+  pais: [{ k: 'mapa', nome: 'Mapa' }, { k: 'economia', nome: 'Economia' }, { k: 'seguranca', nome: 'Segurança' }, { k: 'saude', nome: 'Saúde' }, { k: 'educacao', nome: 'Educação' }, { k: 'trabalho', nome: 'Trabalho' }, { k: 'infraestrutura', nome: 'Infraestrutura' }, { k: 'transportes', nome: 'Transportes' }, { k: 'sociedade', nome: 'Sociedade' }, { k: 'justica', nome: 'Justiça' }],
   poder: [{ k: 'congresso', nome: 'Congresso' }, { k: 'governo', nome: 'Governo' }, { k: 'stf', nome: 'STF' }, { k: 'oposicao', nome: 'Oposição' }],
   mundo: [{ k: 'panorama', nome: 'Panorama' }, { k: 'paises', nome: 'Países' }, { k: 'viagens', nome: 'Visitas de Estado' }, { k: 'blocos', nome: 'Blocos' }, { k: 'tratados', nome: 'Tratados' }, { k: 'mesa', nome: 'Mesa diplomática' }, { k: 'terras', nome: 'Terras raras' }],
   eu: [{ k: 'condicao', nome: 'Condição' }, { k: 'bemestar', nome: 'Bem-estar e agenda' }, { k: 'familia', nome: 'Família e partido' }, { k: 'bastidores', nome: 'Bastidores' }, { k: 'conquistas', nome: 'Conquistas' }]
@@ -15663,6 +15665,7 @@ function pendenciasMesa(g) {
   try { const r = medResumoMesa(g); if (r && r.prob) L.push({ id: 'medidas', tipo: 'medidas', urg: 61, cat: 'Medidas em vigor', ic: 'ClipboardList', titulo: r.titulo, ctx: r.ctx, extra: null, abrir: 'medidas', btns: [] }); } catch (e) { } // v3.6
   pendenciasF4(g).forEach(x => L.push(x));
   entPendX(g, L);
+  try { jusPend(g, L); } catch (e) { }
   return L.map((x, i) => Object.assign(x, { ord: i })).sort((a, b) => b.urg - a.urg || a.ord - b.ord);
 }
 // o item da gaveta ainda faz sentido? (some sozinho quando é resolvido)
@@ -15674,10 +15677,11 @@ function aindaPend(g, kind) {
   if (kind === 'viagem') return !!(g.mundo && (g.mundo.visita || (g.mundo.ultVisita && g.mundo.ultVisita.mes + 1 === g.mes)));
   if (kind === 'mesadip') return !!(g.mundo && g.mundo.mesa && !g.mundo.mesa.resolvida);
   if (kind === 'bastidores') return !!bastOferta(g);
+  if (kind === 'justica') return !!jusPendCaso(g);
   if (/^(ent|el)/.test(kind)) return entAindaPend(g, kind);
   return true;
 }
-const GAVETA_TIT = { crise: 'Gabinete de crise', protesto: 'Termômetro das ruas', stf: 'Vaga no STF', pauta: 'Pauta do Congresso', qq: 'Quebra-queixo', abin: 'Serviço de inteligência', prioridade: 'Prioridade do trimestre', esplanada: 'Esplanada dos Ministérios', oposicao: 'Oposição rumo a 2030', contas: 'Contas a vencer', viagem: 'Visita de Estado', mesadip: 'Mesa diplomática', bastidores: 'Bastidores (ficção)' };
+const GAVETA_TIT = { crise: 'Gabinete de crise', protesto: 'Termômetro das ruas', stf: 'Vaga no STF', pauta: 'Pauta do Congresso', qq: 'Quebra-queixo', abin: 'Serviço de inteligência', prioridade: 'Prioridade do trimestre', esplanada: 'Esplanada dos Ministérios', oposicao: 'Oposição rumo a 2030', contas: 'Contas a vencer', viagem: 'Visita de Estado', mesadip: 'Mesa diplomática', bastidores: 'Bastidores (ficção)', justica: 'Caso de corrupção' };
 
 function CartaoPendencia({ p, g, agir }) {
   const nv = nivelUrg(p.urg);
@@ -15824,7 +15828,7 @@ function SinaisVitais({ g, onConfig, encerrar, irEu }) {
 function secaoDaPendencia(p) {
   const k = p.tipo || '';
   if (['stf', 'pauta', 'oposicao', 'desgaste', 'prioridade', 'abin', 'qq', 'entcol', 'entconv', 'elmun', 'elapurm', 'elsuc', 'elcand', 'elpesq', 'eldeb', 'elcamp', 'elapurg'].includes(k)) return 'poder';
-  if (['crise', 'protesto', 'seguranca', 'governadores'].includes(k)) return 'pais';
+  if (['crise', 'protesto', 'seguranca', 'governadores', 'justica'].includes(k)) return 'pais';
   if (['viagem', 'mesadip', 'terras_raras'].includes(k)) return 'mundo';
   if (['saude', 'estresse', 'bastidores', 'vida'].includes(k)) return 'eu';
   if (k === 'rede' || k === 'x' || /^(rede|x)[-_]/.test(k)) return 'x';
@@ -15902,6 +15906,7 @@ function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino 
     : kind === 'viagem' ? html`<${CartaoViagem} g=${g} upd=${upd} />`
     : kind === 'mesadip' ? html`<${MesaDipCartao} g=${g} upd=${upd} />`
     : kind === 'bastidores' ? html`<${CartaoBastidores} g=${g} upd=${upd} />`
+    : kind === 'justica' ? html`<${CartaoJustica} g=${g} upd=${upd} />`
     : kind === 'contas' ? html`<${CartaoContas} g=${g} />` : entCorpo(kind, g, upd));
   const itemArt = art ? g.pauta.find(x => x.id === art) : null;
   return html`<div className="grid gap-6 lg:grid-cols-12">
@@ -16779,6 +16784,7 @@ function Pais({ g, upd, decidir, chip, setChip }) {
     ${c === 'infraestrutura' && html`<${PaisAreaUF} g=${g} area="infraestrutura" />`}
     ${c === 'transportes' && html`<${PaisAreaUF} g=${g} area="transportes" />`}
     ${c === 'sociedade' && html`<${Sociedade} g=${g} upd=${upd} setChip=${setChip} />`}
+    ${c === 'justica' && html`<${PaisJustica} g=${g} upd=${upd} />`}
   </${Subpagina}>`;
 }
 function PaisMapa({ g }) {
@@ -17032,6 +17038,7 @@ function Congresso({ g, upd, decidir, votarItem }) {
               <span className="ml-auto num text-sm text-muted">${P[casa]} ${casa === 'cam' ? 'dep.' : 'sen.'}</span>
             </div>
             ${(P.membros.length > 1 || P.id === 'OUTROS') && html`<div className="text-[11px] text-muted leading-tight -mt-1">${P.full}</div>`}
+            ${jusSuplentes(g, casa, P.id).length > 0 && html`<div className="text-[11px] text-muted leading-tight -mt-1" data-cadeira-suplente=${P.id}>${P[casa]} cadeiras · ${jusSuplentes(g, casa, P.id).length} ocupada${jusSuplentes(g, casa, P.id).length > 1 ? 's' : ''} por suplente</div>`}
             <div className="flex items-center gap-3"><div className="flex-1"><${Bar} v=${rel} cor=${s === 'base' ? 'var(--verde)' : s === 'indep' ? 'var(--ouro)' : 'var(--rubro)'} h=${6} label=${'Relação com ' + P.nome} /></div><span className="num text-xs w-8 text-right">${fmt(rel, 0)}</span></div>
             ${!proprio && P[casa] > 0 && html`<div className="flex flex-wrap gap-2">
               ${casa === 'cam' ? html`
@@ -17072,10 +17079,12 @@ function Parlamentares({ g }) {
   const achados = base.filter(x => (bl === 'all' || x.L.bloco === bl) && (uf === 'all' || x.L.uf === uf) && (!nq || norm(x.L.nome).includes(nq)));
   const vis = achados.slice(0, lim);
   const blocos = PARTIDOS.filter(P => P[casa] > 0);
+  // suplentes de parlamentares presos em casos fictícios: aparecem como uma linha a mais, sem nome nem estado; ninguém sai da lista
+  const supsVis = uf === 'all' && !nq ? jusSuplentes(g, casa).filter(x => bl === 'all' || x.p === bl) : [];
   return html`<div>
     <div className="flex flex-wrap items-baseline justify-between gap-2 mb-1">
       <h3 className="disp text-2xl font-extrabold uppercase">Parlamentares</h3>
-      <span className="num text-sm" role="status" aria-live="polite">${achados.length} parlamentar${achados.length === 1 ? '' : 'es'}</span>
+      <span className="num text-sm" role="status" aria-live="polite" data-parl-contagem="1">${supsVis.length ? `${achados.length} cadeiras · ${supsVis.length} ocupada${supsVis.length > 1 ? 's' : ''} por suplente` : `${achados.length} parlamentar${achados.length === 1 ? '' : 'es'}`}</span>
     </div>
     <p className="text-xs text-muted mb-3">Eleitos em 2026 (TSE); no Senado, um terço eleito em 2022. Cada parlamentar tem uma posição em nove eixos: a do bloco, calibrada pelas votações de 2023 a 2026, ajustada pela ala de quem tem atuação pública conhecida e por sinais do nome de urna e da ocupação. Nas votações, o voto soma convicção (o quanto a medida combina com essa posição), relação com o governo, custo eleitoral e o humor do estado; quanto mais ideológica a medida, menos cargos e emendas compram o voto. A fidelidade abaixo é a disposição em pauta neutra. As bancadas (ruralista, evangélica, da bala e outras) são estimadas por partido, estado e ocupação declarada ao TSE e pressionam o voto de cada integrante. Votos simulados.</p>
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-4">
@@ -17095,6 +17104,10 @@ function Parlamentares({ g }) {
         ${L.pos && html`<div className="text-[11px] text-muted leading-tight cursor-help" title=${dicaPosicao(L)} data-posicao="1">${L.pos.alas.length ? html`<span className="text-fg">${L.pos.alas.map(a => ALAS[a].nome).join(' · ')}</span> · ` : ''}econ. ${nivelPos(L.pos.v[0], 'eco')} · costumes ${nivelPos(L.pos.v[5], 'cos')} · segurança ${nivelPos(L.pos.v[6], 'seg')}</div>`}
         ${L.fr && L.fr.f.length > 0 && html`<div className="flex flex-wrap gap-1" data-bancada="1">${L.fr.f.slice(0, 2).map(x => html`<span key=${x} className="chip" style=${{ fontSize: '10px', padding: '0 6px', lineHeight: '16px' }} title="Estimativa do jogo: partido, estado e ocupação declarada ao TSE. Não é a lista oficial da frente.">${FRENTE_ROT[x]} (estimativa)</span>`)}</div>`}
         ${casa === 'sen' && html`<div className="text-[11px] text-muted leading-tight">eleito em ${L.ano}${L.gov ? html` · <span className="text-ambar">${NOTA_SUPLENTE}</span>` : null}</div>`}
+      </div>`)}
+      ${supsVis.map(x => html`<div key=${x.id} className="flex flex-col gap-1.5 p-2.5 rounded-lg min-w-0 border border-dashed border-line" data-suplente=${x.p} data-suplente-casa=${x.casa} style=${{ background: 'var(--panel2)' }}>
+        <div className="flex items-center gap-2 min-w-0"><span className="shrink-0" aria-hidden="true"><${Icon} n="UserRound" s=${28} /></span><span className="font-medium truncate flex-1 min-w-0">Suplente do ${x.sig}</span><${Tag} cor=${PMAP[x.p].cor}>suplente</${Tag}></div>
+        <div className="text-[11px] text-muted leading-tight">Sem nome e sem estado. Assumiu em ${dataCurta(x.mes)} a vaga de um ${x.cargo} do ${x.sig} preso na Operação ${x.op}. A vaga continua com o partido, e um dos nomes listados do partido está afastado, sem indicação de qual.</div>
       </div>`)}
     </div>`}
     ${achados.length > lim && html`<div className="flex items-center justify-center gap-3 mt-4"><span className="text-xs text-muted num">mostrando ${vis.length} de ${achados.length}</span><button type="button" className="btn btn-ghost text-sm" onClick=${() => setLim(l => l + 60)}>Mostrar mais 60</button></div>`}
@@ -17925,6 +17938,339 @@ function PaisSaude({ g, upd, decidir }) {
     <${FontesArea} area="saude" />
   </div>`;
 }
+/* ============================== PAÍS: JUSTIÇA ============================== */
+/* Custos do Judiciário (CNJ, Justiça em Números, ano-base 2025, divulgado em 2026), escândalos de corrupção (fictícios, gerados na partida)
+   e arquivo de casos históricos reais (só fatos públicos e situação oficial). Estado em g.jus, criado de forma preguiçosa (saves antigos funcionam). */
+const JUS_CUSTO = { ano: 2025, total: 164.6, pessoal: 148.5, verbas: 9.8, hab: 771.48, pibPct: 1.3, pessoalPct: 90.2, arrec: 68.2, arrecPct: 41, ti: 4.4 };
+const JUS_POP_MI = JUS_CUSTO.total * 1000 / JUS_CUSTO.hab; // população implícita (milhões) = total / custo por habitante
+// pct: participação no gasto. Estadual e Trabalho = 2024 (CNJ: R$ 91,7 bi e R$ 25,5 bi de R$ 146,5 bi); demais ramos = estimativa do jogo sobre os 20% restantes
+const JUS_RAMOS = [
+  { k: 'est', nome: 'Justiça Estadual', pct: 62.6, v: true }, { k: 'trab', nome: 'Justiça do Trabalho', pct: 17.4, v: true },
+  { k: 'fed', nome: 'Justiça Federal', pct: 11.5, v: false }, { k: 'eleit', nome: 'Justiça Eleitoral', pct: 4.5, v: false },
+  { k: 'sup', nome: 'Tribunais superiores (STF, STJ, TST, TSE, STM)', pct: 3.5, v: false }, { k: 'mil', nome: 'Justiça Militar (União e Estados)', pct: 0.5, v: false }
+];
+const JUS_OPS = ['Cofre de Vidro', 'Maré Alta', 'Ponte Falsa', 'Rota do Sal', 'Pedra no Sapato', 'Casa de Barro', 'Fio de Prumo', 'Mão Dupla', 'Trilho Morto', 'Safra Fantasma', 'Balcão Azul', 'Vento Cruzado', 'Caixa Preta', 'Porta Giratória', 'Selo Frio', 'Chão de Giz', 'Lama Branca', 'Pente Fino', 'Espelho Turvo', 'Ouro de Tolo', 'Cabo de Guerra', 'Muro Baixo', 'Fachada Nova', 'Boca de Siri'];
+const JUS_ESQUEMAS = ['desvio em contratos de merenda escolar', 'fraude em licitação de obras rodoviárias', 'superfaturamento de equipamentos hospitalares', 'emendas parlamentares desviadas para ONGs de fachada', 'propina em contratos de uma estatal', 'fraude em fundos de pensão', 'cartel em compras de medicamentos', 'desvio em convênios de turismo'];
+// alvos sempre genéricos: cargo OU instituição + partido, nunca uma pessoa real nem cargo + partido + estado
+const JUS_ALVOS = [
+  { t: 'um senador do PL', p: 'PL', casa: 'sen', cargo: 'senador', sig: 'PL' }, { t: 'deputados do PT', p: 'PT', casa: 'cam', cargo: 'deputado', sig: 'PT' }, { t: 'o tesoureiro do União Brasil', p: 'UNIAO' }, { t: 'secretários de um governo estadual do PT', p: 'PT' },
+  { t: 'diretores de uma estatal indicados pelo MDB', p: 'MDB' }, { t: 'um deputado do PSD', p: 'PSD', casa: 'cam', cargo: 'deputado', sig: 'PSD' }, { t: 'um senador do MDB', p: 'MDB', casa: 'sen', cargo: 'senador', sig: 'MDB' }, { t: 'um deputado do PP', p: 'UNIAO', casa: 'cam', cargo: 'deputado', sig: 'PP' }, { t: 'prefeitos de cidades médias ligados ao PP', p: 'UNIAO' },
+  { t: 'assessores do Planalto', gov: true }, { t: 'servidores de um ministério do governo federal', gov: true }, { t: 'empresários e intermediários sem cargo público', p: null }
+];
+const JUS_ORGAOS = [['PF', 45], ['MPF', 20], ['CGU', 15], ['TCU', 15], ['PGR', 5]];
+const JUS_FASE_COR = { 'inquérito': 'var(--ouro)', 'denúncia': 'var(--ambar)', 'ação penal': 'var(--rubro)', 'prisão': 'var(--rubro)', 'arquivado': 'var(--muted)' };
+const JUS_BLOQ = {
+  trocar_dg: { nome: 'Trocar o diretor-geral da PF', bt: .35, w: { vazamento: 5, stf: 2, cpi: 2, imp: 1 }, desc: 'Trava o caso por 3 meses e enfraquece a prova. Risco: vazamento e reação do Congresso.' },
+  cortar_verba: { nome: 'Cortar verba da PF', bt: .30, w: { vazamento: 2, stf: 1, cpi: 5, imp: 1 }, desc: 'Desacelera as investigações da PF por meses. Risco: CPI e imprensa.' },
+  pressionar_pgr: { nome: 'Pressionar a PGR', bt: .30, w: { vazamento: 2, stf: 3, cpi: 1, imp: 3 }, desc: 'Pode segurar a denúncia ou arquivar. Risco: STF abrir inquérito por obstrução e pedido de impeachment.' },
+  sigilo: { nome: 'Decretar sigilo de 100 anos', bt: .45, w: { vazamento: 3, stf: 5, cpi: 2, imp: 1 }, desc: 'Esconde o caso e trava a imprensa. Risco alto: o STF e a opinião pública reagem.' }
+};
+const JUS_AVAN = {
+  acelerar: { nome: 'Acelerar a investigação', desc: 'Reforça o orçamento da PF (R$ 0,3 bi) e a cooperação entre órgãos. O caso anda mais rápido.' },
+  forca_tarefa: { nome: 'Criar força-tarefa', desc: 'Junta PF, MPF e CGU: mais prova e mais velocidade. Só para casos em inquérito ou denúncia.' },
+  reabrir: { nome: 'Reabrir o caso arquivado', desc: 'Só para casos arquivados nesta partida, uma vez por caso. Gera desgaste com o partido citado.' }
+};
+function jusPadrao() { return { ver: 1, seq: 0, casos: [], ultQuebra: 0, ult: null, pfCorte: 0, pfOrc: 0, nBloq: 0, nAvan: 0, ev: {}, suplentes: [], reacoes: [], cpiMes: 0 }; }
+function ensureJus(g) {
+  if (!g.jus || typeof g.jus !== 'object') g.jus = jusPadrao();
+  const J = g.jus; const D = jusPadrao();
+  for (const k in D) if (J[k] == null && k !== 'ult') J[k] = D[k];
+  if (J.ult === undefined) J.ult = null;
+  if (!Array.isArray(J.casos)) J.casos = [];
+  return J;
+}
+const jusDe = (g) => (g && g.jus && Array.isArray(g.jus.casos) ? g.jus : jusPadrao()); // leitura: não cria
+const jusAbertos = (g) => jusDe(g).casos.filter(c => c.fase !== 'arquivado');
+const jusSuplentes = (g, casa, bloco) => (jusDe(g).suplentes || []).filter(x => (!casa || x.casa === casa) && (!bloco || x.p === bloco));
+const jusArquivados = (g) => jusDe(g).casos.filter(c => c.fase === 'arquivado');
+const jusSorteia = (g, tag) => hashStr(String(g.seed) + '|jus|' + g.mes + '|' + (g.jus ? g.jus.seq : 0) + '|' + tag);
+function jusRel(g, id, d) { const P = id && g.parties && g.parties[id]; if (!P) return; P.rel = clamp(P.rel + d, 0, 99); P.relS = clamp(P.relS + d, 0, 99); }
+function jusGrupos(g, d, ks) { for (const k of (ks || ['classemedia', 'jovens', 'mercado', 'universitarios', 'servidores'])) dgrp(g, k, d); }
+function jusManchete(g, src, txt) { g.feed.unshift({ mes: g.mes, src, txt }); try { xEvento(g, 'escandalo', { txt: String(txt).replace(/\.$/, '') }); } catch (e) { } }
+function jusRotulo(c) { return 'Operação ' + c.nome; }
+function jusNovoCaso(g, opt) {
+  const J = ensureJus(g); opt = opt || {}; J.seq++;
+  const r = (t) => jusSorteia(g, t);
+  const usados = new Set(J.casos.map(c => c.nome));
+  const livres = JUS_OPS.filter(n => !usados.has(n)); const pool = livres.length ? livres : JUS_OPS;
+  const nome = pool[Math.floor(r('n') * pool.length)];
+  const govAlvos = JUS_ALVOS.filter(a => a.gov);
+  let alvo = opt.alvoT ? (JUS_ALVOS.find(a => a.t === opt.alvoT) || JUS_ALVOS[0]) : opt.gov ? govAlvos[Math.floor(r('ag') * govAlvos.length)] : JUS_ALVOS[Math.floor(r('a') * JUS_ALVOS.length)];
+  if (!opt.gov && !opt.alvoT && !alvo.gov && r('gv') < .2 + g.escandalo / 250) alvo = govAlvos[Math.floor(r('ag') * govAlvos.length)];
+  let acc = 0; const x = r('o') * 100; let orgao = 'PF'; for (const [o, w] of JUS_ORGAOS) { acc += w; if (x < acc) { orgao = o; break; } }
+  const valor = Math.round(20 * Math.pow(45, r('v')));
+  const esq = opt.esquema || JUS_ESQUEMAS[Math.floor(r('e') * JUS_ESQUEMAS.length)];
+  const c = { id: 'j' + J.seq, nome, mes: g.mes, faseMes: g.mes, orgao, orgaos: [orgao], fase: 'inquérito', valor, prova: Math.round(20 + r('p') * 60), alvo: alvo.t, p: alvo.p || null, gov: !!alvo.gov, casa: alvo.casa || null, cargo: alvo.cargo || null, sig: alvo.sig || null, esquema: esq, pend: true, pendMes: g.mes, trava: 0, sigilo: false, rastro: 0, acel: 0, forca: false, reab: 0, ult: 0, log: [] };
+  J.casos.push(c); J.ultQuebra = g.mes;
+  const imp = c.gov ? clamp(c.valor / 120 + 2, 2, 8) : clamp(c.valor / 400, .5, 2);
+  g.escandalo = clamp(g.escandalo + imp, 0, 100);
+  if (c.gov) jusGrupos(g, -.5); else jusRel(g, c.p, -2);
+  jusManchete(g, c.gov ? 'antag' : 'globo', `${orgao} deflagra a ${jusRotulo(c)}: investigação sobre ${esq}, com ${c.alvo}. Valor estimado: R$ ${c.valor} milhões.`);
+  linhaAdd(g, 'ESCÂNDALO', `${jusRotulo(c)} (${orgao}) investiga ${esq}`);
+  try { jusReage(g, c, 'abre'); } catch (e) { }
+  return c;
+}
+// probabilidade mensal de estourar um caso novo: sobe com o escândalo e com os bastidores
+function jusProbQuebra(g) {
+  const B = g.eu && g.eu.bast; let p = .035 + g.escandalo / 320;
+  if (B && !g.cfg.real) { p += clamp((B.expo || 0) / 600, 0, .1); if (B.inv) p += .05; }
+  return clamp(p, .02, .35);
+}
+function jusMensal(g, notas) {
+  const J = ensureJus(g); if (g.over) return;
+  // cada caso aberto avança de fase conforme prova, órgão e travas
+  for (const c of J.casos) {
+    if (c.fase === 'arquivado') continue;
+    if (c.pend && g.mes - c.pendMes >= 2) { c.pend = false; if (c.gov) g.escandalo = clamp(g.escandalo + 1, 0, 100); } // ignorado: some da Mesa
+    const idade = g.mes - c.faseMes; const r = jusSorteia(g, 'm' + c.id);
+    const agil = .08 + c.prova / 600 + (c.forca ? .1 : 0) + (c.acel >= g.mes ? .08 : 0) - (J.pfCorte >= g.mes && c.orgaos.includes('PF') ? .05 : 0);
+    if (c.rastro > 0 && !c.sigilo && jusSorteia(g, 'v' + c.id) < .03 * c.rastro) { c.rastro = 0; jusVaza(g, c, 'm'); }
+    if (c.trava >= g.mes) continue;
+    if (c.fase === 'inquérito') {
+      if (idade >= 3 && r < agil * 2) jusAvancaFase(g, c, 'denúncia', notas);
+      else if (idade >= 4 && c.prova < 28 && r > .93) jusArquiva(g, c, 'sem provas suficientes', notas);
+    } else if (c.fase === 'denúncia') {
+      if (idade >= 2 && r < agil * 2.2) jusAvancaFase(g, c, 'ação penal', notas);
+    } else if (c.fase === 'ação penal') {
+      if (c.casa && !c.sigilo && idade >= 4 && c.prova >= 50 && r < .14 + (c.prova - 50) / 300) jusPrende(g, c, notas);
+      else if (idade >= 10) jusArquiva(g, c, 'julgado e encerrado na Justiça', notas);
+    } else if (c.fase === 'prisão' && idade >= 6) jusArquiva(g, c, 'julgado e encerrado na Justiça', notas);
+  }
+  // casos ligados aos eventos existentes da Mesa (PF e CPI): estouram junto com a crise do mês
+  if ((g.evento === 'pf' || g.evento === 'cpi') && J.ev[g.mes] == null && jusAbertos(g).length < 5) {
+    J.ev[g.mes] = 1;
+    if (g.evento === 'pf') jusNovoCaso(g, { gov: true, esquema: 'desvio em contratos de merenda escolar' }); else if (jusSorteia(g, 'evcpi') < .6) jusNovoCaso(g, { gov: false });
+  } else if (g.mes >= 2 && g.mes - J.ultQuebra >= 2 && jusAbertos(g).length < 4 && jusSorteia(g, 'q') < jusProbQuebra(g)) {
+    const c = jusNovoCaso(g); notas.push({ t: 'neg', x: `${jusRotulo(c)}: ${c.orgao} abre investigação sobre ${c.esquema}. Veja em País, Justiça.` });
+  }
+  for (const k in J.ev) if (+k < g.mes - 12) delete J.ev[k];
+  if (J.ult && g.mes - J.ult.mes > 3) J.ult = null;
+}
+function jusAvancaFase(g, c, fase, notas) {
+  c.fase = fase; c.faseMes = g.mes;
+  const imp = c.gov ? clamp(c.valor / 250 + 1, 1, 5) : .4;
+  g.escandalo = clamp(g.escandalo + (c.sigilo ? imp * .3 : imp), 0, 100);
+  if (!c.gov) jusRel(g, c.p, -1.5);
+  const txt = fase === 'denúncia' ? `MPF oferece denúncia na ${jusRotulo(c)}` : `Justiça aceita denúncia e abre ação penal na ${jusRotulo(c)}`;
+  if (!c.sigilo) g.feed.unshift({ mes: g.mes, src: c.gov ? 'antag' : 'globo', txt: txt + '.' });
+  c.log.push({ mes: g.mes, t: 'Fase: ' + fase }); linhaAdd(g, 'ESCÂNDALO', txt);
+  if (notas) notas.push({ t: 'neg', x: txt + '.' });
+  try { jusReage(g, c, 'avanca'); } catch (e) { }
+}
+// prisão (ou condenação) de um parlamentar do caso fictício: a vaga fica com o suplente do mesmo partido; ninguém é nomeado nem sai de lista alguma
+function jusPrende(g, c, notas) {
+  const J = ensureJus(g); c.fase = 'prisão'; c.faseMes = g.mes; c.preso = true; c.pend = false;
+  c.log.push({ mes: g.mes, t: 'Prisão de ' + (c.cargo ? 'um ' + c.cargo + ' do ' + c.sig : 'investigado') });
+  const quem = c.cargo ? `um ${c.cargo} do ${c.sig}` : c.alvo;
+  if (c.casa && c.p && PMAP[c.p]) {
+    J.suplentes.push({ id: 's' + (J.suplentes.length + 1), casa: c.casa, p: c.p, sig: c.sig, mes: g.mes, caso: c.id, op: c.nome, cargo: c.cargo });
+    const d = (jusSorteia(g, 'sup' + c.id) - .5) * 5; // suplente pode ser menos leal: pequeno ajuste aleatório na relação do partido
+    const st = g.parties[c.p]; if (st) { if (c.casa === 'cam') st.rel = clamp(st.rel + d, 0, 99); else st.relS = clamp(st.relS + d, 0, 99); }
+  }
+  const aliado = g.parties[c.p] ? g.parties[c.p].rel >= 62 : false; const base = g.parties[c.p] ? g.parties[c.p].rel >= 42 : false;
+  g.escandalo = clamp(g.escandalo + (aliado ? 6 : base ? 4.5 : 3) + (c.rastro > 0 ? 2 : 0), 0, 100);
+  if (c.rastro === 0) { if (base) jusRel(g, c.p, -5); } else if (base) jusRel(g, c.p, 2); // aliado se sente abandonado se o presidente não bloqueou
+  for (const P of PARTIDOS) { const st = g.parties[P.id]; if (st && st.rel < 42 && P.id !== c.p) jusGrupos(g, -.15, ['classemedia']); }
+  jusGrupos(g, aliado ? -1.2 : -.6);
+  jusManchete(g, 'globo', `PF prende ${quem} na ${jusRotulo(c)}; suplente do ${c.sig} assume a vaga.`);
+  linhaAdd(g, 'ESCÂNDALO', `Prisão de ${quem} na ${jusRotulo(c)}; suplente assume`);
+  if (notas) notas.push({ t: 'neg', x: `Prisão de ${quem} na ${jusRotulo(c)}: o suplente do ${c.sig} assume a vaga.` });
+  try { jusReage(g, c, 'prisao'); } catch (e) { }
+}
+function jusArquiva(g, c, motivo, notas) {
+  c.fase = 'arquivado'; c.faseMes = g.mes; c.pend = false; c.motivo = motivo;
+  c.log.push({ mes: g.mes, t: 'Arquivado: ' + motivo });
+  if (notas) notas.push({ t: 'neu', x: `${jusRotulo(c)} arquivada (${motivo}).` });
+  g.escandalo = clamp(g.escandalo - (c.gov ? 1.5 : .3), 0, 100);
+}
+// reação ao bloqueio: vazamento à imprensa, inquérito no STF (obstrução), CPI ou pedido de impeachment
+function jusVaza(g, c, origem) {
+  g.escandalo = clamp(g.escandalo + 8, 0, 100); jusGrupos(g, -2.2);
+  jusManchete(g, 'antag', origem === 'm' ? `Mensagens vazadas mostram tentativa do Planalto de interferir na ${jusRotulo(c)}.` : `Vazamento: Planalto pressionou para travar a ${jusRotulo(c)}.`);
+  return 'vazamento à imprensa (escândalo +8)';
+}
+function jusReacao(g, c, tipo) {
+  if (tipo === 'vazamento') return jusVaza(g, c, 'a');
+  if (tipo === 'stf') {
+    g.stf = clamp(g.stf + 14, 0, 100); g.escandalo = clamp(g.escandalo + 5, 0, 100); jusGrupos(g, -1.2);
+    jusManchete(g, 'globo', `STF abre inquérito para apurar suposta obstrução na ${jusRotulo(c)}.`); return 'inquérito no STF por obstrução (tensão com o STF +14, escândalo +5)';
+  }
+  if (tipo === 'cpi') {
+    g.escandalo = clamp(g.escandalo + 7, 0, 100); for (const P of PARTIDOS) { const st = g.parties[P.id]; if (st && st.rel < 62) jusRel(g, P.id, -3); }
+    jusManchete(g, 'carta', `Oposição reúne assinaturas e instala CPI sobre a ${jusRotulo(c)}.`); return 'CPI instalada (escândalo +7, base no Congresso −3)';
+  }
+  g.escandalo = clamp(g.escandalo + 6, 0, 100); if (g.oposicao) g.oposicao.pedidoImp = g.mes; for (const P of PARTIDOS) { const st = g.parties[P.id]; if (st && st.rel < 62) jusRel(g, P.id, -4); }
+  jusGrupos(g, -1.5); jusManchete(g, 'antag', `Oposição protocola pedido de impeachment citando a ${jusRotulo(c)}.`);
+  return 'pedido de impeachment protocolado (escândalo +6, base −4)';
+}
+function jusRiscoBloq(g, c, k) { const B = JUS_BLOQ[k]; return clamp(B.bt + c.prova / 400 + g.escandalo / 500 + (c.sigilo ? .1 : 0) + c.rastro * .04, .1, .85); }
+function jusPodeAgir(g, c, k) {
+  if (g.over) return 'Fim de jogo'; if (g.acoes <= 0) return 'Sem ações políticas neste mês';
+  try { if (elSemGoverno(g)) return 'Modo leve: você não governa'; } catch (e) { }
+  if (c.ult === g.mes) return 'Uma ação por caso a cada mês';
+  if (k === 'reabrir') return c.fase !== 'arquivado' ? 'Só para caso arquivado' : c.reab >= 1 ? 'Já foi reaberto uma vez' : '';
+  if (c.fase === 'arquivado') return 'Caso arquivado: só dá para reabrir';
+  if (c.fase === 'prisão') return 'Prisão já decretada: o caso segue na Justiça';
+  if (k === 'forca_tarefa' && (c.forca || c.fase === 'ação penal')) return c.forca ? 'Já existe força-tarefa' : 'Já virou ação penal';
+  if (k === 'sigilo' && c.sigilo) return 'Já está sob sigilo';
+  return '';
+}
+function jusAcao(g, id, k) {
+  const J = ensureJus(g); const c = J.casos.find(x => x.id === id); if (!c) return { ok: false, msg: 'Caso não encontrado.' };
+  const imp = jusPodeAgir(g, c, k); if (imp) return { ok: false, msg: imp };
+  g.acoes -= 1; c.ult = g.mes; c.pend = false;
+  const R = { mes: g.mes, caso: c.id, k, nome: c.nome, res: '', tipo: 'bloq' };
+  if (JUS_BLOQ[k]) {
+    const B = JUS_BLOQ[k]; J.nBloq++; c.rastro++; estOf(g).bloqJus = (estOf(g).bloqJus || 0) + 1;
+    const back = Math.random() < jusRiscoBloq(g, c, k);
+    if (k === 'trocar_dg') { c.trava = g.mes + 3; c.prova = Math.max(5, c.prova - 15); g.stf = clamp(g.stf + 2, 0, 100); R.res = 'Novo diretor-geral assume e o caso trava por 3 meses.'; }
+    else if (k === 'cortar_verba') { J.pfCorte = g.mes + 6; if (c.orgaos.includes('PF')) c.trava = g.mes + 4; c.prova = Math.max(5, c.prova - 6); R.res = 'Verba da PF cortada: investigações desaceleram por 6 meses.'; }
+    else if (k === 'pressionar_pgr') { if (c.fase !== 'ação penal' && Math.random() < .5) { jusArquiva(g, c, 'arquivamento pedido pela PGR', null); R.res = 'A PGR pede o arquivamento e o caso é arquivado.'; } else { c.trava = g.mes + 4; R.res = 'A PGR segura a denúncia por 4 meses.'; } g.stf = clamp(g.stf + 2, 0, 100); }
+    else { c.sigilo = true; c.trava = g.mes + 6; g.stf = clamp(g.stf + 6, 0, 100); jusGrupos(g, -.8); R.res = 'Sigilo decretado: o caso some das manchetes e trava por 6 meses.'; }
+    jusRel(g, c.p, 4); // o partido citado agradece
+    if (back) { let tot = 0; for (const t in B.w) tot += B.w[t]; let x = Math.random() * tot, tipo = 'vazamento'; for (const t in B.w) { x -= B.w[t]; if (x <= 0) { tipo = t; break; } } R.rea = jusReacao(g, c, tipo); R.res += ' Mas houve reação: ' + R.rea + '.'; R.back = true; }
+    else R.res += ' Sem reação imediata, mas fica um rastro que pode vazar depois.';
+  } else {
+    R.tipo = 'avan'; J.nAvan++;
+    if (k === 'acelerar') { g.fiscal.extra += .3; J.pfOrc = (J.pfOrc || 0) + .3; c.acel = g.mes + 6; c.prova = clamp(c.prova + 6, 0, 100); jusRel(g, c.p, -3); if (c.gov) g.escandalo = clamp(g.escandalo + 3, 0, 100); jusGrupos(g, .8); g.stf = clamp(g.stf - 1, 0, 100); R.res = 'PF recebe reforço de R$ 0,3 bi e o caso anda mais rápido por 6 meses.'; }
+    else if (k === 'forca_tarefa') { g.fiscal.extra += .2; c.forca = true; for (const o of ['MPF', 'CGU']) if (!c.orgaos.includes(o)) c.orgaos.push(o); c.prova = clamp(c.prova + 14, 0, 100); jusRel(g, c.p, -4); for (const P of PARTIDOS) if (P.fisio > 70 && P.id !== c.p) jusRel(g, P.id, -1); if (c.gov) g.escandalo = clamp(g.escandalo + 2, 0, 100); jusGrupos(g, 1.2); R.res = 'Força-tarefa (PF, MPF e CGU) montada: mais prova e mais velocidade.'; }
+    else { c.fase = 'inquérito'; c.faseMes = g.mes; c.reab++; c.prova = clamp(c.prova + 8, 0, 100); c.trava = 0; c.motivo = null; jusRel(g, c.p, -6); g.escandalo = clamp(g.escandalo + (c.gov ? 4 : 1), 0, 100); jusGrupos(g, 1.2); g.stf = clamp(g.stf - 1, 0, 100); c.log.push({ mes: g.mes, t: 'Reaberto por decisão do governo' }); jusManchete(g, 'globo', `Governo reabre a ${jusRotulo(c)}, que estava arquivada.`); R.res = 'Caso reaberto e de volta ao inquérito.'; }
+    if (k !== 'reabrir') jusManchete(g, 'globo', k === 'acelerar' ? `Planalto reforça o orçamento da PF e acelera a ${jusRotulo(c)}.` : `Governo cria força-tarefa para a ${jusRotulo(c)}.`);
+  }
+  c.log.push({ mes: g.mes, t: (JUS_BLOQ[k] || JUS_AVAN[k]).nome });
+  J.ult = R; try { jusReage(g, c, JUS_BLOQ[k] ? 'bloqueio:' + k : 'avanco'); } catch (e) { }
+  return { ok: true, msg: R.res };
+}
+// Reações de políticos reais (selo "simulado"): só ação política e fala institucional (CPI, voto, autonomia da PF). Nunca citam o alvo do caso,
+// nunca acusam ninguém e só saem de quem é de bloco diferente do partido citado, exceto a fala genérica do próprio partido sobre o processo.
+const JUS_FALAS = {
+  cpi: ['Vamos protocolar o pedido de CPI para acompanhar a {op}. Fiscalizar é dever do Congresso.', 'Assinei o requerimento de CPI sobre a {op}. O país precisa de transparência e de apuração completa.', 'Vou votar a favor da CPI da {op}. Cabe ao Congresso fiscalizar o uso do dinheiro público.'],
+  trocar_dg: ['Trocar o diretor-geral da PF no meio de uma investigação é grave e exige explicações do Planalto.', 'Mudar o comando da PF durante uma investigação é um péssimo sinal. A PF tem que ter autonomia.'],
+  cortar_verba: ['Cortar verba da PF no meio de uma investigação é um sinal ruim. A PF tem que ter autonomia e orçamento.', 'A PF precisa de recursos para investigar. Contingenciar a polícia no meio de uma operação não é razoável.'],
+  pressionar_pgr: ['A PGR precisa ter independência para decidir. Pressão sobre o órgão não combina com o Estado de Direito.', 'Instituições de controle não podem sofrer pressão do governo. Respeito à independência da PGR.'],
+  sigilo: ['Sigilo de 100 anos em caso de investigação é um retrocesso. O país precisa de transparência.', 'Decretar sigilo de cem anos num caso como esse vai contra a transparência. Vamos cobrar explicações.'],
+  apoio: ['A PF tem que ter autonomia para investigar. Apoio o trabalho das instituições na {op}.', 'Confiamos nas instituições: a PF, o MPF e a Justiça devem apurar a {op} com independência.', 'Governo que reforça a PF faz o certo. Que a {op} siga seu curso.'],
+  proprio: ['Confiamos nas instituições. Que a investigação siga seu curso e se apure tudo, com direito de defesa para todos.', 'Respeito ao devido processo legal: que a Justiça e a PF façam o seu trabalho, com ampla defesa.', 'O processo é institucional e deve seguir seu curso. Defendemos que se apure tudo, com garantias a todos.']
+};
+function jusPolitico(g, c, papel, seed) {
+  // papel: 'opo' (oposição), 'base' (aliados do governo), 'proprio' (parlamentares do partido citado)
+  const pol = POLITICOS.filter(x => x.cargo !== 'gov' && g.parties[x.bloco]); if (!pol.length) return null;
+  const f = pol.filter(x => { const st = status(g.parties[x.bloco].rel); if (papel === 'proprio') return c.p && x.bloco === c.p; if (c.p && x.bloco === c.p) return false; return papel === 'opo' ? st === 'opos' : st === 'base'; });
+  if (!f.length) return null;
+  const nomeJog = norm((g.cfg && g.cfg.nome) || '');
+  const q = f[Math.floor(hashStr(seed) * f.length) % f.length]; return norm(q.nome) === nomeJog ? null : q;
+}
+function jusReage(g, c, momento) {
+  const J = ensureJus(g); const X = ensureX(g); const seed = 'jus|' + c.id + '|' + momento + '|' + g.mes;
+  const k = momento.indexOf('bloqueio:') === 0 ? momento.slice(9) : null;
+  const novos = []; const rot = jusRotulo(c); const fala = (ks, sd) => escolhe(JUS_FALAS[ks], sd).replace('{op}', rot);
+  const parlam = (q, txt, tom) => novos.push({ a: { nome: q.nome, sigla: sg(q.sigla), uf: q.uf, tipo: 'politico', em: '🏛️', sim: true, pol: true }, txt, likes: engaj(X, seed + q.nome, 2200, 1), rts: engaj(X, seed + q.nome + 'r', 700, 1), resp: respostas(seed + 'x' + q.nome, 2, () => tom, X_PERFIS, XR), tom, kind: 'pol' });
+  const opoAtiva = (c.gov || !!k || momento === 'prisao');
+  let cpiPedida = false;
+  if (opoAtiva && (momento !== 'avanca' || c.gov)) {
+    const lid = (() => { try { const l = liderOposicao(g.cfg); return l && c.p !== bloco(l.partido) ? { nome: l.nome, sigla: l.partido, uf: null } : null; } catch (e) { return null; } })();
+    const q = (hashStr(seed + 'lid') < .5 && lid) ? lid : jusPolitico(g, c, 'opo', seed + 'opo');
+    if (q) { const ks = k || 'cpi'; parlam(q, ks === 'cpi' ? fala('cpi', seed + 'c') : fala(ks, seed + 'k'), 'neg'); cpiPedida = ks === 'cpi' || !!k; }
+    if (k || momento === 'abre' || momento === 'prisao') novos.push({ a: CONTA_OPO, txt: `A oposição vai protocolar o pedido de CPI sobre a ${rot}. A PF tem que ter autonomia.`, likes: engaj(X, seed + 'co', 5200, 1), rts: engaj(X, seed + 'cr', 1500, 1), resp: respostas(seed + 'cp', 2, () => 'neg', X_PERFIS, XR), tom: 'neg', kind: 'lider' });
+  } else if (momento === 'abre' || momento === 'avanca') {
+    const q = jusPolitico(g, c, 'base', seed + 'base'); if (q) parlam(q, fala('apoio', seed + 'a'), 'pos');
+  }
+  if (momento === 'prisao' || (momento === 'abre' && !c.gov && c.p)) { const q = jusPolitico(g, c, 'proprio', seed + 'prop'); if (q) parlam(q, fala('proprio', seed + 'p'), 'neu'); }
+  if (!novos.length) return;
+  empilha(g, X, novos.slice(0, 3), seed);
+  novos.slice(0, 3).forEach(n => { if (n.kind === 'pol') { J.reacoes.unshift({ mes: g.mes, caso: c.id, nome: n.a.nome, sigla: n.a.sigla, txt: n.txt }); } });
+  J.reacoes = J.reacoes.slice(0, 20);
+  // a oposição pode protocolar a CPI de verdade: aumenta a chance de o evento existente da CPI vir no mês seguinte
+  if (cpiPedida && !g.forcaEvento && g.mes - (J.cpiMes || -99) >= 6 && hashStr(seed + 'cpi') < clamp(.15 + g.escandalo / 250 + (c.gov ? .15 : 0), 0, .6)) { g.forcaEvento = 'cpi'; J.cpiMes = g.mes; linhaAdd(g, 'POLÍTICA', `Oposição protocola pedido de CPI sobre a ${rot}`); }
+}
+function jusPend(g, L) {
+  if (g.over) return;
+  jusAbertos(g).filter(c => c.pend).slice(0, 2).forEach(c => L.push({ id: 'justica-' + c.id, tipo: 'justica', urg: 62 + clamp(c.valor / 60, 0, 14), cat: 'Justiça · caso novo', ic: 'Siren', titulo: `${jusRotulo(c)}: ${c.orgao} investiga ${c.esquema}`, ctx: `Envolve ${c.alvo}. Valor estimado de R$ ${c.valor} milhões. Fase: ${c.fase}.`, extra: 'Decida se avança ou tenta bloquear. Bloquear tem risco de reação.', abrir: 'justica', caso: c.id, btns: [] }));
+}
+const jusPendCaso = (g) => jusAbertos(g).find(c => c.pend) || null;
+// penduricalhos e auxílio-moradia: medidas suas em vigor que mexem nesses itens
+function jusMedidasPend(g) {
+  return medL(g).filter(m => ['ativa', 'suspensa', 'aguardando', 'consolidada'].includes(m.estado) && (m.objIds || []).some(id => /supersalarios|moradia_jud|penduricalho/.test(id)));
+}
+
+function JusCaso({ g, upd, c }) {
+  const U = upd || ZERO; const arq = c.fase === 'arquivado';
+  const btn = (k, B, cls, extra) => { const imp = jusPodeAgir(g, c, k);
+    return html`<button key=${k} type="button" className=${'btn btn-ghost text-left justify-start !text-xs ' + cls} data-jus-acao=${k} disabled=${!!imp} title=${imp || B.desc} onClick=${() => U(n => { jusAcao(n, c.id, k); })}>${B.nome}${extra ? html` <span className="num opacity-70">${extra}</span>` : ''}</button>`; };
+  return html`<li className="rounded-lg border border-line p-4 flex flex-col gap-3 min-w-0" data-caso=${c.id} data-fase=${c.fase}>
+    <div className="flex flex-wrap items-start justify-between gap-2">
+      <div className="min-w-0"><div className="eyebrow">${dataCurta(c.mes)} · ${c.orgaos.join(' + ')}${c.sigilo ? ' · sigilo' : ''}${c.forca ? ' · força-tarefa' : ''}</div><h4 className="font-semibold text-lg leading-tight">${jusRotulo(c)}</h4></div>
+      <div className="flex flex-wrap gap-1.5"><${Tag} cor=${JUS_FASE_COR[c.fase]}>${c.fase}</${Tag}>${c.gov && html`<${Tag} cor="var(--rubro)">atinge o governo</${Tag}>`}${c.trava >= g.mes && !arq && html`<${Tag} cor="var(--anil)">travado até ${dataCurta(c.trava)}</${Tag}>`}</div>
+    </div>
+    <p className="text-sm">Apura ${c.esquema}. Envolve ${c.alvo}.${c.preso ? ' Prisão decretada: o suplente do ' + c.sig + ' assumiu a vaga.' : ''}${c.motivo ? ' Arquivado: ' + c.motivo + '.' : ''}</p>
+    <div className="grid grid-cols-3 gap-3 text-sm">
+      <div><div className="eyebrow">Desvio estimado</div><div className="num font-semibold">R$ ${c.valor} mi</div></div>
+      <div><div className="eyebrow">Força da prova</div><div className="num font-semibold">${c.prova}/100</div><div className="h-1.5 rounded bg-line mt-1 overflow-hidden"><div className="h-full" style=${{ width: c.prova + '%', background: c.prova > 60 ? 'var(--rubro)' : c.prova > 35 ? 'var(--ambar)' : 'var(--verde)' }}></div></div></div>
+      <div><div className="eyebrow">Órgão</div><div className="font-semibold">${c.orgaos.join(', ')}</div></div>
+    </div>
+    ${arq ? html`<div className="flex flex-wrap gap-2">${btn('reabrir', JUS_AVAN.reabrir, '!border-verde')}</div>` : html`<div className="grid sm:grid-cols-2 gap-3">
+      <div className="flex flex-col gap-1.5"><div className="eyebrow" style=${{ color: 'var(--rubro)' }}>Bloquear · risco de reação</div>${Object.keys(JUS_BLOQ).map(k => btn(k, JUS_BLOQ[k], '!border-rubro', Math.round(jusRiscoBloq(g, c, k) * 100) + '%'))}</div>
+      <div className="flex flex-col gap-1.5"><div className="eyebrow" style=${{ color: 'var(--verde)' }}>Avançar</div>${['acelerar', 'forca_tarefa'].map(k => btn(k, JUS_AVAN[k], '!border-verde'))}
+        ${c.pend && html`<button type="button" className="btn btn-ghost !text-xs justify-start" data-jus-ignorar="1" onClick=${() => U(n => { const x = ensureJus(n).casos.find(q => q.id === c.id); if (x) { x.pend = false; if (x.gov) n.escandalo = clamp(n.escandalo + 1, 0, 100); } })}>Deixar seguir sem intervir</button>`}</div>
+    </div>`}
+    ${c.log.length > 0 && html`<ul className="text-[11px] text-muted flex flex-wrap gap-x-3">${c.log.slice(-4).map((l, i) => html`<li key=${i}>${dataCurta(l.mes)}: ${l.t}</li>`)}</ul>`}
+  </li>`;
+}
+function CartaoJustica({ g, upd }) {
+  const c = jusPendCaso(g);
+  if (!c) return html`<p className="text-sm text-muted">Nenhum caso novo aguarda decisão. Veja os casos abertos em País, Justiça.</p>`;
+  return html`<ul className="flex flex-col gap-3" data-mesa-justica="1"><${JusCaso} g=${g} upd=${upd} c=${c} /></ul>`;
+}
+const jusFmtBi = (v) => 'R$ ' + v.toFixed(1).replace('.', ',') + ' bi';
+const JUS_HIST = [
+  { id: 'mensalao', nome: 'Mensalão (Ação Penal 470)', ano: '2005 a 2014', orgao: 'STF', fato: 'Esquema de pagamentos a parlamentares revelado em 2005, julgado pelo STF na Ação Penal 470.', status: 'Dos 37 réus, 25 foram condenados e 12 absolvidos. O acórdão foi publicado em abril de 2013, a absolvição de 12 réus foi oficializada em maio de 2013 e as penas passaram a ser executadas entre 2013 e 2014, conforme o trânsito em julgado de cada réu.', fontes: [['Migalhas: STF oficializa absolvição de 12 réus', 'https://www.migalhas.com.br/quentes/177718/stf-oficializa-absolvicao-de-12-reus-no-processo-do-mensalao'], ['Conjur: prisão determinada em fev/2014', 'https://www.conjur.com.br/2014-fev-04/mes-joaquim-barbosa-determina-prisao-joao-paulo-cunha/']] },
+  { id: 'lavajato', nome: 'Lava Jato', ano: '2014 a hoje', orgao: 'PF, MPF, Justiça Federal e STF', fato: 'Maior operação anticorrupção do país, centrada em contratos da Petrobras e de empreiteiras.', status: 'Em 2021 o STF anulou as condenações de Lula na Lava Jato (decisão de 8/3/2021, referendada pelo plenário em 15/4/2021 por 8 a 3, por incompetência da 13ª Vara Federal de Curitiba) e confirmou a suspeição do juiz do caso. Em setembro de 2023 o STF declarou imprestáveis as provas do acordo de leniência da Odebrecht. Em 31/5/2023 o STF condenou o ex-presidente Fernando Collor a 8 anos e 10 meses por corrupção e lavagem de dinheiro ligadas à BR Distribuidora; em abril de 2025 foi determinado o início do cumprimento da pena.', fontes: [['Jornal Opção: STF anula condenações de Lula', 'https://www.jornalopcao.com.br/ultimas-noticias/stf-decide-anular-condenacoes-de-lula-e-devolver-direitos-politicos-323172/'], ['CNN Brasil: Collor condenado pelo STF', 'https://www.cnnbrasil.com.br/politica/fernando-collor-e-condenado-a-8-anos-e-10-meses-de-prisao-pelo-stf/'], ['Correio Braziliense: provas da Odebrecht anuladas', 'https://www.correiobraziliense.com.br/politica/2023/09/amp/5123198-toffoli-anula-provas-do-acordo-de-leniencia-da-lava-jato-com-odebrecht.html']] },
+  { id: 'anoes', nome: 'Anões do Orçamento', ano: '1993 a 1994', orgao: 'CPI do Congresso', fato: 'CPI investigou fraudes na Comissão de Orçamento do Congresso, com desvio de verbas de emendas.', status: 'Segundo a maior parte das fontes, a CPI investigou cerca de 37 parlamentares e o resultado foi de seis cassações e quatro renúncias; as contagens variam conforme a fonte.', fontes: [['Agência Senado: estrago político do mensalão supera o dos anões', 'https://www2.senado.leg.br/jspui/bitstream/id/317130/3/complemento_2.htm'], ['Jornal do Brasil: relembre o escândalo', 'https://www.jb.com.br/pais/noticias/2012/04/15/amp/relembre-o-escandalo-dos-anoes-do-orcamento.html']] },
+  { id: 'collor', nome: 'Caso Collor / PC Farias', ano: '1992 a 1994', orgao: 'CPI, Senado e STF', fato: 'Esquema de arrecadação paralela à campanha presidencial, que levou ao primeiro impeachment de um presidente no Brasil.', status: 'O presidente renunciou em 29/12/1992, durante o julgamento no Senado, que em seguida o condenou à inabilitação por oito anos para função pública. Em 1994 o STF o absolveu da acusação de corrupção passiva por falta de provas (a contagem de votos varia entre as fontes).', fontes: [['Câmara dos Deputados: 20 anos do impeachment', 'https://www2.camara.leg.br/atividade-legislativa/plenario/discursos/escrevendohistoria/destaque-de-materias/20-anos-do-impeachment'], ['Gazeta do Povo: histórico de Collor', 'https://www.gazetadopovo.com.br/republica/de-cacador-de-marajas-a-preso-por-corrupcao-entenda-o-historico-de-collor/']] },
+  { id: 'sanguessugas', nome: 'Sanguessugas (máfia das ambulâncias)', ano: '2006 a hoje', orgao: 'PF, CGU e CPI', fato: 'Fraudes em licitações de ambulâncias compradas com emendas parlamentares; operação da PF em 4/5/2006.', status: 'Auditoria da CGU e do Denasus apontou prejuízo de ao menos R$ 15,5 milhões. Em 2009 a PF indiciou 33 parlamentares, 71 prefeitos e 354 assessores e terceiros. A CPI pediu processos contra 69 deputados e três senadores, mas nenhum foi cassado. Houve poucas condenações criminais, lentas e esparsas.', fontes: [['Congresso em Foco: PF indicia 33 parlamentares', 'https://www.congressoemfoco.com.br/noticia/3328/pf-indicia-33-parlamentares-por-mafia-dos-sanguessugas'], ['Congresso em Foco: a nova vida dos sanguessugas', 'https://www.congressoemfoco.com.br/noticia/83446/a-nova-vida-dos-sanguessugas']] },
+  { id: 'zelotes', nome: 'Zelotes (CARF)', ano: '2015 a hoje', orgao: 'PF, MPF e Receita', fato: 'Operação da PF de março de 2015 sobre suposta venda de decisões no CARF, que poderia anular cerca de R$ 19 bilhões em multas.', status: 'Houve CPI do CARF e processos na Justiça Federal do Distrito Federal, com condenações e absolvições em ações distintas. Situação processual atual não verificada nesta consulta: consulte a Justiça Federal e o MPF.', fontes: [['Congresso em Foco: operação apura desvio bilionário', 'https://congressoemfoco.com.br/noticia/67191/operacao-da-pf-apura-desvio-bilionario-da-receita'], ['Relatório da CPI do CARF (Conjur)', 'https://www.conjur.com.br/wp-content/uploads/2023/09/relatorio-cpi-carf.pdf']] },
+  { id: 'semdesconto', nome: 'Operação Sem Desconto (INSS)', ano: '2025 a hoje', orgao: 'PF e CGU', fato: 'Descontos associativos não autorizados em aposentadorias e pensões do INSS, deflagrada em abril de 2025.', status: 'Em investigação, com novas fases em 2026 (março e maio). Estimativa citada de cerca de R$ 6,3 bilhões descontados entre 2019 e 2024. A CPMI do INSS encerrou os trabalhos em março de 2026 sem relatório final. Sem condenações definitivas conhecidas; por isso o caso é tratado só como investigação de instituições.', fontes: [['O Povo: PF e CGU investigam descontos', 'https://www.opovo.com.br/noticias/politica/2026/05/27/inss-pf-e-cgu-investigam-descontos-nao-autorizados-de-pensionistas.html'], ['Band: nova fase da operação', 'https://www.band.com.br/noticias/pf-e-cgu-nova-fase-operacao-sem-desconto-inss-202605270703'], ['CGU: nota sobre a operação', 'https://www.gov.br/cgu/pt-br/assuntos/noticias/2025/04/sem_desconto.pdf/@@download/file']] }
+];
+function PaisJustica({ g, upd }) {
+  const J = jusDe(g); const ab = jusAbertos(g), ar = jusArquivados(g); const med = jusMedidasPend(g);
+  const bi = (p) => JUS_CUSTO.total * p / 100; const hab = (p) => bi(p) * 1000 / JUS_POP_MI;
+  return html`<div className="flex flex-col gap-6" data-pais="justica">
+    <section className="sec" data-jus="custos">
+      <div className="flex flex-wrap items-end justify-between gap-2 mb-3"><div><h3 className="disp text-2xl font-extrabold uppercase">Quanto custa a Justiça</h3><p className="text-xs text-muted">Poder Judiciário inteiro, CNJ, Justiça em Números (ano-base ${JUS_CUSTO.ano}).</p></div><${Tag} cor=${g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)'}>${g.acoes}/5 ações</${Tag}></div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="rounded-lg border border-line p-3"><div className="eyebrow">Despesa total</div><div className="num text-2xl font-semibold text-ouro">${jusFmtBi(JUS_CUSTO.total)}</div><div className="text-[11px] text-muted">${String(JUS_CUSTO.pibPct).replace('.', ',')}% do PIB · recorde da série</div></div>
+        <div className="rounded-lg border border-line p-3"><div className="eyebrow">Pessoal</div><div className="num text-2xl font-semibold">${jusFmtBi(JUS_CUSTO.pessoal)}</div><div className="text-[11px] text-muted">${String(JUS_CUSTO.pessoalPct).replace('.', ',')}% do total</div></div>
+        <div className="rounded-lg border border-line p-3"><div className="eyebrow">Verbas indenizatórias</div><div className="num text-2xl font-semibold">${jusFmtBi(JUS_CUSTO.verbas)}</div><div className="text-[11px] text-muted">os "penduricalhos": diárias, passagens, auxílio-moradia e outros</div></div>
+        <div className="rounded-lg border border-line p-3"><div className="eyebrow">Por habitante</div><div className="num text-2xl font-semibold">R$ ${JUS_CUSTO.hab.toFixed(2).replace('.', ',')}</div><div className="text-[11px] text-muted">por ano</div></div>
+      </div>
+      <div className="mt-4 overflow-x-auto"><table className="w-full text-sm" data-jus-ramos="1"><thead><tr className="text-left text-muted text-xs"><th className="py-1 pr-2 font-normal">Ramo</th><th className="py-1 px-2 font-normal text-right">Parcela</th><th className="py-1 px-2 font-normal text-right">Despesa 2025</th><th className="py-1 pl-2 font-normal text-right">Por habitante</th><th className="py-1 pl-2 font-normal">Base</th></tr></thead>
+        <tbody>${JUS_RAMOS.map(r => html`<tr key=${r.k} className="border-t border-line"><td className="py-1.5 pr-2">${r.nome}</td><td className="py-1.5 px-2 text-right num">${r.pct.toFixed(1).replace('.', ',')}%</td><td className="py-1.5 px-2 text-right num">${jusFmtBi(bi(r.pct))}</td><td className="py-1.5 pl-2 text-right num">R$ ${hab(r.pct).toFixed(0)}</td><td className="py-1.5 pl-2"><${Tag} cor=${r.v ? 'var(--verde)' : 'var(--ambar)'}>${r.v ? 'CNJ 2024' : 'estimativa'}</${Tag}></td></tr>`)}</tbody></table></div>
+      <div className="mt-3 text-xs text-muted leading-relaxed" data-jus="penduricalhos">${med.length === 0 ? 'Você ainda não tem medida em vigor sobre penduricalhos, supersalários ou auxílio-moradia de magistrados. Uma medida assim (escreva na Mesa) aparece aqui; o teto remuneratório enfrenta resistência do Judiciário e risco de conflito com o STF.' : html`<div><b className="text-fg">Medidas suas sobre penduricalhos e auxílio-moradia:</b><ul className="mt-1 flex flex-col gap-0.5">${med.map(m => html`<li key=${m.id}>${m.nm || m.topic} · ${MED_ESTADOS[m.estado] ? MED_ESTADOS[m.estado][0] : m.estado} · desde ${dataCurta(m.m0)}</li>`)}</ul><div className="mt-1">Prazos, custo e problemas em Medidas.</div></div>`}</div>
+    </section>
+    ${J.ult && html`<div className=${'p-3 rounded-lg border text-sm ' + (J.ult.back ? 'border-rubro' : 'border-verde')} data-jus="resultado"><b>${dataCurta(J.ult.mes)} · Operação ${J.ult.nome}:</b> ${J.ult.res}</div>`}
+    <section className="sec" data-jus="casos">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-1"><h3 className="disp text-2xl font-extrabold uppercase">Casos de corrupção abertos</h3><span className="eyebrow">${ab.length} abertos · ${ar.length} arquivados</span></div>
+      <p className="text-xs text-muted mb-3">Casos fictícios, gerados nesta partida: o risco de novos escândalos sobe com o nível de escândalo (${Math.round(g.escandalo)}) e com atalhos em Bastidores. Cada ação gasta 1 ação política, no máximo uma por caso a cada mês.</p>
+      ${ab.length === 0 ? html`<p className="text-sm text-muted" data-jus="vazio">Nenhum caso aberto agora.</p>` : html`<ul className="grid lg:grid-cols-2 gap-4">${ab.map(c => html`<${JusCaso} key=${c.id} g=${g} upd=${upd} c=${c} />`)}</ul>`}
+      ${ar.length > 0 && html`<div className="mt-5"><div className="eyebrow mb-2">Arquivados nesta partida</div><ul className="grid lg:grid-cols-2 gap-4">${ar.map(c => html`<${JusCaso} key=${c.id} g=${g} upd=${upd} c=${c} />`)}</ul></div>`}
+    </section>
+    <section className="sec" data-jus="historico">
+      <h3 className="disp text-2xl font-extrabold uppercase mb-1">Arquivo histórico</h3>
+      <p className="text-xs text-muted mb-3">Casos reais, só com fatos públicos e situação oficial conhecida. Pessoas só aparecem onde há desfecho oficial público; casos ainda em investigação citam apenas instituições.</p>
+      <div className="flex flex-col gap-2">${JUS_HIST.map(h => html`<details key=${h.id} className="rounded-lg border border-line p-3" data-hist=${h.id}><summary className="cursor-pointer font-semibold">${h.nome} <span className="text-xs text-muted font-normal">· ${h.ano} · ${h.orgao}</span></summary>
+        <div className="mt-2 text-sm flex flex-col gap-1.5"><p>${h.fato}</p><p><b>Situação oficial:</b> ${h.status}</p><ul className="text-xs text-muted flex flex-col gap-0.5">${h.fontes.map(f => html`<li key=${f[1]}>Fonte: <a className="underline" href=${f[1]} target="_blank" rel="noopener noreferrer">${f[0]}</a></li>`)}</ul></div></details>`)}</div>
+    </section>
+    <${NotaFim} area="justica">
+      <p><b className="text-fg">Custos.</b> Conselho Nacional de Justiça, relatório Justiça em Números (edição de 2026, ano-base 2025): despesa total de R$ 164,6 bilhões, a maior da série iniciada em 2009 (1,3% do PIB), sendo R$ 148,5 bilhões com pessoal (90,2%) e R$ 9,8 bilhões em verbas indenizatórias (6,6% da folha). Custo de R$ 771,48 por habitante; arrecadação de R$ 68,2 bilhões (41% da despesa). Fontes: <a className="underline" href="https://www.cnj.jus.br/pesquisas-judiciarias/justica-em-numeros/" target="_blank" rel="noopener noreferrer">CNJ, Justiça em Números</a>; <a className="underline" href="https://www.poder360.com.br/poder-justica/judiciario-gasta-r-1646-bi-em-2025-maior-valor-da-serie-historica/" target="_blank" rel="noopener noreferrer">Poder360</a>; <a className="underline" href="https://www.gazetadopovo.com.br/republica/penduricalhos-custam-9-8-bilhoes-judiciario-superam-investimentos/" target="_blank" rel="noopener noreferrer">Gazeta do Povo (verbas indenizatórias)</a>.</p>
+      <p><b className="text-fg">Ramos.</b> Estadual (R$ 91,7 bi, 62,6%) e do Trabalho (R$ 25,5 bi, 17,4%) são do CNJ de 2024 (total de R$ 146,5 bi). A divisão por ramo de 2025 não foi encontrada nas fontes consultadas: Federal, Eleitoral, tribunais superiores e Militar são estimativa do jogo sobre os 20% restantes, e as parcelas são aplicadas ao total de 2025. O valor por habitante de cada ramo usa a população implícita de ${JUS_POP_MI.toFixed(0)} milhões. A Justiça Eleitoral varia com o calendário de eleições. O Tesouro Nacional usa outra metodologia (R$ 181,5 bi em 2024) e não é comparável.</p>
+      <p><b className="text-fg">Casos abertos.</b> Operações, alvos e valores são inventados e sorteados em cada partida; qualquer semelhança com operação real é coincidência. Os alvos são sempre genéricos (cargo ou instituição e partido) e nunca uma pessoa real. Probabilidades de reação (vazamento, inquérito no STF, CPI, pedido de impeachment) e efeitos são simulados. ${AVISO_SIM}</p>
+      <p><b className="text-fg">Prisão e suplentes.</b> Quando um caso fictício prende um parlamentar, a vaga fica com o suplente do mesmo partido (a Câmara segue com 513 e o Senado com 81). A lista de parlamentares ganha uma linha "Suplente do partido", sem nome e sem estado, e ninguém sai da lista: não há como saber qual dos nomes reais listados é o afastado, porque o caso é inventado. Governadores nunca são presos; apenas secretários de governo estadual, sem efeito em cadeira.</p>
+      <p><b className="text-fg">Reações no X.</b> Parlamentares reais reagem com selo "simulado", só com ação política e fala institucional (CPI, voto, autonomia da PF), a partir do bloco e da relação do partido com o governo. Nenhum cita o alvo do caso, acusa alguém ou se refere a vida privada, e nenhum @ novo foi criado: só aparecem contas que já existem no jogo.</p>
+      <p><b className="text-fg">Arquivo histórico.</b> Fatos e situação oficial conforme as fontes listadas em cada caso, consultadas em out/2026. Contagens que variam entre as fontes estão indicadas.</p>
+    </${NotaFim}>
+  </div>`;
+}
+
 // Educação, Infraestrutura e Transportes: painel por estado + fontes
 function PaisAreaUF({ g, area, sub }) {
   return html`<div className="flex flex-col gap-6" data-pais=${area}>
@@ -20982,7 +21328,8 @@ function VotacaoTabela({ votos, casa, q }) {
     <div className="flex flex-wrap gap-1">${lista.map(v => html`<span key=${v.id} className="text-[11px] px-1.5 py-0.5 rounded border border-black/15" style=${{ fontFamily: 'var(--f-mono)', background: `rgba(31,157,90,${v.frac * .35})` }}>${PMAP[v.id].nome} ${v.sim}/${v.total}</span>`)}</div>
   </div>`;
 }
-function VotacaoNominal({ votacao }) {
+function VotacaoNominal({ votacao, g }) {
+  const sups = g ? jusSuplentes(g) : [];
   const D = votacao.destaques;
   const nome = (v) => `${v.nome} (${sg(v.sigla)}-${v.uf})`;
   const grupos = (nom, voto) => {
@@ -21004,6 +21351,7 @@ function VotacaoNominal({ votacao }) {
         ${destaque('Traições da base', D.traicoes, D.nTraicoes)}
         ${destaque('Votos surpresa da oposição', D.surpresas, D.nSurpresas)}
       </div>`}
+      ${sups.length > 0 && html`<div className="text-[11px] opacity-80 p-2 rounded bg-black/5" data-nominal-suplentes="1">Cadeiras ocupadas por suplente (sem nome nem estado; um dos parlamentares listados do mesmo partido está afastado, sem indicação de qual): ${sups.map(x => `Suplente do ${x.sig} (${x.casa === 'cam' ? 'Câmara' : 'Senado'})`).join('; ')}. O voto individual do suplente não é detalhado nesta lista.</div>`}
       ${[['cam', 'Câmara dos Deputados'], ['sen', 'Senado Federal']].map(([k, l]) => html`<div key=${k}>
         <div className="text-[11px] uppercase tracking-widest opacity-60 mb-1.5" style=${{ fontFamily: 'var(--f-mono)' }}>${l}</div>
         <div className="grid sm:grid-cols-2 gap-4">${coluna(votacao.nominal[k], true)}${coluna(votacao.nominal[k], false)}</div>
@@ -21342,7 +21690,7 @@ function ModalDecisao({ dec, g, upd, setDec, onClose }) {
       <div className="p-3 rounded bg-black/5"><div className="text-[10px] uppercase tracking-widest opacity-60">Senado Federal</div><div className="num text-xl">${R.votacao.semSenado ? 'a matéria não chegou ao Senado' : `${R.votacao.totS} sim · ${81 - R.votacao.totS} não/ausentes/abstenções`}</div></div>
     </div>`}
     ${R.turnos && R.turnos.length > 1 && html`<div className="text-sm p-3 rounded bg-black/5" data-turnos="1">${R.turnos.map((t, i) => html`<div key=${i}>${t.casa === 'cam' ? 'Câmara' : 'Senado'}${t.turno ? ` · ${t.turno}º turno` : ''}: <b className="num">${t.sim}</b> votos (mínimo ${t.quorum}) · ${t.passou ? 'aprovado' : 'rejeitado'}</div>`)}</div>`}
-    ${R.votacao && R.votacao.nominal && html`<${VotacaoNominal} votacao=${R.votacao} />`}
+    ${R.votacao && R.votacao.nominal && html`<${VotacaoNominal} votacao=${R.votacao} g=${g} />`}
     ${R.nota && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(178,58,38,.08)' }}>${R.nota}</div>`}
     ${R.stfVoto && html`<${PlacarSTF} j=${R.stfVoto} />`}
     ${R.ex.resolveu && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(34,197,94,.12)' }}>A crise do mês foi enfrentada.</div>`}
@@ -24767,7 +25115,7 @@ function elGovernadoresNovos(g, notas) {
   notas.push({ t: 'neu', x: `Governadores empossados (simulados após ${ano}).` });
 }
 /* ---------- Mesa: cartões, estado pendente, gaveta ---------- */
-const EL_GOV_TIPOS = ['crise', 'protesto', 'stf', 'pauta', 'abin', 'prioridade', 'desgaste', 'viagem', 'mesadip', 'bastidores', 'contas', 'oposicao', 'qq'];
+const EL_GOV_TIPOS = ['crise', 'protesto', 'stf', 'pauta', 'abin', 'prioridade', 'desgaste', 'viagem', 'mesadip', 'bastidores', 'contas', 'oposicao', 'qq', 'justica'];
 function elPend(g, L) {
   const E = g.el; if (!E || g.over) return;
   const rel = g.mes - 48 * elCiclo(g.mes);
@@ -26140,6 +26488,7 @@ function migraSave(g) {
   ensureTb(g);
   ensureGv(g);
   ensureConv(g);
+  ensureJus(g);
   ensureMin(g);
   ensureCf(g);
   try { entEnsure(g); elEnsure(g); } catch (e) { if (typeof console !== 'undefined') console.warn('migra ent/el', e); }
