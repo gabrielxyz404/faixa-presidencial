@@ -540,6 +540,42 @@
   .j-neg .j-hl::before { background: #b3261e; } .j-pos .j-hl::before { background: #14703a; }
   .j-antag .j-nome { font-family: var(--f-disp); }
   .banca-capas, .banca-rec { gap: 16px; }
+  /* veículos novos: só tipografia e cor, sem reproduzir logotipos */
+  .j-cnn { --papel: #ece9e3; } .j-cnn .j-mast { background: #b00000; color: #fff; margin: -12px -14px 4px; padding: 9px 14px; border-bottom: 0; border-radius: 6px 6px 0 0; }
+  .j-cnn .j-nome { font-family: var(--f-disp); font-weight: 800; letter-spacing: .02em; text-transform: uppercase; } .j-cnn .j-selo { color: #fbeaea; }
+  .j-uol { --papel: #eeeae0; } .j-uol .j-mast { background: #f0b400; color: #151515; margin: -12px -14px 4px; padding: 9px 14px; border-bottom: 0; border-radius: 6px 6px 0 0; }
+  .j-uol .j-nome { font-family: var(--f-disp); font-weight: 800; } .j-uol .j-selo { color: #2a2a2a; }
+  .j-intercept { --papel: #e9e9e6; } .j-intercept .j-mast { background: #111; color: #f2f2ef; margin: -12px -14px 4px; padding: 9px 14px; border-bottom: 0; border-radius: 6px 6px 0 0; }
+  .j-intercept .j-nome { font-family: var(--f-mono); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; font-size: 15px; } .j-intercept .j-selo { color: #d8d8d4; }
+  .j-veja { --papel: #efebe2; } .j-veja .j-nome { color: #c4161c; font-weight: 900; font-size: 24px; letter-spacing: -.01em; }
+  .j-veja.j-grande .j-nome { font-size: 32px; } .j-veja .j-mast { border-bottom: 3px solid #c4161c; }
+  .j-cnn.j-peq .j-mast, .j-uol.j-peq .j-mast, .j-intercept.j-peq .j-mast { margin: -10px -12px 2px; padding: 7px 12px; }
+  /* 5 capas: a principal ocupa duas linhas à esquerda, as outras quatro em grade 2x2 */
+  @media (min-width: 721px) { .banca-capas { grid-template-columns: minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr); } .banca-capas > .jornal:nth-child(n+4) { grid-column: auto; } }
+  .banca-rec { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  @media (max-width: 720px) { .banca-rec { grid-template-columns: minmax(0,1fr); } }
+  /* "Precisa de você" em blocos: mais visual, menos texto */
+  .fila-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; border-top: 0; }
+  @media (max-width: 900px) { .fila-cards { grid-template-columns: minmax(0, 1fr); } }
+  .pend-card, .pend-card[data-nivel] { display: flex; flex-direction: column; align-items: stretch; text-align: left; gap: 8px; padding: 14px 16px 14px; background: var(--panel); border: 1px solid var(--line2); border-radius: 12px; border-bottom: 1px solid var(--line2); cursor: pointer; position: relative; overflow: hidden; transition: border-color .15s, transform .15s, background .15s; }
+  .pend-card::before { content: ""; position: absolute; left: 0; top: 0; right: 0; height: 3px; background: var(--line2); }
+  .pend-card[data-nivel=urgente]::before { background: var(--rubro); } .pend-card[data-nivel=atencao]::before { background: var(--ouro); } .pend-card[data-nivel=acompanhe]::before { background: var(--anil); }
+  .pend-card:hover { border-color: var(--muted); background: var(--panel2); transform: translateY(-1px); }
+  .pend-card:focus-within { border-color: var(--muted); }
+  .pc-top { display: grid; grid-template-columns: auto minmax(0,1fr) auto; gap: 10px; align-items: center; }
+  .pc-ic { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: var(--panel2); color: var(--fg); }
+  .pc-ic[data-nivel=urgente] { background: rgba(255,90,78,.14); color: var(--rubro); } .pc-ic[data-nivel=atencao] { background: rgba(245,197,24,.14); color: var(--ouro); } .pc-ic[data-nivel=acompanhe] { background: rgba(126,166,255,.14); color: var(--anil); }
+  .pend-card .pend-cat { display: block; margin: 2px 0 0; }
+  .pend-card .pend-t { font-family: var(--f-disp); font-size: 19px; font-weight: 700; line-height: 1.2; letter-spacing: -.01em; margin-top: 2px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .pend-card .pend-ctx { margin: 0; }
+  .l1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+  .pc-fx { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .pc-fx-k { font-family: var(--f-mono); font-size: 12px; color: var(--dim); text-transform: uppercase; letter-spacing: .06em; margin-right: 2px; }
+  .pc-chip { font-family: var(--f-mono); font-size: 12px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line2); color: var(--muted); }
+  .pc-chip.pc-neg { color: var(--rubro); border-color: rgba(255,90,78,.4); }
+  .pend-card .pend-a { margin-top: auto; padding-top: 4px; justify-content: flex-start; grid-column: auto; width: 100%; }
+  .pend-card .pc-top { width: 100%; justify-items: start; } .pend-card .pc-top .pend-n { justify-self: end; }
+  .pend-card .pend-n { color: var(--dim); }
 </style>
 
 <div id="root"></div>
@@ -16098,16 +16134,22 @@ function CartaoPendencia({ p, g, agir, n }) {
     votar: { l: 'Levar a voto', cls: 'btn-pri', ic: 'Vote' },
     responderqq: { l: 'Responder', cls: 'btn-pri', ic: 'Mic' }
   };
-  return html`<li className="pend fade-in" data-pend=${p.tipo} data-nivel=${nv} data-urg=${Math.round(p.urg)}>
-    <span className="pend-n num" aria-hidden="true">${String(n || 0).padStart(2, '0')}</span>
-    <div className="min-w-0 pend-corpo">
-      <h3 className="pend-t"><span className="qtag" data-nivel=${nv}>${NIVEL_ROT[nv]}</span>${p.titulo}<span className="pend-cat">${p.cat}</span></h3>
-      <p className="pend-ctx l2">${p.ctx}</p>
-      ${p.extra && html`<p className="pend-extra" data-se-ignorar=${p.tipo === 'crise' ? '1' : undefined}>${p.extra}</p>`}
+  // cartão em formato de bloco: ícone, nível, título curto, uma linha de contexto e o efeito de ignorar em etiquetas
+  const fx = p.extra && /^se ignorar:/i.test(p.extra) ? p.extra.replace(/^se ignorar:\s*/i, '').split(/;\s*/).filter(Boolean).slice(0, 3) : null;
+  const pri = p.btns.filter(k => B[k] && B[k].cls === 'btn-pri'), sec = p.btns.filter(k => B[k] && B[k].cls !== 'btn-pri');
+  const bt = (k, extraCls) => html`<button key=${k} type="button" className=${'btn btn-sm ' + B[k].cls + (extraCls || '')} disabled=${!!B[k].dis} title=${B[k].t || ''} onClick=${(e) => { e.stopPropagation(); agir(k, p); }}><${Icon} n=${B[k].ic} s=${14} /> ${B[k].l}</button>`;
+  return html`<li className="pend pend-card fade-in" data-pend=${p.tipo} data-nivel=${nv} data-urg=${Math.round(p.urg)} onClick=${() => agir('abrir', p)}>
+    <div className="pc-top">
+      <span className="pc-ic" data-nivel=${nv} aria-hidden="true"><${Icon} n=${p.ic || 'Bell'} s=${20} /></span>
+      <div className="min-w-0"><span className="qtag" data-nivel=${nv}>${NIVEL_ROT[nv]}</span><span className="pend-cat">${p.cat}</span></div>
+      <span className="pend-n num" aria-hidden="true">${String(n || 0).padStart(2, '0')}</span>
     </div>
+    <h3 className="pend-t">${p.titulo}</h3>
+    <p className="pend-ctx l1" title=${p.ctx}>${p.ctx}</p>
+    ${fx ? html`<div className="pc-fx" data-se-ignorar="1"><span className="pc-fx-k">Se ignorar</span>${fx.map((t, i) => html`<span key=${i} className=${'pc-chip ' + (/-\d/.test(t) && !/ipca|infla|desemp|risco|d[íi]vida|homic/i.test(t) || /\+\d/.test(t) && /ipca|infla|desemp|risco|d[íi]vida|homic/i.test(t) ? 'pc-neg' : '')}>${t}</span>`)}</div>` : p.extra ? html`<p className="pend-extra l1">${p.extra}</p>` : null}
     <div className="pend-a">
-      ${p.btns.map(k => html`<button key=${k} type="button" className=${'btn btn-sm ' + B[k].cls} disabled=${!!B[k].dis} title=${B[k].t || ''} onClick=${() => agir(k, p)}><${Icon} n=${B[k].ic} s=${14} /> ${B[k].l}</button>`)}
-      <button type="button" className="btn btn-sm btn-ghost pend-ab" onClick=${() => agir('abrir', p)} aria-label=${'Abrir: ' + p.titulo}>Abrir <${Icon} n="ChevronRight" s=${14} /></button>
+      ${pri.map(k => bt(k))}${sec.map(k => bt(k))}
+      <button type="button" className="btn btn-sm btn-ghost pend-ab" onClick=${(e) => { e.stopPropagation(); agir('abrir', p); }} aria-label=${'Abrir: ' + p.titulo}>Abrir <${Icon} n="ChevronRight" s=${14} /></button>
     </div>
   </li>`;
 }
@@ -16283,37 +16325,67 @@ function PorMes({ itens, atual, render, unidade, fixo, id }) {
   })}</div>`;
 }
 const BANCA = {
-  globo: { cidade: 'Rio de Janeiro', cls: 'j-globo' },
-  carta: { cidade: 'São Paulo', cls: 'j-carta' },
-  antag: { cidade: 'Brasília', cls: 'j-antag' }
+  globo: { nome: 'O Globo / Estadão', cidade: 'Rio de Janeiro', cls: 'j-globo' },
+  cnn: { nome: 'CNN Brasil', cidade: 'São Paulo', cls: 'j-cnn' },
+  uol: { nome: 'UOL Notícias', cidade: 'São Paulo', cls: 'j-uol' },
+  carta: { nome: 'Carta Capital', cidade: 'São Paulo', cls: 'j-carta' },
+  intercept: { nome: 'Intercept Brasil', cidade: 'Rio de Janeiro', cls: 'j-intercept' },
+  antag: { nome: 'O Antagonista', cidade: 'Brasília', cls: 'j-antag' },
+  veja: { nome: 'Veja', cidade: 'São Paulo', cls: 'j-veja', frase: true }
 };
+// cada manchete nasce com um dos três tons do jogo (globo, carta, antag); na banca, o tom é distribuído entre veículos da mesma linha editorial
+const BANCA_FAM = { globo: ['globo', 'cnn', 'uol'], carta: ['carta', 'intercept'], antag: ['antag', 'veja'] };
+const BANCA_SIGLAS = /\b(?:STF|STJ|TSE|TST|TCU|PF|PGR|AGU|CGU|CPI|CPMI|PEC|PLP|PL|PT|MP|PIB|IPCA|INSS|SUS|MEI|IR|BC|BNDES|CNJ|MDB|PSD|PSOL|PSB|PDT|PP|PSDB|UE|EUA|ONU|ICMS|IOF|IPI|CLT|FGTS|COPOM|IBGE|BRICS|G20|OAB)\b/gi;
+// manchete em caixa-alta vira frase normal (para veículos que não escrevem em caixa-alta), preservando siglas e o nome do presidente
+function bancaFrase(t, nomes) {
+  if (!t || t !== t.toUpperCase()) return t;
+  let s = t.toLowerCase(); s = s.charAt(0).toUpperCase() + s.slice(1);
+  s = s.replace(BANCA_SIGLAS, m => m.toUpperCase()).replace(/([:.!?]\s+)(\p{L})/gu, (m, a, b) => a + b.toUpperCase());
+  for (const n of nomes || []) if (n && n.length > 2) s = s.replace(new RegExp('\\b' + n.toLowerCase() + '\\b', 'g'), n);
+  return s;
+}
+function bancaHash(t) { let x = 0; for (let i = 0; i < t.length; i++) x = (x * 31 + t.charCodeAt(i)) >>> 0; return x; }
+// distribui veículos: nas capas, cada veículo aparece no máximo uma vez (uma manchete por veículo por edição)
+function bancaDistribui(F) {
+  const usados = new Set(), capas = [], resto = [];
+  for (const f of F) {
+    const fam = BANCA_FAM[f.src] || [f.src], h0 = bancaHash(f.txt + '|' + f.mes);
+    const ord = fam.map((k, i) => fam[(i + h0) % fam.length]);
+    const livre = ord.find(k => !usados.has(k));
+    if (!livre) continue; // cada veículo aparece uma vez só na banca inteira
+    usados.add(livre); (capas.length < 5 ? capas : resto).push({ f, v: livre });
+  }
+  return { capas, resto };
+}
 const BANCA_NEG = /derrota|rejeit|derrub|crise|esc[âa]ndalo|fracass|naufrag|rev[ée]s|barr|suspende|imp[õo]e|sem resposta|perde|\bcai\b|queda|faltaram|estouro|rombo|calote|greve|protesto|vaia|deixa a classe m[ée]dia/i;
 const BANCA_POS = /aprova|vit[óo]ria|celebra|ganha|avan[çc]|cresce|recorde|al[ií]vio|aplaude|elogi|sanciona|beneficia|sucesso|conquista/i;
 function bancaTom(f) { const t = f.txt || ''; return BANCA_NEG.test(t) ? 'neg' : BANCA_POS.test(t) ? 'pos' : 'neu'; }
 const BANCA_TOM = { pos: ['▲', 'Favorável'], neg: ['▼', 'Crítica'], neu: ['●', 'Neutra'] };
-function Jornal({ f, grande, pequeno }) {
-  const V = VEICULOS[f.src] || VEICULOS.globo, B = BANCA[f.src] || BANCA.globo, tom = bancaTom(f), T = BANCA_TOM[tom];
-  return html`<article className=${'jornal ' + B.cls + ' j-' + tom + (grande ? ' j-grande' : '') + (pequeno ? ' j-peq' : '')} data-jornal=${f.src} data-tom=${tom}>
-    <header className="j-mast"><span className="j-nome">${V.nome}</span><span className="j-selo" title="Manchete simulada, sátira do jogo">simulado</span></header>
+function Jornal({ f, v, nomes, grande, pequeno }) {
+  const vk = BANCA[v] ? v : (BANCA[f.src] ? f.src : 'globo'), B = BANCA[vk], tom = bancaTom(f), T = BANCA_TOM[tom];
+  const txt = B.frase ? bancaFrase(f.txt, nomes) : f.txt;
+  return html`<article className=${'jornal ' + B.cls + ' j-' + tom + (grande ? ' j-grande' : '') + (pequeno ? ' j-peq' : '')} data-jornal=${f.src} data-veiculo=${vk} data-tom=${tom}>
+    <header className="j-mast"><span className="j-nome">${B.nome}</span></header>
     <div className="j-data"><span>${B.cidade}, ${dataMes(f.mes)}</span><span className="j-tom" data-tom=${tom}>${T[0]} ${T[1]}</span></div>
-    <h4 className="j-hl">${f.txt}</h4>
+    <h4 className="j-hl">${txt}</h4>
     ${f.sub && !pequeno && html`<p className="j-sub">${f.sub}</p>`}
     ${grande && !f.sub && html`<div className="j-lin" aria-hidden="true">${Array.from({ length: 9 }, (_, i) => html`<i key=${i}></i>`)}</div>`}
   </article>`;
 }
 function BancaJornal({ g }) {
-  const F = (g.feed || []).filter(f => VEICULOS[f.src]).slice(0, 8);
+  const F = (g.feed || []).filter(f => VEICULOS[f.src]).slice(0, 30);
   if (F.length === 0) return html`<section className="mesa-bloco" aria-labelledby="banca-t"><h3 id="banca-t" className="h-quiet mb-3">Banca de jornal</h3><p className="text-sm text-muted">A banca ainda não tem edição. As manchetes aparecem conforme você assina medidas e o mês avança.</p></section>`;
-  const peso = (f) => (f.sub ? 1 : 0) + (bancaTom(f) !== 'neu' ? 1 : 0) + (f.txt.length > 60 ? .5 : 0);
-  const topo = F.slice(0, 3); let lead = topo[0]; for (const f of topo) if (peso(f) > peso(lead)) lead = f;
-  const outros = topo.filter(f => f !== lead), resto = F.slice(3);
+  const peso = (x) => (x.f.sub ? 1 : 0) + (bancaTom(x.f) !== 'neu' ? 1 : 0) + (x.f.txt.length > 60 ? .5 : 0);
+  const D = bancaDistribui(F), nomes = String(g.cfg.nome || '').split(/\s+/);
+  let lead = D.capas[0]; for (const x of D.capas.slice(0, 3)) if (peso(x) > peso(lead)) lead = x;
+  const outros = D.capas.filter(x => x !== lead), resto = D.resto;
   return html`<section className="mesa-bloco banca" aria-labelledby="banca-t" data-secao="banca">
     <div className="flex flex-wrap items-end justify-between gap-2 mb-3"><h3 id="banca-t" className="h-quiet">Banca de jornal</h3><span className="eyebrow">edição de ${dataMes(F[0].mes)} · manchetes simuladas</span></div>
     <div className="banca-capas" data-testid="banca-capas">
-      <${Jornal} f=${lead} grande=${true} />
-      ${outros.map((f, i) => html`<${Jornal} key=${i} f=${f} />`)}
+      <${Jornal} f=${lead.f} v=${lead.v} nomes=${nomes} grande=${true} />
+      ${outros.map((x, i) => html`<${Jornal} key=${i} f=${x.f} v=${x.v} nomes=${nomes} />`)}
     </div>
-    ${resto.length > 0 && html`<div className="eyebrow mt-4 mb-2">Recortes das edições anteriores</div><div className="banca-rec">${resto.map((f, i) => html`<${Jornal} key=${i} f=${f} pequeno=${true} />`)}</div>`}
+    ${resto.length > 0 && html`<div className="eyebrow mt-4 mb-2">Recortes das edições anteriores</div><div className="banca-rec">${resto.map((x, i) => html`<${Jornal} key=${i} f=${x.f} v=${x.v} nomes=${nomes} pequeno=${true} />`)}</div>`}
   </section>`;
 }
 function DiarioMandato({ g }) {
@@ -16387,14 +16459,10 @@ function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino 
           </div>
         </div>
         <textarea id="caixa" rows="3" value=${txt} placeholder="Ex.: Enviar MP criando vale-gás de R$ 100 para 20 milhões de famílias, financiado pela taxação de dividendos" onChange=${e => setTxt(e.target.value)} onKeyDown=${e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) enviar(); }}></textarea>
-        <div className="flex flex-wrap items-center justify-between gap-3 mt-3">
-          <div className="flex flex-wrap gap-2 min-w-0 flex-1">${EXEMPLOS.slice(0, 6).map(x => html`<button key=${x} type="button" onClick=${() => setTxt(x)} className="chip chip-ex">${x}</button>`)}</div>
+        <div className="flex justify-end mt-3">
           <button type="button" className="btn btn-sign" disabled=${semAcoes || txt.trim().length < 4} onClick=${enviar}><${Icon} n="Send" /> Assinar e enviar</button>
         </div>
-        <div className="medida-ajuda">
-          <p>Medida provisória, projeto de lei, PEC, decreto, discurso ou ação. O motor lê o texto, calcula custo, votos e reação do país. O parecer do analista mostra quem ganha e quem perde, os riscos, a coerência com o seu partido e a legalidade (calendário eleitoral e anterioridade dos impostos). Quanto mais específico, mais precisa a análise: valores, beneficiários, fonte de custeio, prazo e região.</p>
-          <p className="mt-2">${semAcoes ? (elSemGoverno(g) ? 'Modo leve: você não é o presidente e não assina medidas de governo. Use X, entrevistas e campanha.' : g.acoes <= 0 ? 'Sem capital político neste mês. Encerre o mês.' : 'Energia esgotada. Descanse na seção Eu.') : 'Ctrl+Enter envia · cada medida gasta 1 ação e energia'}</p>
-        </div>
+        ${semAcoes && html`<p className="medida-ajuda mt-2">${elSemGoverno(g) ? 'Modo leve: você não é o presidente e não assina medidas de governo. Use X, entrevistas e campanha.' : g.acoes <= 0 ? 'Sem capital político neste mês. Encerre o mês.' : 'Energia esgotada. Descanse na seção Eu.'}</p>`}
       </section>
       <section aria-labelledby="pv-t" data-precisa="1">
         <div className="flex flex-wrap items-end justify-between gap-2 mb-3">
@@ -16402,7 +16470,7 @@ function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino 
           <span className="num text-sm text-muted" role="status">${pend.length === 0 ? 'nada pendente' : pend.length + (pend.length === 1 ? ' item' : ' itens')}</span>
         </div>
         ${pend.length === 0 ? html`<div className="fila-vazia text-sm text-muted">Mesa limpa: nada exige você agora. Escreva uma medida acima, use as outras seções ou encerre o mês.</div>` :
-        html`<ul className="fila">${vis.map((p, i) => html`<${CartaoPendencia} key=${p.id} p=${p} g=${g} agir=${agir} n=${i + 1} />`)}</ul>
+        html`<ul className="fila fila-cards">${vis.map((p, i) => html`<${CartaoPendencia} key=${p.id} p=${p} g=${g} agir=${agir} n=${i + 1} />`)}</ul>
         ${pend.length > 4 && html`<button type="button" className="btn btn-ghost text-sm mt-3" aria-expanded=${todas} onClick=${() => setTodas(!todas)}>${todas ? 'Mostrar só as mais urgentes' : `Ver as outras ${pend.length - 4}`}</button>`}`}
       </section>
       ${resMed && html`<section className="resumo-med" aria-label="Medidas em vigor" data-resumo-medidas="1"><div className="flex flex-wrap items-center justify-between gap-3">
