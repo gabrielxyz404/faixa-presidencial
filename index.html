@@ -15277,18 +15277,167 @@ const pct = (v) => fmt(v, 2) + '%';
 const siglas = (s) => (s || '').split(' / ').map(sg).join(' / ');
 function Dado({ r, children }) { return html`<div><dt className="eyebrow">${r}</dt><dd className="text-sm mt-0.5">${children}</dd></div>`; }
 
+/* ===== Tela inicial e assistente (redesenho "inicio-v2"): estilos próprios, prefixos ini- e wz- ===== */
+const INI_CSS = `
+.ini,.wz{min-height:100%;background:#000;color:var(--fg)}
+.ini .eyebrow,.wz .eyebrow{font-size:12px;letter-spacing:.12em;color:var(--dim)}
+.ini-in{max-width:1180px;margin:0 auto;padding-left:16px;padding-right:16px}
+.ini-hero{position:relative;border-bottom:1px solid var(--line);background:radial-gradient(820px 320px at 8% -20%,rgba(245,197,24,.11),transparent 62%),radial-gradient(640px 280px at 100% 0,rgba(47,210,122,.09),transparent 60%),#000}
+.ini-hero-g{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:28px 40px;align-items:center;padding-top:40px;padding-bottom:36px}
+@media(max-width:920px){.ini-hero-g{grid-template-columns:minmax(0,1fr);padding-top:26px;padding-bottom:26px}}
+.ini-h1{font-family:var(--f-disp);font-size:clamp(44px,8vw,88px);font-weight:800;line-height:.95;letter-spacing:-.025em;margin:10px 0 0;text-transform:none}
+.ini-h1 span{display:block;color:var(--ouro)}
+.ini-pitch{font-size:clamp(16px,1.6vw,19px);line-height:1.45;color:var(--fg);margin:16px 0 0;max-width:34em}
+.ini-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.ini-big{padding:13px 22px!important;font-size:16px;border-radius:10px!important}
+.ini-facts{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 0;padding:0;list-style:none}
+.ini-nota{font-size:13px;line-height:1.45;color:var(--muted);margin:16px 0 0;max-width:46em}
+.ini-save{display:flex;flex-direction:column;gap:14px;padding:20px;background:var(--panel);border:1px solid var(--line2);border-top:3px solid var(--ouro);border-radius:14px;min-width:0}
+.ini-save-h{display:flex;align-items:center;gap:14px;min-width:0}
+.ini-save-n{font-family:var(--f-disp);font-size:24px;font-weight:700;line-height:1.15;letter-spacing:-.01em;overflow-wrap:anywhere}
+.ini-save-p{font-size:13px;color:var(--muted)}
+.ini-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.ini-stat{padding:10px 12px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;min-width:0}
+.ini-stat b{display:block;font-family:var(--f-disp);font-size:22px;font-weight:700;line-height:1.1}
+.ini-stat span{font-size:12px;color:var(--muted)}
+.ini-prog{height:6px;border-radius:3px;background:var(--line2);overflow:hidden}
+.ini-prog i{display:block;height:100%;background:linear-gradient(90deg,var(--verde),var(--ouro));border-radius:3px}
+.ini-new{display:flex;flex-direction:column;gap:10px;padding:20px;background:var(--panel);border:1px solid var(--line2);border-radius:14px}
+.ini-sec{padding-top:34px}
+.ini-sec-h{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:6px 16px;margin-bottom:14px}
+.ini-sec-h h2{font-family:var(--f-disp);font-size:clamp(22px,2.6vw,30px);font-weight:700;letter-spacing:-.01em;line-height:1.15;margin:2px 0 0}
+.ini-sub{font-size:14px;color:var(--muted);margin:2px 0 0}
+.ini-opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media(max-width:820px){.ini-opts{grid-template-columns:minmax(0,1fr)}}
+.ini-opt,.wz-opt{display:flex;flex-direction:column;gap:6px;text-align:left;padding:14px 16px;background:var(--panel);border:1px solid var(--line2);border-top:3px solid var(--line2);border-radius:12px;color:var(--fg);cursor:pointer;min-width:0;transition:border-color .15s,background .15s}
+.ini-opt:hover,.wz-opt:hover{border-color:var(--muted);background:var(--panel2)}
+.ini-opt[aria-checked=true],.ini-opt[aria-pressed=true],.wz-opt[aria-pressed=true],.wz-opt[aria-checked=true]{border-color:var(--c,var(--ouro));background:color-mix(in srgb,var(--c,var(--ouro)) 9%,var(--panel));box-shadow:0 0 0 1px var(--c,var(--ouro)) inset}
+.ini-opt-t,.wz-opt-t{display:flex;align-items:center;gap:8px;font-family:var(--f-disp);font-size:18px;font-weight:700;line-height:1.2}
+.ini-opt-t .ck,.wz-opt-t .ck{margin-left:auto;color:var(--c,var(--ouro));display:inline-flex}
+.ini-opt-d,.wz-opt-d{font-size:13px;line-height:1.4;color:var(--muted)}
+.ini-tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 0 4px}
+.ini-tabs::-webkit-scrollbar{display:none}
+.ini-tab{flex:none;padding:8px 16px;border-radius:999px;border:1px solid var(--line2);background:transparent;color:var(--muted);font-size:14px;font-weight:500;cursor:pointer;transition:color .15s,border-color .15s}
+.ini-tab:hover{color:var(--fg);border-color:var(--muted)}
+.ini-tab[aria-selected=true]{background:var(--fg);border-color:var(--fg);color:#000;font-weight:600}
+.ini-chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ini-chipb{padding:6px 13px;border-radius:999px;border:1px solid var(--line2);background:transparent;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer}
+.ini-chipb:hover{color:var(--fg);border-color:var(--muted)}
+.ini-chipb[aria-pressed=true]{background:var(--ouro);border-color:var(--ouro);color:#000;font-weight:600}
+.ini-panel{margin-top:16px}
+.ini-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:12px;list-style:none;margin:0;padding:0}
+.ini-card{display:flex;flex-direction:column;gap:12px;padding:16px;background:var(--panel);border:1px solid var(--line2);border-top:3px solid var(--c,var(--line2));border-radius:12px;min-width:0}
+.ini-card:hover{border-color:var(--muted);border-top-color:var(--c,var(--muted))}
+.ini-card-h{display:flex;align-items:center;gap:12px;min-width:0}
+.ini-card-n{font-family:var(--f-disp);font-size:20px;font-weight:700;line-height:1.15;letter-spacing:-.01em;overflow-wrap:anywhere}
+.ini-card-s{font-size:13px;line-height:1.4;color:var(--muted)}
+.ini-line{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-top:4px}
+.ini-card .go{margin-top:auto;justify-content:center}
+.ini-feat{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:24px 32px;padding:24px;background:var(--panel);border:1px solid var(--line2);border-top:3px solid var(--ouro);border-radius:14px}
+@media(max-width:860px){.ini-feat{grid-template-columns:minmax(0,1fr);padding:18px}}
+.ini-feat h3{font-family:var(--f-disp);font-size:clamp(34px,5vw,56px);font-weight:800;line-height:1;letter-spacing:-.02em;margin:6px 0 0}
+.ini-dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 20px;margin:0}
+.ini-dl dt{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.ini-dl dd{margin:2px 0 0;font-size:15px}
+.ini-filtros{display:flex;flex-direction:column;gap:12px;padding:14px;background:var(--panel);border:1px solid var(--line2);border-radius:12px}
+.ini-filtros-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media(max-width:760px){.ini-filtros-g{grid-template-columns:minmax(0,1fr)}}
+.ini-criar{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px 32px;padding:24px;background:var(--panel);border:1px solid var(--line2);border-top:3px solid var(--verde);border-radius:14px}
+@media(max-width:860px){.ini-criar{grid-template-columns:minmax(0,1fr);padding:18px}}
+.ini-passos{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.ini-passos li{display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;align-items:start}
+.ini-passos .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:color-mix(in srgb,var(--ouro) 14%,transparent);color:var(--ouro)}
+.ini-det{margin-top:34px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.ini-det>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:12px 16px;font-size:14px;font-weight:500;color:var(--muted)}
+.ini-det>summary::-webkit-details-marker{display:none}
+.ini-det>summary:hover{color:var(--fg)}
+.ini-det[open]>summary .car{transform:rotate(90deg)}
+.ini-det .car{display:inline-flex;transition:transform .15s}
+.ini-det-b{padding:4px 16px 16px;font-size:13px;line-height:1.55;color:var(--muted)}
+.ini-det-b p{margin:8px 0 0}
+.ini-foot{margin-bottom:40px}
+.ini .gv-chip{font-size:12px}
+
+/* ---------- assistente ---------- */
+.wz-head{border-bottom:1px solid var(--line);background:radial-gradient(700px 240px at 6% -30%,rgba(245,197,24,.09),transparent 62%),#000}
+.wz-head-g{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 20px;padding-top:22px;padding-bottom:18px}
+.wz-h1{font-family:var(--f-disp);font-size:clamp(28px,4vw,44px);font-weight:800;line-height:1;letter-spacing:-.02em;margin:6px 0 0}
+.wz-h1 span{color:var(--ouro)}
+.wz-steps{position:sticky;top:0;z-index:20;background:rgba(0,0,0,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.wz-prog{height:4px;background:var(--line2)}
+.wz-prog i{display:block;height:100%;background:linear-gradient(90deg,var(--verde),var(--ouro));transition:width .3s ease}
+.wz-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;list-style:none;margin:0;padding:10px 0}
+.wz-tab{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--muted);font-size:14px;font-weight:500;text-align:left;cursor:pointer;min-width:0}
+.wz-tab:hover{background:var(--panel2);color:var(--fg)}
+.wz-tab[aria-selected=true]{background:var(--panel2);border-color:var(--line2);color:var(--fg);font-weight:600}
+.wz-sn{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line2);font-size:13px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.wz-tab[aria-selected=true] .wz-sn{background:var(--ouro);border-color:var(--ouro);color:#000}
+.wz-tab[data-ok=ok]:not([aria-selected=true]) .wz-sn{border-color:var(--verde);color:var(--verde)}
+.wz-sl{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wz-pend{color:var(--rubro);margin-left:4px}
+@media(max-width:760px){.wz-tabs{display:flex;gap:4px;padding:8px 0}.wz-tab{flex:0 0 auto;width:auto;padding:6px 8px;font-size:13px}.wz-tab[aria-selected=true]{flex:1 0 auto}.wz-tab[aria-selected=true] .wz-sl{overflow:visible;text-overflow:clip}.wz-tab[aria-selected=false] .wz-sl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.wz-tab[aria-selected=false]{gap:0}.wz-tab>div,.wz-tabs>div{display:contents}.wz-pend{margin-left:2px}}
+.wz-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start;padding-top:22px;padding-bottom:28px}
+@media(max-width:1020px){.wz-grid{grid-template-columns:minmax(0,1fr)}}
+.wz-main{display:flex;flex-direction:column;gap:16px;min-width:0}
+.wz-sec{background:var(--panel);border:1px solid var(--line2);border-radius:14px;padding:18px;min-width:0}
+.wz-sec-h{margin:0 0 14px}
+.wz-sec-h h2{font-family:var(--f-disp);font-size:22px;font-weight:700;letter-spacing:-.01em;line-height:1.15;margin:2px 0 0}
+.wz-sec-h p{font-size:14px;color:var(--muted);margin:4px 0 0}
+.wz-f{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.wz-f .full{grid-column:1/-1}
+@media(max-width:640px){.wz-f{grid-template-columns:minmax(0,1fr)}}
+.wz-opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:10px}
+.wz-opts.s4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:760px){.wz-opts.s4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.wz-opt{padding:12px 14px;border-top-width:1px}
+.wz-opt.c{justify-content:center;align-items:center;text-align:center;font-size:14px;font-weight:500}
+.wz-opt-t{font-size:16px}
+.wz-sl-card{display:flex;flex-direction:column;gap:10px;padding:14px 16px;background:var(--panel2);border:1px solid var(--line2);border-radius:12px}
+.wz-sl-r{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px}
+.wz-pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px}
+.wz-pasta{display:flex;flex-direction:column;gap:10px;padding:14px;background:var(--panel2);border:1px solid var(--line2);border-top:3px solid var(--st,var(--line2));border-radius:12px;min-width:0}
+.wz-pasta.vazia{border-top-color:var(--rubro);border-style:dashed;border-top-style:solid}
+.wz-pasta-t{font-family:var(--f-disp);font-size:19px;font-weight:700;line-height:1.15;letter-spacing:-.01em}
+.wz-pasta-m{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:center;min-height:44px}
+.wz-pasta-n{font-weight:600;font-size:14px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wz-pasta-s{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wz-pasta .btn{justify-content:center;margin-top:auto}
+.wz-aside{position:sticky;top:96px;display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--panel);border:1px solid var(--line2);border-top:3px solid var(--ouro);border-radius:14px;min-width:0}
+@media(max-width:1020px){.wz-aside{position:static}}
+.wz-aside-n{font-family:var(--f-disp);font-size:26px;font-weight:800;line-height:1.05;letter-spacing:-.01em;overflow-wrap:anywhere}
+.wz-prev{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding-top:12px;border-top:1px solid var(--line)}
+.wz-prev b{display:block;font-family:var(--f-disp);font-size:22px;font-weight:700;line-height:1.1}
+.wz-rev{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.wz-rev li{display:flex;align-items:center;gap:10px;font-size:14px}
+.wz-rev .b{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--rubro) 18%,transparent);color:var(--rubro)}
+.wz-rev .b.ok{background:color-mix(in srgb,var(--verde) 18%,transparent);color:var(--verde)}
+.wz-bar{position:sticky;bottom:0;z-index:30;background:rgba(0,0,0,.94);backdrop-filter:blur(8px);border-top:1px solid var(--line2);padding-bottom:env(safe-area-inset-bottom,0)}
+.wz-bar-g{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:12px;padding-bottom:12px}
+.wz-bar-m{flex:1;min-width:0;font-size:13px;color:var(--muted);text-align:center}
+.wz-bar-m b{color:var(--fg);font-weight:600}
+.wz-bar .btn{padding:10px 18px;font-size:15px;border-radius:10px}
+@media(max-width:600px){.wz-bar-m{display:none}.wz-bar-g{padding-top:10px;padding-bottom:10px}.wz-bar .btn{flex:1;justify-content:center}}
+.wz-falta{display:block;margin-top:3px;font-size:12px;color:var(--rubro)}
+`;
+
+function IniOpcao({ ativo, onClick, nome, desc, cor, tag, attr = {}, role = 'radio' }) {
+  return html`<button type="button" role=${role} aria-checked=${ativo} className="ini-opt" style=${{ '--c': cor }} onClick=${onClick} ...${attr}>
+    <span className="ini-opt-t" style=${{ color: ativo ? cor : 'inherit' }}>${nome}${tag && html`<span className="text-xs text-muted font-normal">${tag}</span>`}${ativo && html`<span className="ck"><${Icon} n="Check" s=${16} /></span>`}</span>
+    <span className="ini-opt-d">${desc}</span></button>`;
+}
+
 function PainelCriar({ onEscolher }) {
-  const passos = [['UserRound', 'Perfil', 'Nome, idade, estado, partido, religião e origem.'], ['Scale', 'Ideologia', 'Quatro eixos que definem quem gosta de você no primeiro dia.'], ['Sparkles', 'Personalidade', 'Dois traços que mudam o jogo.'], ['Landmark', 'Vice e gabinete', 'Escolha o vice e quem ocupa cada ministério.'], ['ScrollText', 'Promessas', 'Três compromissos de campanha, cobrados na reeleição.']];
-  return html`<section className="card p-5 sm:p-7 grid gap-6 lg:grid-cols-3 items-center">
-    <div className="lg:col-span-2 flex flex-col gap-4">
-      <h2 className="disp text-3xl sm:text-4xl font-black uppercase leading-none">Monte o seu presidente</h2>
-      <p className="text-muted max-w-2xl">Um presidente fictício, do jeito que você quiser. Defina perfil, ideologia, personalidade, vice, gabinete e promessas em cinco passos e tome posse para governar o Brasil mês a mês, escrevendo suas próprias medidas.</p>
-      <ol className="grid sm:grid-cols-2 gap-2">${passos.map(([i, t, d], n) => html`<li key=${t} className="flex gap-3 items-start text-sm"><span className="text-ouro mt-0.5"><${Icon} n=${i} s=${16} /></span><span><b className="font-semibold"><span className="num text-muted mr-1">${n + 1}</span>${t}</b><span className="block text-xs text-muted">${d}</span></span></li>`)}</ol>
+  const passos = [['UserRound', 'Presidente', 'Nome, idade, estado, partido, religião e origem.'], ['Scale', 'Ideologia', 'Quatro eixos que definem quem gosta de você no primeiro dia.'], ['Sparkles', 'Personalidade', 'Dois traços que mudam o jogo.'], ['Landmark', 'Vice e ministério', 'Escolha o vice e quem ocupa cada ministério.'], ['ScrollText', 'Posse', 'Três promessas de campanha, cobradas na reeleição.']];
+  return html`<section className="ini-criar" data-ini="criar">
+    <div className="flex flex-col gap-4 min-w-0">
+      <div><div className="eyebrow">Personagem fictício</div><h3 className="disp text-3xl sm:text-4xl font-extrabold leading-none mt-1">Monte o seu presidente</h3></div>
+      <p className="text-muted max-w-2xl">Um presidente fictício, do jeito que você quiser. Defina perfil, ideologia, personalidade, vice, ministério e promessas em cinco passos e tome posse para governar o Brasil mês a mês, escrevendo suas próprias medidas.</p>
+      <div className="flex flex-col gap-2 items-start">
+        <button className="btn btn-pri ini-big" onClick=${() => onEscolher(structuredClone(CFG_PADRAO), 0, null)}><${Icon} n="UserPlus" s=${18} /> Criar do zero</button>
+        <p className="text-xs text-muted">Nenhuma pessoa real envolvida.</p>
+      </div>
     </div>
-    <div className="flex flex-col gap-2 lg:items-end">
-      <button className="btn btn-pri !py-3 !px-5 text-base" onClick=${() => onEscolher(structuredClone(CFG_PADRAO), 0, null)}><${Icon} n="UserPlus" /> Criar do zero</button>
-      <p className="text-xs text-muted lg:text-right">Nenhuma pessoa real envolvida.</p>
-    </div>
+    <ol className="ini-passos">${passos.map(([i, t, d], n) => html`<li key=${t}><span className="ic"><${Icon} n=${i} s=${18} /></span><span><b className="font-semibold"><span className="num text-muted mr-1">${n + 1}</span>${t}</b><span className="block text-xs text-muted">${d}</span></span></li>`)}</ol>
   </section>`;
 }
 
@@ -15296,63 +15445,63 @@ function PainelEleito({ onEscolher }) {
   const c = PESSOAS.candidatos.find(x => x.situacao === 'eleito');
   if (!c) return html`<div className="card p-5 text-muted">Nenhum presidente eleito nos dados.</div>`;
   const cor = PMAP[bloco(c.partido)].cor;
-  return html`<article className="card overflow-hidden">
-    <div className="faixa"></div>
-    <div className="p-5 sm:p-7 flex flex-col gap-6">
+  return html`<article className="ini-feat" data-ini="eleito" style=${{ borderTopColor: 'var(--ouro)' }}>
+    <div className="flex flex-col gap-5 min-w-0">
       <div className="flex flex-wrap items-center gap-4">
-        <${Ef} nome=${c.nome} cor=${cor} papel="presidente" destaque=${true} s=${88} fk=${fotoPres(c.nome)} />
+        <${Ef} nome=${c.nome} cor=${cor} papel="presidente" destaque=${true} s=${96} fk=${fotoPres(c.nome)} />
         <div className="min-w-0 flex-1">
           <div className="eyebrow">Presidente eleito em 2026</div>
-          <h2 className="disp text-4xl sm:text-6xl font-black uppercase leading-none mt-1">${c.nome}</h2>
+          <h3>${c.nome}</h3>
           <div className="text-muted text-sm mt-1">${c.nomeCompleto}</div>
         </div>
-        <${Tag} cor="var(--verde)">eleito</${Tag}>
       </div>
-      <dl className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
-        <${Dado} r="Partido">${sg(c.partido)}</${Dado}>
-        ${c.federacao && html`<${Dado} r="Federação">${c.federacao}</${Dado}>`}
-        <${Dado} r="Vice">${c.vice} <span className="text-muted">· ${sg(c.vicePartido)}</span></${Dado}>
-        ${c.coligacao && html`<${Dado} r="Coligação">${c.coligacao}${c.coligPartidos && html`<span className="block text-xs text-muted">${siglas(c.coligPartidos)}</span>`}</${Dado}>`}
-        <${Dado} r="Idade na posse">${idadePosse(c.nasc)} anos</${Dado}>
-        <${Dado} r="Estado natal">${c.uf}</${Dado}>
-        <${Dado} r="Ocupação">${cap(c.ocupacao)}</${Dado}>
-      </dl>
+      <div className="ini-line"><${LogoPartido} bloco=${bloco(c.partido)} sigla=${c.partido} tam=${32} /><${Tag} cor=${cor}>${sg(c.partido)}</${Tag}><${Tag} cor="var(--verde)">eleito</${Tag}></div>
       <div className="grid sm:grid-cols-2 gap-4">
         <div><div className="flex justify-between text-sm mb-1"><span className="eyebrow">1º turno</span><span className="num">${pct(c.pct1)}</span></div><${Bar} v=${c.pct1} cor="var(--verde)" label="Votos no 1º turno" /></div>
         ${c.pct2 != null && html`<div><div className="flex justify-between text-sm mb-1"><span className="eyebrow">2º turno</span><span className="num">${pct(c.pct2)}</span></div><${Bar} v=${c.pct2} cor="var(--verde)" label="Votos no 2º turno" /></div>`}
       </div>
-      <button className="btn btn-gold self-start !py-3 !px-5" onClick=${() => onEscolher(cfgDeCandidato(c), 1, NOTA_IDEO_PARTIDO)}><${Icon} n="Landmark" /> Assumir o mandato</button>
+      <button className="btn btn-gold ini-big self-start" onClick=${() => onEscolher(cfgDeCandidato(c), 1, NOTA_IDEO_PARTIDO)}><${Icon} n="Landmark" s=${18} /> Assumir o mandato</button>
     </div>
+    <dl className="ini-dl content-start">
+      <${Dado} r="Partido">${sg(c.partido)}</${Dado}>
+      ${c.federacao && html`<${Dado} r="Federação">${c.federacao}</${Dado}>`}
+      <${Dado} r="Vice">${c.vice} <span className="text-muted">· ${sg(c.vicePartido)}</span></${Dado}>
+      ${c.coligacao && html`<${Dado} r="Coligação">${c.coligacao}${c.coligPartidos && html`<span className="block text-xs text-muted">${siglas(c.coligPartidos)}</span>`}</${Dado}>`}
+      <${Dado} r="Idade na posse">${idadePosse(c.nasc)} anos</${Dado}>
+      <${Dado} r="Estado natal">${c.uf}</${Dado}>
+      <${Dado} r="Ocupação">${cap(c.ocupacao)}</${Dado}>
+    </dl>
   </article>`;
 }
 
-function PainelCandidatos({ onEscolher }) {
+function PainelCandidatos({ onEscolher, memo }) {
+  const [f, setF] = useMemoria(memo, 'candF', 'todos');
   const lista = useMemo(() => [...PESSOAS.candidatos].sort((a, b) => b.pct1 - a.pct1), []);
-  return html`<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">${lista.map(c => {
-    const eleito = c.situacao === 'eleito'; const seg = /^2/.test(c.situacao);
-    const bl = PMAP[bloco(c.partido)];
-    return html`<article key=${c.nome} className="card p-4 flex flex-col gap-3">
-      <div className="flex items-start gap-3">
-        <${Ef} nome=${c.nome} cor=${bl.cor} papel="presidente" s=${56} fk=${fotoPres(c.nome)} />
-        <div className="min-w-0 flex-1">
-          <div className="font-semibold leading-tight">${c.nome}</div>
-          <div className="flex flex-wrap items-center gap-1 mt-1"><${LogoPartido} bloco=${bl.id} sigla=${c.partido} tam=${24} /><${Tag} cor=${bl.cor}>${sg(c.partido)}</${Tag}><${Tag} cor=${eleito ? 'var(--verde)' : seg ? 'var(--ouro)' : 'var(--muted)'}>${eleito ? 'eleito' : seg ? '2º turno' : '1º turno'}</${Tag}></div>
+  const sit = (c) => (c.situacao === 'eleito' ? 'eleito' : /^2/.test(c.situacao) ? '2t' : '1t');
+  const vis = lista.filter(c => f === 'todos' || sit(c) === f);
+  const FIL = [['todos', 'Todos'], ['eleito', 'Eleito'], ['2t', 'Foi ao 2º turno'], ['1t', 'Parou no 1º turno']];
+  return html`<div className="flex flex-col gap-4" data-ini="candidatos">
+    <div className="ini-chips" role="group" aria-label="Filtrar candidatos">${FIL.map(([k, n]) => html`<button key=${k} type="button" className="ini-chipb" aria-pressed=${f === k} onClick=${() => setF(k)}>${n}</button>`)}<span className="text-xs text-muted ml-1" role="status">${vis.length} de ${lista.length}</span></div>
+    <ul className="ini-grid">${vis.map(c => {
+      const eleito = c.situacao === 'eleito'; const seg = /^2/.test(c.situacao);
+      const bl = PMAP[bloco(c.partido)];
+      return html`<li key=${c.nome} className="ini-card" style=${{ '--c': bl.cor }}>
+        <div className="ini-card-h">
+          <${Ef} nome=${c.nome} cor=${bl.cor} papel="presidente" s=${64} fk=${fotoPres(c.nome)} />
+          <div className="min-w-0 flex-1">
+            <div className="ini-card-n">${c.nome}</div>
+            <div className="ini-line"><${LogoPartido} bloco=${bl.id} sigla=${c.partido} tam=${24} /><span className="text-sm font-semibold">${sg(c.partido)}</span><${Tag} cor=${eleito ? 'var(--verde)' : seg ? 'var(--ouro)' : 'var(--muted)'}>${eleito ? 'eleito' : seg ? '2º turno' : '1º turno'}</${Tag}></div>
+          </div>
         </div>
-      </div>
-      <dl className="text-sm grid gap-1">
-        <div className="flex gap-2"><dt className="text-muted shrink-0">Vice</dt><dd className="min-w-0">${c.vice} <span className="text-muted">· ${sg(c.vicePartido)}</span></dd></div>
-        <div className="flex gap-2"><dt className="text-muted shrink-0">Idade na posse</dt><dd>${idadePosse(c.nasc)} anos</dd></div>
-        <div className="flex gap-2"><dt className="text-muted shrink-0">Estado</dt><dd>${c.uf}</dd></div>
-        <div className="flex gap-2"><dt className="text-muted shrink-0">Ocupação</dt><dd className="min-w-0">${cap(c.ocupacao)}</dd></div>
-      </dl>
-      <div className="mt-auto">
-        <div className="flex justify-between items-baseline text-xs mb-1"><span className="eyebrow">1º turno</span><span className="num text-sm">${pct(c.pct1)}</span></div>
-        <${Bar} v=${c.pct1} h=${5} cor=${bl.cor} label=${'Votos de ' + c.nome + ' no 1º turno'} />
-        ${c.pct2 != null && html`<div className="text-xs text-muted mt-1 num">2º turno: ${pct(c.pct2)}</div>`}
-      </div>
-      <button className=${'btn text-sm justify-center ' + (eleito ? 'btn-gold !py-2' : 'btn-ghost')} onClick=${() => onEscolher(cfgDeCandidato(c), 1, NOTA_IDEO_PARTIDO)}><${Icon} n=${eleito ? 'Landmark' : 'Shuffle'} s=${14} /> ${eleito ? 'Assumir o mandato' : 'E se fosse presidente?'}</button>
-    </article>`;
-  })}</div>`;
+        <div className="ini-card-s">Vice ${c.vice} (${sg(c.vicePartido)}) · ${idadePosse(c.nasc)} anos na posse · ${c.uf} · ${cap(c.ocupacao)}</div>
+        <div>
+          <div className="flex justify-between items-baseline text-xs mb-1"><span className="eyebrow">1º turno</span><span className="num text-sm">${pct(c.pct1)}${c.pct2 != null ? ' · 2º turno ' + pct(c.pct2) : ''}</span></div>
+          <${Bar} v=${c.pct1} h=${5} cor=${bl.cor} label=${'Votos de ' + c.nome + ' no 1º turno'} />
+        </div>
+        <button className=${'btn go text-sm ' + (eleito ? 'btn-gold !py-2' : 'btn-ghost')} onClick=${() => onEscolher(cfgDeCandidato(c), 1, NOTA_IDEO_PARTIDO)}><${Icon} n=${eleito ? 'Landmark' : 'Shuffle'} s=${14} /> ${eleito ? 'Assumir o mandato' : 'E se fosse presidente?'}</button>
+      </li>`;
+    })}</ul>
+  </div>`;
 }
 
 function PainelPoliticos({ onEscolher, memo }) {
@@ -15364,72 +15513,133 @@ function PainelPoliticos({ onEscolher, memo }) {
   const filtra = (fn) => (v) => { fn(v); setN(POL_PAGINA); };
   const lista = useMemo(() => { const qn = norm(q.trim()); return POLITICOS.filter(p => (cargo === 'todos' || p.cargo === cargo) && (!uf || p.uf === uf) && (!bl || p.bloco === bl) && (!qn || p.busca.includes(qn))); }, [cargo, uf, bl, q]);
   const vis = lista.slice(0, n);
-  return html`<div className="flex flex-col gap-4">
-    <div className="card p-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-      <label className="flex flex-col gap-1" htmlFor="pol-busca"><span className="eyebrow">Nome</span><input id="pol-busca" type="text" autoComplete="off" placeholder="Buscar por nome" value=${q} onChange=${e => filtra(setQ)(e.target.value)} /></label>
-      <label className="flex flex-col gap-1" htmlFor="pol-cargo"><span className="eyebrow">Cargo</span><select id="pol-cargo" value=${cargo} onChange=${e => filtra(setCargo)(e.target.value)}>${CARGOS_POL.map(c => html`<option key=${c.v} value=${c.v}>${c.l}</option>`)}</select></label>
-      <label className="flex flex-col gap-1" htmlFor="pol-uf"><span className="eyebrow">Estado</span><select id="pol-uf" value=${uf} onChange=${e => filtra(setUf)(e.target.value)}><option value="">Todos os estados</option>${Object.keys(ESTADOS).sort().map(u => html`<option key=${u} value=${u}>${u}</option>`)}</select></label>
-      <label className="flex flex-col gap-1" htmlFor="pol-bloco"><span className="eyebrow">Bloco</span><select id="pol-bloco" value=${bl} onChange=${e => filtra(setBl)(e.target.value)}><option value="">Todos os blocos</option>${PARTIDOS.map(P => html`<option key=${P.id} value=${P.id}>${P.nome}</option>`)}</select></label>
-    </div>
-    <div className="text-xs text-muted" role="status" aria-live="polite">${lista.length === 0 ? 'Nenhum político encontrado com esses filtros.' : `Mostrando ${vis.length} de ${lista.length} ${lista.length === 1 ? 'político' : 'políticos'}.`}</div>
-    ${lista.length > 0 && html`<ul className="card divide-y divide-line px-4">${vis.map(p => html`<li key=${p.cargo + p.uf + p.nome} className="flex items-center gap-3 py-2.5">
-      <${Ef} nome=${p.nome} cor=${PMAP[p.bloco].cor} papel=${papelParl(p.cargo)} s=${40} p=${p} />
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1"><span className="font-semibold">${p.nome}</span><${LogoPartido} bloco=${p.bloco} sigla=${p.sigla} tam=${24} /><${Tag} cor=${PMAP[p.bloco].cor}>${sg(p.sigla)}</${Tag}></div>
-        <div className="text-xs text-muted">${CARGO_ROT[p.cargo]} · ${p.uf}${p.ano === 2022 ? ' (eleito em 2022)' : ''} · ~${idadeAprox(p.nasc)} anos · ${cap(p.ocup)}</div>
+  return html`<div className="flex flex-col gap-4" data-ini="politicos">
+    <div className="ini-filtros">
+      <div className="ini-chips" role="group" aria-label="Cargo">${CARGOS_POL.map(c => html`<button key=${c.v} type="button" className="ini-chipb" aria-pressed=${cargo === c.v} onClick=${() => filtra(setCargo)(c.v)}>${c.l}</button>`)}</div>
+      <div className="ini-filtros-g">
+        <label className="flex flex-col gap-1" htmlFor="pol-busca"><span className="eyebrow">Nome</span><input id="pol-busca" type="text" autoComplete="off" placeholder="Buscar por nome" value=${q} onChange=${e => filtra(setQ)(e.target.value)} /></label>
+        <label className="flex flex-col gap-1" htmlFor="pol-uf"><span className="eyebrow">Estado</span><select id="pol-uf" value=${uf} onChange=${e => filtra(setUf)(e.target.value)}><option value="">Todos os estados</option>${Object.keys(ESTADOS).sort().map(u => html`<option key=${u} value=${u}>${u}</option>`)}</select></label>
+        <label className="flex flex-col gap-1" htmlFor="pol-bloco"><span className="eyebrow">Bloco</span><select id="pol-bloco" value=${bl} onChange=${e => filtra(setBl)(e.target.value)}><option value="">Todos os blocos</option>${PARTIDOS.map(P => html`<option key=${P.id} value=${P.id}>${P.nome}</option>`)}</select></label>
       </div>
-      <button className="btn btn-ghost text-sm shrink-0" aria-label=${'Jogar como ' + p.nome} onClick=${() => onEscolher(cfgDePolitico(p), 1, NOTA_IDEO_PARTIDO)}><${Icon} n="Play" s=${14} /> Jogar</button>
+    </div>
+    <div className="text-sm text-muted" role="status" aria-live="polite">${lista.length === 0 ? 'Nenhum político encontrado com esses filtros.' : `Mostrando ${vis.length} de ${lista.length} ${lista.length === 1 ? 'político' : 'políticos'}.`}</div>
+    ${lista.length > 0 && html`<ul className="ini-grid">${vis.map(p => html`<li key=${p.cargo + p.uf + p.nome} className="ini-card" style=${{ '--c': PMAP[p.bloco].cor }}>
+      <div className="ini-card-h">
+        <${Ef} nome=${p.nome} cor=${PMAP[p.bloco].cor} papel=${papelParl(p.cargo)} s=${56} p=${p} />
+        <div className="min-w-0 flex-1">
+          <div className="ini-card-n !text-[18px]">${p.nome}</div>
+          <div className="ini-line"><${LogoPartido} bloco=${p.bloco} sigla=${p.sigla} tam=${24} /><span className="text-sm font-semibold">${sg(p.sigla)}</span></div>
+        </div>
+      </div>
+      <div className="ini-card-s">${CARGO_ROT[p.cargo]} · ${p.uf}${p.ano === 2022 ? ' (eleito em 2022)' : ''} · ~${idadeAprox(p.nasc)} anos · ${cap(p.ocup)}</div>
+      <button className="btn btn-ghost go text-sm" aria-label=${'Jogar como ' + p.nome} onClick=${() => onEscolher(cfgDePolitico(p), 1, NOTA_IDEO_PARTIDO)}><${Icon} n="Play" s=${14} /> Jogar</button>
     </li>`)}</ul>`}
     ${vis.length < lista.length && html`<button className="btn btn-ghost self-center" onClick=${() => setN(n + POL_PAGINA)}><${Icon} n="ChevronDown" /> Mostrar mais</button>`}
   </div>`;
 }
 
 function PainelFamosos({ onEscolher }) {
-  return html`<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">${PESSOAS.famosos.map(f => html`<article key=${f.nome} className="card p-4 flex flex-col gap-3">
-    <div className="flex items-start gap-3">
+  return html`<ul className="ini-grid" data-ini="famosos">${PESSOAS.famosos.map(f => html`<li key=${f.nome} className="ini-card" style=${{ '--c': 'var(--ouro)' }}>
+    <div className="ini-card-h">
       <${Ef} nome=${f.nome} cor="var(--ouro)" papel="famoso" s=${56} />
-      <div className="min-w-0 flex-1"><div className="font-semibold leading-tight" title=${f.nomeCompleto}>${f.nome}</div><div className="text-xs text-muted">${cap(f.area)}</div></div>
+      <div className="min-w-0 flex-1"><div className="ini-card-n !text-[18px]" title=${f.nomeCompleto}>${f.nome}</div><div className="ini-card-s">${cap(f.area)}</div></div>
     </div>
-    <div className="text-sm text-muted flex flex-wrap items-center gap-x-3 gap-y-1"><span>~${idadeAprox(f.nasc)} anos</span><span>${f.uf}</span>
+    <div className="ini-card-s flex flex-wrap items-center gap-x-3 gap-y-1"><span>~${idadeAprox(f.nasc)} anos</span><span>${f.uf}</span>
       <a className="inline-flex items-center gap-1 underline decoration-dotted underline-offset-2 hover:text-fg" href=${f.fonte} target="_blank" rel="noopener noreferrer" aria-label=${'Fonte de ' + f.nome + ' na Wikipédia (abre em nova aba)'}>fonte <${Icon} n="ExternalLink" s=${12} /></a></div>
-    <button className="btn btn-ghost text-sm justify-center mt-auto" aria-label=${'Jogar como ' + f.nome} onClick=${() => onEscolher(cfgDeFamoso(f), 1, NOTA_IDEO_LIVRE)}><${Icon} n="Play" s=${14} /> Jogar</button>
-  </article>`)}</div>`;
+    <button className="btn btn-ghost go text-sm" aria-label=${'Jogar como ' + f.nome} onClick=${() => onEscolher(cfgDeFamoso(f), 1, NOTA_IDEO_LIVRE)}><${Icon} n="Play" s=${14} /> Jogar</button>
+  </li>`)}</ul>`;
 }
 
-function Inicio({ temSave, onContinuar, onEscolher, memo = {} }) {
+// resumo do mandato salvo (presidente, partido, mês x/48, aprovação) + botão grande de continuar
+function IniSave({ save, onContinuar }) {
+  const c = save.cfg || {}; const mes = Math.max(1, Math.min(48, save.mes || 1));
+  let ap = null; try { ap = aprovacao(save); } catch (e) { ap = null; }
+  const dif = QV_DIF[c.dif] ? QV_DIF[c.dif].nome : QV_DIF.realista.nome;
+  return html`<aside className="ini-save" data-ini="save" aria-label="Mandato salvo">
+    <div className="eyebrow">Mandato salvo</div>
+    <div className="ini-save-h">
+      ${c.partido && PMAP[c.partido] && html`<${LogoPartido} bloco=${c.partido} tam=${52} />`}
+      <div className="min-w-0"><div className="ini-save-n" data-ini="save-nome">${c.nome || 'Presidente'}</div><div className="ini-save-p">${nomePartido(c)} · ${(MODOS[c.modo] || MODOS.brasilia).nome} · ${dif}</div></div>
+    </div>
+    <div className="ini-stats">
+      <div className="ini-stat"><b className="num" data-ini="save-mes">${mes}/48</b><span>mês do mandato</span></div>
+      <div className="ini-stat"><b className="num" data-ini="save-ap" style=${{ color: ap != null ? corAprov(ap) : 'inherit' }}>${ap != null ? fmt(ap, 0) + '%' : '—'}</b><span>aprovação</span></div>
+      <div className="ini-stat"><b className="num">${dataCurta(mes)}</b><span>data</span></div>
+    </div>
+    <div className="ini-prog" role="meter" aria-label="Andamento do mandato" aria-valuemin="0" aria-valuemax="48" aria-valuenow=${mes}><i style=${{ width: (mes / 48 * 100) + '%' }}></i></div>
+    <button className="btn btn-gold ini-big justify-center" data-ini="continuar" onClick=${onContinuar}><${Icon} n="Play" s=${18} /> Continuar mandato</button>
+  </aside>`;
+}
+
+function Inicio({ temSave, save, onContinuar, onEscolher, memo = {} }) {
   const [aba, setAba] = useMemoria(memo, 'aba', 'criar');
+  const [modo, setModo] = useMemoria(memo, 'modo', 'brasilia');
+  const [dif, setDif] = useMemoria(memo, 'dif', 'realista');
   const irPara = (k) => { setAba(k); setTimeout(() => { const el = document.getElementById('ini-tab-' + k); if (el) el.focus(); }, 0); };
   const teclas = (e) => {
     const i = ABAS_INICIO.findIndex(a => a.k === aba); const N = ABAS_INICIO.length; let j = -1;
     if (e.key === 'ArrowRight') j = (i + 1) % N; else if (e.key === 'ArrowLeft') j = (i - 1 + N) % N; else if (e.key === 'Home') j = 0; else if (e.key === 'End') j = N - 1;
     if (j < 0) return; e.preventDefault(); irPara(ABAS_INICIO[j].k);
   };
-  return html`<div className="min-h-full">
-    <div className="faixa"></div>
-    <div className="gutter py-6 max-w-6xl mx-auto">
-      <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
-        <div>
+  // o modo e a dificuldade escolhidos aqui entram na configuração de qualquer personagem; o assistente ainda permite trocar
+  const escolher = (cfg, passo, nota) => onEscolher({ ...cfg, modo, dif }, passo, nota);
+  const novo = () => { setAba('criar'); setTimeout(() => { const el = document.getElementById('ini-escolha'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 0); };
+  const nSlots = Array.from({ length: QV_NSLOTS }, (_, i) => i + 1).filter(i => qvInfoSlot(i)).length;
+  return html`<div className="ini" data-tela="inicio">
+    <style>${GV_CSS}${INI_CSS}</style>
+    <header className="ini-hero">
+      <div className="faixa"></div>
+      <div className="ini-in ini-hero-g">
+        <div className="min-w-0">
           <div className="eyebrow">Posse em 1º de janeiro de 2027</div>
-          <h1 className="disp text-5xl sm:text-7xl font-black uppercase leading-none mt-1">Quem sobe a <span className="text-ouro">rampa?</span></h1>
-          <p className="text-muted mt-2 max-w-xl">Crie um presidente do zero ou assuma o lugar de alguém de verdade e governe o Brasil por quatro anos.</p>
-          <p className="text-xs text-muted mt-1 max-w-2xl">Pessoas reais aparecem só com dados públicos (TSE e Wikipédia). Tudo o que acontece no mandato é simulação: nenhuma fala, decisão ou opinião é atribuída a elas.</p>
+          <h1 className="ini-h1">Faixa <span>Presidencial</span></h1>
+          <p className="ini-pitch">Governe o Brasil por quatro anos, mês a mês, escrevendo as suas próprias medidas.</p>
+          <ul className="ini-facts" aria-label="Sobre o jogo"><li className="gv-chip"><${Icon} n="CalendarDays" s=${13} /> 48 meses de mandato</li><li className="gv-chip"><${Icon} n="Landmark" s=${13} /> Congresso eleito em 2026 (TSE)</li><li className="gv-chip"><${Icon} n="PenLine" s=${13} /> Medidas escritas por você</li></ul>
+          <p className="ini-nota">Pessoas reais aparecem só com dados públicos (TSE e Wikipédia). Tudo o que acontece no mandato é simulação: nenhuma fala, decisão ou opinião é atribuída a elas.</p>
         </div>
-        ${temSave && html`<button className="btn btn-gold" onClick=${onContinuar}><${Icon} n="Play" /> Continuar mandato salvo</button>`}
+        ${temSave && save ? html`<${IniSave} save=${save} onContinuar=${onContinuar} />`
+          : html`<div className="ini-new"><div className="eyebrow">Comece agora</div><div className="disp text-2xl font-bold leading-tight">Quem sobe a rampa?</div><p className="text-sm text-muted">Crie um presidente do zero ou assuma o lugar de alguém de verdade.</p>
+            ${temSave && html`<button className="btn btn-gold ini-big justify-center" data-ini="continuar" onClick=${onContinuar}><${Icon} n="Play" s=${18} /> Continuar mandato</button>`}
+            <button className=${'btn ini-big justify-center ' + (temSave ? 'btn-ghost' : 'btn-gold')} data-ini="novo" onClick=${novo}><${Icon} n="Plus" s=${18} /> Novo mandato</button></div>`}
       </div>
-      <${QvSaves} ctx="inicio" />
-      <div className="flex gap-1 mb-5 scroll-x" role="tablist" aria-label="Quem vai governar" onKeyDown=${teclas}>
-        ${ABAS_INICIO.map(a => html`<button key=${a.k} id=${'ini-tab-' + a.k} role="tab" aria-selected=${aba === a.k} aria-controls="ini-painel" tabIndex=${aba === a.k ? 0 : -1} onClick=${() => setAba(a.k)} className=${'tabbtn shrink-0 px-3 py-2 border-b-2 text-sm ' + (aba === a.k ? '' : 'border-transparent text-muted hover:text-fg')}>${a.nome}</button>`)}
-      </div>
-      <div id="ini-painel" role="tabpanel" aria-labelledby=${'ini-tab-' + aba} className="fade-in" key=${aba}>
-        ${aba === 'criar' && html`<${PainelCriar} onEscolher=${onEscolher} />`}
-        ${aba === 'eleito' && html`<${PainelEleito} onEscolher=${onEscolher} />`}
-        ${aba === 'cand' && html`<${PainelCandidatos} onEscolher=${onEscolher} />`}
-        ${aba === 'pol' && html`<${PainelPoliticos} onEscolher=${onEscolher} memo=${memo} />`}
-        ${aba === 'fam' && html`<${PainelFamosos} onEscolher=${onEscolher} />`}
-        ${aba === 'fig' && html`<${ElFigurasInicio} onEscolher=${onEscolher} />`}
-      </div>
-      <p className="text-xs text-muted mt-8">Dados: TSE (candidaturas e resultados das Eleições 2026; Senado de 2022) e Wikipédia (ano de nascimento e estado dos famosos). Idades com “~” são estimativas pelo ano de nascimento.</p>
-    </div>
+      ${temSave && save && html`<div className="ini-in" style=${{ paddingBottom: 22, marginTop: -8 }}><button className="btn btn-ghost" data-ini="novo" onClick=${novo}><${Icon} n="Plus" s=${16} /> Novo mandato</button></div>`}
+    </header>
+    <main className="ini-in pb-6">
+      <section className="ini-sec" aria-labelledby="ini-regras">
+        <div className="ini-sec-h"><div><div className="eyebrow">Regras do mandato</div><h2 id="ini-regras">Como você quer jogar?</h2></div></div>
+        <div className="flex flex-col gap-5">
+          <div><div className="eyebrow mb-2" id="ini-modo-r">Modo de jogo</div>
+            <div className="ini-opts" role="radiogroup" aria-labelledby="ini-modo-r">${Object.values(MODOS).map(m => html`<${IniOpcao} key=${m.k} ativo=${modo === m.k} onClick=${() => setModo(m.k)} nome=${m.nome} desc=${m.d} cor=${m.cor} attr=${{ 'data-ini-modo': m.k }} />`)}</div></div>
+          <div><div className="eyebrow mb-2" id="ini-dif-r">Dificuldade</div>
+            <div className="ini-opts" role="radiogroup" aria-labelledby="ini-dif-r">${QV_DIFS.map(k => { const D = QV_DIF[k]; return html`<${IniOpcao} key=${k} ativo=${dif === k} onClick=${() => setDif(k)} nome=${D.nome} tag=${k === 'realista' ? 'padrão' : ''} desc=${D.d} cor=${D.cor} attr=${{ 'data-ini-dif': k }} />`; })}</div></div>
+        </div>
+      </section>
+      <section className="ini-sec" id="ini-escolha" aria-labelledby="ini-quem" style=${{ scrollMarginTop: 12 }}>
+        <div className="ini-sec-h"><div><div className="eyebrow">Quem vai governar</div><h2 id="ini-quem">Escolha o presidente</h2></div><p className="ini-sub">Do zero, o eleito de 2026, os candidatos, políticos ou figuras públicas.</p></div>
+        <div className="ini-tabs" role="tablist" aria-label="Quem vai governar" onKeyDown=${teclas}>
+          ${ABAS_INICIO.map(a => html`<button key=${a.k} id=${'ini-tab-' + a.k} role="tab" aria-selected=${aba === a.k} aria-controls="ini-painel" tabIndex=${aba === a.k ? 0 : -1} onClick=${() => setAba(a.k)} className="ini-tab">${a.nome}</button>`)}
+        </div>
+        <div id="ini-painel" role="tabpanel" aria-labelledby=${'ini-tab-' + aba} className="ini-panel fade-in" key=${aba}>
+          ${aba === 'criar' && html`<${PainelCriar} onEscolher=${escolher} />`}
+          ${aba === 'eleito' && html`<${PainelEleito} onEscolher=${escolher} />`}
+          ${aba === 'cand' && html`<${PainelCandidatos} onEscolher=${escolher} memo=${memo} />`}
+          ${aba === 'pol' && html`<${PainelPoliticos} onEscolher=${escolher} memo=${memo} />`}
+          ${aba === 'fam' && html`<${PainelFamosos} onEscolher=${escolher} />`}
+          ${aba === 'fig' && html`<${ElFigurasInicio} onEscolher=${escolher} />`}
+        </div>
+      </section>
+      <details className="ini-det" data-ini="slots" open=${nSlots > 1}>
+        <summary><span className="car"><${Icon} n="ChevronRight" s=${16} /></span> Mandatos salvos e importação <span className="text-xs ml-auto" style=${{ color: "var(--dim)" }}>${nSlots} de ${QV_NSLOTS} slots em uso</span></summary>
+        <div className="p-3 sm:p-4"><${QvSaves} ctx="inicio" /></div>
+      </details>
+      <details className="ini-det ini-foot" data-ini="creditos">
+        <summary><span className="car"><${Icon} n="ChevronRight" s=${16} /></span> Fontes e créditos</summary>
+        <div className="ini-det-b">
+          <p>Dados: TSE (candidaturas e resultados das Eleições 2026; Senado de 2022) e Wikipédia (ano de nascimento e estado dos famosos). Idades com “~” são estimativas pelo ano de nascimento.</p>
+          <p>Pessoas reais aparecem só com dados públicos. Fotos oficiais do TSE e da Wikimedia Commons. Tudo o que acontece no mandato é simulação: nenhuma fala, decisão ou opinião é atribuída a elas.</p>
+        </div>
+      </details>
+    </main>
   </div>`;
 }
 
@@ -15449,40 +15659,44 @@ function Wizard({ onStart, temSave, onContinuar, onTrocar, inicial, passoInicial
   const [step, setStep] = useState(passoInicial);
   const [escolhe, setEscolhe] = useState(null);
   const set = (k, v) => setCfg(c => ({ ...c, [k]: v }));
-  const steps = ['Perfil', 'Ideologia', 'Personalidade', 'Vice e gabinete', 'Promessas'];
+  const steps = ['Presidente', 'Ideologia', 'Personalidade', 'Ministério', 'Posse'];
+  const ULT = steps.length - 1;
   const escolheNome = (pk, N) => { setCfg(c => ({ ...c, ministros: { ...c.ministros, [pk]: N.tipo }, nomeados: { ...(c.nomeados || {}), [pk]: N } })); setEscolhe(null); };
   const toggle = (k, lista, max) => { const cur = cfg[lista]; set(lista, cur.includes(k) ? cur.filter(x => x !== k) : cur.length >= max ? [...cur.slice(1), k] : [...cur, k]); };
   const nomeadosN = PASTAS.filter(p => (cfg.nomeados || {})[p.k]).length;
   const faltaMin = nomeadosN < PASTAS.length ? `ministros (${nomeadosN}/${PASTAS.length})` : null;
   const faltas = [cfg.nome.trim().length > 1 ? null : 'nome', cfg.partido ? null : 'legenda', cfg.tracos.length === 2 ? null : `traços (${cfg.tracos.length}/2)`, faltaMin, cfg.promessas.length === 3 ? null : `promessas (${cfg.promessas.length}/3)`].filter(Boolean);
   const pronto = faltas.length === 0;
-  const pend = [!cfg.partido || cfg.nome.trim().length < 2, false, cfg.tracos.length !== 2, false, cfg.promessas.length !== 3];
-  const slider = (k, esq, dir) => html`<div className="flex flex-col gap-2">
-    <div className="flex justify-between text-xs"><span className=${cfg.ideo[k] < 0 ? 'text-fg font-semibold' : 'text-muted'}>${esq}</span><span className="num text-ouro">${cfg.ideo[k] > 0 ? '+' : ''}${cfg.ideo[k]}</span><span className=${cfg.ideo[k] > 0 ? 'text-fg font-semibold' : 'text-muted'}>${dir}</span></div>
+  const pend = [!cfg.partido || cfg.nome.trim().length < 2, false, cfg.tracos.length !== 2, !!faltaMin, cfg.promessas.length !== 3];
+  const slider = (k, esq, dir) => html`<div className="wz-sl-card">
+    <div className="wz-sl-r"><span className=${cfg.ideo[k] < 0 ? 'font-semibold' : 'text-muted'}>${esq}</span><span className="num text-ouro font-semibold">${cfg.ideo[k] > 0 ? '+' : ''}${cfg.ideo[k]}</span><span className=${cfg.ideo[k] > 0 ? 'font-semibold' : 'text-muted'}>${dir}</span></div>
     <input id=${'ideo-' + k} type="range" min="-100" max="100" step="5" value=${cfg.ideo[k]} aria-label=${esq + ' versus ' + dir} onChange=${e => set('ideo', { ...cfg.ideo, [k]: +e.target.value })} /></div>`;
   const sel = (id, k, opts) => html`<select id=${id} value=${cfg[k]} onChange=${e => set(k, e.target.value)}>${opts.map(o => html`<option key=${o.v || o} value=${o.v || o}>${o.l || o}</option>`)}</select>`;
   const prev = useMemo(() => { try { const g = novoJogo(cfg); return { ap: aprovacao(g), cam: bancadas(g, 'cam'), conf: g.eco.conf }; } catch (e) { return null; } }, [cfg]);
+  const sec = (eb, t, sub, corpo) => html`<section className="wz-sec"><div className="wz-sec-h"><div className="eyebrow">${eb}</div><h2>${t}</h2>${sub && html`<p>${sub}</p>`}</div>${corpo}</section>`;
+  const modoAt = MODOS[cfg.modo] || MODOS.brasilia;
 
-  return html`<div className="min-h-full">
+  return html`<div className="wz" data-tela="wizard">
+    <style>${GV_CSS}${INI_CSS}</style>
     <div className="faixa"></div>
-    <div className="gutter py-6 max-w-6xl mx-auto">
-      <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
-        <div>
-          <div className="eyebrow">Tribunal Superior Eleitoral · Diplomação 2027–2030</div>
-          <h1 className="disp text-5xl sm:text-6xl font-black uppercase leading-none mt-1">Faixa <span className="text-ouro">Presidencial</span></h1>
-          <p className="text-muted mt-2 max-w-xl">Você venceu a eleição. Monte o presidente, o gabinete e as promessas. Depois governe o Brasil mês a mês, escrevendo suas próprias medidas.</p>
-          <p className="text-xs text-muted mt-1 max-w-xl">Congresso real eleito em 2026 (dados do TSE). Votos e comportamentos dos parlamentares são simulados.</p>
-        </div>
-        ${temSave && html`<button className="btn btn-gold" onClick=${onContinuar}><${Icon} n="Play" /> Continuar mandato salvo</button>`}
+    <header className="wz-head"><div className="ini-in wz-head-g">
+      <div className="min-w-0">
+        <div className="eyebrow">Tribunal Superior Eleitoral · Diplomação 2027–2030</div>
+        <h1 className="wz-h1">Faixa <span>Presidencial</span></h1>
+        <p className="text-muted text-sm mt-2 max-w-xl">Você venceu a eleição. Monte o presidente, o ministério e as promessas. Depois governe o Brasil mês a mês, escrevendo suas próprias medidas.</p>
       </div>
-      <div className="flex gap-1 mb-5 scroll-x" role="tablist">
-        ${steps.map((s, i) => html`<button key=${s} role="tab" aria-selected=${step === i} onClick=${() => setStep(i)} className=${'tabbtn shrink-0 px-3 py-2 border-b-2 text-sm ' + (step === i ? '' : 'border-transparent text-muted')}>
-          <span className="num text-xs mr-1">${i + 1}</span>${s}${pend[i] && html`<span className="text-rubro ml-1" title="Falta preencher"><span aria-hidden="true">●</span><span className="sr-only"> (falta preencher)</span></span>`}</button>`)}
-      </div>
-      <div className="grid gap-5 lg:grid-cols-3">
-        <div className="lg:col-span-2 card p-5 fade-in" key=${step}>
-          ${step === 0 && html`<div className="grid sm:grid-cols-2 gap-4">
-            <label className="flex flex-col gap-1 sm:col-span-2"><span className="eyebrow">Nome</span><input id="w-nome" type="text" value=${cfg.nome} onChange=${e => set('nome', e.target.value)} /></label>
+      ${temSave && html`<button className="btn btn-ghost" onClick=${onContinuar}><${Icon} n="Play" s=${16} /> Continuar mandato</button>`}
+    </div></header>
+    <nav className="wz-steps" aria-label="Etapas da posse">
+      <div className="wz-prog" role="progressbar" aria-label="Progresso do assistente" aria-valuemin="1" aria-valuemax=${steps.length} aria-valuenow=${step + 1} aria-valuetext=${'Passo ' + (step + 1) + ' de ' + steps.length}><i style=${{ width: ((step + 1) / steps.length * 100) + '%' }}></i></div>
+      <div className="ini-in"><div className="wz-tabs" role="tablist">
+        ${steps.map((s, i) => html`<div key=${s} role="presentation"><button role="tab" className="wz-tab" aria-selected=${step === i} data-ok=${i < step && !pend[i] ? 'ok' : undefined} onClick=${() => setStep(i)}><span className="wz-sn">${i + 1}</span><span className="wz-sl">${s}</span>${pend[i] && html`<span className="wz-pend" title="Falta preencher"><span aria-hidden="true">●</span><span className="sr-only"> (falta preencher)</span></span>`}</button></div>`)}
+      </div></div>
+    </nav>
+    <div className="ini-in wz-grid">
+      <div className="wz-main fade-in" key=${step}>
+        ${step === 0 && html`${sec('Passo 1 de 5', 'Quem é o presidente', null, html`<div className="wz-f">
+            <label className="flex flex-col gap-1 full"><span className="eyebrow">Nome</span><input id="w-nome" type="text" value=${cfg.nome} onChange=${e => set('nome', e.target.value)} /></label>
             <label className="flex flex-col gap-1"><span className="eyebrow">Idade · ${cfg.idade} anos</span>
               <input id="w-idade" type="range" min="18" max="95" value=${cfg.idade} onChange=${e => set('idade', +e.target.value)} />
               <span className="text-xs text-muted">${cfg.idade < 35 && html`<span className="text-ambar">Abaixo da idade mínima constitucional de 35 anos: nesta simulação, vale tudo. </span>`}${cfg.idade < 40 ? 'Jovem: o Congresso te respeita menos.' : cfg.idade > 70 ? 'Idoso: a saúde pesa no mandato.' : 'Idade de estadista.'}</span></label>
@@ -15494,87 +15708,87 @@ function Wizard({ onStart, temSave, onContinuar, onTrocar, inicial, passoInicial
               ${!cfg.partido && html`<span id="w-partido-aviso" className="text-xs text-rubro">Escolha a legenda do personagem para tomar posse.</span>`}
               ${cfg.partido === 'OUTROS' && html`<label className="flex flex-col gap-1 mt-1" htmlFor="w-sigla"><span className="text-xs text-muted">Sigla da legenda (opcional)</span><input id="w-sigla" type="text" maxLength="14" autoComplete="off" value=${cfg.siglaReal || ''} onChange=${e => set('siglaReal', e.target.value.toUpperCase())} /></label>`}</div>
             <label className="flex flex-col gap-1"><span className="eyebrow">Religião</span>${sel('w-rel', 'religiao', ['Católica', 'Evangélica', 'Espírita', 'Matriz africana', 'Sem religião / Ateu', 'Não informada'])}</label>
-            <label className="flex flex-col gap-1 sm:col-span-2"><span className="eyebrow">Origem</span>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">${['Político de Carreira', 'Outsider', 'Sindicalista', 'Empresário'].map(o => html`<button key=${o} onClick=${() => set('origem', o)} className=${'btn btn-ghost justify-center text-sm ' + (cfg.origem === o ? '!border-ouro text-ouro' : '')}>${o}</button>`)}</div></label>
-            <div className="flex flex-col gap-1 sm:col-span-2"><span className="eyebrow">Modo de jogo</span>
-              <div className="grid sm:grid-cols-3 gap-2">${Object.values(MODOS).map(m => html`<button key=${m.k} onClick=${() => set('modo', m.k)} className=${'card p-3 text-left transition ' + (cfg.modo === m.k ? '!border-ouro' : 'hover:border-muted')}><div className="font-semibold flex items-center gap-2" style=${{ color: cfg.modo === m.k ? m.cor : 'inherit' }}>${m.nome}${cfg.modo === m.k && html`<span className="ml-auto"><${Icon} n="Check" s=${14} /></span>`}</div><div className="text-xs text-muted mt-1">${m.d}</div></button>`)}</div></div>
-            <div className="flex flex-col gap-2 sm:col-span-2" data-familia-wiz="1"><span className="eyebrow">Família (opcional)</span>
-              ${cfg.real && !cfg.familiaDef ? html`<p className="text-sm text-muted">Não informado. O jogo não inventa cônjuge nem filhos de pessoas reais. <button type="button" className="linklike" onClick=${() => set('familiaDef', true)}>Criar uma família fictícia para esta partida</button></p>` : html`<div className="grid sm:grid-cols-2 gap-3">
+            <div className="flex flex-col gap-2 full"><span className="eyebrow">Origem</span>
+              <div className="wz-opts s4">${['Político de Carreira', 'Outsider', 'Sindicalista', 'Empresário'].map(o => html`<button key=${o} type="button" aria-pressed=${cfg.origem === o} onClick=${() => set('origem', o)} className="wz-opt c">${o}</button>`)}</div></div>
+          </div>`)}
+          ${sec('Regras', 'Modo de jogo e dificuldade', null, html`<div className="flex flex-col gap-4">
+            <div className="wz-opts">${Object.values(MODOS).map(m => html`<button key=${m.k} type="button" aria-pressed=${cfg.modo === m.k} style=${{ '--c': m.cor }} onClick=${() => set('modo', m.k)} className="wz-opt"><span className="wz-opt-t" style=${{ color: cfg.modo === m.k ? m.cor : 'inherit' }}>${m.nome}${cfg.modo === m.k && html`<span className="ck"><${Icon} n="Check" s=${16} /></span>`}</span><span className="wz-opt-d">${m.d}</span></button>`)}</div>
+            ${qvDifCtl(cfg, set)}</div>`)}
+          ${sec('Opcional', 'Família', null, html`<div className="flex flex-col gap-2" data-familia-wiz="1">
+              ${cfg.real && !cfg.familiaDef ? html`<p className="text-sm text-muted">Não informado. O jogo não inventa cônjuge nem filhos de pessoas reais. <button type="button" className="linklike" onClick=${() => set('familiaDef', true)}>Criar uma família fictícia para esta partida</button></p>` : html`<div className="wz-f">
                 <label className="flex flex-col gap-1"><span className="text-xs text-muted">Cônjuge (em branco = nenhum)</span><input id="w-conjuge" type="text" maxLength="40" autoComplete="off" value=${cfg.conjuge || ''} onChange=${e => set('conjuge', e.target.value)} /></label>
                 <label className="flex flex-col gap-1"><span className="text-xs text-muted">Filhos</span><select id="w-filhos" value=${cfg.filhos || 0} onChange=${e => set('filhos', +e.target.value)}>${[0, 1, 2, 3, 4].map(n => html`<option key=${n} value=${n}>${n}</option>`)}</select></label>
-                ${cfg.real && html`<p className="text-xs text-muted sm:col-span-2">Família fictícia criada por você: não representa a pessoa real. <button type="button" className="linklike" onClick=${() => setCfg(c => ({ ...c, familiaDef: false, conjuge: '', filhos: 0 }))}>Voltar a "não informado"</button></p>`}</div>`}</div>
-          </div>`}
-          ${step === 0 && qvDifCtl(cfg, set)}
-          ${step === 1 && html`<div className="flex flex-col gap-6">
-            <p className="text-muted text-sm">Sua posição define quem gosta de você no primeiro dia e como cada partido te recebe.</p>
+                ${cfg.real && html`<p className="text-xs text-muted full">Família fictícia criada por você: não representa a pessoa real. <button type="button" className="linklike" onClick=${() => setCfg(c => ({ ...c, familiaDef: false, conjuge: '', filhos: 0 }))}>Voltar a "não informado"</button></p>`}</div>`}</div>`)}`}
+        ${step === 1 && sec('Passo 2 de 5', 'Ideologia', 'Sua posição define quem gosta de você no primeiro dia e como cada partido te recebe.', html`<div className="flex flex-col gap-4">
             ${notaIdeo && html`<p className="text-sm text-ouro flex items-center gap-2" role="note"><${Icon} n="Info" s=${14} /> ${notaIdeo}</p>`}
-            ${slider('eco', 'Estatal', 'Mercado')}
-            ${slider('soc', 'Progressista', 'Conservador')}
-            ${slider('jus', 'Garantista', 'Linha Dura')}
-            ${slider('env', 'Desenvolvimentista', 'Ambientalista')}
-          </div>`}
-          ${step === 2 && html`<div>
-            <p className="text-muted text-sm mb-3">Escolha 2 traços (${cfg.tracos.length}/2).</p>
-            <div className="grid sm:grid-cols-2 gap-3">${TRACOS.map(t => html`<button key=${t.k} onClick=${() => toggle(t.k, 'tracos', 2)} className=${'text-left card p-3 transition ' + (cfg.tracos.includes(t.k) ? '!border-ouro' : 'hover:border-muted')}>
-              <div className="flex items-center gap-2 font-semibold"><span className="text-xl">${t.em}</span>${t.nome}${cfg.tracos.includes(t.k) && html`<span className="ml-auto text-ouro"><${Icon} n="Check" /></span>`}</div>
-              <div className="text-xs text-muted mt-1">${t.desc}</div></button>`)}</div>
-          </div>`}
-          ${step === 3 && html`<div className="flex flex-col gap-5">
-            <div className="grid sm:grid-cols-2 gap-3">
+            <div className="wz-f">
+              ${slider('eco', 'Estatal', 'Mercado')}
+              ${slider('soc', 'Progressista', 'Conservador')}
+              ${slider('jus', 'Garantista', 'Linha Dura')}
+              ${slider('env', 'Desenvolvimentista', 'Ambientalista')}
+            </div></div>`)}
+        ${step === 2 && sec('Passo 3 de 5', 'Personalidade', `Escolha 2 traços (${cfg.tracos.length}/2).`, html`<div className="wz-opts">${TRACOS.map(t => html`<button key=${t.k} type="button" aria-pressed=${cfg.tracos.includes(t.k)} onClick=${() => toggle(t.k, 'tracos', 2)} className="wz-opt">
+              <span className="wz-opt-t"><span className="text-xl" aria-hidden="true">${t.em}</span>${t.nome}${cfg.tracos.includes(t.k) && html`<span className="ck"><${Icon} n="Check" s=${16} /></span>`}</span>
+              <span className="wz-opt-d">${t.desc}</span></button>`)}</div>`)}
+        ${step === 3 && html`${sec('Passo 4 de 5', 'Vice', null, html`<div className="wz-f">
               <label className="flex flex-col gap-1"><span className="eyebrow">Nome do vice</span><input id="w-vice" type="text" value=${cfg.viceNome} onChange=${e => set('viceNome', e.target.value)} /></label>
               <label className="flex flex-col gap-1"><span className="eyebrow">Perfil do vice</span>${sel('w-vicep', 'vice', VICES.map(v => ({ v: v.k, l: v.nome })))}<span className="text-xs text-muted">${VICES.find(v => v.k === cfg.vice).desc}</span></label>
-            </div>
-            <div>
-              <div className="eyebrow mb-2">Esplanada dos Ministérios</div>
-              <ul className="flex flex-col divide-y divide-line">${PASTAS.map(p => { const N = (cfg.nomeados || {})[p.k];
-                return html`<li key=${p.k} className="flex flex-wrap items-center gap-x-3 gap-y-2 py-2.5">
-                  <span className="w-36 shrink-0 font-medium">${p.nome}</span>
-                  <div className="flex flex-wrap items-center gap-2 min-w-0 flex-1 basis-52">
-                    ${N ? html`<${Ef} nome=${N.nome} cor=${corEfigie(N)} papel="ministro" s=${40} p=${N} /><div className="min-w-0"><div className="text-sm font-medium truncate">${N.nome}</div><div className="text-[11px] text-muted truncate">${subNomeado(N)}</div></div><${Tag} cor=${corNomeado(N)}>${rotuloNomeado(N)}</${Tag}><span className="num text-[11px] text-muted" title=${(N.fonteAtr && N.fonteAtr.pop) || ''}>comp. ${fmt(compMin(cfg, p.k) * 100, 0)} · pop. ${N.pop != null ? fmt(N.pop, 0) : '—'}</span>`
-                    : html`<span className="text-sm text-rubro">sem ministro: escolha um nome</span>`}
+            </div>`)}
+          ${sec('Esplanada dos Ministérios', 'Escolha o ministro de cada pasta', 'Sem ministro em todas as pastas, não há posse.', html`<div className="flex flex-col gap-4">
+              <div className="wz-pastas">${PASTAS.map(p => { const N = (cfg.nomeados || {})[p.k];
+                return html`<article key=${p.k} className=${'wz-pasta' + (N ? '' : ' vazia')} data-pasta=${p.k} style=${N ? { '--st': corNomeado(N) } : undefined}>
+                  <div className="wz-pasta-t">${p.nome}</div>
+                  <div className="wz-pasta-m">
+                    ${N ? html`<${Ef} nome=${N.nome} cor=${corEfigie(N)} papel="ministro" s=${44} p=${N} /><div className="min-w-0"><div className="wz-pasta-n" title=${N.nome}>${N.nome}</div><div className="wz-pasta-s">${subNomeado(N)}</div></div>`
+                    : html`<span className="text-sm text-rubro" style=${{ gridColumn: '1 / -1' }}>sem ministro: escolha um nome</span>`}
                   </div>
-                  <button className="btn btn-ghost text-sm" aria-label=${'Escolher nome para ' + p.nome} onClick=${() => setEscolhe(p.k)}><${Icon} n="UserPlus" s=${14} /> ${N ? 'Trocar' : 'Escolher nome'}</button>
-                </li>`; })}</ul>
-              <div className="text-sm mt-3" role="status">${faltaMin ? html`Ministros escolhidos: <b className="num">${nomeadosN}/${PASTAS.length}</b>` : html`Competência média <b className="num">${fmt(competenciaCfg(cfg) * 100, 0)}%</b> · ministérios para partidos: <b>${resumoMinisterios(cfg)}</b>`}</div>
-              <div className="text-xs text-muted mt-2">Técnicos executam melhor. Indicações partidárias compram votos no Centrão. Personalidades dão mídia, mas tropeçam. Escolha um nome em cada pasta: sem ministro em todas, não há posse.</div>
+                  ${N && html`<div className="ini-line"><${Tag} cor=${corNomeado(N)}>${rotuloNomeado(N)}</${Tag}><span className="num text-xs text-muted" title=${(N.fonteAtr && N.fonteAtr.pop) || ''}>comp. ${fmt(compMin(cfg, p.k) * 100, 0)} · pop. ${N.pop != null ? fmt(N.pop, 0) : '—'}</span></div>`}
+                  <button className=${'btn text-sm ' + (N ? 'btn-ghost' : 'btn-pri')} aria-label=${'Escolher nome para ' + p.nome} onClick=${() => setEscolhe(p.k)}><${Icon} n="UserPlus" s=${14} /> ${N ? 'Trocar' : 'Escolher nome'}</button>
+                </article>`; })}</div>
+              <div>
+                <div className="flex justify-between text-sm mb-1.5" role="status">${faltaMin ? html`<span>Ministros escolhidos: <b className="num">${nomeadosN}/${PASTAS.length}</b></span>` : html`<span>Competência média <b className="num">${fmt(competenciaCfg(cfg) * 100, 0)}%</b> · ministérios para partidos: <b>${resumoMinisterios(cfg)}</b></span>`}</div>
+                <${Bar} v=${nomeadosN} max=${PASTAS.length} cor="var(--ouro)" h=${6} label="Ministros escolhidos" />
+              </div>
+              <div className="text-sm text-muted">Técnicos executam melhor. Indicações partidárias compram votos no Centrão. Personalidades dão mídia, mas tropeçam.</div>
               ${escolhe && html`<${Modal} wide label=${'Escolher ministro: ' + PASTAS.find(x => x.k === escolhe).nome} onClose=${() => setEscolhe(null)}><div className="card p-5">
                 <div className="flex items-start justify-between gap-3 mb-3"><div><div className="eyebrow">Esplanada dos Ministérios</div><h2 className="disp text-3xl font-black uppercase leading-none mt-1">Escolher ministro: ${PASTAS.find(x => x.k === escolhe).nome}</h2></div>
                   <button className="btn btn-ghost" onClick=${() => setEscolhe(null)}><${Icon} n="X" s=${14} /> Fechar</button></div>
                 <${SeletorMinistro} pasta=${escolhe} atual=${(cfg.nomeados || {})[escolhe]} presidente=${cfg} ctx=${cfg} usados=${Object.entries(cfg.nomeados || {}).filter(([k]) => k !== escolhe).map(([, v]) => v.nome)} onEscolher=${(N) => escolheNome(escolhe, N)} />
               </div></${Modal}>`}
-            </div>
-          </div>`}
-          ${step === 4 && html`<div>
-            <p className="text-muted text-sm mb-3">Escolha 3 promessas de campanha (${cfg.promessas.length}/3). Elas pesam na reeleição.</p>
-            <div className="grid sm:grid-cols-2 gap-2">${PROMESSAS.map(p => html`<button key=${p.k} onClick=${() => toggle(p.k, 'promessas', 3)} className=${'btn btn-ghost justify-between text-left ' + (cfg.promessas.includes(p.k) ? '!border-ouro text-ouro' : '')}><span>${p.nome}</span>${cfg.promessas.includes(p.k) && html`<${Icon} n="Check" />`}</button>`)}</div>
-          </div>`}
-          <div className="flex justify-between mt-6 pt-4 border-t border-line">
-            <button className="btn btn-ghost" disabled=${step === 0} onClick=${() => setStep(step - 1)}><${Icon} n="ChevronLeft" /> Voltar</button>
-            ${step < 4 ? html`<div className="flex flex-wrap items-center justify-end gap-3">${step === 3 && faltaMin && html`<span className="text-xs text-rubro" role="status">Falta escolher: ${faltaMin}</span>`}<button className="btn btn-pri" disabled=${step === 3 && !!faltaMin} onClick=${() => setStep(step + 1)}>Avançar <${Icon} n="ChevronRight" /></button></div>`
-      : html`<div className="flex flex-wrap items-center justify-end gap-3">${!pronto && html`<span className="text-xs text-rubro" role="status">Falta: ${faltas.join(', ')}</span>`}<button className="btn btn-gold" disabled=${!pronto} onClick=${() => onStart(cfg)}><${Icon} n="Landmark" /> Tomar posse</button></div>`}
-          </div>
-        </div>
-        <aside className="card p-5 flex flex-col gap-3 h-fit">
-          <div className="eyebrow">Ficha do eleito</div>
-          <div className="flex flex-wrap items-center gap-3"><${Ef} nome=${cfg.nome || '?'} cor=${corPresidente(cfg)} papel="presidente" s=${64} p=${cfg} /><div className="disp text-3xl font-extrabold uppercase leading-none">${cfg.nome || '—'}</div>${cfg.real && html`<${Tag} cor="var(--ouro)">personagem real · fonte ${cfg.real.fonte}</${Tag}>`}</div>
-          ${cfg.real && html`<div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted"><span>Dados públicos; o mandato é simulação.</span>${cfg.real.url && html`<a className="inline-flex items-center gap-1 underline decoration-dotted underline-offset-2 hover:text-fg" href=${cfg.real.url} target="_blank" rel="noopener noreferrer">ver fonte <${Icon} n="ExternalLink" s=${12} /></a>`}</div>`}
-          <div className="text-sm text-muted">${cfg.idade} anos · ${cfg.estado} · <span className=${cfg.partido ? '' : 'text-rubro'}>${nomePartido(cfg)}</span> · ${cfg.religiao} · ${cfg.origem}</div>
-          <div className="flex flex-wrap gap-1">${cfg.tracos.map(t => { const T = TRACOS.find(x => x.k === t); return html`<${Tag} key=${t} cor="var(--ouro)">${T.em} ${T.nome}</${Tag}>`; })}<${Tag} cor=${(MODOS[cfg.modo] || MODOS.brasilia).cor}>${(MODOS[cfg.modo] || MODOS.brasilia).nome}</${Tag}></div>
-          <div className="text-sm">Vice: <b>${cfg.viceNome || 'a definir'}</b> <span className="text-muted">(${VICES.find(v => v.k === cfg.vice).nome})</span></div>
-          ${prev && html`<div className="grid grid-cols-3 gap-2 pt-3 border-t border-line">
-            <div><div className="eyebrow">Aprovação</div><div className="num text-xl" style=${{ color: corAprov(prev.ap) }}>${fmt(prev.ap, 0)}%</div></div>
-            <div><div className="eyebrow">Base</div><div className="num text-xl">${prev.cam.base}</div></div>
-            <div><div className="eyebrow">Mercado</div><div className="num text-xl">${fmt(prev.conf, 0)}</div></div>
-          </div>`}
-          <div className="text-xs text-muted">Prévia de como o país te recebe no dia da posse.</div>
-          <button className="btn btn-ghost text-sm justify-center" onClick=${onTrocar}><${Icon} n=${cfg.real ? 'Shuffle' : 'ChevronLeft'} s=${14} /> ${cfg.real ? 'Trocar personagem' : 'Voltar ao início'}</button>
-          <div className="pt-3 border-t border-line">
-            <div className="eyebrow mb-1">Promessas</div>
-            <ul className="text-sm list-disc pl-5">${cfg.promessas.map(p => html`<li key=${p}>${PROMESSAS.find(x => x.k === p).nome}</li>`)}</ul>
-          </div>
-        </aside>
+            </div>`)}`}
+        ${step === 4 && html`${sec('Passo 5 de 5', 'Promessas de campanha', `Escolha 3 promessas (${cfg.promessas.length}/3). Elas pesam na reeleição.`, html`<div className="wz-opts">${PROMESSAS.map(p => html`<button key=${p.k} type="button" aria-pressed=${cfg.promessas.includes(p.k)} onClick=${() => toggle(p.k, 'promessas', 3)} className="wz-opt"><span className="wz-opt-t !text-[15px] !font-semibold !font-sans"><span>${p.nome}</span>${cfg.promessas.includes(p.k) && html`<span className="ck"><${Icon} n="Check" s=${16} /></span>`}</span></button>`)}</div>`)}
+          ${sec('Revisão', 'Tudo pronto para a posse?', null, html`<ul className="wz-rev" data-wz="revisao">${[
+            ['Nome do presidente', cfg.nome.trim().length > 1], ['Legenda escolhida', !!cfg.partido], [`Dois traços de personalidade (${cfg.tracos.length}/2)`, cfg.tracos.length === 2],
+            [`Ministro em todas as pastas (${nomeadosN}/${PASTAS.length})`, !faltaMin], [`Três promessas (${cfg.promessas.length}/3)`, cfg.promessas.length === 3]
+          ].map(([t, ok]) => html`<li key=${t}><span className=${'b' + (ok ? ' ok' : '')}><${Icon} n=${ok ? 'Check' : 'X'} s=${13} /></span><span className=${ok ? '' : 'text-rubro'}>${t}</span></li>`)}</ul>`)}`}
       </div>
+      <aside className="wz-aside" aria-label="Ficha do eleito">
+        <div className="eyebrow">Ficha do eleito</div>
+        <div className="flex flex-wrap items-center gap-3"><${Ef} nome=${cfg.nome || '?'} cor=${corPresidente(cfg)} papel="presidente" s=${64} p=${cfg} /><div className="wz-aside-n">${cfg.nome || '—'}</div></div>
+        ${cfg.real && html`<div><${Tag} cor="var(--ouro)">personagem real · fonte ${cfg.real.fonte}</${Tag}></div>`}
+        ${cfg.real && html`<div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted"><span>Dados públicos; o mandato é simulação.</span>${cfg.real.url && html`<a className="inline-flex items-center gap-1 underline decoration-dotted underline-offset-2 hover:text-fg" href=${cfg.real.url} target="_blank" rel="noopener noreferrer">ver fonte <${Icon} n="ExternalLink" s=${12} /></a>`}</div>`}
+        <div className="flex items-center gap-2 text-sm text-muted">${cfg.partido && PMAP[cfg.partido] && html`<${LogoPartido} bloco=${cfg.partido} tam=${28} />`}<span>${cfg.idade} anos · ${cfg.estado} · <span className=${cfg.partido ? '' : 'text-rubro'}>${nomePartido(cfg)}</span> · ${cfg.religiao} · ${cfg.origem}</span></div>
+        <div className="flex flex-wrap gap-1">${cfg.tracos.map(t => { const T = TRACOS.find(x => x.k === t); return html`<${Tag} key=${t} cor="var(--ouro)">${T.em} ${T.nome}</${Tag}>`; })}<${Tag} cor=${modoAt.cor}>${modoAt.nome}</${Tag}></div>
+        <div className="text-sm">Vice: <b>${cfg.viceNome || 'a definir'}</b> <span className="text-muted">(${VICES.find(v => v.k === cfg.vice).nome})</span></div>
+        ${prev && html`<div className="wz-prev">
+          <div><div className="eyebrow">Aprovação</div><b className="num" style=${{ color: corAprov(prev.ap) }}>${fmt(prev.ap, 0)}%</b></div>
+          <div><div className="eyebrow">Base</div><b className="num">${prev.cam.base}</b></div>
+          <div><div className="eyebrow">Mercado</div><b className="num">${fmt(prev.conf, 0)}</b></div>
+        </div>`}
+        <div className="text-xs text-muted">Prévia de como o país te recebe no dia da posse.</div>
+        <div className="pt-3 border-t border-line">
+          <div className="eyebrow mb-1">Promessas</div>
+          <ul className="text-sm list-disc pl-5">${cfg.promessas.map(p => html`<li key=${p}>${PROMESSAS.find(x => x.k === p).nome}</li>`)}</ul>
+        </div>
+        <button className="btn btn-ghost text-sm justify-center" onClick=${onTrocar}><${Icon} n=${cfg.real ? 'Shuffle' : 'ChevronLeft'} s=${14} /> ${cfg.real ? 'Trocar personagem' : 'Voltar ao início'}</button>
+      </aside>
     </div>
+    <div className="wz-bar"><div className="ini-in wz-bar-g">
+      <button className="btn btn-ghost" disabled=${step === 0} onClick=${() => setStep(step - 1)}><${Icon} n="ChevronLeft" /> Voltar</button>
+      <div className="wz-bar-m" role="status">${step < ULT ? (step === 3 && faltaMin ? html`<span className="text-rubro">Falta escolher: ${faltaMin}</span>` : html`Passo <b className="num">${step + 1}</b> de ${steps.length} · <b>${steps[step]}</b>`) : (!pronto ? html`<span className="text-rubro">Falta: ${faltas.join(', ')}</span>` : html`Tudo pronto: <b>${cfg.nome}</b> toma posse.`)}</div>
+      ${step < ULT ? html`<button className="btn btn-pri" disabled=${step === 3 && !!faltaMin} onClick=${() => setStep(step + 1)}>Avançar <${Icon} n="ChevronRight" /></button>`
+        : html`<button className="btn btn-gold" disabled=${!pronto} onClick=${() => onStart(cfg)}><${Icon} n="Landmark" /> Tomar posse</button>`}
+    </div></div>
   </div>`;
 }
 
@@ -29061,7 +29275,7 @@ function App() {
   const reiniciar = () => { gravaSave(null); setG(null); setCfgOpen(false); setRelMes(null); setDec(null); setWiz(null); try { if (typeof history !== 'undefined' && history.replaceState) history.replaceState(null, '', location.pathname + location.search); } catch (e) { } };
 
   if (!g && wiz) return html`<${Wizard} key=${wiz.id} inicial=${wiz.cfg} passoInicial=${wiz.passo} notaIdeo=${wiz.nota} temSave=${!!save && (!save.over || !!save.over.leg || save.over.tipo === 'personagem')} onContinuar=${() => setG(save)} onTrocar=${() => setWiz(null)} onStart=${cfg => { qvNovo(); setG(novoJogo(cfg)); setWiz(null); }} />`;
-  if (!g) return html`<${Inicio} temSave=${!!save && (!save.over || !!save.over.leg || save.over.tipo === 'personagem')} onContinuar=${() => setG(save)} memo=${iniMemo.current} onEscolher=${(cfg, passo, nota) => setWiz({ id: Date.now(), cfg, passo, nota })} />`;
+  if (!g) return html`<${Inicio} save=${save} temSave=${!!save && (!save.over || !!save.over.leg || save.over.tipo === 'personagem')} onContinuar=${() => setG(save)} memo=${iniMemo.current} onEscolher=${(cfg, passo, nota) => setWiz({ id: Date.now(), cfg, passo, nota })} />`;
   if (g.over && !relMes) return html`<${FimDeJogo} g=${g} reiniciar=${reiniciar} upd=${upd} />`;
 
   const motorNome = MOTORES.find(m => m.k === ia.motor).nome;
