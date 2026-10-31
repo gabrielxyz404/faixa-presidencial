@@ -20948,7 +20948,7 @@ function Documento({ prop, g, children }) {
     <div className="px-5 sm:px-8 pt-5 pb-3 border-b border-black/10 text-center">
       <div className="text-[11px] tracking-[.2em] uppercase font-semibold" style=${{ fontFamily: 'var(--f-mono)' }}>Presidência da República · Casa Civil · Subchefia para Assuntos Jurídicos</div>
       <div className="disp text-2xl sm:text-3xl font-black uppercase mt-2">${prop.instDetalhe === 'AUT' ? 'Pedido de autorização ao Congresso' : INST_NOME[prop.inst]}</div>
-      <div className="text-xs mt-1" style=${{ fontFamily: 'var(--f-mono)' }}>Brasília, ${MESES[(g.mes - 1) % 12]} de ${ano} · ${prop.ai ? 'parecer gerado por IA' : prop.motor === 'v3' ? 'parecer do motor v3.9' : prop.motor === 'v2' ? 'parecer do motor v2' : 'parecer do motor local'}</div>
+      <div className="text-xs mt-1" style=${{ fontFamily: 'var(--f-mono)' }}>Brasília, ${MESES[(g.mes - 1) % 12]} de ${ano} · ${prop.ai ? 'parecer gerado por IA' : prop.motor === 'v3' ? 'parecer do motor v4' : prop.motor === 'v2' ? 'parecer do motor v2' : 'parecer do motor local'}</div>
     </div>
     <div className="px-5 sm:px-8 py-5 flex flex-col gap-4">${children}</div>
   </div>`;
