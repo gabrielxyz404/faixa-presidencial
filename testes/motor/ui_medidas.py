@@ -76,6 +76,8 @@ with sync_playwright() as p:
     print('painel após 14 meses:', 'cartões:', pg.locator('.med-card').count(), '| problemas:', pg.locator('[data-testid=med-probs]').count())
     # ações
     def acao(rot):
+        ex = pg.locator('button').filter(has_text='Expandir tudo')  # v4.2: as linhas vêm recolhidas; abre os detalhes antes de procurar os botões
+        if ex.count(): ex.first.click(timeout=4000); pg.wait_for_timeout(400)
         bt = pg.locator('.med-card .med-acoes button:not([disabled])').filter(has_text=re.compile(rot))
         n = bt.count()
         if n: bt.first.click(timeout=4000); pg.wait_for_timeout(700)
