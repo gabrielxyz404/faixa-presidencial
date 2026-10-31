@@ -168,3 +168,58 @@ Diagnóstico do sim com custo zero (a pedido): no dev, medidas aprovadas de cust
 | teor | 35% | 44% |
 | varias | 32% | 39% |
 | zoeira | 40% | 73% |
+
+## Rodada 6
+
+Entendimento dev: 57,7% -> 59,2% (1243/2100). Efeito no save: 61% (mega sim, sem mudança relevante). cenarios.json 239/3/6, única diferença para a base: acelera_obra/custo m24 (ok -> inconclusivo). Benches antigos: dev 160/220, dev2 93/121, cft_dev 89/90, cft_dev2 60/60, zoeira_dev 72/80, zoeira_dev2 48/50, final_dev 124/150, justica_dev 40/40. ui_v39 6/6 e ui_v38 41/0 sem erros de página na build final; regressao.py sem erros de página.
+
+Mudanças: (1) recorte nomeado de tributo nunca leva mais de 12% da base (V4_NICHO_RX em contabiliza), beneficiário de tributo (micro/pequenas após IOF/ICMS) deixa de ser objeto, contribuinte facultativo/autônomo do INSS usa 1,5 bi por ponto; (2) obra e compra de equipamento de grande porte (ponte, ferrovia, metrô, porto, aeroporto, hospital, laboratório, satélite, ônibus, transmissão etc.) viram despesa única de 2x o valor anual mais custeio de 40%, ou o valor citado mais custeio de 10%; aporte em fundo com valor explícito é despesa única; privatização de estatal sem valor de mercado informado sempre dá receita única (3 bi, Correios 1 bi); (3) tabela de orçamentos de referência como objetos: FNDCT, defesa agropecuária, DNIT, Embrapa, Funai, ICMBio, Fust, INPE, IBGE, Anvisa; (4) ampliar, contratar ou criar nunca dá custo negativo; defesa e discricionárias deixam de ser objetos de economia; (5) atos administrativos (agência, bolsa de commodities, registro, visto, prazo de pagamento) custam zero ou no máximo R$ 0,4 bi; (6) instrumento: proibir, obrigar, multar, tipificar, taxar, mudar nome e criar órgão ou fundo sobem de ADM/COM para PL, exceto atos do Executivo (decreto, carro oficial, IPI/IOF). Resultado do ajuste de instrumento: +13 itens no dev.
+
+| Tema | Entende v3.9 | Entende v4 | Δ | Efeito no save v3.9 | Efeito v4 | Δ |
+|---|---|---|---|---|---|---|
+| agro | 47% | 70% | +23 | 60% | 56% | -4 |
+| assistencia_social | 27% | 53% | +27 | 79% | 84% | +5 |
+| bets | 42% | 65% | +23 | 62% | 65% | +4 |
+| ciencia_tecnologia | 32% | 60% | +28 | 64% | 72% | +8 |
+| constituicao | 33% | 57% | +23 | 33% | 33% | +0 |
+| corte_gastos | 27% | 48% | +22 | 82% | 100% | +18 |
+| cultura_esporte | 28% | 48% | +20 | 62% | 62% | +0 |
+| desemprego | 40% | 60% | +20 | 73% | 73% | +0 |
+| direitos_humanos | 47% | 63% | +17 | 85% | 81% | -4 |
+| dolar | 37% | 62% | +25 | 25% | 50% | +25 |
+| economia | 35% | 48% | +13 | 50% | 57% | +7 |
+| educacao | 28% | 43% | +15 | 86% | 79% | -7 |
+| energia | 27% | 52% | +25 | 51% | 46% | -6 |
+| games | 38% | 63% | +25 | 50% | 38% | -12 |
+| grandes_empresas | 42% | 53% | +12 | 42% | 45% | +2 |
+| ia | 52% | 75% | +23 | 50% | 36% | -14 |
+| impostos | 18% | 47% | +28 | 35% | 46% | +11 |
+| inflacao | 42% | 53% | +12 | 57% | 57% | +0 |
+| infraestrutura | 43% | 67% | +23 | 75% | 75% | +0 |
+| justica | 48% | 70% | +22 | 50% | 50% | +0 |
+| medias_empresas | 32% | 63% | +32 | 57% | 67% | +10 |
+| meio_ambiente | 28% | 67% | +38 | 67% | 69% | +3 |
+| micro_empresas | 37% | 60% | +23 | 56% | 59% | +3 |
+| moradia | 38% | 57% | +18 | 84% | 78% | -5 |
+| previdencia | 33% | 53% | +20 | 60% | 57% | -2 |
+| privatizacoes | 32% | 62% | +30 | 100% | 100% | +0 |
+| regalias | 35% | 55% | +20 | 46% | 46% | +0 |
+| relacoes_exteriores | 18% | 50% | +32 | 44% | 48% | +4 |
+| saneamento | 40% | 65% | +25 | 50% | 67% | +17 |
+| saude | 52% | 68% | +17 | 82% | 100% | +18 |
+| seguranca | 23% | 57% | +33 | 73% | 73% | +0 |
+| setor_privado | 38% | 68% | +30 | 67% | 67% | +0 |
+| terras_raras | 30% | 67% | +37 | 38% | 38% | +0 |
+| trabalhista | 53% | 70% | +17 | 50% | 46% | -4 |
+| transporte | 27% | 52% | +25 | 64% | 79% | +14 |
+| **TOTAL** | 36% | 59% | +24 | 60% | 61% | +2 |
+
+| Tipo de proposta | v3.9 | v4 |
+|---|---|---|
+| bem | 39% | 58% |
+| ja_lei | 23% | 92% |
+| mal | 32% | 58% |
+| outro | 28% | 61% |
+| teor | 35% | 46% |
+| varias | 32% | 42% |
+| zoeira | 40% | 74% |
