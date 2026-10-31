@@ -278,3 +278,60 @@ Entendimento dev 59,2% (1243/2100), efeito no save 61%. cenarios.json 239/3/6 (�
 | teor | 35% | 46% |
 | varias | 32% | 43% |
 | zoeira | 40% | 74% |
+
+## Rodada 8
+
+Banco externo de normas integrado em V4_NORMAS_DB: 858 normas (869 nos arquivos; 11 ids repetidos entre temas, a primeira ocorrência fica), index.html de 3,12 MB para 3,83 MB (+0,71 MB). Entendimento dev 59,3% (1246/2100), efeito no save 61%. cenarios.json 239/3/6 (única diferença: acelera_obra/custo m24). Benches: dev 161/220, dev2 93/121, cft_dev 89/90, cft_dev2 60/60, zoeira_dev 72/80, zoeira_dev2 48/50, final_dev 126/150, justica_dev 40/40. ui_v39 6/6, ui_v38 41/0, regressao.py sem erros de página. ja_lei no mega_dev: 94/102 antes e depois (o dev já estava coberto pelas rodadas anteriores; o ganho esperado está no holdout).
+
+Auditoria de falsos redundantes (2911 itens: mega_dev e as 8 baterias antigas; 258 com jaVigente): (1) pedido só conta como 'repete a norma' quando não tem número nem R$ e tem no máximo uma palavra de conteúdo fora do trecho casado pelo ex (filtro no carregador); isso baixou os itens sem jaVigente com valor, instrumento ou tópico alterado de 175 para 62. (2) Com o motor real, 94 normas tiveram o ex removido (viram só 'norma relacionada'), pelo critério: o ex alterou custo, receita, receita única, instrumento ou tópico de item cujo gabarito não tem jaVigente (testes/motor/normas_exfalse.js faz a parte offline). Exceção deliberada: mp1394proibe, que mantém o ex porque a MP 1.394/2026 proíbe as bets. (3) Resultado final: 0 itens sem jaVigente com valor ou instrumento alterados, exceto a MP; restam 6 itens com custo diferente por efeito do vocabulário da correção ortográfica (esports, fibra óptica, assentimento prévio); o banco foi retirado da alimentação do vocabulário (flag baixa), o que não eliminou todo o efeito. Prioridade: entradas existentes de JN37 vêm antes (ordenação estável); entrada nova só passa à frente quando é exata e a antiga é só relacionada. Ids já existentes não são recarregados. Flags de instrumento derivadas da citação principal do texto: LC no rótulo => lc (86 normas), EC/CF/Constituição => pec (186), demais PL; os bens de dev com PEC/PLP continuam passando.
+
+Bets e a MP 1.394/2026 (para decisão sua, a economia não foi mexida): o motor continua tratando as bets como atividade legal e tributada (outorga e GGR no catálogo: imposto_bets, bets_proibicao), então propostas de taxar ou aumentar outorga ainda rendem receita (por exemplo 'taxar bets em 30%' dá receita 2,4 bi e 'outorga maior' 6 bi) e o banco só acrescenta a nota 'Norma relacionada' com a MP. 'Proibir as bets' passa a sair como medida já em vigor (custo zero, topic 'já em vigor'). A linha de base de receita das bets no jogo (e as medidas de proibição com receita -8 do catálogo) não foi alterada; seria preciso decidir se a MP deve zerar a arrecadação de bets no cenário inicial e como tratar a conversão pelo Congresso.
+
+| Tema | Entende v3.9 | Entende v4 | Δ | Efeito no save v3.9 | Efeito v4 | Δ |
+|---|---|---|---|---|---|---|
+| agro | 47% | 70% | +23 | 60% | 56% | -4 |
+| assistencia_social | 27% | 53% | +27 | 79% | 84% | +5 |
+| bets | 42% | 65% | +23 | 62% | 65% | +4 |
+| ciencia_tecnologia | 32% | 62% | +30 | 64% | 72% | +8 |
+| constituicao | 33% | 57% | +23 | 33% | 33% | +0 |
+| corte_gastos | 27% | 48% | +22 | 82% | 100% | +18 |
+| cultura_esporte | 28% | 48% | +20 | 62% | 54% | -8 |
+| desemprego | 40% | 60% | +20 | 73% | 73% | +0 |
+| direitos_humanos | 47% | 63% | +17 | 85% | 81% | -4 |
+| dolar | 37% | 62% | +25 | 25% | 50% | +25 |
+| economia | 35% | 48% | +13 | 50% | 57% | +7 |
+| educacao | 28% | 42% | +13 | 86% | 79% | -7 |
+| energia | 27% | 52% | +25 | 51% | 46% | -6 |
+| games | 38% | 68% | +30 | 50% | 42% | -8 |
+| grandes_empresas | 42% | 53% | +12 | 42% | 45% | +2 |
+| ia | 52% | 75% | +23 | 50% | 41% | -9 |
+| impostos | 18% | 47% | +28 | 35% | 46% | +11 |
+| inflacao | 42% | 53% | +12 | 57% | 57% | +0 |
+| infraestrutura | 43% | 67% | +23 | 75% | 75% | +0 |
+| justica | 48% | 70% | +22 | 50% | 50% | +0 |
+| medias_empresas | 32% | 63% | +32 | 57% | 67% | +10 |
+| meio_ambiente | 28% | 67% | +38 | 67% | 69% | +3 |
+| micro_empresas | 37% | 60% | +23 | 56% | 59% | +3 |
+| moradia | 38% | 57% | +18 | 84% | 78% | -5 |
+| previdencia | 33% | 52% | +18 | 60% | 55% | -5 |
+| privatizacoes | 32% | 62% | +30 | 100% | 100% | +0 |
+| regalias | 35% | 55% | +20 | 46% | 46% | +0 |
+| relacoes_exteriores | 18% | 50% | +32 | 44% | 48% | +4 |
+| saneamento | 40% | 65% | +25 | 50% | 67% | +17 |
+| saude | 52% | 68% | +17 | 82% | 100% | +18 |
+| seguranca | 23% | 57% | +33 | 73% | 73% | +0 |
+| setor_privado | 38% | 68% | +30 | 67% | 83% | +17 |
+| terras_raras | 30% | 67% | +37 | 38% | 38% | +0 |
+| trabalhista | 53% | 70% | +17 | 50% | 46% | -4 |
+| transporte | 27% | 53% | +27 | 64% | 75% | +11 |
+| **TOTAL** | 36% | 59% | +24 | 60% | 61% | +2 |
+
+| Tipo de proposta | v3.9 | v4 |
+|---|---|---|
+| bem | 39% | 58% |
+| ja_lei | 23% | 92% |
+| mal | 32% | 58% |
+| outro | 28% | 61% |
+| teor | 35% | 46% |
+| varias | 32% | 43% |
+| zoeira | 40% | 74% |
