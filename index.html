@@ -18834,6 +18834,8 @@ const CONV_AREAS = {
 function convAbre(g, area, u, k) {
   const A = CONV_AREAS[area]; const T = A && A.topicos.find(x => x.k === k); if (!T || !UF_INFO[u]) return 'Tema inválido.';
   const C = ensureConv(g); const key = area + '|' + u; const U0 = C.ult[key];
+  // trocar de tema antes de responder não custa outra ação; depois da resposta, só no mês seguinte
+  if (U0 && U0.mes === g.mes && !U0.resp) { if (U0.t !== k) C.ult[key] = { mes: g.mes, t: k, txt: A.fala(g, u, k), resp: null, res: '' }; return null; }
   if (U0 && U0.mes === g.mes) return 'Você já conversou com este governador neste mês.';
   if (g.acoes <= 0) return 'Sem ações políticas neste mês.'; if (g.pes.energia < 10) return 'Energia esgotada.';
   if (area === 'seg' && gvIntervUF(g) === u) return 'Estado sob intervenção federal: o governador não conversa.';
@@ -18892,7 +18894,7 @@ function segConvMensal(g, notas) {
 function ConversaGov({ g, upd, area, uf, onPlano }) {
   const A = CONV_AREAS[area]; const C = g.conv || { ult: {} }; const U = C.ult[area + '|' + uf];
   const P = gvPerfil(uf); const S = (g.govs && g.govs.uf[uf]) || { rel: 50 }; const al = convAlin(g, uf);
-  const doMes = !!(U && U.mes === g.mes); const semAcoes = g.acoes <= 0 || g.pes.energia < 10; const itv = area === 'seg' && gvIntervUF(g) === uf;
+  const doMes = !!(U && U.mes === g.mes && U.resp); const trocando = !!(U && U.mes === g.mes && !U.resp); const semAcoes = g.acoes <= 0 || g.pes.energia < 10; const itv = area === 'seg' && gvIntervUF(g) === uf;
   const T = U && A.topicos.find(x => x.k === U.t);
   const bloqueio = itv ? 'Estado sob intervenção federal' : doMes ? 'Já conversou com este governador neste mês' : semAcoes ? (g.acoes <= 0 ? 'Sem ações políticas neste mês' : 'Energia esgotada') : 'Custa 1 ação política';
   const titulo = A.titulo;
@@ -18912,7 +18914,7 @@ function ConversaGov({ g, upd, area, uf, onPlano }) {
         <${MxDet} rot="Sobre este perfil">${area === 'seg' ? 'Perfil na segurança estimado pelo jogo (partido e atuação pública); não representa a pessoa real.' : 'Posição de política pública simulada pelo jogo a partir do alinhamento do partido; não representa a pessoa real.'}</${MxDet}>
       </div>
       <div className="min-w-0 flex flex-col gap-3">
-        <div className="mx-grid g3" role="group" aria-label="Temas da conversa">${A.topicos.map(t => html`<button key=${t.k} type="button" data-conv-tema=${t.k} aria-pressed=${!!U && U.t === t.k} disabled=${doMes || semAcoes || itv} title=${bloqueio}
+        <div className="mx-grid g3" role="group" aria-label="Temas da conversa">${A.topicos.map(t => html`<button key=${t.k} type="button" data-conv-tema=${t.k} aria-pressed=${!!U && U.t === t.k} disabled=${doMes || (semAcoes && !trocando) || itv} title=${trocando ? 'Trocar de tema (sem custo até você responder)' : bloqueio}
           className="mx-act" style=${{ '--c': U && U.t === t.k ? 'var(--ouro)' : 'var(--anil)' }} onClick=${() => upd(n => { convAbre(n, area, uf, t.k); })}><span className="mx-act-h"><span className="gv-ic" style=${{ '--c': 'var(--anil)' }}><${Icon} n=${t.ico} s=${18} /></span><span>${t.nome}</span><span></span></span></button>`)}</div>
         ${U ? html`<div className="mx-card panel" style=${{ '--st': 'var(--ouro)' }} data-conv-fala="1">
           <div className="flex flex-wrap items-center gap-2"><${Ef} nome=${P.nome} cor=${PMAP[P.bloco].cor} papel="governador" s=${28} fk=${uf + '|governador|' + P.nome} /><b className="text-sm">${P.nome}</b><${SeloSim} a="o" /><span className="num text-xs text-muted">mês ${U.mes} · ${T ? T.nome : ''}</span></div>
