@@ -110,6 +110,7 @@
   .btn-ghost { background: var(--panel2); border: 1px solid var(--line); color: var(--fg); padding: 6px 11px; }
   .btn-ghost:hover { border-color: var(--muted); }
   .btn:disabled { opacity: .4; cursor: not-allowed; }
+  .orc-on, .orc-on:hover { border-color: var(--ouro) !important; color: var(--ouro) !important; background: rgba(233,189,52,.1) !important; }
   .chip { display: inline-flex; align-items: center; gap: 4px; font-family: var(--f-mono); font-size: 10.5px; padding: 2px 7px; border-radius: 999px; border: 1px solid var(--line); letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
   input[type=range] { accent-color: var(--ouro); width: 100%; }
   textarea, input[type=text], input[type=number], input[type=password], select { background: var(--ink); border: 1px solid var(--line); border-radius: 8px; color: var(--fg); padding: 8px 10px; width: 100%; }
@@ -17516,6 +17517,7 @@ function Trabalho({ g, decidir }) {
       </div>
       <${TbKpis} g=${g} />
     </section>
+    <${OrcamentoArea} g=${g} decidir=${decidir} area="trabalho" />
     <div className="tb-grid">
       <${TbComposicao} g=${g} />
       <${TbHistorico} g=${g} />
@@ -17535,9 +17537,9 @@ function Pais({ g, upd, decidir, chip, setChip, abrirPend }) {
     ${c === 'seguranca' && html`<${PaisSeguranca} g=${g} upd=${upd} decidir=${decidir} />`}
     ${c === 'saude' && html`<${PaisSaude} g=${g} upd=${upd} decidir=${decidir} />`}
     ${c === 'educacao' && html`<${PaisEducacao} g=${g} upd=${upd} decidir=${decidir} />`}
-    ${c === 'trabalho' && html`<div className="flex flex-col gap-6"><${PainelUF} g=${g} area="trabalho" /><${Trabalho} g=${g} decidir=${decidir} /><${FontesArea} area="trabalho" /></div>`}
+    ${c === 'trabalho' && html`<div className="flex flex-col gap-6"><${PainelUF} g=${g} area="trabalho" /><${Trabalho} g=${g} decidir=${decidir} /><${FontesArea} area="trabalho" notas=${html`<${OrcFonte} area="trabalho" />`} /></div>`}
     ${c === 'infraestrutura' && html`<${PaisInfra} g=${g} upd=${upd} decidir=${decidir} />`}
-    ${c === 'sociedade' && html`<${Sociedade} g=${g} upd=${upd} setChip=${setChip} />`}
+    ${c === 'sociedade' && html`<${Sociedade} g=${g} upd=${upd} setChip=${setChip} decidir=${decidir} />`}
     ${c === 'justica' && html`<${PaisJustica} g=${g} upd=${upd} decidir=${decidir} />`}
   </${Subpagina}>`;
 }
@@ -18179,16 +18181,17 @@ const NOTAS_FONTES = [
   'IDH mundial: HDR 2025 (dados de 2023), empates preservados como publicados. PIB em US$: Banco Mundial, último ano disponível de cada país (2021 a 2025). IPC: só para o Brasil e comparadores.',
   'A Revisão 2018 de projeções do IBGE está superada pela Revisão 2024 e só serve como perfil relativo entre estados.'
 ];
-function RodapeFontes() {
+function RodapeFontes({ extra }) {
   const F = IND_DADOS.fontes.filter(f => !f.id.startsWith('ativos_'));
   return html`<footer className="sec min-w-0" data-rodape-fontes="1"><details>
     <summary className="cursor-pointer eyebrow">Fontes e notas sobre as estimativas</summary>
     <ul className="mt-2 flex flex-col gap-1 text-xs text-muted list-disc pl-4">${NOTAS_FONTES.map((x, i) => html`<li key=${i}>${x}</li>`)}</ul>
+    ${extra ? html`<div className="mt-2 text-xs text-muted leading-relaxed">${extra}</div>` : null}
     <div className="eyebrow mt-3 mb-1">Fontes (com o ano dos dados)</div>
     <ul className="grid gap-x-6 gap-y-0.5 sm:grid-cols-2 text-[11px]">${F.map(f => html`<li key=${f.id}><a href=${f.u} target="_blank" rel="noopener noreferrer" className="underline decoration-dotted hover:text-ouro">${f.t}</a> <span className="text-muted">· ${f.ano}</span></li>`)}</ul>
   </details></footer>`;
 }
-function Sociedade({ g, upd, setChip }) {
+function Sociedade({ g, upd, setChip, decidir }) {
   const S = g.soc;
   const grupos = GRUPOS.slice().sort((a, b) => g.groups[b.k] - g.groups[a.k]);
   const irUF = (uf) => { if (upd) upd(n => { n.ui = n.ui || {}; n.ui.uf = uf; }); if (setChip) setChip('mapa'); };
@@ -18210,11 +18213,12 @@ function Sociedade({ g, upd, setChip }) {
         <div><div className="eyebrow">Desmatamento</div><div className="num text-2xl">${fmt(S.desm, 0)}</div><div className="text-xs text-muted">km²/ano (PRODES)</div></div>
       </div>
     </aside>
+    ${decidir && html`<div className="lg:col-span-12"><${OrcamentoArea} g=${g} decidir=${decidir} area="sociedade" /></div>`}
     <div className="lg:col-span-12"><${PainelIndicadores} g=${g} /></div>
     <div className="lg:col-span-12"><${TabelaRegioes} g=${g} /></div>
     <div className="lg:col-span-12"><${TabelaEstados} g=${g} onUF=${irUF} /></div>
     <div className="lg:col-span-12"><${BrasilNoMundo} g=${g} /></div>
-    <div className="lg:col-span-12"><${RodapeFontes} /></div>
+    <div className="lg:col-span-12"><${RodapeFontes} extra=${html`<${OrcFonte} area="sociedade" />`} /></div>
   </div>`;
 }
 
@@ -18690,6 +18694,174 @@ function ConversaGov({ g, upd, area, uf, onPlano }) {
 }
 
 /* ---------- abas do País com mapa por estado ---------- */
+const ORC_AREAS = {
+  educacao: { alvos: [
+    { k: 'geral', nome: 'Todo o MEC', inv: 'Ampliar em {V} por ano os gastos federais com educação', cut: 'Cortar {V} do orçamento do Ministério da Educação', nc: 1 },
+    { k: 'basica', nome: 'Educação básica', inv: 'Ampliar em {V} por ano o Fundeb e o FNDE para a educação básica', cut: 'Cortar {V} do Fundeb e do FNDE para a educação básica', nc: 1 },
+    { k: 'univ', nome: 'Universidades e IFs', inv: 'Ampliar em {V} por ano o orçamento das universidades e institutos federais', cut: 'Cortar {V} do orçamento das universidades e institutos federais' },
+    { k: 'creches', nome: 'Creches', inv: 'Ampliar em {V} por ano o orçamento das creches', cut: 'Cortar {V} do orçamento das creches' },
+    { k: 'merenda', nome: 'Merenda escolar', inv: 'Ampliar em {V} por ano o orçamento da merenda escolar (PNAE)', cut: 'Cortar {V} do orçamento da merenda escolar (PNAE)' }
+  ] },
+  saude: { alvos: [
+    { k: 'geral', nome: 'Todo o Ministério da Saúde', inv: 'Ampliar o SUS em {V} por ano', cut: 'Cortar {V} do SUS', nc: 1 },
+    { k: 'ab', nome: 'Atenção básica', inv: 'Ampliar em {V} por ano o orçamento da atenção básica do SUS', cut: 'Cortar {V} do orçamento da atenção básica do SUS' },
+    { k: 'hosp', nome: 'Hospitais federais', inv: 'Ampliar em {V} por ano o orçamento dos hospitais federais', cut: 'Cortar {V} do orçamento da saúde em hospitais federais' },
+    { k: 'rem', nome: 'Remédios', inv: 'Ampliar em {V} por ano o orçamento da Farmácia Popular e dos medicamentos gratuitos', cut: 'Cortar {V} da Farmácia Popular' },
+    { k: 'vac', nome: 'Vacinação', inv: 'Ampliar em {V} por ano o orçamento da vacinação do Programa Nacional de Imunizações', cut: 'Cortar {V} do orçamento da vacinação do Programa Nacional de Imunizações' }
+  ] },
+  seguranca: { alvos: [
+    { k: 'geral', nome: 'Toda a Segurança Pública', inv: 'Ampliar em {V} por ano o orçamento da Segurança Pública', cut: 'Cortar {V} do orçamento do Ministério da Justiça e Segurança Pública', nc: 1 },
+    { k: 'pf', nome: 'Polícia Federal', inv: 'Ampliar em {V} por ano o orçamento da Polícia Federal', cut: 'Cortar {V} da Polícia Federal' },
+    { k: 'prf', nome: 'PRF', inv: 'Ampliar em {V} por ano a Polícia Rodoviária Federal', cut: 'Cortar {V} do orçamento da Polícia Rodoviária Federal' },
+    { k: 'fn', nome: 'Força Nacional', inv: 'Ampliar em {V} por ano o orçamento da Força Nacional de Segurança Pública', cut: 'Cortar {V} do orçamento da Força Nacional de Segurança Pública' },
+    { k: 'pres', nome: 'Presídios', inv: 'Ampliar em {V} por ano o orçamento do sistema penitenciário federal e dos presídios', cut: 'Cortar {V} do orçamento do sistema penitenciário federal e dos presídios' }
+  ] },
+  infra: { alvos: [
+    { k: 'geral', nome: 'Toda a infraestrutura', inv: 'Ampliar em {V} por ano o pacote de obras de infraestrutura', cut: 'Cortar {V} do pacote de obras de infraestrutura', nc: 1 },
+    { k: 'rod', nome: 'Rodovias', inv: 'Ampliar em {V} por ano as rodovias federais', cut: 'Cortar {V} das rodovias federais' },
+    { k: 'fer', nome: 'Ferrovias', inv: 'Ampliar em {V} por ano os investimentos federais em ferrovias', cut: 'Cortar {V} das ferrovias' },
+    { k: 'san', nome: 'Saneamento', inv: 'Ampliar em {V} por ano os investimentos federais em saneamento básico, água e esgoto', cut: 'Cortar {V} do saneamento básico' },
+    { k: 'ene', nome: 'Energia', inv: 'Ampliar em {V} por ano os investimentos federais em energia elétrica e transmissão', cut: 'Cortar {V} do investimento em energia' },
+    { k: 'hab', nome: 'Habitação', inv: 'Ampliar em {V} por ano o orçamento do Minha Casa Minha Vida', cut: 'Cortar {V} do orçamento do Minha Casa Minha Vida' }
+  ] },
+  trabalho: { alvos: [
+    { k: 'geral', nome: 'Todo o Trabalho', inv: 'Ampliar em {V} por ano o Ministério do Trabalho e Emprego', cut: 'Cortar {V} dos gastos do Ministério do Trabalho e Emprego', nc: 1 },
+    { k: 'qual', nome: 'Qualificação', inv: 'Ampliar em {V} por ano o orçamento da qualificação profissional de trabalhadores', cut: 'Cortar {V} do orçamento da qualificação profissional de trabalhadores' },
+    { k: 'seg', nome: 'Seguro-desemprego', inv: 'Ampliar em {V} por ano o orçamento do seguro-desemprego', cut: 'Cortar {V} do orçamento do seguro-desemprego' },
+    { k: 'int', nome: 'Intermediação (Sine)', inv: 'Ampliar em {V} por ano o Sistema Nacional de Emprego (Sine)', cut: 'Cortar {V} do Sistema Nacional de Emprego (Sine)', nc: 1 }
+  ] },
+  sociedade: { alvos: [
+    { k: 'geral', nome: 'Toda a assistência social', inv: 'Ampliar em {V} por ano os programas sociais', cut: 'Cortar {V} dos programas sociais', nc: 1 },
+    { k: 'bf', nome: 'Bolsa Família', inv: 'Ampliar em {V} por ano o orçamento do Bolsa Família', cut: 'Cortar {V} do Bolsa Família', nc: 1 },
+    { k: 'bpc', nome: 'BPC', inv: 'Ampliar em {V} por ano o orçamento do BPC', cut: 'Cortar {V} do BPC' },
+    { k: 'coz', nome: 'Cozinha Solidária', inv: 'Ampliar em {V} por ano o orçamento das Cozinhas Solidárias e da segurança alimentar', cut: 'Cortar {V} do orçamento das Cozinhas Solidárias e da segurança alimentar' }
+  ] },
+  justica: { alvos: [
+    { k: 'pf', nome: 'Polícia Federal', inv: 'Reforçar em {V} por ano o orçamento da Polícia Federal', cut: 'Cortar {V} da Polícia Federal' },
+    { k: 'cgu', nome: 'CGU', inv: 'Ampliar o orçamento da Controladoria-Geral da União em {V} por ano', cut: 'Cortar {V} do orçamento da CGU' },
+    { k: 'jud', nome: 'Judiciário: penduricalhos', inv: '(sem investimento)', cut: 'Cortar o teto dos penduricalhos do Judiciário em {V}', nc: 1, so: 1 }
+  ] }
+};
+
+for (const D of Object.values(ORC_AREAS)) for (const T of D.alvos) T.cont = T.cont || T.cut.replace(/^Cortar /, 'Contingenciar ');
+
+/* ============================== ORÇAMENTO DA ÁREA (investir / cortar) ==============================
+   Painel das abas do País. Monta um texto claro, mostra a leitura do motor (analisaLocal, só leitura) e envia por decidir(texto).
+   Os textos foram testados com a sonda do motor (testes/motor/probe.py): tema certo, custo com o sinal certo e valor ≈ o escolhido.
+   Valores reais: LOA 2026 (Lei 15.346/2026, sancionada em 14/01/2026) e fontes citadas em ORC_FONTE. Nada aqui altera o motor. */
+const ORC_META = {
+  educacao: { titulo: 'Educação', pasta: 'MEC', base: 233.7, baseRot: 'LOA 2026, função Educação', ico: 'GraduationCap', rx: /educa|escola|universi|instituto federal|creche|merenda|ensino|professor|pe-de-meia|fundeb|fnde/,
+    linhas: [['Função Educação (LOA 2026)', 'R$ 233,7 bi', 'ouro'], ['Pé-de-Meia (LOA 2026)', 'R$ 11,5 bi']],
+    ef: [{ n: 'Ideb', d: 1, b: 1 }, { n: 'Analfabetismo', d: -1, b: -1 }, { n: 'Evasão escolar', d: -1, b: -1 }] },
+  saude: { titulo: 'Saúde', pasta: 'Ministério da Saúde', base: 271.3, baseRot: 'LOA 2026, função Saúde', ico: 'Stethoscope', rx: /saude|\bsus\b|hospital|vacin|farmacia|medic|mais medicos|dengue|uti\b/,
+    linhas: [['Função Saúde (LOA 2026)', 'R$ 271,3 bi', 'ouro'], ['Mesma função em 2025', 'R$ 254,1 bi']],
+    ef: [{ n: 'Mortalidade infantil', d: -1, b: -1 }, { n: 'Cobertura vacinal', d: 1, b: 1 }, { n: 'Filas do SUS', d: -1, b: -1 }] },
+  seguranca: { titulo: 'Segurança Pública', pasta: 'Ministério da Justiça e Segurança Pública', base: 26.35, baseRot: 'LOA 2026, Ministério da Justiça e Segurança Pública', ico: 'Shield', rx: /seguranc|policia|presidi|prisional|penitenci|forca nacional|\bprf\b|\bpf\b/,
+    linhas: [['Ministério da Justiça e Segurança Pública (LOA 2026)', 'R$ 26,35 bi', 'ouro'], ['Mesmo conjunto em 2025', 'R$ 22,9 bi'], ['Fundo Nacional de Segurança Pública (proposta)', 'R$ 1,99 bi']],
+    ef: [{ n: 'Mortes violentas', d: -1, b: -1 }, { n: 'Pressão do crime organizado', d: -1, b: -1 }] },
+  infra: { titulo: 'Infraestrutura e transportes', pasta: 'Transportes, Cidades e Minas e Energia', base: 16.05, baseRot: 'investimento federal em transportes, PLOA 2026', ico: 'Construction', rx: /rodovi|ferrovi|saneament|energia|transmiss|moradia|minha casa|dnit|\bobras?\b|\bpac\b|infraestrutura|porto|metro|\bbrt\b/,
+    linhas: [['Investimento federal em transportes (PLOA 2026)', 'R$ 16,05 bi', 'ouro'], ['DNIT, orçamento 2026', 'R$ 13,5 bi']],
+    ef: [{ n: 'Rodovias em bom estado', d: 1, b: 1 }, { n: 'Cobertura de esgoto', d: 1, b: 1 }, { n: 'Emprego na construção', d: 1, b: 1 }] },
+  trabalho: { titulo: 'Trabalho', pasta: 'Ministério do Trabalho e Emprego', base: 63.8, baseRot: 'seguro-desemprego, LOA 2026', ico: 'Briefcase', rx: /emprego|trabalh|seguro-desemprego|qualificacao|\bsine\b|aprendiz|desemprego/,
+    linhas: [['Seguro-desemprego (LOA 2026)', 'R$ 63,8 bi', 'ouro'], ['Corte do Congresso no seguro-desemprego', 'R$ 391 mi']],
+    ef: [{ n: 'Desemprego', d: -1, b: -1 }, { n: 'Informalidade', d: -1, b: -1 }] },
+  sociedade: { titulo: 'Assistência social', pasta: 'Desenvolvimento e Assistência Social', base: 158.63, baseRot: 'Bolsa Família, LOA 2026', ico: 'HeartHandshake', rx: /bolsa familia|\bbpc\b|loas|assistencia social|cozinha|cesta basica|fome|programas sociais|cadunico|cadastro unico/,
+    linhas: [['Bolsa Família (LOA 2026)', 'R$ 158,6 bi', 'ouro'], ['BPC/Loas (fontes divergem)', 'R$ 130,6 bi'], ['Pé-de-Meia (LOA 2026)', 'R$ 11,5 bi']],
+    ef: [{ n: 'Pobreza', d: -1, b: -1 }, { n: 'Insegurança alimentar', d: -1, b: -1 }] },
+  justica: { titulo: 'Justiça e controle', pasta: 'Justiça, CGU e Judiciário', base: null, baseRot: 'Judiciário inteiro, CNJ 2025', ico: 'Scale', rx: /\bcgu\b|controladoria|penduricalh|supersalar|verbas? indenizatoria|judiciario|policia federal|\bpf\b|corrupcao|anticorrupcao/,
+    linhas: [['Judiciário inteiro (CNJ, 2025)', 'R$ 164,6 bi', 'ouro'], ['Verbas indenizatórias (penduricalhos)', 'R$ 9,8 bi'], ['Polícia Federal (proposta de 2026)', 'R$ 1,79 bi']],
+    ef: [{ n: 'Capacidade de investigação', d: 1, b: 1 }, { n: 'Escândalos descobertos', d: 1, b: 1 }] }
+};
+// alvos com orçamento próprio verificado: a porcentagem é calculada sobre ele
+const ORC_BASE_ALVO = { 'sociedade|bf': 158.63, 'sociedade|bpc': 130.6, 'justica|jud': 9.8, 'trabalho|seg': 63.8, 'infra|rod': 13.5 };
+const ORC_EF_ALVO = { 'justica|jud': [{ n: 'Gasto com penduricalhos', d: 1, b: -1 }, { n: 'Reação do Judiciário e do STF', d: -1, b: -1 }] };
+const ORC_FONTE = {
+  educacao: 'Orçamento da Educação: LOA 2026 (Lei 15.346/2026, sancionada em 14/01/2026), função Educação, R$ 233,7 bilhões (R$ 206,1 bi em 2025); uma fonte secundária cita R$ 226,4 bi, e a diferença vem de a conta incluir ou não despesas de outros órgãos. Pé-de-Meia: R$ 11,5 bi. Conferir em Portal da Transparência, despesas por função, e Siop. Ver notícia da sanção em brasil61.com e diariodepernambuco.com.br. Os ajustes que você faz aqui são medidas simuladas e não alteram a LOA real.',
+  saude: 'Orçamento da Saúde: LOA 2026 (Lei 15.346/2026), função Saúde, R$ 271,3 bilhões (R$ 254,1 bi em 2025). O piso constitucional (15% da receita corrente líquida) é de R$ 245,5 bi no projeto de agosto/2025 e não é o total do ministério. Fontes: Portal da Transparência (despesas por função), Siop, e cobertura da sanção da LOA (brasil61.com, diariodepernambuco.com.br).',
+  seguranca: 'Orçamento da Segurança: Ministério da Justiça e Segurança Pública com R$ 26,35 bilhões na LOA 2026 aprovada pelo Congresso (A Tarde, a partir do orçamento aprovado); o relatório setorial da Comissão Mista de Orçamento falava em R$ 26,1 bi, contra R$ 22,9 bi em 2025 (Agência Câmara). O Fundo Nacional de Segurança Pública (R$ 1,99 bi) e a Polícia Federal (R$ 1,79 bi) são valores da proposta do governo, e não necessariamente do texto final. Valores por órgão (PRF, Força Nacional, Senappen) não foram localizados e não são exibidos.',
+  infra: 'Orçamento de Infraestrutura: R$ 16,05 bilhões em investimentos federais em transportes na proposta (PLOA) de 2026, segundo a CNT, e cerca de R$ 13,5 bi para o DNIT em 2026, segundo a Agência iNFRA (fev/2026). Os dois números ficam sujeitos a bloqueio e contingenciamento (a Agência iNFRA relata R$ 23,7 bi de contenção total em 2026). O total da LOA para a função Transporte, Habitação e Saneamento não foi localizado; confira no Siop.',
+  trabalho: 'Orçamento do Trabalho: seguro-desemprego de cerca de R$ 63,8 bilhões na LOA 2026, valor citado pela imprensa na tramitação (o Congresso retirou R$ 391 mi da rubrica e R$ 207 mi do abono salarial; cobertura do Seu Dinheiro). Salário mínimo de R$ 1.621 como referência. Valor com confiança média: confira no Portal da Transparência, programa Seguro-Desemprego. Qualificação e intermediação (Sine) não têm valor verificado e usam o orçamento da área como base de porcentagem.',
+  sociedade: 'Assistência social: Bolsa Família com R$ 158,63 bilhões na LOA 2026 (Jornal Contábil e Fundação Perseu Abramo), com R$ 11,47 bi para o Pé-de-Meia. BPC/Loas: as fontes divergem (R$ 130,6 bi em uma, e uma representação ao TCU, divulgada pelo Poder360, estima R$ 149,5 bi pelo crescimento histórico); o jogo usa R$ 130,6 bi. Cozinha Solidária não tem valor próprio verificado.',
+  justica: 'Justiça: o Judiciário inteiro custou R$ 164,6 bilhões em 2025 (CNJ, Justiça em Números), dos quais R$ 9,8 bi em verbas indenizatórias; o Executivo federal não controla esse total, só a Polícia Federal (R$ 1,79 bi na proposta de 2026, Agência Câmara) e a CGU, que não tiveram valor da LOA localizado. Por isso a porcentagem só aparece para o alvo com valor próprio (penduricalhos), e as ações do Executivo (PF, CGU) usam valores em bilhões.'
+};
+function orcFmtV(v) { return v <= 1 ? 'R$ ' + String(v).replace('.', ',') + ' bilhão' : 'R$ ' + (Number.isInteger(v) ? String(v) : String(v).replace('.', ',')) + ' bilhões'; }
+
+function orcMedidas(g, rx) { // medidas suas aprovadas nesta área que mexem no orçamento (despesa em R$ bi por ano)
+  const L = medL(g).filter(m => (m.estado === 'ativa' || m.estado === 'suspensa' || m.estado === 'consolidada' || m.estado === 'aguardando') && m.fis && Math.abs(m.fis.custo || 0) >= 0.05 && rx.test(norm(m.topic || m.nm || '')));
+  return { L, net: L.reduce((s, m) => s + (m.fis.custo || 0), 0) };
+}
+function OrcamentoArea({ g, decidir, area }) {
+  const M = ORC_META[area], A = ORC_AREAS[area];
+  const [modo, setModo] = useState('inv');
+  const [alvoK, setAlvoK] = useState(A.alvos[0].k);
+  const [cont, setCont] = useState(false);
+  const [q, setQ] = useState({ t: 'bi', v: 5 });
+  const T = A.alvos.find(a => a.k === alvoK) || A.alvos[0];
+  const m = (T.so && modo === 'inv') ? 'cut' : modo;
+  const baseAlvo = ORC_BASE_ALVO[area + '|' + T.k] || M.base || null;
+  const baseNome = ORC_BASE_ALVO[area + '|' + T.k] ? T.nome : M.baseRot;
+  const bi = q.t === 'bi' ? q.v : (baseAlvo ? Math.max(0.5, Math.round(baseAlvo * q.v / 100 * 2) / 2) : 5);
+  const temCont = m === 'cut' && !T.nc;
+  const usaCont = temCont && cont;
+  const texto = (usaCont ? T.cont : T[m]).replace('{V}', orcFmtV(bi));
+  const semAcoes = g.acoes <= 0 || g.pes.energia < 10;
+  const motor = useMemo(() => { try { const p = analisaLocal(g, texto); return p || null; } catch (e) { return null; } }, [g.mes, texto]);
+  const dir = m === 'inv' ? 1 : -1;
+  const custo = motor ? motor.cost : null;
+  const sentidoOk = !!motor && !motor.vago && custo != null && (dir > 0 ? custo > 0 : custo < 0);
+  const med = useMemo(() => orcMedidas(g, M.rx), [g.mes, (g.medidas || []).length]);
+  const base = M.base, ajuste = med.net, jogo = base != null ? base + ajuste : null;
+  const efs = ORC_EF_ALVO[area + '|' + T.k] || M.ef;
+  const grupos = motor && motor.imp ? { gan: (motor.imp.gan || []).filter(x => x.tipo === 'grupo').slice(0, 3), per: (motor.imp.per || []).filter(x => x.tipo === 'grupo').slice(0, 3) } : { gan: [], per: [] };
+  const titulo = semAcoes ? (g.acoes <= 0 ? 'Sem ações políticas neste mês' : 'Energia esgotada') : !sentidoOk ? 'O motor não leu esta combinação como ' + (dir > 0 ? 'aumento' : 'corte') + ' de despesa: escolha outro valor ou alvo' : 'Custa 1 ação política e passa pelo parecer da Casa Civil';
+  const chipBtn = (on) => 'btn btn-ghost !text-xs ' + (on ? 'orc-on' : '');
+  const sel = (modo2) => m === modo2 ? { borderColor: modo2 === 'inv' ? 'var(--verde)' : 'var(--rubro)', color: modo2 === 'inv' ? 'var(--verde)' : 'var(--rubro)' } : null;
+  const mudaAlvo = (k) => { setAlvoK(k); const a = A.alvos.find(x => x.k === k); if (a && a.so) setModo('cut'); };
+  const pcts = [2, 5, 10];
+  return html`<section className="sec" data-orcamento=${area}>
+    <div className="flex flex-wrap items-end justify-between gap-2 mb-3">
+      <div><h3 className="disp text-2xl font-extrabold uppercase">Orçamento da área</h3><p className="text-xs text-muted">${M.titulo}: ${M.pasta}. Invista ou corte; o texto vai ao motor, que decide o instrumento, o custo e o efeito.</p></div>
+      <${Tag} cor=${g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)'}>${g.acoes}/5 ações</${Tag}>
+    </div>
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <div className="flex flex-col gap-4 min-w-0">
+        <div className="grid grid-cols-2 gap-3" data-orc-num="1">
+          <div className="rounded-lg border border-line p-3 min-w-0"><div className="eyebrow">${M.baseRot}</div><div className="num text-2xl font-semibold text-ouro">${base != null ? 'R$ ' + fmt(base, base < 100 ? 2 : 1) + ' bi' : 'sem total federal'}</div><div className="text-[11px] text-muted">por ano · valor real, não muda no jogo</div></div>
+          <div className="rounded-lg border border-line p-3 min-w-0"><div className="eyebrow">Seus ajustes neste mandato</div><div className="num text-2xl font-semibold" style=${{ color: Math.abs(ajuste) < .05 ? 'var(--fg)' : ajuste > 0 ? 'var(--ouro)' : 'var(--verde)' }}>${Math.abs(ajuste) < .05 ? 'nenhum' : (ajuste > 0 ? '+' : '−') + 'R$ ' + fmt(Math.abs(ajuste), 1) + ' bi'}</div><div className="text-[11px] text-muted">${med.L.length} medida${med.L.length === 1 ? '' : 's'} em vigor${jogo != null && Math.abs(ajuste) >= .05 ? ' · no jogo R$ ' + fmt(jogo, 1) + ' bi' : ''}</div></div>
+        </div>
+        <ul className="text-xs text-muted flex flex-col gap-0.5" data-orc-linhas="1">${M.linhas.map(l => html`<li key=${l[0]} className="flex justify-between gap-3"><span>${l[0]}</span><span className="num" style=${{ color: l[2] ? 'var(--' + l[2] + ')' : 'var(--fg)' }}>${l[1]}</span></li>`)}</ul>
+        ${med.L.length > 0 && html`<ul className="text-xs flex flex-col gap-0.5" data-orc-medidas="1">${med.L.slice(0, 3).map(x => html`<li key=${x.id} className="flex justify-between gap-3"><span className="truncate">${x.nm || x.topic}</span><span className="num" style=${{ color: x.fis.custo > 0 ? 'var(--ouro)' : 'var(--verde)' }}>${x.fis.custo > 0 ? '+' : '−'}R$ ${fmt(Math.abs(x.fis.custo), 1)} bi</span></li>`)}</ul>`}
+        <div role="radiogroup" aria-label="Ação" className="grid grid-cols-2 gap-2">
+          <button type="button" role="radio" aria-checked=${m === 'inv'} data-orc-modo="inv" disabled=${T.so} className=${chipBtn(false) + ' justify-center'} style=${sel('inv')} onClick=${() => setModo('inv')}><${Icon} n="TrendingUp" s=${15} /> Investir</button>
+          <button type="button" role="radio" aria-checked=${m === 'cut'} data-orc-modo="cut" className=${chipBtn(false) + ' justify-center'} style=${sel('cut')} onClick=${() => setModo('cut')}><${Icon} n="Scissors" s=${15} /> Cortar</button>
+        </div>
+        <div><div className="eyebrow mb-1.5">Onde</div><div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Alvo dentro da área">${A.alvos.map(a => html`<button key=${a.k} type="button" role="radio" aria-checked=${a.k === T.k} data-orc-alvo=${a.k} className=${chipBtn(a.k === T.k)} onClick=${() => mudaAlvo(a.k)}>${a.nome}</button>`)}</div></div>
+        <div><div className="eyebrow mb-1.5">Quanto</div><div className="flex flex-wrap items-center gap-1.5" role="radiogroup" aria-label="Valor">
+          ${[1, 5, 10, 20].map(v => html`<button key=${v} type="button" role="radio" aria-checked=${q.t === 'bi' && q.v === v} data-orc-bi=${v} className=${chipBtn(q.t === 'bi' && q.v === v)} onClick=${() => setQ({ t: 'bi', v })}>R$ ${v} bi</button>`)}
+          ${baseAlvo ? pcts.map(p => html`<button key=${'p' + p} type="button" role="radio" aria-checked=${q.t === 'pct' && q.v === p} data-orc-pct=${p} className=${chipBtn(q.t === 'pct' && q.v === p)} title=${p + '% de ' + baseNome + ' (R$ ' + fmt(baseAlvo, 1) + ' bi)'} onClick=${() => setQ({ t: 'pct', v: p })}>${p}%</button>`) : null}
+          <label className="inline-flex items-center gap-1 text-xs text-muted">outro <input type="number" min="0.5" max="50" step="0.5" value=${bi} data-orc-outro="1" aria-label="Valor em bilhões de reais" className="w-16 rounded border border-line bg-transparent px-1.5 py-1 text-fg num" onChange=${e => { const v = Math.round(Math.min(50, Math.max(0.5, parseFloat(e.target.value) || 1)) * 2) / 2; setQ({ t: 'bi', v }); }} /> bi</label>
+        </div>${baseAlvo && q.t === 'pct' ? html`<div className="text-[11px] text-muted mt-1">${q.v}% de ${baseNome} (R$ ${fmt(baseAlvo, 1)} bi) = ${orcFmtV(bi)}</div>` : null}</div>
+        ${temCont && html`<label className="flex items-center gap-2 text-xs"><input type="checkbox" checked=${cont} data-orc-cont="1" onChange=${e => setCont(e.target.checked)} /> Contingenciar (congelar por decreto, reversível) em vez de cortar em lei</label>`}
+      </div>
+      <div className="flex flex-col gap-3 min-w-0 rounded-lg border border-line p-4" data-orc-previa="1" aria-live="polite">
+        <div className="eyebrow">Prévia antes de confirmar</div>
+        <div className="text-sm italic leading-snug" data-orc-texto="1">“${texto}”</div>
+        ${motor ? html`<div className="flex flex-wrap gap-1.5" data-orc-motor="1">
+          <${Tag} cor=${sentidoOk ? 'var(--verde)' : 'var(--rubro)'}>${INST_NOME[motor.inst] || motor.inst}${precisaCongresso(motor.inst) ? ' · precisa do Congresso' : ' · sem votação'}</${Tag}>
+          <${Tag}>${custo != null ? 'despesa ' + (custo > 0 ? '+' : '−') + 'R$ ' + fmt(Math.abs(custo), 1) + ' bi/ano' : ''}</${Tag}>
+          ${motor.pastaNome ? html`<${Tag}>${String(motor.pastaNome).replace(/\s*\(.*$/, '')}</${Tag}>` : null}
+        </div>` : html`<p className="text-xs text-muted">O motor não conseguiu ler este texto.</p>`}
+        ${motor && custo != null ? html`<div className="text-sm" data-orc-primario="1"><b>Resultado primário:</b> <span className="num" style=${{ color: custo > 0 ? 'var(--rubro)' : 'var(--verde)' }}>${custo > 0 ? 'piora' : 'melhora'} cerca de R$ ${fmt(Math.abs(custo), 1)} bi por ano</span>${usaCont ? html` <span className="text-muted">(o contingenciamento segura só parte da dotação)</span>` : null}</div>` : null}
+        <div className="flex flex-col gap-1" data-orc-ef="1"><div className="eyebrow">Indicadores esperados (${dir > 0 ? 'com a verba' : 'com o corte'}, em meses)</div>
+          <div className="flex flex-wrap gap-1.5">${efs.map(e => { const ar = e.d * dir; const bom = ar * e.b > 0; return html`<span key=${e.n} className="chip" style=${{ color: bom ? 'var(--verde)' : 'var(--rubro)', borderColor: bom ? 'var(--verde)' : 'var(--rubro)' }}>${ar > 0 ? '▲' : '▼'} ${e.n}</span>`; })}</div></div>
+        ${(grupos.gan.length + grupos.per.length) > 0 ? html`<div className="text-xs leading-relaxed" data-orc-grupos="1">${grupos.gan.length ? html`<div><span className="text-muted">Tendem a ganhar:</span> ${grupos.gan.map(x => x.nome || x.quem).join(', ')}</div>` : null}${grupos.per.length ? html`<div><span className="text-muted">Tendem a perder:</span> ${grupos.per.map(x => x.nome || x.quem).join(', ')}</div>` : null}</div>` : null}
+        <p className="text-[11px] text-muted leading-snug">Leitura do motor em modo de consulta: não gasta ação. Os efeitos reais aparecem depois do parecer, do Congresso e da implantação.</p>
+        <button type="button" className=${'btn mt-auto justify-center ' + (m === 'inv' ? 'btn-pri' : 'btn-ghost')} data-orc-confirm=${area} disabled=${semAcoes || !sentidoOk || !decidir} title=${titulo} style=${m === 'cut' ? { borderColor: 'var(--rubro)', color: 'var(--rubro)' } : null} onClick=${() => decidir(texto)}><${Icon} n=${m === 'inv' ? 'TrendingUp' : 'Scissors'} s=${15} /> ${m === 'inv' ? 'Investir ' : usaCont ? 'Contingenciar ' : 'Cortar '}${orcFmtV(bi)} · ${T.nome}</button>
+      </div>
+    </div>
+  </section>`;
+}
+function OrcFonte({ area }) { return html`<span className="block mt-2" data-orc-fonte=${area}><b className="text-fg">Orçamento da área.</b> ${ORC_FONTE[area]}</span>`; }
 const SAU_PROG = [
   { l: 'Ampliar o Mais Médicos', t: 'Ampliar o Programa Mais Médicos, com mais vagas e incentivo à fixação de médicos no interior e nas periferias', i: 'Stethoscope' },
   { l: 'Mutirão nacional de cirurgias eletivas', t: 'Lançar um mutirão nacional de cirurgias eletivas para reduzir as filas do SUS', i: 'Hospital' },
@@ -18709,6 +18881,7 @@ function PaisSeguranca({ g, upd, decidir }) {
   };
   return html`<div className="flex flex-col gap-6" data-pais="seguranca">
     <${SegurancaPublica} g=${g} decidir=${decidir} sel=${sel} setSel=${setSel} parte="topo" />
+    <${OrcamentoArea} g=${g} decidir=${decidir} area="seguranca" />
     <${ConversaGov} g=${g} upd=${upd} area="seg" uf=${sel} onPlano=${abrePlano} />
     <${GvSecao} g=${g} upd=${upd} decidir=${decidir} parte="tabela" sel=${sel} setSel=${setSel} preset=${preset} />
     <${SegurancaPublica} g=${g} decidir=${decidir} sel=${sel} setSel=${setSel} parte="ops" />
@@ -18732,19 +18905,20 @@ function PaisSaude({ g, upd, decidir }) {
       ${inds.length === 0 ? html`<p className="text-sm text-muted">Indicadores de saúde em preparação.</p>` : html`<div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">${inds.slice(0, 6).map(k => { const F = D.fontes[k]; const v = pufVal(g, 'saude', D, k, 'BR'), r = D.BR[k]; const pior = Number.isFinite(r) && v != null ? ((F.melhor === 'menor') === (v > r) ? Math.abs(v - r) / Math.abs(r) > .03 : false) : false; const melhor = Number.isFinite(r) && v != null ? ((F.melhor === 'menor') === (v < r) ? Math.abs(v - r) / Math.abs(r) > .03 : false) : false;
         return html`<div key=${k} className="rounded-lg border border-line p-3 min-w-0"><div className="eyebrow">${F.nome}</div><div className="num text-2xl font-semibold" style=${{ color: pior ? 'var(--rubro)' : melhor ? 'var(--verde)' : 'var(--fg)' }}>${pufFmt(D, k, v)}</div><div className="text-[11px] text-muted">${F.unidade}</div><div className="text-[11px] text-muted mt-1">Real ${F.ano}: <span className="num">${pufFmt(D, k, r)}</span></div></div>`; })}</div>`}
     </section>
-    <${PainelUF} g=${g} area="saude" cfg=${{ rankFora: true }} selUF=${sel} onUF=${setSel} />
-    <${ConversaGov} g=${g} upd=${upd} area="sau" uf=${sel} />
-    <section className="sec">
-      <h3 className="disp text-2xl font-extrabold uppercase mb-1">Programas federais</h3>
-      <p className="text-xs text-muted mb-3">Cada programa gasta 1 ação do mês e passa pelo motor de decisão (parecer da Casa Civil, custo e Congresso).</p>
+    <${OrcamentoArea} g=${g} decidir=${decidir} area="saude" />
+    <section className="sec" data-programas="saude">
+      <h3 className="disp text-2xl font-extrabold uppercase mb-1">Programas</h3>
+      <p className="text-xs text-muted mb-3">Programas prontos, abaixo do orçamento. Cada um gasta 1 ação do mês e passa pelo motor de decisão (parecer da Casa Civil, custo e Congresso).</p>
       <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-2">${SAU_PROG.map(prog)}</div>
     </section>
+    <${PainelUF} g=${g} area="saude" cfg=${{ rankFora: true }} selUF=${sel} onUF=${setSel} />
+    <${ConversaGov} g=${g} upd=${upd} area="sau" uf=${sel} />
     ${inds.length > 0 && html`<section className="sec">
       <div className="flex flex-wrap items-center justify-between gap-2 mb-3"><h3 className="disp text-2xl font-extrabold uppercase">Ranking dos estados</h3>
         <div role="radiogroup" aria-label="Indicador do ranking" className="flex flex-wrap gap-1">${inds.map(k => html`<button key=${k} type="button" role="radio" aria-checked=${k === ind} onClick=${() => setIndR(k)} className=${'btn btn-ghost !text-xs ' + (k === ind ? '!border-ouro text-ouro' : '')}>${D.fontes[k].nome}</button>`)}</div></div>
       <div className="grid sm:grid-cols-2 gap-6"><${RankingUF} g=${g} area="saude" ind=${ind} onUF=${setSel} selUF=${sel} n=${8} /><${RankingUF} g=${g} area="saude" ind=${ind} onUF=${setSel} selUF=${sel} n=${8} melhores=${true} /></div>
     </section>`}
-    <${FontesArea} area="saude" />
+    <${FontesArea} area="saude" notas=${html`<${OrcFonte} area="saude" />`} />
   </div>`;
 }
 const EDU_PROG = [
@@ -18780,7 +18954,7 @@ const INFRA_GRUPOS = [
     { l: 'Cabotagem', t: 'Incentivar a cabotagem para transportar cargas pela costa', i: 'Ship' },
     { l: 'Renovar a frota de caminhões', t: 'Financiar a renovação da frota de caminhões antigos', i: 'Truck' }] }
 ];
-function PaisAreaAcao({ g, upd, decidir, pa, conv, dp, titulo, sub, grupos, notas, ind0 }) {
+function PaisAreaAcao({ g, upd, decidir, pa, conv, dp, titulo, sub, grupos, notas, ind0, orc }) {
   const [sel, setSel] = useState(g.cfg.estado && ELEITOS.gov[g.cfg.estado] ? g.cfg.estado : 'SP');
   const [indR, setIndR] = useState(ind0 || null);
   const D = pufDados(pa); const inds = pufInds(D); const ind = inds.includes(indR) ? indR : inds[0];
@@ -18799,13 +18973,14 @@ function PaisAreaAcao({ g, upd, decidir, pa, conv, dp, titulo, sub, grupos, nota
       </div>
       ${kD.length + kE.length === 0 ? html`<p className="text-sm text-muted">Indicadores em preparação.</p>` : html`<div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">${kD.concat(kE).map(card)}</div>`}
     </section>
-    <${PainelUF} g=${g} area=${pa} cfg=${{ rankFora: true, ind0 }} selUF=${sel} onUF=${setSel} />
-    <${ConversaGov} g=${g} upd=${upd} area=${conv} uf=${sel} />
+    ${orc && html`<${OrcamentoArea} g=${g} decidir=${decidir} area=${orc} />`}
     <section className="sec" data-programas=${pa}>
-      <h3 className="disp text-2xl font-extrabold uppercase mb-1">Programas federais</h3>
-      <p className="text-xs text-muted mb-3">Cada programa gasta 1 ação do mês e passa pelo motor de decisão (parecer da Casa Civil, custo e Congresso).</p>
+      <h3 className="disp text-2xl font-extrabold uppercase mb-1">Programas</h3>
+      <p className="text-xs text-muted mb-3">Programas prontos, abaixo do orçamento. Cada um gasta 1 ação do mês e passa pelo motor de decisão (parecer da Casa Civil, custo e Congresso).</p>
       ${grupos.map(G => html`<div key=${G.h || 'g'} className="mb-4 last:mb-0">${G.h ? html`<div className="eyebrow mb-2">${G.h}</div>` : null}<div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-2">${G.itens.map(prog)}</div></div>`)}
     </section>
+    <${PainelUF} g=${g} area=${pa} cfg=${{ rankFora: true, ind0 }} selUF=${sel} onUF=${setSel} />
+    <${ConversaGov} g=${g} upd=${upd} area=${conv} uf=${sel} />
     ${inds.length > 0 && html`<section className="sec">
       <div className="flex flex-wrap items-center justify-between gap-2 mb-3"><h3 className="disp text-2xl font-extrabold uppercase">Ranking dos estados</h3>
         <div role="radiogroup" aria-label="Indicador do ranking" className="flex flex-wrap gap-1">${inds.map(k => html`<button key=${k} type="button" role="radio" aria-checked=${k === ind} onClick=${() => setIndR(k)} className=${'btn btn-ghost !text-xs ' + (k === ind ? '!border-ouro text-ouro' : '')}>${D.fontes[k].nome}</button>`)}</div></div>
@@ -18817,10 +18992,10 @@ function PaisAreaAcao({ g, upd, decidir, pa, conv, dp, titulo, sub, grupos, nota
 const EDU_NOTAS = 'Ideb: INEP 2025 (valores por estado reproduzidos pela imprensa a partir do INEP). Analfabetismo e superior completo: IBGE, PNAD Contínua Educação 2025. As conversas com governadores e os programas movem os valores no jogo a partir dessa base real.';
 const INFRA_NOTAS = 'Rodovias e pavimentação: CNT 2025 (a extensão pavimentada é a avaliada pela CNT, não a malha total do estado). Mortes no trânsito: DataSUS/SIM 2024. Internet: IBGE, PNAD Contínua TIC 2025. Água, esgoto e energia ainda não têm série por estado verificada neste jogo: aparecem só como dado nacional (o esgoto também acompanha o jogo), por isso não há conversa com governadores sobre eles. Estimativas do jogo seguem marcadas como tal.';
 function PaisEducacao({ g, upd, decidir }) {
-  return html`<${PaisAreaAcao} g=${g} upd=${upd} decidir=${decidir} pa="educacao" conv="edu" dp="educacao" titulo="Educação" sub="Situação nacional no jogo, com a linha de base real logo abaixo de cada número." grupos=${[{ itens: EDU_PROG }]} notas=${EDU_NOTAS} />`;
+  return html`<${PaisAreaAcao} g=${g} upd=${upd} decidir=${decidir} pa="educacao" conv="edu" dp="educacao" titulo="Educação" sub="Situação nacional no jogo, com a linha de base real logo abaixo de cada número." grupos=${[{ itens: EDU_PROG }]} notas=${html`<span>${EDU_NOTAS}<${OrcFonte} area="educacao" /></span>`} orc="educacao" />`;
 }
 function PaisInfra({ g, upd, decidir }) {
-  return html`<${PaisAreaAcao} g=${g} upd=${upd} decidir=${decidir} pa="infratransp" conv="infra" dp="infraestrutura" titulo="Infraestrutura e transportes" sub="Rodovias, saneamento, energia e conectividade: situação nacional no jogo, com a base real logo abaixo." grupos=${INFRA_GRUPOS} notas=${INFRA_NOTAS} ind0="rodovias_boas_pct" />`;
+  return html`<${PaisAreaAcao} g=${g} upd=${upd} decidir=${decidir} pa="infratransp" conv="infra" dp="infraestrutura" titulo="Infraestrutura e transportes" sub="Rodovias, saneamento, energia e conectividade: situação nacional no jogo, com a base real logo abaixo." grupos=${INFRA_GRUPOS} notas=${html`<span>${INFRA_NOTAS}<${OrcFonte} area="infra" /></span>`} ind0="rodovias_boas_pct" orc="infra" />`;
 }
 const JUS_GOV = [
   { l: 'Reforçar o orçamento da PF', t: 'Reforçar o orçamento da Polícia Federal', i: 'Shield' },
@@ -19154,9 +19329,10 @@ function PaisJustica({ g, upd, decidir }) {
         <tbody>${JUS_RAMOS.map(r => html`<tr key=${r.k} className="border-t border-line"><td className="py-1.5 pr-2">${r.nome}</td><td className="py-1.5 px-2 text-right num">${r.pct.toFixed(1).replace('.', ',')}%</td><td className="py-1.5 px-2 text-right num">${jusFmtBi(bi(r.pct))}</td><td className="py-1.5 pl-2 text-right num">R$ ${hab(r.pct).toFixed(0)}</td><td className="py-1.5 pl-2"><${Tag} cor=${r.v ? 'var(--verde)' : 'var(--ambar)'}>${r.v ? 'CNJ 2024' : 'estimativa'}</${Tag}></td></tr>`)}</tbody></table></div>
       <div className="mt-3 text-xs text-muted leading-relaxed" data-jus="penduricalhos">${med.length === 0 ? 'Você ainda não tem medida em vigor sobre penduricalhos, supersalários ou auxílio-moradia de magistrados. Uma medida assim (escreva na Mesa) aparece aqui; o teto remuneratório enfrenta resistência do Judiciário e risco de conflito com o STF.' : html`<div><b className="text-fg">Medidas suas sobre penduricalhos e auxílio-moradia:</b><ul className="mt-1 flex flex-col gap-0.5">${med.map(m => html`<li key=${m.id}>${m.nm || m.topic} · ${MED_ESTADOS[m.estado] ? MED_ESTADOS[m.estado][0] : m.estado} · desde ${dataCurta(m.m0)}</li>`)}</ul><div className="mt-1">Prazos, custo e problemas em Medidas.</div></div>`}</div>
     </section>
+    <${OrcamentoArea} g=${g} decidir=${decidir} area="justica" />
     ${J.ult && html`<div className=${'p-3 rounded-lg border text-sm ' + (J.ult.back ? 'border-rubro' : 'border-verde')} data-jus="resultado"><b>${dataCurta(J.ult.mes)} · Operação ${J.ult.nome}:</b> ${J.ult.res}</div>`}
     <section className="sec" data-jus="acoes-gov">
-      <h3 className="disp text-2xl font-extrabold uppercase mb-1">Ações do governo</h3>
+      <h3 className="disp text-2xl font-extrabold uppercase mb-1">Programas: ações do governo</h3>
       <p className="text-xs text-muted mb-3">Medidas que você pode tomar a qualquer hora, sem depender de um caso aberto. Cada uma gasta 1 ação do mês e passa pelo motor de decisão (parecer da Casa Civil, custo e Congresso).</p>
       <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-2">${JUS_GOV.map(a => html`<button key=${a.l} className="btn btn-ghost justify-start text-sm text-left" data-prog="justica" disabled=${semAcoes || !decidir} title=${semAcoes ? (g.acoes <= 0 ? 'Sem ações políticas neste mês' : 'Energia esgotada') : 'Custa 1 ação política e passa pelo parecer da Casa Civil'} onClick=${() => decidir(a.t)}><${Icon} n=${a.i} s=${15} /> ${a.l}</button>`)}</div>
     </section>
@@ -19173,6 +19349,7 @@ function PaisJustica({ g, upd, decidir }) {
         <div className="mt-2 text-sm flex flex-col gap-1.5"><p>${h.fato}</p><p><b>Situação oficial:</b> ${h.status}</p><ul className="text-xs text-muted flex flex-col gap-0.5">${h.fontes.map(f => html`<li key=${f[1]}>Fonte: <a className="underline" href=${f[1]} target="_blank" rel="noopener noreferrer">${f[0]}</a></li>`)}</ul></div></details>`)}</div>
     </section>
     <${NotaFim} area="justica">
+      <p><${OrcFonte} area="justica" /></p>
       <p><b className="text-fg">Custos.</b> Conselho Nacional de Justiça, relatório Justiça em Números (edição de 2026, ano-base 2025): despesa total de R$ 164,6 bilhões, a maior da série iniciada em 2009 (1,3% do PIB), sendo R$ 148,5 bilhões com pessoal (90,2%) e R$ 9,8 bilhões em verbas indenizatórias (6,6% da folha). Custo de R$ 771,48 por habitante; arrecadação de R$ 68,2 bilhões (41% da despesa). Fontes: <a className="underline" href="https://www.cnj.jus.br/pesquisas-judiciarias/justica-em-numeros/" target="_blank" rel="noopener noreferrer">CNJ, Justiça em Números</a>; <a className="underline" href="https://www.poder360.com.br/poder-justica/judiciario-gasta-r-1646-bi-em-2025-maior-valor-da-serie-historica/" target="_blank" rel="noopener noreferrer">Poder360</a>; <a className="underline" href="https://www.gazetadopovo.com.br/republica/penduricalhos-custam-9-8-bilhoes-judiciario-superam-investimentos/" target="_blank" rel="noopener noreferrer">Gazeta do Povo (verbas indenizatórias)</a>.</p>
       <p><b className="text-fg">Ramos.</b> Estadual (R$ 91,7 bi, 62,6%) e do Trabalho (R$ 25,5 bi, 17,4%) são do CNJ de 2024 (total de R$ 146,5 bi). A divisão por ramo de 2025 não foi encontrada nas fontes consultadas: Federal, Eleitoral, tribunais superiores e Militar são estimativa do jogo sobre os 20% restantes, e as parcelas são aplicadas ao total de 2025. O valor por habitante de cada ramo usa a população implícita de ${JUS_POP_MI.toFixed(0)} milhões. A Justiça Eleitoral varia com o calendário de eleições. O Tesouro Nacional usa outra metodologia (R$ 181,5 bi em 2024) e não é comparável.</p>
       <p><b className="text-fg">Casos abertos.</b> Operações, alvos e valores são inventados e sorteados em cada partida; qualquer semelhança com operação real é coincidência. Os alvos são sempre genéricos (cargo ou instituição e partido) e nunca uma pessoa real. Probabilidades de reação (vazamento, inquérito no STF, CPI, pedido de impeachment) e efeitos são simulados. ${AVISO_SIM}</p>
@@ -19391,6 +19568,7 @@ function SegurancaPublica({ g, decidir, sel: selP, setSel: setSelP, parte }) {
   const fontesFim = html`<details className="sec text-xs text-muted" data-fontes="seguranca"><summary className="cursor-pointer hover:text-fg text-sm font-semibold">Fontes e notas</summary>
     <p className="mt-3 leading-relaxed">Dados reais: Anuário Brasileiro de Segurança Pública 2026 (FBSP, dados de 2025), Atlas da Violência 2026 e estudos sobre facções (FBSP/Abin, Geni-UFF, Senappen). A classificação de hegemonia vem de estudo preliminar divulgado pela imprensa em dez/2025. Evolução no jogo é simulada.</p>
     <p className="mt-2 leading-relaxed">${SEG_NOTA_BASE}</p>
+    <p className="mt-2 leading-relaxed"><${OrcFonte} area="seguranca" /></p>
     <p className="mt-2 leading-relaxed">Índice de crime organizado do jogo: +45 se o estado tem facção com hegemonia, +15 por facção nacional (PCC ou CV) além da hegemônica, +5 por facção regional listada (máximo +20), +15 se há milícia documentada, mais 1,2 ponto para cada ponto de mortes violentas acima da média nacional de 2025 (19,11). Policiais mortos, roubo de celular e estupro acompanham a violência de cada estado no jogo; são estimativas.</p>
     <div className="eyebrow mt-4 mb-1">Fontes de ${I.nome} (estado selecionado)</div>
     <ul className="flex flex-col gap-1">${R.fontes.map(id => SEG_FONTE[id]).filter(Boolean).map(f => html`<li key=${f.id}><a href=${f.url} target="_blank" rel="noopener noreferrer" className="underline decoration-dotted hover:text-ouro">${f.titulo}</a> <span className="text-muted">· dados de ${f.ano_dados}</span></li>`)}</ul>
