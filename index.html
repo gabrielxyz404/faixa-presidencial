@@ -15863,18 +15863,109 @@ function CartaoLinha({ g, max = 8, plano }) {
 }
 
 /* ---- prioridade do trimestre ---- */
+/* ---- Governo v2: blocos visuais (resumo, prioridade, ministros, ideias) ---- */
+const GV_CSS = `
+.gv-sec-h{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 16px;margin-bottom:14px}
+.gv-sub{font-size:13px;color:var(--muted);margin:2px 0 0}
+.gv-tip{position:relative;display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;margin-left:6px;border-radius:50%;border:1px solid var(--muted);color:var(--muted);font-family:var(--f-mono);font-size:12px;line-height:1;cursor:help;vertical-align:middle;flex:none;text-transform:none;letter-spacing:0;font-weight:600}
+.gv-tip:hover,.gv-tip:focus{color:var(--fg);border-color:var(--fg);outline:none}
+.gv-tip:focus-visible{outline:2px solid var(--ouro);outline-offset:2px}
+.gv-tipbox{display:none;position:absolute;z-index:50;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);width:280px;max-width:80vw;padding:10px 12px;border:1px solid var(--line2);border-radius:8px;background:#101010;color:var(--fg);font-family:var(--f-body);font-size:13px;line-height:1.45;text-align:left;font-weight:400;box-shadow:0 10px 28px rgba(0,0,0,.6)}
+.gv-tip:hover .gv-tipbox,.gv-tip:focus .gv-tipbox{display:block}
+.gv-tip.dir .gv-tipbox{left:auto;right:-8px;transform:none}
+.gv-tip.esq .gv-tipbox{left:-8px;transform:none}
+.gv-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+@media (max-width:1100px){.gv-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){.gv-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.gv-kpi{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 12px;align-items:center;padding:12px 14px;background:var(--panel);border:1px solid var(--line2);border-radius:12px;min-width:0}
+.gv-kpi .gv-ic{grid-row:span 3}
+.gv-kpi-k{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gv-kpi-v{font-family:var(--f-disp);font-size:26px;font-weight:700;line-height:1.1;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gv-kpi-v.sm{font-size:17px;line-height:1.25;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.gv-kpi-s{font-size:12px;color:var(--muted);line-height:1.35}
+.gv-ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:color-mix(in srgb,var(--c,var(--muted)) 15%,transparent);color:var(--c,var(--muted));flex:none}
+.gv-pri-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:12px}
+.gv-pri{display:flex;flex-direction:column;gap:8px;padding:14px;background:var(--panel2);border:1px solid var(--line2);border-radius:12px;position:relative;min-width:0;border-top:3px solid var(--c,var(--line2))}
+.gv-pri:hover{border-color:var(--muted);border-top-color:var(--c,var(--muted))}
+.gv-pri h4{font-family:var(--f-disp);font-size:18px;font-weight:700;line-height:1.2;margin:0}
+.gv-pri p{font-size:13px;color:var(--muted);line-height:1.4;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.gv-chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.gv-chip{display:inline-flex;align-items:center;gap:4px;font-family:var(--f-mono);font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line2);color:var(--muted);white-space:nowrap}
+.gv-chip.neg{color:var(--rubro);border-color:rgba(255,90,78,.4)}
+.gv-chip.pos{color:var(--verde);border-color:rgba(47,210,122,.4)}
+.gv-chip.ouro{color:var(--ouro);border-color:rgba(245,197,24,.4)}
+.gv-pri .gv-go{margin-top:auto}
+.gv-pri-on{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;padding:12px 14px;background:var(--panel2);border:1px solid var(--line2);border-radius:12px;border-left:3px solid var(--ouro)}
+.gv-steps{display:flex;gap:4px}
+.gv-steps i{width:26px;height:6px;border-radius:3px;background:var(--line2)}
+.gv-steps i.on{background:var(--ouro)}
+.gv-min-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px;align-items:start}
+.gv-min{display:flex;flex-direction:column;gap:10px;padding:14px;background:var(--panel);border:1px solid var(--line2);border-radius:12px;min-width:0;border-top:3px solid var(--st,var(--line2))}
+.gv-min:hover{border-color:var(--muted);border-top-color:var(--st,var(--muted))}
+.gv-min-h{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center}
+.gv-min-n{font-weight:600;font-size:15px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gv-min-p{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gv-min-s{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gv-meter{display:grid;grid-template-columns:76px minmax(0,1fr) 28px;gap:8px;align-items:center;font-size:12px;color:var(--muted)}
+.gv-meter .num{text-align:right;color:var(--fg);font-size:12px}
+.gv-acts{display:flex;flex-wrap:wrap;gap:6px}
+.gv-acts .btn{padding:6px 10px;font-size:13px}
+.gv-det summary{cursor:pointer;font-size:13px;color:var(--muted);list-style:none;display:flex;align-items:center;gap:4px;padding:2px 0}
+.gv-det summary::-webkit-details-marker{display:none}
+.gv-det summary:hover{color:var(--fg)}
+.gv-det[open] summary .gv-car{transform:rotate(90deg)}
+.gv-car{display:inline-flex;transition:transform .15s}
+.gv-det-b{display:flex;flex-direction:column;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:13px}
+.gv-idea-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:900px){.gv-idea-grid{grid-template-columns:minmax(0,1fr)}}
+.gv-idea{display:flex;flex-direction:column;gap:10px;padding:14px 16px;background:var(--panel2);border:1px solid var(--line2);border-radius:12px;min-width:0;border-top:3px solid var(--c,var(--ouro))}
+.gv-idea-h{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center}
+.gv-idea h4{font-family:var(--f-disp);font-size:19px;font-weight:700;line-height:1.2;margin:0;letter-spacing:-.01em}
+.gv-idea-t{font-size:14px;line-height:1.45;color:var(--fg);margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.gv-idea-a{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}
+.gv-mini{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+`;
+function GvTip({ txt, lado }) {
+  return html`<span className=${'gv-tip ' + (lado || '')} tabIndex="0" role="note" aria-label=${txt} data-gv-tip="1">?<span className="gv-tipbox" aria-hidden="true">${txt}</span></span>`;
+}
+const GV_PRI_IC = { obras: ['HardHat', 'var(--ambar)'], gastos: ['Scissors', 'var(--verde)'], comunicacao: ['Megaphone', 'var(--anil)'], despacho: ['Handshake', 'var(--ouro)'], cadastro: ['HeartHandshake', 'var(--rubro)'] };
+// etiquetas de efeito de uma prioridade, já multiplicadas pela competência do gabinete (as linhas de relação com partidos viram uma só)
+function gvPriChips(D, m) {
+  const L = palavrasFx(D.fx, m); const rel = L.filter(x => /^relação com/i.test(x)); const out = L.filter(x => !/^relação com/i.test(x)).map(t => ({ t, c: '' }));
+  if (rel.length) out.push({ t: 'relação com ' + rel.length + ' partidos', c: 'pos' });
+  if (D.extra) out.push({ t: 'custo R$ ' + fmt(D.extra * m, 2) + ' bi', c: 'neg' });
+  if (D.cortaCusto) out.push({ t: 'economia R$ ' + fmt(D.cortaCusto * m, 2) + ' bi/ano', c: 'pos' });
+  return out;
+}
+function GvChips({ L, max = 4 }) {
+  const ver = L.slice(0, max), resto = L.slice(max);
+  return html`<div className="gv-chips">${ver.map((x, i) => html`<span key=${i} className=${'gv-chip ' + (x.c || '')}>${x.t}</span>`)}${resto.length > 0 && html`<span className="gv-chip" title=${resto.map(x => x.t).join(' · ')}>+${resto.length}</span>`}</div>`;
+}
 function CartaoPrioridade({ g, upd }) {
   const P = g.prioridade; const pend = prioridadePendente(g); const m = prioridadeMult(g);
   const ativa = P.k && P.q === trimestreDe(g) ? PRIORIDADEMAP[P.k] : null;
   if (!pend && !ativa) return null;
-  return html`<div className="sec" data-prioridade=${pend ? 'pendente' : 'ativa'}>
-    <div className="flex flex-wrap items-baseline justify-between gap-2 mb-2"><h3 className="disp text-xl font-extrabold uppercase">Prioridade do trimestre</h3><span className="chip" title="Competência média do gabinete"><span>multiplicador ×${fmt(pend ? m : (P.mult || m), 2)}</span></span></div>
-    ${pend ? html`<p className="text-sm text-muted mb-3">Escolha uma frente para os próximos três meses. Os efeitos abaixo valem por mês e são multiplicados pela competência média do seu gabinete.</p>
-      <ul className="grid gap-2 sm:grid-cols-2">${PRIORIDADES.map(D => html`<li key=${D.k} className="p-3 rounded-lg border border-line flex flex-col gap-1"><b className="text-sm">${D.nome}</b><span className="text-xs text-muted">${D.d}</span>
-        <span className="text-xs">Por mês, por 3 meses: ${palavrasFx(D.fx, m).concat(D.extra ? ['custo R$ ' + fmt(D.extra * m, 2) + ' bi'] : [], D.cortaCusto ? ['economia permanente de R$ ' + fmt(D.cortaCusto * m, 2) + ' bi/ano por mês'] : []).join('; ')}.</span>
-        <button className="btn btn-ghost text-sm self-start mt-1" onClick=${() => upd(n => { escolhePrioridade(n, D.k); })}>Escolher</button></li>`)}</ul>` :
-    html`<div className="text-sm"><b>${ativa.nome}</b> · mês ${Math.min(3, Math.max(1, g.mes - P.ini + 1))} de 3 · multiplicador ×${fmt(P.mult || 1, 2)}<div className="text-xs text-muted mt-1">${ativa.d}</div></div>`}
-  </div>`;
+  const mesAt = Math.min(3, Math.max(1, g.mes - P.ini + 1));
+  return html`<section className="sec" data-prioridade=${pend ? 'pendente' : 'ativa'} aria-labelledby="pri-t">
+    <div className="gv-sec-h">
+      <div><div className="eyebrow">Governo · trimestre</div><h3 id="pri-t" className="disp text-2xl font-extrabold uppercase">Prioridade do trimestre<${GvTip} txt="Escolha uma frente para os próximos três meses. Os efeitos valem por mês e são multiplicados pela competência média do seu gabinete." /></h3>
+        ${pend && html`<p className="gv-sub">Efeitos por mês, durante 3 meses.</p>`}</div>
+      <span className="chip" title="Competência média do gabinete"><span>multiplicador ×${fmt(pend ? m : (P.mult || m), 2)}</span></span>
+    </div>
+    ${pend ? html`<div className="gv-pri-grid">${PRIORIDADES.map(D => { const [ic, cor] = GV_PRI_IC[D.k] || ['Target', 'var(--ouro)'];
+      return html`<article key=${D.k} className="gv-pri" style=${{ '--c': cor }} data-pri=${D.k}>
+        <div className="flex items-center gap-3"><span className="gv-ic" style=${{ '--c': cor }}><${Icon} n=${ic} s=${20} /></span><h4>${D.nome}</h4></div>
+        <p title=${D.d}>${D.d}</p>
+        <${GvChips} L=${gvPriChips(D, m)} max=${3} />
+        <button className="btn btn-pri btn-sm self-start gv-go" onClick=${() => upd(n => { escolhePrioridade(n, D.k); })} aria-label=${'Escolher prioridade: ' + D.nome}><${Icon} n="Check" s=${14} /> Escolher</button>
+      </article>`; })}</div>`
+    : html`<div className="gv-pri-on" role="status">
+      <span className="gv-ic" style=${{ '--c': (GV_PRI_IC[P.k] || ['', 'var(--ouro)'])[1] }}><${Icon} n=${(GV_PRI_IC[P.k] || ['Target'])[0]} s=${20} /></span>
+      <div className="min-w-0 flex-1 basis-56"><div className="font-semibold text-base">${ativa.nome}</div><div className="text-xs text-muted">Mês ${mesAt} de 3 · ${3 - mesAt === 0 ? 'último mês' : 'faltam ' + (3 - mesAt) + (3 - mesAt === 1 ? ' mês' : ' meses')} · multiplicador ×${fmt(P.mult || 1, 2)}</div></div>
+      <span className="gv-steps" aria-hidden="true">${[1, 2, 3].map(i => html`<i key=${i} className=${i <= mesAt ? 'on' : ''}></i>`)}</span>
+      <${GvChips} L=${gvPriChips(ativa, P.mult || 1)} max=${3} />
+    </div>`}
+  </section>`;
 }
 
 /* ---- pauta do Congresso ---- */
@@ -15936,7 +16027,7 @@ function CartaoVice({ g, upd }) {
     <div className="flex flex-wrap items-baseline justify-between gap-2 mb-3"><h3 id="vice-t" className="disp text-xl font-extrabold uppercase">Vice-presidente</h3><${Tag} cor=${V.conspira ? 'var(--rubro)' : V.leal >= 45 ? 'var(--verde)' : 'var(--ambar)'}>${viceSituacao(V)}</${Tag}></div>
     <div className="flex items-center gap-3">${g.cfg.viceNome && html`<${Ef} nome=${nome} cor=${corPresidente(g.cfg)} papel="vice" s=${48} fk=${fotoVice(nome)} />`}<div className="font-semibold">${nome}${V.protag && html` <span className="text-xs text-muted font-normal">· com protagonismo</span>`}</div></div>
     <div className="grid grid-cols-2 gap-3 mt-2">${med(['Lealdade', V.leal], corAtr(V.leal))}${med(['Articulação', V.artic], corAtr(V.artic))}</div>
-    <p className="text-xs text-muted mt-2">Lealdade e articulação são traços simulados. Vice articulado e pouco leal aumenta o risco de impeachment.</p>
+    <p className="text-xs text-muted mt-2">Vice articulado e pouco leal aumenta o risco de impeachment.<${GvTip} txt="Lealdade e articulação são traços simulados nesta partida." /></p>
     <div className="flex flex-wrap gap-2 mt-3">
       <button className="btn btn-ghost !text-xs" disabled=${jaAcao || g.acoes <= 0} onClick=${() => upd(n => { viceAcao(n, 'protagonismo'); })}>Dar protagonismo · 1 ação</button>
       <button className="btn btn-ghost !text-xs" disabled=${jaAcao || g.acoes <= 0} onClick=${() => upd(n => { viceAcao(n, 'escantear'); })}>Escantear · 1 ação</button>
@@ -15954,7 +16045,7 @@ function CartaoAbin({ g, upd }) {
   const A = g.abin; const prox = A.ativa && A.prox ? EVENTOS.find(e => e.id === A.prox.id) : null;
   return html`<section className="sec" aria-labelledby="abin-t" data-abin=${A.ativa ? 'ativa' : 'inativa'}>
     <div className="flex flex-wrap items-baseline justify-between gap-2 mb-2"><h3 id="abin-t" className="disp text-xl font-extrabold uppercase">Serviço de inteligência</h3><${Tag} cor=${A.ativa ? 'var(--verde)' : 'var(--muted)'}>${A.ativa ? 'ativo' : 'desativado'}</${Tag}></div>
-    <p className="text-sm text-muted">Antecipa a crise do mês seguinte, enfraquece em 25% a cobrança de crises previstas e pode desarmar denúncias. Em troca, expõe o governo a acusações de uso político. Custo: R$ ${fmt(ABIN_ATIVACAO, 0)} bi para ativar e R$ ${fmt(ABIN_MES, 2)} bi por mês.</p>
+    <p className="text-sm text-muted">Antecipa a crise do mês seguinte e pode desarmar denúncias, ao custo de exposição política.<${GvTip} txt=${`Antecipa a crise do mês seguinte, enfraquece em 25% a cobrança de crises previstas e pode desarmar denúncias. Em troca, expõe o governo a acusações de uso político. Custo: R$ ${fmt(ABIN_ATIVACAO, 0)} bi para ativar e R$ ${fmt(ABIN_MES, 2)} bi por mês.`} /></p>
     ${A.ativa && html`<div className="mt-3 p-3 rounded-lg border border-line" role="status"><div className="eyebrow">Alerta da inteligência</div>${prox ? html`<div className="text-sm mt-1"><b>${dataMes(g.mes + 1)}:</b> ${prox.titulo} <span className="text-xs text-muted">(gravidade ${prox.grav})</span></div>` : html`<div className="text-sm mt-1 text-muted">Sem alerta para o mês seguinte.</div>`}
       <div className="mt-2"><div className="flex justify-between text-xs mb-0.5"><span>Exposição política</span><span className="num">${fmt(A.exposicao, 0)}</span></div><${Bar} v=${A.exposicao} cor="var(--rubro)" h=${5} label="Exposição política" /><div className="text-[11px] text-muted mt-1">Chance mensal de escândalo: ${fmt(A.exposicao / 4, 1)}%.</div></div></div>`}
     <div className="mt-3"><button className=${'btn ' + (A.ativa ? 'btn-ghost' : 'btn-gold')} onClick=${() => upd(n => { ativaAbin(n, !A.ativa); })}>${A.ativa ? 'Desativar a inteligência' : 'Ativar · R$ 3 bi'}</button></div>
@@ -15975,6 +16066,35 @@ function ReformaModal({ g, upd, onClose }) {
   </div></${Gaveta}>`;
 }
 const corEntrega = (v) => (v >= 55 ? 'var(--verde)' : v >= 30 ? 'var(--ouro)' : 'var(--rubro)');
+// situação de cada ministro, lida do que o jogo já guarda: lealdade, desgaste, engavetadas seguidas e crise do mês na pasta
+function gvStatus(g, pk) {
+  const pe = minPessoa(g, pk); const leal = minLeal(g, pk, pe); const E = minEst(g, pk); const eng = (ensureMin(g).eng[pk]) || 0;
+  const ev = EV(g); const emCrise = !!(ev && !g.eventoOk && pastaDoEvento(ev) === pk);
+  if (leal <= 10) return { k: 'demissionario', t: 'demissionário', c: 'var(--rubro)', ic: 'DoorOpen', grave: true, leal };
+  if (E.desgaste > 60) return { k: 'desgastado', t: 'desgastado', c: 'var(--rubro)', ic: 'Flame', grave: true, leal };
+  if (emCrise) return { k: 'crise', t: 'em crise', c: 'var(--rubro)', ic: 'TriangleAlert', grave: true, leal };
+  if (leal < 30 || E.desgaste > 35 || eng >= 2) return { k: 'pressao', t: 'sob pressão', c: 'var(--ambar)', ic: 'Gauge', grave: false, leal };
+  return { k: 'estavel', t: 'estável', c: 'var(--verde)', ic: 'ShieldCheck', grave: false, leal };
+}
+function GvKpi({ ic, cor, k, v, s, sm, dado }) {
+  return html`<div className="gv-kpi" data-gv-kpi=${dado}><span className="gv-ic" style=${{ '--c': cor }}><${Icon} n=${ic} s=${20} /></span>
+    <div className="gv-kpi-k">${k}</div><div className=${'gv-kpi-v num' + (sm ? ' sm' : '')} style=${sm ? { fontFamily: 'var(--f-disp)' } : null} title=${typeof v === 'string' ? v : ''}>${v}</div><div className="gv-kpi-s">${s}</div></div>`;
+}
+function GvResumo({ g }) {
+  const R = resumoEsplanada(g); const NM = g.cfg.nomeados || {}; const M = ensureMin(g);
+  const comp = competenciaCfg(g.cfg) * 100; const nomes = PASTAS.filter(p => NM[p.k]).length; const meu = PASTAS.filter(p => NM[p.k] && NM[p.k].tipo === 'partidario' && NM[p.k].bloco === g.cfg.partido).length;
+  const pops = PASTAS.map(p => NM[p.k] && NM[p.k].pop).filter(x => x != null); const pop = pops.length ? pops.reduce((a, b) => a + b, 0) / pops.length : null;
+  const graves = PASTAS.filter(p => gvStatus(g, p.k).grave).length;
+  const P = g.prioridade; const pend = prioridadePendente(g); const ativa = P.k && P.q === trimestreDe(g) ? PRIORIDADEMAP[P.k] : null;
+  const mesAt = ativa ? Math.min(3, Math.max(1, g.mes - P.ini + 1)) : 0; const falta = 3 - mesAt;
+  return html`<section aria-label="Resumo do governo" data-resumo-esplanada="1" data-gv="resumo"><div className="gv-kpis">
+    <${GvKpi} dado="gabinete" ic="Users" cor=${corAtr(comp)} k="Competência" v=${fmt(comp, 0)} s=${html`entrega <b style=${{ color: corEntrega(R.media) }}>${fmt(R.media, 0)}</b>${pop != null ? ' · pop. ' + fmt(pop, 0) : ''}`} />
+    <${GvKpi} dado="ministros" ic="Landmark" cor="var(--anil)" k="Ministros" v=${nomes + '/' + PASTAS.length} s=${meu ? meu + (meu === 1 ? ' é do seu partido' : ' são do seu partido') : 'com nome definido'} />
+    <${GvKpi} dado="ideias" ic="Lightbulb" cor=${M.lista.length ? 'var(--ouro)' : 'var(--muted)'} k="Ideias pendentes" v=${M.lista.length} s=${M.lista.length ? 'aguardam sua decisão' : 'nenhuma por ora'} />
+    <${GvKpi} dado="prioridade" ic="Target" cor=${pend ? 'var(--ouro)' : 'var(--anil)'} k="Prioridade" sm=${true} v=${ativa ? ativa.nome : pend ? 'Escolha pendente' : 'Nenhuma'} s=${ativa ? html`mês ${mesAt} de 3 · ${falta === 0 ? 'último mês' : 'faltam ' + falta + (falta === 1 ? ' mês' : ' meses')}` : pend ? 'vale por 3 meses' : 'próxima em breve'} />
+    <${GvKpi} dado="crises" ic=${graves ? 'Flame' : 'ShieldCheck'} cor=${graves ? 'var(--rubro)' : 'var(--verde)'} k="Crise nos ministérios" v=${graves} s=${graves ? 'desgastados, em crise ou saindo' : 'nenhum em risco'} />
+  </div></section>`;
+}
 function CartaoEsplanada({ g, upd }) {
   const [pasta, setPasta] = useState(null); const reforma = pasta === '*reforma';
   const NM = g.cfg.nomeados || {}; const semAcao = g.acoes <= 0;
@@ -15982,51 +16102,53 @@ function CartaoEsplanada({ g, upd }) {
   const P = pasta && !reforma && PASTAS.find(p => p.k === pasta);
   const troca = (N) => { upd(n => { trocaMinistro(n, pasta, N); }); setPasta(null); };
   const dossie = (nome) => upd(n => { pedirDossie(n, nome); });
-  const R = resumoEsplanada(g);
-  const nm = (L) => L.map(x => `${x.nome} (${fmt(x.e, 0)})`).join(', ');
-  return html`<section className="sec" aria-labelledby="esp-t">
-    <div className="flex flex-wrap items-baseline justify-between gap-2 mb-3">
-      <h3 id="esp-t" className="disp text-2xl font-extrabold uppercase">Esplanada dos Ministérios</h3>
-      <span className="text-xs text-muted">Trocar um ministro custa 1 ação política</span>
+  const R = resumoEsplanada(g); const M = ensureMin(g);
+  return html`<section className="sec" aria-labelledby="esp-t" data-gv="ministros">
+    <div className="gv-sec-h">
+      <div><div className="eyebrow">Governo · Esplanada dos Ministérios</div><h3 id="esp-t" className="disp text-2xl font-extrabold uppercase">Ministros<${GvTip} txt="Trocar um ministro custa 1 ação política. Competência, popularidade e experiência vêm de dados públicos; lealdade, desgaste e risco são simulados nesta partida. Entrega = competência − desgaste/1,5 (mais 10 com metas cobradas): negativa quer dizer que a pasta gasta e não entrega." /></h3></div>
+      <button className="btn btn-ghost text-sm" disabled=${R.desgastados === 0 || semAcao} onClick=${() => setPasta('*reforma')} title="Troca de uma vez todos os titulares com desgaste acima de 60"><${Icon} n="Shuffle" s=${14} /> Reforma ministerial${R.desgastados ? ` (${R.desgastados})` : ''}</button>
     </div>
-    <div className="grid gap-3 sm:grid-cols-4 mb-4 p-3 rounded-lg border border-line" data-resumo-esplanada="1">
-      <div><div className="eyebrow">Entrega média</div><div className="num text-2xl" style=${{ color: corEntrega(R.media) }}>${fmt(R.media, 0)}</div></div>
-      <div><div className="eyebrow">Desgastados (acima de 60)</div><div className="num text-2xl" style=${{ color: R.desgastados ? 'var(--rubro)' : 'var(--verde)' }}>${R.desgastados}</div></div>
-      <div className="sm:col-span-2 text-xs"><div><b className="text-verde">Melhores:</b> ${nm(R.melhores)}</div><div className="mt-1"><b className="text-rubro">Piores:</b> ${nm(R.piores)}</div></div>
-      <div className="sm:col-span-4"><button className="btn btn-ghost text-sm" disabled=${R.desgastados === 0 || semAcao} onClick=${() => setPasta('*reforma')}><${Icon} n="Shuffle" s=${14} /> Reforma ministerial${R.desgastados ? ` (${R.desgastados})` : ''}</button></div>
-    </div>
-    <ul className="flex flex-col divide-y divide-line">${PASTAS.map(p => {
-      const N = NM[p.k]; const tipo = g.cfg.ministros[p.k]; const comp = compMin(g.cfg, p.k) * 100; const E = minEst(g, p.k);
+    <ul className="gv-min-grid" data-min-ministros="1" style=${{ listStyle: 'none', padding: 0, margin: 0 }}>${PASTAS.map(p => {
+      const N = NM[p.k]; const tipo = g.cfg.ministros[p.k]; const comp = compMin(g.cfg, p.k) * 100; const E = minEst(g, p.k); const S = gvStatus(g, p.k); const pe = minPessoa(g, p.k);
       const entrega = entregaPasta(g, p.k); const rend = rendimentoPasta(g, p.k); const orc = orcDaPasta(g, p.k);
-      const blG = tipo === 'partidario' && !N ? (g.minGen || {})[p.k] : null;
-      return html`<li key=${p.k} className="py-2.5" data-pasta=${p.k}>
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-          <span className="w-32 shrink-0 text-sm font-medium">${p.nome}</span>
-          <div className="flex items-center gap-2 min-w-0 flex-1 basis-48">
-            ${N ? html`<${Ef} nome=${N.nome} cor=${corEfigie(N)} papel="ministro" s=${40} p=${N} /><div className="min-w-0"><div className="text-sm truncate">${N.nome}</div><div className="text-[11px] text-muted truncate">${subNomeado(N)}</div></div>`
-            : html`<div className="min-w-0"><div className="text-sm text-muted">a definir</div><div className="text-[11px] text-muted">${PERFIS_MIN[tipo].nome}${blG && PMAP[blG] ? ' · ' + PMAP[blG].curto : ''}</div></div>`}
-            ${N ? html`<${Tag} cor=${corNomeado(N)}>${rotuloNomeado(N)}${N.tipo === 'partidario' && N.bloco === g.cfg.partido ? ' · seu partido' : ''}</${Tag}>` : html`<${Tag} cor=${PERFIS_MIN[tipo].cor}>${tipo === 'partidario' && blG && PMAP[blG] ? PMAP[blG].curto : PERFIS_MIN[tipo].nome.toLowerCase()}</${Tag}>`}
-          </div>
-          <div className="flex flex-col gap-1 w-44 shrink-0">
-            <div className="flex items-center gap-2" title=${N && N.fonteAtr && N.fonteAtr.comp ? N.fonteAtr.comp : 'Competência padrão do perfil genérico'}><span className="text-[10px] text-muted w-9">comp.</span><div className="flex-1"><${Bar} v=${comp} cor=${corAtr(comp)} h=${6} label=${'Competência na pasta ' + p.nome} /></div><span className="num text-xs w-7 text-right">${fmt(comp, 0)}</span></div>
-            <div className="flex items-center gap-2" title="Desgaste do ministro: sobe todo mês, com crises, escândalos e derrotas da pasta; reuniões o reduzem"><span className="text-[10px] text-muted w-9">desg.</span><div className="flex-1"><${Bar} v=${E.desgaste} cor=${E.desgaste > 60 ? 'var(--rubro)' : E.desgaste > 35 ? 'var(--ambar)' : 'var(--verde)'} h=${6} label=${'Desgaste na pasta ' + p.nome} /></div><span className="num text-xs w-7 text-right" data-desgaste=${p.k}>${fmt(E.desgaste, 0)}</span></div>
-            ${N && N.pop != null && html`<div className="flex items-center gap-2" title=${N.fonteAtr && N.fonteAtr.pop ? N.fonteAtr.pop : 'Popularidade'}><span className="text-[10px] text-muted w-9">pop.</span><div className="flex-1"><${Bar} v=${N.pop} cor=${corAtr(N.pop)} h=${6} label=${'Popularidade de ' + N.nome} /></div><span className="num text-xs w-7 text-right">${fmt(N.pop, 0)}</span></div>`}
-          </div>
+      const blG = tipo === 'partidario' && !N ? (g.minGen || {})[p.k] : null; const bloco = N && N.tipo === 'partidario' ? N.bloco : blG;
+      const eng = M.eng[p.k] || 0; const vz = M.vazou[p.k] || 0; const nIdeias = M.lista.filter(x => x.pk === p.k).length;
+      const ac = M.hist.filter(h => h.pk === p.k && (h.estado === 'enviada' || h.estado === 'ajustada')).length; const en = M.hist.filter(h => h.pk === p.k && (h.estado === 'engavetada' || h.estado === 'expirada')).length;
+      const meter = (rot, v, cor, dado, tip) => html`<div className="gv-meter" title=${tip || ''}><span>${rot}</span><${Bar} v=${v} cor=${cor} h=${6} label=${rot + ' · ' + p.nome} /><span className="num" data-desgaste=${dado || null}>${fmt(v, 0)}</span></div>`;
+      return html`<li key=${p.k} className="gv-min" style=${{ '--st': S.c }} data-pasta=${p.k} data-min-linha=${p.k} data-st=${S.k}>
+        <div className="gv-min-h">
+          ${N ? html`<${Ef} nome=${N.nome} cor=${corEfigie(N)} papel="ministro" s=${48} p=${N} />` : html`<span className="gv-ic" style=${{ width: 48, height: 48, '--c': 'var(--muted)' }}><${Icon} n="UserRound" s=${22} /></span>`}
+          <div className="min-w-0"><div className="gv-min-p">${p.nome}</div><div className="gv-min-n" title=${pe.nome}>${N ? N.nome : 'a definir'}${pe.sim ? ' ' : ''}${pe.sim && html`<${Sim} />`}</div><div className="gv-min-s">${N ? subNomeado(N) : PERFIS_MIN[tipo].nome + (bloco && PMAP[bloco] ? ' · ' + PMAP[bloco].curto : '')}</div></div>
+          ${bloco ? html`<${LogoPartido} sigla=${N && N.sigla} bloco=${bloco} tam=${34} />` : null}
         </div>
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 mt-2 text-xs">
-          <span title="Entrega = competência − desgaste/1,5 (mais 10 com metas cobradas). Negativa: a pasta gasta e não entrega.">Entrega <b className="num text-sm" style=${{ color: corEntrega(entrega) }} data-entrega=${p.k}>${fmt(entrega, 0)}</b></span>
-          <span title="Rendimento da execução da pasta">Rendimento <b className="num">${fmt(rend, 0)}%</b></span>
-          <span className="text-muted">${orc ? `Orçamento ${orc.rubrica}: R$ ${fmt(orc.atual, 0)} bi (${sgn(orc.slider, 0)}% no controle)` : 'Sem rubrica própria no controle de orçamento'}</span>
-          <span className="ml-auto flex flex-wrap gap-1.5">
-            <button className="btn btn-ghost !text-xs" disabled=${E.reuniao === g.mes || g.pes.energia < 5} title="−15 de desgaste, −5 de energia, uma vez por mês" onClick=${() => upd(n => { reuniaoMinistro(n, p.k); })}>Reunião</button>
-            <button className="btn btn-ghost !text-xs" disabled=${E.cobranca >= g.mes} title="+10 de entrega por 3 meses, +8 de desgaste" onClick=${() => upd(n => { cobrarMetas(n, p.k); })}>Cobrar metas</button>
-            <button className="btn btn-ghost !text-xs" disabled=${semAcao} title=${semAcao ? 'Sem ações políticas neste mês' : 'Custa 1 ação política'} aria-label=${'Substituir ministro: ' + p.nome} onClick=${() => setPasta(p.k)}><${Icon} n="RefreshCw" s=${12} /> Substituir</button>
-          </span>
+        <div className="gv-chips">
+          <${Tag} cor=${S.c}><${Icon} n=${S.ic} s=${12} /> ${S.t}</${Tag}>
+          <span className="gv-chip" title="Entrega = competência − desgaste/1,5 (mais 10 com metas cobradas). Negativa: a pasta gasta e não entrega.">entrega <b className="num" style=${{ color: corEntrega(entrega) }} data-entrega=${p.k}>${fmt(entrega, 0)}</b></span>
+          ${N ? html`<span className="gv-chip" style=${{ color: corNomeado(N), borderColor: 'currentColor' }}>${N.tipo === 'partidario' && N.bloco === g.cfg.partido ? 'seu partido' : rotuloNomeado(N)}</span>` : null}
+          ${nIdeias > 0 && html`<span className="gv-chip ouro" title="Ideias deste ministro aguardando decisão"><${Icon} n="Lightbulb" s=${11} /> ${nIdeias} ${nIdeias === 1 ? 'ideia' : 'ideias'}</span>`}
         </div>
-        ${N && html`<${FichaPessoa} pessoa=${N} pasta=${p.k} g=${g} onDossie=${dossie} sem="barras" compacta />`}
+        <div className="flex flex-col gap-1.5">
+          ${meter('competência', comp, corAtr(comp), null, N && N.fonteAtr && N.fonteAtr.comp ? N.fonteAtr.comp : 'Competência padrão do perfil genérico')}
+          <div className="gv-meter" title="Lealdade ao governo. Engavetar ideias reduz; acatar aumenta. Abaixo de 7, o ministro pede demissão."><span>lealdade</span><${Bar} v=${S.leal} cor=${corAtr(S.leal)} h=${6} label=${'Lealdade · ' + p.nome} /><span className="num" data-min-leal=${p.k}>${Math.round(S.leal)}</span></div>
+          ${meter('desgaste', E.desgaste, E.desgaste > 60 ? 'var(--rubro)' : E.desgaste > 35 ? 'var(--ambar)' : 'var(--verde)', p.k, 'Desgaste do ministro: sobe todo mês, com crises, escândalos e derrotas da pasta; reuniões o reduzem')}
+        </div>
+        <div className="gv-acts">
+          <button className="btn btn-ghost" disabled=${E.reuniao === g.mes || g.pes.energia < 5} title="Conversar com o ministro: −15 de desgaste, −5 de energia, uma vez por mês" onClick=${() => upd(n => { reuniaoMinistro(n, p.k); })}><${Icon} n="MessagesSquare" s=${13} /> Reunião</button>
+          <button className="btn btn-ghost" disabled=${E.cobranca >= g.mes} title="+10 de entrega por 3 meses, +8 de desgaste" onClick=${() => upd(n => { cobrarMetas(n, p.k); })}><${Icon} n="ListChecks" s=${13} /> Cobrar metas</button>
+          <button className="btn btn-ghost" disabled=${semAcao} title=${semAcao ? 'Sem ações políticas neste mês' : 'Custa 1 ação política'} aria-label=${'Substituir ministro: ' + p.nome} onClick=${() => setPasta(p.k)}><${Icon} n="RefreshCw" s=${13} /> Substituir</button>
+        </div>
+        <details className="gv-det"><summary><span className="gv-car"><${Icon} n="ChevronRight" s=${14} /></span> Detalhes</summary><div className="gv-det-b">
+          <div className="flex flex-wrap gap-x-4 gap-y-1">
+            ${N && N.pop != null && html`<span title=${(N.fonteAtr && N.fonteAtr.pop) || 'Popularidade'}><span className="text-muted">popularidade</span> <b className="num">${fmt(N.pop, 0)}</b></span>`}
+            <span title="Rendimento da execução da pasta"><span className="text-muted">rendimento</span> <b className="num">${fmt(rend, 0)}%</b></span>
+            <span><span className="text-muted">${MIN_TIPO[pe.tipo]} · comp.</span> <b className="num">${pe.comp}</b></span>
+          </div>
+          <div className="text-muted">${orc ? `Orçamento ${orc.rubrica}: R$ ${fmt(orc.atual, 0)} bi (${sgn(orc.slider, 0)}% no controle)` : 'Sem rubrica própria no controle de orçamento'}</div>
+          <div className="text-muted">${ac} acatadas · ${en} engavetadas${eng ? ` · seguidas ${eng}/3` : ''}${vz ? ` · ${vz} vazamento${vz > 1 ? 's' : ''}` : ''}</div>
+          ${N && html`<${FichaPessoa} pessoa=${N} pasta=${p.k} g=${g} onDossie=${dossie} sem="barras" compacta />`}
+        </div></details>
       </li>`;
     })}</ul>
-    <p className="text-sm mt-3" role="status">Competência média do governo <b className="num">${fmt(competenciaCfg(g.cfg) * 100, 0)}</b></p>
     ${pasta && !reforma && html`<${Gaveta} titulo=${'Trocar ministro: ' + P.nome} eyebrow="Esplanada · custa 1 ação política" onClose=${() => setPasta(null)}><div className="flex flex-col gap-4">
       <p className="text-sm text-muted">${NM[pasta] ? 'Atual: ' + NM[pasta].nome + '.' : 'A pasta está sem nome definido.'}</p>
       <${SeletorMinistro} pasta=${pasta} atual=${NM[pasta]} presidente=${g.cfg} ctx=${g} onDossie=${dossie} usados=${usados} onEscolher=${troca} />
@@ -17429,10 +17551,13 @@ function NotaFim({ area, children }) {
   return html`<details className="sec text-xs text-muted min-w-0" data-fontes=${area}><summary className="cursor-pointer hover:text-fg text-sm font-semibold">Fontes e notas</summary><div className="mt-3 flex flex-col gap-2 leading-relaxed">${children}</div></details>`;
 }
 function PoderGoverno({ g, upd, decidir }) {
-  return html`<div className="flex flex-col gap-6">
-    <${CartaoEsplanada} g=${g} upd=${upd} />
+  return html`<div className="flex flex-col gap-6" data-gv="governo">
+    <style>${GV_CSS}</style>
+    <${GvResumo} g=${g} />
+    <${CartaoPrioridade} g=${g} upd=${upd} />
     <${MinIdeiasPoder} g=${g} upd=${upd} decidir=${decidir} />
-    <div className="grid gap-6 lg:grid-cols-2 items-start"><div className="flex flex-col gap-6 min-w-0"><${CartaoPrioridade} g=${g} upd=${upd} /><${CartaoAbin} g=${g} upd=${upd} /></div><${CartaoVice} g=${g} upd=${upd} /></div>
+    <${CartaoEsplanada} g=${g} upd=${upd} />
+    <div className="grid gap-6 lg:grid-cols-2 items-start"><${CartaoVice} g=${g} upd=${upd} /><${CartaoAbin} g=${g} upd=${upd} /></div>
     <${NotaFim} area="governo"><p>Competência, popularidade e experiência dos ministros vêm de dados públicos (passe o mouse sobre o ministro para ver a fonte). Lealdade, articulação, risco e desgaste são simulados nesta partida. ${AVISO_SIM}</p></${NotaFim}>
   </div>`;
 }
@@ -28165,42 +28290,61 @@ function MinCartao({ g, upd, e, decidir, onAjustar, ativo, compacto }) {
   </article>`;
 }
 
-/* ---- Poder → Governo: lista completa, ministros e histórico ---- */
+/* ---- Poder → Governo: ideias dos ministros em blocos, ministros e histórico ---- */
+function MinIdeiaBloco({ g, upd, e, decidir, onAjustar }) {
+  const c = useMemo(() => minPrev(g, e), [e.id, g.mes, Math.round(aprovacao(g)), Math.round(compMin(g.cfg, e.pk) * 100)]);
+  const semAcao = g.acoes <= 0 || g.pes.energia < 10;
+  const M = ensureMin(g); const eng = M.eng[e.pk] || 0; const leal = minLeal(g, e.pk);
+  const [bl, bc] = MIN_BAND[minQualBand(e.q)]; const vence = e.exp - g.mes; const Mi = e.ministro;
+  const acatar = () => { MIN_PEND = { id: e.id, texto: e.texto }; decidir(e.texto); };
+  const chips = [];
+  if (c) {
+    for (const [k, v, cor] of minFiscal(c)) chips.push({ t: k + ' ' + v, c: cor === 'var(--verde)' ? 'pos' : 'neg' });
+    if (c.cong) chips.push({ t: `Câmara ${c.totC}/${c.q.c}`, c: c.totC >= c.q.c ? 'pos' : 'neg' }, { t: `Senado ${c.totS}/${c.q.s}`, c: c.totS >= c.q.s ? 'pos' : 'neg' });
+    else chips.push({ t: 'sem votação', c: '' });
+    chips.push({ t: c.stf === 'ok' ? 'STF: sem vício' : c.stf === 'controverso' ? 'STF: contestável' : 'STF: risco de derrubada', c: c.stf === 'ok' ? 'pos' : 'neg' });
+  }
+  return html`<article className="gv-idea" style=${{ '--c': bc }} data-min-card=${e.id} data-min-pasta=${e.pk} data-min-band=${e.band}>
+    <div className="gv-idea-h">
+      <span className="gv-ic" style=${{ '--c': bc }}><${Icon} n="Lightbulb" s=${20} /></span>
+      <div className="min-w-0"><div className="gv-min-p">${minPasta(e.pk)} · ${e.inst}</div><div className="gv-min-n" data-min-nome="1">${Mi.nome}${Mi.sim ? ' ' : ''}${Mi.sim && html`<${Sim} txt="Pessoa real; a ideia e a fala são simuladas pelo jogo e refletem só a posição política atribuída ao cargo." />`}</div></div>
+      <span className="chip" style=${{ color: bc, borderColor: bc }} title=${'Qualidade técnica = competência do ministro na pasta (' + e.compEf + ' neste mês) combinada com a especificidade do texto e a segurança jurídica lidas pelo motor.'} data-min-q=${e.q}>${e.q} · ${bl}</span>
+    </div>
+    <h4 data-min-titulo="1">${e.ti}</h4>
+    <p className="gv-idea-t" data-min-texto="1" title=${e.texto}>${e.texto}</p>
+    <div data-min-prev="1"><${GvChips} L=${chips} max=${6} /></div>
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted">
+      <span>${vence <= 0 ? 'vence neste mês' : vence === 1 ? 'vence no fim do próximo mês' : 'vence em ' + vence + ' meses'}</span>
+      <span title="Lealdade do ministro ao governo. Engavetar reduz; acatar aumenta. Abaixo de 7, ele pede demissão.">lealdade <b className="num" style=${{ color: corAtr(leal) }}>${Math.round(leal)}</b></span>
+      ${eng > 0 && html`<span style=${{ color: eng >= 2 ? 'var(--rubro)' : 'var(--ambar)' }}>engavetadas seguidas: ${eng}/3</span>`}
+      <${GvTip} lado="dir" txt=${'Justificativa do ministro: ' + e.j + ' · Origem: ' + e.orig.txt + (c ? ' · Execução: ' + minPasta(c.pastaExec) : '')} />
+    </div>
+    <div className="gv-idea-a" role="group" aria-label="Decidir sobre a ideia do ministro">
+      <button type="button" className="btn btn-pri btn-sm" disabled=${semAcao} data-min-act="acatar" onClick=${acatar} aria-label=${'Aprovar e enviar: ' + e.ti} title=${semAcao ? 'Sem ações ou sem energia neste mês' : 'Manda o texto pelo fluxo normal de decisão. Gasta 1 ação; ministro +5 de lealdade' + (Mi.tipo === 'partidario' ? ' e o partido dele ganha relação.' : '.')}><${Icon} n="Check" s=${14} /> Aprovar</button>
+      <button type="button" className="btn btn-ghost btn-sm" data-min-act="ajustar" onClick=${() => onAjustar && onAjustar(e)} aria-label=${'Ajustar antes: ' + e.ti} title="Leva o texto para a caixa de decisão da Mesa para você editar. Conta como acolher a ideia (+3 de lealdade)."><${Icon} n="PenLine" s=${14} /> Ajustar</button>
+      <button type="button" className="btn btn-ghost btn-sm" data-min-act="engavetar" onClick=${() => upd(n => { minEngaveta(n, e.id, false); })} aria-label=${'Recusar e engavetar: ' + e.ti} title="Descarta a ideia. O ministro perde 6 de lealdade; três engavetadas seguidas viram vazamento na imprensa."><${Icon} n="X" s=${14} /> Recusar</button>
+    </div>
+  </article>`;
+}
 function MinIdeiasPoder({ g, upd, decidir }) {
   const M = ensureMin(g); const L = M.lista; const H = M.hist;
   const ajustar = (e) => upd(n => { minAjustada(n, e.id); n.minProp.aj = { texto: e.texto, n: Date.now() }; n.ui = uiNav(n.ui, 'mesa'); });
   const cont = (est) => H.filter(h => h.estado === est).length;
   return html`<section className="sec" aria-labelledby="minp-t" data-min-bloco="poder">
-    <div className="flex flex-wrap items-end justify-between gap-2 mb-4">
-      <div><div className="eyebrow">Governo · ideias dos ministros</div><h3 id="minp-t" className="disp text-2xl font-extrabold uppercase">Propostas dos ministros</h3></div>
+    <div className="gv-sec-h">
+      <div><div className="eyebrow">Governo · ideias dos ministros</div><h3 id="minp-t" className="disp text-2xl font-extrabold uppercase">Propostas dos ministros<${GvTip} txt="Novas propostas chegam no início de cada mês. Aprovar manda o texto pelo fluxo normal de decisão (1 ação); Ajustar leva o texto à caixa da Mesa; Recusar engaveta e custa lealdade." /></h3></div>
       <div className="flex flex-wrap gap-2 text-xs"><${Tag} cor="var(--ouro)">${L.length} abertas</${Tag}><${Tag} cor="var(--verde)">${cont('enviada') + cont('ajustada')} acatadas</${Tag}><${Tag} cor="var(--rubro)">${cont('engavetada')} engavetadas</${Tag}><${Tag}>${cont('expirada')} expiradas</${Tag}></div>
     </div>
-    <div className="grid gap-6 lg:grid-cols-12 items-start">
-      <div className="lg:col-span-8 min-w-0 flex flex-col gap-3">
-        ${L.length === 0 ? html`<p className="text-sm text-muted">Nenhuma ideia aguardando. Novas propostas chegam no início de cada mês.</p>`
-        : L.map(e => html`<${MinCartao} key=${e.id} g=${g} upd=${upd} e=${e} decidir=${decidir} onAjustar=${ajustar} ativo=${true} />`)}
-      </div>
-      <div className="lg:col-span-4 min-w-0">
-        <h4 className="h-quiet mb-2">Relação com os ministros</h4>
-        <ul className="flex flex-col divide-y divide-line" data-min-ministros="1">${PASTAS.map(p => {
-          const pe = minPessoa(g, p.k); const leal = minLeal(g, p.k, pe); const eng = M.eng[p.k] || 0; const vz = M.vazou[p.k] || 0;
-          const ac = H.filter(h => h.pk === p.k && (h.estado === 'enviada' || h.estado === 'ajustada')).length; const en = H.filter(h => h.pk === p.k && (h.estado === 'engavetada' || h.estado === 'expirada')).length;
-          return html`<li key=${p.k} className="py-2 text-xs" data-min-linha=${p.k}>
-            <div className="flex items-center gap-2"><b className="w-28 shrink-0 text-sm font-medium">${p.nome}</b><span className="truncate flex-1 min-w-0">${pe.nome}${pe.sim ? ' ' : ''}${pe.sim && html`<${Sim} />`}</span></div>
-            <div className="flex items-center gap-2 mt-1"><span className="text-muted w-14">lealdade</span><div className="flex-1"><${Bar} v=${leal} cor=${corAtr(leal)} h=${6} label=${'Lealdade ' + Math.round(leal)} /></div><span className="num w-7 text-right" data-min-leal=${p.k}>${Math.round(leal)}</span></div>
-            <div className="text-muted mt-1">${MIN_TIPO[pe.tipo]} · comp. ${pe.comp} · ${ac} acatadas · ${en} engavetadas${eng ? ` · seguidas ${eng}/3` : ''}${vz ? ` · ${vz} vazamento${vz > 1 ? 's' : ''}` : ''}</div>
-          </li>`;
-        })}</ul>
-      </div>
-    </div>
-    <h4 className="h-quiet mt-6 mb-2">Histórico</h4>
-    ${H.length === 0 ? html`<p className="text-sm text-muted">Nada decidido ainda.</p>` : html`<ul className="flex flex-col divide-y divide-line" data-min-hist="1">${H.slice(0, 30).map(h => {
+    ${L.length === 0 ? html`<div className="flex items-center gap-3 p-4 rounded-xl border border-line text-sm text-muted"><${Icon} n="Inbox" s=${20} /> Nenhuma ideia aguardando. Novas propostas chegam no início de cada mês.</div>`
+    : html`<div className="gv-idea-grid">${L.map(e => html`<${MinIdeiaBloco} key=${e.id} g=${g} upd=${upd} e=${e} decidir=${decidir} onAjustar=${ajustar} />`)}</div>`}
+    <details className="gv-det mt-4"><summary><span className="gv-car"><${Icon} n="ChevronRight" s=${14} /></span> Histórico de decisões (${H.length})</summary>
+    ${H.length === 0 ? html`<p className="text-sm text-muted mt-2">Nada decidido ainda.</p>` : html`<ul className="flex flex-col divide-y divide-line mt-2" data-min-hist="1">${H.slice(0, 30).map(h => {
       const [el, ec] = MIN_ESTADO[h.estado] || [h.estado, 'var(--muted)']; const r = h.res && MIN_RES[h.res];
       return html`<li key=${h.id} className="py-2 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm" data-min-h=${h.id}>
         <span className="num text-xs text-muted w-14 shrink-0">${dataCurta(h.mes)}</span>
         <span className="flex-1 min-w-0"><b>${minPasta(h.pk)}</b> · ${h.ti} <span className="text-xs text-muted">(${h.ministro.nome}, ${h.inst}, qualidade ${h.q})</span></span>
         <${Tag} cor=${ec}>${el}</${Tag}>${r && html`<${Tag} cor=${r[1]}>${r[0]}</${Tag}>`}</li>`;
-    })}</ul>`}
+    })}</ul>`}</details>
   </section>`;
 }
 const SAVE_KEY = 'faixa-presidencial-v2';
