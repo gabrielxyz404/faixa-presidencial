@@ -608,3 +608,113 @@ Fora do escopo ou não resolvido: 'concurso' (o fim dos concursos com -6 bi) já
 | teor | 31% | 51% |
 | varias | 34% | 49% |
 | zoeira | 47% | 58% |
+
+## Rodada 12
+
+Entendimento: mega_dev 61,1% (1283/2100), mega_dev2 52,6% (737/1400); conjunto 57,7%. Efeito no save: mega_dev_sim 63%, mega_dev2_sim 58%. cenarios.json 239/3/6 (única diferença: acelera_obra/custo m24). Benches: dev 159/220, dev2 92/121, cft_dev 89/90, cft_dev2 60/60, zoeira_dev 72/80, zoeira_dev2 48/50, final_dev 123/150, justica_dev 40/40. ui_v39 6/6, ui_v38 41/0, regressao.py sem erros de página.
+
+Resolvedor de direção de tributo (v4Alivio): dedução, abatimento, desconto, isenção, crédito presumido, devolução, alíquota menor, faixa de isenção maior, Refis e 'aplicar ao Anexo V as alíquotas do Anexo III' viram sinal negativo sobre o tributo e a despesa abatida (educação, creche, cuidador) deixa de virar programa de gasto; verbos de restrição (limitar, cortar, reduzir, subir, revogar a dedução ou o benefício) mantêm o aumento. Dedução de despesa específica fica em poucos bilhões (teto de 3 bi no caso do IR). Corte de benefício fiscal ou incentivo setorial (gastos tributários) agora é receita positiva em vez de corte de despesa de -30/-50; 'incentivos do setor automotivo/da indústria' entram no objeto. Refis é um objeto novo com receita única (7,2 bi para 90% de desconto) e receita recorrente nula. 'Do IR' depois de dedução, abatimento, permitir ou desconto vira imposto de renda. Anexo do Simples passa a pedir PLP. Benefício fiscal/tributário não colide mais com benefício previdenciário; 'declaração pré-preenchida' não é pronunciamento e vira ADM junto com os procedimentos da Receita (malha fina, restituição, e-CAC); a isenção do IR até R$ 5 mil já em vigor fica como PL, não COM. Imposto novo sobre ricos, fortuna, herança, dividendos, jatinhos e renda acima de R$ X mil sem número usa R$ 20 bi em vez de 1,5. A conta de finalidade (X financia Y) já saía líquida; o caso do IR com incentivos automotivos soma agora gasto tributário + faixa e dá receita ~0.
+
+Energia/infra/saneamento: nas duas bases juntas (100 itens cada) acertam 50, 63 e 62; o erro dominante é valor (32 a 34 por tema), sobretudo custo fora da faixa e custo que deveria ser zero. Classes encontradas: (a) concessões e pedágios lidos como receita única de 8 a 40 bi quando o gabarito espera nada (regra de pedágio free flow, prorrogação antecipada, PPI); (b) programa nomeado sem público ('Água para Todos', 'agua encanada pra toda casa', 'banheiro pra todo mundo') sem a escala universal; (c) ICMS (tributo estadual) sai com efeito zero, mas o gabarito espera -5 a -40 de receita; (d) obras em R$ bi explícitos onde o gabarito esperava custo anual baixo mais despesa única (PAC Saneamento 34,5). Nenhuma foi corrigida nesta rodada por falta de uma regra única que valha nos dois conjuntos.
+
+Conflitos de gabarito: (i) item condicional do holdout ('se o PIB crescer mais de 3%, reduzir o IRPJ') espera valor; 105 dos 106 itens condicionais dos conjuntos de treino esperam zero, mantida a regra.
+
+### mega_dev
+| Tema | Entende v3.9 | Entende v4 | Δ | Efeito no save v3.9 | Efeito v4 | Δ |
+|---|---|---|---|---|---|---|
+| agro | 47% | 72% | +25 | 60% | 56% | -4 |
+| assistencia_social | 27% | 62% | +35 | 79% | 84% | +5 |
+| bets | 42% | 67% | +25 | 62% | 65% | +4 |
+| ciencia_tecnologia | 32% | 62% | +30 | 64% | 72% | +8 |
+| constituicao | 33% | 57% | +23 | 33% | 33% | +0 |
+| corte_gastos | 27% | 52% | +25 | 82% | 100% | +18 |
+| cultura_esporte | 28% | 50% | +22 | 62% | 54% | -8 |
+| desemprego | 40% | 62% | +22 | 73% | 73% | +0 |
+| direitos_humanos | 47% | 65% | +18 | 85% | 81% | -4 |
+| dolar | 37% | 62% | +25 | 25% | 50% | +25 |
+| economia | 35% | 52% | +17 | 50% | 62% | +12 |
+| educacao | 28% | 45% | +17 | 86% | 79% | -7 |
+| energia | 27% | 58% | +32 | 51% | 66% | +14 |
+| games | 38% | 68% | +30 | 50% | 38% | -12 |
+| grandes_empresas | 42% | 57% | +15 | 42% | 50% | +8 |
+| ia | 52% | 73% | +22 | 50% | 36% | -14 |
+| impostos | 18% | 55% | +37 | 35% | 51% | +16 |
+| inflacao | 42% | 53% | +12 | 57% | 71% | +14 |
+| infraestrutura | 43% | 70% | +27 | 75% | 75% | +0 |
+| justica | 48% | 70% | +22 | 50% | 50% | +0 |
+| medias_empresas | 32% | 68% | +37 | 57% | 67% | +10 |
+| meio_ambiente | 28% | 67% | +38 | 67% | 67% | +0 |
+| micro_empresas | 37% | 67% | +30 | 56% | 65% | +9 |
+| moradia | 38% | 58% | +20 | 84% | 84% | +0 |
+| previdencia | 33% | 52% | +18 | 60% | 52% | -7 |
+| privatizacoes | 32% | 62% | +30 | 100% | 100% | +0 |
+| regalias | 35% | 55% | +20 | 46% | 46% | +0 |
+| relacoes_exteriores | 18% | 50% | +32 | 44% | 48% | +4 |
+| saneamento | 40% | 68% | +28 | 50% | 67% | +17 |
+| saude | 52% | 70% | +18 | 82% | 100% | +18 |
+| seguranca | 23% | 55% | +32 | 73% | 73% | +0 |
+| setor_privado | 38% | 67% | +28 | 67% | 83% | +17 |
+| terras_raras | 30% | 67% | +37 | 38% | 46% | +8 |
+| trabalhista | 53% | 70% | +17 | 50% | 46% | -4 |
+| transporte | 27% | 53% | +27 | 64% | 75% | +11 |
+| **TOTAL** | 36% | 61% | +25 | 60% | 63% | +4 |
+
+| Tipo de proposta | v3.9 | v4 |
+|---|---|---|
+| bem | 39% | 59% |
+| ja_lei | 23% | 92% |
+| mal | 32% | 59% |
+| outro | 28% | 63% |
+| teor | 35% | 54% |
+| varias | 32% | 44% |
+| zoeira | 40% | 74% |
+
+### mega_dev2
+| Tema | Entende v3.9 | Entende v4 | Δ | Efeito no save v3.9 | Efeito v4 | Δ |
+|---|---|---|---|---|---|---|
+| agro | 30% | 48% | +18 | 45% | 41% | -3 |
+| assistencia_social | 40% | 48% | +8 | 80% | 80% | +0 |
+| bets | 38% | 60% | +22 | 46% | 46% | +0 |
+| ciencia_tecnologia | 35% | 40% | +5 | 70% | 60% | -10 |
+| constituicao | 55% | 68% | +12 | 100% | 100% | +0 |
+| corte_gastos | 35% | 50% | +15 | 71% | 76% | +6 |
+| cultura_esporte | 45% | 68% | +22 | 40% | 50% | +10 |
+| desemprego | 40% | 55% | +15 | 60% | 67% | +7 |
+| direitos_humanos | 35% | 48% | +12 | 88% | 62% | -25 |
+| dolar | 42% | 65% | +22 | 50% | 38% | -12 |
+| economia | 38% | 65% | +28 | 51% | 51% | +0 |
+| educacao | 38% | 42% | +5 | 86% | 71% | -14 |
+| energia | 28% | 38% | +10 | 50% | 42% | -8 |
+| games | 35% | 52% | +18 | 47% | 47% | +0 |
+| grandes_empresas | 28% | 30% | +2 | 37% | 40% | +3 |
+| ia | 58% | 65% | +8 | 44% | 44% | +0 |
+| impostos | 22% | 35% | +12 | 35% | 35% | +0 |
+| inflacao | 20% | 45% | +25 | 88% | 100% | +12 |
+| infraestrutura | 45% | 52% | +8 | 86% | 86% | +0 |
+| justica | 42% | 55% | +12 | 80% | 60% | -20 |
+| medias_empresas | 30% | 48% | +18 | 73% | 73% | +0 |
+| meio_ambiente | 42% | 65% | +22 | 59% | 59% | +0 |
+| micro_empresas | 35% | 62% | +28 | 65% | 73% | +8 |
+| moradia | 40% | 48% | +8 | 80% | 72% | -8 |
+| previdencia | 45% | 55% | +10 | 50% | 58% | +8 |
+| privatizacoes | 38% | 68% | +30 | 50% | 83% | +33 |
+| regalias | 30% | 40% | +10 | 45% | 45% | +0 |
+| relacoes_exteriores | 32% | 45% | +12 | 58% | 58% | +0 |
+| saneamento | 35% | 52% | +18 | 79% | 71% | -7 |
+| saude | 45% | 65% | +20 | 100% | 100% | +0 |
+| seguranca | 20% | 40% | +20 | 62% | 69% | +8 |
+| setor_privado | 62% | 78% | +15 | 33% | 33% | +0 |
+| terras_raras | 28% | 35% | +8 | 20% | 20% | +0 |
+| trabalhista | 58% | 72% | +15 | 74% | 63% | -11 |
+| transporte | 25% | 42% | +18 | 20% | 30% | +10 |
+| **TOTAL** | 38% | 53% | +15 | 58% | 58% | -1 |
+
+| Tipo de proposta | v3.9 | v4 |
+|---|---|---|
+| bem | 44% | 54% |
+| ja_lei | 25% | 60% |
+| mal | 29% | 45% |
+| outro | 27% | 63% |
+| teor | 31% | 51% |
+| varias | 34% | 49% |
+| zoeira | 47% | 58% |

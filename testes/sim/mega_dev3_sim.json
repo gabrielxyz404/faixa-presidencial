@@ -1,0 +1,5311 @@
+[
+{
+"id": "n0000",
+"descricao": "agro: Subvencionar o prêmio do seguro rural com R$ 3 bilhões por ano",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Subvencionar o prêmio do seguro rural com R$ 3 bilhões por ano",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "g_agro",
+"m12": "sobe",
+"just": "Proteção contra perdas."
+}
+]
+},
+{
+"id": "n0001",
+"descricao": "agro: Contratar 1.500 fiscais federais agropecuários e dobrar o orçamento da defesa ag",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Contratar 1.500 fiscais federais agropecuários e dobrar o orçamento da defesa agropecuária",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0002",
+"descricao": "agro: Zerar o imposto de importação de máquinas agrícolas sem similar nacional",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar o imposto de importação de máquinas agrícolas sem similar nacional",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "sobe",
+"just": "Máquinas mais baratas."
+}
+]
+},
+{
+"id": "n0003",
+"descricao": "agro: Criar um Cadastro Ambiental Rural simplificado para agricultores familiares, com",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um Cadastro Ambiental Rural simplificado para agricultores familiares, com análise em 90 dias",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agfam",
+"m12": "sobe",
+"just": "Regularização mais rápida."
+}
+]
+},
+{
+"id": "n0004",
+"descricao": "agro: Reservar 30% do crédito do Pronaf para mulheres agricultoras",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reservar 30% do crédito do Pronaf para mulheres agricultoras",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mulheres",
+"m12": "sobe",
+"just": "Crédito direcionado."
+},
+{
+"ind": "g_agfam",
+"m12": "sobe",
+"just": "Mais acesso."
+}
+]
+},
+{
+"id": "n0005",
+"descricao": "agro: Reduzir para 12 meses o prazo de registro de novas cultivares no Ministério da A",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir para 12 meses o prazo de registro de novas cultivares no Ministério da Agricultura",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "sobe",
+"just": "Inovação mais rápida."
+}
+]
+},
+{
+"id": "n0006",
+"descricao": "agro: Dar R$ 2 bilhões a mais à Embrapa para pesquisa e contratação de pesquisadores",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Dar R$ 2 bilhões a mais à Embrapa para pesquisa e contratação de pesquisadores",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0007",
+"descricao": "agro: Recuperar 10 milhões de hectares de pastagens degradadas com crédito a juros bai",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Recuperar 10 milhões de hectares de pastagens degradadas com crédito a juros baixos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "g_agro",
+"m12": "sobe",
+"just": "Crédito para produtores."
+}
+]
+},
+{
+"id": "n0008",
+"descricao": "agro: Criar um fundo de aval de R$ 2 bilhões para cooperativas agropecuárias tomarem c",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um fundo de aval de R$ 2 bilhões para cooperativas agropecuárias tomarem crédito",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0009",
+"descricao": "agro: o agricultor pequeno ta quebrado, perdoa a divida dele logo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "o agricultor pequeno ta quebrado, perdoa a divida dele logo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "g_agfam",
+"m12": "sobe",
+"just": "Alívio de dívidas."
+}
+]
+},
+{
+"id": "n0010",
+"descricao": "agro: o diesel do agricultor tem q ser mais barato q o dos outros",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "o diesel do agricultor tem q ser mais barato q o dos outros",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "sobe",
+"just": "Custo de produção menor."
+},
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia tributária."
+}
+]
+},
+{
+"id": "n0011",
+"descricao": "agro: liberar agrotoxico novo mais rapido pro agro ser competitivo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "liberar agrotoxico novo mais rapido pro agro ser competitivo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "sobe",
+"just": "Mais produtos disponíveis."
+}
+]
+},
+{
+"id": "n0012",
+"descricao": "agro: reforma agraria ja, tem muita terra parada nesse pais",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "reforma agraria ja, tem muita terra parada nesse pais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0016",
+"descricao": "agro: Sem aumentar o orçamento do Ministério da Agricultura, ampliar a assistência téc",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Sem aumentar o orçamento do Ministério da Agricultura, ampliar a assistência técnica remanejando recursos do crédito de grandes produtores",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agfam",
+"m12": "sobe",
+"just": "Mais assistência técnica."
+},
+{
+"ind": "g_agro",
+"m12": "desce",
+"just": "Menos crédito aos grandes."
+}
+]
+},
+{
+"id": "n0018",
+"descricao": "agro: Zerar o imposto de importação de peças para tratores, ampliar o Proagro e criar ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar o imposto de importação de peças para tratores, ampliar o Proagro e criar linhas para jovens agricultores sucessores",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0020",
+"descricao": "assistencia_social: Criar centros-dia para idosos dependentes em todas as cidades com mais de 50 mil",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar centros-dia para idosos dependentes em todas as cidades com mais de 50 mil habitantes",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0021",
+"descricao": "assistencia_social: Fazer busca ativa de famílias elegíveis ao Bolsa Família e ao BPC que ainda não ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Fazer busca ativa de famílias elegíveis ao Bolsa Família e ao BPC que ainda não estão inscritas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "pob",
+"m12": "desce",
+"just": "Mais famílias atendidas."
+}
+]
+},
+{
+"id": "n0024",
+"descricao": "assistencia_social: Distribuir leite e fórmula infantil a famílias em extrema pobreza com bebês",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Distribuir leite e fórmula infantil a famílias em extrema pobreza com bebês",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "pob",
+"m12": "desce",
+"just": "Mais segurança alimentar."
+}
+]
+},
+{
+"id": "n0025",
+"descricao": "assistencia_social: Criar um piso salarial nacional de R$ 5 mil para assistentes sociais e agentes d",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um piso salarial nacional de R$ 5 mil para assistentes sociais e agentes do Suas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "g_servidores",
+"m12": "sobe",
+"just": "Piso mais alto."
+}
+]
+},
+{
+"id": "n0026",
+"descricao": "assistencia_social: Colocar lanchas itinerantes de CRAS para atender ribeirinhos na Amazônia",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Colocar lanchas itinerantes de CRAS para atender ribeirinhos na Amazônia",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0027",
+"descricao": "assistencia_social: Pagar auxílio de três meses a egressos do sistema prisional para ajudar na reins",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Pagar auxílio de três meses a egressos do sistema prisional para ajudar na reinserção",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0028",
+"descricao": "assistencia_social: Vincular 1% da receita corrente líquida da União ao Suas",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Vincular 1% da receita corrente líquida da União ao Suas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0030",
+"descricao": "assistencia_social: ajuda p quem perdeu a casa na chuva e ta no abrigo, aluguel social ja",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "ajuda p quem perdeu a casa na chuva e ta no abrigo, aluguel social ja",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0031",
+"descricao": "assistencia_social: bpc n devia cortar qm tem deficiencia e arruma emprego, assim ngm trabalha",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "bpc n devia cortar qm tem deficiencia e arruma emprego, assim ngm trabalha",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0032",
+"descricao": "assistencia_social: ajuda mensal p catador de reciclavel q ganha mt pouco",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "ajuda mensal p catador de reciclavel q ganha mt pouco",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0036",
+"descricao": "assistencia_social: Usar o dinheiro de contas bancárias inativas há 20 anos para financiar restauran",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Usar o dinheiro de contas bancárias inativas há 20 anos para financiar restaurantes populares",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Receita nova melhora o primário."
+}
+]
+},
+{
+"id": "n0038",
+"descricao": "assistencia_social: Pagar passagem para famílias voltarem à cidade de origem, abrir 300 albergues e ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Pagar passagem para famílias voltarem à cidade de origem, abrir 300 albergues e distribuir marmitas a pessoas em situação de rua",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0045",
+"descricao": "bets: Elevar de R$ 30 milhões para R$ 100 milhões a outorga cobrada por empresa de apo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Elevar de R$ 30 milhões para R$ 100 milhões a outorga cobrada por empresa de apostas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Arrecadação nova."
+}
+]
+},
+{
+"id": "n0047",
+"descricao": "bets: Legalizar cassinos em complexos turísticos e bingos, com tributação própria",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Legalizar cassinos em complexos turísticos e bingos, com tributação própria",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Arrecadação nova."
+}
+]
+},
+{
+"id": "n0049",
+"descricao": "bets: bet tem q ser proibida de vez no brasil, ta destruindo familia",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "bet tem q ser proibida de vez no brasil, ta destruindo familia",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia reduz a receita."
+}
+]
+},
+{
+"id": "n0050",
+"descricao": "bets: pq n taxam o tigrinho ne? vc taxa tudo mas n isso",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "pq n taxam o tigrinho ne? vc taxa tudo mas n isso",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Arrecadação nova."
+}
+]
+},
+{
+"id": "n0060",
+"descricao": "ciencia_tecnologia: Criar uma rede nacional de computação quântica com três laboratórios em universi",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar uma rede nacional de computação quântica com três laboratórios em universidades federais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0062",
+"descricao": "ciencia_tecnologia: Criar bolsa de pós-doutorado de R$ 10 mil por mês para jovens pesquisadores",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar bolsa de pós-doutorado de R$ 10 mil por mês para jovens pesquisadores",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "g_universitarios",
+"m12": "sobe",
+"just": "Mais bolsas."
+}
+]
+},
+{
+"id": "n0063",
+"descricao": "ciencia_tecnologia: Exigir que as plataformas expliquem os critérios dos algoritmos de recomendação ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Exigir que as plataformas expliquem os critérios dos algoritmos de recomendação e permitam desativá-los",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_app",
+"m12": "desce",
+"just": "Obrigações novas para plataformas."
+}
+]
+},
+{
+"id": "n0064",
+"descricao": "ciencia_tecnologia: Criar a Agência Nacional de Cibersegurança para proteger os sistemas do governo ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar a Agência Nacional de Cibersegurança para proteger os sistemas do governo e dos serviços essenciais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0067",
+"descricao": "ciencia_tecnologia: Zerar a fila de patentes do INPI com concurso e metas para startups e universida",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar a fila de patentes do INPI com concurso e metas para startups e universidades",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0070",
+"descricao": "ciencia_tecnologia: o brasil ta atrasado em ia, chama as universidade p fazer uma ia nossa em portug",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "o brasil ta atrasado em ia, chama as universidade p fazer uma ia nossa em portugues",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0075",
+"descricao": "ciencia_tecnologia: Se o Brasil cair no ranking global de inovação, dobrar os recursos do FNDCT no a",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Se o Brasil cair no ranking global de inovação, dobrar os recursos do FNDCT no ano seguinte",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0076",
+"descricao": "ciencia_tecnologia: Elevar a CIDE-Royalties de 10% para 15% para financiar o FNDCT",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Elevar a CIDE-Royalties de 10% para 15% para financiar o FNDCT",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Receita nova melhora o primário."
+}
+]
+},
+{
+"id": "n0078",
+"descricao": "ciencia_tecnologia: Dobrar o FNDCT, abrir 5 mil vagas de iniciação científica e instalar sinal 4G na",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Dobrar o FNDCT, abrir 5 mil vagas de iniciação científica e instalar sinal 4G nas rodovias federais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0088",
+"descricao": "constituicao: Extinguir a Justiça Eleitoral como ramo próprio e transferir suas funções à Just",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Extinguir a Justiça Eleitoral como ramo próprio e transferir suas funções à Justiça Federal",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0096",
+"descricao": "constituicao: Acabar com as emendas de bancada (R$ 11 bilhões) para reduzir o déficit primário",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Acabar com as emendas de bancada (R$ 11 bilhões) para reduzir o déficit primário",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0100",
+"descricao": "corte_gastos: Congelar por dois anos os reajustes salariais dos servidores federais",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Congelar por dois anos os reajustes salariais dos servidores federais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Direcao robusta da medida."
+},
+{
+"ind": "g_servidores",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0103",
+"descricao": "corte_gastos: Cortar 15% dos contratos de terceirização e de TI da União, unificando sistemas",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cortar 15% dos contratos de terceirização e de TI da União, unificando sistemas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0105",
+"descricao": "corte_gastos: Limitar o crescimento das despesas obrigatórias a 70% do crescimento da receita",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Limitar o crescimento das despesas obrigatórias a 70% do crescimento da receita",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0106",
+"descricao": "corte_gastos: Cruzar as bases do CadÚnico, do INSS e da Receita para cortar pagamentos indevid",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cruzar as bases do CadÚnico, do INSS e da Receita para cortar pagamentos indevidos de benefícios",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0107",
+"descricao": "corte_gastos: Reduzir em 10% os benefícios fiscais e subsídios da União",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir em 10% os benefícios fiscais e subsídios da União",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Direcao robusta da medida."
+},
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Direcao robusta da medida."
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0108",
+"descricao": "corte_gastos: Acabar com o ganho real do salário mínimo, repondo apenas a inflação",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Acabar com o ganho real do salário mínimo, repondo apenas a inflação",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Direcao robusta da medida."
+},
+{
+"ind": "g_aposentados",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0109",
+"descricao": "corte_gastos: corta tudo q é gasto atoa do gov",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "corta tudo q é gasto atoa do gov",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0112",
+"descricao": "corte_gastos: corta o bolsa familia de quem tem carro e celular novo pq vagabundo n merece",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "corta o bolsa familia de quem tem carro e celular novo pq vagabundo n merece",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_periferia",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0116",
+"descricao": "corte_gastos: Cortar despesas sem demitir servidor nem reduzir salário, apenas eliminando cont",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cortar despesas sem demitir servidor nem reduzir salário, apenas eliminando contratos duplicados",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0120",
+"descricao": "cultura_esporte: Criar uma taxa de 2% sobre ingressos de shows internacionais para o Fundo Nacion",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar uma taxa de 2% sobre ingressos de shows internacionais para o Fundo Nacional da Cultura",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Receita nova melhora o primário."
+}
+]
+},
+{
+"id": "n0121",
+"descricao": "cultura_esporte: Construir um museu nacional da história da escravidão e da memória afro-brasilei",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Construir um museu nacional da história da escravidão e da memória afro-brasileira",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_negro",
+"m12": "sobe",
+"just": "Reconhecimento da memória."
+}
+]
+},
+{
+"id": "n0122",
+"descricao": "cultura_esporte: Contratar um professor de educação física para cada escola pública de ensino fun",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Contratar um professor de educação física para cada escola pública de ensino fundamental",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0123",
+"descricao": "cultura_esporte: Fazer o MEC comprar livros de autores locais para as bibliotecas escolares, ampl",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Fazer o MEC comprar livros de autores locais para as bibliotecas escolares, ampliando o PNLD Literário",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0124",
+"descricao": "cultura_esporte: Retomar os Jogos Escolares Brasileiros com um milhão de alunos de todos os estad",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Retomar os Jogos Escolares Brasileiros com um milhão de alunos de todos os estados",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0125",
+"descricao": "cultura_esporte: Reformar mil piscinas e pistas de atletismo públicas em todo o país",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reformar mil piscinas e pistas de atletismo públicas em todo o país",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0130",
+"descricao": "cultura_esporte: tem q ter mais incentivo pro volei e judo, nao so futebol",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "tem q ter mais incentivo pro volei e judo, nao so futebol",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0131",
+"descricao": "cultura_esporte: livraria pequena ta fechando, ajuda os sebo e livraria de bairro",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "livraria pequena ta fechando, ajuda os sebo e livraria de bairro",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Renúncia de receita reduz o primário."
+}
+]
+},
+{
+"id": "n0138",
+"descricao": "cultura_esporte: Dar dedução no Imposto de Renda a patrocínios de times de base, criar bolsa para",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Dar dedução no Imposto de Renda a patrocínios de times de base, criar bolsa para treinadores e reformar ginásios municipais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0140",
+"descricao": "desemprego: Pagar um subsídio de R$ 500 por mês, durante seis meses, às empresas que contrat",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Pagar um subsídio de R$ 500 por mês, durante seis meses, às empresas que contratarem beneficiários do Bolsa Família",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "des",
+"m12": "desce",
+"just": "Estímulo à contratação."
+}
+]
+},
+{
+"id": "n0141",
+"descricao": "desemprego: Garantir vaga em creche pública para mães desempregadas que estejam procurando t",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Garantir vaga em creche pública para mães desempregadas que estejam procurando trabalho",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "g_mulheres",
+"m12": "sobe",
+"just": "Facilita retorno ao mercado."
+}
+]
+},
+{
+"id": "n0142",
+"descricao": "desemprego: Contratar 50 mil jovens para um serviço civil remunerado com bolsa de R$ 900 por",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Contratar 50 mil jovens para um serviço civil remunerado com bolsa de R$ 900 por mês",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "g_jovens",
+"m12": "sobe",
+"just": "Renda e experiência a jovens."
+}
+]
+},
+{
+"id": "n0143",
+"descricao": "desemprego: Conceder três parcelas adicionais de seguro-desemprego a trabalhadores acima de ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Conceder três parcelas adicionais de seguro-desemprego a trabalhadores acima de 55 anos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0144",
+"descricao": "desemprego: Reduzir de 8% para 4% o depósito do FGTS pago pelas empresas na contratação de j",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir de 8% para 4% o depósito do FGTS pago pelas empresas na contratação de jovens de 18 a 24 anos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_empresariado",
+"m12": "sobe",
+"just": "Menor custo de contratação."
+}
+]
+},
+{
+"id": "n0145",
+"descricao": "desemprego: Distribuir vouchers de R$ 2 mil para desempregados pagarem cursos técnicos em es",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Distribuir vouchers de R$ 2 mil para desempregados pagarem cursos técnicos em escolas credenciadas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0146",
+"descricao": "desemprego: Reduzir a contribuição previdenciária das empresas de tecnologia que contratarem",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir a contribuição previdenciária das empresas de tecnologia que contratarem recém-formados",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_jovens",
+"m12": "sobe",
+"just": "Incentivo a recém-formados."
+},
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia previdenciária."
+}
+]
+},
+{
+"id": "n0147",
+"descricao": "desemprego: Criar o Pronaf Jovem Empreendedor com crédito de R$ 10 mil para jovens do campo ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar o Pronaf Jovem Empreendedor com crédito de R$ 10 mil para jovens do campo abrirem negócios",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0150",
+"descricao": "desemprego: cada cidade tinha q ter um centro de emprego com curso gratis",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "cada cidade tinha q ter um centro de emprego com curso gratis",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0152",
+"descricao": "desemprego: dar auxilio pra quem ta desempregado ha mais de um ano",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "dar auxilio pra quem ta desempregado ha mais de um ano",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0156",
+"descricao": "desemprego: Sem aumentar o gasto da União, estimular o emprego de jovens liberando o contrat",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Sem aumentar o gasto da União, estimular o emprego de jovens liberando o contrato de aprendizagem em meio período",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_jovens",
+"m12": "sobe",
+"just": "Mais oportunidades de entrada."
+}
+]
+},
+{
+"id": "n0158",
+"descricao": "desemprego: Criar um voucher de qualificação de R$ 1.500, abrir 100 mil vagas de estágio no ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um voucher de qualificação de R$ 1.500, abrir 100 mil vagas de estágio no governo federal e reduzir a burocracia do seguro-desemprego",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0160",
+"descricao": "direitos_humanos: Criar ouvidorias externas e independentes das polícias, com mandato fixo e poder",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar ouvidorias externas e independentes das polícias, com mandato fixo e poder de requisitar documentos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_policiais",
+"m12": "desce",
+"just": "Mais controle externo."
+}
+]
+},
+{
+"id": "n0161",
+"descricao": "direitos_humanos: Substituir a prisão provisória por tornozeleira eletrônica em crimes sem violênc",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Substituir a prisão provisória por tornozeleira eletrônica em crimes sem violência ou grave ameaça",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Economia de despesa melhora o primário."
+}
+]
+},
+{
+"id": "n0162",
+"descricao": "direitos_humanos: Garantir atendimento psicológico gratuito no SUS a vítimas de violência",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Garantir atendimento psicológico gratuito no SUS a vítimas de violência",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0163",
+"descricao": "direitos_humanos: Fiscalizar trimestralmente todas as casas de repouso para idosos e abrir vagas p",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Fiscalizar trimestralmente todas as casas de repouso para idosos e abrir vagas públicas em ILPIs",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0164",
+"descricao": "direitos_humanos: Construir residências inclusivas adaptadas para pessoas com deficiência sem vínc",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Construir residências inclusivas adaptadas para pessoas com deficiência sem vínculo familiar",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0166",
+"descricao": "direitos_humanos: Exigir das grandes empresas auditoria de direitos humanos em toda a cadeia de fo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Exigir das grandes empresas auditoria de direitos humanos em toda a cadeia de fornecedores",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "Novas obrigações de conformidade."
+}
+]
+},
+{
+"id": "n0167",
+"descricao": "direitos_humanos: Contratar intérpretes de línguas indígenas para a Justiça e o SUS nas regiões co",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Contratar intérpretes de línguas indígenas para a Justiça e o SUS nas regiões com aldeias",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_indigenas",
+"m12": "sobe",
+"just": "Atendimento na língua materna."
+}
+]
+},
+{
+"id": "n0168",
+"descricao": "direitos_humanos: Criar um programa de abrigamento temporário para pessoas ameaçadas por milícias ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um programa de abrigamento temporário para pessoas ameaçadas por milícias e facções",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0169",
+"descricao": "direitos_humanos: precisa proteger mais crianca q sofre abuso, o disque 100 n atende direito",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "precisa proteger mais crianca q sofre abuso, o disque 100 n atende direito",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0171",
+"descricao": "direitos_humanos: a cadeia ta lotada d+ n cabe mais gente, faz algo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "a cadeia ta lotada d+ n cabe mais gente, faz algo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0175",
+"descricao": "direitos_humanos: Se a superlotação dos presídios passar de 150%, converter penas curtas em medida",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Se a superlotação dos presídios passar de 150%, converter penas curtas em medidas alternativas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Economia de despesa melhora o primário."
+}
+]
+},
+{
+"id": "n0178",
+"descricao": "direitos_humanos: Reforçar a proteção a defensores de direitos humanos ameaçados, ampliar o Ligue ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reforçar a proteção a defensores de direitos humanos ameaçados, ampliar o Ligue 180 com atendimento em Libras e criar 100 abrigos para vítimas de tráfico de pessoas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0180",
+"descricao": "dolar: Criar um seguro cambial subsidiado para pequenos exportadores se protegerem da o",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um seguro cambial subsidiado para pequenos exportadores se protegerem da oscilação do dólar",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0181",
+"descricao": "dolar: Pedir ao Banco Central que faça leilões de swap cambial para reduzir a volatilid",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Pedir ao Banco Central que faça leilões de swap cambial para reduzir a volatilidade do dólar",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "dol",
+"m12": "desce",
+"just": "Oferta de proteção cambial alivia a cotação no curto prazo."
+}
+]
+},
+{
+"id": "n0182",
+"descricao": "dolar: Elevar para 50% o imposto de importação de bens de luxo, como iates, relógios e ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Elevar para 50% o imposto de importação de bens de luxo, como iates, relógios e bolsas de grife",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Mais arrecadação tarifária."
+}
+]
+},
+{
+"id": "n0183",
+"descricao": "dolar: Abrir uma linha de R$ 20 bilhões no BNDES Exim para financiar a exportação de be",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Abrir uma linha de R$ 20 bilhões no BNDES Exim para financiar a exportação de bens de capital",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0184",
+"descricao": "dolar: Dispensar visto de turistas de 20 países e investir R$ 1 bilhão em promoção do t",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Dispensar visto de turistas de 20 países e investir R$ 1 bilhão em promoção do turismo receptivo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0185",
+"descricao": "dolar: Abrir negociações de acordos de livre comércio com Canadá, Japão e Emirados Árab",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Abrir negociações de acordos de livre comércio com Canadá, Japão e Emirados Árabes pelo Mercosul",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "sobe",
+"just": "Acesso a mercados favorece exportadores."
+}
+]
+},
+{
+"id": "n0186",
+"descricao": "dolar: Recapitalizar o Fundo Garantidor de Exportações com R$ 5 bilhões",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Recapitalizar o Fundo Garantidor de Exportações com R$ 5 bilhões",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0188",
+"descricao": "dolar: Zerar o imposto de importação de equipamentos de data center e semicondutores",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar o imposto de importação de equipamentos de data center e semicondutores",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia tarifária."
+}
+]
+},
+{
+"id": "n0190",
+"descricao": "dolar: temos q parar de importar tanta coisa da china",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "temos q parar de importar tanta coisa da china",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Tarifas maiores arrecadam."
+}
+]
+},
+{
+"id": "n0191",
+"descricao": "dolar: taxar mais as compras da shein e aliexpress que quebra a industria nacional",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "taxar mais as compras da shein e aliexpress que quebra a industria nacional",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Mais arrecadação."
+},
+{
+"ind": "g_classemedia",
+"m12": "desce",
+"just": "Consumidor paga mais."
+}
+]
+},
+{
+"id": "n0198",
+"descricao": "dolar: Criar seguro cambial para exportadores, abrir escritórios da Apex em 20 países e",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar seguro cambial para exportadores, abrir escritórios da Apex em 20 países e zerar o imposto de importação de componentes de painéis solares",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0200",
+"descricao": "economia: Limitar as renúncias fiscais federais a 4% do PIB por lei complementar, com redu",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Limitar as renúncias fiscais federais a 4% do PIB por lei complementar, com redução gradual em quatro anos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Economia ou receita melhora o primário."
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "Perda de benefícios fiscais."
+}
+]
+},
+{
+"id": "n0201",
+"descricao": "economia: Cortar 10% de todos os benefícios fiscais federais, preservando Simples, Zona Fr",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cortar 10% de todos os benefícios fiscais federais, preservando Simples, Zona Franca e cesta básica",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Economia ou receita melhora o primário."
+},
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Menos renúncia."
+}
+]
+},
+{
+"id": "n0203",
+"descricao": "economia: Criar uma conta de investimento isenta de IR para pequenos investidores aplicare",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar uma conta de investimento isenta de IR para pequenos investidores aplicarem até R$ 20 mil por ano em renda variável",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia de IR."
+}
+]
+},
+{
+"id": "n0204",
+"descricao": "economia: Instituir o Imposto sobre Grandes Fortunas com alíquota de 0,5% sobre patrimônio",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Instituir o Imposto sobre Grandes Fortunas com alíquota de 0,5% sobre patrimônio acima de R$ 50 milhões",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "Atinge o topo da riqueza."
+},
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Nova arrecadação."
+}
+]
+},
+{
+"id": "n0207",
+"descricao": "economia: Fundir ministérios para reduzir a Esplanada de 38 para 25 pastas",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Fundir ministérios para reduzir a Esplanada de 38 para 25 pastas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Economia ou receita melhora o primário."
+}
+]
+},
+{
+"id": "n0208",
+"descricao": "economia: Aumentar em três pontos percentuais a alíquota de CSLL dos bancos",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Aumentar em três pontos percentuais a alíquota de CSLL dos bancos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Mais arrecadação."
+},
+{
+"ind": "g_mercado",
+"m12": "desce",
+"just": "Setor financeiro tributado."
+}
+]
+},
+{
+"id": "n0211",
+"descricao": "economia: vende a petrobras e paga a divida de uma vez",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "vende a petrobras e paga a divida de uma vez",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mercado",
+"m12": "sobe",
+"just": "Venda abre capital ao mercado."
+}
+]
+},
+{
+"id": "n0212",
+"descricao": "economia: juro do bndes pra industria nacional tem q ser menor q o do mercado, a china faz",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "juro do bndes pra industria nacional tem q ser menor q o do mercado, a china faz isso",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "g_empresariado",
+"m12": "sobe",
+"just": "Crédito subsidiado à indústria."
+}
+]
+},
+{
+"id": "n0216",
+"descricao": "economia: Sem mexer no arcabouço fiscal, antecipar R$ 30 bilhões em dividendos das estatai",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Sem mexer no arcabouço fiscal, antecipar R$ 30 bilhões em dividendos das estatais para reduzir o déficit",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Economia ou receita melhora o primário."
+}
+]
+},
+{
+"id": "n0218",
+"descricao": "economia: Reduzir em 20% os cargos comissionados, vender os carros oficiais e cortar a ver",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir em 20% os cargos comissionados, vender os carros oficiais e cortar a verba de publicidade do governo federal",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Economia ou receita melhora o primário."
+}
+]
+},
+{
+"id": "n0220",
+"descricao": "educacao: Ampliar a escola em tempo integral para metade das matrículas do ensino fundamen",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Ampliar a escola em tempo integral para metade das matrículas do ensino fundamental público",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0221",
+"descricao": "educacao: Reajustar o piso salarial nacional dos professores em 10% acima da inflação",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reajustar o piso salarial nacional dos professores em 10% acima da inflação",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+},
+{
+"ind": "g_servidores",
+"m12": "sobe",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0222",
+"descricao": "educacao: Entregar um notebook ou tablet a cada aluno do 6º ano da rede pública",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Entregar um notebook ou tablet a cada aluno do 6º ano da rede pública",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0226",
+"descricao": "educacao: Dobrar a parcela do Fundeb distribuída por resultado de aprendizagem (VAAR) para",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Dobrar a parcela do Fundeb distribuída por resultado de aprendizagem (VAAR) para premiar escolas que melhorarem",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0227",
+"descricao": "educacao: Aumentar em 50% o valor por aluno da merenda escolar do PNAE",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Aumentar em 50% o valor por aluno da merenda escolar do PNAE",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0228",
+"descricao": "educacao: Elevar em 50% as bolsas de mestrado e doutorado da Capes e do CNPq",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Elevar em 50% as bolsas de mestrado e doutorado da Capes e do CNPq",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+},
+{
+"ind": "g_universitarios",
+"m12": "sobe",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0238",
+"descricao": "educacao: Estender o Pé-de-Meia ao ensino fundamental e distribuir uniforme e material esc",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Estender o Pé-de-Meia ao ensino fundamental e distribuir uniforme e material escolar gratuito",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0239",
+"descricao": "educacao: Cumprir a meta do PNE de aplicar 10% do PIB em educação pública",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cumprir a meta do PNE de aplicar 10% do PIB em educação pública",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0242",
+"descricao": "energia: Trocar o ar-condicionado e a iluminação dos prédios públicos federais por equipa",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Trocar o ar-condicionado e a iluminação dos prédios públicos federais por equipamentos eficientes",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Economia de despesa melhora o primário."
+}
+]
+},
+{
+"id": "n0245",
+"descricao": "energia: Isentar de PIS e Cofins o biometano usado como combustível em caminhões",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Isentar de PIS e Cofins o biometano usado como combustível em caminhões",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Renúncia de receita reduz o primário."
+}
+]
+},
+{
+"id": "n0246",
+"descricao": "energia: Zerar o imposto de importação de turbinas eólicas, transformadores e inversores",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar o imposto de importação de turbinas eólicas, transformadores e inversores",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Renúncia de receita reduz o primário."
+}
+]
+},
+{
+"id": "n0258",
+"descricao": "energia: Criar o selo de eficiência mais rígido para eletrodomésticos, financiar geladeir",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar o selo de eficiência mais rígido para eletrodomésticos, financiar geladeira nova às famílias do CadÚnico e estender a tarifa social a quem consome até 150 kWh",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "Conta de luz mais baixa."
+}
+]
+},
+{
+"id": "n0269",
+"descricao": "games: videogame ta caro d+, tira imposto de tudo q é console e jogo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "videogame ta caro d+, tira imposto de tudo q é console e jogo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia reduz a receita."
+},
+{
+"ind": "g_gamers",
+"m12": "sobe",
+"just": "Grupo diretamente beneficiado."
+}
+]
+},
+{
+"id": "n0281",
+"descricao": "grandes_empresas: Cortar pela metade os financiamentos subsidiados do BNDES a grandes empresas",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cortar pela metade os financiamentos subsidiados do BNDES a grandes empresas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Economia ou receita nova melhora o primário."
+},
+{
+"ind": "g_empresariado",
+"m12": "sobe",
+"just": "Grupo diretamente beneficiado."
+}
+]
+},
+{
+"id": "n0282",
+"descricao": "grandes_empresas: Instituir tributação mínima de 10% do lucro contábil para empresas que declaram ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Instituir tributação mínima de 10% do lucro contábil para empresas que declaram prejuízo e distribuem dividendos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Arrecadação nova."
+}
+]
+},
+{
+"id": "n0283",
+"descricao": "grandes_empresas: Criar imposto de 3% sobre a receita de plataformas digitais estrangeiras no Bras",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar imposto de 3% sobre a receita de plataformas digitais estrangeiras no Brasil",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Arrecadação nova."
+}
+]
+},
+{
+"id": "n0286",
+"descricao": "grandes_empresas: Limitar a 50% das receitas a dedução de juros pagos por grandes empresas para ca",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Limitar a 50% das receitas a dedução de juros pagos por grandes empresas para calcular o IRPJ",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Arrecadação nova."
+}
+]
+},
+{
+"id": "n0287",
+"descricao": "grandes_empresas: Cobrar contribuição de 3% sobre lucros extraordinários de petroleiras e minerado",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cobrar contribuição de 3% sobre lucros extraordinários de petroleiras e mineradoras em anos de preço alto",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Arrecadação nova."
+}
+]
+},
+{
+"id": "n0289",
+"descricao": "grandes_empresas: empresa grande devia pagar mais imposto q o pequeno, ta tudo invertido",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "empresa grande devia pagar mais imposto q o pequeno, ta tudo invertido",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Arrecadação nova."
+}
+]
+},
+{
+"id": "n0298",
+"descricao": "grandes_empresas: Limitar a compensação de prejuízo fiscal a 20% do lucro e proibir recompra de aç",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Limitar a compensação de prejuízo fiscal a 20% do lucro e proibir recompra de ações de empresas com dívida ativa com a União",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Arrecadação nova."
+}
+]
+},
+{
+"id": "n0305",
+"descricao": "ia: Abrir crédito de R$ 3 bilhões da Finep e do BNDES para startups de inteligência ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Abrir crédito de R$ 3 bilhões da Finep e do BNDES para startups de inteligência artificial",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0310",
+"descricao": "ia: faz o governo ter uma ia propria tipo chatgpt brasileiro",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "faz o governo ter uma ia propria tipo chatgpt brasileiro",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0312",
+"descricao": "ia: taxa as big tech q usam nossos dados pra treinar ia",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "taxa as big tech q usam nossos dados pra treinar ia",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Arrecadação nova."
+}
+]
+},
+{
+"id": "n0320",
+"descricao": "impostos: Criar dedução no Imposto de Renda para gastos com creche e cuidado de idosos dep",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar dedução no Imposto de Renda para gastos com creche e cuidado de idosos dependentes",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Renúncia de receita reduz o primário."
+},
+{
+"ind": "g_classemedia",
+"m12": "sobe",
+"just": "Menos imposto para famílias de renda média."
+}
+]
+},
+{
+"id": "n0321",
+"descricao": "impostos: Permitir a dedução integral das despesas com educação no Imposto de Renda, sem l",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Permitir a dedução integral das despesas com educação no Imposto de Renda, sem limite anual",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Renúncia de receita reduz o primário."
+},
+{
+"ind": "g_classemedia",
+"m12": "sobe",
+"just": "Menos imposto para famílias de renda média."
+}
+]
+},
+{
+"id": "n0322",
+"descricao": "impostos: Aplicar ao Anexo V do Simples Nacional as mesmas alíquotas do Anexo III para pre",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Aplicar ao Anexo V do Simples Nacional as mesmas alíquotas do Anexo III para prestadores de serviço",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Renúncia de receita reduz o primário."
+},
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Carga menor para prestadores pequenos."
+}
+]
+},
+{
+"id": "n0323",
+"descricao": "impostos: Cortar 10% ao ano os benefícios fiscais federais até 2030, com revisão periódica",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cortar 10% ao ano os benefícios fiscais federais até 2030, com revisão periódica obrigatória",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Receita nova melhora o primário."
+}
+]
+},
+{
+"id": "n0325",
+"descricao": "impostos: Zerar o imposto de importação de medicamentos e insumos farmacêuticos",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar o imposto de importação de medicamentos e insumos farmacêuticos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Renúncia de receita reduz o primário."
+}
+]
+},
+{
+"id": "n0326",
+"descricao": "impostos: Reduzir pela metade os incentivos federais de IPI da Zona Franca de Manaus",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir pela metade os incentivos federais de IPI da Zona Franca de Manaus",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Receita nova melhora o primário."
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "Perda de incentivos."
+}
+]
+},
+{
+"id": "n0327",
+"descricao": "impostos: Reduzir a alíquota máxima do Imposto de Renda da pessoa física de 27,5% para 25%",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir a alíquota máxima do Imposto de Renda da pessoa física de 27,5% para 25%",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Renúncia de receita reduz o primário."
+},
+{
+"ind": "g_classemedia",
+"m12": "sobe",
+"just": "Menos imposto para quem ganha mais."
+}
+]
+},
+{
+"id": "n0328",
+"descricao": "impostos: Lançar um Refis para MEI e pequenas empresas com 90% de desconto em multas e jur",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Lançar um Refis para MEI e pequenas empresas com 90% de desconto em multas e juros",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Alívio de dívidas."
+}
+]
+},
+{
+"id": "n0330",
+"descricao": "impostos: tira o imposto do pao e do leite q o pobre sofre mt",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "tira o imposto do pao e do leite q o pobre sofre mt",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Renúncia de receita reduz o primário."
+},
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "Comida mais barata."
+}
+]
+},
+{
+"id": "n0331",
+"descricao": "impostos: nota fiscal da federal devolvendo dinheiro p quem pede cpf na nota, como em sp",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "nota fiscal da federal devolvendo dinheiro p quem pede cpf na nota, como em sp",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "g_classemedia",
+"m12": "sobe",
+"just": "Dinheiro devolvido."
+}
+]
+},
+{
+"id": "n0335",
+"descricao": "impostos: Se o PIB crescer mais de 3% no ano, reduzir em um ponto a alíquota do IRPJ das e",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Se o PIB crescer mais de 3% no ano, reduzir em um ponto a alíquota do IRPJ das empresas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Renúncia de receita reduz o primário."
+},
+{
+"ind": "g_empresariado",
+"m12": "sobe",
+"just": "Alíquota menor."
+}
+]
+},
+{
+"id": "n0338",
+"descricao": "impostos: Zerar o IOF do crédito rural, cortar o ITR dos pequenos produtores em 50% e disp",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar o IOF do crédito rural, cortar o ITR dos pequenos produtores em 50% e dispensar produtores familiares da declaração de ITR",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Renúncia de receita reduz o primário."
+},
+{
+"ind": "g_agro",
+"m12": "sobe",
+"just": "Alívio tributário."
+}
+]
+},
+{
+"id": "n0340",
+"descricao": "inflacao: Criar uma cota livre de tarifa para importar 500 mil toneladas de ovos e leite e",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar uma cota livre de tarifa para importar 500 mil toneladas de ovos e leite em pó",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ipca",
+"m12": "desce",
+"just": "Mais oferta reduz preços."
+}
+]
+},
+{
+"id": "n0341",
+"descricao": "inflacao: Pedir ao Banco Central que eleve a Selic em um ponto percentual para conter as e",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Pedir ao Banco Central que eleve a Selic em um ponto percentual para conter as expectativas de inflação",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "selic",
+"m12": "sobe",
+"just": "Aperto monetário."
+},
+{
+"ind": "ipca",
+"m12": "desce",
+"just": "Juros altos contêm demanda."
+}
+]
+},
+{
+"id": "n0342",
+"descricao": "inflacao: Reajustar o salário mínimo apenas pela inflação do INPC, sem aumento real",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reajustar o salário mínimo apenas pela inflação do INPC, sem aumento real",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Economia ou receita melhora o primário."
+},
+{
+"ind": "g_sindicatos",
+"m12": "desce",
+"just": "Fim do ganho real."
+},
+{
+"ind": "g_aposentados",
+"m12": "desce",
+"just": "Benefícios indexados crescem menos."
+}
+]
+},
+{
+"id": "n0344",
+"descricao": "inflacao: Criar um fundo de estabilização de preços de combustíveis financiado por dividen",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um fundo de estabilização de preços de combustíveis financiado por dividendos da Petrobras",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0345",
+"descricao": "inflacao: Reduzir para 48 horas o desembaraço de alimentos importados pela Anvisa e pelo M",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir para 48 horas o desembaraço de alimentos importados pela Anvisa e pelo Ministério da Agricultura",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ipca",
+"m12": "desce",
+"just": "Menor atrito na oferta."
+}
+]
+},
+{
+"id": "n0347",
+"descricao": "inflacao: Zerar o IPI dos eletrodomésticos da linha branca por 12 meses",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar o IPI dos eletrodomésticos da linha branca por 12 meses",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia de IPI."
+}
+]
+},
+{
+"id": "n0349",
+"descricao": "inflacao: ovo ta um absurdo, importa ovo de qualquer lugar q ta caro",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "ovo ta um absurdo, importa ovo de qualquer lugar q ta caro",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ipca",
+"m12": "desce",
+"just": "Mais oferta reduz preços."
+}
+]
+},
+{
+"id": "n0352",
+"descricao": "inflacao: subsidiar a carne pro povo comer mais, 5 reais o kilo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "subsidiar a carne pro povo comer mais, 5 reais o kilo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0358",
+"descricao": "inflacao: Zerar o IPI de massas e biscoitos, ampliar em R$ 3 bilhões o auxílio de gás e cr",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar o IPI de massas e biscoitos, ampliar em R$ 3 bilhões o auxílio de gás e criar cota de importação de ovos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0360",
+"descricao": "infraestrutura: Duplicar 3 mil km de rodovias federais de pista simples com maior índice de acid",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Duplicar 3 mil km de rodovias federais de pista simples com maior índice de acidentes",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0368",
+"descricao": "infraestrutura: Garantir manutenção preventiva anual de toda a malha rodoviária federal paviment",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Garantir manutenção preventiva anual de toda a malha rodoviária federal pavimentada",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0371",
+"descricao": "infraestrutura: tira pedagio das rodovias federais, ta caro dms",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "tira pedagio das rodovias federais, ta caro dms",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_caminhoneiros",
+"m12": "sobe",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0382",
+"descricao": "justica: Fazer valer o teto constitucional sobre os penduricalhos do Judiciário e do Mini",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Fazer valer o teto constitucional sobre os penduricalhos do Judiciário e do Ministério Público",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Direcao robusta da medida."
+},
+{
+"ind": "g_servidores",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0398",
+"descricao": "justica: Contratar 500 juízes federais e 2 mil servidores para reduzir a fila dos juizado",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Contratar 500 juízes federais e 2 mil servidores para reduzir a fila dos juizados especiais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0405",
+"descricao": "medias_empresas: Estender a dedução da Lei do Bem a empresas médias do lucro presumido",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Estender a dedução da Lei do Bem a empresas médias do lucro presumido",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia reduz a receita."
+}
+]
+},
+{
+"id": "n0409",
+"descricao": "medias_empresas: empresa media paga imposto d+ e n tem ajuda de ninguem, o gov so olha pro mei e ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "empresa media paga imposto d+ e n tem ajuda de ninguem, o gov so olha pro mei e pra grande",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia reduz a receita."
+}
+]
+},
+{
+"id": "n0415",
+"descricao": "medias_empresas: Se a empresa média contratar jovens no primeiro emprego, abater 50% da contribui",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Se a empresa média contratar jovens no primeiro emprego, abater 50% da contribuição patronal por 12 meses",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia reduz a receita."
+}
+]
+},
+{
+"id": "n0418",
+"descricao": "medias_empresas: Compensar 100% do prejuízo fiscal no ano, criar seguro de crédito à exportação p",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Compensar 100% do prejuízo fiscal no ano, criar seguro de crédito à exportação para médias e abrir balcão de IPO simplificado",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia reduz a receita."
+}
+]
+},
+{
+"id": "n0420",
+"descricao": "meio_ambiente: Destruir o maquinário flagrado em garimpo ilegal em terras indígenas e bloquear ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Destruir o maquinário flagrado em garimpo ilegal em terras indígenas e bloquear as contas dos financiadores",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_indigenas",
+"m12": "sobe",
+"just": "Proteção territorial."
+},
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0421",
+"descricao": "meio_ambiente: Restaurar 2 milhões de hectares degradados até 2030 com mudas nativas e crédito ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Restaurar 2 milhões de hectares degradados até 2030 com mudas nativas e crédito a pequenos produtores",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "desm",
+"m12": "desce",
+"just": "Mais cobertura florestal."
+}
+]
+},
+{
+"id": "n0422",
+"descricao": "meio_ambiente: Proibir novas usinas a carvão e retirar o subsídio ao carvão mineral na conta de",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Proibir novas usinas a carvão e retirar o subsídio ao carvão mineral na conta de luz",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "Setor carbonífero perde subsídio."
+}
+]
+},
+{
+"id": "n0423",
+"descricao": "meio_ambiente: Exigir rastreabilidade do ouro, da lavra até o comprador, com nota fiscal eletrô",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Exigir rastreabilidade do ouro, da lavra até o comprador, com nota fiscal eletrônica obrigatória",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "desm",
+"m12": "desce",
+"just": "Dificulta o ouro ilegal."
+}
+]
+},
+{
+"id": "n0424",
+"descricao": "meio_ambiente: Zerar o IPI de bicicletas elétricas, painéis solares e baterias residenciais",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar o IPI de bicicletas elétricas, painéis solares e baterias residenciais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia de IPI."
+}
+]
+},
+{
+"id": "n0425",
+"descricao": "meio_ambiente: Cobrar as multas ambientais com protesto em cartório e bloqueio do crédito rural",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cobrar as multas ambientais com protesto em cartório e bloqueio do crédito rural para devedores",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Mais multas arrecadadas."
+}
+]
+},
+{
+"id": "n0426",
+"descricao": "meio_ambiente: Instalar 1.000 estações de monitoramento da qualidade do ar nas regiões metropol",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Instalar 1.000 estações de monitoramento da qualidade do ar nas regiões metropolitanas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0427",
+"descricao": "meio_ambiente: Criar um programa de manejo florestal comunitário com concessão de florestas púb",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um programa de manejo florestal comunitário com concessão de florestas públicas a populações tradicionais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "desm",
+"m12": "desce",
+"just": "Uso sustentável protege a floresta."
+}
+]
+},
+{
+"id": "n0428",
+"descricao": "meio_ambiente: Abrir linha de R$ 10 bilhões para cadeias da bioeconomia como açaí, castanha e b",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Abrir linha de R$ 10 bilhões para cadeias da bioeconomia como açaí, castanha e babaçu",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0429",
+"descricao": "meio_ambiente: quem toca fogo no mato de proposito tem q ir preso, chega de impunidade",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "quem toca fogo no mato de proposito tem q ir preso, chega de impunidade",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "desm",
+"m12": "desce",
+"just": "Maior punição."
+}
+]
+},
+{
+"id": "n0431",
+"descricao": "meio_ambiente: desmatamento zero ja, nao quero nem saber",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "desmatamento zero ja, nao quero nem saber",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "desm",
+"m12": "desce",
+"just": "Meta de desmatamento zero."
+},
+{
+"ind": "g_agro",
+"m12": "desce",
+"just": "Restrições à expansão agrícola."
+}
+]
+},
+{
+"id": "n0432",
+"descricao": "meio_ambiente: carro eletrico mais barato pra todo mundo, tira imposto",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "carro eletrico mais barato pra todo mundo, tira imposto",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia tributária."
+}
+]
+},
+{
+"id": "n0435",
+"descricao": "meio_ambiente: Se o desmatamento da Amazônia subir mais de 20% em um ano, suspender o crédito r",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Se o desmatamento da Amazônia subir mais de 20% em um ano, suspender o crédito rural aos municípios que mais desmatam",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "desm",
+"m12": "desce",
+"just": "Gatilho contra o desmatamento."
+},
+{
+"ind": "g_agro",
+"m12": "desce",
+"just": "Corte de crédito."
+}
+]
+},
+{
+"id": "n0436",
+"descricao": "meio_ambiente: Sem criar imposto novo, financiar a restauração florestal com 10% das multas amb",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Sem criar imposto novo, financiar a restauração florestal com 10% das multas ambientais e dos royalties de petróleo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0438",
+"descricao": "meio_ambiente: Criar 5 reservas extrativistas na Amazônia, contratar 500 analistas ambientais e",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar 5 reservas extrativistas na Amazônia, contratar 500 analistas ambientais e financiar 50 brigadas voluntárias contra incêndios no Cerrado",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "desm",
+"m12": "desce",
+"just": "Mais proteção."
+}
+]
+},
+{
+"id": "n0440",
+"descricao": "micro_empresas: Permitir que o MEI contrate até dois empregados em vez de um",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Permitir que o MEI contrate até dois empregados em vez de um",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Grupo diretamente beneficiado."
+}
+]
+},
+{
+"id": "n0441",
+"descricao": "micro_empresas: Criar seguro-desemprego específico para o microempreendedor individual que encer",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar seguro-desemprego específico para o microempreendedor individual que encerrar a atividade",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Grupo diretamente beneficiado."
+}
+]
+},
+{
+"id": "n0442",
+"descricao": "micro_empresas: Zerar o DAS por 12 meses para quem formalizar um negócio informal",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar o DAS por 12 meses para quem formalizar um negócio informal",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia reduz a receita."
+},
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Grupo diretamente beneficiado."
+}
+]
+},
+{
+"id": "n0445",
+"descricao": "micro_empresas: Dar carência de cinco anos de CBS a microempresas abertas em municípios de IDH b",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Dar carência de cinco anos de CBS a microempresas abertas em municípios de IDH baixo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia reduz a receita."
+}
+]
+},
+{
+"id": "n0448",
+"descricao": "micro_empresas: Triplicar os recursos do microcrédito produtivo orientado com fundos de bancos p",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Triplicar os recursos do microcrédito produtivo orientado com fundos de bancos públicos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0449",
+"descricao": "micro_empresas: o mei paga d+ de imposto, baixa o das como era antes",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "o mei paga d+ de imposto, baixa o das como era antes",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia reduz a receita."
+},
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Grupo diretamente beneficiado."
+}
+]
+},
+{
+"id": "n0450",
+"descricao": "micro_empresas: pq o governo n ajuda o pequeno? da dinheiro pra quem abre negocio",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "pq o governo n ajuda o pequeno? da dinheiro pra quem abre negocio",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0452",
+"descricao": "micro_empresas: perdoa tds as divida do simples dos microempresario falidos",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "perdoa tds as divida do simples dos microempresario falidos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia reduz a receita."
+},
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Grupo diretamente beneficiado."
+}
+]
+},
+{
+"id": "n0456",
+"descricao": "micro_empresas: Taxar os bancos para financiar crédito barato a microempresas",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Taxar os bancos para financiar crédito barato a microempresas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Arrecadação nova."
+}
+]
+},
+{
+"id": "n0458",
+"descricao": "micro_empresas: Zerar taxa de maquininha em compras até R$ 100, limitar a 12 meses a análise de ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar taxa de maquininha em compras até R$ 100, limitar a 12 meses a análise de licenças de baixo risco e dar crédito integral de CBS a quem compra do Simples",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia reduz a receita."
+}
+]
+},
+{
+"id": "n0461",
+"descricao": "moradia: Urbanizar mil favelas com água, esgoto, drenagem e iluminação, em parceria com o",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Urbanizar mil favelas com água, esgoto, drenagem e iluminação, em parceria com os municípios",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0463",
+"descricao": "moradia: Criar seguro público que cubra as parcelas do financiamento habitacional de baix",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar seguro público que cubra as parcelas do financiamento habitacional de baixa renda em caso de desemprego",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0465",
+"descricao": "moradia: Pagar bônus de R$ 20 mil de entrada a jovens de até 29 anos na compra do primeir",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Pagar bônus de R$ 20 mil de entrada a jovens de até 29 anos na compra do primeiro imóvel",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "g_jovens",
+"m12": "sobe",
+"just": "Grupo diretamente beneficiado."
+}
+]
+},
+{
+"id": "n0467",
+"descricao": "moradia: Usar R$ 3 bilhões do Fundo Social do pré-sal para moradia de famílias desabrigad",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Usar R$ 3 bilhões do Fundo Social do pré-sal para moradia de famílias desabrigadas por enchentes e desastres",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0468",
+"descricao": "moradia: Cobrar imposto de 20% sobre o ganho de capital de imóveis revendidos em menos de",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cobrar imposto de 20% sobre o ganho de capital de imóveis revendidos em menos de dois anos, poupando o imóvel único",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Arrecadação nova."
+}
+]
+},
+{
+"id": "n0469",
+"descricao": "moradia: qro casa propria mas aluguel ta absurdo, faz o governo dar casa pra quem ta na f",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "qro casa propria mas aluguel ta absurdo, faz o governo dar casa pra quem ta na fila ha 10 anos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0478",
+"descricao": "moradia: Zerar PIS, Cofins e IPI dos materiais básicos de construção usados no MCMV e dar",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar PIS, Cofins e IPI dos materiais básicos de construção usados no MCMV e dar R$ 5 bilhões por ano para regularizar 2 milhões de lotes",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0480",
+"descricao": "previdencia: Pagar a aposentadoria por incapacidade permanente com 100% da média salarial par",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Pagar a aposentadoria por incapacidade permanente com 100% da média salarial para todos os segurados",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "g_aposentados",
+"m12": "sobe",
+"just": "Benefício maior."
+}
+]
+},
+{
+"id": "n0481",
+"descricao": "previdencia: Cruzar os dados dos cartórios com o INSS para cortar benefícios pagos a pessoas ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cruzar os dados dos cartórios com o INSS para cortar benefícios pagos a pessoas falecidas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Economia de despesa melhora o primário."
+}
+]
+},
+{
+"id": "n0482",
+"descricao": "previdencia: Cobrar contribuição previdenciária sobre a participação nos lucros e resultados ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cobrar contribuição previdenciária sobre a participação nos lucros e resultados acima de R$ 20 mil por ano",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Receita nova melhora o primário."
+}
+]
+},
+{
+"id": "n0484",
+"descricao": "previdencia: Conceder aposentadoria automaticamente a quem já cumpriu os requisitos nos dados",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Conceder aposentadoria automaticamente a quem já cumpriu os requisitos nos dados do CNIS, sem exigir requerimento",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "g_aposentados",
+"m12": "sobe",
+"just": "Acesso mais rápido ao benefício."
+}
+]
+},
+{
+"id": "n0485",
+"descricao": "previdencia: Reduzir a alíquota do segurado facultativo de 20% para 15% do salário de contrib",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir a alíquota do segurado facultativo de 20% para 15% do salário de contribuição",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Renúncia de receita reduz o primário."
+}
+]
+},
+{
+"id": "n0486",
+"descricao": "previdencia: Aumentar o salário-família para R$ 150 por filho de trabalhador de baixa renda",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Aumentar o salário-família para R$ 150 por filho de trabalhador de baixa renda",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0487",
+"descricao": "previdencia: Ampliar o salário-maternidade de 120 para 180 dias para todas as seguradas do IN",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Ampliar o salário-maternidade de 120 para 180 dias para todas as seguradas do INSS",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "g_mulheres",
+"m12": "sobe",
+"just": "Mais tempo com o bebê."
+}
+]
+},
+{
+"id": "n0489",
+"descricao": "previdencia: precisamos de aposentadoria p quem cuida de parente doente em casa, ninguem vê e",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "precisamos de aposentadoria p quem cuida de parente doente em casa, ninguem vê esse trabalho",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0491",
+"descricao": "previdencia: INSS demora 6 meses p dar resposta, absurdo!! resolve isso",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "INSS demora 6 meses p dar resposta, absurdo!! resolve isso",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0492",
+"descricao": "previdencia: a aposentadoria do deputado tem q ser igual a do povao, chega de privilegio",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "a aposentadoria do deputado tem q ser igual a do povao, chega de privilegio",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Economia de despesa melhora o primário."
+}
+]
+},
+{
+"id": "n0498",
+"descricao": "previdencia: Criar um pecúlio por morte de R$ 5 mil, elevar o auxílio-acidente para 100% do b",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um pecúlio por morte de R$ 5 mil, elevar o auxílio-acidente para 100% do benefício e contratar 2 mil peritos médicos federais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0503",
+"descricao": "privatizacoes: Vender a carteira de ações do BNDESPar em empresas privadas",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Vender a carteira de ações do BNDESPar em empresas privadas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0522",
+"descricao": "regalias: Enxugar a Esplanada de 38 para 20 ministérios, fundindo pastas e cortando cargos",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Enxugar a Esplanada de 38 para 20 ministérios, fundindo pastas e cortando cargos de confiança",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Economia ou receita nova melhora o primário."
+}
+]
+},
+{
+"id": "n0523",
+"descricao": "regalias: Fazer incidir imposto de renda sobre verbas indenizatórias pagas acima do teto a",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Fazer incidir imposto de renda sobre verbas indenizatórias pagas acima do teto a membros de qualquer Poder",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Arrecadação nova."
+},
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Economia ou receita nova melhora o primário."
+}
+]
+},
+{
+"id": "n0538",
+"descricao": "regalias: Cortar pela metade a verba de publicidade oficial, extinguir o cartão corporativ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cortar pela metade a verba de publicidade oficial, extinguir o cartão corporativo de ministros e reduzir 20% dos cargos comissionados",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Economia ou receita nova melhora o primário."
+}
+]
+},
+{
+"id": "n0548",
+"descricao": "relacoes_exteriores: Zerar o IOF sobre remessas de brasileiros no exterior para suas famílias",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar o IOF sobre remessas de brasileiros no exterior para suas famílias",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0560",
+"descricao": "saneamento: Criar o programa Rios Limpos com R$ 6 bilhões para tratar o esgoto lançado nas d",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar o programa Rios Limpos com R$ 6 bilhões para tratar o esgoto lançado nas dez bacias mais poluídas do país",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "Melhoria ambiental em áreas urbanas."
+}
+]
+},
+{
+"id": "n0561",
+"descricao": "saneamento: Abrir linha do BNDES com juros subsidiados para parcerias público-privadas de es",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Abrir linha do BNDES com juros subsidiados para parcerias público-privadas de esgoto em municípios pequenos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0562",
+"descricao": "saneamento: Instalar cisternas de captação de chuva em 1 milhão de residências do semiárido",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Instalar cisternas de captação de chuva em 1 milhão de residências do semiárido",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0565",
+"descricao": "saneamento: Cobrir o custo das ligações intradomiciliares de esgoto de famílias inscritas no",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cobrir o custo das ligações intradomiciliares de esgoto de famílias inscritas no CadÚnico",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "Ligação domiciliar custeada."
+}
+]
+},
+{
+"id": "n0566",
+"descricao": "saneamento: Dar crédito tributário às indústrias que tratarem e reutilizarem mais de 50% da ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Dar crédito tributário às indústrias que tratarem e reutilizarem mais de 50% da água usada",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia tributária."
+}
+]
+},
+{
+"id": "n0568",
+"descricao": "saneamento: Reduzir em 50% a tarifa de energia das estações de tratamento de água e esgoto",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir em 50% a tarifa de energia das estações de tratamento de água e esgoto",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0569",
+"descricao": "saneamento: tem esgoto a ceu aberto na minha rua, o governo tem q resolver agora",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "tem esgoto a ceu aberto na minha rua, o governo tem q resolver agora",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0570",
+"descricao": "saneamento: o bndes devia dar dinheiro p prefeitura fazer rede de esgoto",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "o bndes devia dar dinheiro p prefeitura fazer rede de esgoto",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0576",
+"descricao": "saneamento: Cobrar 1% sobre bebidas açucaradas para financiar redes de água em favelas",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cobrar 1% sobre bebidas açucaradas para financiar redes de água em favelas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Nova arrecadação."
+}
+]
+},
+{
+"id": "n0578",
+"descricao": "saneamento: Financiar 500 estações de tratamento de esgoto em cidades pequenas, capacitar 20",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Financiar 500 estações de tratamento de esgoto em cidades pequenas, capacitar 20 mil operadores e criar um cadastro nacional de nascentes",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0580",
+"descricao": "saude: Oferecer a vacina contra HPV pelo SUS a adultos até 45 anos",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Oferecer a vacina contra HPV pelo SUS a adultos até 45 anos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0581",
+"descricao": "saude: Dobrar os recursos para saúde mental e abrir 500 novos CAPS",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Dobrar os recursos para saúde mental e abrir 500 novos CAPS",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0582",
+"descricao": "saude: Incluir mais 20 medicamentos na lista gratuita do Farmácia Popular, como antidep",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Incluir mais 20 medicamentos na lista gratuita do Farmácia Popular, como antidepressivos e anticoncepcionais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0583",
+"descricao": "saude: Ampliar a mamografia gratuita pelo SUS para mulheres a partir dos 40 anos e o ex",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Ampliar a mamografia gratuita pelo SUS para mulheres a partir dos 40 anos e o exame de colo do útero",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+},
+{
+"ind": "g_mulheres",
+"m12": "sobe",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0584",
+"descricao": "saude: Vacinar adolescentes contra a dengue e reforçar o controle do mosquito nos munic",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Vacinar adolescentes contra a dengue e reforçar o controle do mosquito nos municípios",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0587",
+"descricao": "saude: Investir R$ 10 bilhões na Fiocruz e no Butantan para produzir vacinas e insumos ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Investir R$ 10 bilhões na Fiocruz e no Butantan para produzir vacinas e insumos no Brasil",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0589",
+"descricao": "saude: qro remedio de graca pra todo mundo no sus, simples assim",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "qro remedio de graca pra todo mundo no sus, simples assim",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0596",
+"descricao": "saude: Taxar bebidas açucaradas para financiar a atenção básica",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Taxar bebidas açucaradas para financiar a atenção básica",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0603",
+"descricao": "seguranca: Aumentar em 50% o piso salarial das polícias civis e militares com complemento d",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Aumentar em 50% o piso salarial das polícias civis e militares com complemento da União",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+},
+{
+"ind": "g_policiais",
+"m12": "sobe",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0605",
+"descricao": "seguranca: Reforçar a Polícia Federal com 5 mil novos agentes e delegados",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reforçar a Polícia Federal com 5 mil novos agentes e delegados",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Direcao robusta da medida."
+}
+]
+},
+{
+"id": "n0620",
+"descricao": "setor_privado: Criar a Nota Fiscal Nacional unificada para que pequenas empresas emitam um únic",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar a Nota Fiscal Nacional unificada para que pequenas empresas emitam um único documento fiscal em todo o país",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_empresariado",
+"m12": "sobe",
+"just": "Menos custo de conformidade."
+}
+]
+},
+{
+"id": "n0622",
+"descricao": "setor_privado: Aprovar um procedimento de recuperação extrajudicial simplificado para micro e p",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Aprovar um procedimento de recuperação extrajudicial simplificado para micro e pequenas empresas endividadas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Alívio a micro e pequenos negócios."
+}
+]
+},
+{
+"id": "n0623",
+"descricao": "setor_privado: Reduzir em 50% as taxas do INPI para registro de marcas e patentes de startups e",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir em 50% as taxas do INPI para registro de marcas e patentes de startups e MEIs",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Custo menor para MEI."
+}
+]
+},
+{
+"id": "n0624",
+"descricao": "setor_privado: Ampliar o Pronampe com R$ 10 bilhões em crédito e cobertura do FGO para capital ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Ampliar o Pronampe com R$ 10 bilhões em crédito e cobertura do FGO para capital de giro de pequenos negócios",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Mais crédito barato."
+}
+]
+},
+{
+"id": "n0626",
+"descricao": "setor_privado: Instituir um regime simplificado para empresas de base tecnológica com alíquota ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Instituir um regime simplificado para empresas de base tecnológica com alíquota única de 4% sobre o faturamento",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_empresariado",
+"m12": "sobe",
+"just": "Carga menor para tech."
+}
+]
+},
+{
+"id": "n0627",
+"descricao": "setor_privado: Zerar o IOF das operações de crédito contratadas por micro e pequenas empresas",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar o IOF das operações de crédito contratadas por micro e pequenas empresas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Crédito mais barato."
+},
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia de IOF."
+}
+]
+},
+{
+"id": "n0630",
+"descricao": "setor_privado: subir o limite do simples p 10 milhoes pq 4 milhoes e pouco hoje",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "subir o limite do simples p 10 milhoes pq 4 milhoes e pouco hoje",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_empresariado",
+"m12": "sobe",
+"just": "Mais empresas no Simples."
+},
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia tributária."
+}
+]
+},
+{
+"id": "n0631",
+"descricao": "setor_privado: empresario precisa de credito do bndes sem juros kkk tudo de graca",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "empresario precisa de credito do bndes sem juros kkk tudo de graca",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0636",
+"descricao": "setor_privado: Será que não está na hora de cortar pela metade o tempo que as empresas gastam c",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Será que não está na hora de cortar pela metade o tempo que as empresas gastam com obrigações acessórias, hein?",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_empresariado",
+"m12": "sobe",
+"just": "Menos custo de conformidade."
+}
+]
+},
+{
+"id": "n0638",
+"descricao": "setor_privado: Criar um balcão único de licenças, zerar a taxa de abertura do MEI e dar 12 mese",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um balcão único de licenças, zerar a taxa de abertura do MEI e dar 12 meses sem multas fiscais para empresas recém-abertas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Alívio direto ao MEI."
+}
+]
+},
+{
+"id": "n0651",
+"descricao": "terras_raras: taxa as mineradora q ta levando tudo e deixando buraco",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "taxa as mineradora q ta levando tudo e deixando buraco",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Arrecadação nova."
+}
+]
+},
+{
+"id": "n0660",
+"descricao": "trabalhista: Instituir o direito à desconexão, proibindo o empregador de acionar o empregado ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Instituir o direito à desconexão, proibindo o empregador de acionar o empregado fora do expediente",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_sindicatos",
+"m12": "sobe",
+"just": "Ganho de direitos."
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "Mais restrições."
+}
+]
+},
+{
+"id": "n0661",
+"descricao": "trabalhista: Obrigar a empresa a pagar parte das despesas de internet e energia do trabalhado",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Obrigar a empresa a pagar parte das despesas de internet e energia do trabalhador em teletrabalho",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "Custo adicional para empresas."
+}
+]
+},
+{
+"id": "n0662",
+"descricao": "trabalhista: Limitar as horas extras a duas por dia e elevar o adicional para 75%",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Limitar as horas extras a duas por dia e elevar o adicional para 75%",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_sindicatos",
+"m12": "sobe",
+"just": "Mais remuneração por extra."
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "Custo maior."
+}
+]
+},
+{
+"id": "n0663",
+"descricao": "trabalhista: Aumentar o adicional noturno de 20% para 30%",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Aumentar o adicional noturno de 20% para 30%",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_sindicatos",
+"m12": "sobe",
+"just": "Remuneração maior no turno da noite."
+}
+]
+},
+{
+"id": "n0664",
+"descricao": "trabalhista: Estender a licença-maternidade para 180 dias para todas as trabalhadoras celetis",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Estender a licença-maternidade para 180 dias para todas as trabalhadoras celetistas, custeada pelo INSS",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "g_mulheres",
+"m12": "sobe",
+"just": "Mais tempo com o bebê."
+}
+]
+},
+{
+"id": "n0665",
+"descricao": "trabalhista: Tipificar o assédio moral no trabalho como crime, com pena de detenção e multa",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Tipificar o assédio moral no trabalho como crime, com pena de detenção e multa",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_sindicatos",
+"m12": "sobe",
+"just": "Proteção ao trabalhador."
+}
+]
+},
+{
+"id": "n0666",
+"descricao": "trabalhista: Obrigar as plataformas a contratar seguro contra acidentes para entregadores e m",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Obrigar as plataformas a contratar seguro contra acidentes para entregadores e motoristas de aplicativo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_app",
+"m12": "sobe",
+"just": "Proteção ao trabalhador de app."
+}
+]
+},
+{
+"id": "n0667",
+"descricao": "trabalhista: Proibir a contratação de pessoa jurídica para funções com subordinação, com mult",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Proibir a contratação de pessoa jurídica para funções com subordinação, com multa de 10 salários mínimos por trabalhador",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_sindicatos",
+"m12": "sobe",
+"just": "Combate a fraude trabalhista."
+}
+]
+},
+{
+"id": "n0668",
+"descricao": "trabalhista: Dobrar o número de auditores fiscais do trabalho com concurso público nacional",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Dobrar o número de auditores fiscais do trabalho com concurso público nacional",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0669",
+"descricao": "trabalhista: acabar com o desconto do vale transporte no salario, patrao paga tudo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "acabar com o desconto do vale transporte no salario, patrao paga tudo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "Custo maior."
+},
+{
+"ind": "g_sindicatos",
+"m12": "sobe",
+"just": "Salário líquido maior."
+}
+]
+},
+{
+"id": "n0670",
+"descricao": "trabalhista: reduz a carga horaria pra 4 dias por semana sem cortar salario",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "reduz a carga horaria pra 4 dias por semana sem cortar salario",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_sindicatos",
+"m12": "sobe",
+"just": "Menos horas."
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "Custo por hora maior."
+}
+]
+},
+{
+"id": "n0671",
+"descricao": "trabalhista: demissao sem justa causa so com aval do sindicato",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "demissao sem justa causa so com aval do sindicato",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_sindicatos",
+"m12": "sobe",
+"just": "Poder de veto sindical."
+}
+]
+},
+{
+"id": "n0672",
+"descricao": "trabalhista: dar 14 salario pra todo mundo em dezembro kkkk",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "dar 14 salario pra todo mundo em dezembro kkkk",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_sindicatos",
+"m12": "sobe",
+"just": "Mais renda."
+}
+]
+},
+{
+"id": "n0676",
+"descricao": "trabalhista: Sem mexer na CLT, ampliar em R$ 800 milhões a fiscalização do trabalho infantil",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Sem mexer na CLT, ampliar em R$ 800 milhões a fiscalização do trabalho infantil",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0678",
+"descricao": "trabalhista: Garantir intervalo de amamentação em local próprio, estender o vale-transporte a",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Garantir intervalo de amamentação em local próprio, estender o vale-transporte a estagiários e elevar o adicional de insalubridade em 10 pontos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_sindicatos",
+"m12": "sobe",
+"just": "Novos direitos."
+}
+]
+},
+{
+"id": "n0680",
+"descricao": "transporte: Autorizar a construção da Ferrogrão entre Sinop e Miritituba para escoar a safra",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Autorizar a construção da Ferrogrão entre Sinop e Miritituba para escoar a safra do Centro-Oeste",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "sobe",
+"just": "Frete menor para a safra."
+}
+]
+},
+{
+"id": "n0681",
+"descricao": "transporte: Zerar PIS e Cofins sobre o querosene de aviação nas rotas regionais",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar PIS e Cofins sobre o querosene de aviação nas rotas regionais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Renúncia de receita reduz o primário."
+}
+]
+},
+{
+"id": "n0682",
+"descricao": "transporte: Criar bônus de R$ 20 mil para trocar caminhão com mais de 30 anos de uso por um ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar bônus de R$ 20 mil para trocar caminhão com mais de 30 anos de uso por um novo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "g_caminhoneiros",
+"m12": "sobe",
+"just": "Bônus na troca do veículo."
+}
+]
+},
+{
+"id": "n0685",
+"descricao": "transporte: Eliminar as passagens de nível ferroviárias das grandes cidades com viadutos e t",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Eliminar as passagens de nível ferroviárias das grandes cidades com viadutos e trincheiras",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0686",
+"descricao": "transporte: Abrir linha de crédito com juros baixos para motoboys comprarem a moto própria",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Abrir linha de crédito com juros baixos para motoboys comprarem a moto própria",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_app",
+"m12": "sobe",
+"just": "Crédito mais barato para entregadores."
+}
+]
+},
+{
+"id": "n0687",
+"descricao": "transporte: Subsidiar tarifa de balsas e barcos de passageiros em rios da Amazônia",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Subsidiar tarifa de balsas e barcos de passageiros em rios da Amazônia",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "n0688",
+"descricao": "transporte: Obrigar as concessionárias a manter paradas seguras com banheiro e vigilância a ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Obrigar as concessionárias a manter paradas seguras com banheiro e vigilância a cada 150 km nas rodovias federais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_caminhoneiros",
+"m12": "sobe",
+"just": "Descanso mais seguro."
+}
+]
+},
+{
+"id": "n0691",
+"descricao": "transporte: fiscaliza mais balanca de caminhao q estraga a estrada toda",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "fiscaliza mais balanca de caminhao q estraga a estrada toda",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_caminhoneiros",
+"m12": "desce",
+"just": "Maior fiscalização de peso."
+}
+]
+},
+{
+"id": "n0698",
+"descricao": "transporte: Dobrar a frota de ônibus escolares rurais, pavimentar 5 mil km de estradas vicin",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Dobrar a frota de ônibus escolares rurais, pavimentar 5 mil km de estradas vicinais e instalar internet nos ônibus",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+},
+{
+"ind": "g_agfam",
+"m12": "sobe",
+"just": "Estradas e ônibus melhores no campo."
+}
+]
+}
+]
