@@ -3,7 +3,7 @@
   .med-grid { display: grid; grid-template-columns: minmax(0,1fr); gap: 16px; }
   @media (min-width: 1500px) { .med-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
   .med-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
-  .med-card[data-estado=suspensa] { border-color: rgba(232,146,58,.6); }
+  .med-card[data-estado=suspensa] { border-color: rgba(240,166,58,.6); }
   .med-head { display: flex; gap: 12px; align-items: flex-start; }
   .med-ic { flex: none; width: 40px; height: 40px; border-radius: 999px; background: var(--panel2); display: flex; align-items: center; justify-content: center; color: var(--ouro); }
   .med-tit { font-weight: 700; font-size: 17px; line-height: 1.25; }
@@ -19,7 +19,7 @@
   .med-fase[data-st=pulada] b { text-decoration: line-through; }
   .med-fase[data-st=atual] { color: var(--fg); }
   .med-fase[data-st=atual] b { color: var(--ouro); }
-  .med-fase[data-st=atual] .med-dot { background: var(--ouro); border-color: var(--ouro); box-shadow: 0 0 0 4px rgba(250,204,21,.18); }
+  .med-fase[data-st=atual] .med-dot { background: var(--ouro); border-color: var(--ouro); box-shadow: 0 0 0 4px rgba(245,197,24,.18); }
   .med-fase[data-st=atual]::before { background: linear-gradient(90deg, var(--verde), var(--ouro)); }
   .med-prog-t { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
   .med-pr table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px; }
@@ -45,7 +45,7 @@
 <title>Faixa Presidencial</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800&display=swap">
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script>
   tailwind.config = {
@@ -57,8 +57,8 @@
           anil: 'var(--anil)', rubro: 'var(--rubro)', ambar: 'var(--ambar)'
         },
         fontFamily: {
-          disp: ['Outfit', 'system-ui', 'sans-serif'],
-          sans: ['Outfit', 'system-ui', 'sans-serif'],
+          disp: ['"Bricolage Grotesque"', '"Bricolage Grotesque Variable"', 'system-ui', 'sans-serif'],
+          sans: ['"IBM Plex Sans"', 'system-ui', 'sans-serif'],
           mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace']
         }
       }
@@ -72,19 +72,22 @@
 <style>
   /* Layout: sticky gabinete header + tab rail; content in a dense 12-col grid of "dossiê" panels. Single deliberate dark theme (cerrado night + flag accents). */
   :root {
+    /* tema preto: preto puro, painéis finos, amarelo só para ações */
     --ink: #000000;      /* fundo preto */
-    --panel: #0d0d0c;
-    --panel2: #161614;
-    --line: #2c2b24;
-    --fg: #f3f2ea;
-    --muted: #a9a796;
-    --verde: #22c55e;
-    --ouro: #facc15;
-    --anil: #a3e635;
-    --rubro: #e2553f;
-    --ambar: #e8923a;
-    --f-disp: "Outfit", system-ui, sans-serif;
-    --f-body: "Outfit", system-ui, sans-serif;
+    --panel: #0b0b0b;
+    --panel2: #121212;
+    --line: #222222;     /* fio */
+    --line2: #2e2e2e;    /* fio forte (campos, caixas) */
+    --fg: #f2f2ef;
+    --muted: #a9a9a2;
+    --dim: #8a8a83;      /* rótulos secundários: 5,9:1 sobre preto (AA) */
+    --verde: #2fd27a;
+    --ouro: #f5c518;
+    --anil: #7ea6ff;
+    --rubro: #ff5a4e;
+    --ambar: #f0a63a;
+    --f-disp: "Bricolage Grotesque", "Bricolage Grotesque Variable", system-ui, sans-serif;
+    --f-body: "IBM Plex Sans", system-ui, sans-serif;
     --f-mono: "IBM Plex Mono", ui-monospace, monospace;
     color-scheme: dark;
   }
@@ -188,15 +191,6 @@
   .chipnav button { flex: none; padding: 8px 16px; border-radius: 999px; font-size: 14px; font-weight: 600; color: var(--muted); background: var(--panel); }
   .chipnav button:hover { color: var(--fg); }
   .chipnav button[aria-selected=true] { color: #1a1403; background: var(--ouro); }
-  /* cartões de pendência */
-  .pend { display: grid; grid-template-columns: 40px minmax(0,1fr) auto; gap: 8px 16px; padding: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
-  .pend[data-nivel=urgente] { border-color: rgba(226,85,63,.5); box-shadow: inset 4px 0 0 var(--rubro); }
-  .pend[data-nivel=atencao] { box-shadow: inset 4px 0 0 var(--ambar); }
-  .pend[data-nivel=acompanhe] { box-shadow: inset 4px 0 0 var(--anil); }
-  .pend-ic { width: 40px; height: 40px; border-radius: 999px; background: var(--panel2); display: flex; align-items: center; justify-content: center; color: var(--ouro); }
-  .pend-a { grid-column: 2 / span 2; display: flex; flex-wrap: wrap; gap: 8px; }
-  .pend-ab { grid-column: 3; grid-row: 1; align-self: start; }
-  @media (max-width: 480px) { .pend { grid-template-columns: minmax(0,1fr) auto; gap: 8px 16px; } .pend-ic { display: none; } .pend-ab { grid-column: 2; grid-row: 1; } .pend-a { grid-column: 1 / span 2; } .vit-nums { gap: 16px; } }
   .btn-sm { padding: 8px 16px; font-size: 13px; }
   .linklike { color: var(--muted); font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; padding: 8px 0; }
   .linklike:hover { color: var(--fg); }
@@ -216,8 +210,7 @@
 </style>
 <style id="visual-v42">
   /* ===== v4.2 visual: legibilidade global ===== */
-  :root { --muted: #c3c1b0; --f-serif: "Playfair Display", "Libre Caslon Text", Georgia, "Times New Roman", serif; }
-  body { font-size: 15.5px; line-height: 1.5; }
+  :root { --f-serif: "Playfair Display", "Libre Caslon Text", Georgia, "Times New Roman", serif; }
   /* tamanhos mínimos: 10/11px viram 12px, text-xs vira 13px, text-sm vira 15px */
   body .text-\[10px\], body .text-\[11px\], body .text-\[11\.5px\], body .\!text-\[11\.5px\], body .\!text-\[10px\], body .\!text-\[11px\] { font-size: 12px !important; line-height: 1.4 !important; }
   body .text-xs { font-size: 13px !important; line-height: 1.45 !important; }
@@ -269,7 +262,7 @@
   .med-gh .num { font-size: 12.5px; color: var(--muted); }
   .med-lista { display: flex; flex-direction: column; gap: 8px; }
   .med-card { padding: 0; gap: 0; overflow: hidden; }
-  .med-card[data-prob="1"] { border-color: rgba(226,85,63,.55); }
+  .med-card[data-prob="1"] { border-color: rgba(255,90,78,.55); }
   .med-card[data-aberto="1"] { border-color: var(--muted); }
   .med-row { display: grid; grid-template-columns: 40px minmax(0,1fr) 138px 150px minmax(0,150px) 20px; gap: 14px; align-items: center; width: 100%; text-align: left; padding: 14px 16px; color: var(--fg); }
   .med-row:hover { background: var(--panel2); }
@@ -358,6 +351,195 @@
   .j-neg .j-hl::before { content: ""; display: block; width: 36px; height: 4px; background: #c2402f; margin-bottom: 6px; }
   .j-pos .j-hl::before { content: ""; display: block; width: 36px; height: 4px; background: #1f9d55; margin-bottom: 6px; }
 </style>
+<style id="tema-preto">
+  /* ===== TEMA PRETO (interface aprovada): preto puro, fios finos, amarelo só para ações ===== */
+  html, body { background: #000; color: var(--fg); }
+  body { font-family: var(--f-body); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  * { scrollbar-color: #2e2e2e #000; scrollbar-width: thin; }
+  ::selection { background: rgba(245,197,24,.3); color: #fff; }
+  ::placeholder { color: var(--dim); opacity: 1; }
+  /* títulos: Bricolage Grotesque em caixa mista, tracking curto (a classe .disp segue valendo) */
+  .disp, .h-quiet { font-family: var(--f-disp); font-weight: 800; letter-spacing: -.015em; text-transform: none !important; line-height: 1.12; }
+  .h-quiet { font-size: 18px; font-weight: 700; letter-spacing: -.01em; }
+  .font-black { font-weight: 800; }
+  .num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+  .eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+  .tit-l { font-family: var(--f-disp); font-weight: 800; font-size: 24px; letter-spacing: -.01em; line-height: 1.15; margin-top: 2px; }
+  .text-muted { color: var(--muted); }
+  /* superfícies: fio fino, cantos modestos, sem brilho */
+  .card, .sec { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; box-shadow: none; }
+  .sec { padding: 24px; } .sec-sm { padding: 16px; }
+  .bar-track { background: var(--line); border: 0; }
+  hr, .border-line { border-color: var(--line); }
+  .faixa { height: 3px; }
+  .faixa-sk { flex: none; height: 6px; width: 120px; border-radius: 3px; background: linear-gradient(90deg, var(--verde) 0 55%, var(--ouro) 55%); transform: skewX(-20deg); margin-left: 6px; }
+  /* botões: amarelo = ação principal; contorno = secundária; branco = assinar */
+  .btn { border-radius: 8px; font-weight: 600; font-family: var(--f-body); }
+  .btn-pri, .btn-gold { background: var(--ouro); color: #000; padding: 8px 14px; }
+  .btn-pri:hover, .btn-gold:hover { background: #ffd53d; }
+  .btn-ghost { background: transparent; border: 1px solid var(--line2); color: var(--fg); padding: 6px 12px; font-weight: 500; }
+  .btn-ghost:hover { border-color: var(--muted); background: var(--panel2); }
+  .btn-ghost[aria-pressed=true] { background: var(--fg); color: #000; border-color: var(--fg) !important; }
+  .btn-sign { background: var(--fg); color: #000; padding: 10px 16px; }
+  .btn-sign:hover { background: #fff; }
+  .btn:disabled { opacity: .4; }
+  .chip { font-size: 12px; letter-spacing: .06em; border-radius: 5px; padding: 2px 8px; background: color-mix(in srgb, currentColor 12%, transparent); border-color: color-mix(in srgb, currentColor 30%, transparent) !important; }
+  .chip.chip-ex { text-transform: none; letter-spacing: 0; font-family: var(--f-body); font-size: 13px; color: var(--muted); background: transparent; border-radius: 999px; padding: 3px 11px; white-space: normal; text-align: left; border-color: var(--line2) !important; }
+  .chip.chip-ex:hover { color: var(--fg); border-color: var(--muted) !important; }
+  .selo-sim { color: var(--dim); opacity: 1; border-color: var(--line2); background: transparent; }
+  textarea, input[type=text], input[type=number], input[type=password], select { background: #000; border: 1px solid var(--line2); font-family: var(--f-body); }
+  textarea:focus, input:focus, select:focus { border-color: var(--muted); outline: none; }
+  input[type=checkbox], input[type=radio] { accent-color: var(--ouro); }
+  .tabbtn[aria-selected=true] { color: var(--fg); border-color: var(--ouro); }
+  .toast.card { background: var(--panel2); border-color: var(--line2); box-shadow: 0 8px 24px rgba(0,0,0,.6); }
+  .modal-wrap { background: rgba(0,0,0,.84); }
+  .modal-wrap > div > .card, .modal-wrap > div > .dou { border-color: var(--line2); }
+  .dou { background: #000; border-color: var(--line2); border-radius: 10px; }
+  .gav { background: #000; border-left: 1px solid var(--line2); }
+  .gav-scrim { background: rgba(0,0,0,.72); }
+  .gav-h { border-bottom: 1px solid var(--line); }
+  /* subseções (chips de País, Poder, Mundo, Eu): ativa = branco */
+  .chipnav button { background: transparent; border: 1px solid var(--line2); color: var(--muted); font-weight: 500; padding: 7px 14px; }
+  .chipnav button:hover { color: var(--fg); border-color: var(--muted); }
+  .chipnav button[aria-selected=true] { color: #000; background: var(--fg); border-color: var(--fg); font-weight: 600; }
+
+  /* ===== barra do topo ===== */
+  :root { --bar-h: 70px; --rail-w: 76px; }
+  .vitais { background: #000; backdrop-filter: none; border-bottom: 1px solid var(--line); }
+  .vitais-in { max-width: 1680px; padding-top: 12px; padding-bottom: 12px; }
+  .vit-nome { font-family: var(--f-disp); font-size: clamp(18px, 1.5vw, 21px); font-weight: 800; letter-spacing: -.01em; line-height: 1.15; text-transform: none; }
+  .vit-part { color: var(--muted); font-weight: 600; }
+  .vit-sub { color: var(--muted); font-size: 13px; line-height: 1.3; }
+  .vit-ctl { justify-content: flex-end; gap: 28px; flex-wrap: wrap; }
+  .vit-k { font-family: var(--f-mono); font-size: 12px; color: var(--dim); letter-spacing: .08em; text-transform: uppercase; line-height: 1.2; }
+  .vit-v, .vit-v.num { font-family: var(--f-disp); font-weight: 700; font-size: 18px; line-height: 24px; }
+  .vit-data { text-align: left; }
+  .vit-data .vit-v { font-size: 18px; text-transform: uppercase; font-family: var(--f-disp); font-weight: 700; }
+  .btn-enc { padding: 10px 16px; font-size: 14px; }
+  @media (max-width: 767px) { .vit-mes, .vit-imp { display: none; } .vit-ctl { gap: 16px; } }
+
+  /* ===== trilho de navegação ===== */
+  .secnav { background: rgba(0,0,0,.97); border-top: 1px solid var(--line); }
+  .secnav button { color: var(--muted); font-weight: 500; }
+  .secnav button[aria-selected=true] { color: var(--fg); border-top-color: var(--ouro); }
+  .secnav-badge { background: var(--rubro); color: #000; font-weight: 700; box-shadow: 0 0 0 2px #000; font-family: var(--f-mono); }
+  .fp-selo { display: none; }
+  @media (min-width: 1024px) {
+    .shell { max-width: 1680px; gap: 0; }
+    .secnav { background: transparent; border-top: 0; border-right: 1px solid var(--line); width: var(--rail-w); align-items: center; padding: 14px 0 0; gap: 6px; }
+    .secnav button { position: relative; width: 56px; min-height: 56px; padding: 8px 0 6px; border-left: 0; border-radius: 8px; }
+    .secnav button[aria-selected=true] { background: var(--panel2); border-left-color: transparent; }
+    .secnav button[aria-selected=true]::before { content: ""; position: absolute; left: -10px; top: 10px; bottom: 10px; width: 3px; border-radius: 2px; background: var(--ouro); }
+    .fp-selo { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; margin-bottom: 10px; background: conic-gradient(var(--verde) 0 50%, var(--ouro) 0); }
+    .fp-selo span { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: #000; font-family: var(--f-disp); font-weight: 800; font-size: 14px; color: var(--fg); }
+    .shell-main { padding-left: 28px; padding-top: 24px; }
+  }
+
+  /* ===== Mesa ===== */
+  .mesa { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .mesa-esq { display: flex; flex-direction: column; gap: 28px; min-width: 0; }
+  @media (min-width: 1024px) {
+    .mesa { grid-template-columns: minmax(0, 1fr) 340px; gap: 0; }
+    .mesa-esq { padding-right: 28px; }
+    .mesa-dir { border-left: 1px solid var(--line); padding-left: 24px; }
+  }
+  .mesa-bloco { border-top: 1px solid var(--line); padding-top: 20px; min-width: 0; }
+  .mesa-bloco .h-quiet, .pulso-i .h-quiet { font-family: var(--f-mono); font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase !important; color: var(--dim); line-height: 1.3; }
+  .resumo-med { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 14px 4px; }
+  /* caixa de decisão no topo */
+  .medida { background: var(--panel); border: 1px solid var(--line2); border-radius: 12px; padding: 18px; }
+  .medida textarea { margin-top: 14px; background: #000; border: 1px solid var(--line2); border-radius: 10px; padding: 14px; min-height: 88px; font-size: 15px; resize: vertical; }
+  .medida-ajuda { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 12px; font-size: 13px; color: var(--muted); max-width: 92ch; line-height: 1.5; }
+  .acoes-q { display: inline-flex; align-items: center; gap: 8px; font-family: var(--f-mono); font-size: 13px; color: var(--muted); }
+  .acoes-sq { display: inline-flex; gap: 3px; }
+  .acoes-sq i { display: block; width: 10px; height: 10px; border-radius: 2px; background: var(--line2); }
+  .acoes-sq i[data-on="1"] { background: var(--ouro); }
+  .meter-mini { background: var(--line); }
+  /* fila "Precisa de você" */
+  .fila { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .fila-vazia { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 18px 4px; }
+  .pend, .pend[data-nivel] { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 14px 4px; background: transparent; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; box-shadow: none; }
+  .pend-n { font-family: var(--f-mono); font-size: 13px; color: var(--dim); }
+  .pend-t { margin: 0; font-family: var(--f-body); font-size: 16px; font-weight: 600; line-height: 1.35; letter-spacing: 0; }
+  .qtag { display: inline-block; font-family: var(--f-mono); font-size: 12px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; line-height: 1.4; padding: 2px 8px; border-radius: 4px; margin-right: 8px; vertical-align: 1px; }
+  .qtag[data-nivel=urgente] { color: var(--rubro); background: rgba(255,90,78,.12); }
+  .qtag[data-nivel=atencao] { color: var(--ouro); background: rgba(245,197,24,.12); }
+  .qtag[data-nivel=acompanhe] { color: var(--anil); background: rgba(126,166,255,.12); }
+  .pend-cat { margin-left: 10px; font-family: var(--f-mono); font-size: 12px; font-weight: 400; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); white-space: nowrap; }
+  .pend-ctx { margin: 3px 0 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
+  .pend-extra { margin: 3px 0 0; color: var(--dim); font-size: 13px; }
+  .pend-a { grid-column: 3; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+  .pend .btn-pri { background: transparent; color: var(--fg); border: 1px solid var(--line2); font-weight: 500; }
+  .pend .btn-pri:hover { background: var(--panel2); border-color: var(--muted); }
+  @media (max-width: 760px) {
+    .pend, .pend[data-nivel] { grid-template-columns: 28px minmax(0, 1fr); gap: 8px 12px; }
+    .pend-a { grid-column: 2; justify-content: flex-start; }
+    .pend-cat { display: block; margin-left: 0; }
+  }
+  /* coluna da direita: aprovação, painel, alertas... */
+  .pulso-i { padding: 20px 0; border-top: 1px solid var(--line); }
+  .pulso-i:first-child { padding-top: 0; border-top: 0; }
+  .aprov .eyebrow { margin-bottom: 4px; }
+  .aprov-l { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px; align-items: center; }
+  .aprov-n { font-family: var(--f-disp); font-weight: 800; font-size: 54px; line-height: 1; letter-spacing: -.03em; color: var(--fg); }
+  .aprov-d { display: block; font-size: 14px; }
+  .aprov-bar { position: relative; height: 6px; margin-top: 8px; border-radius: 3px; overflow: hidden; background: linear-gradient(90deg, var(--rubro), var(--ouro), var(--verde)); }
+  .aprov-bar i { position: absolute; top: 0; right: 0; bottom: 0; background: var(--line2); }
+  .aprov-x { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 12px; }
+  .kpi-grade { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line); border-left: 1px solid var(--line); margin-top: 4px; }
+  .kpi-c { padding: 10px 12px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: transparent; border-radius: 0; }
+  .kpi-k { font-family: var(--f-mono); font-size: 12px; color: var(--dim); letter-spacing: .04em; text-transform: uppercase; }
+  .kpi-v { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 6px; }
+  .kpi-v b { font-family: var(--f-disp); font-weight: 700; font-size: 21px; line-height: 1.25; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .kpi-v em { font-style: normal; font-size: 12px; white-space: nowrap; }
+  .pulso .btn-ghost { padding: 4px 9px; font-size: 13px; white-space: nowrap; gap: 4px; }
+  .pulso #kpi-t + div { flex-wrap: wrap; }
+  body .text-ouro { color: var(--fg); } body .\!border-ouro, body .border-ouro { border-color: var(--fg) !important; } body .hover\:text-ouro:hover { color: var(--fg); }
+  .shell-main.fade-in { animation-fill-mode: backwards; } /* sem contexto de empilhamento depois da entrada: gavetas ficam acima do topo e do trilho */
+  .j-carta .j-selo { color: #fbf4e4; } .j-antag .j-selo { color: #e9e4cf; }
+  .alerta { color: var(--muted); }
+  .pulso-ind .vit { background: transparent; }
+
+  /* ===== Diário e Linha do mandato ===== */
+  .pm-g { background: transparent; border: 0; border-radius: 0; border-top: 1px solid var(--line); }
+  .pm-g:first-child { border-top: 0; }
+  .pm-h { padding: 10px 2px; color: var(--muted); font-size: 12px; letter-spacing: .1em; }
+  button.pm-h:hover { background: transparent; color: var(--fg); }
+  .pm-g[data-aberto="1"] > .pm-h { border-bottom: 0; }
+  .pm-l { padding: 0 2px 6px; }
+  .pm-i { border-top: 1px solid var(--line); }
+
+  /* ===== Medidas ===== */
+  .med-card, .med-tile, .med-fiscal, .med-rej li { border-radius: 10px; }
+  .med-card[data-prob="1"] { border-color: rgba(255,90,78,.5); }
+  .med-card[data-aberto="1"] { border-color: var(--line2); background: var(--panel); }
+  .med-gh h3 { font-family: var(--f-disp); font-size: 18px; font-weight: 700; text-transform: none; letter-spacing: -.01em; }
+  .med-gh .num, .med-tile-s, .med-sub { color: var(--muted); }
+  .med-fil { background: transparent; border-color: var(--line2); font-weight: 500; }
+  .med-fil .num { background: var(--panel2); }
+  .med-fil[aria-pressed=true] { background: var(--fg); border-color: var(--fg); color: #000; }
+  .med-fil[aria-pressed=true] .num { background: rgba(0,0,0,.14); color: #000; }
+  .med-ic, .med-vazio-ic { color: var(--muted); }
+  .med-fase[data-st=atual] b { color: var(--fg); }
+  .med-fase[data-st=atual] .med-dot { background: var(--fg); border-color: var(--fg); box-shadow: 0 0 0 4px rgba(242,242,239,.14); }
+  .med-fase[data-st=atual]::before { background: linear-gradient(90deg, var(--verde), var(--fg)); }
+  .med-dot { color: #000; }
+  .med-kpi, .med-tile .med-kpi { font-family: var(--f-disp); }
+
+  /* ===== Banca de jornal: papel sobre o preto, sem brilho ===== */
+  .jornal { --papel: #ece9df; border-radius: 6px; box-shadow: 0 0 0 1px var(--line2); }
+  .jornal::after { border-radius: 6px; }
+  .j-globo { --papel: #e8e4d6; }
+  .j-carta { --papel: #ebe5d8; }
+  .j-antag { --papel: #ece6c8; transform: none; }
+  .j-pos, .j-neg, .j-neu { box-shadow: 0 0 0 1px var(--line2); }
+  .j-selo { opacity: .9; color: #46453b; }
+  .j-carta .j-mast, .j-antag .j-mast { border-radius: 6px 6px 0 0; }
+  .j-carta .j-mast { background: #a82a22; }
+  .j-neg .j-hl::before { background: #b3261e; } .j-pos .j-hl::before { background: #14703a; }
+  .j-antag .j-nome { font-family: var(--f-disp); }
+  .banca-capas, .banca-rec { gap: 16px; }
+</style>
 
 <div id="root"></div>
 
@@ -419,15 +601,15 @@ function bloco(sigla) { return SIGLA_BLOCO[sigla] || 'OUTROS'; }
 const sg = (s) => ({ REPUBLICANOS: 'REP', SOLIDARIEDADE: 'SD', PCDOB: 'PCdoB' }[s] || s);
 // blocos de 2027: federações atuam como um só bloco. cam/sen são calculados a partir do elenco real abaixo.
 const PARTIDOS = [
-  { id: 'PL', nome: 'PL', curto: 'PL', cam: 0, sen: 0, eco: 60, soc: 85, fisio: 45, cor: '#3b6fd6', membros: ['PL'], full: 'PL' },
-  { id: 'PT', nome: 'Federação PT-PCdoB-PV', curto: 'Fed. PT', cam: 0, sen: 0, eco: -65, soc: -55, fisio: 25, cor: '#d9413a', membros: ['PT', 'PCDOB', 'PV'], full: 'PT, PCdoB, PV' },
+  { id: 'PL', nome: 'PL', curto: 'PL', cam: 0, sen: 0, eco: 60, soc: 85, fisio: 45, cor: '#6f98f0', membros: ['PL'], full: 'PL' },
+  { id: 'PT', nome: 'Federação PT-PCdoB-PV', curto: 'Fed. PT', cam: 0, sen: 0, eco: -65, soc: -55, fisio: 25, cor: '#f0584f', membros: ['PT', 'PCDOB', 'PV'], full: 'PT, PCdoB, PV' },
   { id: 'UNIAO', nome: 'União Progressista (União-PP)', curto: 'União-PP', cam: 0, sen: 0, eco: 40, soc: 45, fisio: 90, cor: '#2aa3d8', membros: ['UNIÃO', 'PP'], full: 'União Brasil, PP' },
-  { id: 'PSD', nome: 'PSD', curto: 'PSD', cam: 0, sen: 0, eco: 20, soc: 20, fisio: 85, cor: '#e0a33a', membros: ['PSD'], full: 'PSD' },
-  { id: 'REP', nome: 'Republicanos', curto: 'Republicanos', cam: 0, sen: 0, eco: 35, soc: 78, fisio: 75, cor: '#6a5acd', membros: ['REPUBLICANOS'], full: 'Republicanos' },
+  { id: 'PSD', nome: 'PSD', curto: 'PSD', cam: 0, sen: 0, eco: 20, soc: 20, fisio: 85, cor: '#f0a63a', membros: ['PSD'], full: 'PSD' },
+  { id: 'REP', nome: 'Republicanos', curto: 'Republicanos', cam: 0, sen: 0, eco: 35, soc: 78, fisio: 75, cor: '#9488ee', membros: ['REPUBLICANOS'], full: 'Republicanos' },
   { id: 'MDB', nome: 'MDB', curto: 'MDB', cam: 0, sen: 0, eco: 15, soc: 15, fisio: 85, cor: '#3fae6a', membros: ['MDB'], full: 'MDB' },
   { id: 'PODE', nome: 'Podemos', curto: 'Podemos', cam: 0, sen: 0, eco: 30, soc: 30, fisio: 65, cor: '#5fb3a0', membros: ['PODE'], full: 'Podemos' },
   { id: 'PSB', nome: 'PSB', curto: 'PSB', cam: 0, sen: 0, eco: -30, soc: -30, fisio: 45, cor: '#e2744a', membros: ['PSB'], full: 'PSB' },
-  { id: 'PSOL', nome: 'Federação PSOL-Rede', curto: 'PSOL-Rede', cam: 0, sen: 0, eco: -85, soc: -85, fisio: 5, cor: '#d62f9c', membros: ['PSOL', 'REDE'], full: 'PSOL, Rede' },
+  { id: 'PSOL', nome: 'Federação PSOL-Rede', curto: 'PSOL-Rede', cam: 0, sen: 0, eco: -85, soc: -85, fisio: 5, cor: '#ea5ab8', membros: ['PSOL', 'REDE'], full: 'PSOL, Rede' },
   { id: 'PSDB', nome: 'Federação PSDB-Cidadania', curto: 'PSDB-Cid.', cam: 0, sen: 0, eco: 40, soc: 0, fisio: 50, cor: '#9fc23f', membros: ['PSDB', 'CIDADANIA'], full: 'PSDB, Cidadania' },
   { id: 'NOVO', nome: 'Novo', curto: 'Novo', cam: 0, sen: 0, eco: 95, soc: 40, fisio: 5, cor: '#e8822b', membros: ['NOVO'], full: 'Novo' },
   { id: 'PRD', nome: 'Federação PRD-Solidariedade', curto: 'PRD-SD', cam: 0, sen: 0, eco: 15, soc: 30, fisio: 85, cor: '#b08968', membros: ['PRD', 'SOLIDARIEDADE'], full: 'PRD, Solidariedade' },
@@ -11957,7 +12139,7 @@ function CfAnaliseMinistro({ dec, setDec, g, upd, onClose, semBase }) { // v3.8:
   const aplicar = (lista) => { if (!lista.length) return; reanalisa(MOTOR.CF.aplica(prop.texto, lista, cons.nivel === 'fraco'), lista.map(s => s.texto)); };
   const voltar = () => { const np = analisaLocal(g, prop.cfOrigem); np.fromEvento = prop.fromEvento; setDec({ ...dec, prop: np, cfIgnorou: false }); };
   const desistir = () => { upd(n => { n.log.unshift({ mes: n.mes, ato: 'Proposta retirada', texto: prop.texto, res: 'retirada' }); }); onClose(); };
-  const nivelCor = jur.nivel === 'ok' ? '#22c55e' : jur.nivel === 'controverso' ? '#e8923a' : '#e2553f';
+  const nivelCor = jur.nivel === 'ok' ? '#2fd27a' : jur.nivel === 'controverso' ? '#f0a63a' : '#ff5a4e';
   const cargo = cons.transv ? 'Casa Civil, com a AGU' : 'Ministério ' + (PASTA_DE[cons.pk] || 'da') + ' ' + cons.pasta;
   const quem = cons.ministro ? cons.ministro + ' (' + cargo + ')' : cargo + ' (titular a definir)';
   const cab = html`<div className="flex flex-wrap items-center gap-2"><${Icon} n="Gavel" s=${16} /><b className="text-sm">Análise do ministro</b><${SeloSim} a="o" />
@@ -11968,16 +12150,16 @@ function CfAnaliseMinistro({ dec, setDec, g, upd, onClose, semBase }) { // v3.8:
   if (dec.cfIgnorou && !cons.semReparos) return html`<div className="p-2 rounded border text-sm flex flex-wrap items-center gap-2" data-secao="cf-ministro" style=${{ borderColor: nivelCor }}>
       <${Icon} n="Gavel" s=${15} /><span>Você escolheu enviar sem os ajustes do ministro: o STF poderá derrubar a medida (${jur.nivel === 'ok' ? 'risco baixo' : jur.nivel}).</span>
       <button type="button" className="underline text-xs font-semibold" onClick=${() => setDec({ ...dec, cfIgnorou: false })}>Rever análise</button></div>`;
-  if (cons.semReparos) return html`<div className="p-3 rounded border" data-secao="cf-ministro" style=${{ borderColor: 'rgba(22,122,69,.45)', background: 'rgba(22,122,69,.05)' }}>
-      ${cab}<p className="text-sm mt-1" style=${{ color: '#22c55e' }}><b>${cons.resumo}</b></p>${hist}${dispo}</div>`;
-  return html`<div className="p-3 rounded border" data-secao="cf-ministro" style=${{ borderColor: 'rgba(29,63,143,.4)', background: 'rgba(122,162,255,.08)' }}>
+  if (cons.semReparos) return html`<div className="p-3 rounded border" data-secao="cf-ministro" style=${{ borderColor: 'rgba(47,210,122,.45)', background: 'rgba(47,210,122,.05)' }}>
+      ${cab}<p className="text-sm mt-1" style=${{ color: '#2fd27a' }}><b>${cons.resumo}</b></p>${hist}${dispo}</div>`;
+  return html`<div className="p-3 rounded border" data-secao="cf-ministro" style=${{ borderColor: 'rgba(29,63,143,.4)', background: 'rgba(126,166,255,.08)' }}>
       ${cab}
       <p className="text-sm mt-2">${cons.resumo}</p>
-      ${aplic.length + cons.sugestoes.filter(s => !s.edit).length > 0 && html`<ul className="mt-2 flex flex-col gap-1.5">${cons.sugestoes.map(s => html`<li key=${s.id} className="text-sm flex flex-wrap items-start gap-2"><span className="font-bold shrink-0" style=${{ color: '#1d3f8f' }}>›</span><span className="flex-1 min-w-[12rem]">${s.texto}${!s.edit ? html` <span className="text-xs opacity-60">(ajuste manual: reescreva o pedido)</span>` : ''}</span>
+      ${aplic.length + cons.sugestoes.filter(s => !s.edit).length > 0 && html`<ul className="mt-2 flex flex-col gap-1.5">${cons.sugestoes.map(s => html`<li key=${s.id} className="text-sm flex flex-wrap items-start gap-2"><span className="font-bold shrink-0" style=${{ color: 'var(--anil)' }}>›</span><span className="flex-1 min-w-[12rem]">${s.texto}${!s.edit ? html` <span className="text-xs opacity-60">(ajuste manual: reescreva o pedido)</span>` : ''}</span>
           ${s.edit && html`<button type="button" className="text-xs px-2 py-1 rounded border border-black/25 font-semibold hover:bg-black/5" onClick=${() => aplicar([s])}>Aplicar</button>`}</li>`)}</ul>`}
       ${cons.dicas.length > 0 && html`<ul className="mt-2 text-xs opacity-80 flex flex-col gap-0.5">${cons.dicas.map((d, i) => html`<li key=${i}>Dica: ${d}</li>`)}</ul>`}
       <div className="flex flex-wrap gap-2 mt-3">
-        ${aplic.length > 0 && html`<button type="button" className="px-3 py-1.5 rounded text-sm font-bold text-white" style=${{ background: '#1d3f8f' }} onClick=${() => aplicar(aceitaveis)}>Aceitar sugestões${aceitaveis.length > 1 ? ' (' + aceitaveis.length + ')' : ''}</button>`}
+        ${aplic.length > 0 && html`<button type="button" className="px-3 py-1.5 rounded text-sm font-bold text-black" style=${{ background: 'var(--ouro)' }} onClick=${() => aplicar(aceitaveis)}>Aceitar sugestões${aceitaveis.length > 1 ? ' (' + aceitaveis.length + ')' : ''}</button>`}
         <button type="button" className="px-3 py-1.5 rounded border border-black/25 text-sm font-semibold hover:bg-black/5" title="O STF pode derrubar a medida depois" onClick=${() => setDec({ ...dec, cfIgnorou: true })}>Enviar como está</button>
         <button type="button" className="px-3 py-1.5 rounded border border-black/25 text-sm font-semibold hover:bg-black/5" onClick=${desistir}>Desistir</button>
       </div>
@@ -11992,7 +12174,7 @@ function CfEmendas({ g }) {
     ${lista.length === 0 ? html`<p className="text-sm text-muted">Nenhuma PEC promulgada neste mandato. Emendas exigem 308 deputados e 49 senadores em dois turnos e não podem tocar cláusula pétrea.</p>` :
       html`<ul className="flex flex-col divide-y divide-line">${lista.slice().reverse().map(e => html`<li key=${e.n} className="py-2 text-sm"><div className="flex flex-wrap items-center gap-2"><b className="num">EC nº ${e.n}/${e.ano}</b><${SeloSim} a="a" /><span className="text-xs text-muted">${MESES[(e.mes - 1) % 12]} de ${e.ano}</span></div>
         <div>${e.topic}</div>${e.arts && e.arts.length > 0 && html`<div className="text-xs text-muted">${e.arts.join(' · ')}</div>`}</li>`)}</ul>`}
-    ${g.cf && g.cf.excecao && g.mes <= g.cf.excecao.ate && html`<p className="text-xs mt-2 p-2 rounded" style=${{ background: 'rgba(178,58,38,.08)' }} role="status">Em vigor: ${g.cf.excecao.tipo}. Enquanto durar, nenhuma PEC pode ser votada (art. 60, §1º).</p>`}
+    ${g.cf && g.cf.excecao && g.mes <= g.cf.excecao.ate && html`<p className="text-xs mt-2 p-2 rounded" style=${{ background: 'rgba(255,90,78,.08)' }} role="status">Em vigor: ${g.cf.excecao.tipo}. Enquanto durar, nenhuma PEC pode ser votada (art. 60, §1º).</p>`}
   </section>`;
 }
 /*CF-UI-END*/
@@ -12503,7 +12685,7 @@ function MedCartao({ g, M, upd, irPara, aberto, onToggle }) {
     ${ativo && M.estado !== 'aguardando' && html`<div className="med-prog"><div className="med-prog-t"><span>Efeito real já aplicado</span><span className="num">${pct}%${M.mEf !== 1 ? ' · rendimento ' + Math.round(M.mEf * 100) + '%' : ''}</span></div><div className="bar-track" style=${{ height: '6px' }}><i style=${{ display: 'block', height: '100%', width: pct + '%', background: corBar }}></i></div></div>`}
     ${linhas.length > 0 && html`<div className="med-pr"><div className="eyebrow">Previsto × realizado</div><table><thead><tr><th></th><th>Previsto</th><th>Realizado</th><th></th></tr></thead><tbody>${linhas.map(l => {
       const r = Math.abs(l.prev) > 1e-9 ? clamp(l.real / l.prev, 0, 1.5) : 0;
-      return html`<tr key=${l.nome}><td>${l.nome}</td><td className="num">${sgn(l.prev, l.d)}${l.un}</td><td className="num" style=${{ color: l.ruim ? 'var(--rubro)' : 'var(--fg)' }}>${sgn(l.real, l.d)}${l.un}</td><td className="med-mini"><i style=${{ width: Math.min(100, r * 100) + '%', background: l.ruim ? 'var(--rubro)' : 'var(--ouro)' }}></i></td></tr>`;
+      return html`<tr key=${l.nome}><td>${l.nome}</td><td className="num">${sgn(l.prev, l.d)}${l.un}</td><td className="num" style=${{ color: l.ruim ? 'var(--rubro)' : 'var(--fg)' }}>${sgn(l.real, l.d)}${l.un}</td><td className="med-mini"><i style=${{ width: Math.min(100, r * 100) + '%', background: l.ruim ? 'var(--rubro)' : 'var(--verde)' }}></i></td></tr>`;
     })}</tbody></table>${ind.length > 0 && html`<p className="text-xs text-muted">Indicadores: contribuição estimada desta medida, não o valor total do país.</p>`}</div>`}
     ${M.probs.length > 0 && html`<div className="med-probs" data-testid="med-probs"><div className="eyebrow">Problemas ativos</div><div className="med-chips">${M.probs.map(p => { const P = MED_PROB[p.k] || [p.k, 'var(--ambar)', 'TriangleAlert']; return html`<span key=${p.k} className="chip" style=${{ color: P[1], borderColor: P[1] }}><${Icon} n=${P[2]} s=${12} /> ${P[0]}${p.k === 'adi' && p.lim ? ' (liminar)' : ''}${p.ajuste ? ' (defesa reforçada)' : ''}</span>`; })}</div></div>`}
     ${pas.length > 0 && html`<div className="med-pas"><div className="eyebrow">Próximas etapas</div><ul>${pas.map((p, i) => html`<li key=${i}><span className="num">${medMesTxt(p.mes)}</span> ${p.x}</li>`)}</ul></div>`}
@@ -13528,7 +13710,7 @@ function orientacoesBloco(nominal, casa) {
   for (const id in m) {
     const b = m[id]; if (b.n < min || !PMAP[id]) continue;
     const pres = b.sim + b.nao; if (!pres) continue; const f = b.sim / pres;
-    out.push({ id, n: b.n, txt: f > .6 ? `Liderança do ${PMAP[id].curto} orienta SIM` : f < .4 ? `Liderança do ${PMAP[id].curto} orienta NÃO` : `${PMAP[id].curto} libera a bancada`, cor: f > .6 ? '#35c97a' : f < .4 ? '#ef5b45' : '#e0a33a' });
+    out.push({ id, n: b.n, txt: f > .6 ? `Liderança do ${PMAP[id].curto} orienta SIM` : f < .4 ? `Liderança do ${PMAP[id].curto} orienta NÃO` : `${PMAP[id].curto} libera a bancada`, cor: f > .6 ? '#2fd27a' : f < .4 ? '#ff5a4e' : '#f0a63a' });
   }
   return out.sort((a, b) => b.n - a.n).slice(0, 8);
 }
@@ -14176,7 +14358,7 @@ function Avatar({ nome, cor, s = 44 }) {
 /* ---- ilustrações: Efigie (selo de pessoa, sem rosto) e Emblema (selo de bloco partidário) ---- */
 /* Arte procedural: Efigie (selo/cédula simbólico, sem rosto) e Emblema (selo de bloco). Requer h, hashStr, React. */
 let _aN = 0;
-const _aINK = '#000000', _aPAP = '#0a0a09', _aDISP = "'Outfit',system-ui,sans-serif";
+const _aINK = '#000000', _aPAP = '#0a0a09', _aDISP = "'Bricolage Grotesque','Bricolage Grotesque Variable',system-ui,sans-serif";
 function _aLum(c) { const m = /^#?([0-9a-f]{6})$/i.exec(c || ''); if (!m) return .5; const n = parseInt(m[1], 16); return (.299 * (n >> 16) + .587 * ((n >> 8) & 255) + .114 * (n & 255)) / 255; }
 function _aMono(nome) { const p = String(nome || '?').split(/\s+/).filter(w => w && !/^(d[aeo]s?|e)$/i.test(w)); const a = p[0] || '?', b = p.length > 1 ? p[p.length - 1] : ''; return ((a[0] || '') + (b[0] || '')).toUpperCase(); }
 // moldura: 0 circulo, 1 octogono, 2 cartela-escudo, 3 quadrado arredondado; i = recuo
@@ -14493,7 +14675,7 @@ function Efigie({ nome = '', cor = '#7d8b86', sigla, papel, tam = 56, destaque, 
   let fk2 = fkey, uri = foto || fotoUri(fkey);
   if (!uri && real) { fk2 = 'REAL|' + nome; uri = fotoUri(fk2); }
   const u = 100 / tam, lw = Math.max(1.5, u * 1.2), r = 14;
-  const edge = destaque ? '#facc15' : cor;
+  const edge = destaque ? '#f5c518' : cor;
   const gen = uri ? null : generoDe(nome, pessoa);
   const rotulo = uri ? (/^(BR\|stf\||REAL\|)/.test(fk2 || '') ? 'Foto (Wikimedia Commons) de ' : 'Foto oficial (TSE) de ') : real ? 'Rosto genérico (sem foto disponível) de ' : 'Retrato ilustrado (personagem fictício) de ';
   return h('svg', { width: tam, height: tam, viewBox: '0 0 100 100', role: 'img', 'aria-label': rotulo + nome, 'data-foto': uri ? '1' : undefined, style: { display: 'block', flex: 'none' } },
@@ -14555,12 +14737,12 @@ function Emblema({ bloco, tam = 40 }) {
     big ? h('text', { x: tx, y: ty + 17, textAnchor: 'middle', fill: tc, opacity: .85, fontFamily: "'IBM Plex Mono',monospace", fontSize: 5.4, textLength: Math.min(w, rim.length * 3.4), lengthAdjust: 'spacingAndGlyphs' }, rim) : null);
 }
 // cores do tema em hexadecimal (o SVG da efígie calcula luminosidade a partir do hex)
-const COR_HEX = { 'var(--ouro)': '#facc15', 'var(--anil)': '#a3e635', 'var(--rubro)': '#e2553f', 'var(--verde)': '#22c55e' };
+const COR_HEX = { 'var(--ouro)': '#f5c518', 'var(--anil)': '#a3e635', 'var(--rubro)': '#ff5a4e', 'var(--verde)': '#2fd27a' };
 function Ef({ nome, cor, papel, s = 44, sigla, destaque, p, fk }) { return h(Efigie, { nome, cor: COR_HEX[cor] || cor, papel, sigla, tam: s, destaque, pessoa: p, fk }); }
 const papelParl = (cargo) => (cargo === 'sen' ? 'senador' : cargo === 'gov' ? 'governador' : 'deputado');
 const corPresidente = (cfg) => (cfg && cfg.partido && PMAP[cfg.partido] ? PMAP[cfg.partido].cor : '#e9bd34');
 // cor da efígie de um nomeado: bloco do partido, anil para técnicos, ouro para personalidades
-const corEfigie = (N) => (N.tipo === 'partidario' && PMAP[N.bloco] ? PMAP[N.bloco].cor : N.tipo === 'tecnico' ? '#a3e635' : '#facc15');
+const corEfigie = (N) => (N.tipo === 'partidario' && PMAP[N.bloco] ? PMAP[N.bloco].cor : N.tipo === 'tecnico' ? '#a3e635' : '#f5c518');
 
 
 /* ============================== NOMEAÇÕES: MINISTROS E STF (INTERFACE) ============================== */
@@ -14645,7 +14827,7 @@ function PlacarSTF({ j }) {
     <ul className="text-xs flex flex-col gap-0.5">${lista.map(v => html`<li key=${v.nome}>${v.nome}</li>`)}</ul></div>`;
   return html`<details className="p-3 rounded bg-black/5">
     <summary className="cursor-pointer text-sm font-semibold">${tit}</summary>
-    <div className="grid grid-cols-2 gap-4 mt-2">${col(sus, 'Pela suspensão', '#e2553f')}${col(val, 'Pela validade', '#22c55e')}</div>
+    <div className="grid grid-cols-2 gap-4 mt-2">${col(sus, 'Pela suspensão', '#ff5a4e')}${col(val, 'Pela validade', '#2fd27a')}</div>
     <p className="text-[11px] opacity-60 mt-2">Votos simulados a partir da afinidade, do garantismo e do viés de cada ministro (perfil baseado em votos públicos, com variação simulada nesta partida).</p>
   </details>`;
 }
@@ -14698,7 +14880,7 @@ function SeletorMinistro({ pasta, atual, onEscolher, presidente, usados, ctx, on
           ${meu && PMAP[meu] && html`<button className=${'chip hover:text-fg ' + (bl === 'meu' ? '!text-ouro !border-ouro' : '')} onClick=${() => { setBl(bl === 'meu' ? 'all' : 'meu'); setLim(40); }}><${LogoPartido} bloco=${meu} tam=${18} /> Meu partido</button>`}
           <span className="num text-xs text-muted" role="status" aria-live="polite">${achados.length} parlamentar${achados.length === 1 ? '' : 'es'}</span>
         </div>
-        ${aviso && html`<p role="alert" className="text-sm p-2 rounded mb-1" style=${{ background: 'rgba(226,85,63,.12)' }} data-recusa="1">${aviso}</p>`}
+        ${aviso && html`<p role="alert" className="text-sm p-2 rounded mb-1" style=${{ background: 'rgba(255,90,78,.12)' }} data-recusa="1">${aviso}</p>`}
         <ul className="flex flex-col divide-y divide-line">${achados.slice(0, lim).map(({ p, af, A, px }) => {
           const propr = p.bloco === meu; const mot = recusados.has(p.nome) ? 'recusou o convite' : bloqueio(p.nome);
           return html`<${LinhaPessoa} key=${p.cargo + p.nome + p.uf} nome=${p.nome} cor=${PMAP[p.bloco].cor} papel=${papelParl(p.cargo)} pessoa=${p}
@@ -15340,7 +15522,7 @@ function BoletimCard({ g }) {
 
 /* ============================== FASE 2: COMPONENTES ============================== */
 /* ---- votação ao vivo ---- */
-const COR_VOTO = { sim: '#35c97a', nao: '#ef5b45', abst: '#e0a33a', aus: '#46524d', pend: '#222c29' };
+const COR_VOTO = { sim: '#2fd27a', nao: '#ff5a4e', abst: '#f0a63a', aus: '#4a4a47', pend: '#1c1c1c' };
 function hemiPontos(casa) {
   const n = casa === 'cam' ? 513 : 81; const rows = casa === 'cam' ? 11 : 5; const r0 = casa === 'cam' ? 60 : 50, r1 = 150;
   const radii = Array.from({ length: rows }, (_, i) => r0 + (r1 - r0) * i / (rows - 1));
@@ -15452,9 +15634,9 @@ function KpiCartao({ g, K }) {
 }
 function KpiMini({ g, K }) {
   const I = kpiInfo(g, K);
-  return html`<div className="rounded-lg p-3 min-w-0" style=${{ background: 'var(--panel2)' }} data-kpi=${K.k}>
-    <div className="eyebrow truncate" title=${K.fonte || K.nome}>${K.nome}</div>
-    <div className="flex items-baseline justify-between gap-2"><span className="num text-lg font-semibold whitespace-nowrap">${kpiTxt(K, I.cur)}</span><span className="num text-xs whitespace-nowrap" style=${{ color: I.corM }} title="Variação em relação ao mês anterior">${I.setaM} ${sgn(I.mesPass, K.d)}</span></div></div>`;
+  return html`<div className="kpi-c min-w-0" data-kpi=${K.k}>
+    <div className="kpi-k truncate" title=${K.fonte || K.nome}>${K.nome}</div>
+    <div className="kpi-v"><b className="num-g">${kpiTxt(K, I.cur)}</b><em className="num" style=${{ color: I.corM }} title="Variação em relação ao mês anterior">${I.setaM} ${sgn(I.mesPass, K.d)}</em></div></div>`;
 }
 function KpiBoard({ g, upd, compacto }) {
   const [aberto, setAberto] = useState(false);
@@ -15463,7 +15645,7 @@ function KpiBoard({ g, upd, compacto }) {
   const vistaSet = (v) => upd(n => { n.ui.vista = v; });
   return html`<section className=${compacto ? '' : 'sec sec-sm'} aria-labelledby="kpi-t">
     <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-      <h3 id="kpi-t" className=${compacto ? 'h-quiet' : 'disp text-xl font-extrabold uppercase'}>Painel de indicadores</h3>
+      <h3 id="kpi-t" className=${compacto ? 'h-quiet' : 'disp text-xl font-extrabold'}>Painel de indicadores</h3>
       <div className="flex items-center gap-2 relative">
         <div className="flex" role="group" aria-label="Modo de exibição">${[['cartoes', 'Cartões'], ['lista', 'Lista']].map(([k, l]) => html`<button key=${k} className=${'btn btn-ghost text-sm ' + (vista === k ? '!border-ouro text-ouro' : '')} aria-pressed=${vista === k} onClick=${() => vistaSet(k)}>${l}</button>`)}</div>
         <button className="btn btn-ghost text-sm" aria-expanded=${aberto} onClick=${() => setAberto(!aberto)}><${Icon} n="SlidersHorizontal" s=${14} /> Escolher indicadores</button>
@@ -15478,7 +15660,7 @@ function KpiBoard({ g, upd, compacto }) {
     vista === 'lista' ? html`<div className="scroll-x"><table className="w-full text-sm"><thead><tr className="text-muted text-xs"><th className="text-left font-normal py-1">Indicador</th><th className="text-right font-normal">Agora</th><th className="text-right font-normal">No mês</th><th className="text-right font-normal">Desde a posse</th></tr></thead><tbody>
       ${sel.map(K => { const I = kpiInfo(g, K); return html`<tr key=${K.k} className="border-t border-line" data-kpi=${K.k}><td className="py-1.5" title=${K.fonte || ''}>${K.nome}${K.meta && html` <span className="text-[10px] text-muted">(${K.meta})</span>`}</td><td className="num text-right">${kpiTxt(K, I.cur)}</td><td className="num text-right" style=${{ color: I.corM }}>${I.setaM} ${sgn(I.mesPass, K.d)}</td><td className="num text-right" style=${{ color: I.corP }}>${sgn(I.posse, K.d)}</td></tr>`; })}
     </tbody></table></div>` :
-    html`<div className=${compacto ? 'grid grid-cols-2 gap-2' : 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3'}>${sel.map(K => compacto ? html`<${KpiMini} key=${K.k} g=${g} K=${K} />` : html`<${KpiCartao} key=${K.k} g=${g} K=${K} />`)}</div>`}
+    html`<div className=${compacto ? 'kpi-grade' : 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3'}>${sel.filter(K => !(compacto && K.k === 'ap')).map(K => compacto ? html`<${KpiMini} key=${K.k} g=${g} K=${K} />` : html`<${KpiCartao} key=${K.k} g=${g} K=${K} />`)}</div>`}
   </section>`;
 }
 
@@ -15829,7 +16011,7 @@ function CartaoCrise({ g, upd, decidir }) {
 /* ---- "Precisa de você": lista única, ordenada por urgência ---- */
 const nivelUrg = (u) => (u >= 80 ? 'urgente' : u >= 60 ? 'atencao' : 'acompanhe');
 const NIVEL_ROT = { urgente: 'Urgente', atencao: 'Atenção', acompanhe: 'Acompanhe' };
-const NIVEL_COR = { urgente: 'var(--rubro)', atencao: 'var(--ambar)', acompanhe: 'var(--anil)' };
+const NIVEL_COR = { urgente: 'var(--rubro)', atencao: 'var(--ouro)', acompanhe: 'var(--anil)' };
 function pendenciasMesa(g) {
   const L = [];
   const ev = EV(g);
@@ -15901,7 +16083,7 @@ function aindaPend(g, kind) {
 }
 const GAVETA_TIT = { crise: 'Gabinete de crise', protesto: 'Termômetro das ruas', stf: 'Vaga no STF', pauta: 'Pauta do Congresso', qq: 'Quebra-queixo', abin: 'Serviço de inteligência', prioridade: 'Prioridade do trimestre', esplanada: 'Esplanada dos Ministérios', oposicao: 'Oposição rumo a 2030', contas: 'Contas a vencer', viagem: 'Visita de Estado', mesadip: 'Mesa diplomática', bastidores: 'Bastidores (ficção)', justica: 'Caso de corrupção' };
 
-function CartaoPendencia({ p, g, agir }) {
+function CartaoPendencia({ p, g, agir, n }) {
   const nv = nivelUrg(p.urg);
   const semAcao = g.acoes <= 0;
   const B = {
@@ -15914,15 +16096,16 @@ function CartaoPendencia({ p, g, agir }) {
     responderqq: { l: 'Responder', cls: 'btn-pri', ic: 'Mic' }
   };
   return html`<li className="pend fade-in" data-pend=${p.tipo} data-nivel=${nv} data-urg=${Math.round(p.urg)}>
-    <span className="pend-ic" aria-hidden="true"><${Icon} n=${p.ic} s=${20} /></span>
-    <div className="min-w-0">
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-1"><${Tag} cor=${NIVEL_COR[nv]}>${NIVEL_ROT[nv]}</${Tag}><span className="eyebrow">${p.cat}</span></div>
-      <h3 className="font-semibold leading-snug mt-1">${p.titulo}</h3>
-      <p className="text-sm text-muted l2 mt-0.5">${p.ctx}</p>
-      ${p.extra && html`<p className="text-xs text-muted mt-1" data-se-ignorar=${p.tipo === 'crise' ? '1' : undefined}>${p.extra}</p>`}
+    <span className="pend-n num" aria-hidden="true">${String(n || 0).padStart(2, '0')}</span>
+    <div className="min-w-0 pend-corpo">
+      <h3 className="pend-t"><span className="qtag" data-nivel=${nv}>${NIVEL_ROT[nv]}</span>${p.titulo}<span className="pend-cat">${p.cat}</span></h3>
+      <p className="pend-ctx l2">${p.ctx}</p>
+      ${p.extra && html`<p className="pend-extra" data-se-ignorar=${p.tipo === 'crise' ? '1' : undefined}>${p.extra}</p>`}
     </div>
-    <button type="button" className="linklike pend-ab" onClick=${() => agir('abrir', p)} aria-label=${'Abrir: ' + p.titulo}>Abrir <${Icon} n="ChevronRight" s=${14} /></button>
-    ${p.btns.length > 0 && html`<div className="pend-a">${p.btns.map(k => html`<button key=${k} type="button" className=${'btn btn-sm ' + B[k].cls} disabled=${!!B[k].dis} title=${B[k].t || ''} onClick=${() => agir(k, p)}><${Icon} n=${B[k].ic} s=${14} /> ${B[k].l}</button>`)}</div>`}
+    <div className="pend-a">
+      ${p.btns.map(k => html`<button key=${k} type="button" className=${'btn btn-sm ' + B[k].cls} disabled=${!!B[k].dis} title=${B[k].t || ''} onClick=${() => agir(k, p)}><${Icon} n=${B[k].ic} s=${14} /> ${B[k].l}</button>`)}
+      <button type="button" className="btn btn-sm btn-ghost pend-ab" onClick=${() => agir('abrir', p)} aria-label=${'Abrir: ' + p.titulo}>Abrir <${Icon} n="ChevronRight" s=${14} /></button>
+    </div>
   </li>`;
 }
 
@@ -15951,27 +16134,24 @@ function ApResumo({ g }) {
   if (!d) return html`<p className="text-sm text-muted">Disponível depois do primeiro fechamento de mês.</p>`;
   return html`<div><div className="eyebrow mb-2">Balanço de ${dataMes(d.mes)}</div><${ApBarras} d=${d} top=${4} /></div>`;
 }
-/* indicadores do governo (antes na barra do topo) */
+/* aprovação em destaque (número grande, variação no mês e barra vermelho-amarelo-verde); impeachment fica no topo, ações do mês na caixa de decisão */
 function PulsoIndicadores({ g, irEu }) {
-  const ap = aprovacao(g), imp = riscoImpeachment(g), prim = primario(g);
+  const ap = aprovacao(g), K = KPIMAP.ap, I = kpiInfo(g, K);
   const risco = g.pes.saude < 45 || g.pes.estresse > 80;
-  const corAc = g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)';
-  return html`<div className="pulso-ind" role="group" aria-label="Indicadores do governo" data-indicadores="1">
-    <${Vital} id="ap" rot="Aprovação" txt=${fmt(ap, 0) + '%'} cor=${corAprov(ap)} I=${kpiInfo(g, KPIMAP.ap)} K=${KPIMAP.ap} />
-    <${Vital} id="imp" rot="Impeachment" dica="Risco de impeachment" txt=${fmt(imp, 0) + '%'} cor=${corRisco(imp)} I=${kpiInfo(g, IMP_K)} K=${IMP_K} />
-    <${Vital} id="ipca" rot="Inflação" txt=${fmt(g.eco.ipca) + '%'} cor="var(--fg)" I=${kpiInfo(g, KPIMAP.ipca)} K=${KPIMAP.ipca} />
-    <${Vital} id="des" rot="Desemprego" txt=${fmt(g.eco.des) + '%'} cor="var(--fg)" I=${kpiInfo(g, KPIMAP.des)} K=${KPIMAP.des} />
-    <${Vital} id="prim" rot="Caixa" dica="Caixa: resultado primário projetado no ano" txt=${'R$ ' + sgn(prim, 0) + ' bi'} cor=${prim >= 0 ? 'var(--verde)' : prim > -60 ? 'var(--ambar)' : 'var(--rubro)'} I=${kpiInfo(g, KPIMAP.prim)} K=${KPIMAP.prim} />
-    <div className="vit" data-vital="acoes" data-acoes=${g.acoes} title="Ações políticas restantes neste mês e energia do presidente">
-      <div className="eyebrow whitespace-nowrap">Ações / mês</div>
-      <div className="vit-v num" style=${{ color: corAc }}><span data-vital-v="acoes">${g.acoes} de 5</span></div>
-      <span className="flex items-center gap-2"><span className="meter-mini" role="meter" aria-label="Energia" aria-valuenow=${Math.round(g.pes.energia)} aria-valuemin="0" aria-valuemax="100"><i style=${{ width: clamp(g.pes.energia, 0, 100) + '%', background: g.pes.energia < 25 ? 'var(--rubro)' : 'var(--verde)' }}></i></span><span className="num text-[11px] text-muted">${fmt(g.pes.energia, 0)}</span></span>
+  const tit = 'Aprovação' + `: ${sgn(I.mesPass, K.d)} em relação ao mês anterior`;
+  return html`<div className="aprov" role="group" aria-label="Indicadores do governo" data-indicadores="1">
+    <div className="eyebrow">Aprovação</div>
+    <div className="aprov-l" data-vital="ap" title=${tit}>
+      <b className="aprov-n"><span data-vital-v="ap">${fmt(ap, 0) + '%'}</span></b>
+      <div className="aprov-r"><span className="aprov-d num" style=${{ color: I.corM }} aria-label=${tit}>${I.setaM} ${sgn(I.mesPass, K.d)} no mês</span>
+        <div className="aprov-bar" role="meter" aria-label="Aprovação" aria-valuenow=${Math.round(ap)} aria-valuemin="0" aria-valuemax="100"><i style=${{ width: (100 - clamp(ap, 0, 100)) + '%' }}></i></div></div>
     </div>
-    ${g.eu && html`<div className="vit" data-vital="embalo" title="Embalo do governo: vitórias seguidas no Congresso facilitam as votações; derrotas pioram">
-      <div className="eyebrow">Embalo</div>
-      <div className="vit-v num flex items-center gap-1" data-embalo-chip=${g.eu.embalo} style=${{ color: g.eu.embalo > 0 ? 'var(--verde)' : g.eu.embalo < 0 ? 'var(--rubro)' : 'var(--muted)' }}><${Icon} n="Flame" s=${14} /> <span data-vital-v="embalo">${g.eu.embalo > 0 ? '+' : ''}${g.eu.embalo}</span></div>
+    ${(g.eu || risco) && html`<div className="aprov-x">
+      ${g.eu && html`<div className="vit" data-vital="embalo" title="Embalo do governo: vitórias seguidas no Congresso facilitam as votações; derrotas pioram">
+        <span className="eyebrow">Embalo</span> <span className="num flex items-center gap-1" data-embalo-chip=${g.eu.embalo} style=${{ color: g.eu.embalo > 0 ? 'var(--verde)' : g.eu.embalo < 0 ? 'var(--rubro)' : 'var(--muted)' }}><${Icon} n="Flame" s=${14} /> <span data-vital-v="embalo">${g.eu.embalo > 0 ? '+' : ''}${g.eu.embalo}</span></span>
+      </div>`}
+      ${risco && html`<button type="button" className="chip !text-rubro !border-rubro justify-center" onClick=${irEu}><${Icon} n="HeartPulse" s=${12} /> ${g.pes.saude < 45 ? 'saúde em risco' : 'estresse alto'}</button>`}
     </div>`}
-    ${risco && html`<button type="button" className="chip !text-rubro !border-rubro col-span-2 justify-center" onClick=${irEu}><${Icon} n="HeartPulse" s=${12} /> ${g.pes.saude < 45 ? 'saúde em risco' : 'estresse alto'}</button>`}
   </div>`;
 }
 /* mapa compacto: aprovação por estado */
@@ -15996,15 +16176,14 @@ function PulsoMapa({ g }) {
 }
 function PulsoMes({ g, upd, irEu }) {
   const al = alertasMesa(g);
-  return html`<aside className="sec flex flex-col" aria-label="Pulso do mês" data-pulso="1">
-    <div className="mb-4"><div className="eyebrow">Pulso do mês</div></div>
-    <div className="pulso-i"><h3 className="h-quiet mb-3">Indicadores</h3><${PulsoIndicadores} g=${g} irEu=${irEu} /></div>
-    <div className="pulso-i"><h3 className="h-quiet mb-3">Aprovação por estado</h3><${PulsoMapa} g=${g} /></div>
+  return html`<aside className="pulso flex flex-col" aria-label="Pulso do mês" data-pulso="1">
+    <div className="pulso-i"><${PulsoIndicadores} g=${g} irEu=${irEu} /></div>
+    <div className="pulso-i"><${KpiBoard} g=${g} upd=${upd} compacto=${true} /></div>
     <div className="pulso-i" data-alertas="1"><h3 className="h-quiet mb-3">Alertas</h3>
       ${al.length === 0 ? html`<p className="text-sm text-muted">Sem alertas agora. Nenhum indicador cruzou uma linha de risco.</p>` :
-      html`<ul className="flex flex-col gap-2">${al.map(a => html`<li key=${a.k} className="flex gap-2 items-start text-sm" role="status"><span className="mt-0.5 shrink-0" style=${{ color: a.cor }}><${Icon} n=${a.ic} s=${15} /></span><span className="flex-1 min-w-0 leading-snug">${a.x}${a.eu && html` <button type="button" className="underline decoration-dotted text-muted hover:text-fg" onClick=${irEu}>ver em Eu</button>`}</span></li>`)}</ul>`}</div>
-    <div className="pulso-i"><h3 className="h-quiet mb-3">Balanço do mês</h3><${ApResumo} g=${g} />
-      <div className="mt-4"><${KpiBoard} g=${g} upd=${upd} compacto=${true} /></div></div>
+      html`<ul className="flex flex-col gap-2">${al.map(a => html`<li key=${a.k} className="flex gap-2 items-start text-sm alerta" role="status"><span className="mt-0.5 shrink-0" style=${{ color: a.cor }}><${Icon} n=${a.ic} s=${15} /></span><span className="flex-1 min-w-0 leading-snug">${a.x}${a.eu && html` <button type="button" className="underline decoration-dotted text-muted hover:text-fg" onClick=${irEu}>ver em Eu</button>`}</span></li>`)}</ul>`}</div>
+    <div className="pulso-i"><h3 className="h-quiet mb-3">Balanço do mês</h3><${ApResumo} g=${g} /></div>
+    <div className="pulso-i"><h3 className="h-quiet mb-3">Aprovação por estado</h3><${PulsoMapa} g=${g} /></div>
     <div className="pulso-i"><${CartaoLinha} g=${g} max=${5} plano=${true} /></div>
   </aside>`;
 }
@@ -16018,23 +16197,25 @@ function Vital({ id, rot, txt, cor, I, K, dica }) {
     <div className="vit-v num" style=${{ color: cor }}><span data-vital-v=${id}>${txt}</span>${I && html`<span className="vit-d" style=${{ color: I.corM }} aria-label=${tit}>${I.setaM}</span>`}</div></div>`;
 }
 function SinaisVitais({ g, onConfig, encerrar, irEu }) {
-  // só identidade, data e controles; os indicadores moram em "Pulso do mês" (som fica em Configurações > QvSomCfg)
-  const m = modoDe(g);
+  // identidade, mês, data, impeachment e controles; aprovação e indicadores moram em "Pulso do mês", ações do mês na caixa de decisão
+  const m = modoDe(g), imp = riscoImpeachment(g);
   return html`<header className="vitais sticky-top" data-vitais="1">
-    <div className="faixa"></div>
     <div className="vitais-in gutter">
       <div className="vit-pes">
         <${Ef} nome=${g.cfg.nome} cor=${corPresidente(g.cfg)} papel="presidente" s=${40} p=${g.cfg} />
         <div className="min-w-0">
-          <div className="eyebrow truncate" title=${'Modo de jogo: ' + m.nome}>Mesa do Presidente · mês <span className="num">${g.mes}/48</span></div>
-          <div className="flex items-center gap-2 min-w-0 flex-wrap"><span className="disp vit-nome font-black uppercase min-w-0">${g.cfg.nome}<span className="text-muted text-base font-semibold hidden sm:inline"> · ${nomePartido(g.cfg)}</span></span>${g.cfg.real && html`<${Tag} cor="var(--ouro)">real</${Tag}>`}<${QvDifChip} g=${g} /></div>
+          <div className="flex items-center gap-2 min-w-0 flex-wrap"><span className="disp vit-nome min-w-0">${g.cfg.nome}<span className="vit-part hidden sm:inline"> · ${nomePartido(g.cfg)}</span></span>${g.cfg.real && html`<${Tag} cor="var(--muted)">real</${Tag}>`}<${QvDifChip} g=${g} /></div>
+          <div className="vit-sub truncate" title=${'Modo de jogo: ' + m.nome}>Presidente · modo ${m.nome.toLowerCase()}</div>
         </div>
+        <span className="faixa-sk hidden md:block" aria-hidden="true"></span>
       </div>
       <div className="vit-ctl">
-        <div className="vit vit-data" data-vital="data" title="Data atual do jogo"><div className="eyebrow">Data</div><div className="vit-v num"><span data-vital-v="data">${dataCurtaAno(g.mes)}</span></div></div>
+        <div className="vit vit-mes" title="Mês do mandato"><div className="vit-k">Mês</div><div className="vit-v num"><span data-vital-v="mes">${g.mes} / 48</span></div></div>
+        <div className="vit vit-data" data-vital="data" title="Data atual do jogo"><div className="vit-k">Data</div><div className="vit-v num"><span data-vital-v="data">${dataCurtaAno(g.mes)}</span></div></div>
+        <div className="vit vit-imp" data-vital="imp" title=${'Risco de impeachment: ' + fmt(imp, 0) + '%'}><div className="vit-k">Impeachment</div><div className="vit-v num" style=${{ color: imp >= 30 ? corRisco(imp) : 'var(--fg)' }}><span data-vital-v="imp">${fmt(imp, 0) + '%'}</span></div></div>
         <div className="flex items-center gap-2">
         <button type="button" className="btn btn-ghost" style=${{ padding: '8px' }} onClick=${onConfig} aria-label="Configurações e motor de IA" title="Motor de IA e configurações"><${Icon} n="Settings" s=${18} /></button>
-        <button type="button" className="btn btn-pri" onClick=${encerrar}><${Icon} n="CalendarDays" s=${16} /> Encerrar mês</button>
+        <button type="button" className="btn btn-pri btn-enc" onClick=${encerrar}><${Icon} n="CalendarDays" s=${16} /> Encerrar mês</button>
         </div>
       </div>
     </div>
@@ -16069,7 +16250,7 @@ function NavSecoes({ atual, onSel, g }) {
     e.preventDefault(); onSel(SECAO_KS[j]);
     setTimeout(() => { const el = document.getElementById('sec-tab-' + SECAO_KS[j]); if (el && el.focus) el.focus(); }, 0);
   };
-  return html`<nav className="secnav" role="tablist" aria-label="Seções do jogo">${SECOES.map(s => html`<button key=${s.k} id=${'sec-tab-' + s.k} type="button" role="tab" aria-selected=${atual === s.k} aria-controls="sec-painel" tabIndex=${atual === s.k ? 0 : -1} onKeyDown=${onKey} onClick=${() => onSel(s.k)}><span className="secnav-ic"><${Icon} n=${s.i} s=${22} />${cont[s.k] > 0 && html`<span className="secnav-badge num" role="img" aria-label=${cont[s.k] + (cont[s.k] === 1 ? ' pendência' : ' pendências')} data-badge=${s.k}>${cont[s.k] > 99 ? '99+' : cont[s.k]}</span>`}</span><span>${s.nome}</span></button>`)}</nav>`;
+  return html`<nav className="secnav" role="tablist" aria-label="Seções do jogo"><div className="fp-selo" aria-hidden="true"><span>FP</span></div>${SECOES.map(s => html`<button key=${s.k} id=${'sec-tab-' + s.k} type="button" role="tab" aria-selected=${atual === s.k} aria-controls="sec-painel" tabIndex=${atual === s.k ? 0 : -1} onKeyDown=${onKey} onClick=${() => onSel(s.k)}><span className="secnav-ic"><${Icon} n=${s.i} s=${22} />${cont[s.k] > 0 && html`<span className="secnav-badge num" role="img" aria-label=${cont[s.k] + (cont[s.k] === 1 ? ' pendência' : ' pendências')} data-badge=${s.k}>${cont[s.k] > 99 ? '99+' : cont[s.k]}</span>`}</span><span>${s.nome}</span></button>`)}</nav>`;
 }
 function ChipsNav({ id, chips, atual, onSel, rotulo }) {
   const onKey = (e) => {
@@ -16119,11 +16300,11 @@ function Jornal({ f, grande, pequeno }) {
 }
 function BancaJornal({ g }) {
   const F = (g.feed || []).filter(f => VEICULOS[f.src]).slice(0, 8);
-  if (F.length === 0) return html`<section className="sec sec-sm" aria-labelledby="banca-t"><h3 id="banca-t" className="h-quiet mb-3">Banca de jornal</h3><p className="text-sm text-muted">A banca ainda não tem edição. As manchetes aparecem conforme você assina medidas e o mês avança.</p></section>`;
+  if (F.length === 0) return html`<section className="mesa-bloco" aria-labelledby="banca-t"><h3 id="banca-t" className="h-quiet mb-3">Banca de jornal</h3><p className="text-sm text-muted">A banca ainda não tem edição. As manchetes aparecem conforme você assina medidas e o mês avança.</p></section>`;
   const peso = (f) => (f.sub ? 1 : 0) + (bancaTom(f) !== 'neu' ? 1 : 0) + (f.txt.length > 60 ? .5 : 0);
   const topo = F.slice(0, 3); let lead = topo[0]; for (const f of topo) if (peso(f) > peso(lead)) lead = f;
   const outros = topo.filter(f => f !== lead), resto = F.slice(3);
-  return html`<section className="sec sec-sm banca" aria-labelledby="banca-t" data-secao="banca">
+  return html`<section className="mesa-bloco banca" aria-labelledby="banca-t" data-secao="banca">
     <div className="flex flex-wrap items-end justify-between gap-2 mb-3"><h3 id="banca-t" className="h-quiet">Banca de jornal</h3><span className="eyebrow">edição de ${dataMes(F[0].mes)} · manchetes simuladas</span></div>
     <div className="banca-capas" data-testid="banca-capas">
       <${Jornal} f=${lead} grande=${true} />
@@ -16133,7 +16314,7 @@ function BancaJornal({ g }) {
   </section>`;
 }
 function DiarioMandato({ g }) {
-  return html`<section className="sec sec-sm" aria-labelledby="diario-t" data-secao="diario">
+  return html`<section className="mesa-bloco" aria-labelledby="diario-t" data-secao="diario">
     <div className="flex items-center justify-between mb-3"><h3 id="diario-t" className="h-quiet">Diário do mandato</h3><span className="eyebrow">${g.log.length} atos</span></div>
     ${g.log.length === 0 ? html`<p className="text-sm text-muted">Nenhum ato assinado ainda. Sua primeira decisão aparece aqui, com número oficial e resultado.</p>` :
     html`<${PorMes} id="diario" itens=${g.log} atual=${g.mes} unidade=${['ato', 'atos']} render=${(l, i) => html`<li key=${i} className="pm-i">
@@ -16186,37 +16367,48 @@ function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino 
     : kind === 'justica' ? html`<${CartaoJustica} g=${g} upd=${upd} />`
     : kind === 'contas' ? html`<${CartaoContas} g=${g} />` : entCorpo(kind, g, upd));
   const itemArt = art ? g.pauta.find(x => x.id === art) : null;
-  return html`<div className="grid gap-6 lg:grid-cols-12">
-    <div className="lg:col-span-8 flex flex-col gap-6 min-w-0">
+  const corAc = g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)';
+  return html`<div className="mesa">
+    <div className="mesa-esq">
+      <section className="medida" aria-labelledby="caixa-t">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div><div className="eyebrow">Caixa de decisão</div><label id="caixa-t" htmlFor="caixa" className="disp tit-l block">Escreva sua medida</label></div>
+          <div className="flex flex-wrap items-center gap-3 justify-end">
+            <${Tag} cor="var(--anil)"><${Icon} n="Cpu" s=${11} /> ${motorNome}</${Tag}>
+            <div className="acoes-q" data-vital="acoes" data-acoes=${g.acoes} title="Ações políticas restantes neste mês e energia do presidente">
+              <span className="acoes-rot">ações do mês</span>
+              <span className="acoes-sq" role="img" aria-label=${g.acoes + ' de 5 ações'}>${[0, 1, 2, 3, 4].map(i => html`<i key=${i} data-on=${i < g.acoes ? '1' : '0'}></i>`)}</span>
+              <span className="num acoes-n" style=${{ color: corAc }} data-vital-v="acoes">${g.acoes} de 5</span>
+              <span className="meter-mini" role="meter" aria-label="Energia" aria-valuenow=${Math.round(g.pes.energia)} aria-valuemin="0" aria-valuemax="100" title=${'Energia ' + fmt(g.pes.energia, 0)}><i style=${{ width: clamp(g.pes.energia, 0, 100) + '%', background: g.pes.energia < 25 ? 'var(--rubro)' : 'var(--verde)' }}></i></span>
+            </div>
+          </div>
+        </div>
+        <textarea id="caixa" rows="3" value=${txt} placeholder="Ex.: Enviar MP criando vale-gás de R$ 100 para 20 milhões de famílias, financiado pela taxação de dividendos" onChange=${e => setTxt(e.target.value)} onKeyDown=${e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) enviar(); }}></textarea>
+        <div className="flex flex-wrap items-center justify-between gap-3 mt-3">
+          <div className="flex flex-wrap gap-2 min-w-0 flex-1">${EXEMPLOS.slice(0, 6).map(x => html`<button key=${x} type="button" onClick=${() => setTxt(x)} className="chip chip-ex">${x}</button>`)}</div>
+          <button type="button" className="btn btn-sign" disabled=${semAcoes || txt.trim().length < 4} onClick=${enviar}><${Icon} n="Send" /> Assinar e enviar</button>
+        </div>
+        <div className="medida-ajuda">
+          <p>Medida provisória, projeto de lei, PEC, decreto, discurso ou ação. O motor lê o texto, calcula custo, votos e reação do país. O parecer do analista mostra quem ganha e quem perde, os riscos, a coerência com o seu partido e a legalidade (calendário eleitoral e anterioridade dos impostos). Quanto mais específico, mais precisa a análise: valores, beneficiários, fonte de custeio, prazo e região.</p>
+          <p className="mt-2">${semAcoes ? (elSemGoverno(g) ? 'Modo leve: você não é o presidente e não assina medidas de governo. Use X, entrevistas e campanha.' : g.acoes <= 0 ? 'Sem capital político neste mês. Encerre o mês.' : 'Energia esgotada. Descanse na seção Eu.') : 'Ctrl+Enter envia · cada medida gasta 1 ação e energia'}</p>
+        </div>
+      </section>
       <section aria-labelledby="pv-t" data-precisa="1">
         <div className="flex flex-wrap items-end justify-between gap-2 mb-3">
-          <div><div className="eyebrow">Mesa · ${dataMes(g.mes)}</div><h2 id="pv-t" className="disp text-3xl font-black uppercase leading-none mt-1">Precisa de você</h2></div>
+          <div><div className="eyebrow">Mesa · ${dataMes(g.mes)}</div><h2 id="pv-t" className="disp tit-l mt-1">Precisa de você</h2></div>
           <span className="num text-sm text-muted" role="status">${pend.length === 0 ? 'nada pendente' : pend.length + (pend.length === 1 ? ' item' : ' itens')}</span>
         </div>
-        ${pend.length === 0 ? html`<div className="sec sec-sm text-sm text-muted">Mesa limpa: nada exige você agora. Escreva uma medida abaixo, use as outras seções ou encerre o mês.</div>` :
-        html`<ul className="flex flex-col gap-3">${vis.map(p => html`<${CartaoPendencia} key=${p.id} p=${p} g=${g} agir=${agir} />`)}</ul>
+        ${pend.length === 0 ? html`<div className="fila-vazia text-sm text-muted">Mesa limpa: nada exige você agora. Escreva uma medida acima, use as outras seções ou encerre o mês.</div>` :
+        html`<ul className="fila">${vis.map((p, i) => html`<${CartaoPendencia} key=${p.id} p=${p} g=${g} agir=${agir} n=${i + 1} />`)}</ul>
         ${pend.length > 4 && html`<button type="button" className="btn btn-ghost text-sm mt-3" aria-expanded=${todas} onClick=${() => setTodas(!todas)}>${todas ? 'Mostrar só as mais urgentes' : `Ver as outras ${pend.length - 4}`}</button>`}`}
       </section>
-      <section className="sec" aria-labelledby="caixa-t">
-        <div className="flex flex-wrap items-end justify-between gap-2 mb-3">
-          <div><div className="eyebrow">Caixa de decisão</div><label id="caixa-t" htmlFor="caixa" className="disp text-3xl font-black uppercase leading-none mt-1 block">Escreva sua medida</label></div>
-          <div className="flex items-center gap-2"><${Tag} cor="var(--anil)"><${Icon} n="Cpu" s=${11} /> ${motorNome}</${Tag}><${Tag} cor=${g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)'}>${g.acoes}/5 ações</${Tag}></div>
-        </div>
-        <p className="text-sm text-muted mb-3">Medida provisória, projeto de lei, PEC, decreto, discurso ou ação. O motor lê o texto, calcula custo, votos e reação do país. O parecer do analista mostra quem ganha e quem perde, os riscos, a coerência com o seu partido e a legalidade (calendário eleitoral e anterioridade dos impostos). Quanto mais específico, mais precisa a análise: valores, beneficiários, fonte de custeio, prazo e região.</p>
-        <textarea id="caixa" rows="3" value=${txt} placeholder="Ex.: Enviar MP criando vale-gás de R$ 100 para 20 milhões de famílias, financiado pela taxação de dividendos" onChange=${e => setTxt(e.target.value)} onKeyDown=${e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) enviar(); }}></textarea>
-        <div className="flex flex-wrap items-center justify-between gap-2 mt-3">
-          <div className="text-xs text-muted">${semAcoes ? (elSemGoverno(g) ? 'Modo leve: você não é o presidente e não assina medidas de governo. Use X, entrevistas e campanha.' : g.acoes <= 0 ? 'Sem capital político neste mês. Encerre o mês.' : 'Energia esgotada. Descanse na seção Eu.') : 'Ctrl+Enter envia · cada medida gasta 1 ação e energia'}</div>
-          <button type="button" className="btn btn-gold" disabled=${semAcoes || txt.trim().length < 4} onClick=${enviar}><${Icon} n="Send" /> Assinar e enviar</button>
-        </div>
-        <div className="flex flex-wrap gap-2 mt-4">${EXEMPLOS.slice(0, 6).map(x => html`<button key=${x} type="button" onClick=${() => setTxt(x)} className="chip hover:text-fg hover:border-muted !normal-case !tracking-normal !text-[11.5px] !font-sans !whitespace-normal !text-left">${x}</button>`)}</div>
-      </section>
-      ${resMed && html`<section className="sec sec-sm" aria-label="Medidas em vigor" data-resumo-medidas="1"><div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-3 min-w-0"><span className="text-ouro" aria-hidden="true"><${Icon} n="ClipboardList" s=${20} /></span><div className="min-w-0"><div className="eyebrow">Medidas em vigor</div><div className="text-sm font-semibold">${resMed.titulo}</div></div></div>
+      ${resMed && html`<section className="resumo-med" aria-label="Medidas em vigor" data-resumo-medidas="1"><div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0"><span className="text-muted" aria-hidden="true"><${Icon} n="ClipboardList" s=${20} /></span><div className="min-w-0"><div className="eyebrow">Medidas em vigor</div><div className="text-sm font-semibold">${resMed.titulo}</div></div></div>
         <button type="button" className="btn btn-ghost btn-sm" onClick=${() => irPara('medidas')}>Acompanhar <${Icon} n="ChevronRight" s=${14} /></button></div></section>`}
       <${BancaJornal} g=${g} />
       <${DiarioMandato} g=${g} />
     </div>
-    <div className="lg:col-span-4 min-w-0"><${PulsoMes} g=${g} upd=${upd} irEu=${() => { if (irPara) irPara('eu'); }} /></div>
+    <div className="mesa-dir"><${PulsoMes} g=${g} upd=${upd} irEu=${() => { if (irPara) irPara('eu'); }} /></div>
     ${gav && html`<${Gaveta} titulo=${GAVETA_TIT[gav.kind] || 'Detalhe'} eyebrow="Mesa · detalhe" onClose=${() => setGav(null)}>${corpo(gav.kind)}</${Gaveta}>`}
     ${stfIdx != null && html`<${ModalSTF} g=${g} upd=${upd} idx=${stfIdx} onClose=${() => setStfIdx(null)} />`}
     ${itemArt && html`<${ArticularModal} g=${g} upd=${upd} item=${itemArt} onClose=${(levar) => { setArt(null); if (levar) votarG(levar); }} />`}
@@ -16265,10 +16457,10 @@ const TB_CATS = [
   { k: 'pub', nome: 'Setor público (estatutários, militares e outros)', curto: 'Setor público', cor: '#4a73d8', inf: .08, w: 5200, fonte: 'est', est: true },
   { k: 'emp', nome: 'Empregadores', curto: 'Empregadores', cor: '#8b6fd6', inf: .30, w: 9500, fonte: 'est', est: true },
   { k: 'mei', nome: 'MEI ocupados', curto: 'MEI', cor: '#2fb8c4', inf: 0, w: 3000, fonte: 'mei', est: true },
-  { k: 'dom', nome: 'Trabalhadores domésticos', curto: 'Domésticos', cor: '#e8923a', inf: .75, w: 1500, fonte: 'pnad' },
+  { k: 'dom', nome: 'Trabalhadores domésticos', curto: 'Domésticos', cor: '#f0a63a', inf: .75, w: 1500, fonte: 'pnad' },
   { k: 'cp', nome: 'Conta própria (sem MEI e sem app)', curto: 'Conta própria', cor: '#e9bd34', inf: .90, w: 2600, fonte: 'pnad' },
   { k: 'app', nome: 'Trabalhadores por aplicativo', curto: 'App', cor: '#d86aa8', inf: .90, w: 2900, fonte: 'app', est: true },
-  { k: 'sc', nome: 'Empregados privados sem carteira', curto: 'Sem carteira', cor: '#e2553f', inf: 1, w: 2000, fonte: 'pnad' },
+  { k: 'sc', nome: 'Empregados privados sem carteira', curto: 'Sem carteira', cor: '#ff5a4e', inf: 1, w: 2000, fonte: 'pnad' },
   { k: 'aux', nome: 'Trabalhador familiar auxiliar', curto: 'Familiar auxiliar', cor: '#a58468', inf: 1, w: 900, fonte: 'est', est: true }
 ];
 const TB_COR_DES = '#8da298';
@@ -16851,7 +17043,7 @@ function tbCorDelta(d, bomPositivo) { if (Math.abs(d) < .005) return 'var(--mute
 function TbComposicao({ g }) {
   const { V, itens } = tbSeg(g);
   const ref = TB_CATS.map(c => ({ k: c.k, nome: c.curto, v: TB_REF.pos[c.k], cor: c.cor })).concat([{ k: 'des', nome: 'Desocupados', v: TB_REF.desoc, cor: TB_COR_DES }]);
-  const form = [{ k: 'f', nome: 'Formais', v: V.formal, cor: '#2bb06c' }, { k: 'i', nome: 'Informais', v: V.infMi, cor: '#e2553f' }, { k: 'd', nome: 'Desocupados', v: V.desoc, cor: TB_COR_DES }];
+  const form = [{ k: 'f', nome: 'Formais', v: V.formal, cor: '#2bb06c' }, { k: 'i', nome: 'Informais', v: V.infMi, cor: '#ff5a4e' }, { k: 'd', nome: 'Desocupados', v: V.desoc, cor: TB_COR_DES }];
   const T = g.trab;
   return html`<section className="sec tb-c7 min-w-0" data-tb="composicao">
     <div className="flex flex-wrap items-end justify-between gap-2 mb-3">
@@ -21744,9 +21936,9 @@ function VotacaoTabela({ votos, casa, q }) {
   const lista = votos[casa].filter(v => v.total > 0).sort((a, b) => b.total - a.total);
   const tot = casa === 'cam' ? votos.totC : votos.totS; const meta = casa === 'cam' ? q.c : q.s; const max = casa === 'cam' ? 513 : 81;
   return html`<div>
-    <div className="flex justify-between items-baseline mb-1"><span className="font-semibold">${casa === 'cam' ? 'Câmara' : 'Senado'}</span><span className="num text-sm" style=${{ color: tot >= meta ? '#22c55e' : '#e2553f' }}>${tot} sim / precisa ${meta}</span></div>
-    <div className="relative h-3 rounded-full bg-black/10 overflow-hidden mb-2"><div className="h-full" style=${{ width: tot / max * 100 + '%', background: tot >= meta ? '#22c55e' : '#e2553f' }}></div><div className="absolute top-0 h-full w-0.5 bg-black" style=${{ left: meta / max * 100 + '%' }}></div></div>
-    <div className="flex flex-wrap gap-1">${lista.map(v => html`<span key=${v.id} className="text-[11px] px-1.5 py-0.5 rounded border border-black/15" style=${{ fontFamily: 'var(--f-mono)', background: `rgba(31,157,90,${v.frac * .35})` }}>${PMAP[v.id].nome} ${v.sim}/${v.total}</span>`)}</div>
+    <div className="flex justify-between items-baseline mb-1"><span className="font-semibold">${casa === 'cam' ? 'Câmara' : 'Senado'}</span><span className="num text-sm" style=${{ color: tot >= meta ? '#2fd27a' : '#ff5a4e' }}>${tot} sim / precisa ${meta}</span></div>
+    <div className="relative h-3 rounded-full bg-black/10 overflow-hidden mb-2"><div className="h-full" style=${{ width: tot / max * 100 + '%', background: tot >= meta ? '#2fd27a' : '#ff5a4e' }}></div><div className="absolute top-0 h-full w-0.5 bg-black" style=${{ left: meta / max * 100 + '%' }}></div></div>
+    <div className="flex flex-wrap gap-1">${lista.map(v => html`<span key=${v.id} className="text-[11px] px-1.5 py-0.5 rounded border border-black/15" style=${{ fontFamily: 'var(--f-mono)', background: `rgba(47,210,122,${v.frac * .35})` }}>${PMAP[v.id].nome} ${v.sim}/${v.total}</span>`)}</div>
   </div>`;
 }
 function VotacaoNominal({ votacao, g }) {
@@ -21761,7 +21953,7 @@ function VotacaoNominal({ votacao, g }) {
   const coluna = (nom, voto) => {
     const gr = grupos(nom, voto); const tot = gr.reduce((s, x) => s + x.itens.length, 0);
     return html`<div className="min-w-0">
-      <div className="text-xs font-bold uppercase tracking-widest mb-1" style=${{ color: voto ? '#22c55e' : '#e2553f', fontFamily: 'var(--f-mono)' }}>${voto ? 'Sim' : 'Não'} (${tot})</div>
+      <div className="text-xs font-bold uppercase tracking-widest mb-1" style=${{ color: voto ? '#2fd27a' : '#ff5a4e', fontFamily: 'var(--f-mono)' }}>${voto ? 'Sim' : 'Não'} (${tot})</div>
       <div className="max-h-72 overflow-y-auto pr-1 flex flex-col gap-1.5">${gr.length === 0 ? html`<div className="text-[11px] opacity-60">Nenhum voto.</div>` : gr.map(({ P, itens }) => html`<div key=${P.id} className="text-[11px] leading-snug"><span className="font-bold">${P.curto} (${itens.length}):</span> <span className="opacity-80">${itens.map(nome).join(', ')}</span></div>`)}</div>
     </div>`;
   };
@@ -21784,10 +21976,10 @@ function VotacaoNominal({ votacao, g }) {
 const RISCO_ROT = { fiscal: 'Fiscal', mercado: 'Mercado e câmbio', juridico: 'Jurídico', congressual: 'Congressual', federativo: 'Federativo', implementacao: 'Implementação', eleitoral: 'Eleitoral', social: 'Social', internacional: 'Internacional', narrativa: 'Narrativa e desinformação' };
 const EIXO_ROT = { economia: 'Economia', tributacao: 'Tributação', gasto_social: 'Gasto social', trabalho: 'Trabalho', privatizacao: 'Privatização', costumes: 'Costumes', seguranca: 'Segurança', ambiente: 'Ambiente', soberania_externa: 'Política externa' };
 const TIPO_ROT = { grupo: 'grupo', setor: 'setor', regiao: 'região', ente: 'ente federativo', bloco: 'partido ou bancada' };
-const GRAV_ROT = { bloqueia: ['VEDADO', '#e2553f'], atencao: ['ATENÇÃO', '#e8923a'], info: ['INFORMATIVO', '#a9a796'] };
+const GRAV_ROT = { bloqueia: ['VEDADO', '#ff5a4e'], atencao: ['ATENÇÃO', '#f0a63a'], info: ['INFORMATIVO', '#a9a9a2'] };
 const fmtSg = (v, d = 1) => (v > 0 ? '+' : v < 0 ? '−' : '') + fmt(Math.abs(v), d);
 const recParse = (r) => { const i = (r || '').indexOf(': '); const cab = i < 0 ? (r || '') : r.slice(0, i); const motivo = i < 0 ? '' : r.slice(i + 2); const k = /^assinar/.test(cab) ? 'assinar' : /^ajustar/.test(cab) ? 'ajustar' : 'nao'; return { k, cab, motivo }; };
-const REC_COR = { assinar: '#22c55e', ajustar: '#e8923a', nao: '#e2553f' };
+const REC_COR = { assinar: '#2fd27a', ajustar: '#f0a63a', nao: '#ff5a4e' };
 const REC_ROT = { assinar: 'Assinar', ajustar: 'Ajustar antes', nao: 'Não recomendado' };
 let FRENTE_N = null; // integrantes estimados de cada bancada (cache; o elenco é fixo)
 function membrosFrente(f) {
@@ -21795,7 +21987,7 @@ function membrosFrente(f) {
   return FRENTE_N[f] || { cam: 0, sen: 0 };
 }
 function BarraScore({ v, rotulo }) {
-  const cor = v <= -25 ? '#e2553f' : v >= 25 ? '#22c55e' : '#e8923a'; const p = clamp(v, -100, 100);
+  const cor = v <= -25 ? '#ff5a4e' : v >= 25 ? '#2fd27a' : '#f0a63a'; const p = clamp(v, -100, 100);
   return html`<div className="flex items-center gap-3"><div className="relative flex-1 h-3 rounded bg-black/10 overflow-hidden" role="meter" aria-valuenow=${v} aria-valuemin="-100" aria-valuemax="100" aria-label=${rotulo}>
       <div className="absolute top-0 h-full" style=${{ left: p >= 0 ? '50%' : (50 + p / 2) + '%', width: Math.abs(p) / 2 + '%', background: cor }}></div><div className="absolute top-0 h-full w-px bg-black/60" style=${{ left: '50%' }}></div></div>
     <span className="num font-bold w-12 text-right" style=${{ color: cor }}>${v > 0 ? '+' : ''}${v}</span></div>`;
@@ -21829,7 +22021,7 @@ function ParecerEspecialista({ prop, g, votos, q, congresso, so }) { // v3.8: so
   const apoioPl = prop.coerP ? Math.round(coerenciaApoio(g, prop, bloc)) : 0;
   const cal = an.calendario || [];
   const riscos = an.riscos.slice().sort((a, b) => b.nivel - a.nivel);
-  const corRisco = (n) => (n >= 60 ? '#e2553f' : n >= 35 ? '#e8923a' : '#22c55e');
+  const corRisco = (n) => (n >= 60 ? '#ff5a4e' : n >= 35 ? '#f0a63a' : '#2fd27a');
   const frentes = Object.entries(an.frentes || {}).filter(([, x]) => Math.abs(x.posicao) >= .3).sort((a, b) => Math.abs(b[1].posicao) - Math.abs(a[1].posicao));
   const vc = an.votos.camara, vs = an.votos.senado;
   const blocosV = an.coerencia.blocos.map(b => ({ ...b, P: PMAP[b.id], v: votos.cam.find(x => x.id === b.id) })).filter(b => b.P && b.P.cam > 0).sort((a, b) => b.P.cam - a.P.cam);
@@ -21844,13 +22036,13 @@ function ParecerEspecialista({ prop, g, votos, q, congresso, so }) { // v3.8: so
     <${PBloco} id="coerencia" titulo="Coerência com o seu partido" resumo=${rotTit} aberto=${Math.abs(cp.score) >= 40 || Math.abs(pr.score) >= 40}>
       ${cp.sigla ? html`<div className="flex flex-col gap-2">
         <${BarraScore} v=${cp.score} rotulo=${'Coerência com o ' + cp.sigla} />
-        <div className="text-xs font-bold uppercase tracking-wide" style=${{ color: cp.score <= -25 ? '#e2553f' : cp.score >= 25 ? '#22c55e' : '#e8923a' }}>${cp.rotulo}</div>
+        <div className="text-xs font-bold uppercase tracking-wide" style=${{ color: cp.score <= -25 ? '#ff5a4e' : cp.score >= 25 ? '#2fd27a' : '#f0a63a' }}>${cp.rotulo}</div>
         <p>${cp.motivo}</p>
         ${!fonteProg && html`<p className="text-xs p-2 rounded bg-black/5" data-posicao-estimada="1">Posição estimada pelo espectro do partido (economia ${P ? fmtSg(P.eco, 0) : '?'}, costumes ${P ? fmtSg(P.soc, 0) : '?'}): não há programa com posição publicada nos eixos desta medida.</p>`}
         <ul className="flex flex-col gap-2">${cp.eixos.map((x, i) => {
           const dirTxt = MOTOR.EIXO_TXT[x.eixo][x.direcaoMedida > 0 ? 1 : 0];
           const pg = x.posicaoPartido != null && fonteProg ? progEixo(bloc, x.eixo) : null;
-          return html`<li key=${x.eixo + i} className="flex flex-col gap-0.5 pl-2 border-l-2" style=${{ borderColor: x.efeito === 'contradiz' ? '#e2553f' : x.efeito === 'reforça' ? '#22c55e' : '#a9a796' }}>
+          return html`<li key=${x.eixo + i} className="flex flex-col gap-0.5 pl-2 border-l-2" style=${{ borderColor: x.efeito === 'contradiz' ? '#ff5a4e' : x.efeito === 'reforça' ? '#2fd27a' : '#a9a9a2' }}>
             <div><b>${EIXO_ROT[x.eixo]}</b>: a medida traz ${dirTxt} (${fmtSg(x.direcaoMedida, 1)}); ${x.posicaoPartido == null ? 'o programa não tem posição neste eixo' : 'o partido está em ' + fmtSg(x.posicaoPartido, 0) + ' (' + MOTOR.EIXO_TXT[x.eixo][x.posicaoPartido > 0 ? 1 : 0] + ')'} · <span className="font-semibold">${x.efeito}</span></div>
             ${pg ? html`<blockquote className="text-xs opacity-80 italic"><span className="not-italic">${pg.rot || pg.sigla}${pg.pagina != null ? ', p. ' + pg.pagina : ''}:</span> “${pg.citacao}” <span className="not-italic">${pg.url ? html`· <a href=${pg.url} target="_blank" rel="noopener noreferrer" className="underline">fonte</a>` : pg.doc ? '· ' + pg.doc : ''}</span></blockquote>${pg.hist ? html`<div className="text-xs opacity-80" data-historico="1"><b>No governo:</b> ${pg.hist.fato}${pg.hist.ano ? ' (' + pg.hist.ano + ')' : ''}${bloc !== 'NOVO' && Math.abs(pg.valor - pg.hist.pos) >= 1 ? html` <span className="font-semibold">· programa e prática divergem</span>` : ''} <a href=${pg.hist.url} target="_blank" rel="noopener noreferrer" className="underline">fonte</a></div>` : null}` : x.posicaoPartido != null && html`<div className="text-xs opacity-60">posição estimada pelo espectro do partido</div>`}
           </li>`; })}</ul>
@@ -21872,7 +22064,7 @@ function ParecerEspecialista({ prop, g, votos, q, congresso, so }) { // v3.8: so
 
     ${so ? null : html`<div className="flex flex-col gap-2">
     <${PBloco} id="ganha-perde" titulo="Quem ganha e quem perde" resumo=${an.ganhadores.length + ' ganham · ' + an.perdedores.length + ' perdem'} aberto=${true}>
-      <div className="grid sm:grid-cols-2 gap-4">${[['Quem ganha', an.ganhadores, '#22c55e'], ['Quem perde', an.perdedores, '#e2553f']].map(([t, l, cor]) => html`<div key=${t} data-coluna=${t}>
+      <div className="grid sm:grid-cols-2 gap-4">${[['Quem ganha', an.ganhadores, '#2fd27a'], ['Quem perde', an.perdedores, '#ff5a4e']].map(([t, l, cor]) => html`<div key=${t} data-coluna=${t}>
         <div className="text-xs font-bold mb-1.5" style=${{ color: cor }}>${t}</div>
         ${l.length === 0 ? html`<div className="text-xs opacity-60">Nenhum efeito relevante identificado.</div>` : html`<ul className="flex flex-col gap-2">${l.map(x => html`<li key=${x.tipo + x.quem} className="flex flex-col gap-0.5">
           <div className="flex flex-wrap items-baseline gap-x-2"><b>${cap(x.nome)}</b><${Pontos} n=${x.intensidade} cor=${cor} /><span className="text-[10px] uppercase tracking-wide opacity-50">${TIPO_ROT[x.tipo] || x.tipo}</span></div>
@@ -21892,15 +22084,15 @@ function ParecerEspecialista({ prop, g, votos, q, congresso, so }) { // v3.8: so
         ${[['Câmara', vc, votos.totC, q.c], ['Senado', vs, votos.totS, q.s]].map(([nome, v, jogo, min]) => html`<div key=${nome} className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
           <b className="w-16">${nome}</b>
           <span>estimativa do analista: <b className="num">${v.faixa[0]} a ${v.faixa[1]}</b> (central ${v.sim})</span>
-          <span>projeção das lideranças: <b className="num" style=${{ color: jogo >= min ? '#22c55e' : '#e2553f' }}>${jogo}</b></span>
+          <span>projeção das lideranças: <b className="num" style=${{ color: jogo >= min ? '#2fd27a' : '#ff5a4e' }}>${jogo}</b></span>
           <span className="text-xs opacity-60">mínimo ${min}</span>
-          ${(jogo < v.faixa[0] || jogo > v.faixa[1]) && html`<span className="text-xs" style=${{ color: '#e8923a' }}>fora da faixa do analista</span>`}</div>`)}
+          ${(jogo < v.faixa[0] || jogo > v.faixa[1]) && html`<span className="text-xs" style=${{ color: '#f0a63a' }}>fora da faixa do analista</span>`}</div>`)}
         <p className="text-xs opacity-70">A projeção das lideranças é a que vale na votação: soma a posição de cada parlamentar nos eixos da medida, as relações atuais do seu governo e o custo eleitoral de votar contra ou a favor. A estimativa do analista parte só do texto da medida e da posição dos partidos.</p>
         <${LinhaRede} g=${g} prop=${prop} />
       </div>` : html`<p className="text-xs opacity-70">Esta medida não passa pelo Congresso. As bancadas reagem na opinião pública e nas relações com o governo.</p>`}
       <div className="flex flex-col gap-2" data-secao="bancadas">
         <div className="font-semibold">Bancadas suprapartidárias</div>
-        ${frentes.length === 0 ? html`<p className="text-xs opacity-70">Nenhuma bancada tem posição relevante sobre a medida.</p>` : html`<ul className="flex flex-col gap-1.5">${frentes.map(([f, x]) => { const mb = membrosFrente(f); const cor = x.posicao > 0 ? '#22c55e' : '#e2553f'; return html`<li key=${f} className="flex flex-col gap-0.5">
+        ${frentes.length === 0 ? html`<p className="text-xs opacity-70">Nenhuma bancada tem posição relevante sobre a medida.</p>` : html`<ul className="flex flex-col gap-1.5">${frentes.map(([f, x]) => { const mb = membrosFrente(f); const cor = x.posicao > 0 ? '#2fd27a' : '#ff5a4e'; return html`<li key=${f} className="flex flex-col gap-0.5">
           <div className="flex flex-wrap items-baseline gap-x-2"><b>${cap(x.nome)}</b><span className="font-bold" style=${{ color: cor }}>${x.rotulo} (${fmtSg(x.posicao, 1)})</span><span className="text-xs opacity-60">${mb.cam + mb.sen === 0 ? 'nenhum integrante identificado pela estimativa; sem pressão no voto' : '≈ ' + mb.cam + ' deputados e ' + mb.sen + ' senadores (estimativa) · pressão de ' + fmtSg(x.posicao * FRENTE_K, 0) + ' pontos no voto de cada integrante'}</span></div>
           <div className="text-xs opacity-80">${x.motivo}</div></li>`; })}</ul>`}
         <p className="text-xs opacity-60">Pertencimento estimado por partido, estado e ocupação declarada ao TSE; não é a lista oficial das frentes. A pressão soma ${FRENTE_K} pontos de apoio por unidade de posição, com teto de ${FRENTE_TETO}.</p>
@@ -21909,7 +22101,7 @@ function ParecerEspecialista({ prop, g, votos, q, congresso, so }) { // v3.8: so
         <div className="font-semibold">Como cada bloco enxerga a medida</div>
         <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-1">${blocosV.map(b => html`<li key=${b.id} className="flex items-center gap-2">
           <span className="w-24 shrink-0 truncate" title=${b.P.nome}>${b.P.curto}</span>
-          <span className="num font-bold w-10 text-right" style=${{ color: b.score <= -25 ? '#e2553f' : b.score >= 25 ? '#22c55e' : '#e8923a' }}>${b.score > 0 ? '+' : ''}${b.score}</span>
+          <span className="num font-bold w-10 text-right" style=${{ color: b.score <= -25 ? '#ff5a4e' : b.score >= 25 ? '#2fd27a' : '#f0a63a' }}>${b.score > 0 ? '+' : ''}${b.score}</span>
           <span className="text-xs opacity-70 flex-1 min-w-0 truncate" title=${b.rotulo}>${b.rotulo}</span>
           ${congresso && b.v && html`<span className="num text-xs opacity-70">${b.v.sim}/${b.v.total}</span>`}</li>`)}</ul>
       </div>
@@ -21918,7 +22110,7 @@ function ParecerEspecialista({ prop, g, votos, q, congresso, so }) { // v3.8: so
     <${PBloco} id="calendario" titulo="Calendário e legalidade" resumo=${cal.length ? cal.filter(c => c.gravidade === 'bloqueia').length ? 'há vedação' : cal.length + (cal.length === 1 ? ' ponto' : ' pontos') : 'nada incide'} aberto=${cal.some(c => c.gravidade === 'bloqueia')}>
       ${cal.length === 0 ? html`<p className="text-xs opacity-70">Nenhuma restrição do calendário eleitoral, da Lei de Responsabilidade Fiscal ou das anterioridades tributárias incide sobre esta medida.</p>` : html`<ul className="flex flex-col gap-2.5">${cal.map(linhaCal)}</ul>`}
       ${prop.vig && html`<p className="text-xs p-2 rounded bg-black/5" data-secao="vigencia-jogo"><b>No jogo:</b> a receita de ${prop.vig.itens.map(v => bi(v.rev) + '/ano em ' + dataCurta(g.mes + Math.max(1, v.em))).join(' e ')} só entra na vigência; até lá o caixa não recebe o aumento (os demais efeitos valem já).</p>`}
-      ${(prop.bloqueio || []).length > 0 && html`<p className="text-xs p-2 rounded" data-secao="bloqueio-jogo" style=${{ background: 'rgba(178,58,38,.1)' }}><b>Se assinar mesmo assim:</b> ${prop.bloqueio[0].orgao === 'TSE' ? 'o TSE abre representação por conduta vedada' : 'o TCU abre processo de contas'}, o escândalo e a tensão com o STF sobem e o desgaste político chega dois meses depois.</p>`}
+      ${(prop.bloqueio || []).length > 0 && html`<p className="text-xs p-2 rounded" data-secao="bloqueio-jogo" style=${{ background: 'rgba(255,90,78,.1)' }}><b>Se assinar mesmo assim:</b> ${prop.bloqueio[0].orgao === 'TSE' ? 'o TSE abre representação por conduta vedada' : 'o TCU abre processo de contas'}, o escândalo e a tensão com o STF sobem e o desgaste político chega dois meses depois.</p>`}
     </${PBloco}>
 
     <${PBloco} id="horizonte" titulo="No tempo" resumo="curto, médio e longo prazo">
@@ -21942,7 +22134,7 @@ function useJuridico(g, prop) { // v3.8
 function FaixaCF({ prop }) { // v3.8
   const nivel = prop.stf && prop.stf.nivel; if (!nivel || nivel === 'ok') return null;
   const jur = prop.juridico; const d = jur && jur.dispositivos && jur.dispositivos[0]; const art = d ? d.art : null;
-  const inc = nivel === 'inconstitucional'; const cor = inc ? '#b23a26' : '#c7771c';
+  const inc = nivel === 'inconstitucional'; const cor = inc ? '#ff5a4e' : '#f0a63a';
   return html`<div className="p-3 rounded flex flex-wrap items-center gap-2 text-white font-semibold text-sm" data-secao="faixa-cf" data-nivel=${nivel} role="alert" style=${{ background: cor }}>
     <${Icon} n="Scale" s=${16} /><span>${inc ? 'Inconstitucional: o STF deve derrubar' : 'Controverso: o STF pode derrubar'}${art ? ' (' + art + ')' : ''}</span>
     <details className="ml-auto text-xs font-normal"><summary className="cursor-pointer select-none underline">por quê</summary><p className="mt-1 max-w-xl">${prop.stf.parecer}</p></details></div>`;
@@ -21957,7 +22149,7 @@ function BlocoCusto({ prop, congresso }) { // v3.8
   const tram = congresso ? (prop.inst === 'PEC' ? 'PEC: 308 deputados e 49 senadores' : prop.instDetalhe === 'LC' ? 'PLP: 257 deputados e 41 senadores' : prop.instDetalhe === 'AUT' ? 'Autorização: 257 deputados e 41 senadores' : INST_NOME[prop.inst] + ': 257 deputados e 41 senadores') : 'Sem votação no Congresso';
   return html`<div className="p-4 rounded bg-black/5 flex flex-wrap items-end gap-x-8 gap-y-2" data-secao="bloco-custo">
     <div><div className="text-[10px] uppercase tracking-widest opacity-60">${rot}</div>
-      <div className="num text-3xl font-extrabold" style=${{ color: ganho ? '#16a34a' : custoNet ? '#b23a26' : 'inherit' }}>${ganho ? bi(-net) : custoNet ? bi(net) : '—'}</div></div>
+      <div className="num text-3xl font-extrabold" style=${{ color: ganho ? '#2fd27a' : custoNet ? '#ff5a4e' : 'inherit' }}>${ganho ? bi(-net) : custoNet ? bi(net) : '—'}</div></div>
     <div className="text-sm flex flex-col gap-0.5">
       ${rec > 0 && html`<span>Receita anual: <b className="num">${bi(rec)}</b>${custo > 0 ? html` · custo bruto <b className="num">${bi(custo)}</b>` : ''}</span>`}
       ${unico && html`<span className="num">${unico}</span>`}
@@ -21972,11 +22164,11 @@ function ChanceAprovar({ votos, q }) { // v3.8
   const L = [['Câmara', votos.totC, q.c, 513, 4.5], ['Senado', votos.totS, q.s, 81, 1.7]].map(([nome, tot, min, max, sg]) => ({ nome, tot, min, max, ch: chanceVotos(tot, min, sg) }));
   const geral = L[0].ch * L[1].ch;
   return html`<div className="flex flex-col gap-2">
-    <div className="flex flex-wrap items-baseline gap-x-3"><div className="text-[11px] uppercase tracking-widest opacity-60" style=${{ fontFamily: 'var(--f-mono)' }}>Chance de aprovar</div><span className="text-sm">nas duas Casas: <b className="num" data-chance-geral="1" style=${{ color: geral >= .6 ? '#16a34a' : geral >= .3 ? '#c7771c' : '#b23a26' }}>${fmtChance(geral)}</b></span></div>
+    <div className="flex flex-wrap items-baseline gap-x-3"><div className="text-[11px] uppercase tracking-widest opacity-60" style=${{ fontFamily: 'var(--f-mono)' }}>Chance de aprovar</div><span className="text-sm">nas duas Casas: <b className="num" data-chance-geral="1" style=${{ color: geral >= .6 ? '#2fd27a' : geral >= .3 ? '#f0a63a' : '#ff5a4e' }}>${fmtChance(geral)}</b></span></div>
     <div className="grid sm:grid-cols-2 gap-3">${L.map(x => html`<div key=${x.nome} className="p-3 rounded bg-black/5" data-chance=${x.nome}>
-      <div className="flex items-baseline justify-between"><b>${x.nome}</b><span className="num text-2xl font-extrabold" style=${{ color: x.ch >= .6 ? '#16a34a' : x.ch >= .3 ? '#c7771c' : '#b23a26' }}>${fmtChance(x.ch)}</span></div>
+      <div className="flex items-baseline justify-between"><b>${x.nome}</b><span className="num text-2xl font-extrabold" style=${{ color: x.ch >= .6 ? '#2fd27a' : x.ch >= .3 ? '#f0a63a' : '#ff5a4e' }}>${fmtChance(x.ch)}</span></div>
       <div className="text-sm num">${x.tot} votos projetados × ${x.min} necessários</div>
-      <div className="relative h-2.5 rounded-full bg-black/10 overflow-hidden mt-1.5"><div className="h-full" style=${{ width: x.tot / x.max * 100 + '%', background: x.tot >= x.min ? '#22c55e' : '#e2553f' }}></div><div className="absolute top-0 h-full w-0.5 bg-black" style=${{ left: x.min / x.max * 100 + '%' }}></div></div></div>`)}</div>
+      <div className="relative h-2.5 rounded-full bg-black/10 overflow-hidden mt-1.5"><div className="h-full" style=${{ width: x.tot / x.max * 100 + '%', background: x.tot >= x.min ? '#2fd27a' : '#ff5a4e' }}></div><div className="absolute top-0 h-full w-0.5 bg-black" style=${{ left: x.min / x.max * 100 + '%' }}></div></div></div>`)}</div>
   </div>`;
 }
 // "Pedir opinião do ministro": a análise do ministro (com Aplicar e Aceitar sugestões) abre sob demanda
@@ -22005,7 +22197,7 @@ function GruposResultado({ gd }) { // v3.8
   const lista = todos ? gd : gd.slice(0, 9);
   return html`<div data-secao="grupos-resultado">
     <div className="text-[11px] uppercase tracking-widest opacity-60 mb-2" style=${{ fontFamily: 'var(--f-mono)' }}>Aprovação por grupo da população (p.p.)</div>
-    <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-1.5">${lista.map(x => { const G = GRUPOS.find(z => z.k === x.k) || { nome: x.k, em: '' }; const cor = x.d > 0 ? '#22c55e' : '#e2553f';
+    <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-1.5">${lista.map(x => { const G = GRUPOS.find(z => z.k === x.k) || { nome: x.k, em: '' }; const cor = x.d > 0 ? '#2fd27a' : '#ff5a4e';
       return html`<li key=${x.k} className="flex items-center gap-2 text-sm min-w-0" data-grupo=${x.k}>
         <span className="shrink-0" aria-hidden="true">${G.em}</span><span className="flex-1 min-w-0 truncate" title=${G.nome}>${G.nome}</span>
         <span className="relative shrink-0 h-2 rounded bg-black/10" style=${{ width: 56 }}><span className="absolute top-0 h-full rounded" style=${{ background: cor, width: Math.max(4, Math.abs(x.d) / mx * 100) + '%', left: 0 }}></span></span>
@@ -22027,7 +22219,7 @@ function ModalDecisao({ dec, g, upd, setDec, onClose }) {
   const congresso = precisaCongresso(prop.inst);
   const votos = projetaVotos(g, prop);
   const passa = votos.totC >= q.c && votos.totS >= q.s;
-  const stfCor = prop.stf.nivel === 'ok' ? '#22c55e' : prop.stf.nivel === 'controverso' ? '#e8923a' : '#e2553f';
+  const stfCor = prop.stf.nivel === 'ok' ? '#2fd27a' : prop.stf.nivel === 'controverso' ? '#f0a63a' : '#ff5a4e';
 
   if (dec.stage === 'votando') return html`<${Modal} wide label="Votação ao vivo"><${VotacaoViva} plano=${dec.plano} idx0=${dec.idx0} onConcluir=${() => setDec({ ...dec, stage: 'resultado', resultado: aplicaPlano(dec.plano, dec.item) })} /></${Modal}>`;
   if (dec.stage === 'enviado') return html`<${Modal} label="Enviada ao Congresso"><div className="card p-6 flex flex-col gap-3"><div className="eyebrow">Mensagem presidencial</div><h2 className="disp text-3xl font-black uppercase leading-none">${dec.envio.mp ? 'Medida provisória em vigor' : dec.envio.destino === 'gaveta' ? 'Enviada e guardada na gaveta' : 'Enviada para tramitar'}</h2><p className="text-sm">${prop.texto}</p><p className="text-sm text-muted">${dec.envio.mp ? 'Os efeitos já valem. O Congresso tem 4 meses para votar; sem votação, a MP caduca e 70% dos efeitos são desfeitos.' : dec.envio.destino === 'gaveta' ? 'A pauta está cheia. Na gaveta o texto não perde apoio, mas também não anda.' : 'Articule os votos na Pauta do Congresso. Sem trabalho, o apoio cai 3 pontos por mês e o texto é arquivado depois de 3 meses.'}</p><div className="flex justify-end"><button className="btn btn-gold" onClick=${onClose}>Voltar ao gabinete</button></div></div></${Modal}>`;
@@ -22046,16 +22238,16 @@ function ModalDecisao({ dec, g, upd, setDec, onClose }) {
         <div className="text-lg font-semibold leading-snug">${prop.texto}</div>
         ${prop.resumo && html`<div className="text-sm mt-1 opacity-80">${prop.resumo}</div>`}</div>
       <${BlocoCusto} prop=${prop} congresso=${congresso} />
-      ${dec.aviso && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(178,58,38,.08)' }} role="alert">${dec.aviso}</div>`}
+      ${dec.aviso && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,90,78,.08)' }} role="alert">${dec.aviso}</div>`}
       <div className="flex flex-col gap-2">
         ${!PQ ? html`<div className="flex flex-wrap items-center gap-3"><button onClick=${encomendar} className="text-sm px-3 py-2 rounded border border-black/25 font-semibold hover:bg-black/5 flex items-center gap-2"><${Icon} n="ClipboardList" s=${15} /> Fazer pesquisa popular (Instituto Bússola · R$ 2 mi)</button><span className="text-xs opacity-60">Uma pesquisa por proposta. Deputados tendem a seguir o que o povo apoia.</span></div>` :
         html`<div className="p-3 rounded bg-black/5 flex flex-col gap-3">
           <div className="text-[11px] uppercase tracking-widest opacity-60" style=${{ fontFamily: 'var(--f-mono)' }}>Instituto Bússola · pesquisa sobre o rascunho · margem de erro ±${PQ.margem} p.p.</div>
-          <div className="flex h-5 rounded overflow-hidden"><div style=${{ width: PQ.favor + '%', background: '#22c55e' }}></div><div style=${{ width: PQ.contra + '%', background: '#e2553f' }}></div><div style=${{ width: PQ.nsei + '%', background: '#a9a796' }}></div></div>
-          <div className="flex flex-wrap gap-x-5 gap-y-1 text-sm num"><span style=${{ color: '#22c55e' }}>${PQ.favor}% a favor</span><span style=${{ color: '#e2553f' }}>${PQ.contra}% contra</span><span className="opacity-60">${PQ.nsei}% não sabem</span></div>
+          <div className="flex h-5 rounded overflow-hidden"><div style=${{ width: PQ.favor + '%', background: '#2fd27a' }}></div><div style=${{ width: PQ.contra + '%', background: '#ff5a4e' }}></div><div style=${{ width: PQ.nsei + '%', background: '#a9a9a2' }}></div></div>
+          <div className="flex flex-wrap gap-x-5 gap-y-1 text-sm num"><span style=${{ color: '#2fd27a' }}>${PQ.favor}% a favor</span><span style=${{ color: '#ff5a4e' }}>${PQ.contra}% contra</span><span className="opacity-60">${PQ.nsei}% não sabem</span></div>
           <div className="grid sm:grid-cols-2 gap-3">
-            <div><div className="text-xs font-bold mb-1" style=${{ color: '#22c55e' }}>Mais a favor</div>${PQ.melhores.map(x => html`<div key=${x.k} className="text-sm flex justify-between"><span>${x.em} ${x.nome}</span><span className="num">${x.p}%</span></div>`)}</div>
-            <div><div className="text-xs font-bold mb-1" style=${{ color: '#e2553f' }}>Mais contra</div>${PQ.piores.map(x => html`<div key=${x.k} className="text-sm flex justify-between"><span>${x.em} ${x.nome}</span><span className="num">${x.p}% a favor</span></div>`)}</div>
+            <div><div className="text-xs font-bold mb-1" style=${{ color: '#2fd27a' }}>Mais a favor</div>${PQ.melhores.map(x => html`<div key=${x.k} className="text-sm flex justify-between"><span>${x.em} ${x.nome}</span><span className="num">${x.p}%</span></div>`)}</div>
+            <div><div className="text-xs font-bold mb-1" style=${{ color: '#ff5a4e' }}>Mais contra</div>${PQ.piores.map(x => html`<div key=${x.k} className="text-sm flex justify-between"><span>${x.em} ${x.nome}</span><span className="num">${x.p}% a favor</span></div>`)}</div>
           </div>
           <div className="text-xs opacity-70">${PQ.favor >= 60 ? 'Medida popular: os deputados tendem a embarcar no mapa de votos.' : PQ.favor <= 40 ? 'Medida impopular: parlamentares vão pensar duas vezes antes de votar com o governo.' : 'Opinião dividida: o plenário não se mexe por causa disso.'}</div>
         </div>`}
@@ -22082,13 +22274,13 @@ function ModalDecisao({ dec, g, upd, setDec, onClose }) {
       <div className="flex flex-wrap justify-end gap-2 pt-3 border-t border-black/10">
         <button className="px-3 py-2 rounded border border-black/25 text-sm font-semibold hover:bg-black/5" onClick=${() => { upd(n => { n.log.unshift({ mes: n.mes, ato: 'Proposta retirada', texto: prop.texto, res: 'retirada' }); }); onClose(); }}>Retirar proposta</button>
         ${congresso && !prop.jaPaga && html`<button className="px-3 py-2 rounded border border-black/25 text-sm font-semibold hover:bg-black/5 disabled:opacity-40" disabled=${!podeEnviar(g, prop).ok || g.acoes <= 0 || cfTravada(prop)} title="Vai para a Pauta do Congresso e gasta 1 ação" onClick=${tramitar}>Enviar e tramitar</button>`}
-        <button className="px-4 py-2 rounded text-sm font-bold text-white disabled:opacity-40" style=${{ background: '#1d3f8f' }} disabled=${!!gvBloqPEC(g, prop) || cfTravada(prop)} title=${gvBloqPEC(g, prop) ? gvBloqPEC(g, prop).msg : cfTravada(prop) ? 'PEC não pode ser votada durante intervenção federal, estado de defesa ou de sítio (art. 60, §1º)' : ''} onClick=${votar}>${congresso ? 'Votar agora' : prop.stf.nivel === 'inconstitucional' ? 'Assinar mesmo assim' : 'Assinar e publicar no DOU'}</button>
+        <button className="px-4 py-2 rounded text-sm font-bold text-black disabled:opacity-40" style=${{ background: 'var(--ouro)' }} disabled=${!!gvBloqPEC(g, prop) || cfTravada(prop)} title=${gvBloqPEC(g, prop) ? gvBloqPEC(g, prop).msg : cfTravada(prop) ? 'PEC não pode ser votada durante intervenção federal, estado de defesa ou de sítio (art. 60, §1º)' : ''} onClick=${votar}>${congresso ? 'Votar agora' : prop.stf.nivel === 'inconstitucional' ? 'Assinar mesmo assim' : 'Assinar e publicar no DOU'}</button>
       </div>
     </${Documento}></${Modal}>`;
   }
   // resultado
   const R = dec.resultado;
-  const corRes = R.res === 'aprovada' ? '#22c55e' : '#e2553f';
+  const corRes = R.res === 'aprovada' ? '#2fd27a' : '#ff5a4e';
   // o partido do presidente no plenário: quem votou contra quando a medida contraria o programa; fechamento quando é bandeira
   const coerMsg = (() => {
     const c = prop.coerP; if (!c || !R.votacao || !R.votacao.nominal || !R.votacao.nominal.cam) return null;
@@ -22099,7 +22291,7 @@ function ModalDecisao({ dec, g, upd, setDec, onClose }) {
     if (c.score >= COER_BANDEIRA && c.efeito) return { neg: false, txt: 'Bandeira do ' + c.sigla + ': a bancada votou fechada, com ' + sim + ' de ' + nom.length + ' deputados a favor.' };
     return null;
   })();
-  const delta = (a, b, d = 1, inv) => { const x = b - a; const bom = inv ? x < 0 : x > 0; return html`<span className="num" style=${{ color: Math.abs(x) < .05 ? 'inherit' : bom ? '#22c55e' : '#e2553f' }}>${sgn(x, d)}</span>`; };
+  const delta = (a, b, d = 1, inv) => { const x = b - a; const bom = inv ? x < 0 : x > 0; return html`<span className="num" style=${{ color: Math.abs(x) < .05 ? 'inherit' : bom ? '#2fd27a' : '#ff5a4e' }}>${sgn(x, d)}</span>`; };
   return html`<${Modal} wide label="Resultado da medida" onClose=${onClose}><${Documento} prop=${prop} g=${g}>
     <div className="flex flex-wrap items-center gap-3">
       <div className="text-sm" style=${{ fontFamily: 'var(--f-mono)' }}>${R.ex.ato}</div>
@@ -22112,27 +22304,27 @@ function ModalDecisao({ dec, g, upd, setDec, onClose }) {
     </div>`}
     ${R.turnos && R.turnos.length > 1 && html`<div className="text-sm p-3 rounded bg-black/5" data-turnos="1">${R.turnos.map((t, i) => html`<div key=${i}>${t.casa === 'cam' ? 'Câmara' : 'Senado'}${t.turno ? ` · ${t.turno}º turno` : ''}: <b className="num">${t.sim}</b> votos (mínimo ${t.quorum}) · ${t.passou ? 'aprovado' : 'rejeitado'}</div>`)}</div>`}
     ${R.votacao && R.votacao.nominal && html`<${VotacaoNominal} votacao=${R.votacao} g=${g} />`}
-    ${R.nota && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(178,58,38,.08)' }}>${R.nota}</div>`}
+    ${R.nota && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,90,78,.08)' }}>${R.nota}</div>`}
     ${R.stfVoto && html`<${PlacarSTF} j=${R.stfVoto} />`}
-    ${R.ex.resolveu && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(34,197,94,.12)' }}>A crise do mês foi enfrentada.</div>`}
-    ${R.ex.protesto && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(178,58,38,.08)' }}>As ruas reagiram: um protesto foi convocado. Responda em “Precisa de você”, na Mesa.</div>`}
+    ${R.ex.resolveu && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(47,210,122,.12)' }}>A crise do mês foi enfrentada.</div>`}
+    ${R.ex.protesto && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,90,78,.08)' }}>As ruas reagiram: um protesto foi convocado. Responda em “Precisa de você”, na Mesa.</div>`}
     ${R.ex.seg && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,255,255,.06)' }}>${R.ex.seg}</div>`}
-    ${coerMsg && html`<div className="text-sm p-3 rounded" data-secao="coerencia-resultado" style=${{ background: coerMsg.neg ? 'rgba(178,58,38,.08)' : 'rgba(34,197,94,.12)' }}>${coerMsg.txt}</div>`}
-    ${R.ex.bloqueio && html`<div className="text-sm p-3 rounded" data-secao="bloqueio-resultado" style=${{ background: 'rgba(178,58,38,.08)' }}>${R.ex.bloqueio}</div>`}
+    ${coerMsg && html`<div className="text-sm p-3 rounded" data-secao="coerencia-resultado" style=${{ background: coerMsg.neg ? 'rgba(255,90,78,.08)' : 'rgba(47,210,122,.12)' }}>${coerMsg.txt}</div>`}
+    ${R.ex.bloqueio && html`<div className="text-sm p-3 rounded" data-secao="bloqueio-resultado" style=${{ background: 'rgba(255,90,78,.08)' }}>${R.ex.bloqueio}</div>`}
     ${R.ex.vigencia && R.ex.vigencia.length > 0 && html`<div className="text-sm p-3 rounded" data-secao="vigencia-resultado" style=${{ background: 'rgba(255,255,255,.06)' }}>Anterioridade tributária: a arrecadação do aumento (${R.ex.vigencia.map(v => bi(v.rev) + '/ano').join(' e ')}) só entra a partir de ${R.ex.vigencia.map(v => dataCurta(g.mes + Math.max(1, v.em))).join(' e ')}. Nada disso chega ao caixa antes.</div>`}
-    ${R.ex.medida && html`<div className="text-sm p-3 rounded" data-secao="medida-resultado" style=${{ background: 'rgba(34,197,94,.10)' }}><b>Ciclo de vida (${R.ex.medida.tipo}):</b> ${R.ex.medida.reg ? 'regulamentação até ' + R.ex.medida.reg + '; ' : ''}implantação até ${R.ex.medida.pleno}; efeito pleno e maturação até ${R.ex.medida.mat}. Opinião e expectativas reagem já; o efeito real e o fiscal chegam mês a mês. Acompanhe em Medidas.</div>`}
+    ${R.ex.medida && html`<div className="text-sm p-3 rounded" data-secao="medida-resultado" style=${{ background: 'rgba(47,210,122,.10)' }}><b>Ciclo de vida (${R.ex.medida.tipo}):</b> ${R.ex.medida.reg ? 'regulamentação até ' + R.ex.medida.reg + '; ' : ''}implantação até ${R.ex.medida.pleno}; efeito pleno e maturação até ${R.ex.medida.mat}. Opinião e expectativas reagem já; o efeito real e o fiscal chegam mês a mês. Acompanhe em Medidas.</div>`}
     ${R.ex.revogou && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,255,255,.06)' }}>Revogação aprovada: ${R.ex.revogou} deixa de valer.</div>`}
     ${R.ex.agendados > 0 && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,255,255,.06)' }}>${R.ex.agendados} ${R.ex.agendados === 1 ? 'efeito futuro agendado' : 'efeitos futuros agendados'} em Contas a vencer.</div>`}
-    ${R.ex.marcos && R.ex.marcos.length > 0 && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(250,204,21,.14)' }}>Marco do mandato: <b>${R.ex.marcos.join(' · ')}</b></div>`}
+    ${R.ex.marcos && R.ex.marcos.length > 0 && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(245,197,24,.14)' }}>Marco do mandato: <b>${R.ex.marcos.join(' · ')}</b></div>`}
     ${R.ex.gd && R.ex.gd.length > 0 && html`<${GruposResultado} gd=${R.ex.gd} />`}
     <div>
       <div className="text-[11px] uppercase tracking-widest opacity-60 mb-2" style=${{ fontFamily: 'var(--f-mono)' }}>Reação dos jornais · manchetes de amanhã</div>
       <div className="grid md:grid-cols-3 gap-3">
-        <div className="p-3 rounded border-t-4" style=${{ borderColor: '#1d3f8f', background: 'rgba(255,255,255,.05)' }}><div className="text-[10px] uppercase tracking-widest font-bold" style=${{ color: '#7aa2ff' }}>O Globo / Estadão</div><div className="font-semibold mt-1 leading-snug" style=${{ fontFamily: 'Georgia, serif' }}>${R.ex.manchetes.globo}</div>
+        <div className="p-3 rounded border-t-4" style=${{ borderColor: 'var(--anil)', background: 'rgba(255,255,255,.05)' }}><div className="text-[10px] uppercase tracking-widest font-bold" style=${{ color: '#7aa2ff' }}>O Globo / Estadão</div><div className="font-semibold mt-1 leading-snug" style=${{ fontFamily: 'Georgia, serif' }}>${R.ex.manchetes.globo}</div>
           ${R.ex.manchetes.sub && R.ex.manchetes.sub.globo && html`<div className="text-xs mt-1 opacity-70 leading-snug">${R.ex.manchetes.sub.globo}</div>`}</div>
-        <div className="p-3 rounded border-t-4" style=${{ borderColor: '#b5261e', background: 'rgba(255,255,255,.05)' }}><div className="text-[10px] uppercase tracking-widest font-bold" style=${{ color: '#ff6b5e' }}>Carta Capital</div><div className="font-semibold mt-1 leading-snug" style=${{ fontFamily: 'Georgia, serif' }}>${R.ex.manchetes.carta}</div>
+        <div className="p-3 rounded border-t-4" style=${{ borderColor: '#b5261e', background: 'rgba(255,255,255,.05)' }}><div className="text-[10px] uppercase tracking-widest font-bold" style=${{ color: '#ff5a4e' }}>Carta Capital</div><div className="font-semibold mt-1 leading-snug" style=${{ fontFamily: 'Georgia, serif' }}>${R.ex.manchetes.carta}</div>
           ${R.ex.manchetes.sub && R.ex.manchetes.sub.carta && html`<div className="text-xs mt-1 opacity-70 leading-snug">${R.ex.manchetes.sub.carta}</div>`}</div>
-        <div className="p-3 rounded border-t-4" style=${{ borderColor: '#c99a06', background: 'rgba(255,255,255,.05)' }}><div className="text-[10px] uppercase tracking-widest font-bold" style=${{ color: '#facc15' }}>O Antagonista</div><div className="disp font-black text-lg mt-1 leading-tight uppercase">${R.ex.manchetes.antag}</div>
+        <div className="p-3 rounded border-t-4" style=${{ borderColor: '#c99a06', background: 'rgba(255,255,255,.05)' }}><div className="text-[10px] uppercase tracking-widest font-bold" style=${{ color: '#f5c518' }}>O Antagonista</div><div className="disp font-black text-lg mt-1 leading-tight uppercase">${R.ex.manchetes.antag}</div>
           ${R.ex.manchetes.sub && R.ex.manchetes.sub.antag && html`<div className="text-xs mt-1 opacity-70 leading-snug">${R.ex.manchetes.sub.antag}</div>`}</div>
       </div>
     </div>
@@ -22148,7 +22340,7 @@ function ModalDecisao({ dec, g, upd, setDec, onClose }) {
       <div className="p-3 rounded bg-black/5"><div className="text-[10px] uppercase tracking-widest opacity-60">Primário (R$ bi)</div>${delta(R.ex.antes.prim, R.ex.depois.prim, 1)}</div>
       <div className="p-3 rounded bg-black/5"><div className="text-[10px] uppercase tracking-widest opacity-60">Tensão STF</div>${delta(R.ex.antes.stf, R.ex.depois.stf, 0, true)}</div>
     </div>
-    <div className="flex justify-end pt-3 border-t border-black/10"><button className="px-4 py-2 rounded text-sm font-bold text-white" style=${{ background: '#1d3f8f' }} onClick=${onClose}>Arquivar e voltar ao gabinete</button></div>
+    <div className="flex justify-end pt-3 border-t border-black/10"><button className="px-4 py-2 rounded text-sm font-bold text-black" style=${{ background: 'var(--ouro)' }} onClick=${onClose}>Arquivar e voltar ao gabinete</button></div>
   </${Documento}></${Modal}>`;
 }
 // decide o resultado e aplica no estado (via referência mutável dentro de upd)
