@@ -2839,7 +2839,7 @@ function escProduto(s, it, orig) {
   const tail = s.slice(t0, it.e + 70).replace(/^\s*(?:de|em|a|para|ate)?\s*\d+(?:\.\d+)?\s?(?:%|por cento|pontos percentuais)\s*/, ' '), off0 = Math.max(0, it.i - 50), head = s.slice(off0, it.i); // v4: a alíquota do começo da cauda não é o produto
   const corta = (str) => { const tk = str.split(' '), out = []; for (const t of tk) { if (out.length && /^(?:e|ou|para|por|com|sem|ate|que|mas|durante|em|no|na|nos|nas|ao|pelo|pela|financiad\w+|compensand\w+|cortando)$/.test(t)) break; out.push(t); } while (out.length > 1 && /^(?:de|da|do|a|e)$/.test(out[out.length - 1])) out.pop(); return out; };
   let m = /^\s*(?:(?:de|do|da|dos|das|sobre|para|nos?|nas?|em|incidente (?:sobre|nos?|nas?)|aplicado (?:a|ao|aos|as)|cobrado (?:de|dos|das|sobre))\s+(?:(?:o|a|os|as)\s+)?|(?:o|a|os|as)\s+)([a-z][a-z0-9]*(?: (?:de |da |do |a |e )?[a-z][a-z0-9]*){0,2})/.exec(tail), toks = null, from = t0;
-  if (m) { toks = corta(m[1]); from = t0 + m[0].length - m[1].length; }
+  if (m) { toks = corta(m[1]); from = t0 + m[0].length - m[1].length; if (toks.length >= 3 && /^(?:bens|produtos|mercadorias|equipamentos|insumos|materiais)$/.test(toks[0]) && /^(?:de|da|do|dos|das)$/.test(toks[1])) { toks = toks.slice(2); from = t0 + m[0].indexOf(toks[0], m[0].length - m[1].length); } } // v4: "bens de informática" é o produto, não a palavra genérica 'bens'
   if (!toks || ESC_GEN.test(toks[0]) || ESC_VERBO.test(toks[0]) || /\d/.test(toks[0]) || toks[0].length < 3) {
     toks = null;
     const mh = /(?:isent\w+|desoner\w+|zer\w+|reduz\w+|cort\w+|baix\w+|aument\w+|elev\w+|tribut\w+|taxar|sobretax\w+|major\w+|diminu\w+|elimin\w+)\s+(?:(?:o|a|os|as)\s+)?([a-z][a-z0-9]*(?: (?:de |da |do |a )?[a-z][a-z0-9]*){0,2})\s+(?:de|do|da)\s*$/.exec(head);
@@ -3120,6 +3120,10 @@ function extrairQuantidades(s) {
   const rC2 = /\b(?:para|pra|a|aos|beneficiando|atendendo|atingindo) (\d+(?:\.\d+)?) ?(milhoes|milhao|mi|mil)\b(?! ?(?:de )?reais)/g;
   while ((m = rC2.exec(s))) { const i = m.index; if (Q.count.some(x => i >= x.i - 12 && i <= x.e)) continue; Q.count.push({ n: parseFloat(m[1]) * UNIT[m[2]], noun: 'pessoas', i: i, e: i + m[0].length }); }
   { const mb = s.match(/\b(?:cada|todo|todos os) brasileiros?\b|toda a populacao|todos os cidadaos/); if (mb && Q.money.length && !Q.count.length) Q.count.push({ n: 213e6, noun: 'brasileiros', i: mb.index, e: mb.index + mb[0].length }); }
+  /* v4: valor por pessoa ("R$ 2 mil para cada criança nascida") sem quantidade no texto: a população-alvo vem de uma tabela de contagens do país */
+  if (!Q.count.length && Q.money.some(x => x.v >= 5 && x.v < 1e6 && !/^(?:bi|bilhoes|bilhao|tri|trilhoes|trilhao|mi|milhoes|milhao)$/.test(x.unit || ''))) {
+    for (const pp of V4_POP) { const mp = pp[0].exec(s); if (mp) { Q.count.push({ n: pp[1], noun: pp[2], i: mp.index, e: mp.index + mp[0].length, v4pop: true }); const mo = Q.money.find(x => x.v >= 5 && x.v < 1e6); if (mo && !mo.freq && pp[3]) { mo.freq = 'ano'; } break; } }
+  }
   /* v3.1: quantificador universal ("todos os adultos", "todas as criancas de 0 a 3 anos") escala pela populacao (ordens de grandeza tipo IBGE) */
   if (!Q.count.length) {
     for (const u of UNIV) {
@@ -3163,6 +3167,34 @@ function extrairQuantidades(s) {
   if (/\b(?:permanente\w*|definitiv\w+|para sempre|de vez|em carater permanente|vitalici\w+|sem prazo)\b/.test(s)) Q.perm = true;
   return Q;
 }
+/* populações do Brasil (aprox. 2026) para valor por pessoa: [regex, quantidade, rótulo, pagamento anual por pessoa?] */
+const V4_POP = [
+  [/\b(?:cada|toda|por|para) (?:crianca|bebe)s? nascid[ao]s?\b.{0,40}\b(?:cadunico|baixa renda|bolsa familia)\b|\b(?:cadunico|baixa renda|bolsa familia)\b.{0,40}\b(?:crianca|bebe)s? nascid[ao]s?/, 1.4e6, 'crianças nascidas em famílias do CadÚnico', 1],
+  [/\b(?:crianca|bebe|recem.?nascid\w*)s? nascid[ao]s?\b|\brecem.?nascid\w+\b|\bnascimentos?\b/, 2.5e6, 'crianças nascidas', 1],
+  [/\bformandos?\b|\bconcluintes? do ensino medio\b|\begressos? do ensino medio\b/, 2.2e6, 'formandos', 1],
+  [/\b(?:alunos?|estudantes?|jovens?) do ensino medio\b/, 7.5e6, 'alunos do ensino médio', 0],
+  [/\b(?:alunos?|estudantes?|criancas?) do (?:ensino )?fundamental\b/, 26e6, 'alunos do ensino fundamental', 0],
+  [/\b(?:alunos?|estudantes?) (?:da |de )?(?:rede )?publica\b|\b(?:alunos|estudantes) da educacao basica\b/, 38e6, 'alunos da rede pública', 0],
+  [/\b(?:estudantes?|alunos?) (?:de|do|da|das|dos)? ?(?:ensino superior|universidades?|faculdades?|graduacao)\b|\buniversitarios?\b/, 9e6, 'estudantes do ensino superior', 0],
+  [/\bestudantes? (?:de |das |nas )?universidades? federais?\b|\buniversitarios? das? federais\b/, 1.4e6, 'estudantes de universidades federais', 0],
+  [/\bcriancas? (?:de )?(?:0|zero) a (?:3|4|5|6) anos\b|\bprimeira infancia\b/, 14e6, 'crianças de 0 a 6 anos', 0],
+  [/\bgestantes?\b|\bgravidas?\b/, 2.5e6, 'gestantes', 1],
+  [/\bpensionistas?\b/, 8e6, 'pensionistas', 0],
+  [/\baposentad[oa]s?\b/, 38e6, 'aposentados', 0],
+  [/\bidosos? (?:de )?(?:mais de )?(?:65|70|75|80)\b/, 22e6, 'idosos', 0],
+  [/\bidosos?\b/, 33e6, 'idosos', 0],
+  [/\bmeis?\b|\bmicroempreendedor\w*\b/, 15e6, 'MEIs', 0],
+  [/\bmicro e pequenas empresas\b|\bmicroempresas?\b|\bpequenos negocios\b/, 6e6, 'micro e pequenas empresas', 0],
+  [/\bcatadores?\b/, 0.7e6, 'catadores', 0],
+  [/\b(?:motoristas?|entregadores?|trabalhadores?) (?:de )?(?:aplicativo|plataforma)s?\b/, 1.5e6, 'trabalhadores de aplicativo', 0],
+  [/\bcaminhoneiros?\b/, 0.8e6, 'caminhoneiros', 0],
+  [/\bpescadores?\b/, 1.2e6, 'pescadores', 0],
+  [/\bagricultores? familiares?\b|\bpequenos produtores\b/, 3.9e6, 'agricultores familiares', 0],
+  [/\b(?:professores?|docentes)\b/, 2.3e6, 'professores', 0],
+  [/\bagentes? comunitarios?\b/, 0.35e6, 'agentes comunitários', 0],
+  [/\bpoliciais\b|\bpolicial\b/, 0.7e6, 'policiais', 0],
+  [/\bservidores? federais?\b/, 1.2e6, 'servidores federais', 0]
+];
 
 /* =====================================================================================
    ESCOPO (geografia / competencia)
@@ -3452,6 +3484,8 @@ function dimensionar(it, Q, S) {
   }
 }
 const V4_LIMIAR = /(?:acima d[eoa]|a partir d[eoa]|superior\w* a|maior\w* (?:que|d[eoa])|mais d[eoa]|ate|abaixo d[eoa]|inferior\w* a|limite d[eo]|teto d[eo]|faixa d[eo]|patrimonio d[eo]|renda d[eo]|faturamento d[eo]|receita bruta d[eo]|rendimentos? d[eo]|lucro d[eo]|valor d[eo]|imoveis? d[eo]|ganha|ganham|ganhe|exced\w+|ultrapass\w+)\s*(?:r\$)?\s*$/; // v4
+const V4_BASES = [[/\bsoja\b/, 400], [/\bminerio\b|\bminerios\b/, 250], [/\bpetroleo\b|\bhidrocarbonetos\b/, 280], [/\bcarne\b|\bbovin\w+|\bfrango\b/, 110], [/\bmilho\b/, 60], [/\bcafe\b/, 60], [/\bcelulose\b|\bmadeira\b/, 50], [/\bacucar\b|\betanol\b/, 45], [/\balgodao\b/, 35], [/\bsuco de laranja\b|\bfrutas?\b/, 15], [/\bcommodities\b/, 800]]; // v4: valor anual aproximado exportado, R$ bi
+function v4BaseNomeada(t) { const f = foldTxt(t || ''); for (const b of V4_BASES) if (b[0].test(f)) return b[1]; return 0; }
 const V4_NICHO = 8; // v4: base típica de um tributo sobre produto, serviço ou operação nomeada (R$ bi/ano)
 function dimensionarBase(it, Q, S) {
   const o = it.o, q = it.q, calc = it.calc = [], nome = semArt(o.n);
@@ -3464,8 +3498,9 @@ function dimensionarBase(it, Q, S) {
   if (o.id === 'imposto_geral' && it.recorte && !(q.money && q.money.unit && q.money.v >= 1e6)) { // v4: tributo sobre base nomeada (cervejas, jogos, placas): a alíquota incide sobre um nicho, não sobre os R$ 2,3 tri dos impostos
     const rt = q.pct && q.pct.rate, pv = q.pct && !q.pct.pib ? q.pct.v : null, rate = rt ? Math.abs(rt.to - rt.from) : pv;
     if (rate != null && rate > 0) {
-      B = Math.min(10, V4_NICHO * rate / 100); if (rt) it.dir = rt.to >= rt.from ? 1 : -1;
-      calc.push(fmtNum(rate, rate % 1 ? 1 : 0) + (rt ? ' pontos percentuais' : '%') + ' sobre uma base nomeada (' + it.recorte + ') estimada em ' + fmtBi(V4_NICHO) + ' = ' + fmtBi(B) + '/ano'); // v4
+      const bn = v4BaseNomeada(it.recorte + ' ' + (it.ctxTxt || '')) || V4_NICHO; // v4: commodities de exportação têm bases de centenas de bilhões
+      B = Math.min(bn > V4_NICHO ? 80 : 10, bn * rate / 100); if (rt) it.dir = rt.to >= rt.from ? 1 : -1;
+      calc.push(fmtNum(rate, rate % 1 ? 1 : 0) + (rt ? ' pontos percentuais' : '%') + ' sobre uma base nomeada (' + it.recorte + ') estimada em ' + fmtBi(bn) + ' = ' + fmtBi(B) + '/ano'); // v4
       it.B = B; return;
     }
   }
@@ -4362,6 +4397,7 @@ function genItem(A, force) {
 }
 const V4_MASSA = /\b(?:zerar a tarifa|zerar tarifa|tarifa d[eo] (?:onibus|transporte)|todo mundo|de graca|passe livre|zerar a passagem|tarifa zero|reassentar|auxilio|bolsa|renda|complemento|beneficio|salario|pagar|pague|paga|pagasse|repass\w+|distribu\w+|subsid\w+|gratis|gratuit\w+|de graca|cada (?:aluno|crianca|familia|idoso|brasileiro|morador|estudante|jovem)|(?:todo|toda|todos|todas) (?:o |a |os |as )?(?:posto|escola|estrada|rodovia|municipio|cidade|hospital|capital|pais|brasil|estado|bairro|favela|comunidade|trabalhador|servidor|professor|policial|medico|delegacia|agencia|porto|aeroporto|malha|rede|frota|ponte|viaduto)s?|em todo o (?:pais|brasil)|nacionalmente|para todos|em todos os|ajuda mensal|ajuda de custo|mensal|por mes|todo mes|vacina\w*|cisternas?|notebooks?|tablets?|hectares?|(?:todos|todas) (?:os|as)|triplic\w+|duplic\w+|dobr\w+|ampli\w+|expand\w+|universaliz\w+|construir|pavimentar|leitos?|computador\w*|poupanca|aluguel)\b/; // v4: benefício em massa ou obra de escala: o padrão da área vale
 const V4_GEN_PEQ = 0.6;
+const V4_GATILHO = /\b(?:menos de|mais de|abaixo de|acima de|passar de|passe de|passar|superar|supere|ultrapass\w+|exceder|exceda|cair|caia|cair abaixo|subir|suba|crescer|cresca|atingir|atinja|chegar|chegue|bater|bata|dobrar|dobre|aumentar|aumente|reduzir|reduza|ficar|fique|for|forem|estiver|estiverem|houver|ocorrer|ocorra|persistir|persista)\b/;
 const V4_COND = /^(?:se|caso|quando|assim que|desde que|havendo)\b|[,;] (?:se|caso) |\b(?:se|caso) (?:a|o|as|os|houver|ocorrer) [^,]{0,70},/; // v4: proposta condicional (gatilho)
 const V4_APORTE = /\b(?:subvencion\w+|subvencao|recapitaliz\w+|aport\w+|capitaliz\w+|fundo garantidor|fgc|fgo|fundo de aval|aval|premio do seguro|seguro rural|injet\w+)\b/; // v4: aporte público explícito é gasto, não linha de crédito (8% do principal)
 const V4_GEN_MEDIO = 2.0; // v4: programa sem número e sem escala citada, mas que não é pontual: meia dúzia de bilhões no máximo
@@ -6879,7 +6915,8 @@ function v39Cond(c, fc) { // c: cláusula da condição (original), fc: dobrada
   let num = null;
   { const t = fc.replace(/(\d),(\d)/g, '$1.$2'), re = /(?:r\$ ?)?(\d+(?:\.\d+)?)\s*(%|por cento|pontos|pts|bi\b|bilhoes|km)?/g; re.lastIndex = best ? best.e : 0; const m = re.exec(t); if (m) num = { v: parseFloat(m[1]), u: m[2] || '' }; }
   const up = V39_UP.exec(fc), dn = V39_DN.exec(fc);
-  const op = up && (!dn || up.index < dn.index) ? '>' : dn ? '<' : null;
+  let op = up && (!dn || up.index < dn.index) ? '>' : dn ? '<' : null;
+  if (/\b(?:menos (?:de|que)|abaixo d[eo]|menor que|inferior a)\b/.test(fc)) op = '<'; else if (/\b(?:mais (?:de|que)|acima d[eo]|maior que|superior a)\b/.test(fc)) op = '>'; // v4: o comparador escrito vale mais que o verbo ("crescer menos de 1%" é <)
   if (best && best.I.id === 'pib' && /\brecessao\b/.test(fc)) return { ind: best.I, op: '<', lim: 0, txt: c.trim(), q: false };
   if (best && (num || op)) return { ind: best.I, op: op, lim: num ? num.v : null, txt: c.trim(), q: !num };
   return { ind: null, op: null, lim: null, txt: c.trim(), q: true };
@@ -6968,14 +7005,14 @@ function v39AplicaCond(g, prop, A, c) {
   const I = c.ind;
   if (P.jaVale) { A.calculo.push('Condição "' + rot + '" já vale hoje (' + (I ? I.nome + ' em ' + v39Fmt(P.atual, I.dec) : '') + '): a medida produz efeito imediato.'); prop.calculo = A.calculo; return; }
   co.pleno = { cost: prop.cost, rev: prop.rev, once: prop.once, extra: prop.extra };
-  for (const k of ['cost', 'rev', 'once', 'extra']) prop[k] = r2((prop[k] || 0) * P.p);
+  for (const k of ['cost', 'rev', 'once', 'extra']) prop[k] = 0; // v4: até o gatilho disparar nada é gasto nem arrecadado (o valor pleno fica em cond.pleno)
   const pct = fmtNum(P.p * 100, 0);
   const linha = P.gen
     ? 'Medida condicional ("' + c.txt + '"): o gatilho não é um indicador acompanhado pelo jogo; estimativa de ' + pct + '% de chance de valer. Custo e receita esperados = valor pleno × ' + pct + '%; o efeito só entra quando a condição ocorrer (aguardando gatilho).'
     : 'Medida condicional (' + rot + '): hoje ' + I.nome + ' está em ' + v39Fmt(P.atual, I.dec) + (I.un === 'R$' ? '' : ' ' + I.un.replace('%', '%').trim()) + '; chance estimada de o gatilho valer ' + pct + '% do tempo até o fim do mandato. Custo e receita esperados = valor pleno × ' + pct + '%; o efeito real só entra quando a condição dispara (aguardando: ' + rot + ').';
   A.calculo.unshift(linha); prop.calculo = A.calculo;
   const pleno = [co.pleno.cost ? 'despesa plena ' + fmtBi(co.pleno.cost) + '/ano' : '', co.pleno.rev ? 'receita plena ' + fmtBi(co.pleno.rev) + '/ano' : '', co.pleno.once ? 'receita única plena ' + fmtBi(co.pleno.once) : '', co.pleno.extra ? 'gasto único pleno ' + fmtBi(co.pleno.extra) : ''].filter(Boolean).join('; ');
-  prop.tecnico = 'Medida condicional: só vale quando ' + (P.gen ? c.txt : rot) + '. ' + (pleno ? 'Se disparar: ' + pleno + '. ' : '') + 'Valores deste parecer = pleno × ' + pct + '% (chance do gatilho). ' + prop.tecnico;
+  prop.tecnico = 'Medida condicional: só vale quando ' + (P.gen ? c.txt : rot) + '. ' + (pleno ? 'Se disparar: ' + pleno + '. ' : '') + 'Valores deste parecer = 0 até o gatilho disparar (chance estimada de ' + pct + '%). ' + prop.tecnico;
   prop.topic = prop.topic + ' (se ' + (P.gen ? c.txt.charAt(0).toLowerCase() + c.txt.slice(1) : rot) + ')';
   try { if (prop.analise) { prop.analise.parecer = prop.tecnico; } } catch (e) { }
 }
@@ -7253,6 +7290,7 @@ function contabiliza(it, F) {
   if (o.fix && !(o.id === 'bets_proibicao' && /\b(?:propaganda|publicidade|patrocin\w+|anunci\w+|camisas?|menores|idade|maior de|\d+ anos|categorias? de base|clandestin\w+|sem licenca|nao autorizad\w+|ilegais?)\b/.test(it.ctxTxt || ''))) { it.spend += (o.fix.cost || 0) * it.sg; it.revC += (o.fix.rev || 0) * it.sg; } // v4: restringir propaganda/idade/bet ilegal não tira a outorga das bets licenciadas
   if (o.k === 'E') { if (it.own > 0 && !it.liquida) it.sale = it.B; else if (it.own < 0) it.buy = it.B; }
   it.v4Capex = 0;
+  if (o.id === 'auxilio_generico' && it.sg > 0 && it.B > .6 && !it.q.has && /\b(?:atletas?|artistas?|jogadores?|musicos?|escritores?|poetas?|cuidadores?|jornalistas?|ciclistas?|garis|parteiras?|benzedeiras?|cantores?|dancarinos?|bolsistas?)\b/.test(it.ctxTxt || '')) { const B0 = it.B; it.B = .6; it.spend = it.spend * (it.B / B0); it.calc.push('Bolsa para categoria pequena (atletas, artistas, cuidadores etc.): ' + fmtBi(B0) + ' -> ' + fmtBi(it.B)); } // v4
   if (o.k === 'G' && o.vu && !o.sav && it.sg > 0 && it.B > 5 && /\b(?:adicional|por crianca|por filho|gestantes?|nutrizes)\b/.test(it.ctxTxt || '') && !/\btodos\b/.test(it.ctxTxt || '')) { const B0 = it.B; it.B = it.B * .2; it.spend = it.spend * .2; it.calc.push('Componente do benefício (adicional por criança, gestante): cerca de 20% dos beneficiários, ' + fmtBi(B0) + ' -> ' + fmtBi(it.B)); } // v4
   if (o.k === 'G' && !o.sav && !o.ger && it.sg > 0 && it.B > 1.5 && !it.q.has && V4_NICHO_G.test(it.ctxTxt || '')) { const B0 = it.B; it.B = Math.max(.5, it.B * .3); it.spend = it.spend * (it.B / B0); it.calc.push('Público restrito (' + V4_NICHO_G.exec(it.ctxTxt)[0].trim() + '): cerca de 30% do pacote padrão, ' + fmtBi(B0) + ' -> ' + fmtBi(it.B)); } // v4
   if (o.k === 'G' && it.tipo === 'perm' && it.sg > 0 && !o.sav && !o.ger && it.spend > 0 && V4_OBRA_V.test(it.ctxTxt || '') && (V4_OBRA_N.test(it.ctxTxt || '') || (V4_OBRA_KM.test(it.ctxTxt || '') && /\b\d[\d.,]*\s*(?:mil\s+)?(?:km|quilometros)\b/.test(it.ctxTxt || ''))) && !V4_OBRA_NO.test(it.ctxTxt || '')) { const ex = it.q && it.q.money && it.q.money.unit && it.q.money.v >= 1e8, km = /\b\d[\d.,]*\s*(?:mil\s+)?(?:km|quilometros)\b/.test(it.ctxTxt || ''); it.v4Capex = it.spend * (ex ? 1 : km ? 4 : 2); it.v4CustPct = ex || km ? .1 : .4; if (ex && it.spend * it.v4CustPct > .9) it.v4CustPct = .9 / it.spend; } // v4: obra e compra de equipamento são despesa única, com custeio anual menor
@@ -7327,6 +7365,7 @@ function v39Piso(A) {
 }
 function contabilizaRefaz(it) { /* o piso muda B depois de dimensionar: contabiliza() relê B */ }
 const V4_ADM = /\b(?:(?:criar|instituir|implantar|estabelecer|abrir|fundar) (?:uma |um |a |o )?(?:nova |novo )?(?:agencia(?: reguladora| nacional)?|autarquia|conselho|comissao|comite|camara|bolsa de (?:commodities|valores|mercadorias|carbono|credito)|registro|cadastro|selo|certificacao|marco regulatorio|sandbox|ouvidoria|observatorio|codigo|estatuto)|(?:dispensar|dispensa de|isentar de|fim d[oe]) vistos?|prazo (?:maximo )?(?:de|para) (?:pagamento|pagar)|casamentos? (?:civis? )?(?:em|no|nos|na))\b/; // v4
+const V4_ZERO_SOMA = /\b(?:redistribu\w+|realoc\w+|remanej\w+|reorganiz\w+|reequilibr\w+|rebalance\w+|reordenar|reparti\w+ (?:melhor|de outra forma)|dar mais peso)\b/; // v4: soma zero
 const V4_ADM_BEN = /\b(?:subsidi\w+|bolsa familia|auxilio|pagar|isenc\w+ de (?:imposto|tributo)|desconto|credito|financi\w+|fundo|aporte)\b/;
 function calcFiscal(A, g) {
   const F = { cost: 0, rev: 0, extra: 0, once: 0, S: 0, offsetNom: 0, offsetEff: 0, cov: 1, fonte: null, fonteDesc: [], credPond: 1 };
@@ -7334,7 +7373,9 @@ function calcFiscal(A, g) {
   for (const it of main) if (it.o.k !== 'C') { dimensionar(it, A.Q, null); }
   try { v39Piso(A); for (const it of A.items) if (it.role === 'main' && it.o.k !== 'C' && it.B == null) dimensionar(it, A.Q, null); } catch (e) { } // v3.9
   const main2 = A.items.filter(i => i.role === 'main'); main.length = 0; main2.forEach(i => main.push(i));
+  if (V4_COND.test(A.s || '') && V4_GATILHO.test(String(A.s || '').split(/[,;]/)[0]) && !A.talk) for (const it of main) if (it.B && it.o.k !== 'C') { it.B = 0; it.calc = (it.calc || []).concat(['Medida condicional a um gatilho que ainda não ocorreu: nada é gasto nem arrecadado até o gatilho disparar']); } // v4: "Se X passar de Y, fazer Z" não custa nada até o gatilho
   if (A.normaVigente && A.normaVigente.exato && !A.pledgeOnly) for (const it of main) if (it.B && it.o.k !== 'C' && !(it.q && it.q.money && it.q.money.unit && it.q.money.v >= 1e8)) { it.B = 0; it.calc = (it.calc || []).concat(['Norma já em vigor repetida pelo pedido: nenhum valor novo']); } // v4: norma reconhecida como exata zera o valor marginal
+  if (V4_ZERO_SOMA.test(A.s || '') && !A.Q.money.some(x => x.unit && x.v >= 5e7) && !/\b(?:aument\w+|ampli\w+|dobr\w+|mais recursos|novos? )\b/.test(A.s || '')) for (const it of main) if (it.B && it.o.k !== 'C') { it.B = 0; it.calc = (it.calc || []).concat(['Redistribuição ou remanejamento sem aumento do total: efeito fiscal líquido nulo']); } // v4
   if (A.v4Adm) for (const it of main) if (it.B) { it.B = /\b(?:agencia|autarquia|conselho|comissao|comite|camara)\b/.test(A.s) ? Math.min(it.B, .4) : 0; it.calc = (it.calc || []).concat(['Ato administrativo ou regulatório (agência, registro, bolsa, visto, prazo) sem transferência nem benefício: custo fiscal direto desprezível']); }
   if (A.absRes) for (const it of main) if (it.B) { it.B = 0; it.calc = (it.calc || []).concat(['Resultado impossível ordenado por decreto: nada é gasto nem arrecadado, só o desgaste político']); } // v4
   if (fon.length) for (const it of main) it.fonteCtx = true; // v4
@@ -8087,6 +8128,9 @@ const CF35 = [
 CF35.push( // v4: temas que o STF e a doutrina tratam como controversos
   { id: 'v4_monopolio_priv', neg: /\b\d+ ?%|\bparte d[ae]|\bparticipacao\b/, rx: /\b(?:privatiz\w+|vender|vende|passar|abrir|acabar com|entregar|fechar)\b[^.;]{0,40}\b(?:correios?|ect|setor nuclear|energia nuclear|ebc|empresa brasil de comunicacao|tv publica|bndes|petrobras)\b|\b(?:correios?|ect)\b[^.;]{0,40}\b(?:iniciativa privada|privad\w+|falid\w+|acab\w+|atrapalh\w+)\b/, nivel: 'controverso', d: ['a37_xix', 'a170_177'], ef: 'O serviço postal (CF, art. 21, X), as atividades nucleares (arts. 21, XXIII, e 177, V) e a comunicação pública (art. 223) têm tratamento constitucional próprio, e vender estatal exige lei específica (STF, ADI 5624; ADPF 46 sobre os Correios): a medida será contestada.' },
   { id: 'v4_iptu_uniao', rx: /\bisent\w+\b[^.;]{0,25}\biptu\b|\biptu\b[^.;]{0,25}\bisen\w+/, nivel: 'controverso', exige: 'PEC', d: ['a151_iii'], ef: 'O IPTU é imposto municipal (CF, art. 156, I) e a União não pode conceder isenção de tributo dos municípios (art. 151, III): só o município, por lei sua, ou uma emenda constitucional.' },
+  { id: 'v4_drogas', rx: /\b(?:legaliz\w+|descriminaliz\w+|liberar|regulariz\w+|regulament\w+|autorizar)\b[^.;]{0,30}\b(?:maconha|cannabis|drogas?|porte (?:de|para) (?:drogas?|uso))\b|\b(?:liberar|legalizar) (?:a |as )?drogas?\b/, nivel: 'controverso', d: [], ef: 'Legalizar ou descriminalizar drogas é tema em disputa: a Lei 11.343/2006 trata do porte e o STF (RE 635.659) fixou critério para o porte de maconha; mudanças amplas dividem o Congresso e a opinião pública.' },
+  { id: 'v4_terra_ind', rx: /\b(?:demarc\w+|homolog\w+|regulariz\w+)\b[^.;]{0,45}\bterras? indigenas?\b/, nivel: 'controverso', d: [], ef: 'A demarcação de terras indígenas é dever da União (CF, art. 231), mas esbarra no debate do marco temporal, em decisões do STF e em conflitos fundiários; fixar prazos ou demarcar tudo de uma vez é politicamente disputado.' },
+  { id: 'v4_renda_basica', rx: /\brenda (?:basica|minima)\b[^.;]{0,30}\b(?:universal|para todos|de cidadania|incondicional)\b|\b(?:universal|para todos)\b[^.;]{0,30}\brenda (?:basica|minima)\b|\brenda (?:basica|minima) de r\$/, nivel: 'controverso', d: ['a195_5'], ef: 'A renda básica de cidadania existe em lei (Lei 10.835/2004) mas nunca foi regulamentada; um benefício universal de centenas de bilhões exige fonte de custeio (CF, art. 195, §5º, e LRF, arts. 16 e 17), o que o torna controverso.' },
   { id: 'v4_bpc', rx: /\b(?:desvincul\w+|dobr\w+|duplic\w+)\b[^.;]{0,30}\bbpc\b|\bbpc\b[^.;]{0,40}\b(?:desvincul\w+|dobr\w+|duplic\w+|65 para 60|a partir de 60)\b|\bbpc\b[^.;]{0,30}\b(?:60 anos)\b/, nivel: 'controverso', d: ['a195_5'], ef: 'O BPC garante um salário mínimo ao idoso e à pessoa com deficiência de baixa renda (CF, art. 203, V) e todo benefício novo ou ampliado exige fonte de custeio (art. 195, §5º); mudar o critério de renda ou a idade é matéria de lei já examinada pelo STF (RE 567.985).' },
   { id: 'v4_ordem_bc', rx: /\b(?:determin\w+|obrig\w+|mandar|ordenar|exigir|bota\w*|forcar)\b[^.;]{0,30}\b(?:banco central|bc|bacen)\b[^.;]{0,30}\b(?:selic|juros?|taxa|emitir|imprimir)\b|\b(?:acab\w+|baix\w+) (?:com )?(?:a )?(?:taxa de )?juros?\b[^.;]{0,20}\b(?:de uma vez|ja)\b|\bbota o banco central\b/, nivel: 'controverso', d: ['lc179'], ef: 'A autonomia do Banco Central (LC 179/2021) proíbe ordem do Executivo à diretoria: a Selic é decidida pelo Copom, com mandatos fixos, e a União não manda o BC baixar ou subir juros.' },
   { id: 'v4_exporta_cota', rx: /\b(?:limit\w+|proib\w+|restring\w+|cota de|barrar)\b[^.;]{0,25}\bexportac\w+\b[^.;]{0,30}\b(?:bruto|niobio|litio|minerio|terras raras|soja|petroleo|\d+%)\b|\bexportac\w+\b[^.;]{0,25}\b(?:a \d+%|bruto|sem refin\w+|sem etapa)/, nivel: 'controverso', d: ['a170_177'], ef: 'Restringir a exportação de um insumo toca a livre iniciativa e as regras da OMC (CF, art. 170, parágrafo único); a política industrial pode usar incentivo ou tributo, mas cota ou proibição é medida excepcional e contestada.' },
@@ -8516,10 +8560,15 @@ function montaViabilidade(A, F, legal, inst, ctx, g, pasta) {
 }
 const V4_PROMESSA = /\b(?:nunca|jamais|prometo|prometemos|promessa|nao vamos|nao vou|nao iremos|nao queremos|nao pretend\w+|nao havera|nao teremos|compromisso|garanto|garantimos|juro que|sem aumentar|sem criar)\b/; // v4
 const V4_LEI_RX = /\b(?:proib\w+|ved(?:ar|e)|obrig\w+|exig\w+|tipific\w+|criminaliz\w+|multas?|penas?|crimes?|codigo penal|taxar|tribut\w+|(?:trocar|mudar|alterar|dar) o nome|renomear|meia.?entrada|loteria|(?:fazer|criar|aprovar|votar) (?:uma )?lei|lei q|criar (?:uma |um |a |o )?(?:agencia|autoridade|fundo|comissao|conselho|autarquia|secretaria|ministerio|banco|empresa publica)|limite d[eo] lucro presumido)\b/;
-const V4_DEC_OK = /\b(?:carros? oficia\w+|jatinho|cartao corporativo|diarias|viagens? oficia\w+|publicidade oficial|decreto|portaria|medida provisoria|\bmp\b|resolucao)\b|\b(?:ipi|iof|imposto de importacao|tarifa de importacao)\b/;
+const V4_DEC_OK = /\b(?:distribuidoras?|concessionarias?|tarifa branca|resolucao normativa|carros? oficia\w+|jatinho|cartao corporativo|diarias|viagens? oficia\w+|publicidade oficial|decreto|portaria|medida provisoria|\bmp\b|resolucao)\b|\b(?:ipi|iof|imposto de importacao|tarifa de importacao)\b/;
+const V4_PEC_TEMA = /\bquorum\b[^.;]{0,40}\b(?:emendas?|constituicao|pec)\b|\b(?:emendas? a constituicao)\b[^.;]{0,30}\b(?:quorum|aprovar|aprovacao)\b|\bsegundo turno\b[^.;]{0,40}\b(?:eleic\w+|municipal|municipios|prefeit\w+)\b|\b(?:mandato|mandatos)\b[^.;]{0,25}\b(?:senador\w*|deputad\w+|vereador\w*|prefeit\w+|governador\w*|president\w+|ministros? do (?:stf|supremo))\b|\breeleicao\b|\bvoto (?:obrigatorio|facultativo)\b|\bidade minima\b[^.;]{0,25}\b(?:president\w+|senador\w*|deputad\w+|candidat\w+|voto)\b|\bnumero de (?:deputados|senadores|vereadores|ministros|estados)\b|\b(?:unicameral|bicameral|parlamentarismo|semipresidencialismo|monarquia)\b|\bpacto federativo\b|\bcompetencia (?:da uniao|dos estados|dos municipios)\b|\bimunidade parlamentar\b|\bparentes? d[eao]s? (?:politicos?|president\w+|governador\w*|prefeit\w+)\b[^.;]{0,30}\b(?:candidat\w+|cargo)\b|\bcandidatar\b[^.;]{0,30}\bmesm[oa] (?:lugar|cargo|base)\b/; // v4
+const V4_LC_RX = /\b(?:simples nacional|supersimples|mei|microempreendedor\w*|lc 123)\b[^.;]{0,60}\b(?:aliquota|teto|faixa|anexo|limite|regime|faturamento|contribuicao|tributac\w+|imposto|isencao|das|inclu\w+|reingresso|exclusao|parcelamento)\b|\b(?:aliquota|teto|faixa|anexo|limite|regime|faturamento|tributac\w+|imposto|das)\b[^.;]{0,40}\b(?:simples nacional|mei|supersimples)\b|\bsimples nacional\b|\bicms\b|\bimposto seletivo\b|\b(?:ibs|cbs)\b|\bgrandes fortunas\b|\bnormas gerais\b|\bitcmd\b[^.;]{0,30}\baliquota|\blei complementar\b/; // v4
 function escolheInst(A) { // v4: obrigar, proibir, multar, tipificar e criar órgão ou fundo exigem lei, mesmo quando o catálogo traz um ato do Executivo
   let r = escolheInst0(A);
+  const r0 = r;
   if ((r === 'ADM' || r === 'COM') && !A.instExpl && !A.talk && !A.consulta && !A.z38 && !A.jaVigente && !A.pledgeOnly && V4_LEI_RX.test(A.s || '') && !V4_DEC_OK.test(A.s || '') && !/^(?:qual|quais|quanto|quantos|quantas|quando|onde|quem|o que|como|por que)\b/.test(A.s || '')) r = 'PL';
+  if ((r === 'PL' || r === 'COM') && !A.instExpl && !A.talk && !A.consulta && !A.jaVigente && V4_PEC_TEMA.test(A.s || '') && !/\b(?:lei ordinaria|projeto de lei|por lei)\b/.test(A.s || '') && !/^(?:qual|quais|quanto|quantos|quantas|quando|onde|quem|o que|como|por que)\b/.test(A.s || '')) { r = 'PEC'; A.instDet = null; } // v4: regra de sistema eleitoral, quórum, mandato e composição dos Poderes está na Constituição
+  if (r === 'PL' && !A.instExpl && !A.talk && !A.consulta && !A.jaVigente && !A.instDet && V4_LC_RX.test(A.s || '') && !/\b(?:decreto|medida provisoria|por mp)\b/.test(A.s || '')) A.instDet = 'LC'; // v4: Simples/MEI (LC 123), ICMS, IBS/CBS e normas gerais tributárias são matéria de lei complementar
   return r;
 }
 function escolheInst0(A) {
@@ -13450,7 +13499,7 @@ for (const A of ATIVOS_CFG) A.d = IND_DADOS.ativos.find(x => A.re.test(x.nome));
 const DIV_ATIVOS = {
   petrobras: { est: 13.2, met: '29,02% do capital × R$ 45,4 bi que a Petrobras pagou a todos os acionistas em 2025 (MGI); a fonte não separa a parcela da União' },
   bb: { est: 4.7, met: '50% do capital (percentual não confirmado em RI) × R$ 9,4 bi pagos a todos os acionistas em 2025 (MGI)' },
-  bndespar: { inf: 22.3, met: 'R$ 22,3 bi pagos pelo BNDES em 2025 (MGI); como o BNDES é 100% da União, assume-se que quase tudo foi ao Tesouro' }
+  bndespar: { est: 7.7, met: 'cerca de 7% do valor da carteira de ações do BNDESPar (R$ 110 bi) em dividendos próprios; os R$ 22,3 bi que o BNDES pagou ao Tesouro em 2025 (MGI) vêm sobretudo da carteira de crédito do banco e continuam a ser recebidos mesmo sem a carteira de ações' }
 };
 const ATIVOS_ORDEM = ['petrobras', 'bb', 'caixa', 'cxse', 'bndespar', 'eletrobras', 'correios', 'serpro', 'dataprev'];
 const ativoCfg = (k) => ATIVOS_CFG.find(a => a.k === k);
@@ -20996,9 +21045,10 @@ function FaixaCF({ prop }) { // v3.8
 }
 // custo anual em destaque (ou ganho), com receita e valor único quando houver
 function BlocoCusto({ prop, congresso }) { // v3.8
-  const k = prop.scale, custo = (prop.cost || 0) * k, rec = (prop.rev || 0) * k, net = custo - rec;
+  const k = prop.scale, ce = prop.cond && !prop.cond.jaVale && prop.cond.pleno ? prop.cond.pleno : null, pe = ce ? (prop.cond.p || 0) : 1; // v4: a medida condicional carrega zero no balanço, mas o parecer mostra o valor esperado (pleno × chance)
+  const pc = (x) => (ce ? (ce[x] || 0) * pe : (prop[x] || 0)), custo = pc('cost') * k, rec = pc('rev') * k, net = custo - rec;
   const ganho = net < -.005, custoNet = net > .005; // v4: economia pequena (R$ 14 mi) não vira traço
-  const unico = prop.extra ? bi(prop.extra * k) + ' de despesa única' : prop.once ? '+' + bi(prop.once) + ' de receita única' : null;
+  const unico = pc('extra') ? bi(pc('extra') * k) + ' de despesa única' : pc('once') ? '+' + bi(pc('once')) + ' de receita única' : null;
   const rot = ganho ? 'Ganho anual' : custoNet ? (rec > 0 ? 'Custo anual líquido' : 'Custo anual') : 'Impacto fiscal anual';
   const tram = congresso ? (prop.inst === 'PEC' ? 'PEC: 308 deputados e 49 senadores' : prop.instDetalhe === 'LC' ? 'PLP: 257 deputados e 41 senadores' : prop.instDetalhe === 'AUT' ? 'Autorização: 257 deputados e 41 senadores' : INST_NOME[prop.inst] + ': 257 deputados e 41 senadores') : 'Sem votação no Congresso';
   return html`<div className="p-4 rounded bg-black/5 flex flex-wrap items-end gap-x-8 gap-y-2" data-secao="bloco-custo">
