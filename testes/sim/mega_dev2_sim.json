@@ -1,0 +1,8330 @@
+[
+{
+"id": "h0000",
+"descricao": "agro: Criar o Imposto Seletivo sobre agrotóxicos mais tóxicos e reduzir a alíquota dos",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar o Imposto Seletivo sobre agrotóxicos mais tóxicos e reduzir a alíquota dos biológicos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "desce",
+"just": "Insumo mais caro"
+}
+]
+},
+{
+"id": "h0002",
+"descricao": "agro: Assentar 100 mil famílias da reforma agrária em 4 anos com crédito instalação e ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Assentar 100 mil famílias da reforma agrária em 4 anos com crédito instalação e assistência técnica",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agfam",
+"m12": "sobe",
+"just": "Mais acesso a terra"
+},
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo"
+}
+]
+},
+{
+"id": "h0003",
+"descricao": "agro: Desapropriar propriedades improdutivas que descumprem a função social e destinar",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Desapropriar propriedades improdutivas que descumprem a função social e destinar à reforma agrária",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "desce",
+"just": "Insegurança fundiária"
+}
+]
+},
+{
+"id": "h0004",
+"descricao": "agro: Fixar em 45% o mínimo de compras da agricultura familiar na merenda escolar",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Fixar em 45% o mínimo de compras da agricultura familiar na merenda escolar",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agfam",
+"m12": "sobe",
+"just": "Mais demanda institucional"
+}
+]
+},
+{
+"id": "h0005",
+"descricao": "agro: Zerar o ICMS sobre insumos agropecuários em todo o país",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar o ICMS sobre insumos agropecuários em todo o país",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "sobe",
+"just": "Menos custo"
+}
+]
+},
+{
+"id": "h0006",
+"descricao": "agro: Reconstituir os estoques reguladores de alimentos básicos da Conab",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reconstituir os estoques reguladores de alimentos básicos da Conab",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ipca",
+"m12": "desce",
+"just": "Estoques regulam preços"
+}
+]
+},
+{
+"id": "h0008",
+"descricao": "agro: Retomar terras públicas griladas e destiná-las à reforma agrária e a UCs",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Retomar terras públicas griladas e destiná-las à reforma agrária e a UCs",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "desm",
+"m12": "desce",
+"just": "Combate à grilagem"
+}
+]
+},
+{
+"id": "h0009",
+"descricao": "agro: Criar assistência técnica gratuita (Ater) para 2 milhões de agricultores familia",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar assistência técnica gratuita (Ater) para 2 milhões de agricultores familiares",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agfam",
+"m12": "sobe",
+"just": "Mais produtividade"
+},
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo"
+}
+]
+},
+{
+"id": "h0010",
+"descricao": "agro: Abrir novos mercados externos para carne e frutas com missão comercial do Mapa",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Abrir novos mercados externos para carne e frutas com missão comercial do Mapa",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "sobe",
+"just": "Mais mercados"
+}
+]
+},
+{
+"id": "h0011",
+"descricao": "agro: Estender o Seguro-Safra a 1 milhão de agricultores do semiárido com prêmio mais ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Estender o Seguro-Safra a 1 milhão de agricultores do semiárido com prêmio mais alto",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agfam",
+"m12": "sobe",
+"just": "Proteção contra seca"
+}
+]
+},
+{
+"id": "h0012",
+"descricao": "agro: Taxar grandes propriedades improdutivas com ITR progressivo até 20%",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Taxar grandes propriedades improdutivas com ITR progressivo até 20%",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "desce",
+"just": "Imposto sobre terra improdutiva"
+},
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "ITR maior"
+}
+]
+},
+{
+"id": "h0013",
+"descricao": "agro: Criar o Programa Nacional de Irrigação para o Nordeste com R$ 8 bilhões em 4 ano",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar o Programa Nacional de Irrigação para o Nordeste com R$ 8 bilhões em 4 anos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agfam",
+"m12": "sobe",
+"just": "Água para produção"
+}
+]
+},
+{
+"id": "h0015",
+"descricao": "agro: planoo safra tem q ser maior pro pequeno produtor mano",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "planoo safra tem q ser maior pro pequeno produtor mano",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agfam",
+"m12": "sobe",
+"just": "Mais crédito"
+}
+]
+},
+{
+"id": "h0016",
+"descricao": "agro: perdoar divida do agricultor q perdeu a safra",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "perdoar divida do agricultor q perdeu a safra",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "sobe",
+"just": "Alívio de dívida"
+}
+]
+},
+{
+"id": "h0017",
+"descricao": "agro: quero q o gov compre mais comida do agricultor pequeno p dar nas escolas",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "quero q o gov compre mais comida do agricultor pequeno p dar nas escolas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agfam",
+"m12": "sobe",
+"just": "Demanda institucional"
+}
+]
+},
+{
+"id": "h0018",
+"descricao": "agro: soja n pode ser exportada crua tem q processar aq dentro",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "soja n pode ser exportada crua tem q processar aq dentro",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "desce",
+"just": "Exportação restringida"
+}
+]
+},
+{
+"id": "h0020",
+"descricao": "agro: seca no sul de novo e o gov n faz nd, precisa de ajuda pros produtor",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "seca no sul de novo e o gov n faz nd, precisa de ajuda pros produtor",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "sobe",
+"just": "Auxílio"
+}
+]
+},
+{
+"id": "h0021",
+"descricao": "agro: agricultura familiar merece 40% do plano safra",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "agricultura familiar merece 40% do plano safra",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agfam",
+"m12": "sobe",
+"just": "Mais crédito"
+}
+]
+},
+{
+"id": "h0023",
+"descricao": "agro: incentivar jovem a ficar no campo com bolsa mensal",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "incentivar jovem a ficar no campo com bolsa mensal",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_jovens",
+"m12": "sobe",
+"just": "Renda"
+},
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo"
+}
+]
+},
+{
+"id": "h0030",
+"descricao": "agro: fala sério, o gov podia isentar o pequeno agricultor do imposto kkk",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "fala sério, o gov podia isentar o pequeno agricultor do imposto kkk",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agfam",
+"m12": "sobe",
+"just": "Menos imposto"
+}
+]
+},
+{
+"id": "h0032",
+"descricao": "agro: Taxar a exportação de minério e soja em bruto para pagar a aposentadoria rural",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Taxar a exportação de minério e soja em bruto para pagar a aposentadoria rural",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "desce",
+"just": "Taxa sobre exportador"
+}
+]
+},
+{
+"id": "h0036",
+"descricao": "agro: Dobrar o Pronaf, perdoar dívidas de até R$ 10 mil e criar assistência técnica gr",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Dobrar o Pronaf, perdoar dívidas de até R$ 10 mil e criar assistência técnica gratuita para 500 mil famílias",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agfam",
+"m12": "sobe",
+"just": "Crédito e perdão"
+}
+]
+},
+{
+"id": "h0037",
+"descricao": "agro: Isentar o diesel agrícola de PIS/Cofins, criar seguro rural subsidiado e liberar",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Isentar o diesel agrícola de PIS/Cofins, criar seguro rural subsidiado e liberar crédito para armazéns",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "sobe",
+"just": "Menor custo"
+}
+]
+},
+{
+"id": "h0038",
+"descricao": "agro: Criar tarifa antidumping para leite em pó, proibir o glifosato e dobrar a fiscal",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar tarifa antidumping para leite em pó, proibir o glifosato e dobrar a fiscalização do Mapa",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "desce",
+"just": "Insumo proibido"
+}
+]
+},
+{
+"id": "h0039",
+"descricao": "agro: Fazer um Plano Safra do Clima com juros zero para práticas de baixo carbono",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Fazer um Plano Safra do Clima com juros zero para práticas de baixo carbono",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "sobe",
+"just": "Crédito barato"
+}
+]
+},
+{
+"id": "h0040",
+"descricao": "assistencia_social: Elevar o benefício básico do Bolsa Família de R$ 600 para R$ 750",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Elevar o benefício básico do Bolsa Família de R$ 600 para R$ 750",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo"
+},
+{
+"ind": "pob",
+"m12": "desce",
+"just": "mais renda"
+},
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "renda maior"
+}
+]
+},
+{
+"id": "h0041",
+"descricao": "assistencia_social: Estender o Pé-de-Meia aos estudantes do ensino fundamental II da rede pública",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Estender o Pé-de-Meia aos estudantes do ensino fundamental II da rede pública",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo"
+},
+{
+"ind": "g_jovens",
+"m12": "sobe",
+"just": "benefício"
+}
+]
+},
+{
+"id": "h0042",
+"descricao": "assistencia_social: Criar uma renda básica universal de R$ 300 por mês para todo adulto",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar uma renda básica universal de R$ 300 por mês para todo adulto",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo enorme"
+},
+{
+"ind": "pob",
+"m12": "desce",
+"just": "renda"
+}
+]
+},
+{
+"id": "h0043",
+"descricao": "assistencia_social: Dobrar as compras do Programa de Aquisição de Alimentos da agricultura familiar ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Dobrar as compras do Programa de Aquisição de Alimentos da agricultura familiar para doação",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agfam",
+"m12": "sobe",
+"just": "compras públicas"
+}
+]
+},
+{
+"id": "h0044",
+"descricao": "assistencia_social: Elevar para 45% a parcela da merenda escolar comprada da agricultura familiar",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Elevar para 45% a parcela da merenda escolar comprada da agricultura familiar",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agfam",
+"m12": "sobe",
+"just": "mercado cativo"
+}
+]
+},
+{
+"id": "h0045",
+"descricao": "assistencia_social: Dobrar o valor repassado por aluno para a merenda escolar",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Dobrar o valor repassado por aluno para a merenda escolar",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo"
+},
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "alimentação escolar"
+}
+]
+},
+{
+"id": "h0046",
+"descricao": "assistencia_social: Criar uma bolsa mensal para cuidadores familiares de idosos e pessoas com defici",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar uma bolsa mensal para cuidadores familiares de idosos e pessoas com deficiência",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo"
+},
+{
+"ind": "g_mulheres",
+"m12": "sobe",
+"just": "renda"
+}
+]
+},
+{
+"id": "h0047",
+"descricao": "assistencia_social: Oferecer tarifa social de água e esgoto gratuita às famílias do CadÚnico",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Oferecer tarifa social de água e esgoto gratuita às famílias do CadÚnico",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "conta menor"
+}
+]
+},
+{
+"id": "h0048",
+"descricao": "assistencia_social: Ampliar a isenção da tarifa social de energia elétrica para consumo de até 120 k",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Ampliar a isenção da tarifa social de energia elétrica para consumo de até 120 kWh",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "conta de luz menor"
+}
+]
+},
+{
+"id": "h0050",
+"descricao": "assistencia_social: Cruzar o CadÚnico com dados da Receita e do INSS para cortar benefícios irregula",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cruzar o CadÚnico com dados da Receita e do INSS para cortar benefícios irregulares",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "economia"
+},
+{
+"ind": "custo",
+"m12": "desce",
+"just": "menos gasto"
+}
+]
+},
+{
+"id": "h0051",
+"descricao": "assistencia_social: Pagar bônus de R$ 1.000 por ano a beneficiários que concluírem curso de qualific",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Pagar bônus de R$ 1.000 por ano a beneficiários que concluírem curso de qualificação",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "renda"
+},
+{
+"ind": "des",
+"m12": "desce",
+"just": "qualificação"
+}
+]
+},
+{
+"id": "h0052",
+"descricao": "assistencia_social: Criar a Bolsa Primeira Infância de R$ 500 para famílias com bebês de até um ano",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar a Bolsa Primeira Infância de R$ 500 para famílias com bebês de até um ano",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo"
+}
+]
+},
+{
+"id": "h0056",
+"descricao": "assistencia_social: Indexar os benefícios assistenciais à inflação todo ano",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Indexar os benefícios assistenciais à inflação todo ano",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo"
+}
+]
+},
+{
+"id": "h0057",
+"descricao": "assistencia_social: bolsa familia tem q acabar ta cheio de gente q n precisa",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "bolsa familia tem q acabar ta cheio de gente q n precisa",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "economia"
+},
+{
+"ind": "pob",
+"m12": "sobe",
+"just": "perda de renda"
+},
+{
+"ind": "g_periferia",
+"m12": "desce",
+"just": "corte"
+}
+]
+},
+{
+"id": "h0058",
+"descricao": "assistencia_social: pe de meia p todo mundo ne",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "pe de meia p todo mundo ne",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_jovens",
+"m12": "sobe",
+"just": "benefício"
+}
+]
+},
+{
+"id": "h0059",
+"descricao": "assistencia_social: mais merenda na escola pq as criança passam fome",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "mais merenda na escola pq as criança passam fome",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "alimentação"
+}
+]
+},
+{
+"id": "h0061",
+"descricao": "assistencia_social: pagar mais pra mae solteira",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "pagar mais pra mae solteira",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mulheres",
+"m12": "sobe",
+"just": "renda"
+}
+]
+},
+{
+"id": "h0062",
+"descricao": "assistencia_social: agua de graca pra periferia",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "agua de graca pra periferia",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "conta menor"
+}
+]
+},
+{
+"id": "h0071",
+"descricao": "assistencia_social: Claro, vamos deixar criança passar fome para fechar a conta, né? Que tal reajust",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Claro, vamos deixar criança passar fome para fechar a conta, né? Que tal reajustar o Bolsa Família?",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo"
+}
+]
+},
+{
+"id": "h0076",
+"descricao": "assistencia_social: Aumentar o Bolsa Família em R$ 100, ampliar o Pé-de-Meia e distribuir cestas bás",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Aumentar o Bolsa Família em R$ 100, ampliar o Pé-de-Meia e distribuir cestas básicas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo"
+}
+]
+},
+{
+"id": "h0080",
+"descricao": "bets: Legalizar o jogo do bicho com licenciamento e tributação",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Legalizar o jogo do bicho com licenciamento e tributação",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "receita nova melhora o primário"
+}
+]
+},
+{
+"id": "h0085",
+"descricao": "bets: Tributar em 30% o lucro líquido de apostadores profissionais",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Tributar em 30% o lucro líquido de apostadores profissionais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "receita nova melhora o primário"
+}
+]
+},
+{
+"id": "h0086",
+"descricao": "bets: Criar um fundo de prevenção e tratamento do vício em jogos com 3% do GGR",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um fundo de prevenção e tratamento do vício em jogos com 3% do GGR",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h0091",
+"descricao": "bets: Criar contribuição de 5% sobre os gastos com publicidade de apostas",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar contribuição de 5% sobre os gastos com publicidade de apostas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "receita nova melhora o primário"
+}
+]
+},
+{
+"id": "h0094",
+"descricao": "bets: Permitir cassinos on-line com licença federal e tributação sobre o GGR",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Permitir cassinos on-line com licença federal e tributação sobre o GGR",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "receita nova melhora o primário"
+},
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "arrecadação federal maior"
+}
+]
+},
+{
+"id": "h0098",
+"descricao": "bets: proibe essas bets logo q ta destruindo familia",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "proibe essas bets logo q ta destruindo familia",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "perda de receita reduz o primário"
+},
+{
+"ind": "receita",
+"m12": "desce",
+"just": "perda de arrecadação"
+}
+]
+},
+{
+"id": "h0102",
+"descricao": "bets: reduzir imposto da bet p ela nao sonegar",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "reduzir imposto da bet p ela nao sonegar",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "perda de receita reduz o primário"
+},
+{
+"ind": "receita",
+"m12": "desce",
+"just": "perda de arrecadação"
+}
+]
+},
+{
+"id": "h0105",
+"descricao": "bets: criar tratamento gratis p viciado em jogo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "criar tratamento gratis p viciado em jogo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h0116",
+"descricao": "bets: Legalizar jogo do bicho, bingos e cassinos com tributação de 20% sobre o GGR",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Legalizar jogo do bicho, bingos e cassinos com tributação de 20% sobre o GGR",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "receita nova melhora o primário"
+},
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "arrecadação federal maior"
+}
+]
+},
+{
+"id": "h0120",
+"descricao": "ciencia_tecnologia: Criar 10 novas universidades federais em cidades do interior",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar 10 novas universidades federais em cidades do interior",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo"
+}
+]
+},
+{
+"id": "h0122",
+"descricao": "ciencia_tecnologia: Isentar de IPI e PIS/Cofins notebooks e celulares de até R$ 2 mil",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Isentar de IPI e PIS/Cofins notebooks e celulares de até R$ 2 mil",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "renúncia"
+},
+{
+"ind": "g_jovens",
+"m12": "sobe",
+"just": "preço menor"
+}
+]
+},
+{
+"id": "h0123",
+"descricao": "ciencia_tecnologia: Ampliar a Lei do Bem para que startups sem lucro também tenham incentivo fiscal",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Ampliar a Lei do Bem para que startups sem lucro também tenham incentivo fiscal",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "renúncia"
+}
+]
+},
+{
+"id": "h0124",
+"descricao": "ciencia_tecnologia: Elevar o investimento público e privado em pesquisa e desenvolvimento para 2% do",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Elevar o investimento público e privado em pesquisa e desenvolvimento para 2% do PIB em dez anos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo"
+}
+]
+},
+{
+"id": "h0127",
+"descricao": "ciencia_tecnologia: Recompor em R$ 2 bilhões o orçamento de custeio das universidades federais",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Recompor em R$ 2 bilhões o orçamento de custeio das universidades federais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_universitarios",
+"m12": "sobe",
+"just": "mais verba"
+},
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo"
+}
+]
+},
+{
+"id": "h0128",
+"descricao": "ciencia_tecnologia: Garantir assistência estudantil integral aos cotistas das universidades federais",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Garantir assistência estudantil integral aos cotistas das universidades federais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_universitarios",
+"m12": "sobe",
+"just": "benefício"
+}
+]
+},
+{
+"id": "h0129",
+"descricao": "ciencia_tecnologia: Proibir a franquia de dados na banda larga fixa",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Proibir a franquia de dados na banda larga fixa",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_classemedia",
+"m12": "sobe",
+"just": "mais uso de internet"
+}
+]
+},
+{
+"id": "h0136",
+"descricao": "ciencia_tecnologia: Abrir mais 100 mil vagas nas universidades federais",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Abrir mais 100 mil vagas nas universidades federais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_jovens",
+"m12": "sobe",
+"just": "acesso"
+}
+]
+},
+{
+"id": "h0162",
+"descricao": "constituicao: Extinguir o fundo eleitoral de R$ 4,9 bilhões e deixar as campanhas só com doaçõ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Extinguir o fundo eleitoral de R$ 4,9 bilhões e deixar as campanhas só com doações de pessoas físicas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "desce",
+"just": "Corte do FEFC reduz despesa federal em ~R$ 5 bi."
+}
+]
+},
+{
+"id": "h0175",
+"descricao": "constituicao: Reservar vagas para mulheres em 30% das cadeiras do Legislativo por PEC",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reservar vagas para mulheres em 30% das cadeiras do Legislativo por PEC",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mulheres",
+"m12": "sobe",
+"just": "Reserva de cadeiras beneficia o grupo diretamente."
+}
+]
+},
+{
+"id": "h0200",
+"descricao": "corte_gastos: Reduzir à metade as emendas parlamentares impositivas",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir à metade as emendas parlamentares impositivas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Corte de despesa melhora o primário."
+},
+{
+"ind": "custo",
+"m12": "desce",
+"just": "Despesa menor."
+}
+]
+},
+{
+"id": "h0201",
+"descricao": "corte_gastos: Cortar linearmente em 10% os benefícios tributários da União",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cortar linearmente em 10% os benefícios tributários da União",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Menos renúncia."
+},
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Receita maior."
+}
+]
+},
+{
+"id": "h0202",
+"descricao": "corte_gastos: Extinguir o abono salarial e redirecionar os recursos para o Bolsa Família",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Extinguir o abono salarial e redirecionar os recursos para o Bolsa Família",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Corte de despesa melhora o primário."
+},
+{
+"ind": "custo",
+"m12": "desce",
+"just": "Despesa menor."
+}
+]
+},
+{
+"id": "h0205",
+"descricao": "corte_gastos: Atrelar o reajuste do salário mínimo apenas à inflação, sem ganho real",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Atrelar o reajuste do salário mínimo apenas à inflação, sem ganho real",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Corte de despesa melhora o primário."
+},
+{
+"ind": "custo",
+"m12": "desce",
+"just": "Despesa menor."
+},
+{
+"ind": "g_aposentados",
+"m12": "desce",
+"just": "Benefícios indexados ao mínimo crescem menos."
+}
+]
+},
+{
+"id": "h0206",
+"descricao": "corte_gastos: Desvincular o piso dos benefícios do INSS do salário mínimo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Desvincular o piso dos benefícios do INSS do salário mínimo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Corte de despesa melhora o primário."
+},
+{
+"ind": "custo",
+"m12": "desce",
+"just": "Despesa menor."
+},
+{
+"ind": "g_aposentados",
+"m12": "desce",
+"just": "Aposentados no piso perdem."
+}
+]
+},
+{
+"id": "h0218",
+"descricao": "corte_gastos: Reduzir em 10% o custeio das universidades federais",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir em 10% o custeio das universidades federais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Corte de despesa melhora o primário."
+},
+{
+"ind": "custo",
+"m12": "desce",
+"just": "Despesa menor."
+},
+{
+"ind": "g_universitarios",
+"m12": "desce",
+"just": "Estudantes e docentes reagem a cortes."
+}
+]
+},
+{
+"id": "h0220",
+"descricao": "corte_gastos: quero zerar o deficit sem aumentar imposto, so cortando",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "quero zerar o deficit sem aumentar imposto, so cortando",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Corte de despesa melhora o primário."
+},
+{
+"ind": "custo",
+"m12": "desce",
+"just": "Despesa menor."
+}
+]
+},
+{
+"id": "h0240",
+"descricao": "cultura_esporte: Cobrar Condecine de 4% sobre o faturamento das plataformas de streaming para fin",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cobrar Condecine de 4% sobre o faturamento das plataformas de streaming para financiar o audiovisual",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "tributo novo"
+}
+]
+},
+{
+"id": "h0241",
+"descricao": "cultura_esporte: Reservar 30% do Fundo Nacional de Cultura para projetos de periferias",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reservar 30% do Fundo Nacional de Cultura para projetos de periferias",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "recursos"
+}
+]
+},
+{
+"id": "h0243",
+"descricao": "cultura_esporte: Recriar o Vale-Cultura de R$ 100 por mês para trabalhadores de baixa renda",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Recriar o Vale-Cultura de R$ 100 por mês para trabalhadores de baixa renda",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "benefício"
+}
+]
+},
+{
+"id": "h0245",
+"descricao": "cultura_esporte: Proibir torcidas organizadas com histórico de violência de entrar nos estádios",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Proibir torcidas organizadas com histórico de violência de entrar nos estádios",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_policiais",
+"m12": "sobe",
+"just": "menos violência"
+}
+]
+},
+{
+"id": "h0253",
+"descricao": "cultura_esporte: Obrigar os clubes das séries A e B a manter times femininos de futebol",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Obrigar os clubes das séries A e B a manter times femininos de futebol",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mulheres",
+"m12": "sobe",
+"just": "medida afirmativa"
+}
+]
+},
+{
+"id": "h0254",
+"descricao": "cultura_esporte: Criar um passaporte cultural gratuito para estudantes da rede pública irem a mus",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um passaporte cultural gratuito para estudantes da rede pública irem a museus, teatros e cinemas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_jovens",
+"m12": "sobe",
+"just": "benefício"
+}
+]
+},
+{
+"id": "h0260",
+"descricao": "cultura_esporte: cortar a rouanet q so da dinheiro p famoso",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "cortar a rouanet q so da dinheiro p famoso",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "menos renúncia"
+}
+]
+},
+{
+"id": "h0261",
+"descricao": "cultura_esporte: queria feriado no dia do saci",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "queria feriado no dia do saci",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "pib",
+"m12": "desce",
+"just": "um dia a menos de trabalho"
+}
+]
+},
+{
+"id": "h0271",
+"descricao": "cultura_esporte: Taxar apostas esportivas para financiar o Bolsa Atleta",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Taxar apostas esportivas para financiar o Bolsa Atleta",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "tributo"
+}
+]
+},
+{
+"id": "h0277",
+"descricao": "cultura_esporte: Elevar a dedução da Rouanet, vedar shows com cachê alto e criar editais para a p",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Elevar a dedução da Rouanet, vedar shows com cachê alto e criar editais para a periferia",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "renúncia"
+}
+]
+},
+{
+"id": "h0280",
+"descricao": "desemprego: Qualificar 2 milhões de trabalhadores por ano em cursos técnicos gratuitos de cu",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Qualificar 2 milhões de trabalhadores por ano em cursos técnicos gratuitos de curta duração",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "des",
+"m12": "desce",
+"just": "maior empregabilidade"
+},
+{
+"ind": "g_jovens",
+"m12": "sobe",
+"just": "acesso a curso"
+}
+]
+},
+{
+"id": "h0281",
+"descricao": "desemprego: Reduzir a contribuição patronal ao INSS para empresas que contratarem jovens de ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir a contribuição patronal ao INSS para empresas que contratarem jovens de 18 a 24 anos no primeiro emprego",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_jovens",
+"m12": "sobe",
+"just": "incentivo ao 1º emprego"
+}
+]
+},
+{
+"id": "h0282",
+"descricao": "desemprego: Ampliar a cota de aprendizes de 5%-15% para até 20% da força de trabalho das emp",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Ampliar a cota de aprendizes de 5%-15% para até 20% da força de trabalho das empresas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_jovens",
+"m12": "sobe",
+"just": "mais vagas de aprendiz"
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "obrigação maior"
+}
+]
+},
+{
+"id": "h0284",
+"descricao": "desemprego: Prorrogar a desoneração da folha dos 17 setores intensivos em mão de obra até 20",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Prorrogar a desoneração da folha dos 17 setores intensivos em mão de obra até 2030",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "renúncia fiscal"
+},
+{
+"ind": "g_empresariado",
+"m12": "sobe",
+"just": "menos tributo"
+}
+]
+},
+{
+"id": "h0288",
+"descricao": "desemprego: Criar seguro-desemprego para motoristas e entregadores de aplicativo, financiado",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar seguro-desemprego para motoristas e entregadores de aplicativo, financiado por contribuição das plataformas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_app",
+"m12": "sobe",
+"just": "nova proteção"
+}
+]
+},
+{
+"id": "h0290",
+"descricao": "desemprego: Condicionar o seguro-desemprego, a partir da segunda parcela, à participação em ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Condicionar o seguro-desemprego, a partir da segunda parcela, à participação em curso de qualificação",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_sindicatos",
+"m12": "desce",
+"just": "exigência nova"
+}
+]
+},
+{
+"id": "h0291",
+"descricao": "desemprego: Restringir o abono salarial a quem ganha até 1,5 salário mínimo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Restringir o abono salarial a quem ganha até 1,5 salário mínimo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "menos despesa"
+}
+]
+},
+{
+"id": "h0294",
+"descricao": "desemprego: Criar a Carteira Verde, com 100 mil empregos em reflorestamento e restauração am",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar a Carteira Verde, com 100 mil empregos em reflorestamento e restauração ambiental",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "desm",
+"m12": "desce",
+"just": "restauração e vigilância"
+},
+{
+"ind": "des",
+"m12": "desce",
+"just": "empregos diretos"
+}
+]
+},
+{
+"id": "h0296",
+"descricao": "desemprego: Reduzir a alíquota do Simples para micro e pequenas empresas que aumentarem o qu",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir a alíquota do Simples para micro e pequenas empresas que aumentarem o quadro de empregados em 10%",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "benefício fiscal"
+}
+]
+},
+{
+"id": "h0297",
+"descricao": "desemprego: Cobrar contribuição adicional de empresas com rotatividade de empregados acima d",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cobrar contribuição adicional de empresas com rotatividade de empregados acima da média do setor",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "custo novo"
+}
+]
+},
+{
+"id": "h0301",
+"descricao": "desemprego: bolsa p quem ta sem emprego tipo 1000 reais",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "bolsa p quem ta sem emprego tipo 1000 reais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo"
+}
+]
+},
+{
+"id": "h0321",
+"descricao": "direitos_humanos: Titular todos os territórios quilombolas pendentes pelo Incra",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Titular todos os territórios quilombolas pendentes pelo Incra",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_negro",
+"m12": "sobe",
+"just": "titulação"
+}
+]
+},
+{
+"id": "h0322",
+"descricao": "direitos_humanos: Criar um fundo de reparação para descendentes de pessoas escravizadas",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um fundo de reparação para descendentes de pessoas escravizadas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_negro",
+"m12": "sobe",
+"just": "reparação"
+},
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo"
+}
+]
+},
+{
+"id": "h0323",
+"descricao": "direitos_humanos: Criar delegacias especializadas em crimes raciais em todas as capitais",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar delegacias especializadas em crimes raciais em todas as capitais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_negro",
+"m12": "sobe",
+"just": "proteção"
+}
+]
+},
+{
+"id": "h0324",
+"descricao": "direitos_humanos: Legalizar e regular o cultivo e a venda de maconha para maiores de 21 anos",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Legalizar e regular o cultivo e a venda de maconha para maiores de 21 anos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "tributos sobre mercado regulado"
+}
+]
+},
+{
+"id": "h0327",
+"descricao": "direitos_humanos: Destinar R$ 1 bilhão para comunidades terapêuticas atenderem dependentes químico",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Destinar R$ 1 bilhão para comunidades terapêuticas atenderem dependentes químicos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_evangelicos",
+"m12": "sobe",
+"just": "apoio a comunidades"
+}
+]
+},
+{
+"id": "h0328",
+"descricao": "direitos_humanos: Reservar 20% das cadeiras do Legislativo para mulheres",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reservar 20% das cadeiras do Legislativo para mulheres",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mulheres",
+"m12": "sobe",
+"just": "representação"
+}
+]
+},
+{
+"id": "h0331",
+"descricao": "direitos_humanos: Garantir creche em tempo integral e gratuita para os filhos de mulheres vítimas ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Garantir creche em tempo integral e gratuita para os filhos de mulheres vítimas de violência doméstica",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mulheres",
+"m12": "sobe",
+"just": "proteção"
+}
+]
+},
+{
+"id": "h0333",
+"descricao": "direitos_humanos: cota p negro em tudo q é concurso e faculdade",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "cota p negro em tudo q é concurso e faculdade",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_negro",
+"m12": "sobe",
+"just": "oportunidade"
+}
+]
+},
+{
+"id": "h0334",
+"descricao": "direitos_humanos: demarcar terra indigena logo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "demarcar terra indigena logo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_indigenas",
+"m12": "sobe",
+"just": "terra"
+},
+{
+"ind": "g_agro",
+"m12": "desce",
+"just": "conflito"
+}
+]
+},
+{
+"id": "h0336",
+"descricao": "direitos_humanos: aposentadoria dobrada p deficiente",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "aposentadoria dobrada p deficiente",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto previdenciário"
+}
+]
+},
+{
+"id": "h0347",
+"descricao": "direitos_humanos: Será que não está na hora de colocar tornozeleira nos agressores de mulheres com",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Será que não está na hora de colocar tornozeleira nos agressores de mulheres com medida protetiva?",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mulheres",
+"m12": "sobe",
+"just": "proteção"
+}
+]
+},
+{
+"id": "h0348",
+"descricao": "direitos_humanos: Ampliar as cotas raciais nas universidades sem retirar as cotas de escola públic",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Ampliar as cotas raciais nas universidades sem retirar as cotas de escola pública",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_negro",
+"m12": "sobe",
+"just": "acesso"
+}
+]
+},
+{
+"id": "h0350",
+"descricao": "direitos_humanos: Criar casas de acolhida para mulheres vítimas de violência sem criar novo impost",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar casas de acolhida para mulheres vítimas de violência sem criar novo imposto",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mulheres",
+"m12": "sobe",
+"just": "proteção"
+}
+]
+},
+{
+"id": "h0354",
+"descricao": "direitos_humanos: Criar 500 Casas da Mulher Brasileira, delegacias 24 horas e tornozeleiras para a",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar 500 Casas da Mulher Brasileira, delegacias 24 horas e tornozeleiras para agressores",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mulheres",
+"m12": "sobe",
+"just": "proteção"
+}
+]
+},
+{
+"id": "h0360",
+"descricao": "dolar: Zerar o IOF das compras com cartão de crédito no exterior",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar o IOF das compras com cartão de crédito no exterior",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "menos IOF"
+},
+{
+"ind": "prim",
+"m12": "desce",
+"just": "renúncia fiscal"
+}
+]
+},
+{
+"id": "h0362",
+"descricao": "dolar: Exigir que exportadores tragam de volta 100% das divisas das vendas externas em ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Exigir que exportadores tragam de volta 100% das divisas das vendas externas em até 180 dias",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mercado",
+"m12": "desce",
+"just": "controle de capitais"
+},
+{
+"ind": "g_agro",
+"m12": "desce",
+"just": "obrigação nova"
+}
+]
+},
+{
+"id": "h0365",
+"descricao": "dolar: Revogar a imunidade de ICMS na exportação de produtos primários e semielaborados",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Revogar a imunidade de ICMS na exportação de produtos primários e semielaborados",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "desce",
+"just": "exportação tributada"
+}
+]
+},
+{
+"id": "h0370",
+"descricao": "dolar: Revogar a taxa das blusinhas, o imposto de 20% sobre compras internacionais de a",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Revogar a taxa das blusinhas, o imposto de 20% sobre compras internacionais de até US$ 50",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "renúncia de receita"
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "varejo nacional perde proteção"
+}
+]
+},
+{
+"id": "h0376",
+"descricao": "dolar: Taxar em 15% a exportação de soja em grão para estimular a industrialização",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Taxar em 15% a exportação de soja em grão para estimular a industrialização",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "desce",
+"just": "exportação taxada"
+}
+]
+},
+{
+"id": "h0400",
+"descricao": "economia: Elevar o investimento público federal em R$ 50 bilhões por ano durante o mandato",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Elevar o investimento público federal em R$ 50 bilhões por ano durante o mandato",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo sem receita."
+},
+{
+"ind": "pib",
+"m12": "sobe",
+"just": "Investimento público com multiplicador positivo."
+},
+{
+"ind": "risco",
+"m12": "sobe",
+"just": "Pressão fiscal."
+}
+]
+},
+{
+"id": "h0401",
+"descricao": "economia: Elevar a meta de inflação para 4% ao ano com tolerância de 1,5 ponto",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Elevar a meta de inflação para 4% ao ano com tolerância de 1,5 ponto",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "risco",
+"m12": "sobe",
+"just": "Perda de credibilidade da âncora."
+},
+{
+"ind": "ipca",
+"m12": "sobe",
+"just": "Expectativas se descolam para cima."
+}
+]
+},
+{
+"id": "h0402",
+"descricao": "economia: Ampliar em R$ 20 bilhões o orçamento do Novo PAC para obras de saneamento e tran",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Ampliar em R$ 20 bilhões o orçamento do Novo PAC para obras de saneamento e transporte",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Mais gasto."
+},
+{
+"ind": "pib",
+"m12": "sobe",
+"just": "Obras empurram a demanda."
+}
+]
+},
+{
+"id": "h0403",
+"descricao": "economia: Criar um Fundo Nacional de Produtividade com R$ 10 bilhões por ano para moderniz",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um Fundo Nacional de Produtividade com R$ 10 bilhões por ano para modernizar a indústria",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Gasto novo."
+},
+{
+"ind": "pib",
+"m12": "sobe",
+"just": "Ganho de produtividade no médio prazo."
+}
+]
+},
+{
+"id": "h0404",
+"descricao": "economia: Qualificar 1 milhão de trabalhadores por ano em tecnologia e automação",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Qualificar 1 milhão de trabalhadores por ano em tecnologia e automação",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "des",
+"m12": "desce",
+"just": "Mais empregabilidade."
+}
+]
+},
+{
+"id": "h0405",
+"descricao": "economia: Tributar em 5% os rendimentos de LCI e LCA",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Tributar em 5% os rendimentos de LCI e LCA",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Nova tributação."
+},
+{
+"ind": "g_mercado",
+"m12": "desce",
+"just": "Retorno menor para aplicadores."
+}
+]
+},
+{
+"id": "h0406",
+"descricao": "economia: Fixar meta de dívida bruta de até 80% do PIB em lei complementar com gatilhos de",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Fixar meta de dívida bruta de até 80% do PIB em lei complementar com gatilhos de ajuste",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "risco",
+"m12": "desce",
+"just": "Âncora fiscal explícita."
+}
+]
+},
+{
+"id": "h0407",
+"descricao": "economia: Zerar o imposto de importação de bens de informática e telecomunicações",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar o imposto de importação de bens de informática e telecomunicações",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Menos II."
+}
+]
+},
+{
+"id": "h0408",
+"descricao": "economia: Exigir a devolução antecipada de R$ 50 bilhões do BNDES ao Tesouro",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Exigir a devolução antecipada de R$ 50 bilhões do BNDES ao Tesouro",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "divida",
+"m12": "desce",
+"just": "Redução da dívida bruta."
+},
+{
+"ind": "pib",
+"m12": "desce",
+"just": "Menos crédito de longo prazo."
+}
+]
+},
+{
+"id": "h0409",
+"descricao": "economia: Construir 2 milhões de moradias no Minha Casa Minha Vida em quatro anos",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Construir 2 milhões de moradias no Minha Casa Minha Vida em quatro anos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Subsídio ao financiamento."
+},
+{
+"ind": "des",
+"m12": "desce",
+"just": "Construção civil emprega muito."
+},
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo."
+}
+]
+},
+{
+"id": "h0410",
+"descricao": "economia: Reduzir o compulsório sobre depósitos à vista para liberar crédito produtivo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir o compulsório sobre depósitos à vista para liberar crédito produtivo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "pib",
+"m12": "sobe",
+"just": "Mais crédito."
+},
+{
+"ind": "ipca",
+"m12": "sobe",
+"just": "Pressão de demanda."
+}
+]
+},
+{
+"id": "h0412",
+"descricao": "economia: Usar parte das reservas internacionais para abater a dívida bruta do governo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Usar parte das reservas internacionais para abater a dívida bruta do governo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "divida",
+"m12": "desce",
+"just": "Menor dívida bruta."
+},
+{
+"ind": "dol",
+"m12": "sobe",
+"just": "Menor proteção cambial."
+},
+{
+"ind": "risco",
+"m12": "sobe",
+"just": "Menor colchão externo."
+}
+]
+},
+{
+"id": "h0413",
+"descricao": "economia: Reduzir o prazo de depreciação de máquinas para cinco anos em todas as indústria",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir o prazo de depreciação de máquinas para cinco anos em todas as indústrias",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "pib",
+"m12": "sobe",
+"just": "Investimento privado mais atrativo."
+}
+]
+},
+{
+"id": "h0419",
+"descricao": "economia: Reduzir de 15% para 10% o imposto de renda sobre ganhos em fundos de longo prazo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir de 15% para 10% o imposto de renda sobre ganhos em fundos de longo prazo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Alíquota menor."
+},
+{
+"ind": "g_mercado",
+"m12": "sobe",
+"just": "Retorno maior."
+}
+]
+},
+{
+"id": "h0420",
+"descricao": "economia: Reduzir a taxa de juros do consignado do INSS em meio ponto percentual",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir a taxa de juros do consignado do INSS em meio ponto percentual",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_aposentados",
+"m12": "sobe",
+"just": "Juros menores."
+}
+]
+},
+{
+"id": "h0421",
+"descricao": "economia: o governo gasta d+ tem q cortar gasto p reduzir a divida",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "o governo gasta d+ tem q cortar gasto p reduzir a divida",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Menos gasto."
+},
+{
+"ind": "risco",
+"m12": "desce",
+"just": "Sinal fiscal positivo."
+}
+]
+},
+{
+"id": "h0422",
+"descricao": "economia: imposto menor p maquina e equipamento p fabrica investir",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "imposto menor p maquina e equipamento p fabrica investir",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "pib",
+"m12": "sobe",
+"just": "Investimento privado."
+}
+]
+},
+{
+"id": "h0424",
+"descricao": "economia: cobra imposto de quem manda dinheiro p exterior",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "cobra imposto de quem manda dinheiro p exterior",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Mais IOF."
+},
+{
+"ind": "dol",
+"m12": "sobe",
+"just": "Remessas encarecidas."
+}
+]
+},
+{
+"id": "h0426",
+"descricao": "economia: Dar dinheiro p o povo gastar e a economia girar",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Dar dinheiro p o povo gastar e a economia girar",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "pib",
+"m12": "sobe",
+"just": "Consumo das famílias."
+},
+{
+"ind": "ipca",
+"m12": "sobe",
+"just": "Demanda aquecida."
+},
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Gasto novo."
+}
+]
+},
+{
+"id": "h0435",
+"descricao": "economia: Criar fundo de produtividade de R$ 10 bilhões por ano, qualificar 1 milhão de tr",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar fundo de produtividade de R$ 10 bilhões por ano, qualificar 1 milhão de trabalhadores e dobrar o FNDCT",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Gastos somados."
+}
+]
+},
+{
+"id": "h0440",
+"descricao": "educacao: Oferecer Wi-Fi e computadores a todas as escolas públicas do país",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Oferecer Wi-Fi e computadores a todas as escolas públicas do país",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Equipar escolas com internet e computadores."
+}
+]
+},
+{
+"id": "h0441",
+"descricao": "educacao: Expandir o Pé-de-Meia para que todo aluno do ensino médio público receba um ince",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Expandir o Pé-de-Meia para que todo aluno do ensino médio público receba um incentivo mensal",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Mais bolsa-incentivo para alunos."
+},
+{
+"ind": "g_jovens",
+"m12": "sobe",
+"just": "Jovens beneficiados."
+}
+]
+},
+{
+"id": "h0442",
+"descricao": "educacao: Contratar 100 mil novos professores por concurso para a rede federal e transferi",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Contratar 100 mil novos professores por concurso para a rede federal e transferir recursos aos estados",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Folha de professores."
+}
+]
+},
+{
+"id": "h0444",
+"descricao": "educacao: Reformar e ampliar a rede de institutos federais com 100 novos campi",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reformar e ampliar a rede de institutos federais com 100 novos campi",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Obras e custeio dos campi."
+}
+]
+},
+{
+"id": "h0457",
+"descricao": "educacao: aumentar o salario dos profesores logo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "aumentar o salario dos profesores logo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_servidores",
+"m12": "sobe",
+"just": "Reajuste a professores."
+}
+]
+},
+{
+"id": "h0475",
+"descricao": "educacao: Construir 5 mil creches, aumentar a merenda em 30% e dar kit escolar para todos ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Construir 5 mil creches, aumentar a merenda em 30% e dar kit escolar para todos os alunos de baixa renda",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Soma das três medidas."
+}
+]
+},
+{
+"id": "h0481",
+"descricao": "energia: Permitir que a Petrobras explore petróleo na Margem Equatorial",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Permitir que a Petrobras explore petróleo na Margem Equatorial",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mercado",
+"m12": "sobe",
+"just": "Nova fronteira petrolífera"
+}
+]
+},
+{
+"id": "h0482",
+"descricao": "energia: Aumentar a mistura de etanol na gasolina para 35%",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Aumentar a mistura de etanol na gasolina para 35%",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "sobe",
+"just": "Demanda por cana"
+}
+]
+},
+{
+"id": "h0483",
+"descricao": "energia: Zerar o ICMS sobre a energia elétrica residencial",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar o ICMS sobre a energia elétrica residencial",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ipca",
+"m12": "desce",
+"just": "Tarifa menor"
+}
+]
+},
+{
+"id": "h0485",
+"descricao": "energia: Concluir a usina nuclear de Angra 3",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Concluir a usina nuclear de Angra 3",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo"
+}
+]
+},
+{
+"id": "h0487",
+"descricao": "energia: Aumentar o percentual de biodiesel no diesel de B15 para B20 ainda este ano",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Aumentar o percentual de biodiesel no diesel de B15 para B20 ainda este ano",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "sobe",
+"just": "Demanda por soja"
+}
+]
+},
+{
+"id": "h0488",
+"descricao": "energia: Taxar os lucros extraordinários das petroleiras para custear o Gás do Povo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Taxar os lucros extraordinários das petroleiras para custear o Gás do Povo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Nova arrecadação"
+}
+]
+},
+{
+"id": "h0496",
+"descricao": "energia: a luz ta mt cara, o gov tem q baixar",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "a luz ta mt cara, o gov tem q baixar",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ipca",
+"m12": "desce",
+"just": "Tarifa menor"
+}
+]
+},
+{
+"id": "h0501",
+"descricao": "energia: o gov devia comprar painel solar pros pobre",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "o gov devia comprar painel solar pros pobre",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "pob",
+"m12": "desce",
+"just": "Conta de luz menor"
+}
+]
+},
+{
+"id": "h0502",
+"descricao": "energia: diesel mais barato p caminhoneiro, já!!",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "diesel mais barato p caminhoneiro, já!!",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_caminhoneiros",
+"m12": "sobe",
+"just": "Diesel mais barato"
+}
+]
+},
+{
+"id": "h0506",
+"descricao": "energia: derruba o preço do gas natural pra industria",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "derruba o preço do gas natural pra industria",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_empresariado",
+"m12": "sobe",
+"just": "Gás mais barato"
+}
+]
+},
+{
+"id": "h0516",
+"descricao": "energia: Ampliar a mistura de etanol para E35, biodiesel para B20 e criar crédito para us",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Ampliar a mistura de etanol para E35, biodiesel para B20 e criar crédito para usinas de etanol de milho",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "sobe",
+"just": "Mais demanda por biocombustível"
+}
+]
+},
+{
+"id": "h0517",
+"descricao": "energia: Retomar Angra 3, licenciar novo reator e criar fundo para descomissionamento nuc",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Retomar Angra 3, licenciar novo reator e criar fundo para descomissionamento nuclear",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Aporte público"
+}
+]
+},
+{
+"id": "h0520",
+"descricao": "games: Isentar de imposto de renda por cinco anos os pequenos estúdios de jogos",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Isentar de imposto de renda por cinco anos os pequenos estúdios de jogos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "renúncia de receita reduz o primário"
+}
+]
+},
+{
+"id": "h0521",
+"descricao": "games: Proibir loot boxes em jogos eletrônicos para qualquer faixa etária",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Proibir loot boxes em jogos eletrônicos para qualquer faixa etária",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_gamers",
+"m12": "desce",
+"just": "afeta diretamente jogadores"
+}
+]
+},
+{
+"id": "h0529",
+"descricao": "games: Aplicar alíquota reduzida de IBS e CBS sobre a venda de jogos desenvolvidos no B",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Aplicar alíquota reduzida de IBS e CBS sobre a venda de jogos desenvolvidos no Brasil",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "renúncia de tributos federais"
+}
+]
+},
+{
+"id": "h0530",
+"descricao": "games: Regular o mercado de itens virtuais e skins, com tributação das transações entre",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Regular o mercado de itens virtuais e skins, com tributação das transações entre jogadores",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "receita nova melhora o primário"
+}
+]
+},
+{
+"id": "h0531",
+"descricao": "games: Criar um programa de eSports nas escolas com campeonatos estudantis",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um programa de eSports nas escolas com campeonatos estudantis",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h0534",
+"descricao": "games: Elevar o limite do MEI para criadores de conteúdo digital de jogos",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Elevar o limite do MEI para criadores de conteúdo digital de jogos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "renúncia de receita reduz o primário"
+},
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "amplia o teto do MEI"
+}
+]
+},
+{
+"id": "h0535",
+"descricao": "games: Abater em dobro, na Lei do Bem, os gastos de pesquisa e desenvolvimento de jogos",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Abater em dobro, na Lei do Bem, os gastos de pesquisa e desenvolvimento de jogos eletrônicos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "renúncia de tributos federais"
+}
+]
+},
+{
+"id": "h0538",
+"descricao": "games: caixa de recompensa e jogo de azar, proibe logo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "caixa de recompensa e jogo de azar, proibe logo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_gamers",
+"m12": "desce",
+"just": "afeta diretamente jogadores"
+}
+]
+},
+{
+"id": "h0540",
+"descricao": "games: pc gamer mais barato pro povo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "pc gamer mais barato pro povo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "renúncia de tributos federais"
+},
+{
+"ind": "g_gamers",
+"m12": "sobe",
+"just": "beneficia diretamente jogadores"
+}
+]
+},
+{
+"id": "h0543",
+"descricao": "games: taxar jogos estrangeiros",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "taxar jogos estrangeiros",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "receita nova melhora o primário"
+},
+{
+"ind": "g_gamers",
+"m12": "desce",
+"just": "afeta diretamente jogadores"
+}
+]
+},
+{
+"id": "h0554",
+"descricao": "games: Taxar em 5% as microtransações para financiar o fomento a estúdios nacionais",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Taxar em 5% as microtransações para financiar o fomento a estúdios nacionais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "receita nova melhora o primário"
+}
+]
+},
+{
+"id": "h0557",
+"descricao": "games: Zerar o IPI de consoles, reduzir o imposto de importação de placas de vídeo e cr",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar o IPI de consoles, reduzir o imposto de importação de placas de vídeo e criar uma linha do BNDES para estúdios",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "renúncia de tributos federais"
+},
+{
+"ind": "g_gamers",
+"m12": "sobe",
+"just": "beneficia diretamente jogadores"
+}
+]
+},
+{
+"id": "h0558",
+"descricao": "games: Proibir loot boxes, exigir controle parental e verificar a idade dos jogadores",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Proibir loot boxes, exigir controle parental e verificar a idade dos jogadores",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_gamers",
+"m12": "desce",
+"just": "afeta diretamente jogadores"
+}
+]
+},
+{
+"id": "h0560",
+"descricao": "grandes_empresas: Reduzir em 5 pontos percentuais a alíquota do IRPJ das empresas do lucro real",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir em 5 pontos percentuais a alíquota do IRPJ das empresas do lucro real",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Alíquota menor."
+},
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Sem compensação."
+},
+{
+"ind": "g_empresariado",
+"m12": "sobe",
+"just": "Alívio direto."
+}
+]
+},
+{
+"id": "h0561",
+"descricao": "grandes_empresas: Elevar de 20% para 25% a alíquota da CSLL dos grandes bancos",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Elevar de 20% para 25% a alíquota da CSLL dos grandes bancos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Mais CSLL."
+},
+{
+"ind": "g_mercado",
+"m12": "desce",
+"just": "Menor lucro líquido dos bancos."
+}
+]
+},
+{
+"id": "h0562",
+"descricao": "grandes_empresas: Tributar em 15% as remessas de lucros e dividendos de multinacionais ao exterior",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Tributar em 15% as remessas de lucros e dividendos de multinacionais ao exterior",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Nova retenção na fonte."
+},
+{
+"ind": "dol",
+"m12": "sobe",
+"just": "Pode reduzir entrada de capital."
+}
+]
+},
+{
+"id": "h0564",
+"descricao": "grandes_empresas: Cortar em 25% todos os benefícios fiscais concedidos a grandes empresas",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cortar em 25% todos os benefícios fiscais concedidos a grandes empresas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Menos renúncia."
+},
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Receita maior."
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "Perdem benefícios."
+}
+]
+},
+{
+"id": "h0565",
+"descricao": "grandes_empresas: Bancar com recursos do Tesouro 30% da conta de energia de indústrias eletrointen",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Bancar com recursos do Tesouro 30% da conta de energia de indústrias eletrointensivas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Subsídio direto."
+},
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo."
+}
+]
+},
+{
+"id": "h0566",
+"descricao": "grandes_empresas: Elevar a CFEM do minério de ferro de 3,5% para 5%",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Elevar a CFEM do minério de ferro de 3,5% para 5%",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Mais compensação financeira."
+}
+]
+},
+{
+"id": "h0568",
+"descricao": "grandes_empresas: Prorrogar até 2040 a redução de 75% do IRPJ das empresas na área da Sudene",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Prorrogar até 2040 a redução de 75% do IRPJ das empresas na área da Sudene",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia mantida."
+}
+]
+},
+{
+"id": "h0569",
+"descricao": "grandes_empresas: Isentar de IRPJ o lucro reinvestido em infraestrutura por concessionárias",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Isentar de IRPJ o lucro reinvestido em infraestrutura por concessionárias",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "pib",
+"m12": "sobe",
+"just": "Mais investimento em infraestrutura."
+}
+]
+},
+{
+"id": "h0570",
+"descricao": "grandes_empresas: Limitar a 15% ao ano o juro dedutível de empréstimos entre empresas do mesmo gru",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Limitar a 15% ao ano o juro dedutível de empréstimos entre empresas do mesmo grupo multinacional",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Menos dedução intragrupo."
+}
+]
+},
+{
+"id": "h0571",
+"descricao": "grandes_empresas: Extinguir a dedução de despesas de propaganda e patrocínio acima de 2% da receit",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Extinguir a dedução de despesas de propaganda e patrocínio acima de 2% da receita",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Menos dedução."
+}
+]
+},
+{
+"id": "h0573",
+"descricao": "grandes_empresas: Impor às empresas estatais dividendo mínimo de 50% do lucro líquido",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Impor às empresas estatais dividendo mínimo de 50% do lucro líquido",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Dividendos para a União."
+},
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Receita não tributária."
+}
+]
+},
+{
+"id": "h0575",
+"descricao": "grandes_empresas: Desestatizar os Correios por meio de venda a investidores privados",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Desestatizar os Correios por meio de venda a investidores privados",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "divida",
+"m12": "desce",
+"just": "Receita única de venda."
+}
+]
+},
+{
+"id": "h0576",
+"descricao": "grandes_empresas: acabar c o jcp q so beneficia rico",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "acabar c o jcp q so beneficia rico",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Fim da dedução."
+},
+{
+"ind": "g_mercado",
+"m12": "desce",
+"just": "Acionistas perdem."
+}
+]
+},
+{
+"id": "h0577",
+"descricao": "grandes_empresas: tira os incentivo fiscal das grandes empresas q n precisam",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "tira os incentivo fiscal das grandes empresas q n precisam",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Menos renúncia."
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "Perda de benefícios."
+}
+]
+},
+{
+"id": "h0578",
+"descricao": "grandes_empresas: vc podia taxar mais as multinacionais q mandam lucro p fora",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "vc podia taxar mais as multinacionais q mandam lucro p fora",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Retenção maior."
+}
+]
+},
+{
+"id": "h0579",
+"descricao": "grandes_empresas: fala sério, as grandes pagam menos imposto q o padeiro, concerta isso",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "fala sério, as grandes pagam menos imposto q o padeiro, concerta isso",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Maior carga sobre grandes."
+}
+]
+},
+{
+"id": "h0583",
+"descricao": "grandes_empresas: qro q o governo force as empresas grandes a contratar jovem",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "qro q o governo force as empresas grandes a contratar jovem",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_jovens",
+"m12": "sobe",
+"just": "Mais vagas para jovens."
+}
+]
+},
+{
+"id": "h0597",
+"descricao": "grandes_empresas: Extinguir o JCP, limitar a dedução de despesas financeiras a 30% do Ebitda e ele",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Extinguir o JCP, limitar a dedução de despesas financeiras a 30% do Ebitda e elevar a CSLL dos bancos para 25%",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Três fontes novas."
+},
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Receita maior."
+}
+]
+},
+{
+"id": "h0598",
+"descricao": "grandes_empresas: Reduzir o IRPJ em três pontos, zerar o imposto de importação de insumos e criar ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir o IRPJ em três pontos, zerar o imposto de importação de insumos e criar crédito de 30% para fábricas de semicondutores",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncias somadas."
+}
+]
+},
+{
+"id": "h0601",
+"descricao": "ia: Criar uma nuvem soberana federal para guardar dados do governo e de saúde",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar uma nuvem soberana federal para guardar dados do governo e de saúde",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h0604",
+"descricao": "ia: Proibir reconhecimento facial em tempo real em espaços públicos",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Proibir reconhecimento facial em tempo real em espaços públicos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_policiais",
+"m12": "desce",
+"just": "restringe ferramenta de policiamento"
+}
+]
+},
+{
+"id": "h0608",
+"descricao": "ia: Capacitar 5 milhões de brasileiros em inteligência artificial e programação",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Capacitar 5 milhões de brasileiros em inteligência artificial e programação",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h0609",
+"descricao": "ia: Contratar 5 mil pesquisadores em IA com bolsas do CNPq e da Capes",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Contratar 5 mil pesquisadores em IA com bolsas do CNPq e da Capes",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h0610",
+"descricao": "ia: Criar um imposto sobre robôs e automação para financiar a requalificação de trab",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um imposto sobre robôs e automação para financiar a requalificação de trabalhadores",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "receita nova melhora o primário"
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "aumenta custo regulatório/tributário das empresas de tecnologia"
+}
+]
+},
+{
+"id": "h0614",
+"descricao": "ia: Construir três data centers públicos de alto desempenho com a Serpro e a Datapre",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Construir três data centers públicos de alto desempenho com a Serpro e a Dataprev",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h0617",
+"descricao": "ia: Criar um fundo garantidor para startups brasileiras de IA captarem crédito para ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um fundo garantidor para startups brasileiras de IA captarem crédito para infraestrutura de computação",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h0619",
+"descricao": "ia: criar um chatgpt brasileiro com dinheiro publico",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "criar um chatgpt brasileiro com dinheiro publico",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h0620",
+"descricao": "ia: taxar as big techs q n pagam imposto",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "taxar as big techs q n pagam imposto",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "receita nova melhora o primário"
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "aumenta custo regulatório/tributário das empresas de tecnologia"
+}
+]
+},
+{
+"id": "h0631",
+"descricao": "ia: Sem criar imposto novo, financiar o Plano Brasileiro de IA com recursos do FNDCT",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Sem criar imposto novo, financiar o Plano Brasileiro de IA com recursos do FNDCT",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h0632",
+"descricao": "ia: Taxar as big techs em 3% do faturamento para pagar a capacitação de trabalhadore",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Taxar as big techs em 3% do faturamento para pagar a capacitação de trabalhadores em IA",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "receita nova melhora o primário"
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "aumenta custo regulatório/tributário das empresas de tecnologia"
+}
+]
+},
+{
+"id": "h0638",
+"descricao": "ia: Criar imposto de 3% sobre serviços digitais, fundo de pesquisa em IA e exigir re",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar imposto de 3% sobre serviços digitais, fundo de pesquisa em IA e exigir representante legal das big techs",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "receita nova melhora o primário"
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "aumenta custo regulatório/tributário das empresas de tecnologia"
+}
+]
+},
+{
+"id": "h0641",
+"descricao": "impostos: Reduzir a alíquota do Imposto de Renda das empresas de 34% para 28%",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir a alíquota do Imposto de Renda das empresas de 34% para 28%",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_empresariado",
+"m12": "sobe",
+"just": "Menos imposto"
+},
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia"
+}
+]
+},
+{
+"id": "h0642",
+"descricao": "impostos: Extinguir o Imposto sobre Produtos Industrializados (IPI) em toda a economia",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Extinguir o Imposto sobre Produtos Industrializados (IPI) em toda a economia",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia"
+}
+]
+},
+{
+"id": "h0644",
+"descricao": "impostos: Dar crédito integral do ICMS na compra de bens de capital imediatamente, sem par",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Dar crédito integral do ICMS na compra de bens de capital imediatamente, sem parcelar em 48 meses",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_empresariado",
+"m12": "sobe",
+"just": "Investimento"
+}
+]
+},
+{
+"id": "h0646",
+"descricao": "impostos: Zerar o IOF sobre operações de crédito para pequenas empresas",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar o IOF sobre operações de crédito para pequenas empresas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Crédito mais barato"
+}
+]
+},
+{
+"id": "h0648",
+"descricao": "impostos: Criar um imposto sobre transações financeiras digitais de 0,1% para compensar a ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um imposto sobre transações financeiras digitais de 0,1% para compensar a desoneração da folha",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Nova arrecadação"
+}
+]
+},
+{
+"id": "h0650",
+"descricao": "impostos: Simplificar o Simples Nacional com uma tabela única e teto de R$ 8 milhões",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Simplificar o Simples Nacional com uma tabela única e teto de R$ 8 milhões",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Menos burocracia"
+}
+]
+},
+{
+"id": "h0652",
+"descricao": "impostos: Reduzir o ITR para propriedades menores de 100 hectares",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir o ITR para propriedades menores de 100 hectares",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agfam",
+"m12": "sobe",
+"just": "Imposto menor"
+}
+]
+},
+{
+"id": "h0656",
+"descricao": "impostos: Diminuir a alíquota do IR sobre ganhos de capital em venda de ações para 10%",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Diminuir a alíquota do IR sobre ganhos de capital em venda de ações para 10%",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mercado",
+"m12": "sobe",
+"just": "Imposto menor"
+}
+]
+},
+{
+"id": "h0657",
+"descricao": "impostos: Taxar de forma extra os bancos e as seguradoras com contribuição sobre o lucro d",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Taxar de forma extra os bancos e as seguradoras com contribuição sobre o lucro de 20%",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mercado",
+"m12": "desce",
+"just": "Mais imposto"
+}
+]
+},
+{
+"id": "h0659",
+"descricao": "impostos: tira o ICMS do gas de cozinha de uma vez",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "tira o ICMS do gas de cozinha de uma vez",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ipca",
+"m12": "desce",
+"just": "Gás mais barato"
+}
+]
+},
+{
+"id": "h0660",
+"descricao": "impostos: imposto sobre fortuna ja!!!",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "imposto sobre fortuna ja!!!",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Nova arrecadação"
+}
+]
+},
+{
+"id": "h0661",
+"descricao": "impostos: imposto de importação p celular e notebook tem q cair",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "imposto de importação p celular e notebook tem q cair",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ipca",
+"m12": "desce",
+"just": "Eletrônicos mais baratos"
+}
+]
+},
+{
+"id": "h0664",
+"descricao": "impostos: o MEI tem q poder faturar 150 mil por ano",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "o MEI tem q poder faturar 150 mil por ano",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Limite maior"
+}
+]
+},
+{
+"id": "h0671",
+"descricao": "impostos: diminui o imposto da gasolina q ta cara demais",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "diminui o imposto da gasolina q ta cara demais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ipca",
+"m12": "desce",
+"just": "Gasolina mais barata"
+}
+]
+},
+{
+"id": "h0674",
+"descricao": "impostos: Taxar as grandes fortunas para financiar a isenção de IR até R$ 5 mil",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Taxar as grandes fortunas para financiar a isenção de IR até R$ 5 mil",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Nova arrecadação"
+}
+]
+},
+{
+"id": "h0675",
+"descricao": "impostos: Cobrar o Imposto Seletivo das mineradoras para financiar a recuperação ambiental",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cobrar o Imposto Seletivo das mineradoras para financiar a recuperação ambiental",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "IS maior"
+}
+]
+},
+{
+"id": "h0676",
+"descricao": "impostos: Isentar de IR e contribuição o aluguel de imóveis residenciais de até R$ 3 mil, ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Isentar de IR e contribuição o aluguel de imóveis residenciais de até R$ 3 mil, reduzir IPI de automóveis populares e acabar com o imposto sobre livros digitais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncias combinadas"
+}
+]
+},
+{
+"id": "h0677",
+"descricao": "impostos: Aumentar o IR de dividendos, taxar jatinhos e criar um imposto sobre grandes her",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Aumentar o IR de dividendos, taxar jatinhos e criar um imposto sobre grandes heranças",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Mais arrecadação"
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "Mais imposto sobre capital"
+}
+]
+},
+{
+"id": "h0681",
+"descricao": "inflacao: Distribuir botijão de gás de cozinha gratuito a 15 milhões de famílias do CadÚni",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Distribuir botijão de gás de cozinha gratuito a 15 milhões de famílias do CadÚnico",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "gasto novo"
+},
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "benefício direto"
+}
+]
+},
+{
+"id": "h0686",
+"descricao": "inflacao: Indexar o benefício do Bolsa Família ao IPCA de alimentos",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Indexar o benefício do Bolsa Família ao IPCA de alimentos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "renda protegida"
+}
+]
+},
+{
+"id": "h0687",
+"descricao": "inflacao: Zerar o PIS/Cofins da gasolina",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar o PIS/Cofins da gasolina",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "renúncia fiscal"
+}
+]
+},
+{
+"id": "h0689",
+"descricao": "inflacao: Criar imposto de exportação de 10% sobre carne bovina in natura para conter o pr",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar imposto de exportação de 10% sobre carne bovina in natura para conter o preço interno",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "desce",
+"just": "exportador tributado"
+}
+]
+},
+{
+"id": "h0692",
+"descricao": "inflacao: Subsidiar o diesel dos transportadores autônomos de carga em R$ 0,40 por litro",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Subsidiar o diesel dos transportadores autônomos de carga em R$ 0,40 por litro",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_caminhoneiros",
+"m12": "sobe",
+"just": "subsídio direto"
+},
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo"
+}
+]
+},
+{
+"id": "h0696",
+"descricao": "inflacao: Implantar um programa de cestas básicas emergenciais de R$ 150 para 10 milhões d",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Implantar um programa de cestas básicas emergenciais de R$ 150 para 10 milhões de famílias",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo"
+}
+]
+},
+{
+"id": "h0720",
+"descricao": "infraestrutura: Ampliar o orçamento de manutenção de rodovias federais em R$ 5 bilhões por ano",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Ampliar o orçamento de manutenção de rodovias federais em R$ 5 bilhões por ano",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Mais despesa anual."
+},
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo."
+}
+]
+},
+{
+"id": "h0723",
+"descricao": "infraestrutura: Construir 500 mil moradias populares pelo Minha Casa Minha Vida em áreas com inf",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Construir 500 mil moradias populares pelo Minha Casa Minha Vida em áreas com infraestrutura",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "Beneficia diretamente famílias de baixa renda."
+}
+]
+},
+{
+"id": "h0727",
+"descricao": "infraestrutura: Reduzir a zero o IPI e o PIS/Cofins de materiais de construção para obras do PAC",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir a zero o IPI e o PIS/Cofins de materiais de construção para obras do PAC",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia tributária."
+},
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Menos arrecadação."
+}
+]
+},
+{
+"id": "h0739",
+"descricao": "infraestrutura: pac 4 com 500 bilhao pra obra",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "pac 4 com 500 bilhao pra obra",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo."
+}
+]
+},
+{
+"id": "h0740",
+"descricao": "infraestrutura: vcs deviam dar desconto no pedágio pra caminhoneiro autonomo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "vcs deviam dar desconto no pedágio pra caminhoneiro autonomo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_caminhoneiros",
+"m12": "sobe",
+"just": "Atinge direto os caminhoneiros."
+}
+]
+},
+{
+"id": "h0760",
+"descricao": "justica: Acabar com o foro privilegiado para todas as autoridades em crimes comuns",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Acabar com o foro privilegiado para todas as autoridades em crimes comuns",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ap",
+"m12": "sobe",
+"just": "Medida popular de combate à impunidade."
+}
+]
+},
+{
+"id": "h0763",
+"descricao": "justica: Criar um teto único para todas as verbas indenizatórias de juízes e promotores",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um teto único para todas as verbas indenizatórias de juízes e promotores",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "desce",
+"just": "Corte de penduricalhos acima do teto."
+}
+]
+},
+{
+"id": "h0764",
+"descricao": "justica: Endurecer a Lei Anticorrupção com multa de até 30% do faturamento de empresas co",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Endurecer a Lei Anticorrupção com multa de até 30% do faturamento de empresas corruptoras",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Mais multas arrecadadas."
+}
+]
+},
+{
+"id": "h0770",
+"descricao": "justica: Criar defensor público federal para atender todos os municípios do país",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar defensor público federal para atender todos os municípios do país",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Folha da DPU."
+}
+]
+},
+{
+"id": "h0797",
+"descricao": "justica: Contratar 5 mil policiais federais, criar 100 varas anticorrupção e implantar o ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Contratar 5 mil policiais federais, criar 100 varas anticorrupção e implantar o juiz das garantias",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Pessoal e varas."
+}
+]
+},
+{
+"id": "h0800",
+"descricao": "medias_empresas: Dobrar o orçamento do Proex para financiar exportações de empresas médias",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Dobrar o orçamento do Proex para financiar exportações de empresas médias",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Mais gasto com equalização."
+}
+]
+},
+{
+"id": "h0802",
+"descricao": "medias_empresas: Estender os incentivos da Lei do Bem de P&D às médias empresas do lucro presumid",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Estender os incentivos da Lei do Bem de P&D às médias empresas do lucro presumido",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Mais dedução de P&D."
+}
+]
+},
+{
+"id": "h0803",
+"descricao": "medias_empresas: Isentar de PIS e Cofins a importação de bens de capital por empresas médias",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Isentar de PIS e Cofins a importação de bens de capital por empresas médias",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Menos tributo na importação."
+}
+]
+},
+{
+"id": "h0807",
+"descricao": "medias_empresas: Isentar de imposto de renda o lucro reinvestido em máquinas por empresas médias",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Isentar de imposto de renda o lucro reinvestido em máquinas por empresas médias",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "pib",
+"m12": "sobe",
+"just": "Reinvestimento estimulado."
+}
+]
+},
+{
+"id": "h0810",
+"descricao": "medias_empresas: Permitir que empresas médias abatam 100% do prejuízo fiscal acumulado do lucro d",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Permitir que empresas médias abatam 100% do prejuízo fiscal acumulado do lucro de cada ano",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Compensação ampla."
+}
+]
+},
+{
+"id": "h0816",
+"descricao": "medias_empresas: baixa o imposto da empresa media q ta pesado d+",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "baixa o imposto da empresa media q ta pesado d+",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Menos arrecadação."
+}
+]
+},
+{
+"id": "h0818",
+"descricao": "medias_empresas: tirar o adicional do irpj q mata a empresa media",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "tirar o adicional do irpj q mata a empresa media",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Fim do adicional."
+}
+]
+},
+{
+"id": "h0823",
+"descricao": "medias_empresas: reduz juros do bndes p empresa q gera emprego",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "reduz juros do bndes p empresa q gera emprego",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "des",
+"m12": "desce",
+"just": "Condicionar o crédito ao emprego."
+}
+]
+},
+{
+"id": "h0836",
+"descricao": "medias_empresas: Reduzir a presunção dos serviços para 24%, zerar o adicional de IRPJ até R$ 120 ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir a presunção dos serviços para 24%, zerar o adicional de IRPJ até R$ 120 milhões e elevar o teto do presumido para R$ 100 milhões",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Soma de três renúncias."
+}
+]
+},
+{
+"id": "h0837",
+"descricao": "medias_empresas: Dobrar o Proex, aportar R$ 3 bilhões no FGE e abrir 10 escritórios da Apex",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Dobrar o Proex, aportar R$ 3 bilhões no FGE e abrir 10 escritórios da Apex",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Gastos somados."
+}
+]
+},
+{
+"id": "h0838",
+"descricao": "medias_empresas: Criar linha do BNDES de R$ 20 bilhões, cortar o spread em um ponto e dobrar a co",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar linha do BNDES de R$ 20 bilhões, cortar o spread em um ponto e dobrar a cobertura do FGI",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Subsídios somados."
+}
+]
+},
+{
+"id": "h0840",
+"descricao": "meio_ambiente: Ampliar em 10 milhões de hectares as unidades de conservação federais na Amazôni",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Ampliar em 10 milhões de hectares as unidades de conservação federais na Amazônia",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "desm",
+"m12": "desce",
+"just": "UCs freiam grilagem"
+},
+{
+"ind": "g_agro",
+"m12": "desce",
+"just": "Restrição de uso de terras"
+}
+]
+},
+{
+"id": "h0841",
+"descricao": "meio_ambiente: Retomar o Plano de Ação para Prevenção e Controle do Desmatamento no Cerrado com",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Retomar o Plano de Ação para Prevenção e Controle do Desmatamento no Cerrado com metas por bioma",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "desm",
+"m12": "desce",
+"just": "Controle do desmatamento no bioma"
+}
+]
+},
+{
+"id": "h0842",
+"descricao": "meio_ambiente: Estabelecer taxa de carbono sobre combustíveis fósseis com devolução em dividend",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Estabelecer taxa de carbono sobre combustíveis fósseis com devolução em dividendo para os mais pobres",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ipca",
+"m12": "sobe",
+"just": "Combustível mais caro pressiona preços"
+},
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Nova arrecadação"
+}
+]
+},
+{
+"id": "h0843",
+"descricao": "meio_ambiente: Isentar de PIS e Cofins a venda de créditos de carbono de projetos de refloresta",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Isentar de PIS e Cofins a venda de créditos de carbono de projetos de reflorestamento",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia tributária"
+}
+]
+},
+{
+"id": "h0844",
+"descricao": "meio_ambiente: Simplificar o licenciamento de obras de saneamento e energia limpa com prazo máx",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Simplificar o licenciamento de obras de saneamento e energia limpa com prazo máximo de 12 meses",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "pib",
+"m12": "sobe",
+"just": "Obras destravadas"
+}
+]
+},
+{
+"id": "h0845",
+"descricao": "meio_ambiente: Criar bolsa mensal para famílias ribeirinhas e extrativistas que protegem a flor",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar bolsa mensal para famílias ribeirinhas e extrativistas que protegem a floresta",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "pob",
+"m12": "desce",
+"just": "Transferência para população vulnerável"
+},
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo"
+}
+]
+},
+{
+"id": "h0846",
+"descricao": "meio_ambiente: Exigir cumprimento do Código Florestal com o CAR validado em todos os imóveis ru",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Exigir cumprimento do Código Florestal com o CAR validado em todos os imóveis rurais até 2028",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "desm",
+"m12": "desce",
+"just": "Cadastro validado facilita fiscalização"
+}
+]
+},
+{
+"id": "h0847",
+"descricao": "meio_ambiente: Aumentar para 30% a reserva legal obrigatória nas propriedades rurais do Cerrado",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Aumentar para 30% a reserva legal obrigatória nas propriedades rurais do Cerrado",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "desce",
+"just": "Mais área restrita"
+},
+{
+"ind": "desm",
+"m12": "desce",
+"just": "Menos supressão"
+}
+]
+},
+{
+"id": "h0848",
+"descricao": "meio_ambiente: Taxar a exportação de madeira nativa não certificada",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Taxar a exportação de madeira nativa não certificada",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "desm",
+"m12": "desce",
+"just": "Desestimula extração ilegal"
+}
+]
+},
+{
+"id": "h0850",
+"descricao": "meio_ambiente: Acabar com os lixões em todos os municípios com financiamento federal para aterr",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Acabar com os lixões em todos os municípios com financiamento federal para aterros sanitários",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Transferências federais"
+}
+]
+},
+{
+"id": "h0853",
+"descricao": "meio_ambiente: Apoiar a lei de proteção da Mata Atlântica com fiscalização reforçada e restaura",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Apoiar a lei de proteção da Mata Atlântica com fiscalização reforçada e restauração de áreas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "desm",
+"m12": "desce",
+"just": "Maior fiscalização"
+}
+]
+},
+{
+"id": "h0854",
+"descricao": "meio_ambiente: Financiar com R$ 3 bilhões a compra de ônibus elétricos para as capitais",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Financiar com R$ 3 bilhões a compra de ônibus elétricos para as capitais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Recursos orçamentários"
+}
+]
+},
+{
+"id": "h0858",
+"descricao": "meio_ambiente: acabar com as queimadas no pantanal p semrpe",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "acabar com as queimadas no pantanal p semrpe",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "desm",
+"m12": "desce",
+"just": "Menos fogo"
+}
+]
+},
+{
+"id": "h0860",
+"descricao": "meio_ambiente: vamo fexar as serrarias ilegais de uma vez",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "vamo fexar as serrarias ilegais de uma vez",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "desm",
+"m12": "desce",
+"just": "Menos madeira ilegal"
+}
+]
+},
+{
+"id": "h0862",
+"descricao": "meio_ambiente: qro q o gov pague quem n desmata, tipo bolsa",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "qro q o gov pague quem n desmata, tipo bolsa",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "desm",
+"m12": "desce",
+"just": "Incentivo a preservar"
+},
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo"
+}
+]
+},
+{
+"id": "h0863",
+"descricao": "meio_ambiente: fim do garimpo ilegal em terra indigena ja kkkk",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "fim do garimpo ilegal em terra indigena ja kkkk",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_indigenas",
+"m12": "sobe",
+"just": "Proteção territorial"
+}
+]
+},
+{
+"id": "h0872",
+"descricao": "meio_ambiente: Taxar a exportação de commodities com alto desmatamento embutido para financiar ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Taxar a exportação de commodities com alto desmatamento embutido para financiar a restauração florestal",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agro",
+"m12": "desce",
+"just": "Taxa sobre exportador"
+}
+]
+},
+{
+"id": "h0880",
+"descricao": "micro_empresas: Elevar o limite de faturamento anual do MEI de R$ 81 mil para R$ 130 mil",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Elevar o limite de faturamento anual do MEI de R$ 81 mil para R$ 130 mil",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Mais empreendedores cabem no regime simplificado."
+},
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Menos recolhimento sobre quem migraria de regime."
+}
+]
+},
+{
+"id": "h0881",
+"descricao": "micro_empresas: Subir o teto do Simples Nacional de R$ 4,8 milhões para R$ 8 milhões de faturame",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Subir o teto do Simples Nacional de R$ 4,8 milhões para R$ 8 milhões de faturamento anual",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Mais empresas com carga menor."
+},
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Renúncia sem compensação."
+}
+]
+},
+{
+"id": "h0882",
+"descricao": "micro_empresas: Permitir que o MEI contribua voluntariamente para o seguro-desemprego",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Permitir que o MEI contribua voluntariamente para o seguro-desemprego",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Nova cobertura de benefício."
+},
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Proteção social ampliada."
+}
+]
+},
+{
+"id": "h0883",
+"descricao": "micro_empresas: Reduzir de 5% para 3% do salário mínimo a contribuição previdenciária do MEI",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir de 5% para 3% do salário mínimo a contribuição previdenciária do MEI",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Menos contribuição recolhida."
+},
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Redução direta do DAS."
+}
+]
+},
+{
+"id": "h0884",
+"descricao": "micro_empresas: Integrar todas as obrigações acessórias de microempresa em um único sistema elet",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Integrar todas as obrigações acessórias de microempresa em um único sistema eletrônico",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Menos tempo com obrigações."
+}
+]
+},
+{
+"id": "h0885",
+"descricao": "micro_empresas: Reduzir pela metade o IOF sobre empréstimos tomados por microempresas",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir pela metade o IOF sobre empréstimos tomados por microempresas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Menos IOF."
+}
+]
+},
+{
+"id": "h0886",
+"descricao": "micro_empresas: Obrigar grandes empresas a pagar fornecedores microempresas em até 30 dias",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Obrigar grandes empresas a pagar fornecedores microempresas em até 30 dias",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Capital de giro mais saudável."
+}
+]
+},
+{
+"id": "h0887",
+"descricao": "micro_empresas: Isentar de tarifa bancária a conta de MEI nos bancos públicos",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Isentar de tarifa bancária a conta de MEI nos bancos públicos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Redução de custo financeiro."
+}
+]
+},
+{
+"id": "h0888",
+"descricao": "micro_empresas: Reduzir em 20% as alíquotas do Anexo I do Simples Nacional, o do comércio",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir em 20% as alíquotas do Anexo I do Simples Nacional, o do comércio",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Alíquota menor."
+},
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Renúncia sem compensação."
+}
+]
+},
+{
+"id": "h0889",
+"descricao": "micro_empresas: Permitir a adesão ao Simples de empresas que tenham outra empresa como sócia",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Permitir a adesão ao Simples de empresas que tenham outra empresa como sócia",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Mais empresas migrando para a carga menor."
+}
+]
+},
+{
+"id": "h0890",
+"descricao": "micro_empresas: Pagar bônus de contratação para microempresa que empregar jovem de 18 a 24 anos ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Pagar bônus de contratação para microempresa que empregar jovem de 18 a 24 anos no primeiro emprego",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_jovens",
+"m12": "sobe",
+"just": "Emprego para a faixa-alvo."
+},
+{
+"ind": "des",
+"m12": "desce",
+"just": "Mais contratação formal."
+}
+]
+},
+{
+"id": "h0892",
+"descricao": "micro_empresas: Criar o Fundo de Aval do Jovem Empreendedor com R$ 2 bilhões em garantia",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar o Fundo de Aval do Jovem Empreendedor com R$ 2 bilhões em garantia",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_jovens",
+"m12": "sobe",
+"just": "Acesso a crédito para jovens."
+}
+]
+},
+{
+"id": "h0893",
+"descricao": "micro_empresas: Perdoar a multa do MEI que atrasar a declaração anual DASN-SIMEI",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Perdoar a multa do MEI que atrasar a declaração anual DASN-SIMEI",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Alívio de penalidade."
+}
+]
+},
+{
+"id": "h0894",
+"descricao": "micro_empresas: Reservar 40% das compras públicas federais para micro e pequenas empresas",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reservar 40% das compras públicas federais para micro e pequenas empresas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Mais contratos públicos para o segmento."
+}
+]
+},
+{
+"id": "h0895",
+"descricao": "micro_empresas: Lançar um novo Desenrola para microempresas com desconto de até 70% e garantia d",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Lançar um novo Desenrola para microempresas com desconto de até 70% e garantia do FGO",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Renegociação de dívidas."
+},
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Garantia pública."
+}
+]
+},
+{
+"id": "h0900",
+"descricao": "micro_empresas: TIRAR O IMPOSTO DO MEI DE VEZ KKK",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "TIRAR O IMPOSTO DO MEI DE VEZ KKK",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mei",
+"m12": "sobe",
+"just": "Fim do DAS."
+},
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Perda de arrecadação."
+}
+]
+},
+{
+"id": "h0902",
+"descricao": "micro_empresas: simples nacional ta caro d+ gov, baixa isso",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "simples nacional ta caro d+ gov, baixa isso",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Alíquota menor."
+}
+]
+},
+{
+"id": "h0915",
+"descricao": "micro_empresas: Criar microcrédito para 1 milhão de informais, dar 12 meses de carência e garant",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar microcrédito para 1 milhão de informais, dar 12 meses de carência e garantir 80% da carteira pelo FGO",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Subsídio e garantia."
+}
+]
+},
+{
+"id": "h0920",
+"descricao": "moradia: Regularizar 5 milhões de imóveis em favelas com título de propriedade gratuito p",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Regularizar 5 milhões de imóveis em favelas com título de propriedade gratuito pela Reurb-S",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "beneficia diretamente famílias de baixa renda"
+}
+]
+},
+{
+"id": "h0921",
+"descricao": "moradia: Zerar o IPI e o imposto de importação de cimento, aço e vergalhão usados em obra",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar o IPI e o imposto de importação de cimento, aço e vergalhão usados em obras do MCMV",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "renúncia direta de tributos federais"
+}
+]
+},
+{
+"id": "h0923",
+"descricao": "moradia: Construir 500 mil moradias em terrenos da União",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Construir 500 mil moradias em terrenos da União",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+},
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "beneficia diretamente famílias de baixa renda"
+}
+]
+},
+{
+"id": "h0924",
+"descricao": "moradia: Transformar prédios públicos vazios no centro das cidades em moradia popular",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Transformar prédios públicos vazios no centro das cidades em moradia popular",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h0925",
+"descricao": "moradia: Reduzir a CBS e o IBS sobre a venda de imóveis populares",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir a CBS e o IBS sobre a venda de imóveis populares",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "renúncia de tributo sobre o consumo"
+}
+]
+},
+{
+"id": "h0927",
+"descricao": "moradia: Subsidiar painéis solares em moradias populares do MCMV",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Subsidiar painéis solares em moradias populares do MCMV",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h0932",
+"descricao": "moradia: Criar um fundo de aval do Tesouro para financiamentos de imóveis de até R$ 350 m",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um fundo de aval do Tesouro para financiamentos de imóveis de até R$ 350 mil",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h0933",
+"descricao": "moradia: Criar microcrédito habitacional para autoconstrução com assistência técnica grat",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar microcrédito habitacional para autoconstrução com assistência técnica gratuita",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+},
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "beneficia diretamente famílias de baixa renda"
+}
+]
+},
+{
+"id": "h0934",
+"descricao": "moradia: Garantir tarifa social de energia automática para todas as moradias do MCMV",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Garantir tarifa social de energia automática para todas as moradias do MCMV",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+},
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "beneficia diretamente famílias de baixa renda"
+}
+]
+},
+{
+"id": "h0935",
+"descricao": "moradia: Criar o Programa Nacional de Moradia Estudantil com 100 mil vagas em universidad",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar o Programa Nacional de Moradia Estudantil com 100 mil vagas em universidades federais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+},
+{
+"ind": "g_universitarios",
+"m12": "sobe",
+"just": "amplia assistência estudantil"
+}
+]
+},
+{
+"id": "h0937",
+"descricao": "moradia: Criar linha de crédito do BNDES para cooperativas habitacionais autogeridas",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar linha de crédito do BNDES para cooperativas habitacionais autogeridas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h0938",
+"descricao": "moradia: gov tinha q dar casa pra todo mundo q mora na rua",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "gov tinha q dar casa pra todo mundo q mora na rua",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+},
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "beneficia diretamente famílias de baixa renda"
+}
+]
+},
+{
+"id": "h0940",
+"descricao": "moradia: quero q o governo pague o aluguel de quem perdeu o emprego",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "quero q o governo pague o aluguel de quem perdeu o emprego",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+},
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "beneficia diretamente famílias de baixa renda"
+}
+]
+},
+{
+"id": "h0941",
+"descricao": "moradia: contruir casas popularez perto do trabalho e do metro",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "contruir casas popularez perto do trabalho e do metro",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h0950",
+"descricao": "moradia: Será que não está na hora de parar de deixar prédio vazio no centro enquanto tem",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Será que não está na hora de parar de deixar prédio vazio no centro enquanto tem gente na rua?",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h0952",
+"descricao": "moradia: Usar o lucro da Caixa para subsidiar a entrada de quem compra o primeiro imóvel",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Usar o lucro da Caixa para subsidiar a entrada de quem compra o primeiro imóvel",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h0954",
+"descricao": "moradia: Criar o aluguel social, regularizar 1 milhão de lotes e reformar 300 mil casas p",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar o aluguel social, regularizar 1 milhão de lotes e reformar 300 mil casas precárias",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+},
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "beneficia diretamente famílias de baixa renda"
+}
+]
+},
+{
+"id": "h0956",
+"descricao": "moradia: Criar o auxílio-aluguel de R$ 600 e um fundo garantidor de locação, financiados ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar o auxílio-aluguel de R$ 600 e um fundo garantidor de locação, financiados por taxa sobre imóveis ociosos acima de R$ 5 milhões",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h0960",
+"descricao": "previdencia: Reajustar os benefícios do INSS acima do salário mínimo pela inflação mais metad",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reajustar os benefícios do INSS acima do salário mínimo pela inflação mais metade do PIB",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_aposentados",
+"m12": "sobe",
+"just": "Ganho real"
+},
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto maior"
+}
+]
+},
+{
+"id": "h0961",
+"descricao": "previdencia: Desvincular o valor do BPC do salário mínimo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Desvincular o valor do BPC do salário mínimo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Economia"
+},
+{
+"ind": "pob",
+"m12": "sobe",
+"just": "Pobreza maior"
+}
+]
+},
+{
+"id": "h0963",
+"descricao": "previdencia: Aumentar a alíquota de contribuição previdenciária de servidores federais para 1",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Aumentar a alíquota de contribuição previdenciária de servidores federais para 16%",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Mais contribuição"
+},
+{
+"ind": "g_servidores",
+"m12": "desce",
+"just": "Salário líquido menor"
+}
+]
+},
+{
+"id": "h0964",
+"descricao": "previdencia: Cobrar contribuição previdenciária de aposentados do serviço público que ganhem ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cobrar contribuição previdenciária de aposentados do serviço público que ganhem acima do teto",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_servidores",
+"m12": "desce",
+"just": "Contribuição maior"
+}
+]
+},
+{
+"id": "h0966",
+"descricao": "previdencia: Aposentar policiais federais com 55 anos independentemente do sexo",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Aposentar policiais federais com 55 anos independentemente do sexo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_policiais",
+"m12": "sobe",
+"just": "Regime favorável"
+}
+]
+},
+{
+"id": "h0967",
+"descricao": "previdencia: Aumentar o teto do INSS para R$ 12 mil",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Aumentar o teto do INSS para R$ 12 mil",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Maior base de contribuição"
+},
+{
+"ind": "g_classemedia",
+"m12": "desce",
+"just": "Mais contribuição"
+}
+]
+},
+{
+"id": "h0968",
+"descricao": "previdencia: Zerar a fila do INSS com mutirão de peritos e contratação temporária de 5 mil se",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar a fila do INSS com mutirão de peritos e contratação temporária de 5 mil servidores",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ap",
+"m12": "sobe",
+"just": "Fila menor"
+},
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Mais gastos com benefícios"
+}
+]
+},
+{
+"id": "h0969",
+"descricao": "previdencia: Ressarcir integralmente os aposentados atingidos por descontos indevidos do INSS",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Ressarcir integralmente os aposentados atingidos por descontos indevidos do INSS",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_aposentados",
+"m12": "sobe",
+"just": "Dinheiro de volta"
+},
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Pagamento pelo Tesouro"
+}
+]
+},
+{
+"id": "h0970",
+"descricao": "previdencia: Proibir descontos de mensalidades associativas em benefícios do INSS",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Proibir descontos de mensalidades associativas em benefícios do INSS",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_aposentados",
+"m12": "sobe",
+"just": "Fim dos descontos"
+}
+]
+},
+{
+"id": "h0971",
+"descricao": "previdencia: Auditar todos os benefícios por incapacidade com mais de 2 anos sem revisão",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Auditar todos os benefícios por incapacidade com mais de 2 anos sem revisão",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Economia previdenciária"
+}
+]
+},
+{
+"id": "h0972",
+"descricao": "previdencia: Isentar de contribuição previdenciária do empregador o primeiro emprego de joven",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Isentar de contribuição previdenciária do empregador o primeiro emprego de jovens até 24 anos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_jovens",
+"m12": "sobe",
+"just": "Mais empregos"
+},
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia"
+}
+]
+},
+{
+"id": "h0977",
+"descricao": "previdencia: Criar o Seguro-Cuidador para pagar um salário mínimo a quem cuida de idoso depen",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar o Seguro-Cuidador para pagar um salário mínimo a quem cuida de idoso dependente em casa",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mulheres",
+"m12": "sobe",
+"just": "Reconhecimento do trabalho de cuidado"
+},
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo"
+}
+]
+},
+{
+"id": "h0978",
+"descricao": "previdencia: Reduzir a contribuição patronal sobre a folha de 20% para 10% compensando com tr",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir a contribuição patronal sobre a folha de 20% para 10% compensando com tributo sobre transações digitais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "des",
+"m12": "desce",
+"just": "Folha mais barata"
+}
+]
+},
+{
+"id": "h0983",
+"descricao": "previdencia: mais gente no INSS pra atender melhor",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "mais gente no INSS pra atender melhor",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ap",
+"m12": "sobe",
+"just": "Atendimento"
+}
+]
+},
+{
+"id": "h0996",
+"descricao": "previdencia: Sem aumentar a idade mínima, controlar o gasto previdenciário atacando fraudes e",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Sem aumentar a idade mínima, controlar o gasto previdenciário atacando fraudes e benefícios concedidos indevidamente",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "Economia por revisão"
+}
+]
+},
+{
+"id": "h0997",
+"descricao": "previdencia: Sem mexer nos benefícios atuais, criar nova alíquota extra para altos salários d",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Sem mexer nos benefícios atuais, criar nova alíquota extra para altos salários do setor público",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Mais contribuição"
+},
+{
+"ind": "g_servidores",
+"m12": "desce",
+"just": "Contribuição maior"
+}
+]
+},
+{
+"id": "h0998",
+"descricao": "previdencia: Taxar bets e apostas online para cobrir o déficit do INSS",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Taxar bets e apostas online para cobrir o déficit do INSS",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Mais arrecadação"
+}
+]
+},
+{
+"id": "h1000",
+"descricao": "privatizacoes: Privatizar a Petrobras vendendo as ações da União e do BNDES numa oferta pública",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Privatizar a Petrobras vendendo as ações da União e do BNDES numa oferta pública global",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mercado",
+"m12": "sobe",
+"just": "Mercado reage bem a desestatização."
+},
+{
+"ind": "g_sindicatos",
+"m12": "desce",
+"just": "Sindicatos de estatais reagem contra."
+}
+]
+},
+{
+"id": "h1002",
+"descricao": "privatizacoes: Privatizar os Correios com venda do controle a um operador logístico privado",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Privatizar os Correios com venda do controle a um operador logístico privado",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mercado",
+"m12": "sobe",
+"just": "Mercado reage bem a desestatização."
+},
+{
+"ind": "g_sindicatos",
+"m12": "desce",
+"just": "Sindicatos de estatais reagem contra."
+}
+]
+},
+{
+"id": "h1019",
+"descricao": "privatizacoes: PRIVATIZA TUDO",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "PRIVATIZA TUDO",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mercado",
+"m12": "sobe",
+"just": "Mercado reage bem a desestatização."
+},
+{
+"ind": "g_sindicatos",
+"m12": "desce",
+"just": "Sindicatos de estatais reagem contra."
+}
+]
+},
+{
+"id": "h1040",
+"descricao": "regalias: Acabar com o auxílio-moradia de deputados e senadores que já têm imóvel próprio ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Acabar com o auxílio-moradia de deputados e senadores que já têm imóvel próprio em Brasília",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ap",
+"m12": "sobe",
+"just": "Cortar privilégios é popular."
+}
+]
+},
+{
+"id": "h1041",
+"descricao": "regalias: Reduzir em 30% a verba de gabinete de cada deputado e senador",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir em 30% a verba de gabinete de cada deputado e senador",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ap",
+"m12": "sobe",
+"just": "Cortar privilégios é popular."
+}
+]
+},
+{
+"id": "h1042",
+"descricao": "regalias: Regulamentar o teto constitucional para proibir penduricalhos fora do limite rem",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Regulamentar o teto constitucional para proibir penduricalhos fora do limite remuneratório",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ap",
+"m12": "sobe",
+"just": "Cortar privilégios é popular."
+},
+{
+"ind": "g_servidores",
+"m12": "desce",
+"just": "Elite do funcionalismo perde."
+}
+]
+},
+{
+"id": "h1043",
+"descricao": "regalias: Acabar com o fundo eleitoral e financiar campanhas só com doações de pessoas fís",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Acabar com o fundo eleitoral e financiar campanhas só com doações de pessoas físicas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ap",
+"m12": "sobe",
+"just": "Cortar privilégios é popular."
+}
+]
+},
+{
+"id": "h1044",
+"descricao": "regalias: Extinguir o fundo partidário e o tempo de propaganda gratuita no rádio e TV",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Extinguir o fundo partidário e o tempo de propaganda gratuita no rádio e TV",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ap",
+"m12": "sobe",
+"just": "Cortar privilégios é popular."
+}
+]
+},
+{
+"id": "h1046",
+"descricao": "regalias: Proibir auxílio-alimentação, auxílio-saúde e outros auxílios acima do teto a mag",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Proibir auxílio-alimentação, auxílio-saúde e outros auxílios acima do teto a magistrados e procuradores",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ap",
+"m12": "sobe",
+"just": "Cortar privilégios é popular."
+}
+]
+},
+{
+"id": "h1047",
+"descricao": "regalias: Reduzir os subsídios do presidente, ministros e parlamentares para o teto de R$ ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir os subsídios do presidente, ministros e parlamentares para o teto de R$ 30 mil",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ap",
+"m12": "sobe",
+"just": "Cortar privilégios é popular."
+}
+]
+},
+{
+"id": "h1057",
+"descricao": "regalias: acaba com o carro oficial dos politico, vao de onibus",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "acaba com o carro oficial dos politico, vao de onibus",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ap",
+"m12": "sobe",
+"just": "Cortar privilégios é popular."
+}
+]
+},
+{
+"id": "h1058",
+"descricao": "regalias: os juiz ganham 100 mil por mes, isso é um absurdo, limita ao teto",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "os juiz ganham 100 mil por mes, isso é um absurdo, limita ao teto",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ap",
+"m12": "sobe",
+"just": "Cortar privilégios é popular."
+}
+]
+},
+{
+"id": "h1075",
+"descricao": "regalias: Aplicar o teto a penduricalhos, reduzir férias a 30 dias e proibir pagamento ret",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Aplicar o teto a penduricalhos, reduzir férias a 30 dias e proibir pagamento retroativo a juízes",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ap",
+"m12": "sobe",
+"just": "Cortar privilégios é popular."
+}
+]
+},
+{
+"id": "h1080",
+"descricao": "relacoes_exteriores: Zerar o imposto de importação de máquinas e equipamentos sem similar nacional",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar o imposto de importação de máquinas e equipamentos sem similar nacional",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Menos II."
+}
+]
+},
+{
+"id": "h1085",
+"descricao": "relacoes_exteriores: Negociar a moeda comum entre Mercosul e BRICS para transações comerciais",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Negociar a moeda comum entre Mercosul e BRICS para transações comerciais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "dol",
+"m12": "desce",
+"just": "Menor dependência do dólar, no longo prazo."
+}
+]
+},
+{
+"id": "h1086",
+"descricao": "relacoes_exteriores: Simplificar a emissão de vistos para turistas de 30 países, com e-Visa em 48 hor",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Simplificar a emissão de vistos para turistas de 30 países, com e-Visa em 48 horas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "pib",
+"m12": "sobe",
+"just": "Mais turismo internacional."
+}
+]
+},
+{
+"id": "h1088",
+"descricao": "relacoes_exteriores: Isentar de taxa de importação compras internacionais até US$ 50",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Isentar de taxa de importação compras internacionais até US$ 50",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Menos II sobre pequenas remessas."
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "Varejo nacional perde competitividade."
+}
+]
+},
+{
+"id": "h1089",
+"descricao": "relacoes_exteriores: Aumentar o IPI de produtos importados para equiparar com o nacional",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Aumentar o IPI de produtos importados para equiparar com o nacional",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "IPI maior."
+},
+{
+"ind": "ipca",
+"m12": "sobe",
+"just": "Importados mais caros."
+}
+]
+},
+{
+"id": "h1090",
+"descricao": "relacoes_exteriores: Impor tarifa de retaliação de 50% sobre produtos de países que taxarem exportaçõ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Impor tarifa de retaliação de 50% sobre produtos de países que taxarem exportações brasileiras",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ipca",
+"m12": "sobe",
+"just": "Produtos importados mais caros."
+}
+]
+},
+{
+"id": "h1091",
+"descricao": "relacoes_exteriores: Proibir a exportação de minérios críticos sem processamento mínimo no país",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Proibir a exportação de minérios críticos sem processamento mínimo no país",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "Mineradoras restringidas."
+}
+]
+},
+{
+"id": "h1092",
+"descricao": "relacoes_exteriores: Mudar o Itamaraty para reduzir salários iniciais de diplomatas e vincular remune",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Mudar o Itamaraty para reduzir salários iniciais de diplomatas e vincular remuneração no exterior ao custo de vida local",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_servidores",
+"m12": "desce",
+"just": "Diplomatas perdem remuneração."
+}
+]
+},
+{
+"id": "h1093",
+"descricao": "relacoes_exteriores: Impedir a concessão de benefícios fiscais a empresas com sede em paraísos fiscai",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Impedir a concessão de benefícios fiscais a empresas com sede em paraísos fiscais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Mais arrecadação sobre planejamento tributário."
+}
+]
+},
+{
+"id": "h1096",
+"descricao": "relacoes_exteriores: qro q o brasil saia do brics",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "qro q o brasil saia do brics",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mercado",
+"m12": "sobe",
+"just": "Mercado acha menos risco geopolítico."
+}
+]
+},
+{
+"id": "h1097",
+"descricao": "relacoes_exteriores: tem q barrar produto chines no brasil",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "tem q barrar produto chines no brasil",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "ipca",
+"m12": "sobe",
+"just": "Produtos mais caros."
+}
+]
+},
+{
+"id": "h1098",
+"descricao": "relacoes_exteriores: diminuir o dolar logo!",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "diminuir o dolar logo!",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "dol",
+"m12": "desce",
+"just": "Se a medida convencer o mercado."
+}
+]
+},
+{
+"id": "h1099",
+"descricao": "relacoes_exteriores: mais intercambio de estudante com outros pais",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "mais intercambio de estudante com outros pais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_universitarios",
+"m12": "sobe",
+"just": "Mais bolsas no exterior."
+}
+]
+},
+{
+"id": "h1108",
+"descricao": "relacoes_exteriores: Aumentar a tarifa de importação de aço para proteger os empregos da siderurgia",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Aumentar a tarifa de importação de aço para proteger os empregos da siderurgia",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Maior II."
+}
+]
+},
+{
+"id": "h1114",
+"descricao": "relacoes_exteriores: Extinguir a taxa das blusinhas, reduzir o imposto de importação de celulares e z",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Extinguir a taxa das blusinhas, reduzir o imposto de importação de celulares e zerar tarifas de insumos médicos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia somada de II."
+}
+]
+},
+{
+"id": "h1116",
+"descricao": "relacoes_exteriores: Propor o fim do visto para turistas de 20 países, abrir e-Visa e criar uma agênc",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Propor o fim do visto para turistas de 20 países, abrir e-Visa e criar uma agência de promoção do turismo",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "pib",
+"m12": "sobe",
+"just": "Mais turismo."
+}
+]
+},
+{
+"id": "h1119",
+"descricao": "relacoes_exteriores: tirar a tarifa de importacao dos remedios",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "tirar a tarifa de importacao dos remedios",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Menos II."
+}
+]
+},
+{
+"id": "h1120",
+"descricao": "saneamento: Destinar R$ 20 bilhões por ano do Orçamento da União a obras de água e esgoto",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Destinar R$ 20 bilhões por ano do Orçamento da União a obras de água e esgoto",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo"
+},
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "mais cobertura"
+}
+]
+},
+{
+"id": "h1121",
+"descricao": "saneamento: Instituir tarifa social de água e esgoto para famílias do CadÚnico, com subsídio",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Instituir tarifa social de água e esgoto para famílias do CadÚnico, com subsídio da União",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "conta menor"
+}
+]
+},
+{
+"id": "h1122",
+"descricao": "saneamento: Estimular a privatização das companhias estaduais de saneamento com apoio técnic",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Estimular a privatização das companhias estaduais de saneamento com apoio técnico do BNDES",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_empresariado",
+"m12": "sobe",
+"just": "novas concessões"
+},
+{
+"ind": "g_sindicatos",
+"m12": "desce",
+"just": "privatização"
+}
+]
+},
+{
+"id": "h1123",
+"descricao": "saneamento: Reestatizar a Sabesp, comprando de volta as ações vendidas aos investidores",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reestatizar a Sabesp, comprando de volta as ações vendidas aos investidores",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mercado",
+"m12": "desce",
+"just": "quebra de contratos"
+},
+{
+"ind": "risco",
+"m12": "sobe",
+"just": "insegurança jurídica"
+}
+]
+},
+{
+"id": "h1124",
+"descricao": "saneamento: Proibir a privatização das companhias estaduais de saneamento",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Proibir a privatização das companhias estaduais de saneamento",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_sindicatos",
+"m12": "sobe",
+"just": "empresas públicas preservadas"
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "menos oportunidades"
+}
+]
+},
+{
+"id": "h1125",
+"descricao": "saneamento: Construir 1 milhão de cisternas de captação de água de chuva no semiárido",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Construir 1 milhão de cisternas de captação de água de chuva no semiárido",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_agfam",
+"m12": "sobe",
+"just": "acesso a água"
+}
+]
+},
+{
+"id": "h1127",
+"descricao": "saneamento: Levar água tratada e esgoto a todas as favelas do país até 2030",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Levar água tratada e esgoto a todas as favelas do país até 2030",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "cobertura direta"
+}
+]
+},
+{
+"id": "h1128",
+"descricao": "saneamento: Criar um imposto de 20% sobre embalagens plásticas descartáveis",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um imposto de 20% sobre embalagens plásticas descartáveis",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "custo maior"
+}
+]
+},
+{
+"id": "h1131",
+"descricao": "saneamento: Proibir o corte de água por inadimplência para famílias de baixa renda",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Proibir o corte de água por inadimplência para famílias de baixa renda",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "mantém acesso"
+}
+]
+},
+{
+"id": "h1147",
+"descricao": "saneamento: marco do saneamento tem q ser revogado",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "marco do saneamento tem q ser revogado",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "risco",
+"m12": "sobe",
+"just": "insegurança jurídica"
+}
+]
+},
+{
+"id": "h1160",
+"descricao": "saude: Zerar a fila de cirurgias eletivas do SUS com mutirões e contratação de leitos p",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Zerar a fila de cirurgias eletivas do SUS com mutirões e contratação de leitos privados",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "h1167",
+"descricao": "saude: Habilitar 10 mil novos leitos de UTI no SUS",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Habilitar 10 mil novos leitos de UTI no SUS",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "h1174",
+"descricao": "saude: Elevar para 18% da receita corrente líquida o piso federal de gastos com saúde",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Elevar para 18% da receita corrente líquida o piso federal de gastos com saúde",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "Gasto novo reduz o primário."
+}
+]
+},
+{
+"id": "h1200",
+"descricao": "seguranca: Construir 100 mil novas vagas em presídios com apoio federal aos estados",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Construir 100 mil novas vagas em presídios com apoio federal aos estados",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Construção e custeio de vagas prisionais."
+}
+]
+},
+{
+"id": "h1201",
+"descricao": "seguranca: Criar o piso nacional salarial para policiais militares e bombeiros",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar o piso nacional salarial para policiais militares e bombeiros",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_policiais",
+"m12": "sobe",
+"just": "Piso beneficia policiais."
+},
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Folha dos estados com apoio da União."
+}
+]
+},
+{
+"id": "h1204",
+"descricao": "seguranca: Ampliar o Sistema Único de Segurança Pública com metas de redução de homicídios",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Ampliar o Sistema Único de Segurança Pública com metas de redução de homicídios",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "hom",
+"m12": "desce",
+"just": "Metas e integração tendem a reduzir homicídios."
+}
+]
+},
+{
+"id": "h1208",
+"descricao": "seguranca: Legalizar a posse de armas para cidadãos sem antecedentes e que passem em teste ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Legalizar a posse de armas para cidadãos sem antecedentes e que passem em teste psicológico",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "hom",
+"m12": "sobe",
+"just": "Mais armas em circulação costumam elevar homicídios."
+}
+]
+},
+{
+"id": "h1212",
+"descricao": "seguranca: Criar um seguro de vida federal para policiais mortos em serviço",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um seguro de vida federal para policiais mortos em serviço",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_policiais",
+"m12": "sobe",
+"just": "Policiais valorizados."
+}
+]
+},
+{
+"id": "h1213",
+"descricao": "seguranca: Reduzir a letalidade policial com protocolos obrigatórios de uso da força",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir a letalidade policial com protocolos obrigatórios de uso da força",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "hom",
+"m12": "desce",
+"just": "Protocolos e treinamento reduzem mortes."
+}
+]
+},
+{
+"id": "h1214",
+"descricao": "seguranca: Ampliar a Lei Maria da Penha com medida protetiva automática por 10 dias a toda ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Ampliar a Lei Maria da Penha com medida protetiva automática por 10 dias a toda denúncia de violência doméstica",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mulheres",
+"m12": "sobe",
+"just": "Maior proteção."
+}
+]
+},
+{
+"id": "h1215",
+"descricao": "seguranca: Instituir meta nacional de redução de mortes violentas intencionais em 20% em qu",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Instituir meta nacional de redução de mortes violentas intencionais em 20% em quatro anos com apoio condicionado a resultados",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "hom",
+"m12": "desce",
+"just": "Meta e recursos condicionados."
+}
+]
+},
+{
+"id": "h1218",
+"descricao": "seguranca: agentes penitenciarios merecem ganhar mais kkk",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "agentes penitenciarios merecem ganhar mais kkk",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_policiais",
+"m12": "sobe",
+"just": "Categoria beneficiada."
+}
+]
+},
+{
+"id": "h1219",
+"descricao": "seguranca: liberar droga tudo logo pra acabar com o trafico",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "liberar droga tudo logo pra acabar com o trafico",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "Imposto sobre drogas legalizadas."
+}
+]
+},
+{
+"id": "h1220",
+"descricao": "seguranca: os policiais tinham que ter plano de saude gratis",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "os policiais tinham que ter plano de saude gratis",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_policiais",
+"m12": "sobe",
+"just": "Benefício a policiais."
+}
+]
+},
+{
+"id": "h1233",
+"descricao": "seguranca: Construir 50 mil vagas em presídios, contratar 3 mil agentes penitenciários fede",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Construir 50 mil vagas em presídios, contratar 3 mil agentes penitenciários federais e comprar scanners para os portos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "custo",
+"m12": "sobe",
+"just": "Obras e folha."
+}
+]
+},
+{
+"id": "h1244",
+"descricao": "setor_privado: Permitir dedução de 30% do IR devido sobre aportes de investidores-anjo em start",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Permitir dedução de 30% do IR devido sobre aportes de investidores-anjo em startups até R$ 100 mil",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "Renúncia nova."
+}
+]
+},
+{
+"id": "h1245",
+"descricao": "setor_privado: Fixar um piso de remuneração por hora para entregadores e motoristas de aplicati",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Fixar um piso de remuneração por hora para entregadores e motoristas de aplicativos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_app",
+"m12": "sobe",
+"just": "Renda por hora maior."
+},
+{
+"ind": "ipca",
+"m12": "sobe",
+"just": "Fretes e entregas ficam mais caros."
+}
+]
+},
+{
+"id": "h1280",
+"descricao": "terras_raras: Criar um fundo de R$ 5 bilhões para financiar projetos de terras raras e lítio v",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um fundo de R$ 5 bilhões para financiar projetos de terras raras e lítio via BNDES e Finep",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h1282",
+"descricao": "terras_raras: Ampliar o mapeamento geológico do Serviço Geológico do Brasil para todo o territ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Ampliar o mapeamento geológico do Serviço Geológico do Brasil para todo o território em escala 1:100.000",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h1283",
+"descricao": "terras_raras: Elevar a alíquota da CFEM do minério de ferro de 3,5% para 5%",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Elevar a alíquota da CFEM do minério de ferro de 3,5% para 5%",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "receita nova melhora o primário"
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "encarece ou limita o setor mineral"
+}
+]
+},
+{
+"id": "h1285",
+"descricao": "terras_raras: Financiar uma planta-piloto de ímãs permanentes de terras raras com R$ 2 bilhões",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Financiar uma planta-piloto de ímãs permanentes de terras raras com R$ 2 bilhões",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h1286",
+"descricao": "terras_raras: Conceder crédito presumido de 10% sobre o investimento em refino de minerais crí",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Conceder crédito presumido de 10% sobre o investimento em refino de minerais críticos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "renúncia fiscal"
+}
+]
+},
+{
+"id": "h1288",
+"descricao": "terras_raras: Instituir imposto de exportação de 2% sobre minério de ferro bruto",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Instituir imposto de exportação de 2% sobre minério de ferro bruto",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "receita nova melhora o primário"
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "encarece ou limita o setor mineral"
+}
+]
+},
+{
+"id": "h1289",
+"descricao": "terras_raras: Elevar a alíquota do Imposto Seletivo sobre a extração mineral de 0,25% para 1%",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Elevar a alíquota do Imposto Seletivo sobre a extração mineral de 0,25% para 1%",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "receita nova melhora o primário"
+}
+]
+},
+{
+"id": "h1291",
+"descricao": "terras_raras: Criar um fundo de diversificação econômica para cidades mineradoras",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um fundo de diversificação econômica para cidades mineradoras",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h1301",
+"descricao": "terras_raras: o gov devia ter uma estatal das terras raras",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "o gov devia ter uma estatal das terras raras",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h1302",
+"descricao": "terras_raras: mineradora tem q pagar mais imposto, ta ganhando demais",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "mineradora tem q pagar mais imposto, ta ganhando demais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "sobe",
+"just": "receita nova melhora o primário"
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "encarece ou limita o setor mineral"
+}
+]
+},
+{
+"id": "h1307",
+"descricao": "terras_raras: terras raras pra fazer celular e carro eletrico aqui",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "terras raras pra fazer celular e carro eletrico aqui",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h1317",
+"descricao": "terras_raras: Criar um fundo de R$ 5 bi para terras raras, reduzir o prazo de pesquisa mineral",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar um fundo de R$ 5 bi para terras raras, reduzir o prazo de pesquisa mineral e firmar acordo de cooperação com a União Europeia",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo reduz o resultado primário"
+}
+]
+},
+{
+"id": "h1320",
+"descricao": "trabalhista: Ampliar as férias de 30 para 35 dias após cinco anos de trabalho na mesma empres",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Ampliar as férias de 30 para 35 dias após cinco anos de trabalho na mesma empresa",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_carteira",
+"m12": "sobe",
+"just": "mais descanso"
+}
+]
+},
+{
+"id": "h1321",
+"descricao": "trabalhista: Reduzir a multa rescisória do FGTS de 40% para 20%",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir a multa rescisória do FGTS de 40% para 20%",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_sindicatos",
+"m12": "desce",
+"just": "menor proteção"
+},
+{
+"ind": "g_empresariado",
+"m12": "sobe",
+"just": "menor custo de demissão"
+}
+]
+},
+{
+"id": "h1322",
+"descricao": "trabalhista: Aprovar o piso por hora de R$ 32,10 e proteção previdenciária para motoristas e ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Aprovar o piso por hora de R$ 32,10 e proteção previdenciária para motoristas e entregadores de aplicativo, sem vínculo CLT",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_app",
+"m12": "sobe",
+"just": "piso por hora e previdência"
+}
+]
+},
+{
+"id": "h1323",
+"descricao": "trabalhista: Proibir a terceirização de atividades-fim das empresas",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Proibir a terceirização de atividades-fim das empresas",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_sindicatos",
+"m12": "sobe",
+"just": "menos terceirização"
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "perde flexibilidade"
+}
+]
+},
+{
+"id": "h1324",
+"descricao": "trabalhista: Restabelecer a contribuição sindical obrigatória de um dia de salário por ano",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Restabelecer a contribuição sindical obrigatória de um dia de salário por ano",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_sindicatos",
+"m12": "sobe",
+"just": "financiamento garantido"
+},
+{
+"ind": "g_carteira",
+"m12": "desce",
+"just": "desconto no salário"
+}
+]
+},
+{
+"id": "h1325",
+"descricao": "trabalhista: Revogar a reforma trabalhista de 2017",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Revogar a reforma trabalhista de 2017",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_sindicatos",
+"m12": "sobe",
+"just": "restaura direitos"
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "perde flexibilização"
+},
+{
+"ind": "g_mercado",
+"m12": "desce",
+"just": "insegurança"
+}
+]
+},
+{
+"id": "h1326",
+"descricao": "trabalhista: Elevar o salário mínimo para R$ 2.000 em 2027",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Elevar o salário mínimo para R$ 2.000 em 2027",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto previdenciário e assistencial"
+},
+{
+"ind": "g_carteira",
+"m12": "sobe",
+"just": "renda maior"
+},
+{
+"ind": "g_aposentados",
+"m12": "sobe",
+"just": "benefício maior"
+}
+]
+},
+{
+"id": "h1327",
+"descricao": "trabalhista: Reduzir a alíquota do FGTS de 8% para 4% nos contratos de jovens até 24 anos",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Reduzir a alíquota do FGTS de 8% para 4% nos contratos de jovens até 24 anos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_jovens",
+"m12": "desce",
+"just": "menor depósito"
+},
+{
+"ind": "g_empresariado",
+"m12": "sobe",
+"just": "menor custo"
+}
+]
+},
+{
+"id": "h1328",
+"descricao": "trabalhista: Garantir estabilidade de 12 meses à mãe após o retorno da licença-maternidade",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Garantir estabilidade de 12 meses à mãe após o retorno da licença-maternidade",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mulheres",
+"m12": "sobe",
+"just": "proteção maior"
+}
+]
+},
+{
+"id": "h1330",
+"descricao": "trabalhista: Obrigar empresas com mais de 100 empregados a oferecer auxílio-creche a mães e p",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Obrigar empresas com mais de 100 empregados a oferecer auxílio-creche a mães e pais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mulheres",
+"m12": "sobe",
+"just": "apoio ao cuidado"
+}
+]
+},
+{
+"id": "h1332",
+"descricao": "trabalhista: Presumir vínculo de emprego quando o prestador PJ trabalhar com exclusividade e ",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Presumir vínculo de emprego quando o prestador PJ trabalhar com exclusividade e subordinação",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mei",
+"m12": "desce",
+"just": "risco de reclassificação"
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "custo de contratação"
+}
+]
+},
+{
+"id": "h1334",
+"descricao": "trabalhista: Ampliar o aviso prévio proporcional de 90 para 120 dias",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Ampliar o aviso prévio proporcional de 90 para 120 dias",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_sindicatos",
+"m12": "sobe",
+"just": "proteção"
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "custo de demissão"
+}
+]
+},
+{
+"id": "h1337",
+"descricao": "trabalhista: Obrigar o pagamento ao terceirizado do mesmo salário e benefícios dos empregados",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Obrigar o pagamento ao terceirizado do mesmo salário e benefícios dos empregados da contratante",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_sindicatos",
+"m12": "sobe",
+"just": "isonomia"
+},
+{
+"ind": "g_empresariado",
+"m12": "desce",
+"just": "custo"
+}
+]
+},
+{
+"id": "h1338",
+"descricao": "trabalhista: Obrigar a divulgação de tabelas salariais por cargo e gênero em empresas com mai",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Obrigar a divulgação de tabelas salariais por cargo e gênero em empresas com mais de 100 empregados",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mulheres",
+"m12": "sobe",
+"just": "transparência salarial"
+}
+]
+},
+{
+"id": "h1339",
+"descricao": "trabalhista: Criar o salário-maternidade para trabalhadoras de aplicativo e autônomas, pago p",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Criar o salário-maternidade para trabalhadoras de aplicativo e autônomas, pago pelo INSS",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_mulheres",
+"m12": "sobe",
+"just": "cobertura ampliada"
+}
+]
+},
+{
+"id": "h1340",
+"descricao": "trabalhista: FIM DA ESCALA 6X1 !!!!",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "FIM DA ESCALA 6X1 !!!!",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_sindicatos",
+"m12": "sobe",
+"just": "folga extra"
+}
+]
+},
+{
+"id": "h1362",
+"descricao": "transporte: Regulamentar o trabalho de motoristas de aplicativo com contribuição previdenciá",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Regulamentar o trabalho de motoristas de aplicativo com contribuição previdenciária e remuneração mínima por hora",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "contribuição nova"
+},
+{
+"ind": "g_app",
+"m12": "desce",
+"just": "custo maior para a categoria"
+}
+]
+},
+{
+"id": "h1364",
+"descricao": "transporte: Cobrar uma taxa sobre jatinhos e helicópteros particulares",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Cobrar uma taxa sobre jatinhos e helicópteros particulares",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "sobe",
+"just": "tributo novo"
+}
+]
+},
+{
+"id": "h1367",
+"descricao": "transporte: Privatizar a administração dos portos de Santos e Paranaguá",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Privatizar a administração dos portos de Santos e Paranaguá",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "divida",
+"m12": "desce",
+"just": "receita de outorga"
+}
+]
+},
+{
+"id": "h1373",
+"descricao": "transporte: Contratar 3 mil policiais rodoviários federais",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "Contratar 3 mil policiais rodoviários federais",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto novo"
+}
+]
+},
+{
+"id": "h1375",
+"descricao": "transporte: TARIFA ZERO JA",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "TARIFA ZERO JA",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_periferia",
+"m12": "sobe",
+"just": "passagem gratuita"
+}
+]
+},
+{
+"id": "h1376",
+"descricao": "transporte: uber e 99 tem q pagar imposto direito e dar direito pros motorista",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "uber e 99 tem q pagar imposto direito e dar direito pros motorista",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_app",
+"m12": "desce",
+"just": "custo maior"
+}
+]
+},
+{
+"id": "h1377",
+"descricao": "transporte: carro eletrico sem imposto nenhum ja",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "carro eletrico sem imposto nenhum ja",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "receita",
+"m12": "desce",
+"just": "renúncia"
+}
+]
+},
+{
+"id": "h1378",
+"descricao": "transporte: bota onibus de graca p idoso de 60 anos",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "bota onibus de graca p idoso de 60 anos",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "g_aposentados",
+"m12": "sobe",
+"just": "benefício"
+}
+]
+},
+{
+"id": "h1380",
+"descricao": "transporte: aposentadoria especial pros motoboy",
+"acoes": [
+{
+"mes": 0,
+"tipo": "propor",
+"texto": "aposentadoria especial pros motoboy",
+"resultado": "aprovada"
+}
+],
+"esperado": [
+{
+"ind": "prim",
+"m12": "desce",
+"just": "gasto previdenciário"
+}
+]
+}
+]
