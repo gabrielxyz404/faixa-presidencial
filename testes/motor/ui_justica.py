@@ -57,7 +57,9 @@ with sync_playwright() as p:
     ok('tabela por ramo com 6 ramos', pg.locator('[data-jus-ramos] tbody tr').count() == 6)
     ok('arquivo histórico com 7 casos e fontes com link', pg.locator('[data-hist]').count() == 7 and pg.locator('[data-hist] a[href^=https]').count() >= 14)
     ok('Fontes e notas no fim da aba', pg.locator('[data-fontes=justica]').count() == 1)
-    ok('sem casos no começo (estado preguiçoso)', pg.locator('[data-caso]').count() == 0 and 'Nenhum caso aberto' in t)
+    ok('partida nova começa com 1 ou 2 casos fictícios abertos', 1 <= pg.locator('[data-caso]').count() <= 2)
+    SET(pg, "n.jus.casos=[];n.jus.seq=0;n.jus.ultQuebra=0")  # zera para os testes seguintes (ids j1, j2...)
+    ok('sem casos: explicação com dica', 'Nenhuma investigação aberta agora' in pg.locator('[data-pais=justica]').inner_text())
     pg.screenshot(path=OUT + '/justica_vazia.png', full_page=True)
     # 2) força um escândalo que atinge o governo e confere na Mesa
     SET(pg, "__J().jusNovoCaso(n,{gov:true})")
@@ -96,7 +98,7 @@ with sync_playwright() as p:
     # 7) save antigo sem g.jus
     SET(pg, "delete n.jus")
     t = pg.locator('[data-pais=justica]').inner_text()
-    ok('save antigo (sem g.jus) renderiza a aba sem erro', 'Nenhum caso aberto' in t and 'R$ 164,6 bi' in t)
+    ok('save antigo (sem g.jus) renderiza a aba sem erro', 'Nenhuma investigação aberta' in t and 'R$ 164,6 bi' in t)
     m = pg.evaluate("()=>{const g=structuredClone(__QV().gRef.current);delete g.jus;__J().migraSave(g);return !!g.jus && Array.isArray(g.jus.casos) && g.jus.seq===0}")
     ok('migraSave cria g.jus com padrões', m)
     # 8) fecha meses: a lógica mensal roda sem erro
