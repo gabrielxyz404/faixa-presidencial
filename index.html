@@ -4501,8 +4501,20 @@ function leituraV35(A) {
     }
     if (it) { A.items.push(it); A.generica = { area: it.o.gen.area, verbo: it.o.gen.verbo, tipo: it.o.gen.kind }; }
   }
+  /* v4: texto com 2 ou 3 medidas que só rendeu uma leitura genérica: cada oração com verbo de política é lida à parte e os itens somam */
+  if (!V4_SPLIT && A.items.length === 1 && A.items[0].o.gen && !A.pledgeOnly && !A.talk) {
+    const cl = String(A.orig).split(/\s*,\s*(?:e\s+)?|\s+e\s+(?=[a-zçãõáéíóúâêô]{3,}(?:ar|er|ir)\b)/).map(x => x.trim()).filter(x => x.split(/\s+/).length >= 2 && /^(?:[a-zçãõáéíóúâêô]{3,}(?:ar|er|ir))\b/i.test(foldTxt(x).split(' ')[0] + ' '));
+    if (cl.length >= 2 && cl.length <= 4) {
+      V4_SPLIT = true;
+      try {
+        const its2 = []; for (const c of cl) { const A2 = parse(c); for (const i of A2.items) if (i.role === 'main' || i.role === undefined) its2.push(i); }
+        if (its2.length >= 2) { A.items = its2; A.v4Varias = cl.length; }
+      } catch (e) { } finally { V4_SPLIT = false; }
+    }
+  }
   return A;
 }
+var V4_SPLIT = false;
 const AMPLOS_R = ['aposentadoria', 'universidades_fed', 'sus_geral', 'publicidade_governo', 'drogas_legalizar', 'reforma_politica', 'educacao_geral', 'seguranca_geral', 'infra_geral', 'rodovias', 'servidores', 'cultura', 'ciencia_tec', 'energia_limpa', 'plano_safra', 'transporte_publico', 'penas', 'oriente_medio', 'israel_ruptura', 'abertura_comercial', 'redes_regulacao', 'ia_regulacao', 'internet', 'esporte', 'futebol'];
 const GEN_FRACAS = /^(?:orcamento|verba|verbas|recursos|investimento|investimentos|gastos?|programa|programas|politica|sistema|numero|valor|dinheiro|rede|pacote|projeto|medida|medidas|bilhoes|bilhao|milhoes|milhao|reais|porcento|mensais|anuais|nacional|federal|federais|publica|publico|publicas|publicos|brasil|brasileiro|brasileiros|brasileira|pais|todo|toda|todos|todas|ainda|sempre|menos|maior|maiores|melhor|governo|apenas|somente|quando|depois|antes|durante|mesmo|novos|novas|nova|novo|mais|cada|qualquer|inteira|inteiro)$/;
 const GEN_STOP = /^(?:para|pelo|pela|pelos|pelas|como|sobre|entre|todo|toda|todos|todas|mais|menos|dessa|desse|esta|este|quem|cada|ainda|quando|onde|qual|todo)$/;
@@ -5093,9 +5105,10 @@ const JN4 = [
 ].map(x => Object.assign({ v: true }, x));
 /* v4: cobertura ampla de normas em vigor (programas, leis e instituições que o jogador pode "criar" de novo), com sujeito tolerante a grafia e verbos de criação/proibição */ // v4
 const V4_CRIA = '(?:cri\\w+|institu\\w+|implant\\w+|estabelec\\w+|adot\\w+|garant\\w+|assegur\\w+|obrig\\w+|exig\\w+|ofert\\w+|oferec\\w+|regulament\\w+|aprov\\w+|votar|prever|reconhec\\w+|autoriz\\w+|legaliz\\w+|permit\\w+|precisamos de|queremos|quero|tem que ter|devia ter|deveria ter)';
-const V4_PROIBE = '(?:proib\\w+|ved(?:ar|e)|criminaliz\\w+|tipific\\w+|punir|banir|combat\\w+|coibir|reprimir)';
+const V4_PROIBE = '(?:limit\\w+|proib\\w+|ved(?:ar|e)|criminaliz\\w+|tipific\\w+|punir|banir|combat\\w+|coibir|reprimir)';
 const V4_NEX5 = new RegExp(V4_NEX.source + '|\\br\\$ ?\\d|\\b\\d+ ?%|\\bmil reais\\b|\\bsem exigir\\b|\\bmais (?!medicos\\b)|\\bmelhor\\w*|\\binvestir\\b|\\binvestimentos?\\b|\\bverbas?\\b|\\brecursos\\b|\\borcamento\\b|\\bmais dinheiro\\b|\\bfortalec\\w+|\\bcontrat\\w+|\\bauditor\\w*|\\bfiscaliz\\w+|\\bnota fiscal\\b|\\bintegr\\w+|\\bgratuit\\w+|\\bde graca\\b|\\b(?:inscritos?|beneficiari\\w+|cadastrad\\w+|atendid\\w+|usuari\\w+) (?:n[oa]s?|d[oa]s?|pel[oa]s?)\\b');
 const JN5 = [
+  ['icms5', /\bicms\b[^.;]{0,50}\b(?:combustiveis|energia|telecomunicac\w+|transporte coletivo|gasolina|diesel)\b|\b(?:combustiveis|energia|telecomunicac\w+|gasolina|diesel)\b[^.;]{0,50}\bicms\b/, 'cc', 'LC 194/2022 (com a LC 192/2022): combustíveis, energia, telecomunicações e transporte coletivo já são bens essenciais, e o ICMS sobre eles não pode passar da alíquota geral do estado.', /\b(?:ampli\w+|aument\w+|elev\w+|zerar|reduz\w+|baix\w+|cortar|isent\w+|revog\w+|mais|r\$|\d+ ?%\s*(?:para|a)\s*\d)\b/],
   ['piso5', /\bpiso (?:nacional |salarial )?(?:d[oa]s? |para (?:os )?)?(?:professor\w*|magisterio)\b/, 'c', 'Lei 11.738/2008: o piso salarial profissional nacional do magistério já está em vigor, reajustado todo ano.', /\b(?:ampli\w+|aument\w+|dobr\w+|elev\w+|reajust\w+|r\$|\d+ ?%|reduz\w+|acabar|mais)\b/],
   ['cf_sus', /\b(?:sistema unico de saude|sus)\b/, 'c', 'CF, arts. 196 a 200, e Lei 8.080/1990: o SUS já está instituído e garante acesso universal e gratuito à saúde.'],
   ['bolsa_familia5', /\bbolsa familia\b/, 'c', 'Lei 14.601/2023: o Bolsa Família já está em vigor, com piso de R$ 600 por família e adicionais por criança e gestante.'],
@@ -5192,8 +5205,25 @@ const JN5 = [
   ['teto5', /\bteto de gastos\b/, 'cc', 'EC 95/2016 (teto de gastos): foi substituído pelo arcabouço fiscal da LC 200/2023, que já está em vigor.'],
   ['previd5', /\breforma da previdencia\b/, 'cc', 'EC 103/2019: a reforma da Previdência já está em vigor, com idade mínima de 62 anos (mulheres) e 65 (homens).', /\b(?:nova|outra|segunda|revog\w+|desfaz\w+|acabar|alter\w+|mud\w+|rev\w+|volt\w+)\b/]
 ];
-JN5.forEach(a => { const rx = a[1], pro = a[2] === 'cp', cc = a[2] === 'cc'; const subj = rx.source; const verbs = cc || pro ? '(?:' + V4_CRIA + '|' + V4_PROIBE + ')' : V4_CRIA; const ex = new RegExp('\\b' + verbs + '\\b[^.;]{0,55}(?:' + subj + ')|(?:' + subj + ')[^.;]{0,25}\\b(?:obrigatori\\w+|para todos|para todas)\\b'); JN4.push({ v: true, id: a[0], rx: rx, ex: ex, nex: a[4] || V4_NEX5, txt: a[3] }); });
+const V4_JN5_FLAG = {"icms5": "lc", "reftrib5": "lc", "lrf5": "lc", "arcabouco5": "lc", "kandir5": "lc", "simples5": "lc", "fichalimpa5": "lc", "salmin5": "pec", "imunlivro5": "pec", "previd5": "pec", "teto5": "pec"}; // v4: LC ou PEC que a norma exige
+JN5.forEach(a => { const rx = a[1], pro = a[2] === 'cp', cc = a[2] === 'cc'; const subj = rx.source; const verbs = cc || pro ? '(?:' + V4_CRIA + '|' + V4_PROIBE + ')' : V4_CRIA; const ex = new RegExp('\\b' + verbs + '\\b[^.;]{0,55}(?:' + subj + ')|(?:' + subj + ')[^.;]{0,25}\\b(?:obrigatori\\w+|para todos|para todas)\\b'); JN4.push({ v: true, id: a[0], rx: rx, ex: ex, nex: a[4] || V4_NEX5, txt: a[3], lc: V4_JN5_FLAG[a[0]] === 'lc', pec: V4_JN5_FLAG[a[0]] === 'pec' }); });
 JN4.forEach(J => { if (J.ex === 'rx') J.ex = J.rx; if (J.nex === undefined) J.nex = V4_NEX; if (J.ex) JN37.push(J); else JN37.push(Object.assign({}, J, { ex: null })); });
+/* v4: gancho para o banco externo de normas em vigor. Cada linha de V4_NORMAS_DB é [id, fonte do rx, fonte do ex ('=' repete o rx, '' sem ex), texto, flags ('lc', 'pec', 'adm', 'dec')].
+   As entradas entram no FIM de JN37 (prioridade menor que a das entradas já existentes) e usam o mesmo veto de crescimento (V4_NEX5). Campos tema, amostras e nao são removidos na geração (testes/motor/normas_build.js). */ // v4
+const V4_NORMAS_DB = [];
+function v4CarregaNormas(db) {
+  let n = 0;
+  for (const a of db) {
+    try {
+      const rx = new RegExp(a[1]), ex = a[2] === '=' ? rx : (a[2] ? new RegExp(a[2]) : null), fl = String(a[4] || '');
+      if (JN37.some(j => j.id === a[0])) continue;
+      JN37.push({ v: true, baixa: true, id: a[0], rx: rx, ex: ex, nex: V4_NEX5, txt: a[3], lc: /\blc\b/.test(fl), pec: /\bpec\b/.test(fl), inst: /\badm\b/.test(fl) ? 'ADM' : /\bdec\b/.test(fl) ? 'DEC' : undefined });
+      n++;
+    } catch (e) { }
+  }
+  return n;
+}
+v4CarregaNormas(V4_NORMAS_DB);
 function v37Vigente(A) {
   if (A.jaVigente) return;
   const s = A.s, hit = [];
@@ -6430,6 +6460,7 @@ function calcFiscal(A, g) {
   for (const it of main) if (it.o.k !== 'C') { dimensionar(it, A.Q, null); }
   try { v39Piso(A); for (const it of A.items) if (it.role === 'main' && it.o.k !== 'C' && it.B == null) dimensionar(it, A.Q, null); } catch (e) { } // v3.9
   const main2 = A.items.filter(i => i.role === 'main'); main.length = 0; main2.forEach(i => main.push(i));
+  if (A.normaVigente && A.normaVigente.exato && !A.pledgeOnly) for (const it of main) if (it.B && it.o.k !== 'C' && !(it.q && it.q.money && it.q.money.unit && it.q.money.v >= 1e8)) { it.B = 0; it.calc = (it.calc || []).concat(['Norma já em vigor repetida pelo pedido: nenhum valor novo']); } // v4: norma reconhecida como exata zera o valor marginal
   if (A.v4Adm) for (const it of main) if (it.B) { it.B = /\b(?:agencia|autarquia|conselho|comissao|comite|camara)\b/.test(A.s) ? Math.min(it.B, .4) : 0; it.calc = (it.calc || []).concat(['Ato administrativo ou regulatório (agência, registro, bolsa, visto, prazo) sem transferência nem benefício: custo fiscal direto desprezível']); }
   if (A.absRes) for (const it of main) if (it.B) { it.B = 0; it.calc = (it.calc || []).concat(['Resultado impossível ordenado por decreto: nada é gasto nem arrecadado, só o desgaste político']); } // v4
   if (fon.length) for (const it of main) it.fonteCtx = true; // v4

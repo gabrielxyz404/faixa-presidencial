@@ -223,3 +223,58 @@ Mudanças: (1) recorte nomeado de tributo nunca leva mais de 12% da base (V4_NIC
 | teor | 35% | 46% |
 | varias | 32% | 42% |
 | zoeira | 40% | 74% |
+
+## Rodada 7
+
+Entendimento dev 59,2% (1243/2100), efeito no save 61%. cenarios.json 239/3/6 (única diferença: acelera_obra/custo m24). Benches: dev 160/220, dev2 93/121, cft_dev 89/90, cft_dev2 60/60, zoeira_dev 72/80, zoeira_dev2 48/50, final_dev 124/150, justica_dev 40/40. ui_v39 6/6, ui_v38 41/0, regressao.py sem erros de página.
+
+(A) Norma exata zera o valor marginal de todos os itens principais (exceto quando o texto traz valor explícito de R$ 100 mi ou mais), e as normas amplas do JN5 passam a carregar a exigência de LC (Imposto Seletivo/IBS/CBS, LRF, arcabouço, Kandir, Simples, ICMS de combustíveis/energia) ou de PEC (salário mínimo, imunidade de livros, reforma da Previdência, teto de gastos). Flags de PEC foram retiradas de licença-maternidade, CNJ, ZFM e Defensoria porque três benches esperam PL. (B) Texto com duas a quatro medidas que só rendeu uma leitura genérica é partido em orações com verbo de política (vírgula ou 'e' + infinitivo), cada uma é lida à parte e os itens somam; efeito líquido no dev: neutro, mas o custo de textos como 'fibra óptica, internet subsidiada e Wi-Fi' passa de 1,5 para 4,1 bi. (C) Gancho do banco de normas: V4_NORMAS_DB e v4CarregaNormas() em index.html (entradas [id, rx, ex, txt, flags], entram no fim de JN37, com o mesmo veto de crescimento) e testes/motor/normas_build.js, que lê scratchpad/normas/<tema>.js, roda a autoverificação (amostras/nao), descarta tema/amostras/nao e imprime as linhas compactas para colar. Testado com uma norma fictícia: 'criar' reconhece e vira PLP; 'dobrar' não.
+
+| Tema | Entende v3.9 | Entende v4 | Δ | Efeito no save v3.9 | Efeito v4 | Δ |
+|---|---|---|---|---|---|---|
+| agro | 47% | 70% | +23 | 60% | 56% | -4 |
+| assistencia_social | 27% | 53% | +27 | 79% | 84% | +5 |
+| bets | 42% | 65% | +23 | 62% | 65% | +4 |
+| ciencia_tecnologia | 32% | 62% | +30 | 64% | 72% | +8 |
+| constituicao | 33% | 57% | +23 | 33% | 33% | +0 |
+| corte_gastos | 27% | 48% | +22 | 82% | 100% | +18 |
+| cultura_esporte | 28% | 48% | +20 | 62% | 62% | +0 |
+| desemprego | 40% | 60% | +20 | 73% | 73% | +0 |
+| direitos_humanos | 47% | 63% | +17 | 85% | 81% | -4 |
+| dolar | 37% | 62% | +25 | 25% | 50% | +25 |
+| economia | 35% | 48% | +13 | 50% | 57% | +7 |
+| educacao | 28% | 42% | +13 | 86% | 79% | -7 |
+| energia | 27% | 52% | +25 | 51% | 46% | -6 |
+| games | 38% | 63% | +25 | 50% | 38% | -12 |
+| grandes_empresas | 42% | 53% | +12 | 42% | 45% | +2 |
+| ia | 52% | 75% | +23 | 50% | 36% | -14 |
+| impostos | 18% | 47% | +28 | 35% | 46% | +11 |
+| inflacao | 42% | 53% | +12 | 57% | 57% | +0 |
+| infraestrutura | 43% | 67% | +23 | 75% | 75% | +0 |
+| justica | 48% | 70% | +22 | 50% | 50% | +0 |
+| medias_empresas | 32% | 63% | +32 | 57% | 67% | +10 |
+| meio_ambiente | 28% | 67% | +38 | 67% | 69% | +3 |
+| micro_empresas | 37% | 60% | +23 | 56% | 59% | +3 |
+| moradia | 38% | 57% | +18 | 84% | 78% | -5 |
+| previdencia | 33% | 52% | +18 | 60% | 55% | -5 |
+| privatizacoes | 32% | 62% | +30 | 100% | 100% | +0 |
+| regalias | 35% | 55% | +20 | 46% | 46% | +0 |
+| relacoes_exteriores | 18% | 50% | +32 | 44% | 48% | +4 |
+| saneamento | 40% | 65% | +25 | 50% | 67% | +17 |
+| saude | 52% | 68% | +17 | 82% | 100% | +18 |
+| seguranca | 23% | 57% | +33 | 73% | 73% | +0 |
+| setor_privado | 38% | 68% | +30 | 67% | 83% | +17 |
+| terras_raras | 30% | 67% | +37 | 38% | 38% | +0 |
+| trabalhista | 53% | 70% | +17 | 50% | 46% | -4 |
+| transporte | 27% | 53% | +27 | 64% | 79% | +14 |
+| **TOTAL** | 36% | 59% | +24 | 60% | 61% | +2 |
+
+| Tipo de proposta | v3.9 | v4 |
+|---|---|---|
+| bem | 39% | 58% |
+| ja_lei | 23% | 92% |
+| mal | 32% | 58% |
+| outro | 28% | 61% |
+| teor | 35% | 46% |
+| varias | 32% | 43% |
+| zoeira | 40% | 74% |
