@@ -335,3 +335,60 @@ Bets e a MP 1.394/2026 (para decisão sua, a economia não foi mexida): o motor 
 | teor | 35% | 46% |
 | varias | 32% | 43% |
 | zoeira | 40% | 74% |
+
+## Rodada 9
+
+Entendimento dev 60,0% (1261/2100), efeito no save 63% (era 61%). cenarios.json 239/3/6 (única diferença: acelera_obra/custo m24). Benches: dev 161/220, dev2 92/121, cft_dev 89/90, cft_dev2 60/60, zoeira_dev 72/80, zoeira_dev2 48/50, final_dev 124/150, justica_dev 40/40. ui_v39 6/6, ui_v38 41/0, regressao.py sem erros de página.
+
+Mudanças: (1) obra rodoviária ou ferroviária com quantidade em km vira despesa de capital (4 anos de obra em despesa única mais 10% de custeio no catálogo; no genérico R$ 3 mi/km, 8 para duplicar, 25 para ferrovia, e metrô/VLT/BRT ficam de fora); recuperar custa 10% e pavimentar 30% do custo de duplicar; sem quantidade o dev2 continua sem despesa única. (2) 'manutenção de toda a malha/rede/frota' entra na escala de massa e deixa de ser 0,6 bi. (3) Tributo temporário (até 12 meses) passa a ser receita do exercício em vez de despesa extraordinária: +7 itens no dev, nenhuma perda. (4) A leitura genérica de programa amplo mantém os tributos nomeados (IR, IR PJ, CBS/IBS, IPI, IOF, ICMS) e o escopo por produto vale também para IR; teto de recorte aceita 'R$ 0' do contexto. (5) Público restrito (agricultores familiares, pequenos produtores, comunidades etc.) lê 30% do pacote padrão; adicional por criança/gestante lê 20% do benefício. (6) 'acabar com a fila do BPC/SUS' vira ampliar o atendimento. (7) Carência de crédito não é carência previdenciária. (8) Sinônimos de saneamento e resíduos. (9) Anterioridade: imposto de exportação passa a vigorar sem anterioridade e a CIDE-combustíveis só tem noventena.
+
+Achados sem alteração: (a) BNDESPar (once 110, prim -22 em m12): não é erro de sinal; o motor lança R$ 22 bi/ano de dividendos que a União deixa de receber (dado da fonte, 20% da carteira) contra receita única que só abate a dívida e não entra no resultado primário. Se o rendimento de 20% parecer alto, é o dado DIV_ATIVOS que deve ser revisto. (b) Anterioridade: o calendário já tratava IOF, II e blusinhas como sem anterioridade e IPI com noventena; faltavam exportação e CIDE-combustíveis, corrigidos. (c) Itens em que o gabarito marca 'controverso' para ampliação do BPC (idade, limite de renda) e renda mínima ficam em 'ok' porque cft_dev/dev2 esperam 'ok' para BPC; seria preciso separar por tipo de fonte.
+
+| Tema | Entende v3.9 | Entende v4 | Δ | Efeito no save v3.9 | Efeito v4 | Δ |
+|---|---|---|---|---|---|---|
+| agro | 47% | 70% | +23 | 60% | 56% | -4 |
+| assistencia_social | 27% | 57% | +30 | 79% | 84% | +5 |
+| bets | 42% | 65% | +23 | 62% | 65% | +4 |
+| ciencia_tecnologia | 32% | 62% | +30 | 64% | 72% | +8 |
+| constituicao | 33% | 57% | +23 | 33% | 33% | +0 |
+| corte_gastos | 27% | 50% | +23 | 82% | 100% | +18 |
+| cultura_esporte | 28% | 48% | +20 | 62% | 54% | -8 |
+| desemprego | 40% | 60% | +20 | 73% | 73% | +0 |
+| direitos_humanos | 47% | 63% | +17 | 85% | 81% | -4 |
+| dolar | 37% | 62% | +25 | 25% | 50% | +25 |
+| economia | 35% | 48% | +13 | 50% | 62% | +12 |
+| educacao | 28% | 42% | +13 | 86% | 79% | -7 |
+| energia | 27% | 57% | +30 | 51% | 63% | +11 |
+| games | 38% | 68% | +30 | 50% | 42% | -8 |
+| grandes_empresas | 42% | 55% | +13 | 42% | 48% | +5 |
+| ia | 52% | 73% | +22 | 50% | 36% | -14 |
+| impostos | 18% | 52% | +33 | 35% | 51% | +16 |
+| inflacao | 42% | 53% | +12 | 57% | 71% | +14 |
+| infraestrutura | 43% | 68% | +25 | 75% | 75% | +0 |
+| justica | 48% | 70% | +22 | 50% | 50% | +0 |
+| medias_empresas | 32% | 65% | +33 | 57% | 67% | +10 |
+| meio_ambiente | 28% | 67% | +38 | 67% | 67% | +0 |
+| micro_empresas | 37% | 63% | +27 | 56% | 65% | +9 |
+| moradia | 38% | 57% | +18 | 84% | 81% | -3 |
+| previdencia | 33% | 52% | +18 | 60% | 52% | -7 |
+| privatizacoes | 32% | 62% | +30 | 100% | 100% | +0 |
+| regalias | 35% | 55% | +20 | 46% | 46% | +0 |
+| relacoes_exteriores | 18% | 50% | +32 | 44% | 48% | +4 |
+| saneamento | 40% | 68% | +28 | 50% | 67% | +17 |
+| saude | 52% | 70% | +18 | 82% | 100% | +18 |
+| seguranca | 23% | 57% | +33 | 73% | 73% | +0 |
+| setor_privado | 38% | 67% | +28 | 67% | 83% | +17 |
+| terras_raras | 30% | 67% | +37 | 38% | 46% | +8 |
+| trabalhista | 53% | 70% | +17 | 50% | 46% | -4 |
+| transporte | 27% | 53% | +27 | 64% | 75% | +11 |
+| **TOTAL** | 36% | 60% | +24 | 60% | 63% | +3 |
+
+| Tipo de proposta | v3.9 | v4 |
+|---|---|---|
+| bem | 39% | 59% |
+| ja_lei | 23% | 92% |
+| mal | 32% | 58% |
+| outro | 28% | 61% |
+| teor | 35% | 47% |
+| varias | 32% | 44% |
+| zoeira | 40% | 74% |

@@ -2592,7 +2592,7 @@ P('imposto_geral', 'os impostos', 'impostos?|tributos?|carga tributaria|tributac
 P('desoneracao_folha', 'a desoneração da folha', 'desoneracao d[ae] folha|desonerar (a )?folha|folha de pagamento|a folha\\b|folha das empresas|folha salarial|contribuicao previdenciaria patronal|contribuicao patronal( ao inss| a previdencia)?|cota patronal( ao inss)?|contribuicao do empregador( ao inss)?|encargos trabalhistas|encargos sobre a folha|encargos|cpp\\b', { exo: 1, k: 'T', ch: 'tfolha', base: 480, def: 18, cap: 60, pg: 'folha', rg: 'urb', pa: 'fazenda', inst: 'PL', emp: 1.6, val: { empresariado: -3, sindicatos: 1, mercado: 1 }, iv: [.6, 0], lag: 6, cred: .8, e: { des: .03 }, nota: 'Renúncia de receita exige compensação pela LRF (art. 14).' });
 P('reforma_tributaria', 'a reforma tributária', 'reforma tributaria|ibs\\b|cbs\\b|simplificar (os )?impostos|simplificacao tributaria|simplificar a tributacao|unificar impostos|imposto unico|iva\\b|cashback tributario', { k: 'R', pa: 'fazenda', inst: 'PL', lc: 1, val: { empresariado: 4, mercado: 4, classemedia: 2, sindicatos: -1 }, e: { pib: .05, conf: 3, risco: -5 }, iv: [.6, 0], lag: 18, cat: 'corte_gastos', nota: 'A regulamentação por lei complementar é longa e há disputa federativa sobre a partilha.' });
 P('reforma_politica', 'a reforma política', 'reeleicao|reforma politica|mandato (de )?(5|cinco) anos|voto facultativo|voto obrigatorio|voto distrital|distritao|parlamentarismo|financiamento de campanha|clausula de barreira|fidelidade partidaria|lei eleitoral|sistema eleitoral|reforma eleitoral|urnas eletronicas', { k: 'R', pa: 'casacivil', pn: 'Relações Institucionais', inst: 'PEC', val: { classemedia: 1 }, iv: [0, 0], lag: 12, cat: 'comunicacao' });
-P('simples_mei', 'o Simples e o MEI', 'simples nacional|\\bmei\\b|microempreendedor\\w*|micro e pequenas? empresas?|pequenos? (negocios|empresarios)|pequenas empresas|pronampe|credito (para|a) pequenos', { k: 'T', ch: 'tfolha', base: 90, def: 6, cap: 40, pg: 'emp', b: 'emp', rg: 'pop', pa: 'fazenda', inst: 'PL', emp: 1.5, val: { empresariado: -3, classemedia: -1 }, iv: [.3, 0], lag: 6, cred: .8, e: { des: .03 } });
+P('simples_mei', 'o Simples e o MEI', 'simples nacional|\\bmei\\b|microempreendedor\\w*|micro e pequenas? empresas?|pequenos? (negocios|empresarios)|pequenas empresas|pronampe|credito (para|a) pequenos', { k: 'T', lc: 1, ch: 'tfolha', base: 90, def: 6, cap: 40, pg: 'emp', b: 'emp', rg: 'pop', pa: 'fazenda', inst: 'PL', emp: 1.5, val: { empresariado: -3, classemedia: -1 }, iv: [.3, 0], lag: 6, cred: .8, e: { des: .03 } });
 P('isencao_cesta', 'a desoneração da cesta básica e alimentos', 'isencao (da|na|de) (cesta basica|alimentos?)|zerar (impostos|tributos) (da|sobre a|dos) (cesta basica|alimentos?)|alimentos mais baratos|comida mais barata|preco (dos|de) alimentos|preco da comida|cesta basica sem imposto|desoneracao (da|dos) (cesta|alimentos)', { exo: 1, k: 'T', ch: 'tcons', base: 35, def: 15, cap: 40, pg: 'cons', b: 'pobres', rg: 'pop', pa: 'fazenda', inst: 'DEC', pr: .02, val: { periferia: -2, agro: -1 }, iv: [-.2, 0], lag: 2, cred: .9, cat: 'importacao' });
 P('contrib_sindical', 'a contribuição sindical', 'imposto sindical|contribuicao sindical|taxa sindical', { k: 'T', ch: 'tcons', base: 3, ex: 0, def: 3, cap: 6, pg: 'trab', b: 'serv', rg: 'se', pa: 'casacivil', inst: 'PL', val: { sindicatos: 6, empresariado: -3, classemedia: -2 }, iv: [-.5, 0], lag: 3, cred: .9 });
 P('gastos_tributarios', 'os subsídios e benefícios fiscais', 'beneficios fiscais|subsidios (fiscais|a empresas)|renuncias? fiscais?|gastos tributarios|isencoes fiscais|incentivos fiscais|zona franca( de manaus)?|lei de informatica|privilegios fiscais', { k: 'G', ch: 'subs', base: 500, def: 30, cap: 120, b: 'emp', rg: 'se', pa: 'fazenda', inst: 'PL', val: { empresariado: 4, mercado: -1, classemedia: -1 }, iv: [-.3, .1], lag: 8, cred: .6, cat: 'corte_gastos', e: { conf: -1 } });
@@ -2826,7 +2826,7 @@ function trabPos(A) {
 /*CF-TRAB-END*/
 /*FISC-V34-BEGIN*/
 /* v3.4: (1) escopo por produto em IPI/IOF/II; (2) dividendos depois da Lei 15.270/2025; (3) autonomia do BC já vigente (LC 179/2021); (4) sítio: motivo não é programa de gasto */
-const ESC_IDS = ['ipi', 'iof', 'imposto_importacao', 'pis_cofins_diesel', 'cbs_ibs', 'icms']; // v4: cbs_ibs e icms também têm escopo por produto
+const ESC_IDS = ['ipi', 'iof', 'imposto_importacao', 'pis_cofins_diesel', 'cbs_ibs', 'icms', 'ir_pf', 'ir_pj']; // v4: cbs_ibs e icms também têm escopo por produto
 const ESC_GEN = /^(?:todos?|todas?|tudo|qualquer|quaisquer|produtos?|bens|mercadorias|industria\w*|setor\w*|economia|empresas?|empresarios?|consumo|consumidor\w*|brasileiros?|pessoas?|quem|ano|anos|mes|meses|periodo|pais|brasil|importad\w+|exportac\w+|importac\w+|operac\w+|cambio|credito|emprestimos?|financiamentos?|aplicac\w+|titulos?|derivativos?|renda|estados?|municipios?|fundos?|fpe|fpm|governo|uniao|investiment\w+|exterior|carga|aliquotas?|taxas?|valor|impostos?|tributos?|tributac\w+|cobranca|incidencia|alivio|arrecadac\w+|bancos?|financeir\w+|seguradoras?|fisica|juridica|pobres|ricos|familias?|trabalhadores|idosos|jovens|mulheres|aposentados|servidores|classe|populacao|cidadaos|contribuintes|sociedade|que|e|ou|mas|por|com|sem|durante|ate|como|se|ao|na|no|nas|nos|do|da|dos|das|de|em|um|uma|essa|esse|esta|este|isso|disso|cada|alem|apos|antes|ja|mais|menos|maior|menor|total|parcial|temporari\w+|permanente|fim|metade|base)$/;
 const ESC_VERBO = /^(?:estimular|incentivar|baratear|reduzir|aumentar|facilitar|ajudar|combater|compensar|financiar|equilibrar|garantir|promover|fomentar|viabilizar|manter|conter|baixar|subir|elevar|zerar|cortar|isentar|desonerar|tributar|taxar|aplicar|cobrar|arrecadar|gerar|criar|ampliar|expandir|impulsionar|aquecer|reativar|recuperar|salvar|ajustar|cumprir|pagar|pagando|ter|ser|fazer|reforcar|proteger|apoiar)$/;
 const ESC_PROD = [[/bens? de capital|maquinas? e equipamentos?|equipamentos industriais?/, .1], [/aco|aluminio|siderurg\w+|metais|metalurg\w+|minerio/, .06], [/medicament\w+|remedios?|farmac\w+|vacinas?|insumos? farmaceutic\w+/, .03], [/combustiv\w+|gasolina|diesel|querosene/, .08], [/energia|eletric\w+|conta de luz/, .06], [/transporte|passagens?|onibus urbano/, .03], [/educacao|escolas?|livros?|material escolar/, .03], [/saude|hospital\w*|planos? de saude/, .04], [/eletric\w*|hibrid\w*|\bevs?\b|bateri\w+|paine\w* solar\w*|solar\w*/, .012], [/tablets?|notebooks?|computador\w*|celular\w*|smartphone\w*|televis\w+|\btvs?\b|eletronic\w+|consoles?|videogames?|games?|drones?|informatica/, .04], [/linha branca|eletrodomestic\w+|geladeira\w*|fogao|fogoes|maquinas? de lavar|ar condicionado/, .05], [/etanol|flex|gnv|biocombust\w+|biodiesel/, .05], [/motos?|motocicletas?|bicicletas?|patinete\w*/, .02], [/carros?|automoveis|automovel|veiculos?|pickups?|utilitarios?|suvs?/, .13], [/caminho\w+|onibus|tratore?s?|maquinas?|implementos?/, .04], [/cigarros?|tabaco|fumo|charutos?/, .1], [/bebidas?|cervejas?|vinhos?|cachaca|refrigerantes?|uisque|whisky|destilados?/, .08], [/armas?|municoes|municao/, .01]];
@@ -3554,8 +3554,9 @@ function dimensionarBase(it, Q, S) {
     it.B = B; return;
   }
   if (o.ukm && count && /^km|quilometros/.test(count.noun)) {
-    const tot = count.n * o.ukm / 1e9, yrs = (Q.hor ? Q.hor / 12 : 4);
-    B = tot / yrs; calc.push(fmtNum(count.n, 0) + ' km × R$ ' + fmtNum(o.ukm / 1e6, 1) + ' mi/km = ' + fmtBi(tot) + ', em ' + fmtNum(yrs, 0) + ' anos = ' + fmtBi(B) + '/ano');
+    const ukm = o.id === 'rodovias' ? (/\b(?:recuper\w+|restaur\w+|manuten\w+|conserv\w+|tapa)\b/.test(it.ctxTxt || '') ? o.ukm * .1 : /\bpavimenta\w+|asfalt\w+/.test(it.ctxTxt || '') ? o.ukm * .3 : o.ukm) : o.ukm; // v4: recuperar custa uma fração de duplicar
+    const tot = count.n * ukm / 1e9, yrs = (Q.hor ? Q.hor / 12 : 4);
+    B = tot / yrs; calc.push(fmtNum(count.n, 0) + ' km × R$ ' + fmtNum(ukm / 1e6, 1) + ' mi/km = ' + fmtBi(tot) + ', em ' + fmtNum(yrs, 0) + ' anos = ' + fmtBi(B) + '/ano');
     it.B = B; return;
   }
   if (money && money.per === 'litro' && o.lit) {
@@ -3762,6 +3763,8 @@ replSyn('celular_escola', 'proibir (?:o )?(?:uso de )?(?:celulares?|smartphones?
 setProp('calamidade', { uc: 60000 });
 ABSORVE.contingenciamento = ['corte_gastos', 'gastos_governo', 'arcabouco'];
 ABSORVE.pedagio_br = ['concessao_rodovias', 'rodovias', 'concessoes']; ABSORVE.tarifa_zero_nac = ['transporte_publico']; // v4
+addSyn('saneamento', 'agua para todos|programa agua|conta de agua|tarifa (?:social |minima |gratuita )?de agua|drenagem(?: urbana)?|aguas pluviais|rede de esgoto|esgoto tratado'); // v4
+addSyn('residuos', 'lixao|lixoes|coleta seletiva|catadores?|aterros? sanitarios?'); // v4
 addSyn('vale_gas', '(?:botijao|gas(?: de cozinha)?) (?:de graca|gratis|gratuito|subsidiado|para (?:os )?pobres|para todos)'); // v4
 setProp('concurso', { base: 6 }); // v4: congelar concursos economiza a folha nova (antes a base era zero)
 addSyn('reforma_adm', 'pec ?32'); // v4
@@ -4357,7 +4360,7 @@ function genItem(A, force) {
   let d = it.q.durq ? it.q.durq.meses : null; if (d == null && q.tmp && !q.perm) d = 6; if (q.perm) d = null; it.dur = d;
   return it;
 }
-const V4_MASSA = /\b(?:zerar a tarifa|zerar tarifa|tarifa d[eo] (?:onibus|transporte)|todo mundo|de graca|passe livre|zerar a passagem|tarifa zero|reassentar|auxilio|bolsa|renda|complemento|beneficio|salario|pagar|pague|paga|pagasse|repass\w+|distribu\w+|subsid\w+|gratis|gratuit\w+|de graca|cada (?:aluno|crianca|familia|idoso|brasileiro|morador|estudante|jovem)|(?:todo|toda|todos|todas) (?:o |a |os |as )?(?:posto|escola|estrada|rodovia|municipio|cidade|hospital|capital|pais|brasil|estado|bairro|favela|comunidade|trabalhador|servidor|professor|policial|medico|delegacia|agencia|porto|aeroporto)s?|em todo o (?:pais|brasil)|nacionalmente|para todos|em todos os|ajuda mensal|ajuda de custo|mensal|por mes|todo mes|vacina\w*|cisternas?|notebooks?|tablets?|hectares?|(?:todos|todas) (?:os|as)|triplic\w+|duplic\w+|dobr\w+|ampli\w+|expand\w+|universaliz\w+|construir|pavimentar|leitos?|computador\w*|poupanca|aluguel)\b/; // v4: benefício em massa ou obra de escala: o padrão da área vale
+const V4_MASSA = /\b(?:zerar a tarifa|zerar tarifa|tarifa d[eo] (?:onibus|transporte)|todo mundo|de graca|passe livre|zerar a passagem|tarifa zero|reassentar|auxilio|bolsa|renda|complemento|beneficio|salario|pagar|pague|paga|pagasse|repass\w+|distribu\w+|subsid\w+|gratis|gratuit\w+|de graca|cada (?:aluno|crianca|familia|idoso|brasileiro|morador|estudante|jovem)|(?:todo|toda|todos|todas) (?:o |a |os |as )?(?:posto|escola|estrada|rodovia|municipio|cidade|hospital|capital|pais|brasil|estado|bairro|favela|comunidade|trabalhador|servidor|professor|policial|medico|delegacia|agencia|porto|aeroporto|malha|rede|frota|ponte|viaduto)s?|em todo o (?:pais|brasil)|nacionalmente|para todos|em todos os|ajuda mensal|ajuda de custo|mensal|por mes|todo mes|vacina\w*|cisternas?|notebooks?|tablets?|hectares?|(?:todos|todas) (?:os|as)|triplic\w+|duplic\w+|dobr\w+|ampli\w+|expand\w+|universaliz\w+|construir|pavimentar|leitos?|computador\w*|poupanca|aluguel)\b/; // v4: benefício em massa ou obra de escala: o padrão da área vale
 const V4_GEN_PEQ = 0.6;
 const V4_COND = /^(?:se|caso|quando|assim que|desde que|havendo)\b|[,;] (?:se|caso) |\b(?:se|caso) (?:a|o|as|os|houver|ocorrer) [^,]{0,70},/; // v4: proposta condicional (gatilho)
 const V4_APORTE = /\b(?:subvencion\w+|subvencao|recapitaliz\w+|aport\w+|capitaliz\w+|fundo garantidor|fgc|fgo|fundo de aval|aval|premio do seguro|seguro rural|injet\w+)\b/; // v4: aporte público explícito é gasto, não linha de crédito (8% do principal)
@@ -4395,6 +4398,10 @@ function dimensionarGen(it, Q) {
   if (count && GEN_NOMES_PES.test(count.noun) && /^(?:contratar|ampliar|aumentar|garantir|oferecer|criar|instituir|dobrar|expandir)$/.test(g.verbo)) {
     B = count.n * 140000 / 1e9; calc.push(rot + fmtPessoas(count.n) + ' ' + count.noun + ' × R$ 140 mil por ano (salário e encargos, estimativa) = ' + fmtBi(B) + '/ano');
     it.B = Math.min(B, 400); return;
+  }
+  if (count && /^(?:km|quilometros?)$/.test(count.noun) && !/\b(?:metro|vlt|brt|trens?|monotrilho|fibra|cabos?)\b/.test(it.ctxTxt || '') && /\b(?:pavimenta\w+|asfalt\w+|duplic\w+|constru\w+|recuper\w+|restaur\w+|implant\w+|ampli\w+|ciclovias?|rodovias?|estradas?|ferrovias?)\b/.test(it.ctxTxt || '')) { // v4: obra em km é capital: R$ 3 mi/km (pavimentar, recuperar), 8 mi/km (duplicar), 25 mi/km (ferrovia)
+    const um = /\bferrovia/.test(it.ctxTxt || '') ? 25 : /\bduplic/.test(it.ctxTxt || '') ? 8 : 3; B = count.n * um * 1e6 / 1e9; it.unica = true;
+    calc.push(rot + fmtPessoas(count.n) + ' km × R$ ' + um + ' mi/km (estimativa) = ' + fmtBi(B) + ' de despesa de capital, no exercício'); it.B = Math.min(B, 400); return;
   }
   if (count && !GEN_NOMES_BEN.test(count.noun) && /^(?:construir|criar|instituir|implantar|implementar|abrir|lançar|ampliar|expandir)$/.test(g.verbo)) {
     const tot = count.n * (o.uc || 8e6) / 1e9; B = tot / yrs; calc.push(rot + fmtPessoas(count.n) + ' ' + count.noun + ' × R$ ' + fmtNum((o.uc || 8e6) / 1e6, 1) + ' mi (custo por unidade, estimativa) = ' + fmtBi(tot) + ', diluídos em ' + fmtNum(yrs, 0) + ' anos = ' + fmtBi(B) + '/ano');
@@ -4497,7 +4504,7 @@ function leituraV35(A) {
       const cob = foldTxt(its.map(i => (i.o.ger ? '' : i.t + ' ') + i.o.n).join(' '));
       const fortes = foldTxt(it.t).split(/[^a-z0-9]+/).filter(w => w.length >= 4 && !GEN_STOP.test(w) && !GEN_FRACAS.test(w));
       const expl = fortes.filter(w => cob.indexOf(w.slice(0, 4)) >= 0).length;
-      if (!fortes.length || expl * 2 > fortes.length) it = null; else A.items = A.items.filter(i => ['big_techs', 'grandes_fortunas', 'dividendos', 'csll_bancos', 'imposto_bets', 'imposto_seletivo'].indexOf(i.o.id) >= 0); // v4: o tributo específico nomeado continua na conta; só os programas amplos cedem à leitura genérica
+      if (!fortes.length || expl * 2 > fortes.length) it = null; else A.items = A.items.filter(i => ['big_techs', 'grandes_fortunas', 'dividendos', 'csll_bancos', 'imposto_bets', 'imposto_seletivo', 'ir_pf', 'ir_pj', 'cbs_ibs', 'ipi', 'iof', 'icms'].indexOf(i.o.id) >= 0); // v4: o tributo específico nomeado continua na conta; só os programas amplos cedem à leitura genérica
     }
     if (it) { A.items.push(it); A.generica = { area: it.o.gen.area, verbo: it.o.gen.verbo, tipo: it.o.gen.kind }; }
   }
@@ -6158,7 +6165,7 @@ function v37Prev(A) {
     sp = { id: 'idade', proto: 'req', kind: 'G', sav: harsher, B: B, topic: (harsher ? 'o aumento da idade mínima de aposentadoria' : sem ? 'o fim da idade mínima de aposentadoria' : 'a redução da idade mínima de aposentadoria') + (N ? ' para ' + N + ' anos' : '') + (pub ? ' ' + pub.n : ''), ex: lcCatI ? 'LC' : 'PEC', d: lcCatI ? ['a40_201', 'a69'] : ['a201_7', 'a40_201'], calc: 'Idade mínima ' + (harsher ? 'maior' : 'menor') + (N ? ' (' + N + ' anos)' : '') + ': cerca de R$ 8 bi/ano por ano de diferença no regime pleno' + (harsher ? ', aplicada só a quem ainda não cumpriu os requisitos (' + (/\btransicao/.test(s) ? 'com a transição citada' : 'transição de cerca de 10 anos') + ')' : '') + '; o efeito cresce ao longo de anos' };
   }
   // tempo de contribuição
-  else if (M(/\btempo (?:minimo )?de contribuicao\b|\banos de contribuicao\b|\bcarencia\b|\baposentadoria por tempo\b/) && !/\bcontar\b|\bem dobro\b/.test(s)) {
+  else if (M(/\btempo (?:minimo )?de contribuicao\b|\banos de contribuicao\b|\bcarencia\b|\baposentadoria por tempo\b/) && !/\bcontar\b|\bem dobro\b/.test(s) && (!/\bcarencia\b/.test(s) || /\b(?:previdenc\w+|aposent\w+|inss|contribuicao|segurad\w+|pensao|auxilio.?doenca|beneficio)\b/.test(s)) && !/\b(?:linha de credito|emprestimo|financiamento|parcel\w+)\b[^.;]{0,60}\bcarencia\b|\bcarencia\b[^.;]{0,30}\b(?:linha de credito|emprestimo|financiamento)\b/.test(s)) { // v4: carência de crédito não é carência previdenciária
     const reabre = /\b(?:reabr\w+|restabelec\w+|retom\w+|volt\w+ a|criar|reinstitu\w+)\b[^.;]{0,40}\baposentadoria por tempo\b|\bsem idade minima\b/.test(s);
     const N = v37Anos(s, /\btempo (?:minimo )?de contribuicao|\banos de contribuicao|\bcarencia/);
     let harsher, B, nom;
@@ -7039,6 +7046,7 @@ function leituraV4(A) {
 }
 function v4Leve(t) { // v4: verbo leve + substantivo de corte ("aplicar um corte linear de 5%") vira o verbo pleno
   t = t.replace(/\b((?:limit\w+|teto|travar|conter|segurar) [^.;]{0,60}?)\b(?:a|em|para|ate) \d+(?:[.,]\d+)?% (?:da|do|das) (?:receita corrente liquida|rcl|pib|receita)\b/g, '$1'); // v4: "limitar a 30% da RCL" é teto de proporção, não corte percentual
+  t = t.replace(/\b(?:acabar com|zerar|eliminar|reduzir|diminuir|zerando)\s+(?:a |as )?filas?\s+(d[aeo]s?|n[aeo]s?)\s+/g, (m, pr) => 'ampliar ' + ({ do: 'o', da: 'a', dos: 'os', das: 'as', no: 'o', na: 'a', nos: 'os', nas: 'as' }[pr] || 'o') + ' '); // v4: acabar com a fila do BPC/SUS é zerar o atraso (despesa), não extinguir o benefício
   return t.replace(/\b(?:aplic\w+|faz\w+|fac\w+|realiz\w+|promov\w+|adot\w+|implement\w+|execut\w+|dar|de|dou) (?:um |uma |o |a |os |as )?(?:corte|cortes|enxugamento|reducao|reducoes)(?: (?:linear|geral|horizontal|drastico|profundo|forte|grande|real|radical))?(?: (?:de|em) (?=\d))?/g, m => /reduc/.test(m) ? 'reduzir ' : 'cortar ');
 }
 function parse(orig) {
@@ -7231,10 +7239,12 @@ function tipoDe(it) {
 const V4_NICHO_RX = /\b(?:para|de|dos|das|aos|as|nas|nos|sobre|em)\s+(?:(?:os|as|o|a)\s+)?(?:micro\w*|pequen\w+|mpes?|mei\w*|rurais?|rural|agricultor\w*|produtor\w*|agro\w*|facultativ\w+|autonom\w+|startups?|cooperativ\w+|igrejas?|templos?|ongs?|entidades?|filantrop\w+|taxistas?|motoristas?|jovens?|idosos?|estudantes?|exportador\w+|importador\w+|setor\w*|regiao|norte|nordeste|amazonia|zona franca|municipios?|medicament\w+|alimentos?|veiculos?|carros?|motos?|livros?|brinquedos?|games?|paineis|hospitais|escolas|santas casas|clubes?|artistas?|pescadores?|caminhoneiros?|empregadas? domestic\w+)\b/;
 const V4_OBRA_V = /\b(?:constru\w+|concluir|conclus\w+|duplic\w+|dragar|dragagem|implant\w+|instalar|reconstru\w+|equipar|comprar|adquirir|lancar|reformar|erguer|inaugurar|recuperar|pavimentar|expandir|ampliar|investir|modernizar)\b/; // v4
 const V4_OBRA_N = /\b(?:ponte|viaduto|ferrovias?|metro|brt|vlt|trens?|portos?|aeroportos?|hidrovias?|hospitais|hospital|laboratorios?|universidades?|satelites?|foguetes?|supercomputador\w*|data centers?|navios?|helicopteros?|avioes|aviao|radares?|scanners?|onibus|linhas? de transmissao|redes? de transmissao|transposicao|gasodutos?|refinarias?|barragens?|museus?|estadios?)\b/;
+const V4_NICHO_G = /\bpara\s+(?:os |as |o |a )?(?:agricultores familiares|pequenos produtores|assentad\w+|ribeirinh\w+|quilombolas|indigenas|catadores|pescadores|microempresas?|mei|startups|escolas rurais|municipios pequenos|familias rurais|comunidades \w+|cooperativas)\b/; // v4
+const V4_OBRA_KM = /\b(?:rodovias?|estradas?|pavimenta\w+|duplica\w+|ferrovias?|ciclovias?|linhas? de transmissao)\b/; // v4: com quantidade em km, a obra rodoviária também é capital
 const V4_OBRA_NO = /,| e (?:contrat\w+|ampli\w+|dobr\w+|criar|reajust\w+)|\b(?:contrat\w+ (?:professores|medicos|servidores)|reajust\w+|salari\w+|bolsas?|auxilio|manutencao|custeio|mensal|por mes|por ano)\b/;
 function contabiliza(it, F) {
   const o = it.o;
-  if (o.k === 'T' && o.base >= 20 && !it.q.money && V4_NICHO_RX.test(it.ctxTxt || '') && !/\b(?:todos|todas|geral|qualquer)\b/.test(it.ctxTxt || '') && it.B > o.base * .15) { const B0 = it.B; it.B = o.base * .12; it.calc.push('Recorte nomeado (' + (V4_NICHO_RX.exec(it.ctxTxt)[0].trim()) + '): a medida alcança uma fração da base do tributo, estimada em 12% (' + fmtBi(B0) + ' -> ' + fmtBi(it.B) + ')'); } // v4: tributo com público ou setor nomeado nunca leva a base inteira
+  if (o.k === 'T' && o.base >= 20 && !(it.q.money && it.q.money.unit) && V4_NICHO_RX.test(it.ctxTxt || '') && !/\b(?:todos|todas|geral|qualquer)\b/.test(it.ctxTxt || '') && it.B > o.base * .15) { const B0 = it.B; it.B = o.base * .12; it.calc.push('Recorte nomeado (' + (V4_NICHO_RX.exec(it.ctxTxt)[0].trim()) + '): a medida alcança uma fração da base do tributo, estimada em 12% (' + fmtBi(B0) + ' -> ' + fmtBi(it.B) + ')'); } // v4: tributo com público ou setor nomeado nunca leva a base inteira
   it.tipo = tipoDe(it);
   it.spend = 0; it.revC = 0; it.sale = 0; it.buy = 0;
   if (it.fora || it.talk || !it.sg) return;
@@ -7243,7 +7253,9 @@ function contabiliza(it, F) {
   if (o.fix && !(o.id === 'bets_proibicao' && /\b(?:propaganda|publicidade|patrocin\w+|anunci\w+|camisas?|menores|idade|maior de|\d+ anos|categorias? de base|clandestin\w+|sem licenca|nao autorizad\w+|ilegais?)\b/.test(it.ctxTxt || ''))) { it.spend += (o.fix.cost || 0) * it.sg; it.revC += (o.fix.rev || 0) * it.sg; } // v4: restringir propaganda/idade/bet ilegal não tira a outorga das bets licenciadas
   if (o.k === 'E') { if (it.own > 0 && !it.liquida) it.sale = it.B; else if (it.own < 0) it.buy = it.B; }
   it.v4Capex = 0;
-  if (o.k === 'G' && it.tipo === 'perm' && it.sg > 0 && !o.sav && !o.ger && it.spend > 0 && V4_OBRA_V.test(it.ctxTxt || '') && V4_OBRA_N.test(it.ctxTxt || '') && !V4_OBRA_NO.test(it.ctxTxt || '')) { const ex = it.q && it.q.money && it.q.money.unit && it.q.money.v >= 1e8; it.v4Capex = it.spend * (ex ? 1 : 2); it.v4CustPct = ex ? .1 : .4; } // v4: obra e compra de equipamento são despesa única, com custeio anual menor
+  if (o.k === 'G' && o.vu && !o.sav && it.sg > 0 && it.B > 5 && /\b(?:adicional|por crianca|por filho|gestantes?|nutrizes)\b/.test(it.ctxTxt || '') && !/\btodos\b/.test(it.ctxTxt || '')) { const B0 = it.B; it.B = it.B * .2; it.spend = it.spend * .2; it.calc.push('Componente do benefício (adicional por criança, gestante): cerca de 20% dos beneficiários, ' + fmtBi(B0) + ' -> ' + fmtBi(it.B)); } // v4
+  if (o.k === 'G' && !o.sav && !o.ger && it.sg > 0 && it.B > 1.5 && !it.q.has && V4_NICHO_G.test(it.ctxTxt || '')) { const B0 = it.B; it.B = Math.max(.5, it.B * .3); it.spend = it.spend * (it.B / B0); it.calc.push('Público restrito (' + V4_NICHO_G.exec(it.ctxTxt)[0].trim() + '): cerca de 30% do pacote padrão, ' + fmtBi(B0) + ' -> ' + fmtBi(it.B)); } // v4
+  if (o.k === 'G' && it.tipo === 'perm' && it.sg > 0 && !o.sav && !o.ger && it.spend > 0 && V4_OBRA_V.test(it.ctxTxt || '') && (V4_OBRA_N.test(it.ctxTxt || '') || (V4_OBRA_KM.test(it.ctxTxt || '') && /\b\d[\d.,]*\s*(?:mil\s+)?(?:km|quilometros)\b/.test(it.ctxTxt || ''))) && !V4_OBRA_NO.test(it.ctxTxt || '')) { const ex = it.q && it.q.money && it.q.money.unit && it.q.money.v >= 1e8, km = /\b\d[\d.,]*\s*(?:mil\s+)?(?:km|quilometros)\b/.test(it.ctxTxt || ''); it.v4Capex = it.spend * (ex ? 1 : km ? 4 : 2); it.v4CustPct = ex || km ? .1 : .4; if (ex && it.spend * it.v4CustPct > .9) it.v4CustPct = .9 / it.spend; } // v4: obra e compra de equipamento são despesa única, com custeio anual menor
   const f = it.tipo === 'temp' ? Math.min(it.dur, 12) / 12 : 1;
   it.f = f;
   it.y1spend = it.spend * f; it.y1rev = it.revC * f;
@@ -7252,7 +7264,7 @@ function contabiliza(it, F) {
   else if (it.tipo === 'perm') { F.cost += it.spend; F.rev += it.revC; }
   else if (it.tipo === 'temp') {
     if (it.spend > 0) F.extra += it.spend * f; else if (it.spend < 0) F.once += -it.spend * f;
-    if (it.revC < 0) F.extra += -it.revC * f; else if (it.revC > 0) F.once += it.revC * f;
+    F.rev += it.revC * f; // v4: tributo temporário (renúncia ou aumento por até 12 meses) é receita do exercício, não despesa extraordinária
   } else {
     if (it.spend > 0) F.extra += it.spend; else if (it.spend < 0) F.once += -it.spend;
     if (it.revC < 0) F.extra += -it.revC; else if (it.revC > 0) F.once += it.revC;
@@ -9315,8 +9327,8 @@ function motivoCoerencia(sigla, r, label) {
 const MES_NOME = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
 const ELEICAO_MES = 46, FIM_MANDATO_MES = 48;
 const ID_SERVIDOR_SAL = ['servidores', 'professores_fed', 'militares', 'policiais_salario', 'piso_professores', 'piso_enfermagem', 'supersalarios'];
-const ID_ANTERIOR_SO_90 = ['pis_cofins_diesel', 'cbs_ibs', 'desoneracao_folha'];
-const ID_SEM_ANTERIORIDADE = ['iof', 'iof_cambio', 'imposto_importacao', 'taxa_blusinhas', 'tarifa_insumos_agro'];
+const ID_ANTERIOR_SO_90 = ['pis_cofins_diesel', 'cbs_ibs', 'desoneracao_folha', 'tributos_gasolina']; // v4: a CIDE-combustíveis está fora da anterioridade anual (art. 177, §4º, I, b), só noventena
+const ID_SEM_ANTERIORIDADE = ['iof', 'iof_cambio', 'imposto_importacao', 'taxa_blusinhas', 'tarifa_insumos_agro', 'imposto_exportacao', 'export_minerio']; // v4: imposto de exportação também é regulatório (art. 150, §1º)
 function mesTxt(m) { return MES_NOME[(m - 1) % 12] + '/' + (2027 + Math.floor((m - 1) / 12)); }
 function calendarioDe(g, A, F, inst) {
   const out = [], mes = g && g.mes != null ? +g.mes : null;
