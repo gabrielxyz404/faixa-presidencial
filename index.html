@@ -43,7 +43,7 @@
 <title>Faixa Presidencial</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800&display=swap">
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script>
   tailwind.config = {
@@ -211,6 +211,150 @@
   .pulso-i { padding: 16px 0; border-top: 1px solid var(--line); }
   .pulso-i:first-child { border-top: 0; padding-top: 0; }
   @media (prefers-reduced-motion: reduce) { .gav { animation: none; } }
+</style>
+<style id="visual-v42">
+  /* ===== v4.2 visual: legibilidade global ===== */
+  :root { --muted: #c3c1b0; --f-serif: "Playfair Display", "Libre Caslon Text", Georgia, "Times New Roman", serif; }
+  body { font-size: 15.5px; line-height: 1.5; }
+  /* tamanhos mínimos: 10/11px viram 12px, text-xs vira 13px, text-sm vira 15px */
+  body .text-\[10px\], body .text-\[11px\], body .text-\[11\.5px\], body .\!text-\[11\.5px\], body .\!text-\[10px\], body .\!text-\[11px\] { font-size: 12px !important; line-height: 1.4 !important; }
+  body .text-xs { font-size: 13px !important; line-height: 1.45 !important; }
+  body .text-sm { font-size: 15px !important; line-height: 1.5 !important; }
+  body .text-base { font-size: 16px !important; }
+  .eyebrow { font-size: 12px; letter-spacing: .12em; }
+  .chip { font-size: 12px; padding: 2px 8px; }
+  .vit-d { font-size: 12px; }
+  .secnav button { font-size: 12px; }
+  .secnav-badge { font-size: 11px; }
+  .btn-sm { font-size: 14px; }
+  .linklike { font-size: 13px; }
+  .med-fase small, .med-pr th, .med-kpi small, .med-pas .num, .med-not .num, .med-fim .num { font-size: 12px; }
+  .med-fase { font-size: 13px; }
+  .med-pr table, .med-pas ul, .med-not ul, .med-fim { font-size: 14px; }
+  .med-prog-t { font-size: 13px; }
+  .tb-kpi .s, .tb-tbl th, .tb-pc, .tb-motor, .tb-inst, .tb-rule .n { font-size: 12px; }
+  .tb-est { font-size: 11px; }
+  textarea, input[type=text], input[type=number], input[type=password], select { font-size: 15px; }
+  @media (max-width: 640px) { .med-fase b { font-size: 11px; } .med-fase small { font-size: 11px; } }
+
+  /* ===== Medidas: tela de gestão ===== */
+  .med-sum { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); gap: 20px 28px; align-items: stretch; }
+  @media (max-width: 1100px) { .med-sum { grid-template-columns: minmax(0,1fr); } }
+  .med-tiles { align-content: start; display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 12px; }
+  .med-tile { background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; min-width: 0; }
+  .med-tile .med-kpi { font-size: 32px; line-height: 1.1; margin-top: 4px; }
+  .med-tile-s { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  .med-fiscal { background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .med-fl-t { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 5px; }
+  .med-fl-v { font-size: 18px; font-weight: 600; }
+  .med-fl-v i, .med-saldo i { font-style: normal; font-size: 12px; color: var(--muted); font-weight: 400; }
+  .med-fl-v small { font-size: 12px; color: var(--muted); }
+  .med-saldo { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 10px; font-size: 14px; }
+  .med-saldo .num { font-weight: 600; font-size: 15px; }
+  .med-barra { display: flex; flex-direction: column; gap: 12px; }
+  .med-filtros { display: flex; flex-wrap: wrap; gap: 8px; }
+  .med-fil { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: var(--panel); border: 1px solid var(--line); color: var(--muted); font-weight: 600; font-size: 14px; }
+  .med-fil .num { font-size: 12px; background: var(--ink); border-radius: 999px; padding: 1px 8px; color: var(--fg); }
+  .med-fil:hover { color: var(--fg); border-color: var(--muted); }
+  .med-fil[aria-pressed=true] { background: var(--ouro); border-color: var(--ouro); color: #1a1403; }
+  .med-fil[aria-pressed=true] .num { background: rgba(0,0,0,.18); color: #1a1403; }
+  .med-ctl { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+  .med-sel { display: inline-flex; align-items: center; gap: 10px; }
+  .med-sel select { width: auto; padding: 6px 10px; }
+  .med-grupo { display: flex; flex-direction: column; gap: 8px; }
+  .med-gh { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+  .med-gh h3 { font-family: var(--f-disp); font-weight: 800; font-size: 18px; text-transform: uppercase; letter-spacing: .02em; }
+  .med-gh .num { font-size: 12.5px; color: var(--muted); }
+  .med-lista { display: flex; flex-direction: column; gap: 8px; }
+  .med-card { padding: 0; gap: 0; overflow: hidden; }
+  .med-card[data-prob="1"] { border-color: rgba(226,85,63,.55); }
+  .med-card[data-aberto="1"] { border-color: var(--muted); }
+  .med-row { display: grid; grid-template-columns: 40px minmax(0,1fr) 138px 150px minmax(0,150px) 20px; gap: 14px; align-items: center; width: 100%; text-align: left; padding: 14px 16px; color: var(--fg); }
+  .med-row:hover { background: var(--panel2); }
+  .med-main { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .med-tit { font-weight: 700; font-size: 16.5px; line-height: 1.25; }
+  .med-sub { font-size: 13px; color: var(--muted); line-height: 1.35; }
+  .med-pill { justify-self: start; font-family: var(--f-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; border: 1px solid; border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
+  .med-prog-mini { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .med-pct { font-size: 14px; width: 40px; text-align: right; flex: none; }
+  .med-bar { flex: 1; height: 8px; min-width: 40px; }
+  .med-gatw { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .med-gat { font-size: 12.5px; line-height: 1.3; }
+  .med-gat-p { font-size: 12px; color: var(--muted); }
+  .med-flag { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; min-width: 0; line-height: 1.25; }
+  .med-flag[data-ok="1"] { color: var(--muted); font-weight: 500; }
+  .med-flag[data-ok="0"] { color: var(--rubro); }
+  .med-chev { color: var(--muted); display: flex; }
+  .med-det { display: flex; flex-direction: column; gap: 14px; padding: 4px 18px 18px; border-top: 1px solid var(--line); padding-top: 16px; }
+  @media (max-width: 1180px) {
+    .med-row { grid-template-columns: 40px minmax(0,1fr) 20px; grid-template-areas: "ic main chev" ". pill pill" ". prog prog" ". flag flag"; gap: 8px 12px; }
+    .med-row .med-ic { grid-area: ic; } .med-row .med-main { grid-area: main; } .med-row .med-pill { grid-area: pill; } .med-row .med-prog-mini { grid-area: prog; } .med-row .med-flag { grid-area: flag; } .med-row .med-chev { grid-area: chev; }
+  }
+  .med-vazio { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; padding: 48px 24px; max-width: 640px; margin: 0 auto; width: 100%; border: 1px dashed var(--line); }
+  .med-vazio-ic { width: 72px; height: 72px; border-radius: 999px; background: var(--panel2); color: var(--ouro); display: flex; align-items: center; justify-content: center; }
+  .med-vazio-f { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .med-rej { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .med-rej li { display: flex; gap: 12px; align-items: baseline; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .med-rej .num { color: var(--muted); font-size: 13px; flex: none; }
+  .med-rej-t { flex: 1; min-width: 0; font-size: 15px; }
+
+  /* ===== Diário e Linha do mandato por mês ===== */
+  .pm { display: flex; flex-direction: column; gap: 10px; }
+  .pm-g { border: 1px solid var(--line); border-radius: 10px; background: var(--ink); overflow: hidden; }
+  .pm-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; text-align: left; padding: 9px 12px; font-family: var(--f-mono); font-size: 12.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--ouro); font-weight: 500; }
+  button.pm-h:hover { background: var(--panel2); }
+  .pm-g[data-aberto="1"] > .pm-h { border-bottom: 1px solid var(--line); }
+  .pm-l { list-style: none; margin: 0; padding: 4px 12px; display: flex; flex-direction: column; }
+  .pm-i { display: flex; gap: 12px; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--line); }
+  .pm-i:first-child { border-top: 0; }
+  .pm-l > li.flex { padding: 8px 0; }
+
+  /* ===== Banca de jornal ===== */
+  .banca-capas { display: grid; grid-template-columns: minmax(0,1.45fr) minmax(0,1fr); gap: 14px; }
+  .banca-capas > .j-grande { grid-row: span 2; }
+  .banca-capas > .jornal:nth-child(n+4) { grid-column: 1 / -1; }
+  .banca-rec { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+  @media (max-width: 720px) { .banca-capas, .banca-rec { grid-template-columns: minmax(0,1fr); } .banca-capas > .j-grande { grid-row: auto; } }
+  .jornal { --papel: #eee8d5; --tinta: #16150f; --acento: #16150f; --tom: #6b6a5c;
+    position: relative; display: flex; flex-direction: column; gap: 8px; padding: 12px 14px 14px; background: var(--papel); color: var(--tinta); border-radius: 3px; min-width: 0;
+    box-shadow: 0 1px 0 rgba(255,255,255,.35) inset, 0 6px 14px rgba(0,0,0,.55), 0 0 0 1px rgba(0,0,0,.4); }
+  .jornal::after { content: ""; position: absolute; inset: 0; border-radius: 3px; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0,0,0,.025) 0 1px, transparent 1px 3px); }
+  .j-mast { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 6px; border-bottom: 3px double var(--tinta); }
+  .j-nome { font-family: var(--f-serif); font-weight: 900; font-size: 19px; line-height: 1.1; letter-spacing: .01em; }
+  .j-selo { font-family: var(--f-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; border: 1px solid currentColor; border-radius: 2px; padding: 0 5px; opacity: .75; flex: none; transform: rotate(-3deg); }
+  .j-data { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-family: var(--f-mono); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: #4a493d; border-bottom: 1px solid rgba(0,0,0,.25); padding-bottom: 5px; }
+  .j-tom { font-weight: 600; }
+  .j-tom[data-tom=pos] { color: #14703a; } .j-tom[data-tom=neg] { color: #b3261e; } .j-tom[data-tom=neu] { color: #57564a; }
+  .j-hl { font-family: var(--f-serif); font-weight: 800; font-size: 19px; line-height: 1.2; text-wrap: balance; overflow-wrap: anywhere; margin: 2px 0 0; }
+  .j-sub { font-family: var(--f-serif); font-size: 14.5px; line-height: 1.45; color: #3b3a30; margin: 0; border-top: 1px solid rgba(0,0,0,.2); padding-top: 7px; }
+  .j-grande .j-hl { font-size: 30px; line-height: 1.12; font-weight: 900; }
+  .j-grande .j-nome { font-size: 26px; }
+  .j-grande .j-sub { font-size: 15.5px; }
+  .j-lin { display: flex; flex-direction: column; gap: 7px; margin-top: 6px; } .j-lin i { display: block; height: 5px; border-radius: 2px; background: rgba(0,0,0,.14); } .j-lin i:nth-child(3n) { width: 72%; } .j-lin i:nth-child(5n) { width: 55%; }
+  .j-peq { padding: 10px 12px 12px; gap: 6px; } .j-peq .j-nome { font-size: 15px; } .j-peq .j-hl { font-size: 16px; font-weight: 700; } .j-peq .j-mast { border-bottom-width: 2px; }
+  /* O Globo / Estadão: sóbrio, cabeçalho centrado com filete duplo */
+  .j-globo .j-mast { justify-content: space-between; } .j-globo .j-nome { flex: 1; text-align: center; padding-left: 52px; } .j-globo .j-nome { text-transform: uppercase; letter-spacing: .08em; font-size: 17px; }
+  .j-globo.j-grande .j-nome { font-size: 22px; } 
+  .j-globo { --papel: #ece6d2; }
+  /* Carta Capital: faixa vermelha, itálico */
+  .j-carta { --papel: #f0e9dc; }
+  .j-carta .j-mast { background: #b3261e; color: #fbf4e4; margin: -12px -14px 4px; padding: 9px 14px; border-bottom: 0; border-radius: 3px 3px 0 0; }
+  .j-carta .j-nome { font-style: italic; font-weight: 800; }
+  .j-carta.j-peq .j-mast { margin: -10px -12px 2px; padding: 7px 12px; }
+  .j-carta .j-hl { font-style: italic; }
+  /* O Antagonista: tabloide, preto e amarelo, caixa-alta */
+  .j-antag { --papel: #f3ecc9; transform: rotate(-.35deg); }
+  .j-antag .j-mast { background: #0c0c0a; color: var(--ouro); margin: -12px -14px 4px; padding: 9px 14px; border-bottom: 5px solid var(--ouro); border-radius: 3px 3px 0 0; }
+  .j-antag.j-peq .j-mast { margin: -10px -12px 2px; padding: 7px 12px; }
+  .j-antag .j-nome { font-family: var(--f-disp); font-weight: 900; text-transform: uppercase; letter-spacing: .04em; font-size: 18px; }
+  .j-antag .j-hl { text-transform: uppercase; font-weight: 900; font-size: 18px; letter-spacing: -.005em; }
+  .j-antag.j-grande .j-hl { font-size: 27px; } .j-antag.j-peq .j-hl { font-size: 15px; }
+  /* tom da cobertura: favorável (verde), crítica (vermelho), neutra */
+  .j-pos { box-shadow: 0 1px 0 rgba(255,255,255,.35) inset, 0 6px 14px rgba(0,0,0,.55), 0 0 0 2px #1f9d55; }
+  .j-neg { box-shadow: 0 1px 0 rgba(255,255,255,.35) inset, 0 6px 14px rgba(0,0,0,.55), 0 0 0 2px #c2402f; }
+  .j-neu { box-shadow: 0 1px 0 rgba(255,255,255,.35) inset, 0 6px 14px rgba(0,0,0,.55), 0 0 0 1px rgba(0,0,0,.5); }
+  .j-neg .j-hl::before { content: ""; display: block; width: 36px; height: 4px; background: #c2402f; margin-bottom: 6px; }
+  .j-pos .j-hl::before { content: ""; display: block; width: 36px; height: 4px; background: #1f9d55; margin-bottom: 6px; }
 </style>
 
 <div id="root"></div>
@@ -12309,7 +12453,9 @@ function medPassos(g, M) {
   return L.sort((a, b) => a.mes - b.mes).slice(0, 4);
 }
 
-function MedCartao({ g, M, upd, irPara }) {
+const MED_FASE_ROT = { pub: ['Publicada', 'var(--ouro)'], reg: ['Regulamentação', 'var(--ouro)'], imp: ['Implantação', 'var(--ouro)'], pleno: ['Efeito pleno', 'var(--verde)'], mat: ['Maturação', 'var(--verde)'], agu: ['Aguardando gatilho', 'var(--ambar)'] };
+function medPasta(M) { const p = PASTAS.find(x => x.k === M.pasta); return p ? p.nome : null; }
+function MedCartao({ g, M, upd, irPara, aberto, onToggle }) {
   const T = MED_TIPOS[M.tipo] || MED_TIPOS.programa, fase = medFase(g, M), ativo = medAtivo(M);
   const est = MED_ESTADOS[M.estado] || MED_ESTADOS.ativa;
   const ix = MED_FASES.findIndex(f => f[0] === fase), fimOk = fase === 'fim' && M.estado === 'consolidada';
@@ -12323,22 +12469,35 @@ function MedCartao({ g, M, upd, irPara }) {
   if (Math.abs(r1.prev) >= .05) linhas.push({ nome: 'Receita', un: ' bi/ano', d: 1, prev: r1.prev, real: r1.real, ruim: M.mRec < .95 });
   for (const x of ind) linhas.push({ nome: x.nome, un: x.un, d: x.d, prev: x.prev, real: x.real, bom: x.bom, ind: true });
   const pct = Math.round(M.aplic * 100);
-  return html`<article className="med-card" data-med=${M.id} data-tipo=${M.tipo} data-fase=${fase} data-estado=${M.estado}>
-    <header className="med-head">
+  const fr = ativo ? (MED_FASE_ROT[fase] || ['Em vigor', 'var(--verde)']) : [est[0], est[1]];
+  const temProb = M.probs.length > 0 || M.estado === 'suspensa';
+  const prob1 = M.probs[0] ? (MED_PROB[M.probs[0].k] || [M.probs[0].k, 'var(--ambar)', 'TriangleAlert']) : null;
+  const pasta = medPasta(M);
+  const corBar = M.mEf < .95 ? 'var(--ambar)' : 'var(--verde)';
+  return html`<article className="med-card" data-med=${M.id} data-tipo=${M.tipo} data-fase=${fase} data-estado=${M.estado} data-aberto=${aberto ? '1' : '0'} data-prob=${temProb ? '1' : '0'}>
+    <button type="button" className="med-row" aria-expanded=${!!aberto} onClick=${onToggle}>
       <span className="med-ic" aria-hidden="true"><${Icon} n=${T.ic} s=${20} /></span>
-      <div className="min-w-0">
-        <h3 className="med-tit">${M.topic[0].toUpperCase() + M.topic.slice(1)}</h3>
-        <div className="med-chips"><${Tag}>${T.nome}</${Tag}><${Tag}>${M.ato}</${Tag}><${Tag}>aprovada em ${medMesTxt(M.m0)}</${Tag}><${Tag} cor=${est[1]}>${est[0]}</${Tag}>${M.mp && html`<${Tag} cor="var(--ambar)">aguarda o Congresso</${Tag}>`}</div>
-      </div>
-    </header>
+      <span className="med-main">
+        <span className="med-tit">${M.topic[0].toUpperCase() + M.topic.slice(1)}</span>
+        <span className="med-sub">${T.nome} · ${M.ato} · ${medMesTxt(M.m0)}${pasta ? ' · ' + pasta : ''}${M.mp ? ' · aguarda o Congresso' : ''}</span>
+      </span>
+      <span className="med-pill" style=${{ color: fr[1], borderColor: fr[1] }}>${fr[0]}</span>
+      <span className="med-prog-mini">
+        ${M.estado === 'aguardando' ? html`<span className="med-gatw" data-testid="med-gatilho"><span className="med-gat">Aguardando: ${M.cond.rotulo}</span><span className="num med-gat-p">chance estimada ${Math.round((M.cond.p || 0) * 100)}%</span></span>` :
+        ativo ? html`<span className="num med-pct">${pct}%</span><span className="bar-track med-bar" role="img" aria-label=${'Rampa de implantação: ' + pct + '%'}><i style=${{ display: 'block', height: '100%', width: pct + '%', background: corBar }}></i></span>` : html`<span className="num med-pct">${fimOk ? '100%' : '—'}</span>`}
+      </span>
+      <span className="med-flag" data-ok=${temProb ? '0' : '1'} title=${temProb ? 'Há problema nesta medida' : 'Sem problemas'}>${temProb ? html`<${Icon} n="TriangleAlert" s=${14} /> ${M.estado === 'suspensa' && !prob1 ? 'Suspensa' : (prob1 ? prob1[0] : 'Problema')}${M.probs.length > 1 ? ' +' + (M.probs.length - 1) : ''}` : html`<${Icon} n="Check" s=${14} /> Sem problemas`}</span>
+      <span className="med-chev" aria-hidden="true"><${Icon} n=${aberto ? 'ChevronUp' : 'ChevronDown'} s=${18} /></span>
+    </button>
+    ${aberto && html`<div className="med-det">
+    <div className="med-chips"><${Tag}>${T.nome}</${Tag}><${Tag}>${M.ato}</${Tag}><${Tag}>aprovada em ${medMesTxt(M.m0)}</${Tag}><${Tag} cor=${est[1]}>${est[0]}</${Tag}>${M.mp && html`<${Tag} cor="var(--ambar)">aguarda o Congresso</${Tag}>`}</div>
     <ol className="med-fases" aria-label="Fases da medida">${MED_FASES.map((f, i) => {
       const pulada = f[0] === 'reg' && M.dReg === 0;
       const st = !ativo && !fimOk ? (i <= ix && ix >= 0 ? 'feito' : 'fut') : fimOk || (ix >= 0 && i < ix) ? 'feito' : i === ix ? 'atual' : 'fut';
       const quando = f[0] === 'reg' ? (pulada ? 'dispensada' : 'até ' + medMesTxt(datas.reg)) : (f[0] === 'pub' ? medMesTxt(datas.pub) : 'a partir de ' + medMesTxt(datas[f[0]]));
       return html`<li key=${f[0]} className="med-fase" data-st=${pulada ? 'pulada' : st} aria-current=${st === 'atual' ? 'step' : undefined}><span className="med-dot">${st === 'feito' || pulada ? html`<${Icon} n="Check" s=${10} sw=${3} />` : ''}</span><b>${f[1]}</b><small className="num">${quando}</small></li>`;
     })}</ol>
-    ${M.estado === 'aguardando' && html`<div className="med-prog" data-testid="med-gatilho"><div className="med-prog-t"><span>Aguardando: ${M.cond.rotulo}</span><span className="num">chance estimada ${Math.round((M.cond.p || 0) * 100)}%</span></div></div>`}
-    ${ativo && M.estado !== 'aguardando' && html`<div className="med-prog" role="img" aria-label=${'Rampa de implantação: ' + pct + '%'}><div className="med-prog-t"><span>Efeito real já aplicado</span><span className="num">${pct}%${M.mEf !== 1 ? ' · rendimento ' + Math.round(M.mEf * 100) + '%' : ''}</span></div><div className="bar-track" style=${{ height: '6px' }}><i style=${{ display: 'block', height: '100%', width: pct + '%', background: M.mEf < .95 ? 'var(--ambar)' : 'var(--verde)' }}></i></div></div>`}
+    ${ativo && M.estado !== 'aguardando' && html`<div className="med-prog"><div className="med-prog-t"><span>Efeito real já aplicado</span><span className="num">${pct}%${M.mEf !== 1 ? ' · rendimento ' + Math.round(M.mEf * 100) + '%' : ''}</span></div><div className="bar-track" style=${{ height: '6px' }}><i style=${{ display: 'block', height: '100%', width: pct + '%', background: corBar }}></i></div></div>`}
     ${linhas.length > 0 && html`<div className="med-pr"><div className="eyebrow">Previsto × realizado</div><table><thead><tr><th></th><th>Previsto</th><th>Realizado</th><th></th></tr></thead><tbody>${linhas.map(l => {
       const r = Math.abs(l.prev) > 1e-9 ? clamp(l.real / l.prev, 0, 1.5) : 0;
       return html`<tr key=${l.nome}><td>${l.nome}</td><td className="num">${sgn(l.prev, l.d)}${l.un}</td><td className="num" style=${{ color: l.ruim ? 'var(--rubro)' : 'var(--fg)' }}>${sgn(l.real, l.d)}${l.un}</td><td className="med-mini"><i style=${{ width: Math.min(100, r * 100) + '%', background: l.ruim ? 'var(--rubro)' : 'var(--ouro)' }}></i></td></tr>`;
@@ -12351,30 +12510,82 @@ function MedCartao({ g, M, upd, irPara }) {
       <button type="button" className="btn btn-sm btn-ghost" disabled=${!pj.ok} title=${pj.t} onClick=${() => upd(n => { medAjusta(n, M.id); })}><${Icon} n="Wrench" s=${14} /> ${pj.l}</button>
       <button type="button" className="btn btn-sm btn-ghost" disabled=${!pv.ok} title=${pv.t} onClick=${() => { upd(n => { medRevoga(n, M.id); }); if (!medRevogaDireto(M)) irPara('mesa'); }}><${Icon} n="Undo2" s=${14} /> ${pv.l}</button>
     </div>`}
+    </div>`}
   </article>`;
 }
+
+const MED_FILTROS = [['todas', 'Todas'], ['impl', 'Em implantação'], ['vigor', 'Em vigor'], ['prob', 'Com problema'], ['agu', 'Aguardando gatilho'], ['enc', 'Revogadas e encerradas'], ['rej', 'Rejeitadas ou arquivadas']];
+const MED_REJ = ['rejeitada', 'derrubada', 'arquivada', 'retirada'];
+function MedFiscalLinha({ rot, prev, real, cor }) {
+  const r = Math.abs(prev) > 1e-9 ? clamp(real / prev, 0, 1.5) : 0;
+  return html`<div className="med-fl"><div className="med-fl-t"><span className="eyebrow">${rot}</span><span className="num med-fl-v">${fmt(prev, 1)} <i>prev.</i> × ${fmt(real, 1)} <i>real.</i><small> bi/ano</small></span></div><div className="bar-track" style=${{ height: '6px' }} role="img" aria-label=${rot + ': ' + Math.round(r * 100) + '% realizado'}><i style=${{ display: 'block', height: '100%', width: Math.min(100, r * 100) + '%', background: cor }}></i></div></div>`;
+}
 function MedidasVigor({ g, upd, irPara }) {
-  const L = medL(g), vivas = L.filter(medAtivo).slice().reverse(), fim = L.filter(m => !medAtivo(m)).slice().reverse();
+  const [fil, setFil] = useState('todas'), [grp, setGrp] = useState('data'), [abertos, setAbertos] = useState({});
+  const L = medL(g), todas = L.slice().reverse(), vivas = todas.filter(medAtivo);
   const R = medResumo(g);
+  const rejL = (g.log || []).filter(l => MED_REJ.includes(l.res));
   const tot = vivas.filter(m => m.estado !== 'aguardando').reduce((a, m) => ({ c: a.c + m.fis.custo + m.fis.extra, ca: a.ca + m.fisAp.custo + m.fisAp.extra, r: a.r + m.fis.receita + (m.vigIt || []).reduce((x, v) => x + v.rev, 0), ra: a.ra + m.fisAp.receita + (m.vigIt || []).reduce((x, v) => x + (v.mes < g.mes ? v.rev : 0), 0) }), { c: 0, ca: 0, r: 0, ra: 0 });
+  const saldoP = tot.r - tot.c, saldoR = tot.ra - tot.ca;
+  const imp = (m) => medAtivo(m) && m.estado !== 'aguardando' && ['pub', 'reg', 'imp'].includes(medFase(g, m));
+  const vig = (m) => medAtivo(m) && m.estado !== 'aguardando';
+  const prb = (m) => medAtivo(m) && m.estado !== 'aguardando' && (m.probs.length > 0 || m.estado === 'suspensa');
+  const PRED = { todas: () => true, impl: imp, vigor: vig, prob: prb, agu: (m) => m.estado === 'aguardando', enc: (m) => !medAtivo(m) };
+  const conta = (k) => k === 'rej' ? rejL.length : todas.filter(PRED[k]).length;
+  const filtros = MED_FILTROS.filter(([k]) => k !== 'agu' || conta('agu') > 0);
+  const lista = fil === 'rej' ? [] : todas.filter(PRED[fil] || PRED.todas);
+  const cap = (s) => s[0].toUpperCase() + s.slice(1);
+  const chaveGrupo = (m) => grp === 'pasta' ? (medPasta(m) || 'Sem pasta definida') : grp === 'tipo' ? (MED_TIPOS[m.tipo] || MED_TIPOS.programa).nome : cap(dataMes(m.m0));
+  const grupos = [];
+  for (const m of lista) { const k = chaveGrupo(m); let G = grupos.find(x => x.k === k); if (!G) { G = { k, itens: [], o: grp === 'data' ? -m.m0 : 0 }; grupos.push(G); } G.itens.push(m); }
+  if (grp !== 'data') grupos.sort((a, b) => a.k.localeCompare(b.k, 'pt-BR'));
+  const alterna = (id) => setAbertos(o => Object.assign({}, o, { [id]: !o[id] }));
+  const todosAbertos = lista.length > 0 && lista.every(m => abertos[m.id]);
+  const abreTodos = () => setAbertos(todosAbertos ? {} : Object.fromEntries(lista.map(m => [m.id, true])));
+  const vazioTotal = L.length === 0 && rejL.length === 0;
+  const Num = ({ rot, v, cor, sub }) => html`<div className="med-tile"><div className="eyebrow">${rot}</div><div className="num med-kpi" style=${cor ? { color: cor } : null}>${v}</div>${sub && html`<div className="med-tile-s">${sub}</div>`}</div>`;
   return html`<div className="flex flex-col gap-6" data-secao-medidas="1">
     <${CabecaSecao} eyebrow="Governo" titulo="Medidas em vigor" />
     <section className="sec med-resumo" aria-label="Resumo das medidas">
-      <div className="faixa" style=${{ marginBottom: '14px' }}></div>
-      <div className="med-kpis">
-        <div><div className="eyebrow">Em vigor</div><div className="num med-kpi">${R.n}</div></div>
-        <div><div className="eyebrow">Em implantação</div><div className="num med-kpi">${R.imp}</div></div>
-        <div><div className="eyebrow">Efeito pleno ou maturação</div><div className="num med-kpi">${R.pleno}</div></div>
-        ${R.agu > 0 && html`<div><div className="eyebrow">Aguardando gatilho</div><div className="num med-kpi">${R.agu}</div></div>`}
-        <div><div className="eyebrow">Com problema</div><div className="num med-kpi" style=${{ color: R.prob ? 'var(--rubro)' : 'var(--fg)' }}>${R.prob}</div></div>
-        <div><div className="eyebrow">Despesa prevista × realizada</div><div className="num med-kpi">${fmt(tot.c, 1)} × ${fmt(tot.ca, 1)}<small> bi/ano</small></div></div>
-        <div><div className="eyebrow">Receita prevista × realizada</div><div className="num med-kpi">${fmt(tot.r, 1)} × ${fmt(tot.ra, 1)}<small> bi/ano</small></div></div>
+      <div className="faixa" style=${{ marginBottom: '16px' }}></div>
+      <div className="med-sum">
+        <div className="med-tiles">
+          <${Num} rot="Em vigor" v=${R.n} sub="medidas ativas" />
+          <${Num} rot="Em implantação" v=${R.imp} sub="ainda saindo do papel" />
+          <${Num} rot="Efeito pleno" v=${R.pleno} sub="pleno ou maturação" />
+          ${R.agu > 0 && html`<${Num} rot="Aguardando gatilho" v=${R.agu} sub="condicionais" />`}
+          <${Num} rot="Com problema" v=${R.prob} cor=${R.prob ? 'var(--rubro)' : null} sub=${R.prob ? 'pedem atenção' : 'tudo em ordem'} />
+        </div>
+        <div className="med-fiscal" aria-label="Impacto fiscal total">
+          <div className="eyebrow">Impacto fiscal (previsto × realizado)</div>
+          <${MedFiscalLinha} rot="Despesa" prev=${tot.c} real=${tot.ca} cor="var(--rubro)" />
+          <${MedFiscalLinha} rot="Receita" prev=${tot.r} real=${tot.ra} cor="var(--verde)" />
+          <div className="med-saldo"><span>Saldo líquido</span><span className="num" style=${{ color: saldoR >= 0 ? 'var(--verde)' : 'var(--rubro)' }}>${sgn(saldoR, 1)} bi/ano <i>real.</i> · ${sgn(saldoP, 1)} <i>prev.</i></span></div>
+        </div>
       </div>
-      <p className="text-xs text-muted" style=${{ marginTop: '10px' }}>O anúncio mexe na opinião e nas expectativas na hora; o efeito real e o fiscal chegam mês a mês, conforme a medida é regulamentada e implantada. Acelerar, ajustar e revogar custam uma ação.</p>
+      <p className="text-sm text-muted" style=${{ marginTop: '14px' }}>O anúncio mexe na opinião e nas expectativas na hora; o efeito real e o fiscal chegam mês a mês, conforme a medida é regulamentada e implantada. Acelerar, ajustar e revogar custam uma ação.</p>
     </section>
-    ${vivas.length === 0 && html`<section className="sec"><p className="text-muted">Nenhuma medida em vigor ainda. Medidas aprovadas na Mesa (decretos, leis, MPs, programas, tributos, regulações) aparecem aqui com prazos, custos e acontecimentos.</p></section>`}
-    <div className="med-grid">${vivas.map(M => html`<${MedCartao} key=${M.id} g=${g} M=${M} upd=${upd} irPara=${irPara} />`)}</div>
-    ${fim.length > 0 && html`<section className="sec sec-sm"><div className="eyebrow" style=${{ marginBottom: '8px' }}>Concluídas e encerradas</div><ul className="med-fim">${fim.slice(0, 12).map(M => html`<li key=${M.id}><span className="num">${medMesTxt(M.m0)}</span> <b>${M.nm}</b> <${Tag} cor=${(MED_ESTADOS[M.estado] || MED_ESTADOS.ativa)[1]}>${(MED_ESTADOS[M.estado] || MED_ESTADOS.ativa)[0]}</${Tag}>${M.not[0] ? html` <span className="text-muted text-xs">${M.not[0].x}</span>` : ''}</li>`)}</ul></section>`}
+    ${vazioTotal ? html`<section className="sec med-vazio" data-testid="med-vazio">
+      <span className="med-vazio-ic" aria-hidden="true"><${Icon} n="ClipboardList" s=${34} /></span>
+      <h3 className="disp text-2xl font-extrabold uppercase">Nenhuma medida ainda</h3>
+      <p className="text-muted">Medidas aprovadas na Mesa (decretos, leis, MPs, programas, tributos, regulações) aparecem aqui, com fase, prazos, custo previsto e realizado, problemas e notícias. Assine a primeira na caixa de decisão.</p>
+      <button type="button" className="btn btn-gold" onClick=${() => irPara('mesa')}><${Icon} n="PenLine" s=${16} /> Escrever uma medida</button>
+    </section>` : html`<section className="flex flex-col gap-4" aria-label="Lista de medidas">
+      <div className="med-barra">
+        <div className="med-filtros" role="group" aria-label="Filtrar medidas">${filtros.map(([k, n]) => html`<button key=${k} type="button" className="med-fil" aria-pressed=${fil === k} data-fil=${k} onClick=${() => setFil(k)}>${n}<span className="num">${conta(k)}</span></button>`)}</div>
+        <div className="med-ctl">
+          <label className="med-sel"><span className="eyebrow">Agrupar por</span><select value=${grp} onChange=${e => setGrp(e.target.value)} aria-label="Agrupar medidas por"><option value="data">Mês de aprovação</option><option value="pasta">Pasta</option><option value="tipo">Tipo de medida</option></select></label>
+          ${fil !== 'rej' && lista.length > 0 && html`<button type="button" className="btn btn-ghost btn-sm" onClick=${abreTodos}><${Icon} n=${todosAbertos ? 'ChevronsUp' : 'ChevronsDown'} s=${14} /> ${todosAbertos ? 'Recolher tudo' : 'Expandir tudo'}</button>`}
+        </div>
+      </div>
+      ${fil === 'rej' ? (rejL.length === 0 ? html`<div className="sec sec-sm text-muted" data-testid="med-sem-itens">Nenhuma proposta rejeitada ou arquivada até agora.</div>` :
+        html`<ul className="med-rej">${rejL.map((l, i) => html`<li key=${i}><span className="num">${dataCurta(l.mes)}</span><span className="med-rej-t"><b>${l.ato}</b> · ${l.texto}</span><${Tag} cor=${(l.res === 'retirada' || l.res === 'arquivada') ? 'var(--muted)' : 'var(--rubro)'}>${l.res}</${Tag}></li>`)}</ul>`) :
+      lista.length === 0 ? html`<div className="sec sec-sm med-vazio-f" data-testid="med-sem-itens"><p className="text-muted">Nenhuma medida neste filtro.</p><button type="button" className="btn btn-ghost btn-sm" onClick=${() => setFil('todas')}>Ver todas</button></div>` :
+      grupos.sort((a, b) => (grp === 'data' ? a.o - b.o : 0)).map(G => html`<div key=${G.k} className="med-grupo" data-grupo=${G.k}>
+        <div className="med-gh"><h3>${G.k}</h3><span className="num">${G.itens.length} ${G.itens.length === 1 ? 'medida' : 'medidas'}</span></div>
+        <div className="med-lista">${G.itens.map(M => html`<${MedCartao} key=${M.id} g=${g} M=${M} upd=${upd} irPara=${irPara} aberto=${!!abertos[M.id]} onToggle=${() => alterna(M.id)} />`)}</div>
+      </div>`)}
+    </section>`}
   </div>`;
 }
 
@@ -12708,12 +12919,13 @@ function eleicao(g) {
 
 /* ============================== FASE 2: PAINEL, TRAMITAÇÃO E GOVERNO (LÓGICA) ============================== */
 const KPI_MAX = 12;
-const KPI_PADRAO = ['ap', 'pib', 'des', 'ipca', 'selic', 'dol', 'prim', 'risco'];
+const KPI_PADRAO = ['ap', 'pib', 'pibpc', 'des', 'ipca', 'selic', 'dol', 'prim', 'risco'];
 const PIB_NOMINAL = 12000; // R$ bi, ordem de grandeza
 const jurosDivida = (g) => g.eco.divida / 100 * (g.eco.pibNom || PIB_NOMINAL) * (g.eco.selic * .8) / 100; // dívida × PIB nominal × Selic efetiva (0,8 × Selic, mesma taxa usada na dinâmica da dívida)
 const KPIS = [
   { k: 'ap', nome: 'Aprovação', u: '%', d: 0, pol: 1, get: (g) => aprovacao(g), hs: 'ap' },
   { k: 'pib', nome: 'PIB', u: '%', d: 1, pol: 1, get: (g) => g.eco.pib, hs: 'pib' },
+  { k: 'pibpc', nome: 'PIB per capita', pre: 'R$ ', u: '', d: 0, pol: 1, get: (g) => pibPerCapita(g), hs: 'pibNom', hf: (g, v) => pibPerCapita(g, v), meta: 'IBGE 2025', fonte: 'PIB per capita do Brasil: R$ 59.687 em 2025 (IBGE, Contas Nacionais Trimestrais, divulgadas em 3/3/2026; PIB corrente de R$ 12,7 trilhões dividido pela população). No jogo, parte desse valor e acompanha o PIB nominal simulado mês a mês, a mesma regra usada por estado na aba País.' },
   { k: 'des', nome: 'Desemprego', u: '%', d: 1, pol: -1, get: (g) => g.eco.des, hs: 'des' },
   { k: 'ipca', nome: 'IPCA (12 meses)', u: '%', d: 1, pol: -1, get: (g) => g.eco.ipca, hs: 'ipca', meta: 'meta 3%' },
   { k: 'selic', nome: 'Selic', u: '%', d: 2, pol: -1, get: (g) => g.eco.selic, hs: 'selic' },
@@ -12730,8 +12942,10 @@ const KPIS = [
   { k: 'stf', nome: 'Tensão com o STF', u: ' pts', d: 0, pol: -1, get: (g) => g.stf, hs: 'stf' }
 ];
 const KPIMAP = Object.fromEntries(KPIS.map(k => [k.k, k]));
+// PIB per capita nacional: valor real de 2025 (IBGE) atualizado pelo PIB nominal simulado, igual ao PIB per capita por UF (ufDados)
+function pibPerCapita(g, pibNom) { const b = IND_DADOS.nac.pibpc.v, p0 = (g.f3 && g.f3.pibNom0) || g.eco.pibNom; return b * (pibNom != null ? pibNom : g.eco.pibNom) / p0; }
 function kpiInfo(g, K) {
-  const cur = K.get(g); const h = (g.hist && g.hist[K.hs]) || [];
+  const cur = K.get(g); let h = (g.hist && g.hist[K.hs]) || []; if (K.hf) h = h.map(v => K.hf(g, v));
   const mesPass = h.length >= 2 ? cur - h[h.length - 2] : 0; const posse = h.length >= 1 ? cur - h[0] : 0;
   const eps = Math.pow(10, -K.d) / 2;
   const cor = (x) => (Math.abs(x) < eps ? 'var(--muted)' : (x * K.pol > 0 ? 'var(--verde)' : 'var(--rubro)'));
@@ -13319,7 +13533,7 @@ function orientacoesBloco(nominal, casa) {
 /* ---- inicialização e migração dos campos novos ---- */
 function fase2Default(g) {
   f3Default(g);
-  g.ui = g.ui || {}; if (!Array.isArray(g.ui.kpis)) g.ui.kpis = KPI_PADRAO.slice(); g.ui.kpis = g.ui.kpis.filter(k => KPIMAP[k]).slice(0, KPI_MAX); if (g.ui.vista !== 'lista') g.ui.vista = 'cartoes';
+  g.ui = g.ui || {}; if (!Array.isArray(g.ui.kpis)) g.ui.kpis = KPI_PADRAO.slice(); else if (g.ui.kpis.join() === 'ap,pib,des,ipca,selic,dol,prim,risco') g.ui.kpis = KPI_PADRAO.slice(); g.ui.kpis = g.ui.kpis.filter(k => KPIMAP[k]).slice(0, KPI_MAX); if (g.ui.vista !== 'lista') g.ui.vista = 'cartoes';
   if (typeof g.ui.fotos !== 'boolean') g.ui.fotos = true; if (typeof g.ui.logos !== 'boolean') g.ui.logos = true; if (!SECAO_KS.includes(g.ui.sec)) g.ui.sec = 'mesa'; if (!g.ui.chip || typeof g.ui.chip !== 'object') g.ui.chip = {};
   const H = g.hist; const n = H.ap.length;
   const cur = { div: g.eco.divida, prim: primario(g), juros: jurosDivida(g), hom: g.soc.hom, pob: g.soc.pob, conf: g.eco.conf, desm: g.soc.desm, idh: g.soc.idh, stf: g.stf, imp: riscoImpeachment(g) };
@@ -15228,7 +15442,7 @@ function VotacaoViva({ plano, idx0, onConcluir }) {
 function KpiCartao({ g, K }) {
   const I = kpiInfo(g, K);
   return html`<div className="card p-3 flex flex-col gap-1.5 min-w-0" data-kpi=${K.k}>
-    <div className="flex items-baseline justify-between gap-2"><span className="eyebrow truncate">${K.nome}</span>${K.meta && html`<span className="text-[10px] text-muted whitespace-nowrap">${K.meta}</span>`}</div>
+    <div className="flex items-baseline justify-between gap-2"><span className="eyebrow truncate" title=${K.fonte || K.nome}>${K.nome}</span>${K.meta && html`<span className="text-[10px] text-muted whitespace-nowrap" title=${K.fonte || ''}>${K.meta}</span>`}</div>
     <div className="flex items-end justify-between gap-2"><div className="num text-2xl font-semibold leading-none">${kpiTxt(K, I.cur)}</div><${Spark} data=${I.serie} w=${64} hh=${24} cor=${I.corM} /></div>
     <div className="flex items-center justify-between gap-2 text-xs"><span className="num" style=${{ color: I.corM }} title="Variação em relação ao mês anterior">${I.setaM} ${sgn(I.mesPass, K.d)} no mês</span><span className="num text-[11px]" style=${{ color: I.corP }} title="Variação desde a posse">${sgn(I.posse, K.d)} desde a posse</span></div>
   </div>`;
@@ -15236,7 +15450,7 @@ function KpiCartao({ g, K }) {
 function KpiMini({ g, K }) {
   const I = kpiInfo(g, K);
   return html`<div className="rounded-lg p-3 min-w-0" style=${{ background: 'var(--panel2)' }} data-kpi=${K.k}>
-    <div className="eyebrow truncate">${K.nome}</div>
+    <div className="eyebrow truncate" title=${K.fonte || K.nome}>${K.nome}</div>
     <div className="flex items-baseline justify-between gap-2"><span className="num text-lg font-semibold whitespace-nowrap">${kpiTxt(K, I.cur)}</span><span className="num text-xs whitespace-nowrap" style=${{ color: I.corM }} title="Variação em relação ao mês anterior">${I.setaM} ${sgn(I.mesPass, K.d)}</span></div></div>`;
 }
 function KpiBoard({ g, upd, compacto }) {
@@ -15252,14 +15466,14 @@ function KpiBoard({ g, upd, compacto }) {
         <button className="btn btn-ghost text-sm" aria-expanded=${aberto} onClick=${() => setAberto(!aberto)}><${Icon} n="SlidersHorizontal" s=${14} /> Escolher indicadores</button>
         ${aberto && html`<div className="absolute right-0 top-full mt-1 z-20 card p-3 w-72 max-h-80 overflow-y-auto" role="dialog" aria-label="Escolher indicadores">
           <div className="text-xs text-muted mb-2">${sel.length}/${KPI_MAX} selecionados (máximo ${KPI_MAX}).</div>
-          <ul className="flex flex-col gap-1">${KPIS.map(K => { const on = g.ui.kpis.includes(K.k); return html`<li key=${K.k}><label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked=${on} disabled=${!on && sel.length >= KPI_MAX} onChange=${() => alterna(K.k)} /> ${K.nome}</label></li>`; })}</ul>
+          <ul className="flex flex-col gap-1">${KPIS.map(K => { const on = g.ui.kpis.includes(K.k); return html`<li key=${K.k}><label className="flex items-center gap-2 text-sm cursor-pointer" title=${K.fonte || ''}><input type="checkbox" checked=${on} disabled=${!on && sel.length >= KPI_MAX} onChange=${() => alterna(K.k)} /> ${K.nome}</label></li>`; })}</ul>
           <button className="btn btn-ghost text-xs mt-2" onClick=${() => setAberto(false)}>Fechar</button>
         </div>`}
       </div>
     </div>
     ${sel.length === 0 ? html`<p className="text-sm text-muted">Nenhum indicador selecionado. Use “Escolher indicadores”.</p>` :
     vista === 'lista' ? html`<div className="scroll-x"><table className="w-full text-sm"><thead><tr className="text-muted text-xs"><th className="text-left font-normal py-1">Indicador</th><th className="text-right font-normal">Agora</th><th className="text-right font-normal">No mês</th><th className="text-right font-normal">Desde a posse</th></tr></thead><tbody>
-      ${sel.map(K => { const I = kpiInfo(g, K); return html`<tr key=${K.k} className="border-t border-line" data-kpi=${K.k}><td className="py-1.5">${K.nome}${K.meta && html` <span className="text-[10px] text-muted">(${K.meta})</span>`}</td><td className="num text-right">${kpiTxt(K, I.cur)}</td><td className="num text-right" style=${{ color: I.corM }}>${I.setaM} ${sgn(I.mesPass, K.d)}</td><td className="num text-right" style=${{ color: I.corP }}>${sgn(I.posse, K.d)}</td></tr>`; })}
+      ${sel.map(K => { const I = kpiInfo(g, K); return html`<tr key=${K.k} className="border-t border-line" data-kpi=${K.k}><td className="py-1.5" title=${K.fonte || ''}>${K.nome}${K.meta && html` <span className="text-[10px] text-muted">(${K.meta})</span>`}</td><td className="num text-right">${kpiTxt(K, I.cur)}</td><td className="num text-right" style=${{ color: I.corM }}>${I.setaM} ${sgn(I.mesPass, K.d)}</td><td className="num text-right" style=${{ color: I.corP }}>${sgn(I.posse, K.d)}</td></tr>`; })}
     </tbody></table></div>` :
     html`<div className=${compacto ? 'grid grid-cols-2 gap-2' : 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3'}>${sel.map(K => compacto ? html`<${KpiMini} key=${K.k} g=${g} K=${K} />` : html`<${KpiCartao} key=${K.k} g=${g} K=${K} />`)}</div>`}
   </section>`;
@@ -15317,15 +15531,15 @@ function CartaoPoderes({ g }) {
 }
 
 /* ---- linha do mandato ---- */
-function LinhaItem({ e }) {
-  return html`<li className="flex items-start gap-2 text-sm"><span className="num text-xs text-muted w-14 shrink-0 mt-0.5">${dataCurta(e.mes)}</span><span className="chip shrink-0 !text-[10px]" style=${{ color: LINHA_CATS[e.cat] || 'var(--muted)', borderColor: LINHA_CATS[e.cat] || 'var(--line)' }}>${e.cat}</span><span className="flex-1 min-w-0 leading-snug">${e.txt}</span></li>`;
+function LinhaItem({ e, semData }) {
+  return html`<li className="flex items-start gap-2 text-sm">${!semData && html`<span className="num text-xs text-muted w-14 shrink-0 mt-0.5">${dataCurta(e.mes)}</span>`}<span className="chip shrink-0 !text-[10px]" style=${{ color: LINHA_CATS[e.cat] || 'var(--muted)', borderColor: LINHA_CATS[e.cat] || 'var(--line)' }}>${e.cat}</span><span className="flex-1 min-w-0 leading-snug">${e.txt}</span></li>`;
 }
 function CartaoLinha({ g, max = 8, plano }) {
   const [tudo, setTudo] = useState(false);
   const L = g.linha || [];
   return html`<div className=${plano ? '' : 'sec'}><div className="flex items-center justify-between mb-3"><h3 className=${plano ? 'h-quiet' : 'disp text-xl font-extrabold uppercase'}>Linha do mandato</h3>${L.length > max && html`<button type="button" className="btn btn-ghost text-xs" onClick=${() => setTudo(true)}>Ver tudo (${L.length})</button>`}</div>
-    ${L.length === 0 ? html`<p className="text-sm text-muted">Os fatos do mandato aparecem aqui.</p>` : html`<ul className="flex flex-col gap-2">${L.slice(0, max).map((e, i) => html`<${LinhaItem} key=${i} e=${e} />`)}</ul>`}
-    ${tudo && html`<${Gaveta} titulo="Linha do mandato" eyebrow=${L.length + ' fatos registrados'} onClose=${() => setTudo(false)}><ul className="flex flex-col gap-3">${L.map((e, i) => html`<${LinhaItem} key=${i} e=${e} />`)}</ul></${Gaveta}>`}
+    ${L.length === 0 ? html`<p className="text-sm text-muted">Os fatos do mandato aparecem aqui.</p>` : html`<${PorMes} id="linha" fixo=${true} itens=${L.slice(0, max)} atual=${g.mes} unidade=${['fato', 'fatos']} render=${(e, i) => html`<${LinhaItem} key=${i} e=${e} semData=${true} />`} />`}
+    ${tudo && html`<${Gaveta} titulo="Linha do mandato" eyebrow=${L.length + ' fatos registrados'} onClose=${() => setTudo(false)}><${PorMes} id="linha-tudo" itens=${L} atual=${g.mes} unidade=${['fato', 'fatos']} render=${(e, i) => html`<${LinhaItem} key=${i} e=${e} semData=${true} />`} /></${Gaveta}>`}
   </div>`;
 }
 
@@ -15865,6 +16079,65 @@ function ChipsNav({ id, chips, atual, onSel, rotulo }) {
 }
 
 /* ---- Mesa ---- */
+/* ---- v4.2 visual: agrupamento por mês (Diário e Linha do mandato) e banca de jornal ---- */
+const capMes = (m) => { const s = dataMes(m); return s[0].toUpperCase() + s.slice(1); };
+function PorMes({ itens, atual, render, unidade, fixo, id }) {
+  const meses = []; for (const it of itens) { let G = meses.find(x => x.mes === it.mes); if (!G) { G = { mes: it.mes, L: [] }; meses.push(G); } G.L.push(it); }
+  const [ab, setAb] = useState({});
+  const cur = meses.some(G => G.mes === atual) ? atual : (meses[0] && meses[0].mes);
+  return html`<div className="pm" data-por-mes=${id || ''}>${meses.map(G => {
+    const aberto = fixo || (ab[G.mes] != null ? ab[G.mes] : G.mes === cur);
+    const n = G.L.length, rot = `${capMes(G.mes)} · ${n} ${n === 1 ? unidade[0] : unidade[1]}`;
+    return html`<section key=${G.mes} className="pm-g" data-mes-grupo=${G.mes} data-aberto=${aberto ? '1' : '0'}>
+      ${fixo ? html`<h4 className="pm-h pm-h-fixo">${rot}</h4>` : html`<button type="button" className="pm-h" aria-expanded=${aberto} onClick=${() => setAb(o => Object.assign({}, o, { [G.mes]: !aberto }))}><span>${rot}</span><${Icon} n=${aberto ? 'ChevronUp' : 'ChevronDown'} s=${16} /></button>`}
+      ${aberto && html`<ul className="pm-l">${G.L.map((it, i) => render(it, i))}</ul>`}
+    </section>`;
+  })}</div>`;
+}
+const BANCA = {
+  globo: { cidade: 'Rio de Janeiro', cls: 'j-globo' },
+  carta: { cidade: 'São Paulo', cls: 'j-carta' },
+  antag: { cidade: 'Brasília', cls: 'j-antag' }
+};
+const BANCA_NEG = /derrota|rejeit|derrub|crise|esc[âa]ndalo|fracass|naufrag|rev[ée]s|barr|suspende|imp[õo]e|sem resposta|perde|\bcai\b|queda|faltaram|estouro|rombo|calote|greve|protesto|vaia|deixa a classe m[ée]dia/i;
+const BANCA_POS = /aprova|vit[óo]ria|celebra|ganha|avan[çc]|cresce|recorde|al[ií]vio|aplaude|elogi|sanciona|beneficia|sucesso|conquista/i;
+function bancaTom(f) { const t = f.txt || ''; return BANCA_NEG.test(t) ? 'neg' : BANCA_POS.test(t) ? 'pos' : 'neu'; }
+const BANCA_TOM = { pos: ['▲', 'Favorável'], neg: ['▼', 'Crítica'], neu: ['●', 'Neutra'] };
+function Jornal({ f, grande, pequeno }) {
+  const V = VEICULOS[f.src] || VEICULOS.globo, B = BANCA[f.src] || BANCA.globo, tom = bancaTom(f), T = BANCA_TOM[tom];
+  return html`<article className=${'jornal ' + B.cls + ' j-' + tom + (grande ? ' j-grande' : '') + (pequeno ? ' j-peq' : '')} data-jornal=${f.src} data-tom=${tom}>
+    <header className="j-mast"><span className="j-nome">${V.nome}</span><span className="j-selo" title="Manchete simulada, sátira do jogo">simulado</span></header>
+    <div className="j-data"><span>${B.cidade}, ${dataMes(f.mes)}</span><span className="j-tom" data-tom=${tom}>${T[0]} ${T[1]}</span></div>
+    <h4 className="j-hl">${f.txt}</h4>
+    ${f.sub && !pequeno && html`<p className="j-sub">${f.sub}</p>`}
+    ${grande && !f.sub && html`<div className="j-lin" aria-hidden="true">${Array.from({ length: 9 }, (_, i) => html`<i key=${i}></i>`)}</div>`}
+  </article>`;
+}
+function BancaJornal({ g }) {
+  const F = (g.feed || []).filter(f => VEICULOS[f.src]).slice(0, 8);
+  if (F.length === 0) return html`<section className="sec sec-sm" aria-labelledby="banca-t"><h3 id="banca-t" className="h-quiet mb-3">Banca de jornal</h3><p className="text-sm text-muted">A banca ainda não tem edição. As manchetes aparecem conforme você assina medidas e o mês avança.</p></section>`;
+  const peso = (f) => (f.sub ? 1 : 0) + (bancaTom(f) !== 'neu' ? 1 : 0) + (f.txt.length > 60 ? .5 : 0);
+  const topo = F.slice(0, 3); let lead = topo[0]; for (const f of topo) if (peso(f) > peso(lead)) lead = f;
+  const outros = topo.filter(f => f !== lead), resto = F.slice(3);
+  return html`<section className="sec sec-sm banca" aria-labelledby="banca-t" data-secao="banca">
+    <div className="flex flex-wrap items-end justify-between gap-2 mb-3"><h3 id="banca-t" className="h-quiet">Banca de jornal</h3><span className="eyebrow">edição de ${dataMes(F[0].mes)} · manchetes simuladas</span></div>
+    <div className="banca-capas" data-testid="banca-capas">
+      <${Jornal} f=${lead} grande=${true} />
+      ${outros.map((f, i) => html`<${Jornal} key=${i} f=${f} />`)}
+    </div>
+    ${resto.length > 0 && html`<div className="eyebrow mt-4 mb-2">Recortes das edições anteriores</div><div className="banca-rec">${resto.map((f, i) => html`<${Jornal} key=${i} f=${f} pequeno=${true} />`)}</div>`}
+  </section>`;
+}
+function DiarioMandato({ g }) {
+  return html`<section className="sec sec-sm" aria-labelledby="diario-t" data-secao="diario">
+    <div className="flex items-center justify-between mb-3"><h3 id="diario-t" className="h-quiet">Diário do mandato</h3><span className="eyebrow">${g.log.length} atos</span></div>
+    ${g.log.length === 0 ? html`<p className="text-sm text-muted">Nenhum ato assinado ainda. Sua primeira decisão aparece aqui, com número oficial e resultado.</p>` :
+    html`<${PorMes} id="diario" itens=${g.log} atual=${g.mes} unidade=${['ato', 'atos']} render=${(l, i) => html`<li key=${i} className="pm-i">
+      <span className="text-sm flex-1 min-w-0"><b>${l.ato}</b> · ${l.texto}</span>
+      <${Tag} cor=${l.res === 'aprovada' ? 'var(--verde)' : (l.res === 'retirada' || l.res === 'arquivada') ? 'var(--muted)' : l.res === 'tramitando' ? 'var(--ouro)' : 'var(--rubro)'}>${l.res}</${Tag}></li>`} />`}
+  </section>`;
+}
+
 function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino }) {
   const [txt, setTxt] = useState('');
   useEffect(() => { if (refino && refino.texto) { setTxt(refino.texto); try { const el = document.getElementById('caixa'); if (el && el.focus) el.focus(); } catch (e) { } } }, [refino && refino.n]);
@@ -15936,20 +16209,8 @@ function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino 
       ${resMed && html`<section className="sec sec-sm" aria-label="Medidas em vigor" data-resumo-medidas="1"><div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0"><span className="text-ouro" aria-hidden="true"><${Icon} n="ClipboardList" s=${20} /></span><div className="min-w-0"><div className="eyebrow">Medidas em vigor</div><div className="text-sm font-semibold">${resMed.titulo}</div></div></div>
         <button type="button" className="btn btn-ghost btn-sm" onClick=${() => irPara('medidas')}>Acompanhar <${Icon} n="ChevronRight" s=${14} /></button></div></section>`}
-      <div className="grid gap-6 md:grid-cols-2">
-        <section className="sec sec-sm" aria-labelledby="diario-t">
-          <div className="flex items-center justify-between mb-3"><h3 id="diario-t" className="h-quiet">Diário do mandato</h3><span className="eyebrow">${g.log.length} atos</span></div>
-          ${g.log.length === 0 ? html`<p className="text-sm text-muted">Nenhum ato assinado ainda. Sua primeira decisão aparece aqui, com número oficial e resultado.</p>` :
-          html`<ul className="flex flex-col gap-2">${g.log.slice(0, 6).map((l, i) => html`<li key=${i} className="flex flex-wrap gap-x-3 gap-y-1 items-baseline">
-            <span className="num text-xs text-muted w-14 shrink-0">${dataCurta(l.mes)}</span>
-            <span className="text-sm flex-1 min-w-0"><b>${l.ato}</b> · ${l.texto}</span>
-            <${Tag} cor=${l.res === 'aprovada' ? 'var(--verde)' : (l.res === 'retirada' || l.res === 'arquivada') ? 'var(--muted)' : l.res === 'tramitando' ? 'var(--ouro)' : 'var(--rubro)'}>${l.res}</${Tag}></li>`)}</ul>`}
-        </section>
-        <section className="sec sec-sm" aria-labelledby="banca-t">
-          <h3 id="banca-t" className="h-quiet mb-3">Banca de jornal</h3>
-          <ul className="flex flex-col gap-3">${g.feed.slice(0, 5).map((f, i) => html`<${Manchete} key=${i} f=${f} />`)}</ul>
-        </section>
-      </div>
+      <${BancaJornal} g=${g} />
+      <${DiarioMandato} g=${g} />
     </div>
     <div className="lg:col-span-4 min-w-0"><${PulsoMes} g=${g} upd=${upd} irEu=${() => { if (irPara) irPara('eu'); }} /></div>
     ${gav && html`<${Gaveta} titulo=${GAVETA_TIT[gav.kind] || 'Detalhe'} eyebrow="Mesa · detalhe" onClose=${() => setGav(null)}>${corpo(gav.kind)}</${Gaveta}>`}
