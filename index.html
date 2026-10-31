@@ -14422,11 +14422,13 @@ function logoChave(sigla, blocoId) {
   const kb = LOGO_BLOCO[b];
   return kb && D[kb] ? kb : null;
 }
-function LogoPartido({ sigla, bloco: bl0, tam = 40 }) {
+const LOGO_ESCURO = { CIDADANIA: 1, PODE: 1 }; // logotipos escuros que somem no preto: mantêm a placa mesmo no modo limpo
+function LogoPartido({ sigla, bloco: bl0, tam = 40, limpo = false }) {
   const bid = bl0 || (sigla ? bloco(String(sigla).toUpperCase()) : 'OUTROS');
   const chave = logoChave(sigla, bid), uri = logoUri(chave);
   if (!uri) return html`<${Emblema} bloco=${bid} tam=${tam} />`;
   const pad = Math.max(2, Math.round(tam * .08));
+  if (limpo && !LOGO_ESCURO[chave]) return html`<span data-logo=${chave} className="inline-flex shrink-0" style=${{ width: tam, height: tam }}><img src=${uri} alt=${'Logotipo do ' + chave} width=${tam} height=${tam} decoding="async" style=${{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} /></span>`;
   return html`<span data-logo=${chave} className="inline-flex shrink-0" style=${{ width: tam, height: tam, padding: pad, boxSizing: 'border-box', borderRadius: Math.round(tam * .16), background: LOGO_PLACA_CLARA[chave] || 'var(--panel)', border: '1px solid var(--line)', flex: 'none' }}>
     <img src=${uri} alt=${'Logotipo do ' + (chave === 'PCdoB' ? 'PCdoB' : chave)} width=${tam - pad * 2} height=${tam - pad * 2} loading="lazy" decoding="async" style=${{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} /></span>`;
 }
@@ -16205,10 +16207,10 @@ function SinaisVitais({ g, onConfig, encerrar, irEu }) {
       <div className="vit-pes">
         <${Ef} nome=${g.cfg.nome} cor=${corPresidente(g.cfg)} papel="presidente" s=${40} p=${g.cfg} />
         <div className="min-w-0">
-          <div className="flex items-center gap-2 min-w-0 flex-wrap"><span className="disp vit-nome min-w-0">${g.cfg.nome}<span className="vit-part hidden sm:inline"> · ${nomePartido(g.cfg)}</span></span>${g.cfg.real && html`<${Tag} cor="var(--muted)">real</${Tag}>`}<${QvDifChip} g=${g} /></div>
-          <div className="vit-sub truncate" title=${'Modo de jogo: ' + m.nome}>Presidente · modo ${m.nome.toLowerCase()}</div>
+          <div className="flex items-center gap-2 min-w-0 flex-wrap"><span className="disp vit-nome min-w-0">${g.cfg.nome}<span className="vit-part hidden sm:inline"> · ${nomePartido(g.cfg)}</span></span></div>
+          <div className="vit-sub truncate" title=${'Modo de jogo: ' + m.nome}>Presidente</div>
         </div>
-        ${g.cfg.partido && html`<span className="vit-partido hidden md:flex" title=${nomePartido(g.cfg)}><${LogoPartido} sigla=${g.cfg.siglaReal || null} bloco=${g.cfg.partido} tam=${30} /><span className="faixa-sk" aria-hidden="true" style=${{ background: corPresidente(g.cfg) }}></span></span>`}
+        ${g.cfg.partido && html`<span className="vit-partido hidden md:flex" title=${nomePartido(g.cfg)}><${LogoPartido} sigla=${g.cfg.siglaReal || null} bloco=${g.cfg.partido} tam=${34} limpo=${true} /><span className="faixa-sk" aria-hidden="true" style=${{ background: corPresidente(g.cfg) }}></span></span>`}
       </div>
       <div className="vit-ctl">
         <div className="vit vit-mes" title="Mês do mandato"><div className="vit-k">Mês</div><div className="vit-v num"><span data-vital-v="mes">${g.mes} / 48</span></div></div>
@@ -16375,7 +16377,7 @@ function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino 
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div><div className="eyebrow">Caixa de decisão</div><label id="caixa-t" htmlFor="caixa" className="disp tit-l block">Escreva sua medida</label></div>
           <div className="flex flex-wrap items-center gap-3 justify-end">
-            <${Tag} cor="var(--anil)"><${Icon} n="Cpu" s=${11} /> ${motorNome}</${Tag}>
+            
             <div className="acoes-q" data-vital="acoes" data-acoes=${g.acoes} title="Ações políticas restantes neste mês e energia do presidente">
               <span className="acoes-rot">ações do mês</span>
               <span className="acoes-sq" role="img" aria-label=${g.acoes + ' de 5 ações'}>${[0, 1, 2, 3, 4].map(i => html`<i key=${i} data-on=${i < g.acoes ? '1' : '0'}></i>`)}</span>
@@ -22437,10 +22439,11 @@ const MOTORES = [
   { k: 'openai', nome: 'API OpenAI', d: 'Chave própria (sk-…).', key: true, model: 'gpt-4o-mini' },
   { k: 'gemini', nome: 'API Gemini', d: 'Chave própria do Google AI Studio.', key: true, model: 'gemini-2.0-flash' }
 ];
-function ModalConfig({ ia, setIa, temClaude, onClose, reiniciar, fotos, setFotos, temFotos, logos, setLogos, temLogos }) {
+function ModalConfig({ ia, setIa, temClaude, onClose, reiniciar, voltarMenu, fotos, setFotos, temFotos, logos, setLogos, temLogos }) {
   const [conf, setConf] = useState(false);
   const M = MOTORES.find(m => m.k === ia.motor);
   return html`<${Modal} label="Configurações" onClose=${onClose}><div className="card p-5 sm:p-6 flex flex-col gap-4">
+    ${voltarMenu && html`<div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-line" data-cfg="menu"><div className="min-w-0"><div className="font-semibold">Voltar ao menu inicial</div><div className="text-xs text-muted">O mandato fica salvo: no menu, use Continuar para voltar de onde parou.</div></div><button type="button" className="btn btn-ghost" data-voltar-menu="1" onClick=${voltarMenu}><${Icon} n="House" s=${16} /> Voltar ao menu</button></div>`}
     <div className="flex items-center justify-between"><h2 className="disp text-3xl font-black uppercase">Motor de decisões</h2><button className="btn btn-ghost" onClick=${onClose} aria-label="Fechar"><${Icon} n="X" /></button></div>
     <div className="grid sm:grid-cols-2 gap-2">${MOTORES.map(m => { const off = m.claude && !temClaude; return html`<button key=${m.k} disabled=${off} onClick=${() => setIa({ ...ia, motor: m.k, model: m.model || '' })} className=${'card p-3 text-left transition disabled:opacity-40 ' + (ia.motor === m.k ? '!border-ouro' : 'hover:border-muted')}>
       <div className="font-semibold flex items-center gap-2">${m.nome}${ia.motor === m.k && html`<span className="ml-auto text-ouro"><${Icon} n="Check" /></span>`}</div><div className="text-xs text-muted mt-1">${off ? 'Indisponível nesta visualização.' : m.d}</div></button>`; })}</div>
@@ -27122,7 +27125,7 @@ function carregaSave() {
 function gravaSave(g) { try { qvGrava(g); } catch (e) { } }
 function App() {
   const [g, setG] = useState(null);
-  const [save] = useState(carregaSave);
+  const [save, setSave] = useState(carregaSave);
   const [dec, setDec] = useState(null);
   const [relMes, setRelMes] = useState(null);
   const [cfgOpen, setCfgOpen] = useState(false);
@@ -27224,6 +27227,8 @@ function App() {
   };
   const votarItem = (id) => { const gg = gRef.current; const it = gg.pauta.find(x => x.id === id); if (!it) return; { const b = gvBloqPEC(gg, it.prop); if (b) { setAviso(b.msg); return; } } const prop = propDoItem(it); setDec({ stage: 'votando', prop, item: id, plano: decideVotacao(gg, prop, true, quorum(prop.inst)) }); };
   const encerrarMes = () => { const n = structuredClone(gRef.current); const r = fimDoMes(n); gRef.current = n; setG(n); setRelMes(r); };
+  // volta à tela inicial sem apagar o save: o botão Continuar retoma do mesmo ponto
+  const voltarMenu = () => { const gg = gRef.current; if (gg) { gravaSave(gg); setSave(gg); } setG(null); setCfgOpen(false); setRelMes(null); setDec(null); setWiz(null); };
   const reiniciar = () => { gravaSave(null); setG(null); setCfgOpen(false); setRelMes(null); setDec(null); setWiz(null); try { if (typeof history !== 'undefined' && history.replaceState) history.replaceState(null, '', location.pathname + location.search); } catch (e) { } };
 
   if (!g && wiz) return html`<${Wizard} key=${wiz.id} inicial=${wiz.cfg} passoInicial=${wiz.passo} notaIdeo=${wiz.nota} temSave=${!!save && (!save.over || !!save.over.leg || save.over.tipo === 'personagem')} onContinuar=${() => setG(save)} onTrocar=${() => setWiz(null)} onStart=${cfg => { qvNovo(); setG(novoJogo(cfg)); setWiz(null); }} />`;
@@ -27254,7 +27259,7 @@ function App() {
     ${dec && html`<${ModalDecisao} dec=${dec} g=${g} upd=${upd} setDec=${setDec} onClose=${() => setDec(null)} />`}
     ${relMes && html`<${ModalMes} rel=${relMes} g=${g} onClose=${() => setRelMes(null)} />`}
     ${aviso && html`<div className="toast card px-4 py-3 text-sm flex items-center gap-2 fade-in" role="status"><span className=${typeof aviso === 'string' ? 'text-ambar' : 'text-ouro'}><${Icon} n=${typeof aviso === 'string' ? 'TriangleAlert' : 'Award'} /></span>${typeof aviso === 'string' ? aviso : aviso.x}</div>`}
-    ${cfgOpen && html`<${ModalConfig} ia=${ia} setIa=${setIa} temClaude=${temClaude} onClose=${() => setCfgOpen(false)} reiniciar=${reiniciar} fotos=${g.ui.fotos !== false} setFotos=${setFotos} temFotos=${!!FOTO_ST.dados} logos=${g.ui.logos !== false} setLogos=${setLogos} temLogos=${!!LOGO_ST.dados} />`}
+    ${cfgOpen && html`<${ModalConfig} ia=${ia} setIa=${setIa} temClaude=${temClaude} onClose=${() => setCfgOpen(false)} reiniciar=${reiniciar} voltarMenu=${voltarMenu} fotos=${g.ui.fotos !== false} setFotos=${setFotos} temFotos=${!!FOTO_ST.dados} logos=${g.ui.logos !== false} setLogos=${setLogos} temLogos=${!!LOGO_ST.dados} />`}
   </div>`;
 }
 
