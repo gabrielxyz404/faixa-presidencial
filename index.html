@@ -372,7 +372,8 @@
   .bar-track { background: var(--line); border: 0; }
   hr, .border-line { border-color: var(--line); }
   .faixa { height: 3px; }
-  .faixa-sk { flex: none; height: 6px; width: 120px; border-radius: 3px; background: linear-gradient(90deg, var(--verde) 0 55%, var(--ouro) 55%); transform: skewX(-20deg); margin-left: 6px; }
+  .faixa-sk { flex: none; height: 6px; width: 96px; border-radius: 3px; background: var(--muted); transform: skewX(-20deg); }
+  .vit-partido { flex: none; align-items: center; gap: 10px; margin-left: 6px; } /* logo e cor do partido do presidente */
   /* botões: amarelo = ação principal; contorno = secundária; branco = assinar */
   .btn { border-radius: 8px; font-weight: 600; font-family: var(--f-body); }
   .btn-pri, .btn-gold { background: var(--ouro); color: #000; padding: 8px 14px; }
@@ -16207,7 +16208,7 @@ function SinaisVitais({ g, onConfig, encerrar, irEu }) {
           <div className="flex items-center gap-2 min-w-0 flex-wrap"><span className="disp vit-nome min-w-0">${g.cfg.nome}<span className="vit-part hidden sm:inline"> · ${nomePartido(g.cfg)}</span></span>${g.cfg.real && html`<${Tag} cor="var(--muted)">real</${Tag}>`}<${QvDifChip} g=${g} /></div>
           <div className="vit-sub truncate" title=${'Modo de jogo: ' + m.nome}>Presidente · modo ${m.nome.toLowerCase()}</div>
         </div>
-        <span className="faixa-sk hidden md:block" aria-hidden="true"></span>
+        ${g.cfg.partido && html`<span className="vit-partido hidden md:flex" title=${nomePartido(g.cfg)}><${LogoPartido} sigla=${g.cfg.siglaReal || null} bloco=${g.cfg.partido} tam=${30} /><span className="faixa-sk" aria-hidden="true" style=${{ background: corPresidente(g.cfg) }}></span></span>`}
       </div>
       <div className="vit-ctl">
         <div className="vit vit-mes" title="Mês do mandato"><div className="vit-k">Mês</div><div className="vit-v num"><span data-vital-v="mes">${g.mes} / 48</span></div></div>
