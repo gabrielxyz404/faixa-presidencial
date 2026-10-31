@@ -874,3 +874,20 @@ Treino em mega_dev + mega_dev2 + mega_dev3 (4200 itens). Entendimento: mega_dev 
 | teor | 24% | 51% |
 | varias | 23% | 43% |
 | zoeira | 34% | 70% |
+
+## Rodada 14 (v4.1: temas fracos do conjunto cego)
+
+Treino em mega_dev + mega_dev2 + mega_dev3. Entendimento: mega_dev 62,3% (1308/2100; era 1290), mega_dev2 53,9% (754/1400; era 748), mega_dev3 52,6% (368/700; era 366); conjunto 2430/4200 = 57,9% (era 2404). Efeito no save: mega_dev_sim 63,7% (494/776), mega_dev2_sim 58,1% (314/540), mega_dev3_sim 56,2% (186/331). cenarios.json 239/3/6, sem nenhuma diferença de veredito contra a rodada 13. Benches: dev 157/220, dev2 92/121, cft_dev 89/90, cft_dev2 60/60, zoeira_dev 72/80, zoeira_dev2 48/50, final_dev 123/150, justica_dev 40/40. ui_v39 6/6, ui_v38 41/0, regressao.py sem erros de página.
+
+Todo código novo está marcado `// v4.1`. Mudanças por classe:
+1) bets: `imposto_bets` só rende receita quando o texto mexe no tributo (taxa, outorga, GGR, alíquota, legalizar/liberar cassino, elevar, cortar renúncia). Regulação, idade mínima, publicidade, patrocínio, bloqueio de sites e Pix, limite de depósito, autoexclusão e destinação da arrecadação a um fim não arrecadam nada novo (receita já existente). A proibição total continua como estava. bets: mega_dev 67->78%, dev2 62->70%, dev3 70->75%.
+2) dolar: operações de reserva, swap, banda cambial, emissão externa do Tesouro e intervenção no câmbio passam a ser ato administrativo (ADM) em `escolheInst` (`V4_RESERVA`), exceto quando há imposto, lei ou privatização no texto; 'reservas de terras raras' não conta. 'IOF zero', 'imposto zero', 'sem imposto/IOF' entram em `V4_ALIVIO` (sinal negativo de receita).
+3) grandes_empresas: tributo genérico sobre grande empresa, multinacional, big tech, banco ou plataforma digital, sem número no texto, tem a mesma ordem de grandeza (R$ 20 bi) que o tributo sobre os ricos (`V4_GRANDES`). Limitar ou extinguir dedução, compensação de prejuízo, JCP, despesas financeiras ou propaganda de empresas é aumento de arrecadação (R$ 8 bi; R$ 2 bi para bônus, propaganda e doações), em `contabiliza` (`V4_RESTR_DED`, `V4_EMPR_LUCRO`). grandes_empresas: dev 58->63%, dev2 32->38%, dev3 45->55%.
+4) previdencia: aposentadoria mais cedo para uma categoria pequena (professores, policiais, bombeiros) deixa de levar o valor do regime inteiro (teto de R$ 12 bi); 'paridade de importação' (PPI da Petrobras) não é mais lida como paridade de servidores.
+5) energia: vender combustível, gasolina, energia ou produto não é vender a estatal (a Petrobras deixa de ser privatizada por 'vender combustível abaixo do preço'); PPI, bandeira tarifária e acionar termelétricas são ato administrativo; retomar a CIDE-Combustíveis 'para financiar' o transporte põe o tributo como medida principal e a destinação não custa.
+6) privatizacoes: 'n privatiza a Petrobras pq é nossa' é pedido contra a venda (compromisso de manter), não privatização, também na camada de patrimônio (`fase3Venda`).
+7) assistencia_social: reduzir a linha, o limite ou o critério de elegibilidade do Bolsa Família ou do BPC corta uma parcela dos beneficiários (R$ 25 bi para o Bolsa Família, R$ 10 bi para o BPC), não o programa inteiro.
+
+Tentado e revertido: ignorar o público do programa ('dos pobres', 'das mães') na checagem de cobertura da leitura genérica; piorou 2 itens de auxílio-aluguel sem ganhar nenhum.
+
+Limitações que ficam: (a) 'dobrar/ampliar o BPC dos pobres/idosos' ainda cai na leitura genérica (custo 0) quando há palavras depois de 'bpc'; a causa é anterior ao catálogo e não foi achada; com número no texto funciona. (b) 'Vender as subsidiárias da Caixa/BB' é lido como estatização (a palavra 'subsidiárias' dispara o verbo de estatizar por um caminho que não localizei). (c) impostos e infraestrutura não mexeram: ICMS segue federal ~0 (inconsistência do gabarito já registrada) e as obras seguem dependendo de quantidade no texto. (d) varias e zoeira ficaram onde estavam (varias 44/48/46%, zoeira 75/64/70%).
