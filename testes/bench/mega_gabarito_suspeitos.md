@@ -38,3 +38,6 @@ Total: 25 itens listados nos números 1 a 4 (6 + 4 + 2 + 13), mais as inconsist�
 ## Rodada 5
 - "Acabar com a escala 6x1" e variações (3 itens de trabalhista): o gabarito espera PEC nova, mas o jogo trata a escala 6x1 como já extinta pela EC 141/2026; conflito de premissa entre bateria e jogo.
 - Itens com `unico` preenchido para obras pequenas (instalar incubadoras, carregadores) e `unico` nulo para obras equivalentes: critério de capital inconsistente, por isso o motor não modela despesa única de obra.
+
+## Rodada 11
+- Item do holdout fresco sobre enviar tropas a missões da ONU: o gabarito espera DEC/ADM, mas a Lei 2.953/1956 exige autorização do Congresso para o envio de forças brasileiras ao exterior, então AUT é o instrumento correto. O motor não foi alterado por causa dele.
