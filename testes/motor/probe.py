@@ -30,7 +30,7 @@ with sync_playwright() as p:
       return {t, topic:p.topic, inst:p.inst, instDet:p.instDetalhe||null, cost:p.cost, rev:p.rev, once:p.once, extra:p.extra,
         cf:(p.stf||{}).nivel, cfTxt:String((p.stf||{}).parecer||'').slice(0,260), vago:!!(p.qualidade||{}).vago, absurdo:!!p.absurdo, generica:!!(p.qualidade||{}).generica, conf:(p.viabilidade||{}).confianca??null,
         pasta:p.pastaNome, gan:((p.imp||{}).gan||[]).map(x=>x.nome).slice(0,4), per:((p.imp||{}).per||[]).map(x=>x.nome).slice(0,4),
-        tecnico:String(p.tecnico||'').slice(0,600)}}catch(e){return {t, err:String(e)}}})""", PH)
+        tecnico:String(p.tecnico||'').slice(0,600), objs:(p.objs||[]).map(o=>o.id+':'+(o.B==null?'':o.B)).slice(0,6), gen:!!(p.qualidade||{}).generica, calc:(p.calculo||[]).slice(0,6), its:((p._A||{}).items||[]).map(i=>i.o.id+'|k'+i.o.k+'|sg'+i.sg+'|B'+(i.B==null?'':Math.round(i.B*100)/100)+'|'+i.role+(i.regul?'|regul':'')+(i.talk?'|talk':'')+(i.jaVigente?'|jv':'')+(i.fora?'|fora':'')), nv:((p._A||{}).normaVigente||{}).id||null, nvx:!!((p._A||{}).normaVigente||{}).exato}}catch(e){return {t, err:String(e)}}})""", PH)
     json.dump(res, open(OUT, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     print('\n'.join(errs) or 'no errs')
     b.close()
