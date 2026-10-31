@@ -490,11 +490,12 @@
   .aprov-bar i { position: absolute; top: 0; right: 0; bottom: 0; background: var(--line2); }
   .aprov-x { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 12px; }
   .kpi-grade { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line); border-left: 1px solid var(--line); margin-top: 4px; }
-  .kpi-c { padding: 10px 12px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: transparent; border-radius: 0; }
+  .kpi-c { overflow: hidden; padding: 10px 12px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: transparent; border-radius: 0; }
   .kpi-k { font-family: var(--f-mono); font-size: 12px; color: var(--dim); letter-spacing: .04em; text-transform: uppercase; }
   .kpi-v { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 6px; }
   .kpi-v b { font-family: var(--f-disp); font-weight: 700; font-size: 21px; line-height: 1.25; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .kpi-v em { font-style: normal; font-size: 12px; white-space: nowrap; }
+  .kpi-u { display: block; font-family: var(--f-body); font-size: 12px; font-weight: 400; color: var(--muted); line-height: 1.2; } /* unidade longa ("por 100 mil") embaixo do número, sem invadir o cartão vizinho */
   .pulso .btn-ghost { padding: 4px 9px; font-size: 13px; white-space: nowrap; gap: 4px; }
   .pulso #kpi-t + div { flex-wrap: wrap; }
   body .text-ouro { color: var(--fg); } body .\!border-ouro, body .border-ouro { border-color: var(--fg) !important; } body .hover\:text-ouro:hover { color: var(--fg); }
@@ -15782,7 +15783,7 @@ function KpiMini({ g, K }) {
   const I = kpiInfo(g, K);
   return html`<div className="kpi-c min-w-0" data-kpi=${K.k}>
     <div className="kpi-k truncate" title=${K.fonte || K.nome}>${K.nome}</div>
-    <div className="kpi-v"><b className="num-g">${kpiTxt(K, I.cur)}</b><em className="num" style=${{ color: I.corM }} title="Variação em relação ao mês anterior">${I.setaM} ${sgn(I.mesPass, K.d)}</em></div></div>`;
+    <div className="kpi-v">${(() => { const t = kpiTxt(K, I.cur), u = (K.u || '').trim(); return u.length > 2 && t.endsWith(K.u) ? html`<b className="num-g">${t.slice(0, -K.u.length)}<small className="kpi-u">${u}</small></b>` : html`<b className="num-g">${t}</b>`; })()}<em className="num" style=${{ color: I.corM }} title="Variação em relação ao mês anterior">${I.setaM} ${sgn(I.mesPass, K.d)}</em></div></div>`;
 }
 function KpiBoard({ g, upd, compacto }) {
   const [aberto, setAberto] = useState(false);
@@ -16517,7 +16518,7 @@ function secaoDaPendencia(p) {
   return 'mesa';
 }
 // sub-aba onde cada pendência mora (para o selo nas sub-abas de País e Poder)
-const PEND_CHIP = { stf: 'stf', pauta: 'congresso', oposicao: 'oposicao', desgaste: 'governo', prioridade: 'governo', abin: 'governo', qq: 'imprensa', entcol: 'imprensa', entconv: 'imprensa', elmun: 'eleicoes', elapurm: 'eleicoes', elsuc: 'eleicoes', elcand: 'eleicoes', elpesq: 'eleicoes', eldeb: 'eleicoes', elcamp: 'eleicoes', elapurg: 'eleicoes', crise: 'mapa', protesto: 'sociedade', seguranca: 'seguranca', governadores: 'mapa', justica: 'justica' };
+const PEND_CHIP = { stf: 'stf', pauta: 'congresso', oposicao: 'oposicao', desgaste: 'governo', prioridade: 'governo', abin: 'governo', qq: 'imprensa', entcol: 'imprensa', entconv: 'imprensa', elmun: 'eleicoes', elapurm: 'eleicoes', elsuc: 'eleicoes', elcand: 'eleicoes', elpesq: 'eleicoes', eldeb: 'eleicoes', elcamp: 'eleicoes', elapurg: 'eleicoes', crise: 'mapa', protesto: 'sociedade', seguranca: 'seguranca', governadores: 'mapa', justica: 'justica', viagem: 'viagens', mesadip: 'mesa', terras_raras: 'terras', saude: 'condicao', estresse: 'bemestar', vida: 'familia', bastidores: 'bastidores' };
 let PEND_ABRIR = null; // pendência pedida fora da Mesa: a Mesa abre a gaveta dela ao montar
 function pendDaSecao(g, sec) { try { return g && g.cfg && !g.over ? pendenciasMesa(g).filter(p => secaoDaPendencia(p) === sec) : []; } catch (e) { return []; } }
 function contChips(L) { const c = {}; for (const p of L) { const k = PEND_CHIP[p.tipo]; if (k) c[k] = (c[k] || 0) + 1; } return c; }
@@ -22478,11 +22479,11 @@ function MundoMesa({ g, upd }) {
   </div>`;
 }
 
-function Diplomacia({ g, decidir, upd, chip, setChip }) {
+function Diplomacia({ g, decidir, upd, chip, setChip, abrirPend }) {
   ensureF4(g);
   const c = CHIPS.mundo.some(x => x.k === chip) ? chip : 'panorama';
   const go = setChip || ZERO;
-  return html`<${Subpagina} id="mundo" chips=${CHIPS.mundo} atual=${c} onSel=${go} rotulo="Áreas do Mundo" eyebrow="Mundo">
+  return html`<${Subpagina} id="mundo" chips=${CHIPS.mundo} atual=${c} onSel=${go} rotulo="Áreas do Mundo" eyebrow="Mundo" pend=${pendDaSecao(g, 'mundo')} abrirPend=${abrirPend}>
     <div className="flex flex-col gap-6"><${MxStyle} />
     ${c !== 'terras' && html`<${MundoResumo} g=${g} />`}
     ${c === 'panorama' && html`<${MundoPanorama} g=${g} decidir=${decidir || ZERO} go=${setChip ? setChip : null} />`}
@@ -22664,7 +22665,7 @@ function Promessas({ g }) {
     <ul className="mx-grid g3" style=${{ padding: 0, margin: 0 }}>${g.cfg.promessas.map(k => { const P = PROMESSAS.find(p => p.k === k); const ok = P.check(g); const cor = ok ? 'var(--verde)' : 'var(--muted)';
       return html`<li key=${k} className="mx-card panel" style=${{ '--st': cor }}><div className="mx-h"><span className="gv-ic" style=${{ '--c': cor }}><${Icon} n=${ok ? 'CircleCheck' : 'Circle'} s=${20} /></span><div className="mx-t">${P.nome}</div></div><div className="gv-chips"><${MxChip} c=${ok ? 'pos' : ''}>${ok ? 'cumprida' : 'em andamento'}</${MxChip}><${MxChip}><span className="num">${P.prog(g)}</span></${MxChip}></div></li>`; })}</ul></section>`;
 }
-function Eu({ g, upd, chip, setChip }) {
+function Eu({ g, upd, chip, setChip, abrirPend }) {
   ensureF4(g);
   const c = CHIPS.eu.some(x => x.k === chip) ? chip : 'condicao';
   const corpo = html`<div className="flex flex-col gap-6">
@@ -22678,7 +22679,7 @@ function Eu({ g, upd, chip, setChip }) {
     ${c === 'bastidores' && html`<${EuBastidores} g=${g} upd=${upd} />`}
     ${c === 'conquistas' && html`<${EuConquistas} g=${g} />`}
   </div>`;
-  return html`<${Subpagina} id="eu" chips=${CHIPS.eu} atual=${c} onSel=${setChip || ZERO} rotulo="Áreas pessoais" eyebrow="Eu">${corpo}</${Subpagina}>`;
+  return html`<${Subpagina} id="eu" chips=${CHIPS.eu} atual=${c} onSel=${setChip || ZERO} rotulo="Áreas pessoais" eyebrow="Eu" pend=${pendDaSecao(g, 'eu')} abrirPend=${abrirPend}>${corpo}</${Subpagina}>`;
 }
 
 /* ---------- Mesa: cartões e pendências da fase 4 ---------- */
@@ -29066,8 +29067,8 @@ function App() {
         ${sec === 'pais' && html`<${Pais} g=${g} upd=${upd} decidir=${decidir} chip=${chipAtual(g, 'pais')} setChip=${(c) => irPara('pais', c)} abrirPend=${(p) => { PEND_ABRIR = p.id; irPara('mesa'); }} />`}
         ${sec === 'poder' && html`<${Poder} g=${g} upd=${upd} decidir=${decidir} votarItem=${votarItem} chip=${chipAtual(g, 'poder')} setChip=${(c) => irPara('poder', c)} abrirPend=${(p) => { PEND_ABRIR = p.id; irPara('mesa'); }} />`}
         ${sec === 'medidas' && html`<${MedidasVigor} g=${g} upd=${upd} irPara=${irPara} />`}
-        ${sec === 'mundo' && html`<${Diplomacia} g=${g} decidir=${decidir} upd=${upd} chip=${chipAtual(g, 'mundo')} setChip=${(c) => irPara('mundo', c)} />`}
-        ${sec === 'eu' && html`<${Eu} g=${g} upd=${upd} chip=${chipAtual(g, 'eu')} setChip=${(c) => irPara('eu', c)} />`}
+        ${sec === 'mundo' && html`<${Diplomacia} g=${g} decidir=${decidir} upd=${upd} chip=${chipAtual(g, 'mundo')} setChip=${(c) => irPara('mundo', c)} abrirPend=${(p) => { PEND_ABRIR = p.id; irPara('mesa'); }} />`}
+        ${sec === 'eu' && html`<${Eu} g=${g} upd=${upd} chip=${chipAtual(g, 'eu')} setChip=${(c) => irPara('eu', c)} abrirPend=${(p) => { PEND_ABRIR = p.id; irPara('mesa'); }} />`}
         ${sec === 'x' && html`<${RedeX} g=${g} upd=${upd} />`}
         <footer className="mt-10 text-xs text-muted flex flex-col gap-2">
           <p>Congresso real eleito em 2026 (dados do TSE). Votos e comportamentos dos parlamentares são simulados. Famosos, podcasts e políticos reais citados em posts e entrevistas têm falas inventadas pelo jogo (nos posts do X, com o selo “simulado”): tratam só de medidas e política e partem de posições públicas declaradas (seguidores são ordens de grandeza). Veículos de imprensa aparecem como referência satírica; os cidadãos entrevistados, as manchetes e os indicadores são fictícios. Efígies e emblemas de reserva são ilustrações originais do jogo. Relações bilaterais, pesos de comércio e valores da diplomacia são estimativas do jogo; a seção Bastidores é ficção, com pessoas e empresas inventadas e indisponível para personagens reais.</p>
