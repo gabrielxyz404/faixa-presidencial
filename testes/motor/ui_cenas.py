@@ -166,6 +166,25 @@ with sync_playwright() as p:
     ok('letreiro de cada programa em texto simples na cena', all(LET[k] in vistos[k]['full'] for k in POD), {k: LET[k] in vistos[k]['full'] for k in POD})
     ok('veículos não-podcast usam estúdio simples (TV, rádio, jornal)', all(vistos[k]['tipo'].startswith('estudio:') for k in ['tv', 'radio', 'jesq', 'jdir', 'sabat', 'intl']) and vistos['podcast']['tipo'] == 'podcast:generico', {k: vistos[k]['tipo'] for k in vistos})
 
+    # ---------- 4b) histórico de respostas na aba Imprensa ----------
+    pg.evaluate("location.hash='#/poder/imprensa'"); pg.wait_for_timeout(1000)
+    ok('histórico: seção com resumo no topo', pg.locator('[data-ent-hist]').count() == 1 and pg.locator('[data-hist-resumo]').count() == 1, pg.locator('[data-hist-resumo]').inner_text().replace('\n', ' ')[:200] if pg.locator('[data-hist-resumo]').count() else '')
+    nrows = pg.locator('[data-hist-row]').count()
+    ok('histórico: uma linha por resposta, agrupadas por mês', nrows >= 5 and pg.locator('[data-hist-mes]').count() >= 1, nrows)
+    ok('histórico: filtros Todas / Podcasts / TV e rádio / Coletivas', pg.locator('[data-hist-filtro]').count() == 4)
+    pg.locator('[data-hist-filtro=pod]').click(); pg.wait_for_timeout(200)
+    npod = pg.locator('[data-hist-row]').count(); ok('histórico: filtro Podcasts só mostra podcasts', npod >= 1 and pg.locator('[data-hist-row]:not([data-hist-row=pod])').count() == 0, npod)
+    pg.locator('[data-hist-filtro=col]').click(); pg.wait_for_timeout(200)
+    ok('histórico: filtro Coletivas só mostra coletivas', pg.locator('[data-hist-row]').count() >= 1 and pg.locator('[data-hist-row]:not([data-hist-row=col])').count() == 0)
+    pg.locator('[data-hist-filtro=todas]').click(); pg.wait_for_timeout(200)
+    pg.locator('[data-hist-row] .hs-row').first.click(); pg.wait_for_timeout(200)
+    ok('histórico: clicar na linha abre pergunta completa, resposta e reação', pg.locator('[data-hist-det]').count() == 1 and 'Você' in pg.locator('[data-hist-det]').inner_text(), pg.locator('[data-hist-det]').inner_text().replace('\n', ' ')[:160])
+    mf = pg.evaluate("()=>{let m=99,q=null;document.querySelectorAll('[data-ent-hist] *').forEach(e=>{const t=[...e.childNodes].some(n=>n.nodeType===3&&n.textContent.trim());if(!t)return;const r=e.getBoundingClientRect();if(!r.width)return;const f=parseFloat(getComputedStyle(e).fontSize);if(f<m){m=f;q=e.textContent.trim().slice(0,30)}});return [m,q]}")
+    ok('histórico: texto mínimo de 12px', mf[0] >= 12, mf)
+    if SHOTS:
+        pg.locator('[data-ent-hist]').scroll_into_view_if_needed(); pg.wait_for_timeout(300); pg.screenshot(path=OUT + '/imprensa_historico.png')
+    pg.evaluate("location.hash='#/mesa'"); pg.wait_for_timeout(800)
+
     # ---------- 5) 1280x720, foco preso e reduced-motion ----------
     pg.set_viewport_size({'width': 1280, 'height': 720})
     SET(pg, "n.qq=__F().qqNovo(n,1)")
