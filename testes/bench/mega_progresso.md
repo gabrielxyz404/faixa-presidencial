@@ -718,3 +718,159 @@ Conflitos de gabarito: (i) item condicional do holdout ('se o PIB crescer mais d
 | teor | 31% | 51% |
 | varias | 34% | 49% |
 | zoeira | 47% | 58% |
+
+## Rodada 13
+
+Treino em mega_dev + mega_dev2 + mega_dev3 (4200 itens). Entendimento: mega_dev 61,4% (1290/2100; v3.9 36%), mega_dev2 53,4% (748/1400; v3.9 37,5%), mega_dev3 52,3% (366/700; v3.9 28,1%; 49,3% no início da rodada); conjunto 57,4% (2404/4200). Efeito no save: mega_dev_sim 63%, mega_dev2_sim 58%, mega_dev3_sim 56% (v3.9 54%). cenarios.json 239/3/6 (única diferença: acelera_obra/custo m24). Benches: dev 158/220, dev2 92/121, cft_dev 89/90, cft_dev2 60/60, zoeira_dev 72/80, zoeira_dev2 48/50, final_dev 123/150, justica_dev 40/40. ui_v39 6/6, ui_v38 41/0, regressao.py sem erros de página.
+
+1) varias: testei ler à parte as orações que nenhum item cobre (cobertura por oração) e somar; piorou (dev -2, dev2 -6, dev3 0), porque a oração perde o verbo, a base e o recorte do texto inteiro. Revertido. Ficou o que ajuda: piso por quantidade por medida em textos de várias (agentes + 5 mil ambulâncias soma os dois). A divisão antiga (só quando a leitura é uma única genérica) segue. 2) zoeira (70 itens no dev3, 420 nos 3 conjuntos): (a) cf inconstitucional por classe: compulsão a todos ('obrigar todo brasileiro a ...', aula de religião, novela, bicicleta), proibição ampla (qualquer empresa existir, ensino de história, impedir beneficiários de votar, pedir demissão), voto e cidadania para robôs, armar todos os professores, quebra de sigilo, desligar a internet, trocar o real por outra moeda; excluindo obrigações legítimas (nota fiscal eletrônica, uniforme). (b) absurdo: a ressalva 'sem afetar ninguém' saía do texto lido pelo v39Teor e escondia o impossível, agora o v4Impossivel também lê o texto original; 'e ainda crescer 10%' e '100%' passam a valer; lista de fantasias e resultados fora do controle do Estado (unicórnios, petróleo brotar do chão, túnel para Lisboa, rios voltarem, expectativa de vida, ganhar a Copa por decreto, nenhum culpado ser pego). Ganho: mega_dev2 +13 e mega_dev3 +9. (c) atos simbólicos (selo, cédula comemorativa, gibi, mascote, naming rights, fliperama, capoeira como terapia) saem como ADM, custo até R$ 0,4 bi. 3) privatizações: classes dominantes nos 3 conjuntos (120 itens, 74 certos): 'vender/privatizar tudo, todos os bancos, o que não é estratégico' (reescrito para todas as estatais, R$ 400 bi, ou R$ 150 bi para não estratégicas); venda de refinaria, fábrica, subsidiária ou ativos da Petrobras leu a empresa inteira (232 bi), agora R$ 30 bi; privatizar ou conceder metrô, água e esgoto, docas lidos como programa de gasto viram venda (receita única), com exclusões para exigir plebiscito, garantir estabilidade, dia, referendo. Energia (120 itens, 58 certos): erro dominante é valor (33 só valor): sobretudo ICMS (decisão: efeito federal zero; os itens do gabarito que esperam receita federal ficam como inconsistência), tributo sobre lucro extraordinário e petroleiras sem número (R$ 20 bi), concluir Angra 3 e retomar refinarias (capex), e leilão de energia. 4) decisões do coordenador aplicadas: ICMS federal ≈ 0; concessão nova dá outorga (R$ 8 bi no padrão) e prorrogação, free flow, reajuste ou licitação dispensada dá zero; programa universal ('água encanada para toda casa') usa a escala universal e sanitarismo entra no capex.
+
+### mega_dev
+| Tema | Entende v3.9 | Entende v4 | Δ | Efeito no save v3.9 | Efeito v4 | Δ |
+|---|---|---|---|---|---|---|
+| agro | 47% | 72% | +25 | 60% | 56% | -4 |
+| assistencia_social | 27% | 60% | +33 | 79% | 84% | +5 |
+| bets | 42% | 67% | +25 | 62% | 65% | +4 |
+| ciencia_tecnologia | 32% | 62% | +30 | 64% | 72% | +8 |
+| constituicao | 33% | 57% | +23 | 33% | 33% | +0 |
+| corte_gastos | 27% | 52% | +25 | 82% | 100% | +18 |
+| cultura_esporte | 28% | 52% | +23 | 62% | 54% | -8 |
+| desemprego | 40% | 62% | +22 | 73% | 73% | +0 |
+| direitos_humanos | 47% | 63% | +17 | 85% | 81% | -4 |
+| dolar | 37% | 62% | +25 | 25% | 50% | +25 |
+| economia | 35% | 52% | +17 | 50% | 62% | +12 |
+| educacao | 28% | 45% | +17 | 86% | 79% | -7 |
+| energia | 27% | 60% | +33 | 51% | 66% | +14 |
+| games | 38% | 68% | +30 | 50% | 38% | -12 |
+| grandes_empresas | 42% | 58% | +17 | 42% | 48% | +5 |
+| ia | 52% | 72% | +20 | 50% | 32% | -18 |
+| impostos | 18% | 55% | +37 | 35% | 51% | +16 |
+| inflacao | 42% | 53% | +12 | 57% | 71% | +14 |
+| infraestrutura | 43% | 75% | +32 | 75% | 75% | +0 |
+| justica | 48% | 70% | +22 | 50% | 50% | +0 |
+| medias_empresas | 32% | 68% | +37 | 57% | 67% | +10 |
+| meio_ambiente | 28% | 68% | +40 | 67% | 67% | +0 |
+| micro_empresas | 37% | 67% | +30 | 56% | 65% | +9 |
+| moradia | 38% | 57% | +18 | 84% | 84% | +0 |
+| previdencia | 33% | 52% | +18 | 60% | 55% | -5 |
+| privatizacoes | 32% | 68% | +37 | 100% | 100% | +0 |
+| regalias | 35% | 55% | +20 | 46% | 46% | +0 |
+| relacoes_exteriores | 18% | 50% | +32 | 44% | 48% | +4 |
+| saneamento | 40% | 68% | +28 | 50% | 67% | +17 |
+| saude | 52% | 70% | +18 | 82% | 100% | +18 |
+| seguranca | 23% | 55% | +32 | 73% | 73% | +0 |
+| setor_privado | 38% | 67% | +28 | 67% | 83% | +17 |
+| terras_raras | 30% | 67% | +37 | 38% | 42% | +4 |
+| trabalhista | 53% | 70% | +17 | 50% | 46% | -4 |
+| transporte | 27% | 53% | +27 | 64% | 71% | +7 |
+| **TOTAL** | 36% | 61% | +26 | 60% | 63% | +3 |
+
+| Tipo de proposta | v3.9 | v4 |
+|---|---|---|
+| bem | 39% | 59% |
+| ja_lei | 23% | 92% |
+| mal | 32% | 60% |
+| outro | 28% | 63% |
+| teor | 35% | 55% |
+| varias | 32% | 43% |
+| zoeira | 40% | 75% |
+
+### mega_dev2
+| Tema | Entende v3.9 | Entende v4 | Δ | Efeito no save v3.9 | Efeito v4 | Δ |
+|---|---|---|---|---|---|---|
+| agro | 30% | 50% | +20 | 45% | 41% | -3 |
+| assistencia_social | 40% | 45% | +5 | 80% | 80% | +0 |
+| bets | 38% | 62% | +25 | 46% | 46% | +0 |
+| ciencia_tecnologia | 35% | 48% | +12 | 70% | 60% | -10 |
+| constituicao | 55% | 68% | +12 | 100% | 100% | +0 |
+| corte_gastos | 35% | 48% | +12 | 71% | 76% | +6 |
+| cultura_esporte | 45% | 65% | +20 | 40% | 50% | +10 |
+| desemprego | 40% | 55% | +15 | 60% | 67% | +7 |
+| direitos_humanos | 35% | 48% | +12 | 88% | 62% | -25 |
+| dolar | 42% | 65% | +22 | 50% | 38% | -12 |
+| economia | 38% | 65% | +28 | 51% | 51% | +0 |
+| educacao | 38% | 48% | +10 | 86% | 71% | -14 |
+| energia | 28% | 42% | +15 | 50% | 33% | -17 |
+| games | 35% | 52% | +18 | 47% | 47% | +0 |
+| grandes_empresas | 28% | 32% | +5 | 37% | 40% | +3 |
+| ia | 58% | 70% | +12 | 44% | 44% | +0 |
+| impostos | 22% | 32% | +10 | 35% | 35% | +0 |
+| inflacao | 20% | 45% | +25 | 88% | 100% | +12 |
+| infraestrutura | 45% | 52% | +8 | 86% | 86% | +0 |
+| justica | 42% | 58% | +15 | 80% | 60% | -20 |
+| medias_empresas | 30% | 48% | +18 | 73% | 73% | +0 |
+| meio_ambiente | 42% | 65% | +22 | 59% | 59% | +0 |
+| micro_empresas | 35% | 62% | +28 | 65% | 73% | +8 |
+| moradia | 40% | 48% | +8 | 80% | 72% | -8 |
+| previdencia | 45% | 55% | +10 | 50% | 58% | +8 |
+| privatizacoes | 38% | 62% | +25 | 50% | 83% | +33 |
+| regalias | 30% | 40% | +10 | 45% | 55% | +9 |
+| relacoes_exteriores | 32% | 45% | +12 | 58% | 58% | +0 |
+| saneamento | 35% | 55% | +20 | 79% | 71% | -7 |
+| saude | 45% | 68% | +22 | 100% | 100% | +0 |
+| seguranca | 20% | 42% | +22 | 62% | 69% | +8 |
+| setor_privado | 62% | 80% | +18 | 33% | 33% | +0 |
+| terras_raras | 28% | 35% | +8 | 20% | 20% | +0 |
+| trabalhista | 58% | 72% | +15 | 74% | 70% | -4 |
+| transporte | 25% | 42% | +18 | 20% | 30% | +10 |
+| **TOTAL** | 38% | 53% | +16 | 58% | 58% | -0 |
+
+| Tipo de proposta | v3.9 | v4 |
+|---|---|---|
+| bem | 44% | 54% |
+| ja_lei | 25% | 60% |
+| mal | 29% | 45% |
+| outro | 27% | 61% |
+| teor | 31% | 51% |
+| varias | 34% | 48% |
+| zoeira | 47% | 64% |
+
+### mega_dev3
+| Tema | Entende v3.9 | Entende v4 | Δ | Efeito no save v3.9 | Efeito v4 | Δ |
+|---|---|---|---|---|---|---|
+| agro | 20% | 40% | +20 | 43% | 52% | +10 |
+| assistencia_social | 20% | 45% | +25 | 73% | 53% | -20 |
+| bets | 10% | 70% | +60 | 25% | 25% | +0 |
+| ciencia_tecnologia | 35% | 55% | +20 | 50% | 60% | +10 |
+| constituicao | 40% | 60% | +20 | 50% | 50% | +0 |
+| corte_gastos | 35% | 50% | +15 | 92% | 92% | +0 |
+| cultura_esporte | 25% | 65% | +40 | 33% | 44% | +11 |
+| desemprego | 35% | 70% | +35 | 62% | 69% | +6 |
+| direitos_humanos | 30% | 45% | +15 | 50% | 42% | -8 |
+| dolar | 25% | 55% | +30 | 67% | 58% | -8 |
+| economia | 25% | 55% | +30 | 53% | 60% | +7 |
+| educacao | 30% | 40% | +10 | 80% | 80% | +0 |
+| energia | 25% | 40% | +15 | 40% | 60% | +20 |
+| games | 50% | 70% | +20 | 100% | 100% | +0 |
+| grandes_empresas | 25% | 45% | +20 | 12% | 12% | +0 |
+| ia | 35% | 50% | +15 | 33% | 33% | +0 |
+| impostos | 25% | 30% | +5 | 57% | 67% | +10 |
+| inflacao | 30% | 55% | +25 | 42% | 50% | +8 |
+| infraestrutura | 10% | 30% | +20 | 0% | 33% | +33 |
+| justica | 35% | 60% | +25 | 33% | 33% | +0 |
+| medias_empresas | 20% | 65% | +45 | 25% | 25% | +0 |
+| meio_ambiente | 15% | 40% | +25 | 40% | 35% | -5 |
+| micro_empresas | 15% | 45% | +30 | 50% | 43% | -7 |
+| moradia | 25% | 45% | +20 | 62% | 62% | +0 |
+| previdencia | 40% | 50% | +10 | 71% | 64% | -7 |
+| privatizacoes | 25% | 65% | +40 | 0% | 0% | +0 |
+| regalias | 30% | 60% | +30 | 50% | 75% | +25 |
+| relacoes_exteriores | 25% | 45% | +20 | 100% | 100% | +0 |
+| saneamento | 25% | 45% | +20 | 75% | 75% | +0 |
+| saude | 40% | 60% | +20 | 89% | 78% | -11 |
+| seguranca | 10% | 50% | +40 | 0% | 33% | +33 |
+| setor_privado | 35% | 70% | +35 | 69% | 77% | +8 |
+| terras_raras | 45% | 45% | +0 | 0% | 0% | +0 |
+| trabalhista | 50% | 55% | +5 | 50% | 45% | -5 |
+| transporte | 20% | 60% | +40 | 36% | 45% | +9 |
+| **TOTAL** | 28% | 52% | +24 | 54% | 56% | +2 |
+
+| Tipo de proposta | v3.9 | v4 |
+|---|---|---|
+| bem | 34% | 50% |
+| ja_lei | 14% | 49% |
+| mal | 26% | 48% |
+| outro | 3% | 69% |
+| teor | 24% | 51% |
+| varias | 23% | 43% |
+| zoeira | 34% | 70% |

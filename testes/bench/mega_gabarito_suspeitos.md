@@ -41,3 +41,7 @@ Total: 25 itens listados nos números 1 a 4 (6 + 4 + 2 + 13), mais as inconsist�
 
 ## Rodada 11
 - Item do holdout fresco sobre enviar tropas a missões da ONU: o gabarito espera DEC/ADM, mas a Lei 2.953/1956 exige autorização do Congresso para o envio de forças brasileiras ao exterior, então AUT é o instrumento correto. O motor não foi alterado por causa dele.
+
+## Rodada 13
+- ICMS: os itens que esperam receita federal negativa para mudar ICMS (por exemplo 'fim do ICMS na conta de luz', 'tira o ICMS da energia que o governo federal manda') tratam como federal um tributo estadual; o jogo modela o orçamento federal e só há efeito federal quando a União compensa (LC 194/2022). Inconsistência de gabarito, o motor não foi alterado.
+- 'Sortear uma viagem à Lua entre os apostadores da Mega-Sena': o gabarito espera que a proposta não seja marcada como absurda (zoeira legal), embora a viagem seja inviável; mantido assim.
