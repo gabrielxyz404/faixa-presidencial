@@ -17984,7 +17984,7 @@ function TabelaRegioes({ g }) {
 const COL_UF = [
   { k: 'uf', nome: 'UF', txt: true }, { k: 'idhm', nome: 'IDHM', f: (x) => fmt(x.idhm, 3) }, { k: 'pibpc', nome: 'PIB per capita', f: (x) => 'R$ ' + fmt(x.pibpc, 0) },
   { k: 'pob', nome: 'Pobreza', est: true, f: (x) => fmt(x.pob) + '%' }, { k: 'hom', nome: 'Homicídios', f: (x) => fmtN(x.hom, 1) },
-  { k: 'esgoto', nome: 'Esgoto', f: (x) => fmt(x.esgoto) + '%' }, { k: 'ideb', nome: 'Ideb', f: (x) => fmt(x.ideb) }
+  { k: 'ideb', nome: 'Ideb', f: (x) => fmt(x.ideb) } // esgoto fica na aba Infraestrutura e transportes
 ];
 function TabelaEstados({ g, onUF }) {
   const [ord, setOrd] = useState({ k: 'idhm', dir: -1 });
@@ -18138,7 +18138,6 @@ const MAPA_CAMADAS = [
   { k: 'aprov', nome: 'Aprovação' },
   { k: 'idhm', nome: 'IDHM', lo: .65, hi: .88, d: 3, val: (g, u) => ufDados(g, u).idhm, un: 'IDHM (Radar 2024, atualizado pela variação do IDH)' },
   { k: 'pibpc', nome: 'PIB per capita', lo: 20000, hi: 100000, d: 0, pre: 'R$ ', val: (g, u) => ufDados(g, u).pibpc, un: 'PIB per capita (2023, atualizado pelo PIB nominal simulado)' },
-  { k: 'esgoto', nome: 'Esgoto', lo: 10, hi: 100, d: 1, u: '%', val: (g, u) => ufDados(g, u).esgoto, un: 'população com esgoto coletado (SINISA 2025, ref. 2024)' },
   { k: 'ideb', nome: 'Ideb', lo: 4.8, hi: 6.8, d: 1, val: (g, u) => ufDados(g, u).ideb, un: 'Ideb 2025, anos iniciais' }
 ];
 const corCamada = (C, v) => corMapa(clamp((v - C.lo) / (C.hi - C.lo), 0, 1) * 100);
