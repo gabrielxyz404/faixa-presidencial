@@ -2011,6 +2011,7 @@ function novoJogo(cfg) {
   ensureMin(g);
   ensureCf(g);
   entEnsure(g); elEnsure(g);
+  jusInicial(g);
   return g;
 }
 
@@ -15514,7 +15515,7 @@ const SECOES = [
 ];
 const SECAO_KS = SECOES.map(s => s.k);
 const CHIPS = {
-  pais: [{ k: 'mapa', nome: 'Mapa' }, { k: 'economia', nome: 'Economia' }, { k: 'seguranca', nome: 'Segurança' }, { k: 'saude', nome: 'Saúde' }, { k: 'educacao', nome: 'Educação' }, { k: 'trabalho', nome: 'Trabalho' }, { k: 'infraestrutura', nome: 'Infraestrutura' }, { k: 'transportes', nome: 'Transportes' }, { k: 'sociedade', nome: 'Sociedade' }, { k: 'justica', nome: 'Justiça' }],
+  pais: [{ k: 'mapa', nome: 'Mapa' }, { k: 'economia', nome: 'Economia' }, { k: 'seguranca', nome: 'Segurança' }, { k: 'saude', nome: 'Saúde' }, { k: 'educacao', nome: 'Educação' }, { k: 'trabalho', nome: 'Trabalho' }, { k: 'infraestrutura', nome: 'Infraestrutura e transportes' }, { k: 'sociedade', nome: 'Sociedade' }, { k: 'justica', nome: 'Justiça' }],
   poder: [{ k: 'congresso', nome: 'Congresso' }, { k: 'governo', nome: 'Governo' }, { k: 'stf', nome: 'STF' }, { k: 'oposicao', nome: 'Oposição' }],
   mundo: [{ k: 'panorama', nome: 'Panorama' }, { k: 'paises', nome: 'Países' }, { k: 'viagens', nome: 'Visitas de Estado' }, { k: 'blocos', nome: 'Blocos' }, { k: 'tratados', nome: 'Tratados' }, { k: 'mesa', nome: 'Mesa diplomática' }, { k: 'terras', nome: 'Terras raras' }],
   eu: [{ k: 'condicao', nome: 'Condição' }, { k: 'bemestar', nome: 'Bem-estar e agenda' }, { k: 'familia', nome: 'Família e partido' }, { k: 'bastidores', nome: 'Bastidores' }, { k: 'conquistas', nome: 'Conquistas' }]
@@ -15533,7 +15534,8 @@ function uiNav(ui, sec, chip) {
 const secAtual = (g) => (g.ui && SECAO_KS.includes(g.ui.sec) ? g.ui.sec : 'mesa');
 function chipAtual(g, sec) {
   const L = CHIPS[sec]; if (!L) return null;
-  const c = g.ui && g.ui.chip && g.ui.chip[sec];
+  let c = g.ui && g.ui.chip && g.ui.chip[sec];
+  if (sec === 'pais' && c === 'transportes') c = 'infraestrutura'; // aba fundida
   return L.some(x => x.k === c) ? c : L[0].k;
 }
 
@@ -16775,18 +16777,18 @@ function Trabalho({ g, decidir }) {
 }
 
 function Pais({ g, upd, decidir, chip, setChip }) {
+  if (chip === 'transportes') chip = 'infraestrutura'; // Transportes foi fundido com Infraestrutura (saves e links antigos)
   const c = CHIPS.pais.some(x => x.k === chip) ? chip : 'mapa';
   return html`<${Subpagina} id="pais" chips=${CHIPS.pais} atual=${c} onSel=${setChip} rotulo="Áreas do país" eyebrow="País">
     ${c === 'mapa' && html`<${PaisMapa} g=${g} />`}
     ${c === 'economia' && html`<div className="flex flex-col gap-6"><${PainelUF} g=${g} area="economia" /><${Economia} g=${g} upd=${upd} decidir=${decidir} /><${FontesArea} area="economia" notas="Petrobras (fatia direta da União) e a carteira do BNDESPar são fatias distintas; a Caixa Seguridade já está dentro do patrimônio da Caixa. Valores marcados como estimativa vêm de cálculo do jogo sobre dados publicados e não de uma fonte direta." /></div>`}
     ${c === 'seguranca' && html`<${PaisSeguranca} g=${g} upd=${upd} decidir=${decidir} />`}
     ${c === 'saude' && html`<${PaisSaude} g=${g} upd=${upd} decidir=${decidir} />`}
-    ${c === 'educacao' && html`<${PaisAreaUF} g=${g} area="educacao" />`}
+    ${c === 'educacao' && html`<${PaisEducacao} g=${g} upd=${upd} decidir=${decidir} />`}
     ${c === 'trabalho' && html`<div className="flex flex-col gap-6"><${PainelUF} g=${g} area="trabalho" /><${Trabalho} g=${g} decidir=${decidir} /><${FontesArea} area="trabalho" /></div>`}
-    ${c === 'infraestrutura' && html`<${PaisAreaUF} g=${g} area="infraestrutura" />`}
-    ${c === 'transportes' && html`<${PaisAreaUF} g=${g} area="transportes" />`}
+    ${c === 'infraestrutura' && html`<${PaisInfra} g=${g} upd=${upd} decidir=${decidir} />`}
     ${c === 'sociedade' && html`<${Sociedade} g=${g} upd=${upd} setChip=${setChip} />`}
-    ${c === 'justica' && html`<${PaisJustica} g=${g} upd=${upd} />`}
+    ${c === 'justica' && html`<${PaisJustica} g=${g} upd=${upd} decidir=${decidir} />`}
   </${Subpagina}>`;
 }
 function PaisMapa({ g }) {
@@ -17616,8 +17618,8 @@ const PUF_LIGA = [
   { re: /esgoto|saneamento/, f: (g, v, B) => clamp(v + (g.ind.esgoto - B.esgoto) * (100 - v) / Math.max(1, 100 - B.esgoto), 0, 100) },
   { re: /pobreza/, f: (g, v, B) => v * (g.soc.pob / B.pob) }
 ];
-const PUF_TIT = { economia: 'Economia por estado', trabalho: 'Trabalho por estado', saude: 'Saúde por estado', educacao: 'Educação por estado', infraestrutura: 'Infraestrutura por estado', transportes: 'Transportes por estado' };
-function pufDados(area) { return area === 'saude' ? SAUDE_UF : (AREAS_UF && AREAS_UF[area]) || null; }
+const PUF_TIT = { economia: 'Economia por estado', trabalho: 'Trabalho por estado', saude: 'Saúde por estado', educacao: 'Educação por estado', infraestrutura: 'Infraestrutura por estado', infratransp: 'Infraestrutura e transportes por estado', transportes: 'Transportes por estado' };
+function pufDados(area) { return area === 'saude' ? SAUDE_UF : area === 'infratransp' ? infraTranspDados() : (AREAS_UF && AREAS_UF[area]) || null; }
 function pufInds(D) { return D && D.fontes && D.UF ? Object.keys(D.fontes).filter(k => Object.keys(D.UF).some(u => D.UF[u] && Number.isFinite(D.UF[u][k]))) : []; }
 function pufVal(g, area, D, k, u) {
   const b = u === 'BR' ? (D.BR || {})[k] : (D.UF[u] || {})[k];
@@ -17625,7 +17627,8 @@ function pufVal(g, area, D, k, u) {
   let v = b; const B = g.conv && g.conv.base; const L = B && PUF_LIGA.find(x => x.re.test(k));
   if (L) { try { const r = L.f(g, b, B); if (Number.isFinite(r)) v = r; } catch (e) { } }
   const a = u !== 'BR' && g.conv && g.conv.adj && g.conv.adj[area === 'saude' ? 'sau' : area] && (g.conv.adj[area === 'saude' ? 'sau' : area][u] || {})[k];
-  return a ? v * (1 + a / 100) : v;
+  const r = a ? v * (1 + a / 100) : v; const F = D.fontes && D.fontes[k];
+  return F && /^%/.test(F.unidade || '') && r > 100 ? 100 : r;
 }
 function pufEscala(D, k) {
   D._esc = D._esc || {}; if (D._esc[k]) return D._esc[k];
@@ -17781,9 +17784,59 @@ function sauConvFala(g, u, k) {
   if (ik) { const F = SAUDE_UF.fontes[ik], v = pufVal(g, 'saude', SAUDE_UF, ik, u), b = pufVal(g, 'saude', SAUDE_UF, ik, 'BR'); if (v != null && b != null) { const pior = (F.melhor === 'menor') === (v > b); n = `${cap(F.nome.toLowerCase())} ${deUF(u)}: ${pufFmt(SAUDE_UF, ik, v)} (${F.unidade}), ${Math.abs(v - b) / Math.abs(b) < .03 ? 'em linha com' : pior ? 'pior que' : 'melhor que'} a média nacional de ${pufFmt(SAUDE_UF, ik, b)}. `; } }
   return n + pol + tom;
 }
+/* ---------- Educação e Infraestrutura/Transportes com ações: mesma estrutura de PaisSaude ---------- */
+// Área virtual "infratransp": junta os indicadores por estado de infraestrutura e transportes (AREAS_UF) num só painel, com rodovias primeiro.
+let _INFRATR = null;
+function infraTranspDados() {
+  if (_INFRATR) return _INFRATR;
+  const A = (AREAS_UF && AREAS_UF.infraestrutura) || { fontes: {}, BR: {}, UF: {} }, T = (AREAS_UF && AREAS_UF.transportes) || { fontes: {}, BR: {}, UF: {} };
+  const D = { fontes: Object.assign({}, T.fontes, A.fontes), BR: Object.assign({}, T.BR, A.BR), UF: {} };
+  for (const u of new Set([...Object.keys(A.UF || {}), ...Object.keys(T.UF || {})])) D.UF[u] = Object.assign({}, T.UF[u] || {}, A.UF[u] || {});
+  return (_INFRATR = D);
+}
+// Dados reais só nacionais (sem série por estado verificada). Entram nos cartões como "Real", marcados como dado nacional fixo; "jogo" liga ao indicador do jogo quando existe.
+const PAIS_EXTRAS = {
+  educacao: [
+    { nome: 'Matrículas em tempo integral', un: '% da educação básica', real: 25.8, ano: 2025, fonte: 'INEP, Censo Escolar 2025 (meta 6 do PNE: 25%; 22,9% em 2024)', url: 'https://www.gov.br/inep/pt-br/centrais-de-conteudo/noticias/censo-escolar/brasil-atingiu-maior-percentual-de-estudantes-em-tempo-integral', melhor: 'maior' }
+  ],
+  infratransp: [
+    { nome: 'Água por rede geral', un: '% da população', real: 83.1, ano: 2023, fonte: 'SINISA 2024 (ano de referência 2023), Ministério das Cidades, na síntese do Banco do Nordeste (Caderno Setorial ETENE, nov/2025)', url: 'https://www.bnb.gov.br/revista/cse/article/view/3298', melhor: 'maior' },
+    { nome: 'Esgoto por rede coletora', un: '% da população', real: 59.7, ano: 2023, jogo: (g) => g.ind.esgoto, fonte: 'SINISA 2024 (ano de referência 2023), Ministério das Cidades, na síntese do Banco do Nordeste (Caderno Setorial ETENE, nov/2025). O Censo 2022 do IBGE dá 62,5% dos domicílios (rede geral e fossa ligada à rede)', url: 'https://www.bnb.gov.br/revista/cse/article/view/3298', melhor: 'maior' },
+    { nome: 'Domicílios com energia pela rede geral', un: '% dos domicílios', real: 99.4, ano: 2022, fonte: 'IBGE, Censo Demográfico 2022 (99,8% com energia por qualquer fonte; na área rural do Norte, só 85,0% pela rede)', url: 'https://sidra.ibge.gov.br/pesquisa/censo-demografico/demografico-2022/universo-caracteristicas-dos-domicilios', melhor: 'maior' },
+    { nome: 'Rodovias concedidas (parte da malha avaliada)', un: '% da extensão avaliada', real: 26.4, ano: 2025, fonte: 'CNT, Pesquisa CNT de Rodovias 2025: 30.130 km concedidos entre mais de 114 mil km avaliados (todas as federais pavimentadas, as concedidas e as principais estaduais)', url: 'https://www.poder360.com.br/poder-infra/qualidade-das-rodovias-melhora-em-2025-mas-62-seguem-problematicas/', melhor: 'maior' }
+  ]
+};
+// "re" casa o tema da conversa com o indicador por estado; st = melhora mensal em % do indicador
+const EDU_CONV = [
+  { k: 'alfa', nome: 'Alfabetização e anos iniciais', ico: 'BookOpen', re: /ideb_ai/, st: .6, n: 8, custo: .3 },
+  { k: 'finais', nome: 'Anos finais do fundamental', ico: 'School', re: /ideb_af/, st: .7, n: 8, custo: .3 },
+  { k: 'medio', nome: 'Ensino médio e evasão', ico: 'GraduationCap', re: /ideb_em/, st: .8, n: 8, custo: .4 },
+  { k: 'analf', nome: 'Analfabetismo de adultos', ico: 'Pencil', re: /analfabetismo/, st: 1.2, n: 8, custo: .2 },
+  { k: 'sup', nome: 'Acesso ao ensino superior', ico: 'Landmark', re: /superior/, st: .5, n: 10, custo: .5 }
+];
+const INFRA_CONV = [
+  { k: 'rod', nome: 'Estado das rodovias', ico: 'Route', re: /rodovias_boas/, st: .9, n: 8, custo: .6 },
+  { k: 'malha', nome: 'Pavimentação de rodovias', ico: 'Construction', re: /malha/, st: .3, n: 10, custo: .5 },
+  { k: 'mortes', nome: 'Mortes no trânsito', ico: 'TriangleAlert', re: /mortes_transito/, st: 1, n: 8, custo: .3 },
+  { k: 'net', nome: 'Internet e conectividade', ico: 'Wifi', re: /internet/, st: .4, n: 8, custo: .3 }
+];
+const convInd = (A, T) => pufInds(pufDados(A.pa)).find(k => T.re.test(k)) || null;
+function convFalaGen(pol) {
+  return (g, u, k) => {
+    const A = pol.A(), T = A.topicos.find(x => x.k === k), al = convAlin(g, u), ik = convInd(A, T), D = pufDados(A.pa);
+    const tom = al === 'opos' ? ' O governo federal tem de fazer a sua parte e cumprir o que prometeu.' : al === 'indep' ? ' Tratemos disso sem disputa partidária.' : ' Estamos alinhados com o governo federal.';
+    let n = '';
+    if (ik) { const F = D.fontes[ik], v = pufVal(g, A.pa, D, ik, u), b = pufVal(g, A.pa, D, ik, 'BR'); if (v != null && b != null) { const pior = (F.melhor === 'menor') === (v > b); n = `${cap(F.nome.toLowerCase())} ${deUF(u)}: ${pufFmt(D, ik, v)} (${F.unidade}), ${Math.abs(v - b) / Math.abs(b) < .03 ? 'em linha com' : pior ? 'pior que' : 'melhor que'} a média nacional de ${pufFmt(D, ik, b)}. `; } }
+    return n + (pol.txt[k] || '') + tom;
+  };
+}
+const EDU_FALA = { alfa: 'Queremos alfabetizar na idade certa: formação de professores, material didático e avaliação a cada ano, com apoio técnico e financeiro da União.', finais: 'Os anos finais perdem alunos e aprendizado; peço reforço escolar, tempo integral e professores bem pagos.', medio: 'O jovem abandona o ensino médio para trabalhar; o Pé-de-Meia, o ensino técnico e o tempo integral ajudam a mantê-lo na escola.', analf: 'Ainda temos adultos e idosos sem ler e escrever; pedimos um programa de alfabetização de jovens e adultos com bolsa e turmas perto de casa.', sup: 'Faltam vagas e permanência estudantil; peço campi, bolsas e ampliação das universidades e institutos federais no interior.' };
+const INFRA_FALA = { rod: 'Nossas rodovias federais estão esburacadas e as estaduais dependem de convênio; peço recuperação, manutenção contínua e novas concessões onde o tráfego justifica.', malha: 'Há trechos sem asfalto que isolam cidades inteiras; peço pavimentação das BRs e das estradas vicinais, com licenciamento ambiental em dia.', mortes: 'As mortes no trânsito pesam na saúde e na economia; peço fiscalização, radares, duplicação de trechos críticos e campanhas de segurança viária.', net: 'Sem internet de qualidade o interior fica para trás; peço fibra, 5G e conectividade rural, com apoio da Anatel e do fundo de universalização.' };
 const CONV_AREAS = {
-  seg: { nome: 'segurança', topicos: SEG_CONV, fala: segConvFala, fator: (P, T) => (T.k === 'letal' ? (P.rot === 'garantista' ? 1.4 : P.rot === 'linha-dura' ? .4 : 1) : 1) },
-  sau: { nome: 'saúde', topicos: SAU_CONV, fala: sauConvFala, fator: () => 1 }
+  seg: { nome: 'segurança', titulo: 'Segurança pública', topicos: SEG_CONV, fala: segConvFala, fator: (P, T) => (T.k === 'letal' ? (P.rot === 'garantista' ? 1.4 : P.rot === 'linha-dura' ? .4 : 1) : 1) },
+  sau: { nome: 'saúde', titulo: 'Saúde', pa: 'saude', adj: 'sau', topicos: SAU_CONV, fala: sauConvFala, fator: () => 1 },
+  edu: { nome: 'educação', titulo: 'Educação', pa: 'educacao', adj: 'educacao', topicos: EDU_CONV, fala: convFalaGen({ A: () => CONV_AREAS.edu, txt: EDU_FALA }), fator: () => 1 },
+  infra: { nome: 'infraestrutura e transportes', titulo: 'Infraestrutura e transportes', pa: 'infratransp', adj: 'infratransp', topicos: INFRA_CONV, fala: convFalaGen({ A: () => CONV_AREAS.infra, txt: INFRA_FALA }), fator: () => 1 }
 };
 function convAbre(g, area, u, k) {
   const A = CONV_AREAS[area]; const T = A && A.topicos.find(x => x.k === k); if (!T || !UF_INFO[u]) return 'Tema inválido.';
@@ -17797,7 +17850,7 @@ function convAbre(g, area, u, k) {
 }
 function convDrift(g, area, u, T, f, n) {
   const C = ensureConv(g); let campo = T.campo, st = T.st * f;
-  if (area === 'sau') { campo = sauInd(T); if (!campo) return false; st = (SAUDE_UF.fontes[campo].melhor === 'menor' ? -1 : 1) * Math.abs(T.st) * f; }
+  if (area !== 'seg') { const D = pufDados(CONV_AREAS[area].pa); campo = pufInds(D).find(k => T.re.test(k)) || null; if (!campo) return false; st = (D.fontes[campo].melhor === 'menor' ? -1 : 1) * Math.abs(T.st) * f; }
   C.dr.push({ area, uf: u, campo, st, n, i: 0 }); while (C.dr.length > 60) C.dr.shift(); return true;
 }
 function convResponde(g, area, u, r) {
@@ -17814,14 +17867,14 @@ function convResponde(g, area, u, r) {
     else { S.rel = clamp(S.rel - 5, 0, 100); S.postura = 'culpa'; g.ufBonus[u] = (g.ufBonus[u] || 0) - .5; res = `A cobrança azedou a relação: ${P.nome} reage em público. Relação −5, sem efeito no indicador.`; cat = 'neg'; tom = 'neg'; xtxt = `Cobrança sem apoio não resolve ${tl}. O estado faz a sua parte; falta a União fazer a dela.`; }
   } else {
     S.rel = clamp(S.rel + 1, 0, 100);
-    if (area === 'sau') { g.fiscal.extra += T.custo * 2; convDrift(g, area, u, T, 1.6 * fp, T.n + 3); res = `Pacto estadual de saúde firmado com ${nome} em ${tl} (R$ ${fmt(T.custo * 2, 1)} bi). Relação +1; melhora mais forte e duradoura.`; cat = 'pos'; }
+    if (area !== 'seg') { g.fiscal.extra += T.custo * 2; convDrift(g, area, u, T, 1.6 * fp, T.n + 3); res = `Pacto estadual de ${A.nome} firmado com ${nome} em ${tl} (R$ ${fmt(T.custo * 2, 1)} bi). Relação +1; melhora mais forte e duradoura.`; cat = 'pos'; }
     else res = `Plano conjunto proposto a ${nome}: a negociação abaixo já traz as ofertas ligadas a ${tl}.`;
   }
   U.res = res;
   if (area === 'seg') gvNoticia(g, { globo: r === 'apoio' ? `União oferece apoio a ${nome} em ${tl}` : r === 'cobrar' ? `Planalto cobra resultados ${deUF(u)} em ${tl}` : undefined, linha: `Conversa com ${P.nome} (${nome}) sobre ${tl}: ${r === 'apoio' ? 'apoio federal' : r === 'cobrar' ? 'cobrança de resultados' : 'plano conjunto'}`, cat, x: r === 'plano' ? undefined : { uf: u, kind: 'conversa', tom, txt: xtxt, imp: `Presidente e governador ${deUF(u)} conversam sobre ${tl}.` } });
   else {
-    const txt = r === 'apoio' ? `Saúde: União oferece apoio a ${nome} em ${tl}` : r === 'cobrar' ? `Saúde: Planalto cobra resultados ${deUF(u)} em ${tl}` : `Saúde: União e ${nome} firmam pacto em ${tl}`;
-    g.feed.unshift({ mes: g.mes, src: 'globo', txt }); g.feed = g.feed.slice(0, 40); linhaAdd(g, 'SAÚDE', txt); gvLog(g, txt, cat, u);
+    const tt = A.titulo; const txt = r === 'apoio' ? `${tt}: União oferece apoio a ${nome} em ${tl}` : r === 'cobrar' ? `${tt}: Planalto cobra resultados ${deUF(u)} em ${tl}` : `${tt}: União e ${nome} firmam pacto em ${tl}`;
+    g.feed.unshift({ mes: g.mes, src: 'globo', txt }); g.feed = g.feed.slice(0, 40); linhaAdd(g, tt.toUpperCase(), txt); gvLog(g, txt, cat, u);
   }
 }
 // deriva mensal dos indicadores acertados nas conversas (segurança mexe em g.seg; saúde acumula em g.conv.adj, % da base); chamado em fimDoMes
@@ -17834,8 +17887,8 @@ function segConvMensal(g, notas) {
         if (d.campo === 'mvi') { x.mvi = clamp(x.mvi * (1 + d.st / 100), 1, 120); x.adj += d.st; }
         else if (d.campo === 'letal') { x.letal = Math.max(0, x.letal * (1 + d.st / 100)); x.ladj += d.st; }
         else if (d.campo === 'controle') x.controle = clamp(x.controle + d.st, 0, 100);
-      } else if (d.area === 'sau') {
-        const A = (C.adj.sau = C.adj.sau || {}); const B = (A[d.uf] = A[d.uf] || {}); B[d.campo] = clamp((B[d.campo] || 0) + d.st, -40, 40);
+      } else if (CONV_AREAS[d.area]) {
+        const A = (C.adj[CONV_AREAS[d.area].adj] = C.adj[CONV_AREAS[d.area].adj] || {}); const B = (A[d.uf] = A[d.uf] || {}); B[d.campo] = clamp((B[d.campo] || 0) + d.st, -40, 40);
       }
       d.i++;
     }
@@ -17849,7 +17902,7 @@ function ConversaGov({ g, upd, area, uf, onPlano }) {
   const doMes = !!(U && U.mes === g.mes); const semAcoes = g.acoes <= 0 || g.pes.energia < 10; const itv = area === 'seg' && gvIntervUF(g) === uf;
   const T = U && A.topicos.find(x => x.k === U.t);
   const bloqueio = itv ? 'Estado sob intervenção federal' : doMes ? 'Já conversou com este governador neste mês' : semAcoes ? (g.acoes <= 0 ? 'Sem ações políticas neste mês' : 'Energia esgotada') : 'Custa 1 ação política';
-  const titulo = area === 'seg' ? 'Segurança pública' : 'Saúde';
+  const titulo = A.titulo;
   const resp = [
     { k: 'apoio', l: 'Oferecer apoio federal', d: T ? `R$ ${fmt(T.custo, 1)} bi · relação +3 · melhora o indicador` : '', ico: 'HeartHandshake' },
     { k: 'cobrar', l: 'Cobrar resultados', d: S.rel >= 60 ? 'relação −2 · relação alta: pode melhorar o indicador' : 'relação −5 · com relação baixa, só azeda', ico: 'Megaphone' },
@@ -17942,6 +17995,93 @@ function PaisSaude({ g, upd, decidir }) {
     <${FontesArea} area="saude" />
   </div>`;
 }
+const EDU_PROG = [
+  { l: 'Ampliar o Pé-de-Meia', t: 'Ampliar o Pé-de-Meia, com mais bolsas para estudantes do ensino médio público permanecerem na escola', i: 'Wallet' },
+  { l: 'Escola em tempo integral', t: 'Expandir as escolas de ensino em tempo integral em parceria com os estados', i: 'Clock' },
+  { l: 'Creches', t: 'Ampliar o número de creches públicas em parceria com os municípios', i: 'Baby' },
+  { l: 'Reajustar o piso dos professores', t: 'Reajustar o piso salarial dos professores', i: 'GraduationCap' },
+  { l: 'Alfabetização na idade certa', t: 'Lançar um programa nacional de alfabetização na idade certa', i: 'BookOpen' },
+  { l: 'Internet nas escolas', t: 'Conectar todas as escolas públicas à internet de alta velocidade', i: 'Wifi' },
+  { l: 'Vagas em universidades e institutos federais', t: 'Criar novas vagas e campi nas universidades e institutos federais', i: 'Landmark' },
+  { l: 'Merenda escolar (PNAE)', t: 'Aumentar o repasse da merenda escolar do PNAE', i: 'Utensils' },
+  { l: 'Transporte escolar', t: 'Ampliar o programa de transporte escolar rural', i: 'Bus' },
+  { l: 'Ensino técnico', t: 'Ampliar os cursos técnicos e profissionalizantes para jovens do ensino médio', i: 'Wrench' }
+];
+const INFRA_GRUPOS = [
+  { h: 'Saneamento e moradia', itens: [
+    { l: 'Acelerar água e esgoto (Marco do Saneamento)', t: 'Acelerar as obras de água e esgoto com recursos do Marco do Saneamento', i: 'Droplets' },
+    { l: 'Minha Casa Minha Vida', t: 'Ampliar o Minha Casa Minha Vida com mais unidades para famílias de baixa renda', i: 'Home' },
+    { l: 'Nova etapa do PAC', t: 'Lançar uma nova etapa do PAC com obras de infraestrutura', i: 'Construction' }] },
+  { h: 'Energia e comunicações', itens: [
+    { l: 'Luz para Todos: energia no campo e na Amazônia', t: 'Universalizar o acesso à energia elétrica nas áreas rurais', i: 'Zap' },
+    { l: 'Leilão de linhas de transmissão', t: 'Leiloar novas linhas de transmissão de energia elétrica', i: 'Cable' },
+    { l: '5G e internet rural', t: 'Levar internet 5G e banda larga para áreas rurais', i: 'Wifi' }] },
+  { h: 'Rodovias', itens: [
+    { l: 'Duplicar trechos de BRs', t: 'Duplicar as principais rodovias federais', i: 'Route' },
+    { l: 'Recuperar e manter as BRs (DNIT)', t: 'Recuperar e manter as rodovias federais com mais verba para o DNIT', i: 'Wrench' },
+    { l: 'Novos leilões de rodovias', t: 'Fazer novos leilões de concessão de rodovias federais', i: 'Handshake' },
+    { l: 'Pavimentar BRs na Amazônia (polêmica ambiental)', t: 'Asfaltar rodovias federais na Amazônia com licenciamento ambiental', i: 'Trees' },
+    { l: 'Segurança viária e radares', t: 'Ampliar a fiscalização e os radares nas rodovias federais para reduzir as mortes no trânsito', i: 'TriangleAlert' }] },
+  { h: 'Ferrovias, portos e mobilidade', itens: [
+    { l: 'Ferrogrão', t: 'Autorizar a concessão da Ferrogrão', i: 'TrainFront' },
+    { l: 'BRT e metrô nas capitais', t: 'Financiar BRT e metrô nas capitais', i: 'TramFront' },
+    { l: 'Cabotagem', t: 'Incentivar a cabotagem para transportar cargas pela costa', i: 'Ship' },
+    { l: 'Renovar a frota de caminhões', t: 'Financiar a renovação da frota de caminhões antigos', i: 'Truck' }] }
+];
+function PaisAreaAcao({ g, upd, decidir, pa, conv, dp, titulo, sub, grupos, notas, ind0 }) {
+  const [sel, setSel] = useState(g.cfg.estado && ELEITOS.gov[g.cfg.estado] ? g.cfg.estado : 'SP');
+  const [indR, setIndR] = useState(ind0 || null);
+  const D = pufDados(pa); const inds = pufInds(D); const ind = inds.includes(indR) ? indR : inds[0];
+  const semAcoes = g.acoes <= 0 || g.pes.energia < 10;
+  const extras = PAIS_EXTRAS[pa] || [];
+  const prog = (a) => html`<button key=${a.l} className="btn btn-ghost justify-start text-sm text-left" data-prog=${pa} disabled=${semAcoes} title=${semAcoes ? (g.acoes <= 0 ? 'Sem ações políticas neste mês' : 'Energia esgotada') : 'Custa 1 ação política e passa pelo parecer da Casa Civil'} onClick=${() => decidir(a.t)}><${Icon} n=${a.i} s=${15} /> ${a.l}</button>`;
+  const card = (c) => html`<div key=${c.nome} className="rounded-lg border border-line p-3 min-w-0" data-kpi=${pa}><div className="eyebrow">${c.nome}</div><div className="num text-2xl font-semibold" style=${{ color: c.cor || 'var(--fg)' }}>${c.v}</div><div className="text-[11px] text-muted">${c.un}</div><div className="text-[11px] text-muted mt-1">${c.real}</div></div>`;
+  const kD = inds.map(k => { const F = D.fontes[k]; const v = pufVal(g, pa, D, k, 'BR'), r = D.BR[k]; const ok = Number.isFinite(r) && v != null; const dir = F.melhor === 'menor' ? -1 : 1; const rel = ok ? (v - r) / Math.abs(r) * dir : 0;
+    return { nome: F.nome, un: F.unidade, v: pufFmt(D, k, v), cor: rel > .03 ? 'var(--verde)' : rel < -.03 ? 'var(--rubro)' : null, real: html`Real ${F.ano}: <span className="num">${pufFmt(D, k, r)}</span>` }; });
+  const kE = extras.map(e => { const v = e.jogo ? e.jogo(g) : null; const rel = v != null ? (v - e.real) / e.real : 0; return { nome: e.nome, un: e.un, v: fmt(v != null ? v : e.real, 1), cor: rel > .03 ? 'var(--verde)' : rel < -.03 ? 'var(--rubro)' : null, real: html`Real ${e.ano}: <span className="num">${fmt(e.real, 1)}</span>${v == null ? html` <${Tag}>dado nacional fixo</${Tag}>` : ''}` }; });
+  return html`<div className="flex flex-col gap-6" data-pais=${dp}>
+    <section className="sec">
+      <div className="flex flex-wrap items-end justify-between gap-2 mb-3">
+        <div><h3 className="disp text-2xl font-extrabold uppercase">${titulo}</h3><p className="text-xs text-muted">${sub}</p></div>
+        <${Tag} cor=${g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)'}>${g.acoes}/5 ações</${Tag}>
+      </div>
+      ${kD.length + kE.length === 0 ? html`<p className="text-sm text-muted">Indicadores em preparação.</p>` : html`<div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">${kD.concat(kE).map(card)}</div>`}
+    </section>
+    <${PainelUF} g=${g} area=${pa} cfg=${{ rankFora: true, ind0 }} selUF=${sel} onUF=${setSel} />
+    <${ConversaGov} g=${g} upd=${upd} area=${conv} uf=${sel} />
+    <section className="sec" data-programas=${pa}>
+      <h3 className="disp text-2xl font-extrabold uppercase mb-1">Programas federais</h3>
+      <p className="text-xs text-muted mb-3">Cada programa gasta 1 ação do mês e passa pelo motor de decisão (parecer da Casa Civil, custo e Congresso).</p>
+      ${grupos.map(G => html`<div key=${G.h || 'g'} className="mb-4 last:mb-0">${G.h ? html`<div className="eyebrow mb-2">${G.h}</div>` : null}<div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-2">${G.itens.map(prog)}</div></div>`)}
+    </section>
+    ${inds.length > 0 && html`<section className="sec">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-3"><h3 className="disp text-2xl font-extrabold uppercase">Ranking dos estados</h3>
+        <div role="radiogroup" aria-label="Indicador do ranking" className="flex flex-wrap gap-1">${inds.map(k => html`<button key=${k} type="button" role="radio" aria-checked=${k === ind} onClick=${() => setIndR(k)} className=${'btn btn-ghost !text-xs ' + (k === ind ? '!border-ouro text-ouro' : '')}>${D.fontes[k].nome}</button>`)}</div></div>
+      <div className="grid sm:grid-cols-2 gap-6"><${RankingUF} g=${g} area=${pa} ind=${ind} onUF=${setSel} selUF=${sel} n=${8} /><${RankingUF} g=${g} area=${pa} ind=${ind} onUF=${setSel} selUF=${sel} n=${8} melhores=${true} /></div>
+    </section>`}
+    <${FontesArea} area=${pa} notas=${html`<span>${notas || ''}${extras.length ? html`<span className="block mt-2"><b className="text-fg">Dados nacionais fora do mapa por estado:</b></span>` : null}${extras.length ? html`<span className="block mt-1">${extras.map(e => html`<span key=${e.nome} className="block mb-1">${e.nome} (${e.un}): ${fmt(e.real, 1)}, ${e.fonte}, dados de ${e.ano}. <a className="underline" href=${e.url} target="_blank" rel="noopener noreferrer">fonte</a></span>`)}</span>` : null}</span>`} />
+  </div>`;
+}
+const EDU_NOTAS = 'Ideb: INEP 2025 (valores por estado reproduzidos pela imprensa a partir do INEP). Analfabetismo e superior completo: IBGE, PNAD Contínua Educação 2025. As conversas com governadores e os programas movem os valores no jogo a partir dessa base real.';
+const INFRA_NOTAS = 'Rodovias e pavimentação: CNT 2025 (a extensão pavimentada é a avaliada pela CNT, não a malha total do estado). Mortes no trânsito: DataSUS/SIM 2024. Internet: IBGE, PNAD Contínua TIC 2025. Água, esgoto e energia ainda não têm série por estado verificada neste jogo: aparecem só como dado nacional (o esgoto também acompanha o jogo), por isso não há conversa com governadores sobre eles. Estimativas do jogo seguem marcadas como tal.';
+function PaisEducacao({ g, upd, decidir }) {
+  return html`<${PaisAreaAcao} g=${g} upd=${upd} decidir=${decidir} pa="educacao" conv="edu" dp="educacao" titulo="Educação" sub="Situação nacional no jogo, com a linha de base real logo abaixo de cada número." grupos=${[{ itens: EDU_PROG }]} notas=${EDU_NOTAS} />`;
+}
+function PaisInfra({ g, upd, decidir }) {
+  return html`<${PaisAreaAcao} g=${g} upd=${upd} decidir=${decidir} pa="infratransp" conv="infra" dp="infraestrutura" titulo="Infraestrutura e transportes" sub="Rodovias, saneamento, energia e conectividade: situação nacional no jogo, com a base real logo abaixo." grupos=${INFRA_GRUPOS} notas=${INFRA_NOTAS} ind0="rodovias_boas_pct" />`;
+}
+const JUS_GOV = [
+  { l: 'Reforçar o orçamento da PF', t: 'Reforçar o orçamento da Polícia Federal', i: 'Shield' },
+  { l: 'Autonomia da PF (PEC)', t: 'Enviar uma PEC dando autonomia funcional e orçamentária à Polícia Federal', i: 'ShieldCheck' },
+  { l: 'PGR com mandato fixo (PEC)', t: 'Enviar PEC dando mandato fixo e independência ao Procurador-Geral da República', i: 'Scale' },
+  { l: 'Cortar penduricalhos do Judiciário (PLP)', t: 'Enviar projeto de lei complementar para cortar penduricalhos do Judiciário', i: 'Gavel' },
+  { l: 'Teto remuneratório', t: 'Aplicar o teto remuneratório do funcionalismo e limitar os supersalários por lei', i: 'Banknote' },
+  { l: 'Fortalecer a CGU', t: 'Reforçar o orçamento da CGU para ampliar as auditorias e o combate à corrupção', i: 'FileSearch' },
+  { l: 'Lei anticorrupção e leniência', t: 'Reforçar a lei anticorrupção e os acordos de leniência', i: 'FileText' },
+  { l: 'Delação premiada', t: 'Regulamentar a delação premiada', i: 'Handshake' },
+  { l: 'Fim do sigilo de 100 anos (LAI)', t: 'Reforçar a Lei de Acesso à Informação e acabar com o sigilo de 100 anos', i: 'Eye' },
+  { l: 'Força-tarefa contra o crime organizado', t: 'Criar uma força-tarefa nacional contra o crime organizado e a lavagem de dinheiro', i: 'Siren' }
+];
 /* ============================== PAÍS: JUSTIÇA ============================== */
 /* Custos do Judiciário (CNJ, Justiça em Números, ano-base 2025, divulgado em 2026), escândalos de corrupção (fictícios, gerados na partida)
    e arquivo de casos históricos reais (só fatos públicos e situação oficial). Estado em g.jus, criado de forma preguiçosa (saves antigos funcionam). */
@@ -18006,6 +18146,7 @@ function jusNovoCaso(g, opt) {
   const esq = opt.esquema || JUS_ESQUEMAS[Math.floor(r('e') * JUS_ESQUEMAS.length)];
   const c = { id: 'j' + J.seq, nome, mes: g.mes, faseMes: g.mes, orgao, orgaos: [orgao], fase: 'inquérito', valor, prova: Math.round(20 + r('p') * 60), alvo: alvo.t, p: alvo.p || null, gov: !!alvo.gov, casa: alvo.casa || null, cargo: alvo.cargo || null, sig: alvo.sig || null, esquema: esq, pend: true, pendMes: g.mes, trava: 0, sigilo: false, rastro: 0, acel: 0, forca: false, reab: 0, ult: 0, log: [] };
   J.casos.push(c); J.ultQuebra = g.mes;
+  if (opt.silencio) return c; // caso de fundo da partida nova: sem manchete, escândalo nem desgaste de partido
   const imp = c.gov ? clamp(c.valor / 120 + 2, 2, 8) : clamp(c.valor / 400, .5, 2);
   g.escandalo = clamp(g.escandalo + imp, 0, 100);
   if (c.gov) jusGrupos(g, -.5); else jusRel(g, c.p, -2);
@@ -18019,6 +18160,15 @@ function jusProbQuebra(g) {
   const B = g.eu && g.eu.bast; let p = .035 + g.escandalo / 320;
   if (B && !g.cfg.real) { p += clamp((B.expo || 0) / 600, 0, .1); if (B.inv) p += .05; }
   return clamp(p, .02, .35);
+}
+// partida nova começa com 1 ou 2 investigações fictícias já abertas (na vida real sempre há alguma); saves antigos não ganham casos
+function jusInicial(g) {
+  try {
+    const J = ensureJus(g); if (J.casos.length) return;
+    const livres = JUS_ALVOS.filter(a => !a.gov); const n = 1 + Math.floor(jusSorteia(g, 'ini') * 2);
+    for (let i = 0; i < n; i++) { const a = livres[Math.floor(jusSorteia(g, 'ia' + i) * livres.length)]; const c = jusNovoCaso(g, { alvoT: a.t, silencio: true }); c.pend = false; c.faseMes = g.mes + 4; if (i === 1) c.fase = 'denúncia'; } // só andam a partir do mês 5 (idade da fase conta de lá)
+    J.ultQuebra = g.mes;
+  } catch (e) { if (typeof console !== 'undefined') console.warn('jusInicial', e); }
 }
 function jusMensal(g, notas) {
   const J = ensureJus(g); if (g.over) return;
@@ -18235,7 +18385,8 @@ const JUS_HIST = [
   { id: 'zelotes', nome: 'Zelotes (CARF)', ano: '2015 a hoje', orgao: 'PF, MPF e Receita', fato: 'Operação da PF de março de 2015 sobre suposta venda de decisões no CARF, que poderia anular cerca de R$ 19 bilhões em multas.', status: 'Houve CPI do CARF e processos na Justiça Federal do Distrito Federal, com condenações e absolvições em ações distintas. Situação processual atual não verificada nesta consulta: consulte a Justiça Federal e o MPF.', fontes: [['Congresso em Foco: operação apura desvio bilionário', 'https://congressoemfoco.com.br/noticia/67191/operacao-da-pf-apura-desvio-bilionario-da-receita'], ['Relatório da CPI do CARF (Conjur)', 'https://www.conjur.com.br/wp-content/uploads/2023/09/relatorio-cpi-carf.pdf']] },
   { id: 'semdesconto', nome: 'Operação Sem Desconto (INSS)', ano: '2025 a hoje', orgao: 'PF e CGU', fato: 'Descontos associativos não autorizados em aposentadorias e pensões do INSS, deflagrada em abril de 2025.', status: 'Em investigação, com novas fases em 2026 (março e maio). Estimativa citada de cerca de R$ 6,3 bilhões descontados entre 2019 e 2024. A CPMI do INSS encerrou os trabalhos em março de 2026 sem relatório final. Sem condenações definitivas conhecidas; por isso o caso é tratado só como investigação de instituições.', fontes: [['O Povo: PF e CGU investigam descontos', 'https://www.opovo.com.br/noticias/politica/2026/05/27/inss-pf-e-cgu-investigam-descontos-nao-autorizados-de-pensionistas.html'], ['Band: nova fase da operação', 'https://www.band.com.br/noticias/pf-e-cgu-nova-fase-operacao-sem-desconto-inss-202605270703'], ['CGU: nota sobre a operação', 'https://www.gov.br/cgu/pt-br/assuntos/noticias/2025/04/sem_desconto.pdf/@@download/file']] }
 ];
-function PaisJustica({ g, upd }) {
+function PaisJustica({ g, upd, decidir }) {
+  const semAcoes = g.acoes <= 0 || g.pes.energia < 10;
   const J = jusDe(g); const ab = jusAbertos(g), ar = jusArquivados(g); const med = jusMedidasPend(g);
   const bi = (p) => JUS_CUSTO.total * p / 100; const hab = (p) => bi(p) * 1000 / JUS_POP_MI;
   return html`<div className="flex flex-col gap-6" data-pais="justica">
@@ -18252,10 +18403,15 @@ function PaisJustica({ g, upd }) {
       <div className="mt-3 text-xs text-muted leading-relaxed" data-jus="penduricalhos">${med.length === 0 ? 'Você ainda não tem medida em vigor sobre penduricalhos, supersalários ou auxílio-moradia de magistrados. Uma medida assim (escreva na Mesa) aparece aqui; o teto remuneratório enfrenta resistência do Judiciário e risco de conflito com o STF.' : html`<div><b className="text-fg">Medidas suas sobre penduricalhos e auxílio-moradia:</b><ul className="mt-1 flex flex-col gap-0.5">${med.map(m => html`<li key=${m.id}>${m.nm || m.topic} · ${MED_ESTADOS[m.estado] ? MED_ESTADOS[m.estado][0] : m.estado} · desde ${dataCurta(m.m0)}</li>`)}</ul><div className="mt-1">Prazos, custo e problemas em Medidas.</div></div>`}</div>
     </section>
     ${J.ult && html`<div className=${'p-3 rounded-lg border text-sm ' + (J.ult.back ? 'border-rubro' : 'border-verde')} data-jus="resultado"><b>${dataCurta(J.ult.mes)} · Operação ${J.ult.nome}:</b> ${J.ult.res}</div>`}
+    <section className="sec" data-jus="acoes-gov">
+      <h3 className="disp text-2xl font-extrabold uppercase mb-1">Ações do governo</h3>
+      <p className="text-xs text-muted mb-3">Medidas que você pode tomar a qualquer hora, sem depender de um caso aberto. Cada uma gasta 1 ação do mês e passa pelo motor de decisão (parecer da Casa Civil, custo e Congresso).</p>
+      <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-2">${JUS_GOV.map(a => html`<button key=${a.l} className="btn btn-ghost justify-start text-sm text-left" data-prog="justica" disabled=${semAcoes || !decidir} title=${semAcoes ? (g.acoes <= 0 ? 'Sem ações políticas neste mês' : 'Energia esgotada') : 'Custa 1 ação política e passa pelo parecer da Casa Civil'} onClick=${() => decidir(a.t)}><${Icon} n=${a.i} s=${15} /> ${a.l}</button>`)}</div>
+    </section>
     <section className="sec" data-jus="casos">
       <div className="flex flex-wrap items-center justify-between gap-2 mb-1"><h3 className="disp text-2xl font-extrabold uppercase">Casos de corrupção abertos</h3><span className="eyebrow">${ab.length} abertos · ${ar.length} arquivados</span></div>
       <p className="text-xs text-muted mb-3">Casos fictícios, gerados nesta partida: o risco de novos escândalos sobe com o nível de escândalo (${Math.round(g.escandalo)}) e com atalhos em Bastidores. Cada ação gasta 1 ação política, no máximo uma por caso a cada mês.</p>
-      ${ab.length === 0 ? html`<p className="text-sm text-muted" data-jus="vazio">Nenhum caso aberto agora.</p>` : html`<ul className="grid lg:grid-cols-2 gap-4">${ab.map(c => html`<${JusCaso} key=${c.id} g=${g} upd=${upd} c=${c} />`)}</ul>`}
+      ${ab.length === 0 ? html`<p className="text-sm text-muted" data-jus="vazio">Nenhuma investigação aberta agora. Elas surgem com o escândalo do governo e os bastidores; você também pode agir pelas ações acima.</p>` : html`<ul className="grid lg:grid-cols-2 gap-4">${ab.map(c => html`<${JusCaso} key=${c.id} g=${g} upd=${upd} c=${c} />`)}</ul>`}
       ${ar.length > 0 && html`<div className="mt-5"><div className="eyebrow mb-2">Arquivados nesta partida</div><ul className="grid lg:grid-cols-2 gap-4">${ar.map(c => html`<${JusCaso} key=${c.id} g=${g} upd=${upd} c=${c} />`)}</ul></div>`}
     </section>
     <section className="sec" data-jus="historico">
