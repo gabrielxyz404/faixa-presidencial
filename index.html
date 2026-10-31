@@ -576,6 +576,14 @@
   .pend-card .pend-a { margin-top: auto; padding-top: 4px; justify-content: flex-start; grid-column: auto; width: 100%; }
   .pend-card .pc-top { width: 100%; justify-items: start; } .pend-card .pc-top .pend-n { justify-self: end; }
   .pend-card .pend-n { color: var(--dim); }
+  /* pendências dentro de País/Poder: selo na sub-aba e faixa com atalho */
+  .chip-badge::after { content: attr(data-n); }
+  .chip-badge { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px; margin-left: 6px; border-radius: 999px; background: var(--rubro); color: #000; font-size: 12px; font-weight: 700; line-height: 1; vertical-align: 1px; }
+  .pend-aqui { display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border: 1px solid rgba(255,90,78,.35); border-radius: 12px; background: rgba(255,90,78,.06); }
+  .pend-aqui-k { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--rubro); }
+  .pend-aqui-i { display: grid; grid-template-columns: auto minmax(0,1fr) auto; gap: 10px; align-items: center; }
+  .pa-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--anil); } .pend-aqui-i[data-nivel=urgente] .pa-dot { background: var(--rubro); } .pend-aqui-i[data-nivel=atencao] .pa-dot { background: var(--ouro); }
+  .pa-t { font-size: 15px; } .pa-onde { color: var(--muted); font-size: 13px; margin-left: 4px; }
 </style>
 
 <div id="root"></div>
@@ -16278,6 +16286,11 @@ function secaoDaPendencia(p) {
   if (k === 'rede' || k === 'x' || /^(rede|x)[-_]/.test(k)) return 'x';
   return 'mesa';
 }
+// sub-aba onde cada pendência mora (para o selo nas sub-abas de País e Poder)
+const PEND_CHIP = { stf: 'stf', pauta: 'congresso', oposicao: 'oposicao', desgaste: 'governo', prioridade: 'governo', abin: 'governo', qq: 'imprensa', entcol: 'imprensa', entconv: 'imprensa', elmun: 'eleicoes', elapurm: 'eleicoes', elsuc: 'eleicoes', elcand: 'eleicoes', elpesq: 'eleicoes', eldeb: 'eleicoes', elcamp: 'eleicoes', elapurg: 'eleicoes', crise: 'mapa', protesto: 'sociedade', seguranca: 'seguranca', governadores: 'mapa', justica: 'justica' };
+let PEND_ABRIR = null; // pendência pedida fora da Mesa: a Mesa abre a gaveta dela ao montar
+function pendDaSecao(g, sec) { try { return g && g.cfg && !g.over ? pendenciasMesa(g).filter(p => secaoDaPendencia(p) === sec) : []; } catch (e) { return []; } }
+function contChips(L) { const c = {}; for (const p of L) { const k = PEND_CHIP[p.tipo]; if (k) c[k] = (c[k] || 0) + 1; } return c; }
 function contagemPendencias(g) {
   const c = { mesa: 0, pais: 0, poder: 0, medidas: 0, mundo: 0, eu: 0, x: 0 }; // v3.6
   let L = [];
@@ -16297,7 +16310,7 @@ function NavSecoes({ atual, onSel, g }) {
   };
   return html`<nav className="secnav" role="tablist" aria-label="Seções do jogo"><div className="fp-selo" aria-hidden="true"><span>FP</span></div>${SECOES.map(s => html`<button key=${s.k} id=${'sec-tab-' + s.k} type="button" role="tab" aria-selected=${atual === s.k} aria-controls="sec-painel" tabIndex=${atual === s.k ? 0 : -1} onKeyDown=${onKey} onClick=${() => onSel(s.k)}><span className="secnav-ic"><${Icon} n=${s.i} s=${22} />${cont[s.k] > 0 && html`<span className="secnav-badge num" role="img" aria-label=${cont[s.k] + (cont[s.k] === 1 ? ' pendência' : ' pendências')} data-badge=${s.k}>${cont[s.k] > 99 ? '99+' : cont[s.k]}</span>`}</span><span>${s.nome}</span></button>`)}</nav>`;
 }
-function ChipsNav({ id, chips, atual, onSel, rotulo }) {
+function ChipsNav({ id, chips, atual, onSel, rotulo, cont }) {
   const onKey = (e) => {
     const i = chips.findIndex(c => c.k === atual); const n = chips.length; let j = -1;
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown') j = (i + 1) % n; else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') j = (i + n - 1) % n; else if (e.key === 'Home') j = 0; else if (e.key === 'End') j = n - 1;
@@ -16305,7 +16318,7 @@ function ChipsNav({ id, chips, atual, onSel, rotulo }) {
     e.preventDefault(); onSel(chips[j].k);
     setTimeout(() => { const el = document.getElementById(id + '-chip-' + chips[j].k); if (el && el.focus) el.focus(); }, 0);
   };
-  return html`<div className="chipnav" role="tablist" aria-label=${rotulo}>${chips.map(c => html`<button key=${c.k} id=${id + '-chip-' + c.k} type="button" role="tab" aria-selected=${atual === c.k} aria-controls=${id + '-pan'} tabIndex=${atual === c.k ? 0 : -1} onKeyDown=${onKey} onClick=${() => onSel(c.k)}>${c.nome}</button>`)}</div>`;
+  return html`<div className="chipnav" role="tablist" aria-label=${rotulo}>${chips.map(c => html`<button key=${c.k} id=${id + '-chip-' + c.k} type="button" role="tab" aria-selected=${atual === c.k} aria-controls=${id + '-pan'} tabIndex=${atual === c.k ? 0 : -1} onKeyDown=${onKey} onClick=${() => onSel(c.k)}>${c.nome}${cont && cont[c.k] > 0 ? html`<span className="chip-badge num" data-chip-badge=${c.k} data-n=${cont[c.k]} title=${cont[c.k] + ' pendência(s)'} aria-hidden="true"></span>` : null}</button>`)}</div>`;
 }
 
 /* ---- Mesa ---- */
@@ -16417,6 +16430,7 @@ function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino 
   useEffect(() => { if (gav && !aindaPend(g, gav.kind)) setGav(null); }, [g]);
   const decidirG = (...a) => { setGav(null); return decidir(...a); };
   const votarG = (id) => { setGav(null); setArt(null); if (votarItem) votarItem(id); };
+  useEffect(() => { if (PEND_ABRIR) { const p = pend.find(x => x.id === PEND_ABRIR); PEND_ABRIR = null; if (p) agir('abrir', p); } }, []);
   const agir = (k, p) => {
     if (k === 'abrir') { if (p.abrir === 'medidas') irPara('medidas'); else setGav({ kind: p.abrir }); } // v3.6
     else if (k === 'responder') setGav({ kind: 'crise' });
@@ -16490,11 +16504,13 @@ function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino 
 function CabecaSecao({ eyebrow, titulo }) {
   return html`<div><div className="eyebrow">${eyebrow}</div><h2 className="disp text-3xl font-black uppercase leading-none mt-1">${titulo}</h2></div>`;
 }
-function Subpagina({ id, chips, atual, onSel, rotulo, eyebrow, children }) {
+function Subpagina({ id, chips, atual, onSel, rotulo, eyebrow, children, pend, abrirPend }) {
   const cur = chips.find(c => c.k === atual);
+  const P = pend || [];
   return html`<div className="flex flex-col gap-6">
     <${CabecaSecao} eyebrow=${eyebrow} titulo=${cur ? cur.nome : ""} />
-    <${ChipsNav} id=${id} chips=${chips} atual=${atual} onSel=${onSel} rotulo=${rotulo} />
+    ${P.length > 0 && html`<div className="pend-aqui" data-pend-aqui=${id}><span className="pend-aqui-k">${P.length === 1 ? 'Pendência aqui' : P.length + ' pendências aqui'}</span>${P.map(p => html`<div key=${p.id} className="pend-aqui-i" data-nivel=${nivelUrg(p.urg)}><span className="pa-dot" aria-hidden="true"></span><span className="min-w-0 pa-t"><b>${p.titulo}</b>${PEND_CHIP[p.tipo] && chips.some(c => c.k === PEND_CHIP[p.tipo]) ? html` <span className="pa-onde">em ${chips.find(c => c.k === PEND_CHIP[p.tipo]).nome}</span>` : null}</span><button type="button" className="btn btn-sm btn-pri" data-resolver=${p.id} onClick=${() => abrirPend && abrirPend(p)}>Resolver <${Icon} n="ChevronRight" s=${14} /></button></div>`)}</div>`}
+    <${ChipsNav} id=${id} chips=${chips} atual=${atual} onSel=${onSel} rotulo=${rotulo} cont=${contChips(P)} />
     <div role="tabpanel" id=${id + '-pan'} aria-labelledby=${id + '-chip-' + atual} className="fade-in min-w-0" key=${atual} tabIndex="-1">${children}</div>
   </div>`;
 }
@@ -17300,10 +17316,10 @@ function Trabalho({ g, decidir }) {
   </div>`;
 }
 
-function Pais({ g, upd, decidir, chip, setChip }) {
+function Pais({ g, upd, decidir, chip, setChip, abrirPend }) {
   if (chip === 'transportes') chip = 'infraestrutura'; // Transportes foi fundido com Infraestrutura (saves e links antigos)
   const c = CHIPS.pais.some(x => x.k === chip) ? chip : 'mapa';
-  return html`<${Subpagina} id="pais" chips=${CHIPS.pais} atual=${c} onSel=${setChip} rotulo="Áreas do país" eyebrow="País">
+  return html`<${Subpagina} id="pais" chips=${CHIPS.pais} atual=${c} onSel=${setChip} rotulo="Áreas do país" eyebrow="País" pend=${pendDaSecao(g, 'pais')} abrirPend=${abrirPend}>
     ${c === 'mapa' && html`<${PaisMapa} g=${g} />`}
     ${c === 'economia' && html`<div className="flex flex-col gap-6"><${PainelUF} g=${g} area="economia" /><${Economia} g=${g} upd=${upd} decidir=${decidir} /><${FontesArea} area="economia" notas="Petrobras (fatia direta da União) e a carteira do BNDESPar são fatias distintas; a Caixa Seguridade já está dentro do patrimônio da Caixa. Valores marcados como estimativa vêm de cálculo do jogo sobre dados publicados e não de uma fonte direta." /></div>`}
     ${c === 'seguranca' && html`<${PaisSeguranca} g=${g} upd=${upd} decidir=${decidir} />`}
@@ -17349,9 +17365,9 @@ function PoderSTF({ g, upd }) {
 function PoderOposicao({ g }) {
   return html`<div className="grid gap-6 lg:grid-cols-2 items-start"><${CartaoOposicao} g=${g} /><${CartaoPoderes} g=${g} /></div>`;
 }
-function Poder({ g, upd, decidir, votarItem, chip, setChip }) {
+function Poder({ g, upd, decidir, votarItem, chip, setChip, abrirPend }) {
   const c = CHIPS.poder.some(x => x.k === chip) ? chip : 'congresso';
-  return html`<${Subpagina} id="poder" chips=${CHIPS.poder} atual=${c} onSel=${setChip} rotulo="Instituições" eyebrow="Poder">
+  return html`<${Subpagina} id="poder" chips=${CHIPS.poder} atual=${c} onSel=${setChip} rotulo="Instituições" eyebrow="Poder" pend=${pendDaSecao(g, 'poder')} abrirPend=${abrirPend}>
     ${c === 'congresso' && html`<${Congresso} g=${g} upd=${upd} decidir=${decidir} votarItem=${votarItem} />`}
     ${c === 'governo' && html`<${PoderGoverno} g=${g} upd=${upd} decidir=${decidir} />`}
     ${c === 'stf' && html`<${PoderSTF} g=${g} upd=${upd} />`}
@@ -27311,8 +27327,8 @@ function App() {
       <${NavSecoes} atual=${sec} onSel=${(s) => irPara(s)} g=${g} />
       <main id="sec-painel" role="tabpanel" aria-labelledby=${'sec-tab-' + sec} className="shell-main gutter fade-in" key=${sec} tabIndex="-1" data-secao=${sec}>
         ${sec === 'mesa' && html`<${Mesa} g=${g} decidir=${decidir} motorNome=${motorNome} upd=${upd} votarItem=${votarItem} encerrar=${encerrarMes} irPara=${irPara} refino=${refino} />`}
-        ${sec === 'pais' && html`<${Pais} g=${g} upd=${upd} decidir=${decidir} chip=${chipAtual(g, 'pais')} setChip=${(c) => irPara('pais', c)} />`}
-        ${sec === 'poder' && html`<${Poder} g=${g} upd=${upd} decidir=${decidir} votarItem=${votarItem} chip=${chipAtual(g, 'poder')} setChip=${(c) => irPara('poder', c)} />`}
+        ${sec === 'pais' && html`<${Pais} g=${g} upd=${upd} decidir=${decidir} chip=${chipAtual(g, 'pais')} setChip=${(c) => irPara('pais', c)} abrirPend=${(p) => { PEND_ABRIR = p.id; irPara('mesa'); }} />`}
+        ${sec === 'poder' && html`<${Poder} g=${g} upd=${upd} decidir=${decidir} votarItem=${votarItem} chip=${chipAtual(g, 'poder')} setChip=${(c) => irPara('poder', c)} abrirPend=${(p) => { PEND_ABRIR = p.id; irPara('mesa'); }} />`}
         ${sec === 'medidas' && html`<${MedidasVigor} g=${g} upd=${upd} irPara=${irPara} />`}
         ${sec === 'mundo' && html`<${Diplomacia} g=${g} decidir=${decidir} upd=${upd} chip=${chipAtual(g, 'mundo')} setChip=${(c) => irPara('mundo', c)} />`}
         ${sec === 'eu' && html`<${Eu} g=${g} upd=${upd} chip=${chipAtual(g, 'eu')} setChip=${(c) => irPara('eu', c)} />`}
