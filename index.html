@@ -13748,7 +13748,9 @@ function eqEscDecaimento(g) {
   const ped = !!(g.oposicao && g.oposicao.pedidoImp != null && g.mes - g.oposicao.pedidoImp < 4);
   const inv = !!(g.eu && g.eu.bast && g.eu.bast.inv);
   const aberto = ped || inv || (g.escAberto != null && g.mes - g.escAberto <= 1);
-  return aberto ? base : Math.max(.7, base - EQ_ESC_SEM_CASO);
+  if (aberto) return base;
+  const f = Math.max(.7, base - EQ_ESC_SEM_CASO), sg = jusProgAtivo(g, 'sigilo');
+  return sg ? 1 - (1 - f) * (1 + .2 * sg) : f; // sigilo vetado para gastos: sem caso aberto o escândalo decai até 20% mais rápido
 }
 // relação-alvo com os partidos: soma o desempenho da economia (PIB acima/abaixo de 2%, primário, inflação acima de 6%)
 function eqRelEconomia(g, prim) {
@@ -13868,6 +13870,7 @@ function fimDoMes(g) {
   S.idh = clamp(S.idh + .00002 * (O.educacao + O.saude) + (E.pib - 1.5) * .0002 - (S.pob - 23) * .00005, .5, .95);
   f3Social(g);
   try { areasMensal(g, notas); } catch (e) { if (typeof console !== 'undefined') console.warn('areasMensal', e); } // METAS POR ÁREA: indicadores de área, efeito nacional e metas
+  try { jusProgMensal(g); } catch (e) { if (typeof console !== 'undefined') console.warn('jusProgMensal', e); } // efeito dos programas de Justiça (PGR, supersalários, leniência, sigilo)
   // grupos
   const G = g.groups;
   const misery = E.ipca + E.des;
@@ -18793,6 +18796,7 @@ function PsProg({ g, a, pa, cor, decidir }) {
     return html`<div key=${a.l} className="mx-act" style=${{ '--c': 'var(--verde)', cursor: 'default' }} data-prog=${pa} data-prog-vigor=${M.id}>
       <span className="mx-act-h"><span className="gv-ic" style=${{ '--c': 'var(--verde)' }}><${Icon} n="Check" s=${18} /></span><span>${a.l}</span><span></span></span>
       <span className="mx-txt c2">Em vigor: ${M.nm || M.topic}</span>
+      ${a.ef ? html`<span className="mx-s" data-prog-ef=${a.jus || a.l}>${a.ef}</span>` : null}
       <span className="gv-chips"><span className="gv-chip" style=${{ color: 'var(--verde)', borderColor: 'var(--verde)' }}>Em vigor</span><span className="gv-chip" data-prog-fase="1" style=${{ color: rot[1] }}>${rot[0]}</span></span>
       <span className="flex flex-wrap gap-2 self-start ps-go"><a href="#medidas" className="btn btn-ghost btn-sm" data-prog-medidas="1">Ver em Medidas</a>
         ${a.p2 ? html`<button type="button" className="btn btn-pri btn-sm" data-prog-prox=${pa} disabled=${off} title=${a.p2.t} onClick=${() => decidir(a.p2.t)}><${Icon} n="Send" s=${14} /> ${a.p2.l}</button>` : null}</span>
@@ -18801,6 +18805,7 @@ function PsProg({ g, a, pa, cor, decidir }) {
   return html`<button key=${a.l} type="button" className="mx-act" style=${{ '--c': cor }} data-prog=${pa} disabled=${off} title=${psTitulo(g)} onClick=${() => decidir(a.t)}>
     <span className="mx-act-h"><span className="gv-ic" style=${{ '--c': cor }}><${Icon} n=${a.i} s=${18} /></span><span>${a.l}</span><span></span></span>
     <span className="mx-txt c2">${a.t}</span>
+    ${a.ef ? html`<span className="mx-s" data-prog-ef=${a.jus || a.l}>${a.ef}</span>` : null}
     <span className="gv-chips"><span className="gv-chip ouro">1 ação</span><span className="gv-chip">parecer da Casa Civil</span></span>
     <span className="btn btn-pri btn-sm self-start ps-go" aria-hidden="true"><${Icon} n="Send" s=${14} /> Propor</span>
   </button>`;
@@ -20735,15 +20740,51 @@ function PaisInfra({ g, upd, decidir }) {
 const JUS_GOV = [
   { l: 'Mais 3 mil cargos na PF', ind: [['esclarec', 2, 24]], t: 'Criar mais 3 mil cargos de delegado, agente e perito na Polícia Federal, R$ 1 bilhão por ano', i: 'Shield', rx: /3 mil cargos/, p2: { l: 'Mais 2 mil cargos na PF', t: 'Criar mais 2 mil cargos de delegado, agente e perito na Polícia Federal, R$ 700 milhões por ano' } },
   { l: 'Autonomia da PF (PEC)', t: 'Enviar uma PEC dando autonomia funcional e orçamentária à Polícia Federal', i: 'ShieldCheck', rx: /autonomia.*policia federal|policia federal.*autonomia/ },
-  { l: 'PGR com mandato único (PEC)', t: 'Enviar PEC fixando mandato único de 4 anos, sem recondução, ao Procurador-Geral da República', i: 'Scale', rx: /mandato unico/ },
+  { l: 'PGR com mandato único (PEC)', t: 'Enviar PEC fixando mandato único de 4 anos, sem recondução, ao Procurador-Geral da República', i: 'Scale', rx: /mandato unico/, jus: 'pgr', ef: 'Efeito: PGR mais independente do presidente; casos que atingem o governo avançam ~15% mais; confiança sobe' },
   { l: 'Cortar penduricalhos (PLP)', t: 'Enviar projeto de lei complementar com a lista nacional das únicas verbas indenizatórias permitidas ao Judiciário e ao Ministério Público, limitadas a 20% do teto', i: 'Gavel', rx: /lista nacional/ },
-  { l: 'Punir quem paga acima do teto', t: 'Enviar projeto de lei que enquadra como improbidade administrativa o pagamento de remuneração acima do teto constitucional, com devolução em dobro', i: 'Banknote', rx: /improbidade.*teto/ },
+  { l: 'Punir quem paga acima do teto', t: 'Enviar projeto de lei que enquadra como improbidade administrativa o pagamento de remuneração acima do teto constitucional, com devolução em dobro', i: 'Banknote', rx: /improbidade.*teto/, jus: 'teto', ef: 'Efeito: corta ~R$ 3 bi/ano em supersalários (e ~R$ 1 bi de devoluções no 1º ano); servidores e Judiciário reagem' },
   { l: 'Mais 1.500 auditores na CGU', t: 'Enviar projeto de lei que cria 1.500 cargos de auditor na CGU para ampliar as auditorias e o combate à corrupção, R$ 400 milhões por ano', i: 'FileSearch', rx: /1\.?500 cargos/ },
-  { l: 'Balcão único da leniência', ind: [['tempo', -1, 12]], t: 'Enviar projeto de lei que unifica a leniência em um balcão único, com CGU, AGU, MPF e TCU, e prazo máximo de 12 meses para fechar o acordo', i: 'FileText', rx: /balcao unico/ },
+  { l: 'Balcão único da leniência', ind: [['tempo', -1, 12]], t: 'Enviar projeto de lei que unifica a leniência em um balcão único, com CGU, AGU, MPF e TCU, e prazo máximo de 12 meses para fechar o acordo', i: 'FileText', rx: /balcao unico/, jus: 'lenc', ef: 'Efeito: acordos mais rápidos recuperam ~R$ 2 bi/ano; empresas punidas voltam a operar e o investimento melhora' },
   { l: 'Sem delação de preso preventivo', ind: [['provis', -.5, 12]], t: 'Enviar projeto de lei que proíbe acordo de delação premiada com réu preso preventivamente por mais de 30 dias', i: 'Handshake', rx: /preso preventivamente/ },
-  { l: 'Sigilo de 100 anos: vetar para gastos', t: 'Enviar projeto de lei que proíbe usar o sigilo de 100 anos para esconder gastos e agendas de agentes públicos', i: 'Eye', rx: /sigilo de 100 anos/ },
+  { l: 'Sigilo de 100 anos: vetar para gastos', t: 'Enviar projeto de lei que proíbe usar o sigilo de 100 anos para esconder gastos e agendas de agentes públicos', i: 'Eye', rx: /sigilo de 100 anos/, jus: 'sigilo', ef: 'Efeito: gastos e agendas ficam públicos; o escândalo decai ~20% mais rápido, mas um caso novo pesa ~10% mais' },
   { l: 'Fundo contra as facções', ind: [['hom', -.5, 12], ['esclarec', 1, 18]], t: 'Criar o Fundo Nacional de Combate às Facções, com R$ 3 bilhões por ano do perdimento de bens do crime organizado, para financiar a PF e as polícias civis', i: 'Siren', rx: /fundo nacional de combate/ }
 ];
+/* Efeitos dos 4 programas de Justiça que não mexiam em indicador algum (PGR de mandato único, supersalários, balcão da leniência, sigilo de 100 anos).
+   Mesmo desenho das metas por área: um hook mensal lê a medida em vigor do programa (psVigor: ativa, suspensa, aguardando gatilho ou consolidada) e aplica o
+   efeito pela rampa da própria medida, em incrementos (se a medida cair, o efeito é desfeito aos poucos). Fiscal: entra em M.fis, que a medida já sincroniza.
+   Escândalo e casos da Justiça: multiplicadores lidos de jusProgAtivo(g, id) em eqEscDecaimento, jusNovoCaso e jusMensal. */
+const JUS_PROG_EF = {
+  pgr: { g: { mercado: 1.5, classemedia: 1, universitarios: 1 }, conf: 1.5 },
+  teto: { g: { servidores: -2, classemedia: 1 }, stf: 2, custo: -3, once: 1 },
+  lenc: { g: { empresariado: 2 }, pib: .07, receita: 2 },
+  sigilo: { g: { universitarios: 1, classemedia: 1 }, conf: .5 } // não há grupo "imprensa" no jogo: universitários/artistas é o mais próximo
+};
+function jusProgAtivo(g, id) { const S = g && g.jusProg && g.jusProg[id]; return S && S.f > 0 ? S.f : 0; } // 0..1 (fase da medida x intensidade)
+function jusProgMensal(g) {
+  if (!g.jusProg) g.jusProg = {};
+  if (g.jusProg._ult === g.mes) return; g.jusProg._ult = g.mes;
+  for (const P of JUS_GOV) {
+    const E = P.jus && JUS_PROG_EF[P.jus]; if (!E) continue;
+    const S = g.jusProg[P.jus] = g.jusProg[P.jus] || { f: 0, mid: null };
+    let M = null; try { M = psVigor(g, P); } catch (e) { M = null; }
+    let fT;
+    if (M) {
+      const kk = clamp(Number.isFinite(M.k) ? M.k : 1, .3, 1.2);
+      if (M.estado === 'aguardando') fT = 0;
+      else if (M.estado === 'suspensa') fT = S.f;
+      else fT = (M.estado === 'consolidada' ? 1 : clamp(medRamp(M, g.mes), 0, 1)) * kk;
+      S.mid = M.id;
+      if (!M.jusFis && M.fis) { M.jusFis = P.jus; M.fis.custo += (E.custo || 0) * kk; M.fis.receita += (E.receita || 0) * kk; if (E.once) M.once = (M.once || 0) + E.once * kk; }
+    } else fT = S.f * .85 < .02 ? 0 : S.f * .85; // medida revogada, derrubada ou caducada: o efeito some aos poucos
+    const d = fT - S.f; S.f = fT;
+    if (Math.abs(d) < 1e-9) continue;
+    const fx = { gx: true, g: {}, e: {} };
+    for (const k in (E.g || {})) fx.g[k] = E.g[k] * d;
+    if (E.conf) fx.e.conf = E.conf * d; if (E.pib) fx.e.pib = E.pib * d; if (E.stf) fx.stf = E.stf * d;
+    applyFx(g, fx, 1);
+    if (E.once && d > 0 && g.eco) g.eco.divida = Math.max(20, g.eco.divida - E.once * d / ((g.eco.pibNom || 12000) / 100)); // devoluções em dobro: receita única, abatida da dívida pela rampa
+  }
+}
 /* ============================== PAÍS: JUSTIÇA ============================== */
 /* Custos do Judiciário (CNJ, Justiça em Números, ano-base 2025, divulgado em 2026), escândalos de corrupção (fictícios, gerados na partida)
    e arquivo de casos históricos reais (só fatos públicos e situação oficial). Estado em g.jus, criado de forma preguiçosa (saves antigos funcionam). */
@@ -20809,7 +20850,7 @@ function jusNovoCaso(g, opt) {
   const c = { id: 'j' + J.seq, nome, mes: g.mes, faseMes: g.mes, orgao, orgaos: [orgao], fase: 'inquérito', valor, prova: Math.round(20 + r('p') * 60), alvo: alvo.t, p: alvo.p || null, gov: !!alvo.gov, casa: alvo.casa || null, cargo: alvo.cargo || null, sig: alvo.sig || null, esquema: esq, pend: true, pendMes: g.mes, trava: 0, sigilo: false, rastro: 0, acel: 0, forca: false, reab: 0, ult: 0, log: [] };
   J.casos.push(c); J.ultQuebra = g.mes;
   if (opt.silencio) return c; // caso de fundo da partida nova: sem manchete, escândalo nem desgaste de partido
-  const imp = c.gov ? clamp(c.valor / 120 + 2, 2, 8) : clamp(c.valor / 400, .5, 2);
+  const imp = (c.gov ? clamp(c.valor / 120 + 2, 2, 8) : clamp(c.valor / 400, .5, 2)) * (1 + .1 * jusProgAtivo(g, 'sigilo')); // sigilo vetado: o caso novo vem com documentos (+10%)
   g.escandalo = clamp(g.escandalo + imp, 0, 100);
   if (c.gov) jusGrupos(g, -.5); else jusRel(g, c.p, -2);
   jusManchete(g, c.gov ? 'antag' : 'globo', `${orgao} deflagra a ${jusRotulo(c)}: investigação sobre ${esq}, com ${c.alvo}. Valor estimado: R$ ${c.valor} milhões.`);
@@ -20839,7 +20880,7 @@ function jusMensal(g, notas) {
     if (c.fase === 'arquivado') continue;
     if (c.pend && g.mes - c.pendMes >= 2) { c.pend = false; if (c.gov) g.escandalo = clamp(g.escandalo + 1, 0, 100); } // ignorado: some da Mesa
     const idade = g.mes - c.faseMes; const r = jusSorteia(g, 'm' + c.id);
-    const agil = .08 + c.prova / 600 + (c.forca ? .1 : 0) + (c.acel >= g.mes ? .08 : 0) - (J.pfCorte >= g.mes && c.orgaos.includes('PF') ? .05 : 0);
+    const agil = (.08 + c.prova / 600 + (c.forca ? .1 : 0) + (c.acel >= g.mes ? .08 : 0) - (J.pfCorte >= g.mes && c.orgaos.includes('PF') ? .05 : 0)) * (c.gov ? 1 + .15 * jusProgAtivo(g, 'pgr') : 1); // PGR de mandato único: casos que atingem o governo avançam até 15% mais
     if (c.rastro > 0 && !c.sigilo && jusSorteia(g, 'v' + c.id) < .03 * c.rastro) { c.rastro = 0; jusVaza(g, c, 'm'); }
     if (c.trava >= g.mes) continue;
     if (c.fase === 'inquérito') {
