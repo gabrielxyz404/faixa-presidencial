@@ -166,7 +166,7 @@ with sync_playwright() as p:
     # cancelar
     pg.locator('[data-com-aba=acordos]').click(); pg.wait_for_timeout(400)
     ex0 = G(pg, 'g.fiscal.extra'); rp0 = G(pg, 'g.mundo.pais.Portugal.rel'); a0 = G(pg, 'g.acoes')
-    pg.locator('[data-com-cancelar]').first.click(); pg.wait_for_timeout(300)
+    pg.locator('[data-com-cancelar]').last.click(); pg.wait_for_timeout(300)
     pg.screenshot(path=OUT + '/com_acordos.png')
     pg.locator('[data-com-cancelar-ok]').first.click(); pg.wait_for_timeout(600)
     ok('Cancelar antes do fim: multa entra nas contas e a relação piora', G(pg, "g.comex.acordos.some(a=>a.estado=='cancelado'&&a.multa>0)") and G(pg, 'g.fiscal.extra') > ex0, (ex0, G(pg, 'g.fiscal.extra')))

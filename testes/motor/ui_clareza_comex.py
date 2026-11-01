@@ -47,8 +47,8 @@ with sync_playwright() as p:
     pg.locator('[data-com-aba=comprar]').click(); pg.wait_for_timeout(400)
     # ---------- Comprar ----------
     itens = pg.locator('[data-com-picker=comprar] [data-com-imp]'); n = itens.count()
-    sem = [t for t in itens.all_inner_texts() if not (re.search(r'US\$ [\d.,]+ bi/ano', t) and re.search(r'\d+% já contratado', t) and re.search(r'preço no Brasil [+\-−]?[\d,]+% vs\. 2025', t))]
-    ok('Comprar: %d itens da lista com "US$ X bi/ano", "%% já contratado" e "preço no Brasil ±Z%% vs. 2025"' % n, n >= 25 and not sem, sem[:2])
+    sem = [t for t in itens.all_inner_texts() if not (re.search(r'US\$ [\d.,]+ bi/ano', t) and re.search(r'\d+% já contratado', t) and re.search(r'preço no Brasil (no nível de 2025|[\d,]+% mais (barato|caro) que em 2025)', t))]
+    ok('Comprar: %d itens da lista com "US$ X bi/ano", "%% já contratado" e "preço no Brasil X%% mais barato/caro que em 2025"' % n, n >= 25 and not sem, sem[:2])
     pg.locator('[data-com-imp=trigo]').click(); pg.wait_for_timeout(500)
     sit = pg.locator('[data-com-sit=compra]')
     ok('Painel "Situação do Trigo" aparece', sit.count() == 1 and 'situação do trigo' in sit.inner_text().lower(), sit.inner_text()[:80])
@@ -63,7 +63,7 @@ with sync_playwright() as p:
     pd0 = G(pg, 'g.comex.fl.trigo.pdom')
     pg.locator('[data-com-comprar-de=ARG]').click(); pg.wait_for_timeout(400)
     linha = pg.locator('[data-com-linha=compra]').inner_text()
-    ok('Linha do tempo: começa este mês, entrega, vale até, preço A → B, IPCA, 1 ação, multa', all(x in linha for x in ['Ao assinar', 'começa este mês', 'entrega em ~', 'vale até', 'preço de trigo no Brasil', '→', 'IPCA', 'custa 1 ação', 'cancelar antes custa multa']), linha)
+    ok('Linha do tempo: começa este mês, entrega, vale até, preço (cai/sobe X%, fica Y% abaixo/acima do nível de 2025), IPCA, 1 ação, multa', all(x in linha for x in ['Ao assinar', 'começa este mês', 'entrega em ~', 'vale até', 'preço de trigo no Brasil:', 'nível de 2025', 'IPCA', 'custa 1 ação', 'cancelar antes custa multa']), linha)
     fimtxt = pg.locator('[data-com-linha=compra] [data-com-fim]').inner_text()
     mm = re.match(r'(\S{3})/(\d\d)', fimtxt); mi = re.search(r'começa este mês \((\S{3})/(\d\d)\)', linha)
     ok('Linha do tempo: término = mesmo mês, 2 anos depois (%s -> %s)' % (mi.group(0) if mi else '?', fimtxt), bool(mm and mi and mm.group(1) == mi.group(1) and int(mm.group(2)) == int(mi.group(2)) + 2), fimtxt)
