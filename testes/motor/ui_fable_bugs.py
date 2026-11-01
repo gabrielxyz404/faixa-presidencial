@@ -75,8 +75,11 @@ with sync_playwright() as p:
     pg.fill('#caixa', 'Reforma administrativa com fim da estabilidade para novos servidores'); click(pg, 'Assinar e enviar', 2200)
     em = pg.locator('.modal-wrap button').filter(has_text=re.compile(r'^Emendas p/'))
     n_em = em.count()
-    for i in range(min(3, n_em)):
-        em.first.click(timeout=2000); pg.wait_for_timeout(300)
+    for i in range(3):  # a lista de indecisos encolhe a cada emenda: reconta a cada volta
+        if not em.count(): break
+        try: em.first.click(timeout=2000)
+        except Exception: break
+        pg.wait_for_timeout(300)
     pq = pg.locator('.modal-wrap button').filter(has_text=re.compile(r'^Fazer pesquisa popular'))
     if pq.count(): pq.first.click(timeout=2000); pg.wait_for_timeout(500)
     e1 = G(pg, 'g.fiscal.extra')
