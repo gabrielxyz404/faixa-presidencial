@@ -17444,7 +17444,7 @@ const TB_LEV = [
     id: 'jornada', grupo: 'Jornada e remuneração', nome: 'Jornada máxima semanal', icone: 'Clock', eng: 'ok',
     atual: g => tbN(tbReg(g).jornada) + ' horas' + (tbReg(g).jornada > 40 ? ' (40h em dez/2027, EC 141/2026)' : ''),
     vals: g => { const j = tbReg(g).jornada; const r = []; if (j > 40) r.push({ v: 40, rot: 'antecipar as 40 horas para já' }); if (j > 36) r.push({ v: 36, rot: 'reduzir para 36 horas' }); return r; },
-    texto: (g, v) => { const j = tbReg(g).jornada; return v === 40 && j > 40 ? 'PEC que antecipa a jornada máxima semanal de 40 horas, sem redução salarial' : v > j ? `PEC que eleva a jornada máxima semanal de ${j} para ${v} horas, revertendo a EC 141/2026` : `PEC que reduz a jornada máxima semanal de ${j > 40 ? 40 : j} para ${v} horas, sem redução salarial`; },
+    texto: (g, v) => { const j = tbReg(g).jornada; return v === 40 && j > 40 ? 'PEC que antecipa a jornada máxima de quarenta horas semanais, prevista para dezembro de 2027, sem redução salarial' : v > j ? `PEC que eleva a jornada máxima semanal de ${j} para ${v} horas, revertendo a EC 141/2026` : `PEC que reduz a jornada máxima semanal de ${j > 40 ? 40 : j} para ${v} horas, sem redução salarial`; },
     inst: () => 'PEC', base: 'CF, art. 7º, XIII fixa a jornada máxima: só emenda constitucional muda (EC 141/2026 já fixou 42h e 40h). Direito do trabalho é competência privativa da União.',
     det: nt => {
       if (!(/jornada|6 ?x ?1|horas semanais|semana de|escala/.test(nt)) || /hora.? extra/.test(nt)) return null;
@@ -17495,8 +17495,8 @@ const TB_LEV = [
   {
     id: 'abono', grupo: 'Proteção ao desempregado', nome: 'Abono salarial (PIS/Pasep)', icone: 'Coins', eng: 'ok',
     atual: g => tbReg(g).abono === 0 ? 'até 2 SM (corrige pelo INPC até 1,5 SM em 2035, EC 135/2024)' : (tbReg(g).abono > 0 ? 'ampliado' : 'reduzido'),
-    vals: g => [{ v: 1, rot: 'ampliar' }, { v: -1, rot: 'reduzir' }],
-    texto: (g, v) => v > 0 ? 'PEC que amplia o abono salarial PIS/Pasep para quem ganha até dois salários mínimos' : 'PEC que reduz o abono salarial PIS/Pasep',
+    vals: g => [{ v: 1, rot: 'manter o teto de 2 SM (revogar a regra de 2035)' }, { v: -1, rot: 'reduzir' }],
+    texto: (g, v) => v > 0 ? 'PEC que mantém o teto do abono salarial PIS/Pasep em dois salários mínimos, sem a redução gradual da EC 135/2024' : 'PEC que reduz o abono salarial PIS/Pasep',
     inst: () => 'PEC', base: 'CF, art. 239, §3º fixa o abono (já alterado pela EC 135/2024). Mudar o valor ou o teto de renda: emenda.',
     det: nt => /(abono salarial|pis.?pasep)/.test(nt) && !/seguro/.test(nt) ? (/(reduz|corta|menos|diminu|acab|extin)/.test(nt) ? -1 : 1) : null,
     ef: (g, v) => ({ reg: { abono: Math.max(-1, Math.min(1, tbReg(g).abono + v)) }, dcc: 0, nota: 'Transferência a trabalhadores de baixa renda (26,9 mi de beneficiários em 2026); não muda a composição do emprego.' })
@@ -17504,8 +17504,8 @@ const TB_LEV = [
   {
     id: 'sm', grupo: 'Jornada e remuneração', nome: 'Salário mínimo', icone: 'BadgeDollarSign', eng: 'sinal',
     atual: g => 'R$ ' + tbN(tbReg(g).sm) + (tbReg(g).smRegra === 'infl' ? ' · só inflação' : tbReg(g).smRegra === 'congela' ? ' · congelado' : tbReg(g).smRegra === 'livre' ? ' · inflação + PIB, sem teto' : ' · inflação + PIB com ganho real de 0,6% a 2,5%'),
-    vals: g => { const r = []; for (const x of [1900, 2000]) if (x > tbReg(g).sm) r.push({ v: x, rot: 'elevar para R$ ' + tbN(x) }); if (tbReg(g).smRegra !== 'livre') r.push({ v: 'livre', rot: 'regra: inflação + PIB, sem teto' }); if (tbReg(g).smRegra !== 'infl') r.push({ v: 'infl', rot: 'regra: só inflação' }); return r; },
-    texto: (g, v) => v === 'livre' ? 'Projeto de lei que garante a valorização do salário mínimo pela inflação mais o crescimento do PIB, sem o teto de 2,5% de ganho real'
+    vals: g => { const r = []; for (const x of [1900, 2000]) if (x > tbReg(g).sm) r.push({ v: x, rot: 'elevar para R$ ' + tbN(x) }); if (tbReg(g).smRegra !== 'livre') r.push({ v: 'livre', rot: 'regra: inflação + todo o PIB, sem o teto de 2,5%' }); if (tbReg(g).smRegra !== 'infl') r.push({ v: 'infl', rot: 'regra: só inflação' }); return r; },
+    texto: (g, v) => v === 'livre' ? 'Projeto de lei que aumenta o ganho real do salário mínimo para todo o crescimento do PIB'
       : v === 'infl' ? 'Projeto de lei que limita o reajuste do salário mínimo à inflação, sem ganho real'
       : v === 'congela' ? 'Projeto de lei que congela o valor do salário mínimo, sem reajuste nominal'
       : v === 'reduz' ? `Projeto de lei que reduz o salário mínimo de R$ ${tbN(tbReg(g).sm)} para R$ ${tbN(Math.round(tbReg(g).sm * .9))}`
@@ -17538,9 +17538,9 @@ const TB_LEV = [
   {
     id: 'mei', grupo: 'Pequenos negócios', nome: 'Limite de faturamento do MEI', icone: 'Store', eng: 'ok',
     atual: g => 'R$ ' + tbN(tbReg(g).mei) + ' mil por ano', vals: g => [60, 81, 110, 140].filter(x => x !== tbReg(g).mei).map(v => ({ v, rot: 'R$ ' + v + ' mil por ano' })),
-    texto: (g, v) => v > tbReg(g).mei ? `Projeto de lei complementar que eleva o teto de faturamento do MEI para R$ ${v} mil por ano` : `Projeto de lei complementar que reduz o teto de faturamento do MEI para R$ ${v} mil por ano`,
+    texto: (g, v) => v > tbReg(g).mei ? `Projeto de lei complementar que eleva o teto de faturamento anual do MEI para R$ ${v}.000` : `Projeto de lei complementar que reduz o teto do MEI para R$ ${v}.000 por ano`,
     inst: () => 'PLP', base: 'LC 123/2006, art. 18-A: lei complementar, com compensação da renúncia (LRF, art. 14) e partilha com estados e municípios (ICMS/ISS).',
-    det: nt => (/\bmei\b/.test(nt) && /(teto|limite|faturamento)/.test(nt)) ? ((nt.match(/(\d+)\s*mil/) || [])[1] ? parseInt(nt.match(/(\d+)\s*mil/)[1], 10) : null) : null,
+    det: nt => { if (!(/\bmei\b/.test(nt) && /(teto|limite|faturamento)/.test(nt))) return null; const mm = nt.match(/(\d+)\s*mil\b/); if (mm) return parseInt(mm[1], 10); const big = tbNumsTxt(nt).filter(x => x >= 20000 && x <= 500000)[0]; return big ? Math.round(big / 1000) : null; },
     ef: (g, v) => {
       const d = v - tbReg(g).mei;
       return { reg: { mei: v }, dcc: 0, flows: d > 0 ? [{ de: 'cp', para: 'mei', mi: .012 * d * .7 }, { de: 'sc', para: 'mei', mi: .006 * d * .7 }, { de: 'clt', para: 'mei', mi: .002 * d }]
@@ -17587,7 +17587,7 @@ const TB_LEV = [
     id: 'terc', grupo: 'Plataformas', nome: 'Terceirização e trabalho intermitente', icone: 'Network', eng: 'sinal',
     atual: g => tbReg(g).terc === 'ampliada' ? 'ampliada' : tbReg(g).terc === 'restrita' ? 'restrita' : 'permitidas (Leis 13.429 e 13.467/2017)',
     vals: g => { const t = tbReg(g).terc; const r = []; if (t !== 'ampliada') r.push({ v: 'amplia', rot: 'ampliar' }); if (t !== 'restrita') r.push({ v: 'restringe', rot: 'restringir' }); return r; },
-    texto: (g, v) => v === 'amplia' ? 'Projeto de lei que amplia a terceirização e o trabalho intermitente' : 'Projeto de lei que proíbe a terceirização da atividade-fim e limita o trabalho intermitente',
+    texto: (g, v) => v === 'amplia' ? 'Projeto de lei que amplia a terceirização e o trabalho intermitente' : 'Projeto de lei que limita o trabalho intermitente e veda a contratação de terceirizados para as funções centrais da empresa',
     inst: () => 'PL', base: 'Lei 6.019/1974 e CLT, art. 452-A. O STF já validou a terceirização irrestrita (ADPF 324 e RE 958252).',
     det: nt => /(terceiriz|intermitente)/.test(nt) ? (/(restring|proib|limit|veda|combat|reduz)/.test(nt) ? 'restringe' : 'amplia') : null,
     ef: (g, v) => v === 'amplia' ? { reg: { terc: 'ampliada' }, dcc: -.8, flows: [{ de: 'clt', para: 'mei', mi: .10 }, { de: 'sc', para: 'clt', mi: .10 }], nota: 'Contratar fica mais barato: sobe o PJ/MEI, mas parte do informal ganha contrato intermitente com carteira.' }
@@ -17598,7 +17598,7 @@ const TB_LEV = [
     id: 'sind', grupo: 'Organização sindical', nome: 'Contribuição sindical', icone: 'Users', eng: 'ok',
     atual: g => ({ opcional: 'opcional (Lei 13.467/2017)', obrigatoria: 'obrigatória', extinta: 'extinta' })[tbReg(g).sind],
     vals: g => { const s = tbReg(g).sind; const r = []; if (s !== 'obrigatoria') r.push({ v: 'obrig', rot: 'restabelecer a obrigatória' }); if (s !== 'extinta') r.push({ v: 'extingue', rot: 'extinguir' }); return r; },
-    texto: (g, v) => v === 'obrig' ? 'Projeto de lei que retoma a contribuição sindical obrigatória' : 'Projeto de lei que extingue a contribuição sindical',
+    texto: (g, v) => v === 'obrig' ? 'Projeto de lei que retoma a contribuição sindical obrigatória' : 'Projeto de lei que elimina a contribuição sindical facultativa e proíbe o desconto em folha, mesmo com autorização do trabalhador',
     inst: () => 'PL', base: 'CLT, arts. 578 a 579; CF, art. 8º, IV e art. 149. Lei ordinária (o STF validou o fim da obrigatoriedade na ADI 5794).',
     det: nt => /(contribuicao sindical|imposto sindical|taxa sindical)/.test(nt) ? (/(acab|extin|fim d|elimin)/.test(nt) ? 'extingue' : 'obrig') : null,
     ef: (g, v) => ({ reg: { sind: v === 'obrig' ? 'obrigatoria' : 'extinta' }, dcc: v === 'obrig' ? .15 : -.05, nota: v === 'obrig' ? 'Sindicatos voltam a ter caixa; empresas e trabalhadores avulsos reclamam.' : 'Sindicatos perdem receita residual.' })
@@ -17606,8 +17606,8 @@ const TB_LEV = [
   {
     id: 'licenca', grupo: 'Jornada e remuneração', nome: 'Licença-paternidade', icone: 'Baby', eng: 'falta',
     atual: g => tbN(tbReg(g).licPat) + ' dias' + (tbReg(g).licPat < 20 ? ' (20 dias em 2029)' : ''),
-    vals: g => [20, 30].filter(x => x > tbReg(g).licPat).map(v => ({ v, rot: v + ' dias' })),
-    texto: (g, v) => `Projeto de lei que amplia a licença-paternidade para ${v} dias, paga pela Previdência`, inst: () => 'PL',
+    vals: g => [20, 30].filter(x => x > tbReg(g).licPat).map(v => ({ v, rot: v === 20 && tbReg(g).licPat < 20 ? '20 dias já (antecipar 2029)' : v + ' dias' })),
+    texto: (g, v) => v <= 20 && tbReg(g).licPat < 20 ? 'Projeto de lei que antecipa para já os 20 dias de licença-paternidade previstos para 2029, pagos pela Previdência' : `Projeto de lei que amplia a licença-paternidade para ${v} dias, paga pela Previdência`, inst: () => 'PL',
     base: 'CF, art. 7º, XIX e ADCT, art. 10, §1º; lei de 31/03/2026 escalonou 10, 15 e 20 dias (2027 a 2029). Mudar o calendário: lei ordinária.',
     det: nt => /licenca.?paternidade/.test(nt) ? (tbNumsTxt(nt).filter(n => n >= 6 && n <= 120)[0] || 20) : null,
     ef: (g, v) => ({ reg: { licPat: v }, dcc: (v - tbReg(g).licPat) * .02, nota: 'Custo recai sobre a Previdência (reembolso a micro e pequenas); efeito pequeno sobre o emprego.' }),
@@ -17965,9 +17965,40 @@ const psSemAcoes = (g) => g.acoes <= 0 || g.pes.energia < 10;
 const psTitulo = (g) => (psSemAcoes(g) ? (g.acoes <= 0 ? 'Sem ações políticas neste mês' : 'Energia esgotada') : 'Custa 1 ação política e passa pelo parecer da Casa Civil');
 const PS_COR = { saude: 'var(--verde)', educacao: 'var(--anil)', infratransp: 'var(--ambar)', justica: 'var(--ouro)', seguranca: 'var(--rubro)' };
 function PsAcoes({ g }) { return html`<span className=${'gv-chip ' + (g.acoes > 0 ? 'ouro' : 'neg')}>${g.acoes}/5 ações</span>`; }
+// programa já em vigor no save. Mesma noção do motor (medRepetida e B7): conta medida ativa, suspensa, aguardando gatilho ou consolidada (ciclo completo, o efeito segue valendo).
+// Casa por (1) mesmo tema lido pelo motor, (2) mesmos objetos e mesma polaridade de uma medida viva (a conta de "Já aprovada" no parecer; objetos genéricos gen_* não contam) ou (3) a regex `rx` do programa.
+const PS_LEITURA = new Map(); // texto do programa -> { topic, pol, ids } (cache: a leitura não depende do estado do jogo)
+function psLeitura(g, a) {
+  if (!PS_LEITURA.has(a.t)) {
+    let r = { topic: null, pol: 0, ids: [] };
+    try { const p = analisaLocal(g, a.t); if (p) r = { topic: p.topic || null, pol: p.entendimento ? p.entendimento.polaridade : 0, ids: (p.objs || []).filter(o => o.sg && !/^gen_/.test(o.id)).map(o => o.id) }; } catch (e) { /* sem leitura: fica só a regex */ }
+    PS_LEITURA.set(a.t, r);
+  }
+  return PS_LEITURA.get(a.t);
+}
+function psVigor(g, a) {
+  const vivas = medL(g).filter(m => medAtivo(m) || m.estado === 'consolidada');
+  if (!vivas.length) return null;
+  const lt = psLeitura(g, a);
+  const L = vivas.filter(m => (lt.topic && m.topic === lt.topic) || (lt.pol && lt.ids.length && m.pol === lt.pol && (m.objIds || []).length && lt.ids.every(i => m.objIds.includes(i))) || (a.rx && a.rx.test(norm(m.topic || m.nm || ''))));
+  return L.length ? L[L.length - 1] : null;
+}
 // cartão de programa: ícone, título, efeito em uma linha, botão. O cartão inteiro é o botão (data-prog) que manda a proposta ao motor.
+// Se o save já tem medida que cobre o programa, vira cartão "Em vigor" (fase da medida, link para Medidas e, se houver, o próximo passo).
 function PsProg({ g, a, pa, cor, decidir }) {
   const off = psSemAcoes(g) || !decidir;
+  const M = psVigor(g, a);
+  if (M) {
+    const fase = medFase(g, M), fr = MED_FASE_ROT[fase], est = MED_ESTADOS[M.estado] || MED_ESTADOS.ativa;
+    const rot = M.estado === 'ativa' && fr ? fr : est;
+    return html`<div key=${a.l} className="mx-act" style=${{ '--c': 'var(--verde)', cursor: 'default' }} data-prog=${pa} data-prog-vigor=${M.id}>
+      <span className="mx-act-h"><span className="gv-ic" style=${{ '--c': 'var(--verde)' }}><${Icon} n="Check" s=${18} /></span><span>${a.l}</span><span></span></span>
+      <span className="mx-txt c2">Em vigor: ${M.nm || M.topic}</span>
+      <span className="gv-chips"><span className="gv-chip" style=${{ color: 'var(--verde)', borderColor: 'var(--verde)' }}>Em vigor</span><span className="gv-chip" data-prog-fase="1" style=${{ color: rot[1] }}>${rot[0]}</span></span>
+      <span className="flex flex-wrap gap-2 self-start ps-go"><a href="#medidas" className="btn btn-ghost btn-sm" data-prog-medidas="1">Ver em Medidas</a>
+        ${a.p2 ? html`<button type="button" className="btn btn-pri btn-sm" data-prog-prox=${pa} disabled=${off} title=${a.p2.t} onClick=${() => decidir(a.p2.t)}><${Icon} n="Send" s=${14} /> ${a.p2.l}</button>` : null}</span>
+    </div>`;
+  }
   return html`<button key=${a.l} type="button" className="mx-act" style=${{ '--c': cor }} data-prog=${pa} disabled=${off} title=${psTitulo(g)} onClick=${() => decidir(a.t)}>
     <span className="mx-act-h"><span className="gv-ic" style=${{ '--c': cor }}><${Icon} n=${a.i} s=${18} /></span><span>${a.l}</span><span></span></span>
     <span className="mx-txt c2">${a.t}</span>
@@ -19509,12 +19540,12 @@ function OrcamentoArea({ g, decidir, area }) {
 }
 function OrcFonte({ area }) { return html`<span className="block mt-2" data-orc-fonte=${area}><b className="text-fg">Orçamento da área.</b> ${ORC_FONTE[area]}</span>`; }
 const SAU_PROG = [
-  { l: 'Ampliar o Mais Médicos', t: 'Ampliar o Programa Mais Médicos, com mais vagas e incentivo à fixação de médicos no interior e nas periferias', i: 'Stethoscope' },
-  { l: 'Mutirão nacional de cirurgias eletivas', t: 'Lançar um mutirão nacional de cirurgias eletivas para reduzir as filas do SUS', i: 'Hospital' },
-  { l: 'Ampliar a Farmácia Popular', t: 'Ampliar o programa Farmácia Popular, com mais medicamentos gratuitos', i: 'Pill' },
-  { l: 'Campanha nacional de vacinação', t: 'Lançar uma campanha nacional de vacinação para recuperar as coberturas vacinais', i: 'Syringe' },
-  { l: 'Reforçar o combate à dengue', t: 'Reforçar o combate à dengue com vigilância, mutirões de limpeza e a vacina', i: 'Bug' },
-  { l: 'Expandir leitos de UTI', t: 'Expandir leitos de UTI e de retaguarda nos hospitais do SUS', i: 'Bed' }
+  { l: 'Carreira médica do SUS', t: 'Criar a carreira federal de médico do SUS, com concurso, dedicação exclusiva e adicional de fixação no interior, R$ 4 bilhões por ano', i: 'Stethoscope', rx: /carreira (federal )?(de |do )?medic|medico do sus/, p2: { l: 'Mais R$ 2 bi na carreira', t: 'Elevar em mais R$ 2 bilhões por ano o adicional de fixação da carreira federal de médico do SUS no interior' } },
+  { l: 'Prazo máximo para cirurgias eletivas', t: 'Pagar R$ 3 bilhões por ano a hospitais privados para zerar a fila de cirurgias eletivas com mais de 180 dias de espera, e fixar esse prazo máximo em lei', i: 'Hospital', rx: /fila de cirurgias eletivas/, p2: { l: 'Prazo de 90 dias', t: 'Pagar mais R$ 2 bilhões por ano a hospitais privados para reduzir de 180 para 90 dias o prazo máximo de espera por cirurgia eletiva no SUS' } },
+  { l: 'Canetas de obesidade no SUS', t: 'Incluir no Farmácia Popular a semaglutida e a tirzepatida para obesidade grave e diabetes, com R$ 3 bilhões por ano', i: 'Pill', rx: /semaglutida|tirzepatida|obesidade/, p2: { l: 'Mais R$ 2 bi em canetas', t: 'Elevar em mais R$ 2 bilhões por ano a oferta gratuita de semaglutida e tirzepatida no Farmácia Popular' } },
+  { l: 'Vacina contra herpes-zóster', t: 'Incluir no calendário do SUS a vacina contra herpes-zóster para maiores de 60 anos, R$ 1,5 bilhão por ano', i: 'Syringe', rx: /zoster/ },
+  { l: 'Mosquitos com Wolbachia', t: 'Criar uma segunda fábrica de mosquitos com Wolbachia contra a dengue, R$ 800 milhões', i: 'Bug', rx: /wolbachia/ },
+  { l: 'Mais 5 mil leitos de UTI', t: 'Financiar 5 mil novos leitos de UTI no SUS, em hospitais filantrópicos e municipais, com R$ 3 bilhões por ano', i: 'Bed', rx: /novos leitos de uti/, p2: { l: 'Mais 5 mil leitos', t: 'Financiar mais 5 mil novos leitos de UTI no SUS, no interior e nas periferias, com R$ 3 bilhões por ano' } }
 ];
 function PaisSeguranca({ g, upd, decidir }) {
   const [sel, setSel] = useState(g.cfg.estado && ELEITOS.gov[g.cfg.estado] ? g.cfg.estado : 'SP');
@@ -19541,37 +19572,37 @@ function PaisSaude({ g, upd, decidir }) {
   return html`<${PaisAreaAcao} g=${g} upd=${upd} decidir=${decidir} pa="saude" conv="sau" dp="saude" titulo="Saúde" sub="Situação nacional no jogo, com a linha de base real logo abaixo de cada número." grupos=${[{ itens: SAU_PROG }]} notas=${html`<${OrcFonte} area="saude" />`} orc="saude" />`;
 }
 const EDU_PROG = [
-  { l: 'Ampliar o Pé-de-Meia', t: 'Ampliar o Pé-de-Meia, com mais bolsas para estudantes do ensino médio público permanecerem na escola', i: 'Wallet' },
-  { l: 'Escola em tempo integral', t: 'Expandir as escolas de ensino em tempo integral em parceria com os estados', i: 'Clock' },
-  { l: 'Creches', t: 'Ampliar o número de creches públicas em parceria com os municípios', i: 'Baby' },
-  { l: 'Reajustar o piso dos professores', t: 'Reajustar o piso salarial dos professores', i: 'GraduationCap' },
-  { l: 'Alfabetização na idade certa', t: 'Lançar um programa nacional de alfabetização na idade certa', i: 'BookOpen' },
-  { l: 'Internet nas escolas', t: 'Conectar todas as escolas públicas à internet de alta velocidade', i: 'Wifi' },
-  { l: 'Vagas em universidades e institutos federais', t: 'Criar novas vagas e campi nas universidades e institutos federais', i: 'Landmark' },
-  { l: 'Merenda escolar (PNAE)', t: 'Aumentar o repasse da merenda escolar do PNAE', i: 'Utensils' },
-  { l: 'Transporte escolar', t: 'Ampliar o programa de transporte escolar rural', i: 'Bus' },
-  { l: 'Ensino técnico', t: 'Ampliar os cursos técnicos e profissionalizantes para jovens do ensino médio', i: 'Wrench' }
+  { l: 'Pé-de-Meia no fundamental II', t: 'Estender o Pé-de-Meia aos alunos do 8º e 9º ano do ensino fundamental da rede pública, R$ 3 bilhões por ano', i: 'Wallet', rx: /pe.de.meia.*fundamental|fundamental.*pe.de.meia/, p2: { l: 'Mais R$ 2 bi de Pé-de-Meia', t: 'Elevar em mais R$ 2 bilhões por ano o Pé-de-Meia para alunos do ensino fundamental' } },
+  { l: 'Mais 1 milhão de vagas em tempo integral', t: 'Elevar a meta do Escola em Tempo Integral em mais 1 milhão de matrículas, além das 3,2 milhões previstas, com R$ 3 bilhões por ano', i: 'Clock', rx: /mais 1 milhao de matriculas|meta do escola em tempo integral/, p2: { l: 'Mais 20% de matrículas', t: 'Elevar em mais 20% a meta de matrículas do Escola em Tempo Integral, com mais R$ 2 bilhões por ano' } },
+  { l: 'Vaga garantida em creche', t: 'Garantir vaga em creche a toda criança de 0 a 3 anos de famílias do CadÚnico, com R$ 5 bilhões por ano de cofinanciamento aos municípios', i: 'Baby', rx: /vaga em creche/, p2: { l: 'Mais R$ 3 bi por criança', t: 'Elevar em R$ 3 bilhões por ano o repasse da União por criança em creche conveniada, para famílias do CadÚnico de 0 a 3 anos' } },
+  { l: 'Adicional para professores de periferia', t: 'Pagar adicional de R$ 1.000 por mês a professores de escolas da periferia e da zona rural, com R$ 3 bilhões por ano', i: 'GraduationCap', rx: /adicional (de r\$ 1\.?000 )?.*professores/, p2: { l: 'Adicional de R$ 1.500', t: 'Elevar para R$ 1.500 por mês o adicional dos professores de escolas da periferia e da zona rural, com mais R$ 1 bilhão por ano' } },
+  { l: 'Reforço em leitura', t: 'Criar reforço escolar em contraturno para alunos do 2º ao 5º ano com atraso em leitura, R$ 2 bilhões por ano', i: 'BookOpen', rx: /reforco escolar/ },
+  { l: 'Notebooks para o ensino médio', t: 'Distribuir notebooks para 3 milhões de alunos do ensino médio público, R$ 4 bilhões', i: 'Laptop', rx: /notebooks/, p2: { l: 'Mais 2 milhões de notebooks', t: 'Distribuir mais 2 milhões de notebooks para alunos do ensino fundamental II da rede pública, R$ 2 bilhões' } },
+  { l: 'Vagas em licenciaturas e saúde', t: 'Criar 100 mil novas vagas em licenciaturas e cursos da saúde nas universidades federais, R$ 3 bilhões por ano', i: 'Landmark', rx: /licenciaturas/ },
+  { l: 'Merenda: valor por refeição +30%', t: 'Reajustar em 30% o valor por refeição do PNAE na rede pública, R$ 2 bilhões por ano', i: 'Utensils', rx: /merenda escolar|refeicao do pnae/ },
+  { l: 'Passe livre estudantil', t: 'Criar o passe livre nacional no transporte público para estudantes da rede pública de baixa renda, com R$ 4 bilhões por ano', i: 'Bus', rx: /passe livre/, p2: { l: 'Passe livre também nas férias', t: 'Estender o passe livre estudantil de baixa renda para os 12 meses do ano, com mais R$ 1 bilhão por ano' } },
+  { l: 'Mais vagas de ensino técnico', t: 'Ampliar em R$ 2 bilhões por ano os cursos técnicos para jovens do ensino médio, com 300 mil novas vagas gratuitas', i: 'Wrench', rx: /cursos tecnicos para jovens do ensino medio/ }
 ];
 const INFRA_GRUPOS = [
   { h: 'Saneamento e moradia', itens: [
-    { l: 'Acelerar água e esgoto (Marco do Saneamento)', t: 'Acelerar as obras de água e esgoto com recursos do Marco do Saneamento', i: 'Droplets' },
-    { l: 'Minha Casa Minha Vida', t: 'Ampliar o Minha Casa Minha Vida com mais unidades para famílias de baixa renda', i: 'Home' },
-    { l: 'Nova etapa do PAC', t: 'Lançar uma nova etapa do PAC com obras de infraestrutura', i: 'Construction' }] },
+    { l: 'Esgoto nos municípios pequenos', t: 'Criar linha de R$ 6 bilhões por ano do Orçamento da União para esgoto nos municípios pequenos fora das concessões do Marco do Saneamento', i: 'Droplets', rx: /esgoto nos municipios pequenos|municipios pequenos/, p2: { l: 'Mais R$ 3 bi de esgoto', t: 'Elevar em mais R$ 3 bilhões por ano a linha da União para esgoto nos municípios pequenos' } },
+    { l: 'Mais Minha Casa Minha Vida', t: 'Construir mais 1 milhão de moradias na Faixa 1 do Minha Casa Minha Vida, além da meta atual, R$ 8 bilhões por ano', i: 'Home', rx: /1 milhao de moradias/, p2: { l: 'Mais 500 mil moradias', t: 'Construir mais 500 mil moradias na Faixa 1 do Minha Casa Minha Vida, R$ 4 bilhões por ano' } },
+    { l: 'Novo PAC 2027-2030', t: 'Lançar o Novo PAC 2027-2030, com R$ 75 bilhões por ano em obras de infraestrutura', i: 'Construction', rx: /novo pac/ }] },
   { h: 'Energia e comunicações', itens: [
-    { l: 'Luz para Todos: energia no campo e na Amazônia', t: 'Universalizar o acesso à energia elétrica nas áreas rurais', i: 'Zap' },
-    { l: 'Leilão de linhas de transmissão', t: 'Leiloar novas linhas de transmissão de energia elétrica', i: 'Cable' },
-    { l: '5G e internet rural', t: 'Levar internet 5G e banda larga para áreas rurais', i: 'Wifi' }] },
+    { l: 'Energia solar para famílias de baixa renda', t: 'Pagar R$ 5 bilhões para instalar painéis de energia solar em 500 mil casas de famílias de baixa renda', i: 'Zap', rx: /energia solar/, p2: { l: 'Mais 500 mil casas com solar', t: 'Pagar mais R$ 5 bilhões para instalar painéis de energia solar em mais 500 mil casas de famílias de baixa renda' } },
+    { l: 'Transmissão para o Nordeste', t: 'Criar fundo de R$ 5 bilhões por ano para antecipar linhas de transmissão que escoam energia solar e eólica do Nordeste', i: 'Cable', rx: /escoam energia|fundo.*transmissao/ },
+    { l: 'Internet rural por satélite', t: 'Criar programa de internet por satélite para 1 milhão de domicílios rurais, R$ 2 bilhões por ano', i: 'Wifi', rx: /internet por satelite/ }] },
   { h: 'Rodovias', itens: [
-    { l: 'Duplicar trechos de BRs', t: 'Duplicar as principais rodovias federais', i: 'Route' },
-    { l: 'Recuperar e manter as BRs (DNIT)', t: 'Recuperar e manter as rodovias federais com mais verba para o DNIT', i: 'Wrench' },
-    { l: 'Novos leilões de rodovias', t: 'Fazer novos leilões de concessão de rodovias federais', i: 'Handshake' },
-    { l: 'Pavimentar a BR-319 (polêmica ambiental)', t: 'Concluir a pavimentação da BR-319', i: 'Trees' },
-    { l: 'Segurança viária e radares', t: 'Ampliar a fiscalização e os radares nas rodovias federais para reduzir as mortes no trânsito', i: 'TriangleAlert' }] },
+    { l: 'Duplicar trechos de BRs', t: 'Duplicar 3 mil km de rodovias federais, com R$ 8 bilhões por ano', i: 'Route', rx: /3 mil km/, p2: { l: 'Mais 2 mil km duplicados', t: 'Duplicar mais 2 mil km de rodovias federais, com mais R$ 5 bilhões por ano' } },
+    { l: 'Manutenção das BRs (DNIT)', t: 'Recuperar 15 mil km de rodovias federais com R$ 3 bilhões por ano a mais para o DNIT', i: 'Wrench', rx: /15 mil km/ },
+    { l: 'Leilão de 6 mil km de rodovias', t: 'Decreto que inclui no Programa de Parcerias de Investimentos e leiloa mais 6 mil km de rodovias federais, com pedágio eletrônico free flow e ampliação de capacidade', i: 'Handshake', rx: /6 mil km/ },
+    { l: 'Conceder a BR-319 (polêmica ambiental)', t: 'Decreto que inclui a BR-319 no Programa de Parcerias de Investimentos, com concessão, pedágio, pavimentação do trecho do meio e R$ 1 bilhão contra o desmatamento nas margens', i: 'Trees', rx: /br.?319/ },
+    { l: '3 mil radares nas BRs', t: 'Instalar 3 mil novos radares e câmeras de fiscalização eletrônica em trechos críticos das rodovias federais, R$ 1 bilhão', i: 'TriangleAlert', rx: /3 mil novos radares/ }] },
   { h: 'Ferrovias, portos e mobilidade', itens: [
-    { l: 'Ferrogrão', t: 'Autorizar a concessão da Ferrogrão', i: 'TrainFront' },
-    { l: 'BRT e metrô nas capitais', t: 'Financiar BRT e metrô nas capitais', i: 'TramFront' },
-    { l: 'Cabotagem', t: 'Incentivar a cabotagem para transportar cargas pela costa', i: 'Ship' },
-    { l: 'Renovar a frota de caminhões', t: 'Financiar a renovação da frota de caminhões antigos', i: 'Truck' }] }
+    { l: 'Ferrovia Centro-Oeste (FICO)', t: 'Estender a Ferrovia de Integração do Centro-Oeste de Água Boa a Lucas do Rio Verde (MT), R$ 6 bilhões', i: 'TrainFront', rx: /centro.oeste/ },
+    { l: 'Fundo de mobilidade urbana', t: 'Criar fundo federal de mobilidade urbana com R$ 5 bilhões por ano para metrô e BRT nas capitais', i: 'TramFront', rx: /fundo.*mobilidade/, p2: { l: 'Mais R$ 3 bi de mobilidade', t: 'Elevar em mais R$ 3 bilhões por ano o fundo federal de mobilidade urbana para metrô e BRT' } },
+    { l: 'Cabotagem: AFRMM pela metade', t: 'Reduzir pela metade o adicional de frete AFRMM da cabotagem e criar linha de crédito de R$ 3 bilhões para navios de cabotagem', i: 'Ship', rx: /afrmm/ },
+    { l: 'Bolsa-sucata para caminhões', t: 'Criar bolsa-sucata de R$ 20 mil por caminhão com mais de 30 anos entregue para desmonte, R$ 2 bilhões', i: 'Truck', rx: /sucata/ }] }
 ];
 function PaisAreaAcao({ g, upd, decidir, pa, conv, dp, titulo, sub, grupos, notas, ind0, orc }) {
   const [sel, setSel] = useState(g.cfg.estado && ELEITOS.gov[g.cfg.estado] ? g.cfg.estado : 'SP');
@@ -19610,16 +19641,16 @@ function PaisInfra({ g, upd, decidir }) {
   return html`<${PaisAreaAcao} g=${g} upd=${upd} decidir=${decidir} pa="infratransp" conv="infra" dp="infraestrutura" titulo="Infraestrutura e transportes" sub="Rodovias, saneamento, energia e conectividade: situação nacional no jogo, com a base real logo abaixo." grupos=${INFRA_GRUPOS} notas=${html`<span>${INFRA_NOTAS}<${OrcFonte} area="infra" /></span>`} ind0="rodovias_boas_pct" orc="infra" />`;
 }
 const JUS_GOV = [
-  { l: 'Reforçar o orçamento da PF', t: 'Reforçar o orçamento da Polícia Federal', i: 'Shield' },
-  { l: 'Autonomia da PF (PEC)', t: 'Enviar uma PEC dando autonomia funcional e orçamentária à Polícia Federal', i: 'ShieldCheck' },
-  { l: 'PGR com mandato fixo (PEC)', t: 'Enviar PEC dando mandato fixo e independência ao Procurador-Geral da República', i: 'Scale' },
-  { l: 'Cortar penduricalhos do Judiciário (PLP)', t: 'Enviar projeto de lei complementar para cortar penduricalhos do Judiciário', i: 'Gavel' },
-  { l: 'Teto remuneratório', t: 'Aplicar o teto remuneratório do funcionalismo e limitar os supersalários por lei', i: 'Banknote' },
-  { l: 'Fortalecer a CGU', t: 'Reforçar o orçamento da CGU para ampliar as auditorias e o combate à corrupção', i: 'FileSearch' },
-  { l: 'Lei anticorrupção e leniência', t: 'Reforçar a lei anticorrupção e os acordos de leniência', i: 'FileText' },
-  { l: 'Delação premiada', t: 'Regulamentar a delação premiada', i: 'Handshake' },
-  { l: 'Fim do sigilo de 100 anos (LAI)', t: 'Reforçar a Lei de Acesso à Informação e acabar com o sigilo de 100 anos', i: 'Eye' },
-  { l: 'Força-tarefa contra o crime organizado', t: 'Criar uma força-tarefa nacional contra o crime organizado e a lavagem de dinheiro', i: 'Siren' }
+  { l: 'Mais 3 mil cargos na PF', t: 'Criar mais 3 mil cargos de delegado, agente e perito na Polícia Federal, R$ 1 bilhão por ano', i: 'Shield', rx: /3 mil cargos/, p2: { l: 'Mais 2 mil cargos na PF', t: 'Criar mais 2 mil cargos de delegado, agente e perito na Polícia Federal, R$ 700 milhões por ano' } },
+  { l: 'Autonomia da PF (PEC)', t: 'Enviar uma PEC dando autonomia funcional e orçamentária à Polícia Federal', i: 'ShieldCheck', rx: /autonomia.*policia federal|policia federal.*autonomia/ },
+  { l: 'PGR com mandato único (PEC)', t: 'Enviar PEC fixando mandato único de 4 anos, sem recondução, ao Procurador-Geral da República', i: 'Scale', rx: /mandato unico/ },
+  { l: 'Cortar penduricalhos (PLP)', t: 'Enviar projeto de lei complementar com a lista nacional das únicas verbas indenizatórias permitidas ao Judiciário e ao Ministério Público, limitadas a 20% do teto', i: 'Gavel', rx: /lista nacional/ },
+  { l: 'Punir quem paga acima do teto', t: 'Enviar projeto de lei que enquadra como improbidade administrativa o pagamento de remuneração acima do teto constitucional, com devolução em dobro', i: 'Banknote', rx: /improbidade.*teto/ },
+  { l: 'Mais 1.500 auditores na CGU', t: 'Enviar projeto de lei que cria 1.500 cargos de auditor na CGU para ampliar as auditorias e o combate à corrupção, R$ 400 milhões por ano', i: 'FileSearch', rx: /1\.?500 cargos/ },
+  { l: 'Balcão único da leniência', t: 'Enviar projeto de lei que unifica a leniência em um balcão único, com CGU, AGU, MPF e TCU, e prazo máximo de 12 meses para fechar o acordo', i: 'FileText', rx: /balcao unico/ },
+  { l: 'Sem delação de preso preventivo', t: 'Enviar projeto de lei que proíbe acordo de delação premiada com réu preso preventivamente por mais de 30 dias', i: 'Handshake', rx: /preso preventivamente/ },
+  { l: 'Sigilo de 100 anos: vetar para gastos', t: 'Enviar projeto de lei que proíbe usar o sigilo de 100 anos para esconder gastos e agendas de agentes públicos', i: 'Eye', rx: /sigilo de 100 anos/ },
+  { l: 'Fundo contra as facções', t: 'Criar o Fundo Nacional de Combate às Facções, com R$ 3 bilhões por ano do perdimento de bens do crime organizado, para financiar a PF e as polícias civis', i: 'Siren', rx: /fundo nacional de combate/ }
 ];
 /* ============================== PAÍS: JUSTIÇA ============================== */
 /* Custos do Judiciário (CNJ, Justiça em Números, ano-base 2025, divulgado em 2026), escândalos de corrupção (fictícios, gerados na partida)
@@ -20110,8 +20141,8 @@ function SegurancaPublica({ g, decidir, sel: selP, setSel: setSelP, parte }) {
     { l: `Decretar GLO ${emUF(sel)}`, t: `Decretar GLO ${emUF(sel)} e enviar as Forças Armadas`, i: 'Gavel' }
   ];
   const nacionais = [
-    { l: 'Plano nacional de câmeras corporais', t: 'Lançar o plano nacional de câmeras corporais para as polícias estaduais', i: 'Camera' },
-    { l: 'Programa de prevenção da violência juvenil', t: 'Criar o programa nacional de prevenção da violência juvenil, com escola em tempo integral e esporte nas periferias', i: 'Users' }
+    { l: 'Mais 100 mil câmeras corporais', t: 'Equipar as polícias estaduais com 100 mil câmeras corporais, com gravação ininterrupta nas abordagens, R$ 600 milhões', i: 'Camera', rx: /100 mil cameras/ },
+    { l: 'Centros de Juventude nas periferias', t: 'Criar 2 mil Centros de Juventude com esporte e cultura nos bairros com mais homicídios, R$ 2 bilhões por ano', i: 'Users', rx: /centros de juventude/ }
   ];
   const btn = (a) => html`<button key=${a.l} className="btn btn-ghost justify-start text-sm text-left" disabled=${semAcoes} title=${semAcoes ? (g.acoes <= 0 ? 'Sem ações políticas neste mês' : 'Energia esgotada') : 'Custa 1 ação política e passa pelo parecer da Casa Civil'} onClick=${() => decidir(a.t)}><${Icon} n=${a.i} s=${15} /> ${a.l}</button>`;
   const topo = html`<div className="flex flex-col gap-4">
@@ -22606,11 +22637,11 @@ function MundoResumo({ g }) {
 function MundoPanorama({ g, decidir, go }) {
   const M = g.mundo; const D = g.dip; const a = alin100(g); const me = mundoEcon(g);
   const acoes = [
-    { l: 'Visita oficial a Washington', t: 'Fazer visita oficial aos Estados Unidos e reunião na Casa Branca', i: 'Plane', c: 'var(--anil)', pk: 'eua' },
-    { l: 'Cúpula do BRICS', t: 'Liderar a cúpula do BRICS e defender a desdolarização com a China', i: 'Globe', c: 'var(--rubro)', pk: 'brics' },
-    { l: 'Fechar acordo Mercosul-UE', t: 'Fechar o acordo comercial Mercosul-União Europeia', i: 'Handshake', c: 'var(--ouro)', pk: 'mercosul_ue' },
-    { l: 'Pedir entrada na OCDE', t: 'Formalizar a adesão do Brasil à OCDE com abertura comercial', i: 'Landmark', c: 'var(--anil)', pk: 'ocde' },
-    { l: 'COP: meta climática ambiciosa', t: 'Anunciar meta de desmatamento zero e transição energética na COP do clima', i: 'Leaf', c: 'var(--verde)' },
+    { l: 'Visita oficial a Washington', t: 'Viajar a Washington para reunião com o presidente dos Estados Unidos na Casa Branca', i: 'Plane', c: 'var(--anil)', pk: 'eua' },
+    { l: 'Cúpula do BRICS na Índia', t: 'Participar da cúpula do BRICS na Índia e propor um sistema de pagamentos em moedas locais com a China', i: 'Globe', c: 'var(--rubro)', pk: 'brics' },
+    { l: 'Ratificar o acordo Mercosul-UE', t: 'Enviar ao Congresso o projeto de decreto legislativo que ratifica o acordo Mercosul–União Europeia assinado em janeiro de 2026', i: 'Handshake', c: 'var(--ouro)', pk: 'mercosul_ue' },
+    { l: 'Avançar na adesão à OCDE', t: 'Aderir ao Código de Liberalização de Capitais da OCDE como passo da adesão do Brasil', i: 'Landmark', c: 'var(--anil)', pk: 'ocde' },
+    { l: 'COP: antecipar desmatamento zero', t: 'Decreto que antecipa para 2028 a meta de desmatamento zero na Amazônia, anunciado na COP do clima', i: 'Leaf', c: 'var(--verde)' },
     { l: 'Viagem comercial à China', t: 'Missão comercial à China para vender carne e soja e atrair investimentos', i: 'Ship', c: 'var(--ambar)', pk: 'china' }
   ];
   const dec = decisaoAtual(g);
@@ -29674,26 +29705,26 @@ const MIN_BANCO = {
       P => `reajusta o Bolsa Família em ${P.pct}%`, P => `com início em ${P.m} meses`, P => `compensado por revisão de benefícios irregulares e corte de despesas`,
       'Fazer um grande programa para acabar com a fome e a miséria no país, com muita ousadia.',
       P => `Com o desemprego onde está, a renda das famílias precisa ser recomposta. Um reajuste de ${P.pct}% chega rápido a quem mais precisa.`),
-    minT('cc_jornada', -1, 'trabalho', 'PL', ['trabalho'], { ind: 'des', prom: ['desemprego'] }, r => ({ h: r.p([40, 40, 42]), m: r.p([12, 18, 24]) }),
+    minT('cc_jornada', -1, 'trabalho', 'PEC', ['trabalho'], { ind: 'des', prom: ['desemprego'] }, r => ({ h: r.p([36, 36, 38]), m: r.p([12, 18, 24]) }),
       P => `Jornada de ${P.h} horas semanais`,
-      P => `reduz a jornada de trabalho para ${P.h} horas semanais sem redução de salário e acaba com a escala 6x1`, P => `com transição de ${P.m} meses`, P => `e acordo coletivo para a transição`,
+      P => `reduz a jornada de trabalho para ${P.h} horas semanais, sem redução de salário`, P => `com transição de ${P.m} meses`, P => `e acordo coletivo para a transição`,
       'Fazer uma grande reforma para o trabalhador ter mais tempo de vida, sem prejudicar ninguém.',
       P => `A produtividade permite trabalhar menos sem perder renda. A transição de ${P.m} meses protege as pequenas empresas.`),
     minT('cc_reagr', -1, 'gasto_social', 'PL', ['reforma_agraria'], { prom: ['reforma_agraria'] }, r => ({ v: r.i(2, 6, 1), a: r.p([3, 4]) }),
-      P => `Assentamentos da reforma agrária`,
-      P => `cria programa de reforma agrária com assentamento de famílias em terras públicas, ao custo de ${minMon(P.v)} por ano`, P => `em ${P.a} anos`, P => `financiado pela reorientação de crédito fundiário`,
+      P => `Mais assentamentos da reforma agrária`,
+      P => `amplia a reforma agrária, com assentamento de famílias em terras públicas da União e em áreas retomadas de grandes devedores, ao custo de ${minMon(P.v)} por ano`, P => `em ${P.a} anos`, P => `financiado pela reorientação de crédito fundiário`,
       'Fazer a reforma agrária que o país precisa, de forma justa e sem demora.',
       P => `A promessa de campanha da reforma agrária só sai do papel com um programa de terras públicas, com meta e orçamento definidos.`),
     minT('cc_servid', 0, 'gasto_social', 'PL', ['servidores'], { ind: 'prim' }, r => ({ pct: r.i(4, 8, 1), m: r.p([2, 3]) }),
       P => `Reajuste dos servidores federais`,
-      P => `reajusta em ${P.pct}% a remuneração dos servidores federais, em parcelas`, P => `em ${P.m} etapas`, P => `dentro do limite do arcabouço fiscal`,
+      P => `reajusta em ${P.pct}% a remuneração dos servidores federais, em parcelas`, P => `em ${P.m} etapas`, P => `com impacto diluído em dois anos`,
       'Fazer justiça com o funcionalismo, que está há anos sem uma resposta do governo.',
       P => `As categorias estão em greve branca. Uma mesa de negociação com reajuste parcelado evita paralisações e cabe no arcabouço.`),
     minT('cc_concurso', 0, 'gasto_social', 'PL', ['servidores'], { ind: 'des' }, r => ({ v: r.p([0.8, 1.2, 1.5, 2]) }),
-      P => `Concurso nacional unificado`,
-      P => `autoriza concurso público nacional unificado, com custo de ${minMon(P.v)} por ano`, P => `com provas ainda este ano`, P => `e reposição dos quadros da União`,
+      P => `Reposição de cargos vagos`,
+      P => `autoriza concurso público para repor cargos vagos da União, com custo de ${minMon(P.v)} por ano`, P => `com provas ainda este ano`, P => `e reposição dos quadros da União`,
       'Contratar muita gente nova para a máquina pública funcionar melhor.',
-      P => `Há áreas inteiras sem servidores. Um concurso unificado reduz o custo da seleção e repõe quadros onde há mais falta.`),
+      P => `Há áreas inteiras sem servidores. O concurso repõe os quadros onde há mais falta.`),
     minT('cc_busca', 0, 'gasto_social', 'MP', ['programa_social'], { ind: 'des' }, r => ({ v: r.i(2, 5, 1) }),
       P => `Busca ativa do Bolsa Família`,
       P => `amplia a busca ativa de famílias elegíveis ao Bolsa Família no Cadastro Único, com ${minMon(P.v)} por ano`, P => `em até 8 meses`, P => `com verificação de renda por cruzamento de dados`,
@@ -29714,26 +29745,26 @@ const MIN_BANCO = {
       P => `reduz a estabilidade de novos servidores, com economia de ${minMon(P.v)} por ano`, P => `valendo só para quem ingressar após a promulgação`, P => `preservando as carreiras típicas de Estado`,
       'Fazer uma reforma do Estado que enxugue a máquina de uma vez.',
       P => `O custo da folha cresce acima da receita. Uma PEC só para novos servidores moderniza a gestão sem mexer em direitos adquiridos.`),
-    minT('cc_prev', 1, 'economia', 'PEC', ['previdencia', 'corte_gastos'], { ind: 'div', prom: ['deficit'] }, r => ({ i: r.p([62, 63, 65]), v: r.i(60, 120, 10) }),
-      P => `Reforma da Previdência`,
-      P => `reforma a Previdência com idade mínima de ${P.i} anos, com economia de ${minMon(P.v)} em 10 anos`, P => `com regra de transição de 8 anos`, P => `preservando o BPC`,
+    minT('cc_prev', 1, 'economia', 'PEC', ['previdencia', 'corte_gastos'], { ind: 'div', prom: ['deficit'] }, r => ({ i: r.p([63, 64, 65]), v: r.i(60, 120, 10) }),
+      P => `Idade mínima de ${P.i} anos para as mulheres`,
+      P => `sobe para ${P.i} anos a idade mínima de aposentadoria das mulheres, hoje de 62, com economia de ${minMon(P.v)} em 10 anos`, P => `com regra de transição de 8 anos`, P => `preservando o BPC`,
       'Fazer a reforma da Previdência que ninguém teve coragem de fazer.',
-      P => `A despesa previdenciária consome o orçamento. Uma idade mínima de ${P.i} anos, com transição, economiza ${minMon(P.v)} em uma década.`)
+      P => `A despesa previdenciária consome o orçamento. Subir a idade mínima das mulheres para ${P.i} anos, com transição, economiza ${minMon(P.v)} em uma década.`)
   ],
   fazenda: [
     minT('fz_dividendos', -1, 'tributacao', 'PL', ['taxa_ricos'], { ind: 'prim', prom: ['taxa_ricos'] }, r => ({ v: r.i(15, 40, 5) }),
-      P => `Taxação dos super-ricos`,
-      P => `arrecada ${minMon(P.v)} por ano com a taxação dos super-ricos`, P => `com vigência a partir do próximo exercício`, P => `e isenção para quem recebe menos`,
+      P => `Imposto sobre grandes fortunas`,
+      P => `cria o imposto sobre grandes fortunas, com alíquota progressiva sobre patrimônio acima de R$ 10 milhões, arrecadando ${minMon(P.v)} por ano`, P => `com vigência a partir do próximo exercício`, P => `e proteção aos patrimônios menores`,
       'Fazer os mais ricos pagarem a conta, sem rodeios e já.',
-      P => `Quem está no topo paga proporcionalmente menos que a classe média. A taxação corrige isso e arrecada cerca de ${minMon(P.v)}.`),
+      P => `O patrimônio do topo quase não é tributado. O imposto sobre grandes fortunas corrige isso e arrecada cerca de ${minMon(P.v)}.`),
     minT('fz_isencao', -1, 'tributacao', 'PL', ['isencao_ir'], { ind: 'des', prom: ['isencao_ir'] }, r => ({ x: 0 }),
       P => `Ampliar a isenção do IR para R$ 7 mil`,
-      P => `amplia a isenção do imposto de renda (já vigente até R$ 5 mil, Lei 15.270/2025) para quem ganha até R$ 7 mil por mês, compensada por mais tributação de altas rendas`, P => `com vigência no próximo exercício`, P => `e cláusula de revisão anual`,
+      P => `eleva a isenção do imposto de renda para quem ganha até R$ 7 mil por mês, compensada por mais tributação de altas rendas`, P => `com vigência no próximo exercício`, P => `e cláusula de revisão anual`,
       'Dar um alívio enorme no imposto de renda para a classe média.',
       P => `A isenção é promessa de campanha e é socialmente justa. A compensação vem de quem recebe dividendos no topo.`),
     minT('fz_bets', -1, 'tributacao', 'PL', ['imposto_bets'], { ind: 'prim' }, r => ({ v: r.i(4, 10, 1) }),
-      P => `Imposto sobre as bets`,
-      P => `cria imposto sobre as bets e as apostas online, arrecadando ${minMon(P.v)} por ano`, P => `com vigência em 90 dias`, P => `e cadastro obrigatório dos apostadores`,
+      P => `Mais imposto sobre as bets`,
+      P => `eleva a tributação das bets e das apostas online e proíbe a publicidade em horário nobre, arrecadando ${minMon(P.v)} por ano`, P => `com vigência em 90 dias`, P => `e cadastro obrigatório dos apostadores`,
       'Taxar pesado as bets, que estão acabando com as famílias.',
       P => `As bets faturam bilhões sem pagar a conta social que geram. O imposto arrecada ${minMon(P.v)} por ano.`),
     minT('fz_corte', 0, 'economia', 'PL', ['corte_gastos'], { ind: 'prim', prom: ['deficit'] }, r => ({ v: r.i(20, 45, 5) }),
@@ -29747,8 +29778,8 @@ const MIN_BANCO = {
       'Baixar o preço da gasolina e do gás para o povo respirar.',
       P => `O diesel e a gasolina pesam no IPCA. Um alívio temporário e focado segura a inflação sem abrir buraco permanente.`),
     minT('fz_arcabouco', 0, 'economia', 'PL', ['corte_gastos'], { ind: 'div', prom: ['deficit'] }, r => ({ v: r.i(12, 30, 2) }),
-      P => `Travas do arcabouço fiscal`,
-      P => `reforça o arcabouço fiscal com travas de despesa e revisão anual de gastos tributários, com economia de ${minMon(P.v)}`, P => `valendo a partir do próximo orçamento`, P => `com gatilhos automáticos de contenção`,
+      P => `Gatilhos de contenção das despesas obrigatórias`,
+      P => `cria gatilhos automáticos de contenção das despesas obrigatórias quando o primário ficar abaixo da meta, com economia de ${minMon(P.v)}`, P => `valendo a partir do próximo orçamento`, P => `com revisão anual pelo Tesouro`,
       'Dar uma sinalização forte de responsabilidade fiscal para o mercado.',
       P => `Sem travas críveis, o prêmio de risco corrói o crescimento. As regras reforçadas economizam ${minMon(P.v)} e ancoram expectativas.`),
     minT('fz_priv', 1, 'privatizacao', 'PL', ['privatizacao'], { ind: 'div', prom: ['privatizacoes'] }, r => ({ v: r.p([15, 20, 30]) }),
@@ -29756,9 +29787,9 @@ const MIN_BANCO = {
       P => `autoriza a venda de participações da União em estatais por leilão, com arrecadação de ${minMon(P.v)}`, P => `com leilão em 12 meses`, P => `com a receita destinada a abater a dívida`,
       'Vender estatal para fazer caixa e o governo sair do negócio.',
       P => `A União carrega ativos que o setor privado administra melhor. A venda arrecada ${minMon(P.v)} e reduz a dívida.`),
-    minT('fz_desv', 1, 'gasto_social', 'PL', ['corte_gastos'], { ind: 'div', prom: ['deficit'] }, r => ({ v: r.i(25, 50, 5) }),
-      P => `Desvinculação de receitas`,
-      P => `faz corte de gastos de ${minMon(P.v)} com a desvinculação de receitas e a revisão de despesas obrigatórias`, P => `valendo a partir do próximo orçamento`, P => `com gatilhos automáticos de contenção`,
+    minT('fz_desv', 1, 'gasto_social', 'PEC', ['corte_gastos'], { ind: 'div', prom: ['deficit'] }, r => ({ v: r.i(25, 50, 5) }),
+      P => `Ampliação da DRU`,
+      P => `faz corte de gastos de ${minMon(P.v)} com a ampliação da desvinculação de receitas da União (DRU) e a revisão de despesas obrigatórias`, P => `valendo a partir do próximo orçamento`, P => `com gatilhos automáticos de contenção`,
       'Cortar tudo que for possível, sem dó, para o caixa fechar.',
       P => `As vinculações engessam ${minMon(P.v)} do orçamento. Desvincular dá ao governo margem para priorizar o que importa.`),
     minT('fz_imposto', 1, 'tributacao', 'PL', ['corte_imposto', '*'], { ind: 'pib', prom: ['crescimento'] }, r => ({ v: r.i(10, 22, 2) }),
@@ -29769,8 +29800,8 @@ const MIN_BANCO = {
   ],
   justica: [
     minT('ju_custodia', -1, 'seguranca', 'PL', ['garantista'], { ind: 'hom' }, r => ({ x: 0 }),
-      P => `Audiências de custódia e penas alternativas`,
-      P => `amplia as audiências de custódia e as penas alternativas, para reduzir a superlotação carcerária e a reincidência`, P => `com vigência em 6 meses`, P => `com recursos do fundo penitenciário`,
+      P => `Monitoração eletrônica no lugar da prisão provisória`,
+      P => `amplia as penas alternativas e cria a monitoração eletrônica no lugar da prisão provisória em crimes sem violência, para reduzir a superlotação carcerária e a reincidência`, P => `com vigência em 6 meses`, P => `com recursos do fundo penitenciário`,
       'Fazer uma grande política de direitos humanos que resolva o problema das prisões.',
       P => `Prisão provisória em excesso lota presídios e alimenta facções. Alternativas penais reduzem a reincidência com custo menor.`),
     minT('ju_prevencao', -1, 'seguranca', 'ADM', ['seguranca_plano'], { ind: 'hom' }, r => ({ v: r.i(500, 1200, 100) / 1000 }),
@@ -29783,11 +29814,11 @@ const MIN_BANCO = {
       P => `financia câmeras corporais nas polícias estaduais e controle externo da letalidade, com ${minMon(P.v)} do fundo de segurança`, P => `em 18 meses`, P => `com contrapartida dos estados`,
       'Equipar toda a polícia com tecnologia moderna e transparência total.',
       P => `Câmeras reduzem a letalidade e fortalecem as provas. O fundo de segurança banca ${minMon(P.v)} e os estados entram com a contrapartida.`),
-    minT('ju_plano', 0, 'seguranca', 'ADM', ['seguranca_plano'], { ind: 'hom', prom: ['homicidios'] }, r => ({ v: r.i(1, 3, 1) }),
-      P => `Plano Nacional de Segurança`,
-      P => `lança o Plano Nacional de Segurança, com ${minMon(P.v)} por ano`, P => `com metas de redução de homicídios a cada semestre`, P => `com recursos do Fundo Nacional de Segurança`,
+    minT('ju_plano', 0, 'seguranca', 'PL', ['seguranca_plano'], { ind: 'hom', prom: ['homicidios'] }, r => ({ v: r.i(1, 3, 1) }),
+      P => `Mais 10 mil vagas na Força Nacional`,
+      P => `cria 10 mil novas vagas na Força Nacional de Segurança Pública, com ${minMon(P.v)} por ano`, P => `com metas de redução de homicídios a cada semestre`, P => `com recursos do Fundo Nacional de Segurança`,
       'Lançar um plano grande de segurança para o povo ver o governo reagindo.',
-      P => `A redução de homicídios exige coordenação entre polícias e inteligência. O plano organiza Força Nacional, Polícia Federal e inteligência integrada com metas por território.`),
+      P => `A redução de homicídios exige presença federal onde as polícias estaduais não dão conta. Dez mil vagas permitem ocupar territórios com metas por semestre.`),
     minT('ju_presidios', 0, 'seguranca', 'PL', ['seguranca_dura'], { ind: 'hom' }, r => ({ v: r.i(1, 3, 1) }),
       P => `Presídios federais para chefes de facção`,
       P => `amplia o isolamento de líderes de facção em presídios federais de segurança máxima, com ${minMon(P.v)} por ano`, P => `com novas vagas em 24 meses`, P => `e controle de comunicações`,
@@ -29804,20 +29835,20 @@ const MIN_BANCO = {
       'Endurecer tudo: bandido tem que ter medo da lei.',
       P => `Quem mata e trafica não pode sair em poucos meses. Penas maiores e regime mais rígido dão resposta à população.`),
     minT('ju_terror', 1, 'seguranca', 'PL', ['seguranca_dura'], { ind: 'hom' }, r => ({ x: 0 }),
-      P => `Facções como organizações terroristas`,
-      P => `tipifica o terrorismo de facção, com penas maiores para chefes de facção e bloqueio de bens`, P => `com vigência imediata`, P => `com apoio da inteligência financeira`,
-      'Chamar as facções de terroristas e botar todo mundo na cadeia.',
-      P => `As facções controlam territórios e financiam-se com lavagem. Tratá-las como organizações terroristas abre instrumentos de combate mais fortes.`),
+      P => `Perdimento de bens de facções`,
+      P => `cria o perdimento de bens de integrantes de facções antes da condenação definitiva`, P => `com vigência imediata`, P => `com apoio da inteligência financeira`,
+      'Tomar o dinheiro das facções e botar todo mundo na cadeia.',
+      P => `As facções controlam territórios e financiam-se com lavagem. Tomar os bens antes da condenação final corta o caixa que paga armas e advogados.`),
     minT('ju_porte', 1, 'seguranca', 'PL', ['seguranca_dura'], { ind: 'hom' }, r => ({ x: 0 }),
-      P => `Porte para agentes de segurança`,
-      P => `amplia o porte de arma para guardas municipais e agentes de segurança, com treinamento obrigatório`, P => `com regulamentação em 90 dias`, P => `custeada pelas taxas de registro`,
+      P => `Porte para agentes de trânsito`,
+      P => `amplia o porte de arma funcional para agentes de trânsito e fiscais municipais, com treinamento obrigatório`, P => `com regulamentação em 90 dias`, P => `e registro na Polícia Federal`,
       'Armar o povo de bem para se defender dos bandidos.',
-      P => `Guardas municipais atuam desarmados em áreas de risco. O porte, com treinamento, reforça a segurança sem custo novo.`)
+      P => `Agentes de trânsito e fiscais municipais atuam desarmados em áreas de risco. O porte, com treinamento, reforça a segurança sem custo novo.`)
   ],
   saude: [
     minT('sa_mutirao', -1, 'gasto_social', 'ADM', ['saude'], { ind: 'des' }, r => ({ v: r.i(3, 8, 1) }),
-      P => `Mutirão de cirurgias eletivas`,
-      P => `lança mutirão nacional de cirurgias eletivas, com ${minMon(P.v)} do orçamento da Saúde`, P => `em 12 meses`, P => `com metas por estado e fila pública`,
+      P => `Cirurgias acima de 180 dias na rede privada`,
+      P => `paga na rede privada as cirurgias eletivas com mais de 180 dias de espera, com ${minMon(P.v)} do orçamento da Saúde`, P => `em 12 meses`, P => `com metas por estado e fila pública`,
       'Zerar a fila do SUS num grande esforço nacional.',
       P => `A fila de cirurgias eletivas cresce desde a pandemia. Um mutirão com metas e fila pública devolve dignidade ao paciente.`),
     minT('sa_farmacia', -1, 'gasto_social', 'DEC', ['saude'], { ind: 'ipca' }, r => ({ v: r.i(2, 4, 1) }),
@@ -29831,30 +29862,30 @@ const MIN_BANCO = {
       'Levar médico para todo canto do país.',
       P => `Há municípios sem médico fixo. Contratar para a atenção básica evita a superlotação dos hospitais.`),
     minT('sa_vacina', 0, 'gasto_social', 'ADM', ['saude'], { ind: 'ap' }, r => ({ v: r.i(1, 3, 1) }),
-      P => `Campanha de vacinação e combate à dengue`,
-      P => `lança campanha nacional de vacinação e combate à dengue, com ${minMon(P.v)} para os municípios`, P => `antes do verão`, P => `com busca ativa por agentes de saúde`,
+      P => `Vacina contra herpes-zóster`,
+      P => `inclui a vacina contra herpes-zóster no calendário do SUS para maiores de 60 anos, com ${minMon(P.v)} para os municípios`, P => `a partir do próximo ano`, P => `com busca ativa por agentes de saúde`,
       'Fazer uma campanha gigante de saúde e proteger todo mundo.',
-      P => `As coberturas vacinais caíram e a dengue sobe todo verão. A campanha antecipada evita internações e custa menos que o tratamento.`),
+      P => `O herpes-zóster causa dor crônica e internações entre idosos. A vacina no calendário evita os casos graves e custa menos que o tratamento.`),
     minT('sa_exames', 0, 'gasto_social', 'ADM', ['saude'], { ind: 'des' }, r => ({ v: r.i(2, 5, 1) }),
-      P => `Mutirão de consultas e exames`,
-      P => `lança mutirão de consultas e exames especializados, com ${minMon(P.v)} do orçamento da Saúde`, P => `em 12 meses`, P => `com regulação unificada das filas`,
+      P => `Policlínicas regionais`,
+      P => `financia policlínicas regionais de consultas e exames especializados, com ${minMon(P.v)} do orçamento da Saúde`, P => `em 12 meses`, P => `com regulação unificada das filas`,
       'Fazer mais consultas e exames para todo mundo ser atendido.',
       P => `A espera por exames atrasa diagnósticos. A regulação unificada põe ordem na fila e acelera os casos graves.`),
-    minT('sa_enfermagem', 0, 'trabalho', 'PL', ['saude', 'servidores'], { ind: 'des' }, r => ({ v: r.i(3, 7, 1) }),
-      P => `Piso da enfermagem`,
-      P => `garante a complementação federal do piso da enfermagem nos hospitais, com ${minMon(P.v)} por ano`, P => `com repasses trimestrais`, P => `e contrapartida de estados e municípios`,
-      'Pagar bem a enfermagem, que merece, custe o que custar.',
-      P => `O piso foi aprovado, mas hospitais não conseguem pagar. A complementação federal evita demissões e greves.`),
+    minT('sa_enfermagem', 0, 'gasto_social', 'ADM', ['saude'], { ind: 'des' }, r => ({ v: r.i(3, 7, 1) }),
+      P => `Residência em saúde da família`,
+      P => `financia bolsas de residência multiprofissional em saúde da família para o SUS do interior, com ${minMon(P.v)} por ano`, P => `com editais trimestrais`, P => `e contrapartida de estados e municípios`,
+      'Formar e fixar mais gente na saúde, custe o que custar.',
+      P => `Faltam profissionais de saúde da família no interior. As bolsas de residência formam e fixam equipes onde o SUS mais precisa.`),
     minT('sa_filantropicos', 1, 'privatizacao', 'ADM', ['saude'], { ind: 'des' }, r => ({ v: r.i(2, 5, 1) }),
-      P => `Fila zero com hospitais filantrópicos`,
-      P => `contrata hospitais filantrópicos e privados para zerar a fila de cirurgias do SUS, com ${minMon(P.v)} por ano`, P => `com contratos de 24 meses`, P => `pagos por produção e auditados`,
+      P => `Cirurgias de alta complexidade em filantrópicos`,
+      P => `contrata hospitais filantrópicos para cirurgias de alta complexidade, com ${minMon(P.v)} por ano`, P => `a partir do próximo semestre`, P => `com metas de produção auditadas`,
       'Usar os hospitais privados para tirar o povo da fila logo.',
-      P => `A rede privada tem capacidade ociosa. Contratar por produção, com auditoria, zera a fila mais rápido que construir hospital.`),
+      P => `A alta complexidade tem a fila mais longa do SUS. Contratar os filantrópicos por produção, com auditoria, abre vagas sem construir hospital.`),
     minT('sa_digital', 1, 'economia', 'ADM', ['saude'], { ind: 'ap' }, r => ({ v: r.i(1, 3, 1) }),
-      P => `Prontuário digital nas unidades de saúde`,
-      P => `implanta o prontuário digital nas unidades de saúde, com ${minMon(P.v)} por ano`, P => `em 18 meses`, P => `com gestão por metas nas unidades`,
+      P => `Telediagnóstico nas UBS do interior`,
+      P => `instala telediagnóstico nas unidades básicas do interior, com ${minMon(P.v)} por ano`, P => `em 18 meses`, P => `com gestão por metas nas unidades`,
       'Colocar inteligência artificial na saúde e modernizar tudo.',
-      P => `O prontuário único corta exames repetidos e a telessaúde leva especialista a quem está longe. A gestão por metas dá eficiência.`),
+      P => `O telediagnóstico leva o especialista a quem está longe e corta deslocamentos. A gestão por metas dá eficiência.`),
     minT('sa_leitos', 1, 'privatizacao', 'ADM', ['saude'], { ind: 'des' }, r => ({ v: r.i(1, 3, 1) }),
       P => `Leitos de UTI na rede privada`,
       P => `contrata leitos de UTI na rede privada para desafogar os hospitais públicos, com ${minMon(P.v)} por ano`, P => `com vigência de 12 meses`, P => `pago só pelos leitos efetivamente usados`,
@@ -29873,15 +29904,15 @@ const MIN_BANCO = {
       'Colocar toda criança na escola o dia inteiro.',
       P => `Creche é política de emprego e de educação ao mesmo tempo. Libera mães para trabalhar e prepara crianças para o ensino fundamental.`),
     minT('ed_pedemeia', -1, 'gasto_social', 'MP', ['educacao', 'programa_social'], { ind: 'des' }, r => ({ v: r.i(3, 6, 1) }),
-      P => `Pé-de-Meia ampliado`,
-      P => `amplia o Pé-de-Meia para estudantes do ensino médio, com ${minMon(P.v)} por ano`, P => `em 12 meses`, P => `com frequência mínima obrigatória`,
+      P => `Pé-de-Meia no fundamental II`,
+      P => `estende o Pé-de-Meia aos alunos do 8º e 9º ano do ensino fundamental, com ${minMon(P.v)} por ano`, P => `em 12 meses`, P => `com frequência mínima obrigatória`,
       'Pagar os estudantes para eles não largarem a escola.',
-      P => `O Pé-de-Meia reduz a evasão no ensino médio. A frequência mínima garante que o dinheiro vire permanência.`),
+      P => `A evasão começa no 8º e 9º ano, antes do ensino médio. A frequência mínima garante que o dinheiro vire permanência.`),
     minT('ed_alfa', 0, 'gasto_social', 'ADM', ['educacao'], { ind: 'ap' }, r => ({ v: r.i(1, 3, 1) }),
-      P => `Alfabetização na idade certa`,
-      P => `lança programa de alfabetização na idade certa, com ${minMon(P.v)} para formação de professores e material`, P => `em 18 meses`, P => `com avaliação nacional a cada ano`,
+      P => `Tutoria de alfabetização`,
+      P => `financia tutoria individual para alfabetização de alunos do 2º ao 5º ano com atraso, com ${minMon(P.v)} por ano`, P => `em 18 meses`, P => `com avaliação nacional a cada ano`,
       'Garantir que toda criança saia da escola sabendo ler e escrever.',
-      P => `Quase metade das crianças não lê no tempo certo. Formação, material e avaliação anual são o pacote que funciona.`),
+      P => `Quase metade das crianças não lê no tempo certo. Tutoria individual e avaliação anual são o pacote que funciona.`),
     minT('ed_merenda', 0, 'gasto_social', 'ADM', ['educacao'], { ind: 'ipca' }, r => ({ v: r.i(1, 3, 1) }),
       P => `Reajuste da merenda escolar`,
       P => `reajusta o valor por aluno da merenda escolar, com ${minMon(P.v)}`, P => `a partir do próximo semestre`, P => `com cardápio acompanhado por nutricionistas`,
@@ -29916,7 +29947,7 @@ const MIN_BANCO = {
       P => `O serviço voluntário dá formação profissional e disciplina a jovens sem emprego, e reforça o efetivo sem recrutamento obrigatório.`),
     minT('de_soldo', -1, 'gasto_social', 'PL', ['servidores'], { ind: 'prim' }, r => ({ pct: r.i(3, 6, 1) }),
       P => `Recomposição do soldo`,
-      P => `recompõe o soldo das Forças Armadas em ${P.pct}%`, P => `em duas parcelas`, P => `dentro do limite do arcabouço fiscal`,
+      P => `recompõe o soldo das Forças Armadas em ${P.pct}%`, P => `em duas parcelas`, P => `com impacto diluído em dois anos`,
       'Dar um bom aumento aos militares, que merecem.',
       P => `O soldo está defasado em relação a outras carreiras de Estado. A recomposição de ${P.pct}%, parcelada, evita perda de quadros.`),
     minT('de_marinha', -1, 'soberania_externa', 'PL', ['seguranca_plano'], { ind: 'ap' }, r => ({ v: r.i(3, 7, 1), a: r.p([5, 6, 8]) }),
@@ -29972,10 +30003,10 @@ const MIN_BANCO = {
       'Fazer trem-bala ligando o país inteiro.',
       P => `Os corredores regionais têm demanda e deslocam carros das rodovias. A União financia a infraestrutura e os estados operam.`),
     minT('in_pac', 0, 'economia', 'ADM', ['infra'], { ind: 'pib', prom: ['crescimento'], nc: true }, r => ({ v: r.i(6, 14, 2) }),
-      P => `Retomada das obras paradas do PAC`,
-      P => `retoma as obras paradas do PAC, com ${minMon(P.v)} em 24 meses`, P => `com cronograma público`, P => `priorizando as obras mais adiantadas`,
+      P => `PAC 2027-2030`,
+      P => `lança a carteira de obras do PAC 2027-2030, com ${minMon(P.v)} em 24 meses`, P => `com cronograma público`, P => `priorizando obras com projeto pronto`,
       'Retomar todas as obras que estão paradas, sem exceção.',
-      P => `Há obras com 80% concluídas e paradas por falta de repasse. Terminar o que já foi começado dá o melhor retorno.`),
+      P => `O ciclo atual do PAC termina em 2026. Uma nova carteira com projeto pronto e cronograma público dá o melhor retorno.`),
     minT('in_corredor', 0, 'economia', 'ADM', ['infra'], { ind: 'pib', nc: true }, r => ({ v: r.i(8, 16, 2) }),
       P => `Ferrovia Centro-Oeste–Santos`,
       P => `constrói a ferrovia que liga o Centro-Oeste ao porto de Santos, com ${minMon(P.v)} por ano`, P => `até 2030`, P => `com cronograma de obras por trecho`,
@@ -30018,11 +30049,11 @@ const MIN_BANCO = {
       P => `amplia o embargo de áreas desmatadas ilegalmente, com ${minMon(P.v)} por ano`, P => `com efeito já neste semestre`, P => `cobrado das multas aplicadas`,
       'Proibir tudo que agride a natureza e multar pesado.',
       P => `O monitoramento por satélite permite embargar o desmatamento ilegal com rapidez. As multas bancam parte da operação.`),
-    minT('am_carbono', 0, 'ambiente', 'DEC', ['ambiente'], { ind: 'dip' }, r => ({ x: 0 }),
-      P => `Mercado regulado de carbono`,
-      P => `regulamenta o mercado de carbono e os serviços ambientais, com créditos auditados`, P => `com regras em 12 meses`, P => `sem custo para a União`,
+    minT('am_carbono', 0, 'ambiente', 'PL', ['ambiente'], { ind: 'dip' }, r => ({ x: 0 }),
+      P => `Taxa de carbono dos grandes emissores`,
+      P => `cria a taxa sobre a emissão de carbono dos 100 maiores emissores, em complemento ao mercado regulado de carbono`, P => `com regras em 12 meses`, P => `com a receita vinculada à transição energética`,
       'Fazer o Brasil ganhar dinheiro vendendo ar limpo para o mundo.',
-      P => `O mercado de carbono atrai investimento e dá valor à floresta em pé. Regras claras evitam fraudes e abrem negócios.`),
+      P => `O mercado regulado não cobre os maiores emissores. A taxa dá previsibilidade, financia a transição e premia quem reduz emissões.`),
     minT('am_floresta', 0, 'ambiente', 'DEC', ['ambiente'], { ind: 'desm' }, r => ({ v: r.i(500, 1200, 100) / 1000 }),
       P => `Restauração florestal e bioeconomia`,
       P => `lança programa de restauração florestal e bioeconomia na Amazônia, com ${minMon(P.v)} por ano`, P => `em 5 anos`, P => `com recursos de fundos climáticos`,
@@ -30034,8 +30065,8 @@ const MIN_BANCO = {
       'Colocar painel solar em todo telhado do Brasil.',
       P => `A energia limpa barateia a conta e atrai indústria. Os leilões de energia aceleram os projetos.`),
     minT('am_licenca', 1, 'ambiente', 'PL', ['negacionismo', 'ambiente'], { ind: 'pib', prom: ['crescimento'] }, r => ({ d: r.p([90, 120, 180]) }),
-      P => `Licenciamento ambiental mais ágil`,
-      P => `agiliza o licenciamento ambiental, com prazo máximo de ${P.d} dias para empreendimentos estratégicos`, P => `com vigência imediata`, P => `mantendo as condicionantes do Ibama`,
+      P => `Mais analistas para licenciar`,
+      P => `cria 500 cargos de analista ambiental no Ibama para cumprir o prazo máximo de ${P.d} dias nas licenças de empreendimentos estratégicos`, P => `com vigência imediata`, P => `mantendo as condicionantes do Ibama`,
       'Acabar com a burocracia ambiental que trava o país.',
       P => `Licenças demoram anos e travam obras. Prazo máximo de ${P.d} dias, sem abrir mão das condicionantes, destrava investimento.`),
     minT('am_pagamento', 1, 'ambiente', 'ADM', ['ambiente'], { ind: 'desm', prom: ['desmatamento'] }, r => ({ v: r.i(500, 1500, 100) / 1000 }),
@@ -30066,10 +30097,10 @@ const MIN_BANCO = {
       'Retaliar quem taxar o Brasil, na mesma moeda.',
       P => `Sem reciprocidade, o Brasil negocia de joelhos. A lista pública de produtos dá previsibilidade e poder de barganha.`),
     minT('it_mercosul', 0, 'soberania_externa', 'ADM', ['comercio'], { ind: 'pib' }, r => ({ m: r.p([12, 18]) }),
-      P => `Acordo Mercosul–União Europeia`,
-      P => `abre negociação de acordo comercial entre o Mercosul e a União Europeia, com salvaguardas ambientais`, P => `com meta de conclusão em ${P.m} meses`, P => `sem custo para o Tesouro`,
-      'Fechar logo o acordo com a Europa, de qualquer jeito.',
-      P => `O acordo abre um mercado de 700 milhões de pessoas. Salvaguardas ambientais respondem às objeções europeias.`),
+      P => `Acordo Mercosul–Japão`,
+      P => `abre negociação de acordo comercial entre o Mercosul e o Japão, com salvaguardas ambientais`, P => `com meta de conclusão em ${P.m} meses`, P => `sem custo para o Tesouro`,
+      'Fechar logo um acordo com o Japão, de qualquer jeito.',
+      P => `O acordo abre um mercado de 125 milhões de pessoas e atrai investimento industrial. Salvaguardas ambientais respondem às objeções japonesas.`),
     minT('it_ocde', 0, 'soberania_externa', 'ADM', ['comercio'], { ind: 'ap' }, r => ({ m: r.p([18, 24]) }),
       P => `Adesão à OCDE`,
       P => `acelera a adesão do Brasil à OCDE, com reformas regulatórias e metas de adequação`, P => `em ${P.m} meses`, P => `sem custo para o Tesouro`,

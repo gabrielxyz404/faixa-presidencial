@@ -104,7 +104,7 @@ with sync_playwright() as p:
     ok('Justiça: ações do caso visíveis desde o começo', pg.locator('[data-pais=justica] [data-caso] [data-jus-acao]').count() >= 3)
     ok('Justiça: seção "Ações do governo" com 10 botões', pg.locator('[data-jus=acoes-gov] button[data-prog]').count() == 10 and 'ações do governo' in pg.locator('[data-jus=acoes-gov]').inner_text().lower())
     pg.screenshot(path=OUT + '/justica.png', full_page=True)
-    clica_programa(pg, 'justica', 'Reforçar o orçamento da PF', 'Justiça')
+    clica_programa(pg, 'justica', 'cargos na PF', 'Justiça')
     SET(pg, "n.acoes=5")
     clica_programa(pg, 'justica', 'Cortar penduricalhos', 'Justiça (PLP)')
     # sem casos abertos: explicação com dica
