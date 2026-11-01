@@ -891,3 +891,29 @@ Todo código novo está marcado `// v4.1`. Mudanças por classe:
 Tentado e revertido: ignorar o público do programa ('dos pobres', 'das mães') na checagem de cobertura da leitura genérica; piorou 2 itens de auxílio-aluguel sem ganhar nenhum.
 
 Limitações que ficam: (a) 'dobrar/ampliar o BPC dos pobres/idosos' ainda cai na leitura genérica (custo 0) quando há palavras depois de 'bpc'; a causa é anterior ao catálogo e não foi achada; com número no texto funciona. (b) 'Vender as subsidiárias da Caixa/BB' é lido como estatização (a palavra 'subsidiárias' dispara o verbo de estatizar por um caminho que não localizei). (c) impostos e infraestrutura não mexeram: ICMS segue federal ~0 (inconsistência do gabarito já registrada) e as obras seguem dependendo de quantidade no texto. (d) varias e zoeira ficaram onde estavam (varias 44/48/46%, zoeira 75/64/70%).
+
+## v4.3 (lote B do relatório do Fable: colisões do motor que viram dinheiro)
+
+Todo código novo está marcado `// v4.3`. Medições antes (motor v4.2, commit ea0bd47) e depois, com `testes/motor/probe.py` + `testes/bench/score.py` e comparação item a item com `score.score_item`:
+
+| conjunto | antes | depois | item a item |
+|---|---|---|---|
+| cego hold3 (700) | 336 (48,0%) | 337 (48,1%) | 1 ganho, 0 regressões |
+| fresh2 do avaliador (103, usado para desenvolver) | 67 (65,0%) | 81 (78,6%) | 14 ganhos, 0 regressões |
+| sim `cenarios.json` | 240/3/5 | 240/3/5 | sem mudança de veredito |
+| `programas_probe.py` | 189 linhas, 0 alertas | 189 linhas, 0 alertas | |
+| `ui_programas_novos.py` | 33 ok | 33 ok, 0 erros de página | |
+| `ui_v38` / `ui_v39` / `ui_medidas` | | 41 ok / 6 de 6 / sem falha, 0 erros de página | |
+
+Benches de desenvolvimento (treino): dev 159 (=), dev2 92 -> 94, mega_dev 1311 (=; 5 ganhos, 5 perdas), mega_dev2 759 -> 760, mega_dev3 370 -> 371, cft_dev 89, cft_dev2 60, zoeira_dev 72, zoeira_dev2 48, final_dev 123, justica_dev 40 (sem mudança). hold3 não foi usado para ajustar regra nenhuma; as regras saíram do fresh2 e de frases próprias (`testes/motor/motor_lote_b.py`, 27 casos, 27 ok).
+
+Mudanças:
+1. B1, consulta sobre privatizar: `V43_CONSULTA` (plebiscito, referendo, consulta/audiência pública, debate público, debater, discutir, estudar, "estudo sobre") faz o objeto citado depois da palavra virar ato de comunicação (`it.talk`; instrumento COM, sem receita única). `fase3Venda` também descarta essa oração, então só um verbo de venda direto vende a estatal. "Audiência de custódia", "estudo de impacto" e "estúdios" não contam.
+2. B2, tributo zerado: o gerúndio "zerando/reduzindo/cortando/isentando X" antes de um tributo deixa de ser marcador de fonte de financiamento (era o que lia "zerando PIS/Cofins" como aumento de R$ 18 bi); "sem PIS/Cofins" passa a ser redução; a isenção de IR até 1 a 4 mil ou até 1 a 3 salários mínimos entra na Lei 15.270 (norma exata, valor zero); isenção acima de 5 mil usa a fórmula da faixa.
+3. B3, bases: `v43Teto` (chamado em `calcFiscal`): alíquota sobre cannabis, drogas leves ou jogo legalizado incide sobre o mercado (R$ 20 bi, R$ 20 bi, R$ 30 bi) e não sobre R$ 2,3 tri de impostos; família na floresta = 9 mi na Amazônia Legal, 25% quando há condição ("que preservar"); "custeio da máquina" = base de R$ 120 bi; aeronave ou iate único = R$ 0,5 bi; ação pontual dentro de um texto com várias medidas, sem valor próprio = R$ 1,5 bi (R$ 0,5 bi quando a oração foi lida à parte). O valor dito no texto ("com R$ 5 bilhões") passa na frente do piso por quantidade. Botijão: "tabelar em R$ 80" é preço-alvo contra os R$ 110 de mercado (ANP), não acréscimo sobre R$ 50. "Até um salário mínimo" depois de "quem ganha" e "de quem recebe o Bolsa Família/BPC" são o público da medida, não objetos; "zerar a conta de luz" com público não cai mais na leitura genérica de assistência.
+4. B4, várias medidas: o tópico lista até 3 medidas; "o Bolsa Família e o BPC" (objetos coordenados do mesmo tipo) herdam o verbo do primeiro; a oração que começa por verbo de ação e ficou sem objeto na leitura do texto inteiro é lida à parte e somada (`v43Clausulas`; só sem condição, ressalva, fonte ou negação).
+5. Erros graves: "tirar/retirar/afastar o Brasil da ONU/OMS/OMC/OCDE/Unesco/Mercosul/BRICS" cai em "saída de acordos internacionais" (tópico "a saída do Brasil da ONU"), não em Oriente Médio; estado de defesa contra facção ou crime organizado é "controverso" (art. 136) e o tópico diz "estado de defesa", não "sítio ou de defesa (paulo)".
+
+`varias`: hold3 10/35 -> 12/35; fresh2 0/2 -> 2/2. O ganho no cego é pequeno porque os 3 erros típicos de `varias` no hold3 são valores por objeto (pensão -> aposentadoria, "bancos de móveis" -> CSLL, defaults de R$ 0,3 a 3 bi), não segmentação. Tentado e mantido desligado por padrão em essência: substituir todos os itens pela leitura oração a oração (regrediu 7 itens no mega_dev2 por defaults de "pacote padrão" nas orações curtas); ficou só a leitura à parte das orações sem objeto.
+
+Limitações que ficam: Lei Rouanet (acabar) segue ADM com custo -3 (é renúncia fiscal, receita 0,8 a 4); 300 mil vagas técnicas, loteria para o SUS, trem-bala SP-Rio, 100 mil casas/ano e satélite estatal seguem com valor baixo ou zerado (falta preço unitário por "vaga" e por "km de trem"); Força Nacional (ADM) e "nomear o vice para a Defesa" (PL em vez de ADM) não foram tocados; "Taxar plástico, proibir sacolinha..." perde 1 ponto no corretor só porque o tópico agora lista as 3 medidas e "proibe" não está no vocabulário de redução do `score.py`.
