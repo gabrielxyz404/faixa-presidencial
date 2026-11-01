@@ -1393,10 +1393,30 @@ function vagaMinisterio(g, pk, notas) {
 }
 // escândalo do mês: cada pasta tem uma chance própria (risco simulado do titular; técnicos e correligionários valem metade). O texto cita só o ministério.
 // EQUILÍBRIO v2: o escândalo sorteado soma +8 (era +16) e tem 3 meses de carência (g.escSorteio), para o acaso não derrubar um governo que se comporta.
-const ESC_SORTEIO = 8, ESC_SORTEIO_CARENCIA = 3;
+const ESC_SORTEIO = 8, ESC_SORTEIO_CARENCIA = 3, ESC_SORTEIO_CARENCIA_FIM = 6, ESC_TETO_MES = 8;
+/* LOTE C/G: fontes do escândalo no mês. escReg registra um valor com rótulo em g.escFM (zerado a cada fimDoMes); escFase mede o que uma etapa fez e
+   anota só o que não foi registrado por dentro. No fim do mês tudo vira g.hist.escFontes e aparece no Balanço ("+12 CPI, +6 caso da PF, −3 decaimento"). */
+function escReg(g, rot, d) { if (!d || !isFinite(d)) return; const F = g.escFM = g.escFM || {}; F[rot] = (F[rot] || 0) + d; }
+function escSomaReg(g) { let t = 0; const F = g.escFM || {}; for (const k in F) t += F[k]; return t; }
+function escFase(g, rot, fn) {
+  const e0 = g.escandalo, r0 = escSomaReg(g); const v = fn();
+  const rest = (g.escandalo - e0) - (escSomaReg(g) - r0); if (Math.abs(rest) >= .05) escReg(g, rot, rest);
+  return v;
+}
+// teto mensal para as fontes que escalavam sozinhas no último ano (casos da Justiça e metas da oposição): no máximo +ESC_TETO_MES por mês somando as duas
+function escComTeto(g, rot, fn) {
+  const e0 = g.escandalo, r0 = escSomaReg(g); const v = fn();
+  const d = g.escandalo - e0; if (g.escTetoMes !== g.mes) { g.escTetoMes = g.mes; g.escTetoUsado = 0; }
+  const rest = d - (escSomaReg(g) - r0); if (Math.abs(rest) >= .05) escReg(g, rot, rest);
+  if (d > 0) {
+    const perm = Math.max(0, Math.min(d, ESC_TETO_MES - g.escTetoUsado)); g.escTetoUsado += perm;
+    if (perm < d - .05) { g.escandalo = e0 + perm; escReg(g, 'excedente contido pelo teto mensal', perm - d); }
+  }
+  return v;
+}
 function sorteiaEscandalo(g, notas) {
   if (g.abinEscudo === g.mes) return;
-  if (g.escSorteio != null && g.mes - g.escSorteio < ESC_SORTEIO_CARENCIA) return;
+  if (g.escSorteio != null && g.mes - g.escSorteio < (elO(g.mes) >= 36 ? ESC_SORTEIO_CARENCIA_FIM : ESC_SORTEIO_CARENCIA)) return; // LOTE C: no último ano do mandato, 6 meses de carência
   const NM = g.cfg.nomeados || {}; const cand = [];
   for (const p of PASTAS) {
     const N = NM[p.k]; const tipo = g.cfg.ministros[p.k];
@@ -1408,7 +1428,7 @@ function sorteiaEscandalo(g, notas) {
   if (!soma || Math.random() >= 1 - cand.reduce((a, c) => a * (1 - c.p), 1)) return;
   let r = Math.random() * soma; const alvo = cand.find(c => (r -= c.p) < 0) || cand[cand.length - 1];
   const onde = alvo.pk ? `do ${pastaTxt(alvo.pk)}` : 'de um ministério de segundo escalão';
-  g.escandalo = clamp(g.escandalo + ESC_SORTEIO, 0, 100); g.escSorteio = g.mes;
+  g.escandalo = clamp(g.escandalo + ESC_SORTEIO, 0, 100); g.escSorteio = g.mes; escReg(g, 'escândalo sorteado em ministério', ESC_SORTEIO);
   if (alvo.pk) minEst(g, alvo.pk).esc = g.mes;
   notas.push({ t: 'neg', x: pick([`Operação investiga contratos de assessores ${onde}.`, `Auditoria questiona licitações de terceirização ${onde}.`, `Reportagem aponta suspeitas em convênios ${onde}.`]) });
 }
@@ -1420,7 +1440,7 @@ function eventosMinisterios(g, notas) {
     const leal = traco(g, idN(N), 'leal');
     if (Math.random() < Math.max(0, 55 - leal) / 700) {
       for (const k of GKEYS) g.groups[k] = clamp(g.groups[k] - .8, 1, 99);
-      g.escandalo = clamp(g.escandalo + 3, 0, 100);
+      g.escandalo = clamp(g.escandalo + 3, 0, 100); escReg(g, 'crise interna em ministério', 3);
       notas.push({ t: 'neg', x: `Crise interna no ${pastaTxt(p.k)}: aliados da pasta reclamam do Planalto em reservado.` });
     }
     if (leal < 25 && g.ultVoto && g.ultVoto.mes === g.mes && g.ultVoto.derrota && Math.random() < .1) vagaMinisterio(g, p.k, notas);
@@ -1890,8 +1910,44 @@ const EVENTOS = [
   { id: 'calmaria', titulo: 'Mês tranquilo em Brasília', icone: 'Coffee', grav: 'baixa', tags: [],
     texto: 'Sem crise no horizonte. A Casa Civil sugere usar a janela para avançar a agenda do governo.',
     opcoes: [{ l: 'Isenção do IR', t: 'Enviar projeto de lei ampliando a isenção do imposto de renda para quem ganha até R$ 7 mil' }, { l: 'Acordo Mercosul-UE', t: 'Fechar o acordo comercial Mercosul-União Europeia' }, { l: 'Pacote de obras', t: 'Lançar pacote de obras de infraestrutura e saneamento de R$ 20 bilhões' }],
-    ignorar: {} }
+    ignorar: {} },
+  // LOTE C6: eventos do segundo mandato (só entram no sorteio com o presidente no 2º mandato; as janelas seguem o calendário eleitoral do ciclo)
+  { id: 'reforma_eleitoral', titulo: 'Reforma eleitoral no Congresso', icone: 'Vote', grav: 'media', tags: ['comunicacao', 'emendas', 'fundo_eleitoral', 'anticorrupcao'], w: g => ev2M(g) * (evRel(g) >= 8 && evRel(g) <= 30 ? 2.2 : .8),
+    texto: 'A Câmara abre uma comissão para mudar as regras de 2030: tamanho do fundo eleitoral, fim das coligações e calendário. O Centrão quer o Planalto no jogo; a oposição acusa tentativa de casuísmo.',
+    opcoes: [{ l: 'Negociar com líderes', t: 'Abrir negociação com os líderes do Congresso sobre a reforma eleitoral e o fundo eleitoral' }, { l: 'Fundo menor', t: 'Reduzir o fundo eleitoral em R$ 1 bilhão e enviar a proposta ao Congresso' }, { l: 'Ficar de fora', t: 'Pronunciamento dizendo que a reforma eleitoral é assunto do Congresso' }],
+    ignorar: { esc: 3, g: { classemedia: -1.5 }, rel: { UNIAO: -1.33, PSD: -1.33, MDB: -1.33 } } },
+  { id: 'stf_bloco', titulo: 'Duas vagas abertas no Supremo', icone: 'Scale', grav: 'media', tags: ['comunicacao', 'conservador', 'progressista'], w: g => ev2M(g) * .9,
+    texto: 'Duas aposentadorias seguidas deixam o plenário do STF com cadeiras vazias ao mesmo tempo. Senadores pedem que o Planalto indique os dois nomes juntos, num pacote só.',
+    opcoes: [{ l: 'Nomes de consenso', t: 'Indicar dois ministros técnicos de consenso para o Supremo e abrir diálogo com o Senado' }, { l: 'Pacote político', t: 'Indicar para o Supremo dois aliados do governo e negociar com o Centrão' }, { l: 'Adiar', t: 'Pronunciamento dizendo que as indicações para o Supremo vão esperar o fim das votações' }],
+    ignorar: { stf: 6, esc: 2, ap: -.5 } },
+  { id: 'fadiga', titulo: 'Fadiga de governo', icone: 'BatteryLow', grav: 'media', tags: ['comunicacao', 'demissao_ministro', 'defender_ministro', 'infra'], w: g => ev2M(g) * (evRel(g) >= 24 ? 2.4 : .9),
+    texto: 'Pesquisas qualitativas mostram cansaço com o governo: "mais do mesmo", dizem os grupos de discussão. Aliados pedem renovação de equipe e uma agenda nova antes que a corrida pela sucessão comece.',
+    opcoes: [{ l: 'Renovar a equipe', t: 'Fazer reforma ministerial e trocar os ministros mais desgastados' }, { l: 'Relançar o governo', t: 'Fazer pronunciamento em cadeia nacional relançando as prioridades do governo' }, { l: 'Agenda de entregas', t: 'Anunciar pacote de entregas com R$ 10 bilhões em obras do Novo PAC' }],
+    ignorar: { ap: -1.5, g: { classemedia: -2, periferia: -1 }, esc: 2 } },
+  { id: 'municipais_base', titulo: 'Eleições municipais racham a base', icone: 'Landmark', grav: 'baixa', tags: ['emendas', 'comunicacao'], w: g => ev2M(g) * (evRel(g) >= 16 && evRel(g) <= 23 ? 4 : .2),
+    texto: 'Prefeitos e candidatos aliados disputam o mesmo palanque nas capitais e cobram emendas e agenda do presidente. Cada partido da base quer o apoio só para si.',
+    opcoes: [{ l: 'Liberar emendas', t: 'Liberar R$ 3 bilhões em emendas para prefeituras aliadas' }, { l: 'Neutralidade', t: 'Pronunciamento reafirmando a neutralidade do governo nas eleições municipais' }, { l: 'Subir em palanques', t: 'Participar de comícios de candidatos aliados nas capitais' }],
+    ignorar: { g: { classemedia: -1 }, rel: { UNIAO: -2, PSD: -2, MDB: -2 }, esc: 1 } },
+  { id: 'racha_sucessao', titulo: 'Aliados brigam pela sucessão', icone: 'Users', grav: 'media', tags: ['comunicacao', 'emendas', 'anticorrupcao'], w: g => ev2M(g) * (evRel(g) >= 26 && evRel(g) <= 42 ? 3 : .3),
+    texto: 'Três partidos da base lançam pré-candidatos ao mesmo tempo e trocam farpas em público. Quem o presidente prestigia agora define a força do candidato governista no ano da eleição.',
+    opcoes: [{ l: 'Arbitrar', t: 'Reunir os presidentes dos partidos da base para definir o candidato da sucessão' }, { l: 'Deixar aberto', t: 'Pronunciamento dizendo que a escolha do candidato da sucessão cabe aos partidos' }, { l: 'Prestigiar um nome', t: 'Fazer pronunciamento elogiando o pré-candidato mais bem colocado nas pesquisas' }],
+    ignorar: { esc: 3, ap: -.8, rel: { UNIAO: -1.33, PSD: -1.33, MDB: -1.33 } } },
+  { id: 'pato_manco', titulo: 'Governo de fim de ciclo perde a pauta', icone: 'Hourglass', grav: 'media', tags: ['emendas', 'comunicacao', 'anticorrupcao'], w: g => ev2M(g) * (evRel(g) >= 30 ? 2.6 : .5),
+    texto: 'Com o mandato se esgotando, deputados deixam de comparecer e a pauta do governo emperra: todos olham para a próxima eleição. A base cobra cargos e emendas para votar.',
+    opcoes: [{ l: 'Pedir urgência', t: 'Enviar ao Congresso pedido de urgência para votar as pautas prioritárias do governo' }, { l: 'Cargos e emendas', t: 'Oferecer cargos e R$ 2 bilhões em emendas para destravar as votações' }, { l: 'Falar do legado', t: 'Fazer pronunciamento sobre o legado do governo' }],
+    ignorar: { ap: -1, g: { mercado: -2 }, rel: { UNIAO: -2, PSD: -2, MDB: -2 } } },
+  { id: 'cpi_fim', titulo: 'CPI do fim de governo', icone: 'Search', grav: 'alta', tags: ['anticorrupcao', 'comunicacao', 'ataque', 'desenvolvimento'], w: g => ev2M(g) * (evRel(g) >= 30 ? 1.6 : .3) * (1 + g.escandalo / 40),
+    texto: 'A oposição reúne assinaturas para uma CPI sobre contratos do governo. A ideia é desgastar o candidato governista a poucos meses da campanha, com sessões semanais na televisão.',
+    opcoes: [{ l: 'Colaborar', t: 'Colaborar com a CPI e abrir os documentos solicitados' }, { l: 'Barrar na base', t: 'Articular com a base aliada para barrar a instalação da CPI' }, { l: 'Portal da transparência', t: 'Lançar portal com todos os gastos e contratos do governo' }],
+    ignorar: { esc: 12, ap: -2, stf: 2 } },
+  { id: 'recessao_mundial', titulo: 'Recessão mundial', icone: 'TrendingDown', grav: 'alta', tags: ['comercio', 'comunicacao', 'corte_gastos', 'programa_social', 'trabalho'], w: g => ev2M(g) * (evRel(g) >= 12 ? 1.2 : .5),
+    texto: 'A economia global desacelera, as commodities caem e os juros lá fora sobem. Exportadores pedem socorro e o dólar sobe com a fuga para ativos seguros.',
+    opcoes: [{ l: 'Crédito a exportadores', t: 'Liberar R$ 15 bilhões em crédito do BNDES para empresas exportadoras' }, { l: 'Acalmar o mercado', t: 'Pronunciamento reafirmando compromisso com o arcabouço fiscal' }, { l: 'Proteger empregos', t: 'Criar programa de preservação de empregos com R$ 8 bilhões' }],
+    ignorar: { e: { pib: -.25, dol: .2, conf: -2 }, g: { empresariado: -3, agro: -3 } } }
 ];
+// LOTE C6: o 2º mandato começa no mês 49 ou, para quem já abre o jogo reeleito, com mandatos = 2; evRel dá o mês do ciclo (1 a 48)
+const ev2M = (g) => ((g.el && g.el.mandatos >= 2) || g.mes > 48) ? 1 : 0;
+const evRel = (g) => ((g.mes - 1) % 48) + 1;
 
 const EV = (g) => { const e = g.evento ? EVENTOS.find(x => x.id === g.evento) || null : null; return e && e.dyn && g.eventoUF && UF_INFO[g.eventoUF] ? Object.assign({}, e, e.dyn(g)) : e; };
 
@@ -2063,8 +2119,8 @@ function tickProtesto(g, notas) {
   g.groups[p.grupo] = clamp(g.groups[p.grupo] - 2, 1, 99);
   notas.push({ t: 'neg', x: `O protesto ${p.cidade} cresce sem resposta: ${milTxt(p.pm)} segundo a PM, ${milTxt(p.org)} segundo os organizadores. ${G.nome} perdem a paciência.` });
   if (p.mesesAtivo >= 2) {
-    for (const k of GKEYS) g.groups[k] = clamp(g.groups[k] - 1.5, 1, 99);
-    g.escandalo = clamp(g.escandalo + 5, 0, 100);
+    for (const k of GKEYS) g.groups[k] = clamp(g.groups[k] - 1, 1, 99); // LOTE C2: rua cheia pesa −1,0 (era −1,5) e +3 de escândalo (era +5): a passividade já paga no protesto em si
+    g.escandalo = clamp(g.escandalo + 3, 0, 100); escReg(g, 'protesto de rua sem resposta', 3);
     notas.push({ t: 'neg', x: 'Dois meses de rua cheia: o desgaste contamina o país inteiro e a oposição explora as imagens.' });
   }
   if (p.mesesAtivo >= 3) { notas.push({ t: 'neu', x: `O protesto ${p.cidade} perde o fôlego e se dispersa por conta própria.` }); fimProtesto(g); }
@@ -13428,7 +13484,7 @@ function medRepetida(g, prop) {
   } catch (e) { return null; }
 }
 // comunicação: rendimento decrescente no mês (1º ato 100%, 2º 50%, 3º e seguintes 25%) e teto global do efeito transitório ainda em vigor (EQ_TRANS_CAP pontos de aprovação)
-const EQ_COM_FATOR = [1, .5, .25], EQ_TRANS_CAP = 4;
+const EQ_COM_FATOR = [1, .5, .25], EQ_TRANS_CAP = 2.5; // LOTE C5: teto 4 -> 2,5
 // comunicação só mexe na opinião: sem efeito em pobreza/segurança/regiões e só uma fração do efeito em confiança, risco e dólar (30%)
 function fxComunicacao(fx) {
   const o = Object.assign({}, fx); delete o.s; delete o.r;
@@ -13471,7 +13527,7 @@ function executaProposta(g, prop, resultado) {
     else { try { medM = medidaCria(g, prop, k, ato); } catch (e) { medM = null; if (typeof console !== 'undefined') console.warn('medidaCria', e); } } // v3.6
     const espera = !!(medM && medM.estado === 'aguardando'); // v3.9: medida condicional ainda não disparou
     if (!medRev && !repet) {
-    applyFx(g, medM ? medM.ag : (ehCom ? fxComunicacao(prop.fx) : prop.fx), k * (espera ? .1 : 1));
+    applyFx(g, medM ? medM.ag : (ehCom ? fxComunicacao(prop.fx) : prop.fx), k * (espera ? .1 : 1) * (prop.fromEvento && ehCom ? .25 : 1)); // LOTE C: resposta de crise só em palavras (silêncio, "acalmar") não rende bônus: 25% do efeito lido
     segNota = espera || ehCom ? null : segAplicaMedida(g, prop, k);
     if (medM) { if (!espera) medSyncFiscal(g, medM, 0); } // v3.6: custo e receita entram pela rampa (fração inicial conforme o tipo)
     else { g.fiscal.custo += (prop.cost || 0) * k; g.fiscal.receita += ((prop.rev || 0) - vigRev(prop)) * k; g.fiscal.extra += (prop.extra || 0) * k; }
@@ -13496,7 +13552,7 @@ function executaProposta(g, prop, resultado) {
     minEst(g, prop.pastaExec || 'casacivil').derr++; if (g.poderes) g.poderes.derr = (g.poderes.derr || 0) + 1;
     const ganhadores = Object.entries((prop.fx && prop.fx.g) || {}).filter(([, v]) => v > 0);
     for (const [kk, v] of ganhadores) g.groups[kk] = clamp(g.groups[kk] - v * .25, 1, 99);
-    for (const kk of GKEYS) g.groups[kk] = clamp(g.groups[kk] - .8, 1, 99);
+    for (const kk of GKEYS) g.groups[kk] = clamp(g.groups[kk] - EQ_DERROTA_AP, 1, 99); // LOTE C: derrota no plenário pesa −0,5 (era −0,8) em todos os grupos
     g.pes.estresse = clamp(g.pes.estresse + 6, 0, 100);
   } else if (resultado === 'derrubada') {
     est.stf = (est.stf || 0) + 1;
@@ -13522,6 +13578,7 @@ function executaProposta(g, prop, resultado) {
       let wT = 0, wS = 0; for (const G of GRUPOS) { wS += G.w; wT += (dgT[G.k] || 0) * G.w; } const dAp = wS ? wT / wS : 0;
       if (dAp > 0) f = Math.min(f, Math.max(0, EQ_TRANS_CAP - efTransTotal(g)) / dAp);
       if (f < .999) { for (const kk of Object.keys(dgT)) { g.groups[kk] = clamp(g0Cap[kk] + dgT[kk] * f, 1, 99); dgT[kk] *= f; } g.comRed = { mes: g.mes, f }; }
+      if (nCom >= 2) { for (const kk of GKEYS) g.groups[kk] = clamp(g.groups[kk] - EQ_COM_CANSACO, 1, 99); if (g.comCansaco !== g.mes) { g.comCansaco = g.mes; g.feed.unshift({ mes: g.mes, src: 'carta', txt: 'Excesso de aparições do presidente cansa o público: o efeito dos discursos e das lives diminui' }); } } // LOTE C5: cansaço de exposição
     }
     if (any) { g.efTrans = g.efTrans || []; g.efTrans.push({ mes: g.mes, d: dgT, f: 1 }); }
   }
@@ -13576,6 +13633,8 @@ function sorteiaEvento(g) {
    - relações com os partidos respondem à economia (PIB, primário, inflação), não só à aprovação;
    - hiperinflação e confiança perto de zero derrubam alvo e teto do PIB;
    - estresse recupera −6/mês sem crise; a saúde zerada afasta por 1 mês antes do fim definitivo. */
+const EQ_DERROTA_AP = .2, EQ_COM_CANSACO = .25; // LOTE C: peso da derrota no plenário e cansaço por ato de comunicação além do 2º no mês
+const EQ_EXPFIS_LIM = .6, EQ_EXPFIS_K = 1.7; // LOTE C4: limite (% do PIB em 12 meses) e peso mensal do desgaste da expansão fiscal
 const EQ_IMP_MESES = 3, EQ_IMP_MESES_LEVE = 4;       // meses seguidos com risco >= 80 até a votação
 const EQ_ESC_SEM_CASO = .07;                          // redução extra do fator de decaimento do escândalo quando não há caso aberto
 const EQ_ESTRESSE_REC = 6;                            // recuperação passiva de estresse por mês sem crise
@@ -13642,6 +13701,8 @@ function fimDoMes(g) {
   const M = modoDe(g);
   const E = g.eco, B = g.bias, O = g.orc;
   const AP = apIni(g);
+  g.escFM = {}; const escBase = (g.escFim != null && isFinite(g.escFim)) ? g.escFim : g.escandalo; // LOTE G: fontes do escândalo no mês
+  if (Math.abs(g.escandalo - escBase) >= .05) escReg(g, 'suas decisões e a crise do mês', g.escandalo - escBase);
   // crise ignorada
   const evA = EV(g);
   if (evA && !g.eventoOk && evA.ignorar && Object.keys(evA.ignorar).length) {
@@ -13650,13 +13711,13 @@ function fimDoMes(g) {
     if (evA.ufIgn && g.seg && g.eventoUF) segEfeitoUF(g, g.eventoUF, evA.ufIgn);
     // EQUILÍBRIO v2: o custo de ignorar crises vira número (aprovação e escândalo), somado no acumulado g.ignAcum e mostrado na nota e no Balanço
     const igA = Math.max(0, apIgn0 - aprovacao(g)), igE = Math.max(0, g.escandalo - escIgn0);
-    const IA = g.ignAcum = g.ignAcum || { n: 0, ap: 0, esc: 0 }; IA.n++; IA.ap += igA; IA.esc += igE;
+    const IA = g.ignAcum = g.ignAcum || { n: 0, ap: 0, esc: 0 }; IA.n++; IA.ap += igA; IA.esc += igE; escReg(g, 'crise ignorada', igE);
     notas.push({ t: 'neg', x: `Crise ignorada: "${evA.titulo}" cobrou seu preço: ${igA >= .05 ? '−' + fmt(igA, 1) + ' ponto' + (igA >= 1.05 ? 's' : '') + ' de aprovação' : 'sem perda imediata de aprovação'}${igE >= .5 ? ' e +' + fmt(igE, 0) + ' de escândalo' : ''}. Acumulado em ${IA.n} ${IA.n === 1 ? 'crise ignorada' : 'crises ignoradas'}: −${fmt(IA.ap, 1)} pontos de aprovação, +${fmt(IA.esc, 0)} de escândalo.` });
     g.pes.estresse += 6;
   }
   AP.mark('crises');
-  liquidaPendentes(g, notas);
-  try { medidasMensal(g, notas); } catch (e) { if (typeof console !== 'undefined') console.warn('medidasMensal', e); } // v3.6
+  escFase(g, 'medidas e consequências adiadas', () => liquidaPendentes(g, notas));
+  try { escFase(g, 'efeitos de medidas', () => medidasMensal(g, notas)); } catch (e) { if (typeof console !== 'undefined') console.warn('medidasMensal', e); } // v3.6
   AP.mark('medidas');
   let ICM = null; try { ICM = icMensal(g, notas); } catch (e) { if (typeof console !== 'undefined') console.warn('icMensal', e); } // indústria e comércio exterior
   const prim = primario(g);
@@ -13670,7 +13731,7 @@ function fimDoMes(g) {
   const dolT = 4.3 + E.risco / 170 + B.dol - (g.dip.eua + g.dip.ue - 110) / 400 + F3.dDol + MX.dol;
   E.dol = clamp(E.dol + (dolT - E.dol) * .25 + rnd(-.06, .06), 2.5, 12);
   const gap = E.pib - 2;
-  const ipcaT = 3.8 + (E.dol - 5.3) * 1.1 + Math.max(0, -prim - 60) / 100 * .35 + gap * .4 - (E.selic - 11) * .12 + B.ipca + F3.dIpca + (MX.ipca || 0);
+  const ipcaT = 3.8 + (E.dol - 5.3) * 1.1 + Math.max(0, -prim - 60) / 100 * .35 + Math.pow(Math.max(0, -prim - 300) / 100, 2) * .12 + gap * .4 - (E.selic - 11) * .12 + B.ipca + F3.dIpca + (MX.ipca || 0);
   E.ipca = clamp(E.ipca + (ipcaT - E.ipca) * .09 + rnd(-.1, .1), -1, 40);
   const selicT = 10 + F3.bcK * (E.ipca - 3) + (E.risco - 200) / 100 * F3.bcR * .6 + F3.bcOff;
   const dif = selicT - E.selic; let passo = 0;
@@ -13723,6 +13784,9 @@ function fimDoMes(g) {
   dg('agro', (E.dol - 5) * .3 + (g.dip.china - 55) * .02 + MX.agro); dg('sindicatos', -(E.des - 6) * .3); dg('gamers', mood * .4);
   f3Grupos(g, dg);
   if (E.conf < 20) for (const k of GKEYS) dg(k, -(20 - E.conf) * .04); // EQUILÍBRIO v2: confiança abaixo de 20 pesa em todos os grupos (zero = −0,8 ponto/mês)
+  // LOTE C4: expansão fiscal acelerada (gasto líquido de receitas subindo mais de 0,6% do PIB em 12 meses) vira preço, juro futuro e dólar no bolso de todos os grupos: o benefício do gasto dura pouco
+  const expFis = Math.max(0, impFis - EQ_EXPFIS_LIM);
+  if (expFis > 0) { for (const k of GKEYS) dg(k, -expFis * EQ_EXPFIS_K); if (g.mes % 3 === 0 && expFis * EQ_EXPFIS_K >= .4) notas.push({ t: 'neg', x: `Expansão fiscal acelerada: o gasto líquido cresce ${fmt(impFis, 1)}% do PIB em 12 meses. Os preços e os juros futuros já pesam no bolso: cerca de −${fmt(expFis * EQ_EXPFIS_K, 1)} ponto de aprovação por mês.` }); }
   AP.mark('economia');
   dg('periferia', O.social * .012 + O.saude * .008); dg('universitarios', O.educacao * .012 + O.ambiente * .01); dg('sindicatos', O.educacao * .008 + O.saude * .005);
   AP.mark('medidas');
@@ -13736,22 +13800,24 @@ function fimDoMes(g) {
   }
   luaDeMel(g);
   AP.mark('lua');
-  const desgaste = (g.mes > 30 ? .55 : g.mes > 6 ? .4 : .2) * qvDes(g);
+  // LOTE C1: o desgaste forte (0,55) só vale do mês 36 em diante e é aliviado por PIB acima de 2% (fator de 1 a 0,6); antes dele, 0,4
+  const desgaste = (g.mes >= 36 ? .55 * clamp(1 - (E.pib - 2) * .15, .6, 1) : g.mes > 6 ? .4 : .2) * qvDes(g);
   for (const k of GKEYS) { dg(k, -desgaste + (g.gbase[k] - G[k]) * .09); }
   AP.mark('desgaste');
+  const pesoEsc = g.escandalo > 20 ? (g.escandalo - 15) / 120 : 0;
   if (g.escandalo > 20) for (const k of GKEYS) dg(k, -(g.escandalo - 15) / 120);
-  AP.mark('crises');
+  AP.mark('crises'); AP.extra = { desgaste: -desgaste, pesoEsc: -pesoEsc };
   popularidadeEquipe(g);
   AP.mark('outros');
   if (M.drift !== 1) for (const k of GKEYS) { const dv = G[k] - G0[k]; if (dv < 0) G[k] = clamp(G0[k] + dv * M.drift, 1, 99); } // modo de jogo: ritmo do desgaste
   AP.mark('desgaste');
   // equipe: crises por lealdade e escândalos por risco da pasta (os textos citam o ministério, nunca uma pessoa)
   fase2Pre(g, notas);
-  eventosMinisterios(g, notas);
+  escFase(g, 'ministérios', () => eventosMinisterios(g, notas));
   AP.mark('crises');
   fase2Mensal(g, notas, AP);
   const retorno = eqRetorno(g); g.retornoMes = retorno; // EQUILÍBRIO v2: retorno de contratos, projetos e prioridade no Balanço
-  g.escandalo *= eqEscDecaimento(g); g.escRef = g.escandalo; g.stf += (20 - g.stf) * .04; // EQUILÍBRIO v2: decai mais rápido sem caso aberto
+  { const eD0 = g.escandalo; g.escandalo *= eqEscDecaimento(g); escReg(g, 'decaimento', g.escandalo - eD0); } g.escRef = g.escandalo; g.stf += (20 - g.stf) * .04; // EQUILÍBRIO v2: decai mais rápido sem caso aberto
   tickProtesto(g, notas);
   checaProtestoCrise(g);
   AP.mark('protestos');
@@ -13765,7 +13831,7 @@ function fimDoMes(g) {
   }
   mundoMensal(g, notas);
   try { trMensal(g, notas); } catch (e) { if (typeof console !== 'undefined') console.warn('trMensal', e); }
-  try { jusMensal(g, notas); } catch (e) { if (typeof console !== 'undefined') console.warn('jusMensal', e); }
+  try { escComTeto(g, 'casos da Justiça', () => jusMensal(g, notas)); } catch (e) { if (typeof console !== 'undefined') console.warn('jusMensal', e); }
   // vida pessoal
   const P = g.pes;
   const crises = (g.evento && !g.eventoOk ? 1 : 0);
@@ -13812,6 +13878,7 @@ function fimDoMes(g) {
   if (g.pesFerias) { g.pesFerias = false; }
   pushHist(g);
   apFim(g, AP);
+  try { escFechaMes(g, AP, escBase); } catch (e) { if (typeof console !== 'undefined') console.warn('escFechaMes', e); }
   escolheEventoNovo(g);
   g.qq = geraQQ(g);
   try { minMensal(g, notas); } catch (e) { if (typeof console !== 'undefined') console.warn('minMensal', e); }
@@ -13918,6 +13985,18 @@ function apIni(g) {
   const S = { base, last: a0, T };
   S.mark = (k) => { const a = aprovacao(g); T[k] += a - S.last; S.last = a; };
   return S;
+}
+// LOTE G: fecha o registro do mês em g.hist.escFontes (escândalo e aprovação), guardando os últimos 60 meses
+function escFechaMes(g, S, escBase) {
+  const F = Object.assign({}, g.escFM || {}); const tot = g.escandalo - escBase; const reg = Object.values(F).reduce((a, b) => a + b, 0);
+  if (Math.abs(tot - reg) >= .05) F['outros fatores'] = (F['outros fatores'] || 0) + (tot - reg);
+  const itens = {}; for (const k in F) if (Math.abs(F[k]) >= .05) itens[k] = Math.round(F[k] * 10) / 10;
+  const ex = S.extra || { desgaste: 0, pesoEsc: 0 };
+  const ult = (g.apDecomp || [])[(g.apDecomp || []).length - 1];
+  const H = g.hist; if (!Array.isArray(H.escFontes)) H.escFontes = [];
+  H.escFontes.push({ mes: g.mes - 1, e0: Math.round(escBase * 10) / 10, e1: Math.round(g.escandalo * 10) / 10, itens, ap: { total: ult ? ult.total : 0, itens: ult ? Object.assign({}, ult.itens) : {}, desgaste: ex.desgaste, pesoEsc: ex.pesoEsc } });
+  if (H.escFontes.length > 60) H.escFontes.splice(0, H.escFontes.length - 60);
+  g.escFim = g.escandalo;
 }
 function apFim(g, S) {
   const a = aprovacao(g); S.T.outros += a - S.last; S.last = a;
@@ -14196,13 +14275,13 @@ function novaOposicao(g) {
 function efeitoObjetivo(g, k, notas) {
   const dizer = (t, neg = true) => { notas.push({ t: neg ? 'neg' : 'neu', x: t }); };
   if (k === 'queda') { dizer('A oposição comemora a aprovação abaixo de 40% e capitaliza o desgaste.'); for (const x of GKEYS) g.groups[x] = clamp(g.groups[x] - .5, 1, 99); }
-  else if (k === 'cpi') { g.escandalo = clamp(g.escandalo + 12, 0, 100); g.forcaEvento = 'cpi'; dizer('A oposição reúne assinaturas e consegue instalar uma CPI: o tema domina o noticiário do próximo mês.'); }
+  else if (k === 'cpi') { g.escandalo = clamp(g.escandalo + 12, 0, 100); escReg(g, 'CPI instalada pela oposição', 12); g.forcaEvento = 'cpi'; dizer('A oposição reúne assinaturas e consegue instalar uma CPI: o tema domina o noticiário do próximo mês.'); }
   else if (k === 'convoca') {
     const pk = PASTAS[Math.floor(Math.random() * PASTAS.length)];
-    minEst(g, pk.k).desgaste = clamp(minEst(g, pk.k).desgaste + 25, 0, 100); g.escandalo = clamp(g.escandalo + 4, 0, 100);
+    minEst(g, pk.k).desgaste = clamp(minEst(g, pk.k).desgaste + 25, 0, 100); g.escandalo = clamp(g.escandalo + 4, 0, 100); escReg(g, 'convocação de ministro', 4);
     dizer(`O plenário aprova a convocação do titular da pasta ${pk.nome}: o ministro sai desgastado da sessão.`);
   } else if (k === 'obstrucao') { for (const it of g.pauta) it.apoioBonus -= 6; dizer('A oposição obstrui o plenário e os projetos do governo perdem fôlego na pauta.'); }
-  else if (k === 'impeach') { g.escandalo = clamp(g.escandalo + 8, 0, 100); g.oposicao.pedidoImp = g.mes; dizer('A oposição protocola um pedido de impeachment: a votação não avança, mas o clima pesa.'); }
+  else if (k === 'impeach') { g.escandalo = clamp(g.escandalo + 8, 0, 100); escReg(g, 'pedido de impeachment da oposição', 8); g.oposicao.pedidoImp = g.mes; dizer('A oposição protocola um pedido de impeachment: a votação não avança, mas o clima pesa.'); }
   else if (k === 'frente') { for (const p of ['UNIAO', 'PSD', 'MDB']) { g.parties[p].rel = clamp(g.parties[p].rel - 4, 0, 99); g.parties[p].relS = clamp(g.parties[p].relS - 4, 0, 99); } dizer('A oposição fecha uma frente ampla e o Centrão fica mais caro de manter.'); }
   else if (k === 'rua') { if (!g.protesto && !(g.protCool > g.mes)) { const alvo = GRUPOS.filter(x => x.w >= 5).sort((a, b) => g.groups[a.k] - g.groups[b.k])[0]; novoProtesto(g, alvo.k, 'o governo', 8); } dizer('A oposição convoca atos de rua em várias capitais.'); }
   else if (k === 'narrativa') { g.eco.conf = clamp(g.eco.conf - 3, 0, 100); g.groups.mercado = clamp(g.groups.mercado - 2, 1, 99); dizer('A oposição emplaca a narrativa de crise econômica e o humor do mercado piora.'); }
@@ -14210,7 +14289,7 @@ function efeitoObjetivo(g, k, notas) {
 function oposicaoMensal(g, notas) {
   const O = g.oposicao; const ap = aprovacao(g); const est = estOf(g);
   const derrMes = (est.derrotas || 0) - (O.derrAnt || 0); O.derrAnt = est.derrotas || 0;
-  const alvo = clamp(24 + (50 - ap) * .8 + g.escandalo * .45 + derrMes * 5 + (g.protesto ? 8 : 0) + riscoImpeachment(g) * .15 - (g.vice && g.vice.protag ? 6 : 0) + O.feitos.length * 1.5, 4, 96);
+  const alvo = clamp(24 + (50 - ap) * .8 + g.escandalo * .45 + derrMes * 3 + (g.protesto ? 8 : 0) + riscoImpeachment(g) * .15 /* LOTE C: derrota no plenário pesa 3 (era 5) na força da oposição */ - (g.vice && g.vice.protag ? 6 : 0) + O.feitos.length * 1.5, 4, 96);
   O.forca = clamp(O.forca + (alvo - O.forca) * .15, 0, 100);
   // avanço de um objetivo por mês
   const ativos = O.objetivos;
@@ -14522,8 +14601,8 @@ function fase2Mensal(g, notas, AP) {
   prioridadeMensal(g, notas); AP.mark('medidas');
   pautaMensal(g, notas); AP.mark('medidas');
   desgasteMensal(g);
-  abinEscandalo(g, notas); viceMensal(g, notas); AP.mark('outros');
-  oposicaoMensal(g, notas); AP.mark('crises');
+  escFase(g, 'Abin e vice', () => { abinEscandalo(g, notas); viceMensal(g, notas); }); AP.mark('outros');
+  escComTeto(g, 'oposição (metas e pedidos)', () => oposicaoMensal(g, notas)); AP.mark('crises');
   for (const uf in g.ufBonus) { g.ufBonus[uf] *= .6; if (g.ufBonus[uf] < .1) delete g.ufBonus[uf]; }
   g.compr = (g.compr || []).filter(c => c.mes + 6 > g.mes);
   atualizaPoderes(g);
@@ -17270,10 +17349,29 @@ function alertasMesa(g) {
   if (g.mundo && g.mundo.isol >= 65) L.push({ k: 'isol', cor: 'var(--rubro)', ic: 'Globe', x: `Isolamento internacional em ${fmt(g.mundo.isol, 0)}: sanções e risco-país pioram.` });
   return L;
 }
+/* LOTE G: de onde vieram o escândalo e a aprovação no mês (g.hist.escFontes), em texto curto: "+12 CPI instalada pela oposição, +6 caso da Justiça, −3 decaimento" */
+function escFontesTxt(e) {
+  if (!e) return null;
+  const sg1 = (v, d = 1) => (Math.abs(v) < Math.pow(10, -d) / 2 ? '' : v > 0 ? '+' : '−') + fmt(Math.abs(v), d);
+  const it = Object.entries(e.itens || {}).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
+  const esc = it.slice(0, 5).map(([k, v]) => `${sg1(v, Math.abs(v) < 10 && Math.abs(v - Math.round(v)) > .04 ? 1 : 0)} ${k}`).join(', ');
+  const A = e.ap || {}; const ai = Object.entries(A.itens || {}).filter(([k, v]) => Math.abs(v) >= .15).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])).slice(0, 4);
+  const nomeAp = Object.assign(Object.fromEntries(AP_ITENS), { desgaste: 'desgaste do mandato e retorno à base' });
+  const ap = ai.map(([k, v]) => `${sg1(v, 1)} ${(nomeAp[k] || k).toLowerCase()}`).join(', ');
+  return { esc, ap, e0: e.e0, e1: e.e1, total: A.total, tot: sg1(A.total || 0, 1) || '0,0' };
+}
+function EscFontes({ g }) {
+  const H = (g.hist && g.hist.escFontes) || []; const e = H[H.length - 1]; const T = escFontesTxt(e);
+  if (!T) return null;
+  return html`<div className="text-xs mt-2 pt-2 border-t border-line flex flex-col gap-1" data-el="esc-fontes">
+    <div><b>Escândalo</b> <span className="num">${fmt(T.e0, 0)} → ${fmt(T.e1, 0)}</span>: ${T.esc || 'sem variação relevante'}.</div>
+    ${T.ap && html`<div className="text-muted"><b>Aprovação</b> <span className="num">${T.tot}</span>: ${T.ap}.</div>`}
+  </div>`;
+}
 function ApResumo({ g }) {
   const d = (g.apDecomp || [])[(g.apDecomp || []).length - 1];
   if (!d) return html`<p className="text-sm text-muted">Disponível depois do primeiro fechamento de mês.</p>`;
-  return html`<div><div className="eyebrow mb-2">Balanço de ${dataMes(d.mes)}</div><${ApBarras} d=${d} top=${4} /></div>`;
+  return html`<div><div className="eyebrow mb-2">Balanço de ${dataMes(d.mes)}</div><${ApBarras} d=${d} top=${4} /><${EscFontes} g=${g} /></div>`;
 }
 /* aprovação em destaque (número grande, variação no mês e barra vermelho-amarelo-verde); impeachment fica no topo, ações do mês na caixa de decisão */
 function PulsoIndicadores({ g, irEu }) {
@@ -17367,7 +17465,7 @@ function SinaisVitais({ g, onConfig, encerrar, irEu }) {
 /* seção onde cada pendência da Mesa se resolve (o que não está claro fica na Mesa) */
 function secaoDaPendencia(p) {
   const k = p.tipo || '';
-  if (['stf', 'pauta', 'oposicao', 'desgaste', 'prioridade', 'abin', 'qq', 'entcol', 'entconv', 'elmun', 'elapurm', 'elsuc', 'elcand', 'elpesq', 'eldeb', 'elcamp', 'elapurg'].includes(k)) return 'poder';
+  if (['stf', 'pauta', 'oposicao', 'desgaste', 'prioridade', 'abin', 'qq', 'entcol', 'entconv', 'elmun', 'elapurm', 'elsuc', 'elforca', 'elcand', 'elpesq', 'eldeb', 'elcamp', 'elapurg'].includes(k)) return 'poder';
   if (['crise', 'protesto', 'seguranca', 'governadores', 'justica'].includes(k)) return 'pais';
   if (['viagem', 'mesadip', 'terras_raras', 'comercio'].includes(k)) return 'mundo';
   if (['saude', 'estresse', 'bastidores', 'vida'].includes(k)) return 'eu';
@@ -17375,7 +17473,7 @@ function secaoDaPendencia(p) {
   return 'mesa';
 }
 // sub-aba onde cada pendência mora (para o selo nas sub-abas de País e Poder)
-const PEND_CHIP = { stf: 'stf', pauta: 'congresso', oposicao: 'oposicao', desgaste: 'governo', prioridade: 'governo', abin: 'governo', qq: 'imprensa', entcol: 'imprensa', entconv: 'imprensa', elmun: 'eleicoes', elapurm: 'eleicoes', elsuc: 'eleicoes', elcand: 'eleicoes', elpesq: 'eleicoes', eldeb: 'eleicoes', elcamp: 'eleicoes', elapurg: 'eleicoes', crise: 'mapa', protesto: 'sociedade', seguranca: 'seguranca', governadores: 'mapa', justica: 'justica', viagem: 'viagens', mesadip: 'mesa', terras_raras: 'terras', comercio: 'comercio', saude: 'condicao', estresse: 'bemestar', vida: 'familia', bastidores: 'bastidores' };
+const PEND_CHIP = { stf: 'stf', pauta: 'congresso', oposicao: 'oposicao', desgaste: 'governo', prioridade: 'governo', abin: 'governo', qq: 'imprensa', entcol: 'imprensa', entconv: 'imprensa', elmun: 'eleicoes', elapurm: 'eleicoes', elsuc: 'eleicoes', elforca: 'eleicoes', elcand: 'eleicoes', elpesq: 'eleicoes', eldeb: 'eleicoes', elcamp: 'eleicoes', elapurg: 'eleicoes', crise: 'mapa', protesto: 'sociedade', seguranca: 'seguranca', governadores: 'mapa', justica: 'justica', viagem: 'viagens', mesadip: 'mesa', terras_raras: 'terras', comercio: 'comercio', saude: 'condicao', estresse: 'bemestar', vida: 'familia', bastidores: 'bastidores' };
 let PEND_ABRIR = null; // pendência pedida fora da Mesa: a Mesa abre a gaveta dela ao montar
 function pendDaSecao(g, sec) { try { return g && g.cfg && !g.over ? pendenciasMesa(g).filter(p => secaoDaPendencia(p) === sec) : []; } catch (e) { return []; } }
 function contChips(L) { const c = {}; for (const p of L) { const k = PEND_CHIP[p.tipo]; if (k) c[k] = (c[k] || 0) + 1; } return c; }
@@ -20233,7 +20331,7 @@ function jusMensal(g, notas) {
 function jusAvancaFase(g, c, fase, notas) {
   c.fase = fase; c.faseMes = g.mes;
   const imp = c.gov ? clamp(c.valor / 250 + 1, 1, 5) : .4;
-  g.escandalo = clamp(g.escandalo + (c.sigilo ? imp * .3 : imp), 0, 100);
+  { const dE = (c.sigilo ? imp * .3 : imp); g.escandalo = clamp(g.escandalo + dE, 0, 100); escReg(g, c.gov ? 'caso da Justiça que atinge o governo' : 'caso da Justiça (fora do governo)', dE); }
   if (!c.gov) jusRel(g, c.p, -1.5);
   const txt = fase === 'denúncia' ? `MPF oferece denúncia na ${jusRotulo(c)}` : `Justiça aceita denúncia e abre ação penal na ${jusRotulo(c)}`;
   if (!c.sigilo) g.feed.unshift({ mes: g.mes, src: c.gov ? 'antag' : 'globo', txt: txt + '.' });
@@ -20252,7 +20350,7 @@ function jusPrende(g, c, notas) {
     const st = g.parties[c.p]; if (st) { if (c.casa === 'cam') st.rel = clamp(st.rel + d, 0, 99); else st.relS = clamp(st.relS + d, 0, 99); }
   }
   const aliado = g.parties[c.p] ? g.parties[c.p].rel >= 62 : false; const base = g.parties[c.p] ? g.parties[c.p].rel >= 42 : false;
-  g.escandalo = clamp(g.escandalo + (aliado ? 6 : base ? 4.5 : 3) + (c.rastro > 0 ? 2 : 0), 0, 100);
+  { const dE = (aliado ? 6 : base ? 4.5 : 3) + (c.rastro > 0 ? 2 : 0); g.escandalo = clamp(g.escandalo + dE, 0, 100); escReg(g, 'prisão em caso da Justiça', dE); }
   if (c.rastro === 0) { if (base) jusRel(g, c.p, -5); } else if (base) jusRel(g, c.p, 2); // aliado se sente abandonado se o presidente não bloqueou
   for (const P of PARTIDOS) { const st = g.parties[P.id]; if (st && st.rel < 42 && P.id !== c.p) jusGrupos(g, -.15, ['classemedia']); }
   jusGrupos(g, aliado ? -1.2 : -.6);
@@ -21791,6 +21889,8 @@ const LIDERES = [
 ];
 const CUSTO_LIDER = 8000;
 const CUSTO_BANCADA = 12000;
+// LOTE C5: custo crescente dos jantares no mês (1º R$ 12 mil, 2º R$ 30 mil, 3º em diante R$ 60 mil); a conta pessoal cobra a agenda cheia
+const custoJantar = (g) => { const n = Object.keys(g.pesMes || {}).filter(k => k.indexOf('art_bancada_') === 0).length; return n <= 0 ? CUSTO_BANCADA : n === 1 ? 30000 : 60000; };
 const BANCADA_FATOR = [1, .5, .25]; // EQUILÍBRIO v2: jantares com o mesmo bloco no trimestre rendem 100% / 50% / 25%
 
 /* ---- Eu: família (eventos só para famílias fictícias) ---- */
@@ -22863,12 +22963,14 @@ function fazArticulacao(g, k, arg) {
   }
   if (k === 'bancada') {
     const pt = PMAP[arg]; if (!pt || pt.cam + pt.sen <= 0) return { ok: false, msg: 'Bloco inválido.' };
-    if (P.conta < CUSTO_BANCADA) return { ok: false, msg: 'Saldo insuficiente na conta pessoal.' };
+    const cJ = custoJantar(g); if (P.conta < cJ) return { ok: false, msg: 'Saldo insuficiente na conta pessoal.' };
     // EQUILÍBRIO v2: rendimento decrescente dentro do trimestre móvel (1º jantar 100%, 2º 50%, 3º e seguintes 25%): "a bancada estranha a frequência"
-    P.conta -= CUSTO_BANCADA; const st = g.parties[arg];
+    P.conta -= cJ; const st = g.parties[arg];
     const jant = st.jant = (st.jant || []).filter(m => g.mes - m < 3), fJ = BANCADA_FATOR[Math.min(jant.length, BANCADA_FATOR.length - 1)];
     st.rel = clamp(st.rel + 4 * fJ, 0, 99); st.relS = clamp(st.relS + 2 * fJ, 0, 99); P.estresse += 2; P.humor += 2; jant.push(g.mes);
-    g.pesMes[nome] = true; clampPes(P); return { ok: true, fator: fJ, dica: fJ < 1 ? 'A bancada estranha a frequência: o jantar rendeu ' + Math.round(fJ * 100) + '% do efeito.' : null };
+    g.pesMes[nome] = true; clampPes(P);
+    if (cJ >= 60000 && !g.pesMes.jantNota) { g.pesMes.jantNota = true; g.feed.unshift({ mes: g.mes, src: 'antag', txt: 'AGENDA CHEIA DE JANTARES NO PLANALTO CHAMA ATENÇÃO DA IMPRENSA' }); } // LOTE C5
+    return { ok: true, fator: fJ, dica: fJ < 1 ? 'A bancada estranha a frequência: o jantar rendeu ' + Math.round(fJ * 100) + '% do efeito.' : null };
   }
   const a = ARTICULACAO.find(x => x.k === k); if (!a) return { ok: false, msg: 'Ação indisponível.' };
   if (P.conta < a.custo) return { ok: false, msg: 'Saldo insuficiente na conta pessoal.' };
@@ -24699,10 +24801,10 @@ function EuArticulacao({ g, upd }) {
         <div className="gv-chips"><${MxChip}>R$ ${fmt(CUSTO_LIDER, 0)}</${MxChip}></div>
         <div className="gv-acts">${LIDERES.map(L => html`<button key=${L.k} type="button" className="btn btn-ghost" disabled=${!!g.pesMes.art_lider || g.pes.conta < CUSTO_LIDER} data-lider=${L.k} onClick=${() => U(n => { fazArticulacao(n, 'lider', L.k); })}>${L.l}</button>`)}</div></div>
       <div className="mx-act" style=${{ '--c': 'var(--verde)', cursor: 'default' }} data-art="bancada">
-        <div className="mx-act-h"><span className="gv-ic" style=${{ '--c': 'var(--verde)' }}><${Icon} n="Utensils" s=${20} /></span><span>Jantar com a bancada de um bloco<${GvTip} txt="Relação com o bloco +4 na Câmara e +2 no Senado · estresse +2 · humor +2. Um jantar por bloco a cada mês; repetir com o mesmo bloco no trimestre rende 50% e depois 25%." /></span></div>
-        <div className="gv-chips"><${MxChip}>R$ ${fmt(CUSTO_BANCADA, 0)}</${MxChip}></div>
+        <div className="mx-act-h"><span className="gv-ic" style=${{ '--c': 'var(--verde)' }}><${Icon} n="Utensils" s=${20} /></span><span>Jantar com a bancada de um bloco<${GvTip} txt="Relação com o bloco +4 na Câmara e +2 no Senado · estresse +2 · humor +2. Um jantar por bloco a cada mês, e o custo sobe com a agenda cheia (R$ 12 mil, R$ 30 mil, depois R$ 60 mil). Repetir com o mesmo bloco no trimestre rende 50% e depois 25%." /></span></div>
+        <div className="gv-chips"><${MxChip}>R$ ${fmt(custoJantar(g), 0)}</${MxChip}></div>
         <div className="gv-acts"><select aria-label="Bloco para o jantar" value=${sel} onChange=${e => setPid(e.target.value)}>${blocos.map(b => html`<option key=${b.id} value=${b.id}>${b.curto} (${b.cam} dep.)</option>`)}</select>
-          <button type="button" className="btn btn-pri" disabled=${!sel || !!g.pesMes['art_bancada_' + sel] || g.pes.conta < CUSTO_BANCADA} data-bancada=${sel} onClick=${() => U(n => { fazArticulacao(n, 'bancada', sel); })}>Jantar</button></div>
+          <button type="button" className="btn btn-pri" disabled=${!sel || !!g.pesMes['art_bancada_' + sel] || g.pes.conta < custoJantar(g)} data-bancada=${sel} onClick=${() => U(n => { fazArticulacao(n, 'bancada', sel); })}>Jantar</button></div>
         ${(() => { const nJ = ((g.parties[sel] || {}).jant || []).filter(m => g.mes - m < 3).length; return nJ > 0 ? html`<div className="mx-txt" data-art-dica="bancada">A bancada estranha a frequência: ${nJ === 1 ? 'o próximo jantar com este bloco no trimestre rende 50%' : 'jantares com este bloco no trimestre rendem só 25%'} do efeito.</div>` : null; })()}</div>
     </div>
   </section>`;
@@ -25301,7 +25403,7 @@ function ModalMes({ rel, g, onClose }) {
       <div className="scroll-x"><table className="w-full text-sm"><thead><tr className="text-muted text-xs"><th className="text-left font-normal py-1">Indicador</th><th className="text-right font-normal">Antes</th><th className="text-right font-normal">Agora</th><th className="text-right font-normal">Var.</th></tr></thead><tbody>
         ${linhas.map(([l, a, b, d, inv, u]) => { const x = b - a; const neutro = Math.abs(x) < Math.pow(10, -d) / 2; const bom = inv ? x < 0 : x > 0; return html`<tr key=${l} className="border-t border-line"><td className="py-1.5">${l}</td><td className="num text-right text-muted">${fmt(a, d)}${u}</td><td className="num text-right">${fmt(b, d)}${u}</td><td className="num text-right" style=${{ color: neutro ? 'var(--muted)' : bom ? 'var(--verde)' : 'var(--rubro)' }}>${neutro ? '=' : sgn(x, d)}</td></tr>`; })}
       </tbody></table></div>
-      ${g.apDecomp && g.apDecomp.length > 0 && html`<div className="p-3 rounded-lg border border-line" data-modal-apdecomp="1"><div className="eyebrow mb-2">Por que a aprovação mudou</div><${ApBarras} d=${g.apDecomp[g.apDecomp.length - 1]} /></div>`}
+      ${g.apDecomp && g.apDecomp.length > 0 && html`<div className="p-3 rounded-lg border border-line" data-modal-apdecomp="1"><div className="eyebrow mb-2">Por que a aprovação mudou</div><${ApBarras} d=${g.apDecomp[g.apDecomp.length - 1]} /><${EscFontes} g=${g} /></div>`}
       ${g.abin && g.abin.ativa && g.abin.prox && EVENTOS.find(e => e.id === g.abin.prox.id) && html`<div className="p-3 rounded-lg border border-line text-sm"><b>Alerta da inteligência:</b> no mês que vem, ${EVENTOS.find(e => e.id === g.abin.prox.id).titulo.toLowerCase()}.</div>`}
       ${(rel.retorno && rel.retorno.length > 0 || rel.ignAcum) && html`<div className="p-3 rounded-lg border border-line" data-modal-retorno="1"><div className="eyebrow mb-2">Retorno das suas decisões</div><ul className="flex flex-col gap-1.5">${(rel.retorno || []).map(r => html`<li key=${r.k} className="text-sm flex gap-2" data-retorno=${r.k}><span className="text-ouro"><${Icon} n=${r.ic || 'Info'} s=${16} /></span><span>${r.x}</span></li>`)}${rel.ignAcum && html`<li className="text-sm flex gap-2" data-retorno="ignoradas"><span className="text-ouro"><${Icon} n="EyeOff" s=${16} /></span><span>Crises ignoradas até aqui: ${rel.ignAcum.n}, ao custo acumulado de −${fmt(rel.ignAcum.ap, 1)} pontos de aprovação e +${fmt(rel.ignAcum.esc, 0)} de escândalo.</span></li>`}</ul></div>`}
       ${rel.notas.length > 0 && html`<ul className="flex flex-col gap-2">${rel.notas.map((n, i) => html`<li key=${i} className="text-sm flex gap-2"><span style=${{ color: n.t === 'neg' ? 'var(--rubro)' : n.t === 'pos' ? 'var(--verde)' : 'var(--ouro)' }}><${Icon} n=${n.t === 'neg' ? 'TriangleAlert' : n.t === 'pos' ? 'CircleCheck' : 'Info'} /></span>${n.x}</li>`)}</ul>`}
@@ -28244,8 +28346,9 @@ function elPosse(g, c, motivo) {
   g.cfg = novo; g.minGen = rotGenerico(novo);
   for (const k of GKEYS) { g.groups[k] = clamp(g.groups[k] * .65 + 53 * .35, 5, 92); if (g.gbase && g.gbase[k] != null) g.gbase[k] = g.groups[k] - 5; }
   for (const P of PARTIDOS) { const st = g.parties[P.id]; const nat = clamp(idealRel(novo, P.id, 0), 5, 95); st.rel = clamp(st.rel + (nat - st.rel) * .55, 0, 99); st.relS = clamp(st.relS + (nat + 2 - st.relS) * .55, 0, 99); st.min = 0; }
-  g.escandalo = 0; g.impStreak = 0; g.vice = novoVice(g);
-  E.mandatos = c.reeleito ? 2 : 1;
+  g.escandalo = 0; g.escFim = 0; g.impStreak = 0; g.vice = novoVice(g);
+  E.mandatos = c.reeleito ? 2 : 1; E.suc = null;
+  g.minProp = { lista: [], hist: [], eng: {}, leal: {}, vazou: {}, usados: [], seq: 0, ger: null, aj: null }; // LOTE C6: ideias e engavetadas do governo anterior não passam ao sucessor
   linhaAdd(g, 'AÇÃO', `${c.nome} (${c.sigla || 'sem partido'}) assume a Presidência${motivo ? ' · ' + motivo : ''}.`);
   g.feed.unshift({ mes: g.mes, src: 'globo', txt: `${c.nome} assume a Presidência e promete ${PROMESSAS.filter(p => prom.includes(p.k)).map(p => p.nome.toLowerCase()).join(', ')}` }); g.feed = g.feed.slice(0, 40);
   // a pasta do ministério inicia com o rodízio genérico
@@ -28551,13 +28654,14 @@ function elMontaCampo(g, ger) {
   const E = g.el; const ano = ger.ano; const usadosN = new Set(); const sigs = new Set();
   // governo: presidente elegível concorre; senão, sucessor automático (o jogador pode trocar)
   let sit;
-  if (E.mandatos < 2) { sit = elCandDeCfg(g); sit.sitPres = true; }
+  if (E.mandatos < 2 && !(E.suc && E.suc.naoConcorre && !E.pj)) { sit = elCandDeCfg(g); sit.sitPres = true; }
   else {
     const S = elSucessores(g).filter(x => !x.bloq);
     const x = E.pj ? { p: elPessoas().find(q => q.id === E.pj.id) } : null;
-    const pick = (x && x.p) || (S[0] && S[0].p);
+    const xs = !E.pj && E.suc && E.suc.id && S.some(q => q.p.id === E.suc.id) ? { p: S.find(q => q.p.id === E.suc.id).p } : null; // I3: nome já escolhido na pré-campanha
+    const pick = (x && x.p) || (xs && xs.p) || (S[0] && S[0].p);
     sit = pick ? elCandDePessoa(g, pick, { opo: 0, rej: 30, sucessor: true }) : Object.assign(elCandDeCfg(g), { id: 'suc:auto', nome: 'Candidato(a) governista', sigla: nomePartido(g.cfg), pres: false, sucessor: true });
-    ger.sucAuto = !E.pj;
+    ger.sucAuto = !E.pj && !(E.suc && E.suc.fixado);
   }
   sit.sit = true; ger.sitId = sit.id; usadosN.add(norm(sit.nome)); sigs.add(sit.sigla);
   const cands = [sit];
@@ -28612,7 +28716,7 @@ function elScoresUF(g, ger, uf, AE, prog) {
   return ger.cands.map(c => {
     const cs = ger.cs[c.id]; const pop = c.pid ? elPopDe(g, c.pid) : { rec: c.pres ? 98 : 55, apr: 50 };
     let s = 2.6 * (elQ(g, c) - .5) + .95 * c.dir * lean + (c.uf === uf ? .55 : 0) + (c.reg[reg] || 0);
-    if (c.sit) s += EL_K1 * (apu - 45) / 10 * c.tr + .1 + (c.sucessor && ger.apoioPres ? .1 : 0); else s -= EL_K2 * c.opo * (apu - 45) / 10;
+    if (c.sit) s += EL_K1 * (apu - 45) / 10 * c.tr + .1 + (c.sucessor ? EL_KF * ((ger.forca != null ? ger.forca : EL_F0) - EL_F0) / 50 : 0); else s -= EL_K2 * c.opo * (apu - 45) / 10; // I3: a força do candidato governista (alavancas) decide
     if (c.sit) s += .3 * ger.compAntigo;
     s += cs.mom + (cs.uf[uf] || 0) + 1.5 * elTVshare(g, ger, c) * (rel >= 44 ? 1 : .3);
     if (ph && ph.depois) s += .5 * (ph.depois[c.bloco] || 0) / 46;
@@ -28680,18 +28784,27 @@ function elPesqMes(g, ger) {
   } catch (e) { }
 }
 /* ---------- criação e ciclo mensal da campanha ---------- */
-function elGerCria(g) {
+function elGerBuild(g, persiste) {
   const E = elEnsure(g); const c = elCiclo(g.mes); const ano = elAnoGer(g.mes);
   const ger = { ano, c, mes: elMesGer(c), cands: [], sitId: null, meuId: null, apoioPres: null, cs: {}, pesq: [], deb: [], res: null, gasto: 0, aliancas: [], tema: null, log: [], fase: 'pre', sucAuto: false, trocou: false, acoes: {}, pjRoda: false, desinc: [] };
   ger.deb = [
     { id: 'd1', rel: 44, nome: 'Primeiro debate (TV aberta)', estado: 'agendado' }, { id: 'd2', rel: 45, nome: 'Debate de rádio e portais', estado: 'agendado' },
     { id: 'd3', rel: 45, nome: 'Debate de TV a cabo', estado: 'agendado' }, { id: 'd4', rel: 45, nome: 'Debate final (TV aberta)', estado: 'agendado' }, { id: 'd5', rel: 46, nome: 'Debate do 2º turno', estado: 'agendado', t2: true }];
-  E.ger = ger; elMontaCampo(g, ger);
+  if (persiste) E.ger = ger;
+  elMontaCampo(g, ger);
   const sit = ger.cands[0];
-  if (!E.pj) ger.meuId = E.mandatos < 2 ? sit.id : null;
+  if (!E.pj) ger.meuId = sit.sitPres ? sit.id : null;
   else ger.meuId = sit.persId === E.pj.id ? sit.id : null;
-  if (E.mandatos >= 2 && sit.sucessor) ger.apoioPres = { nome: g.cfg.nome, ativo: Math.abs(sit.dir - elDirIdeo(g.cfg.ideo)) < .6 };
+  if (sit.sucessor) {
+    ger.apoioPres = { nome: g.cfg.nome, ativo: Math.abs(sit.dir - elDirIdeo(g.cfg.ideo)) < .6 };
+    if (!E.pj && E.suc && E.suc.aliados) ger.aliancas = E.suc.aliados.slice(); // I3: coligação já articulada na pré-campanha
+  }
   ger.apoiadoId = ger.meuId || sit.id;
+  return ger;
+}
+function elGerCria(g) {
+  const ger = elGerBuild(g, true);
+  const sit = ger.cands[0]; if (sit.sucessor) { const S = !g.el.pj ? elSucGarante(g) : null; if (S) { S.id = sit.pid || S.id; S.nome = sit.nome; } ger.forca = elSucForca(g).F; }
   return ger;
 }
 function elGerMensal(g, notas) {
@@ -28722,6 +28835,7 @@ function elDesincompat(g, ger, notas) {
 function elApoioPresidente(g, ger, c) { return !!(ger.apoioPres && ger.apoioPres.ativo && c.sit); }
 /* ---------- apuração ---------- */
 function elGerApura1(g, ger, notas) {
+  if (ger.cands[0] && ger.cands[0].sucessor) ger.forca = elSucForca(g).F; // I3: força do candidato do governo no dia da eleição
   const AE = aprovEstados(g); const t1 = elTurno1(g, ger, AE, 1);
   const ord = ger.cands.slice().sort((a, b) => t1.nac[b.id] - t1.nac[a.id]);
   const res = { t1: { nac: t1.nac, votos: t1.votos, validos: t1.validos, ufs: t1.ufs }, fin: null, venc: null, t2: null, fase: 't2' };
@@ -28810,9 +28924,151 @@ function elEscolheSucessor(n, pessoaId, jogar) {
   ger.apoiadoId = novo.id;
   // apoio automático: parte da aprovação do presidente vira intenção para o sucessor e a rejeição também é herdada
   elPopMove(n, p.id, 6, 2);
+  { const SS = n.el.suc; if (SS) { SS.id = pessoaId; SS.nome = p.nome; SS.fixado = true; } ger.forca = elSucForca(n).F; } // I3
   n.feed.unshift({ mes: n.mes, src: 'globo', txt: `${n.cfg.nome} apresenta ${p.nome} (${sg(p.sigla)}) como candidato(a) à sucessão` }); n.feed = n.feed.slice(0, 40);
   linhaAdd(n, 'AÇÃO', `Sucessão: ${p.nome} será o(a) candidato(a) do campo do governo${jogar ? '; você passa a jogar com essa pessoa' : ''}.`);
   return true;
+}
+/* ============================== I3: ELEGER SUCESSOR (força do candidato governista) ==============================
+   Quando o presidente não pode se reeleger (2º mandato) ou anuncia que não concorre, escolhe um candidato do governo. Do mês 30 do ciclo até a apuração o jogo mostra a
+   FORÇA desse candidato (0 a 100) como soma ponderada de cinco alavancas: aprovação do governo, economia, aliança/coligação, apoio do presidente em campanha e o nome do candidato
+   (reconhecimento e aprovação), menos o peso do escândalo. A força entra direto no modelo de voto (elScoresUF) e o painel mostra a aprovação necessária para vencer. Candidatos são pessoas
+   da base de dados eleitoral do jogo (só cargo, partido e posições; nada é dito em nome delas) ou o "candidato governista" fictício. */
+const EL_SUC_MES = 30, EL_KF = 1.15, EL_F0 = 40;
+const EL_SUC_PESOS = { aprov: .30, econ: .18, alianca: .14, apoio: .16, nome: .22 };
+const EL_SUC_ROT = {
+  aprov: ['Aprovação do governo', 'Quanto da avaliação do seu governo se transfere ao candidato (30% da força).'],
+  econ: ['Economia', 'PIB, inflação e desemprego percebidos (18% da força).'],
+  alianca: ['Aliança e coligação', 'Partidos da base e coligação fechada: tempo de TV e palanques (14% da força).'],
+  apoio: ['Apoio do presidente em campanha', 'Campanha ao lado do candidato; decai aos poucos (16% da força).'],
+  nome: ['Nome do candidato', 'Reconhecimento e aprovação da pessoa (22% da força).']
+};
+function elSemReeleicao(g) { const E = g && g.el; return !!(E && !E.pj && (E.mandatos >= 2 || (E.suc && E.suc.naoConcorre))); }
+function elSucNovo(g, naoConcorre) {
+  const E = elEnsure(g); const L = elSucessores(g).filter(x => !x.bloq); const top = L[0];
+  const S = { c: elCiclo(g.mes), id: top ? top.p.id : null, nome: top ? top.p.nome : null, fixado: false, naoConcorre: !!naoConcorre, piso: 20, apoio: 20, aliados: [], acoes: {}, forca: 0, hist: [], visto: 0 };
+  E.suc = S; return S;
+}
+function elSucGarante(g) {
+  const E = elEnsure(g); if (E.suc && E.suc.c !== elCiclo(g.mes)) E.suc = null;
+  if (!E.suc && !E.pj && E.mandatos >= 2) elSucNovo(g, false);
+  return E.suc || null;
+}
+const elSucGerAtual = (g) => (g.el && g.el.ger && g.el.ger.c === elCiclo(g.mes) ? g.el.ger : null);
+function elSucBaseN(g) { return PARTIDOS.filter(P => P.id !== 'OUTROS' && g.parties[P.id] && g.parties[P.id].rel >= 58).length; }
+function elSucAlav(g) {
+  const E = elEnsure(g); const S = E.suc || {}; const ger = elSucGerAtual(g); const ap = aprovacao(g), Ec = g.eco;
+  const pop = S.id ? elPopDe(g, S.id) : { rec: 50, apr: 50 };
+  const nAl = ger ? (ger.aliancas || []).length : (S.aliados || []).length;
+  return {
+    aprov: clamp((ap - 25) / 40 * 100, 0, 100),
+    econ: clamp(50 + (Ec.pib - 2) * 12 - (Ec.ipca - 4.5) * 6 - (Ec.des - 6.5) * 5, 0, 100),
+    alianca: clamp(14 * elSucBaseN(g) + 10 * nAl, 0, 100),
+    apoio: clamp(S.apoio != null ? S.apoio : 20, 0, 100),
+    nome: clamp(.6 * pop.rec + .4 * pop.apr, 0, 100)
+  };
+}
+function elSucForca(g) {
+  const L = elSucAlav(g); let F = 0; for (const k in EL_SUC_PESOS) F += L[k] * EL_SUC_PESOS[k];
+  const pen = clamp(g.escandalo - 20, 0, 60) * .2;
+  return { L, pen, F: clamp(F - pen, 0, 100) };
+}
+function elSucMensal(g, notas) {
+  const E = elEnsure(g); const rel = g.mes - 48 * elCiclo(g.mes);
+  if (E.pj || rel < EL_SUC_MES || rel > 47) return;
+  const S = elSucGarante(g); if (!S) return;
+  const ger = elSucGerAtual(g); if (ger && ger.res && rel > 46) return;
+  S.apoio = clamp(S.piso + (S.apoio - S.piso) * .95, 0, 100);
+  const f = elSucForca(g); S.forca = f.F; S.hist.push({ m: g.mes, F: Math.round(f.F * 10) / 10 }); if (S.hist.length > 24) S.hist.shift();
+  if (ger && ger.cands[0] && ger.cands[0].sucessor) ger.forca = f.F;
+  if (rel === EL_SUC_MES && notas) notas.push({ t: 'neu', x: S.naoConcorre ? `Você anunciou que não concorre: a força do candidato governista${S.nome ? ' (' + S.nome + ')' : ''} passa a aparecer em Poder, Eleições.` : `Sucessão: a Constituição impede um terceiro mandato. A força do candidato governista${S.nome ? ' (' + S.nome + ')' : ''} passa a aparecer em Poder, Eleições.` });
+}
+// escolha do nome na pré-campanha (antes da convenção); depois de montado o campo, vale a regra antiga (elEscolheSucessor)
+function elSucEscolhe(n, pessoaId) {
+  const E = elEnsure(n); const S = elSucGarante(n); if (!S || !elSemReeleicao(n)) return false;
+  if (elSucGerAtual(n)) return elEscolheSucessor(n, pessoaId, false);
+  const rel = n.mes - 48 * elCiclo(n.mes); if (rel < EL_SUC_MES) return false;
+  const x = elSucessores(n).find(q => q.p.id === pessoaId); if (!x || x.bloq) return false;
+  S.id = pessoaId; S.nome = x.p.nome; S.fixado = true; elPopMove(n, pessoaId, 4, 1.5);
+  n.feed.unshift({ mes: n.mes, src: 'globo', txt: `${n.cfg.nome} indica ${x.p.nome} (${sg(x.p.sigla || 'sem partido')}) como nome do governo para a sucessão` }); n.feed = n.feed.slice(0, 40);
+  linhaAdd(n, 'AÇÃO', `Sucessão: ${x.p.nome} é o nome escolhido para a eleição de ${elAnoGer(n.mes)}.`);
+  S.forca = elSucForca(n).F; return true;
+}
+// presidente do 1º mandato anuncia que não concorre (reversível até a montagem do campo, no mês 37)
+function elNaoConcorrer(n, sim) {
+  const E = elEnsure(n); const rel = n.mes - 48 * elCiclo(n.mes);
+  if (E.pj || E.mandatos >= 2 || rel < EL_SUC_MES || rel > 43) return false;
+  const ger = elSucGerAtual(n); if (ger && ger.res) return false;
+  if (sim) {
+    const S = E.suc && E.suc.c === elCiclo(n.mes) ? E.suc : elSucNovo(n, true); S.naoConcorre = true;
+    if (ger) {
+      const L = elSucessores(n).filter(x => !x.bloq); const alvo = L.find(x => x.p.id === S.id) || L[0];
+      if (!alvo || !elEscolheSucessor(n, alvo.p.id, false)) { S.naoConcorre = false; return false; }
+    }
+    linhaAdd(n, 'AÇÃO', `${n.cfg.nome} anuncia que não concorrerá à reeleição e vai trabalhar pela eleição de um sucessor.`);
+    n.feed.unshift({ mes: n.mes, src: 'globo', txt: `${n.cfg.nome} diz que não disputa a reeleição e vai escolher o candidato do governo` }); n.feed = n.feed.slice(0, 40);
+  } else {
+    if (ger) return false; if (E.suc) E.suc.naoConcorre = false;
+  }
+  return true;
+}
+// ações do presidente para fortalecer o candidato (1 ação política cada, uma vez por mês cada tipo)
+function elSucAcao(n, tipo, arg) {
+  const E = elEnsure(n); const S = E.suc; const rel = n.mes - 48 * elCiclo(n.mes); const ger = elSucGerAtual(n);
+  if (!S || !elSemReeleicao(n) || rel < EL_SUC_MES || rel > 46 || (ger && ger.res && ger.res.fase === 'fim')) return { ok: false, msg: 'Fora do período de pré-campanha e campanha.' };
+  if (n.acoes <= 0) return { ok: false, msg: 'Sem ações neste mês.' };
+  const k = tipo + (arg || ''); if (S.acoes[k] === n.mes) return { ok: false, msg: 'Já feito neste mês.' };
+  if (tipo === 'palanque') {
+    if (n.pes.energia < 8) return { ok: false, msg: 'Energia insuficiente.' };
+    n.acoes--; n.pes.energia = clamp(n.pes.energia - 8, 0, 100); S.acoes[k] = n.mes;
+    const ap = aprovacao(n); const rend = clamp((ap - 30) / 20, -.5, 1);
+    const d = 8 * rend * (1 - S.apoio / 130); S.apoio = clamp(S.apoio + d, 0, 100);
+    if (S.id) elPopMove(n, S.id, 2.5, rend);
+    return { ok: true, msg: rend > 0 ? `Campanha ao lado de ${S.nome || 'o candidato'}: apoio do presidente ${sgn(d, 1)} ponto${Math.abs(d) >= 1.05 ? 's' : ''}.` : 'Com a aprovação tão baixa, aparecer ao lado do candidato rende pouco ou pesa contra.' };
+  }
+  if (tipo === 'coligar') {
+    const P = n.parties[arg]; if (!P || !PMAP[arg]) return { ok: false, msg: 'Partido inválido.' };
+    if ((S.aliados || []).includes(arg) || (ger && (ger.aliancas || []).includes(arg))) return { ok: false, msg: 'Aliança já fechada.' };
+    if ((ger ? (ger.aliancas || []) : S.aliados).length >= 4) return { ok: false, msg: 'Máximo de quatro partidos na coligação.' };
+    n.acoes--; S.acoes[k] = n.mes;
+    const ok = P.rel + hashStr(String(n.seed) + 'sal' + arg + n.mes) * 22 >= 52;
+    if (ok) { S.aliados = S.aliados || []; S.aliados.push(arg); if (ger && !(ger.aliancas || []).includes(arg)) ger.aliancas.push(arg); return { ok: true, msg: `${PMAP[arg].curto} entra na coligação do candidato do governo: mais tempo de TV e palanques.` }; }
+    P.rel = clamp(P.rel + 1, 0, 99); return { ok: true, msg: `${PMAP[arg].curto} recusa por ora. Reforce a relação e tente de novo no mês que vem.` };
+  }
+  return { ok: false, msg: 'Ação desconhecida.' };
+}
+// quanto a aprovação precisa ser, hoje, para o candidato governista vencer (busca binária sobre um deslocamento uniforme dos grupos)
+function elSucVence(g, ger0, d) {
+  const g2 = d ? Object.assign({}, g, { groups: Object.fromEntries(GKEYS.map(k => [k, clamp(g.groups[k] + d, 1, 99)])) }) : g;
+  const ger = Object.assign({}, ger0, { forca: elSucForca(g2).F });
+  const AE = aprovEstados(g2); const t1 = elTurno1(g2, ger, AE, 1);
+  const ord = ger.cands.slice().sort((a, b) => t1.nac[b.id] - t1.nac[a.id]);
+  if (t1.nac[ord[0].id] > .5) return ord[0].id === ger.sitId;
+  const fin = [ord[0].id, ord[1].id]; if (!fin.includes(ger.sitId)) return false;
+  const t2 = elTurno2(g2, ger, fin[0], fin[1], AE, 1, t1); return t2.nac[ger.sitId] >= .5;
+}
+function elAprovNecessaria(g) {
+  const E = elEnsure(g); const ga = elSucGerAtual(g); const ger0 = ga && !ga.res ? ga : elGerBuild(g, false);
+  const sit = ger0.cands[0]; if (!sit || !sit.sit) return null; // vale para o candidato do governo: o sucessor ou o próprio presidente que concorre
+  const ap = aprovacao(g); const hoje = elSucVence(g, ger0, 0);
+  let lo = -40, hi = 40;
+  if (elSucVence(g, ger0, lo)) return { ap, hoje, nec: null, rot: 'folga', cand: sit.nome };
+  if (!elSucVence(g, ger0, hi)) return { ap, hoje, nec: null, rot: 'fora', cand: sit.nome };
+  for (let i = 0; i < 12; i++) { const m = (lo + hi) / 2; if (elSucVence(g, ger0, m)) hi = m; else lo = m; }
+  return { ap, hoje, nec: clamp(ap + hi, 0, 100), rot: 'ok', cand: sit.nome };
+}
+function elSucResumo(g, ger, W) {
+  const sit = ger.cands.find(c => c.id === ger.sitId); if (!sit || !sit.sucessor) return null;
+  const f = elSucForca(g); const res = ger.res || {}; const L = {}; for (const k in f.L) L[k] = Math.round(f.L[k]);
+  return { nome: sit.nome, sigla: sit.sigla, fic: !sit.pid, venceu: !!(W && W.id === sit.id), t1: res.t1 ? res.t1.nac[sit.id] : null, t2: res.t2 && res.t2.nac[sit.id] != null ? res.t2.nac[sit.id] : null, forca: Math.round(f.F), L, pen: Math.round(f.pen * 10) / 10, ap: aprovacao(g), venc: W ? W.nome : null, vencSigla: W ? W.sigla : null };
+}
+// painel de legado: primeiro e último valor de cada série do histórico do governo
+function elLegadoPainel(g) {
+  const H = g.hist || {}; const pt = (k, d) => { const a = H[k]; if (!Array.isArray(a) || !a.length) return null; const v0 = a[0], v1 = k === 'ap' ? aprovacao(g) : a[a.length - 1]; return (v0 == null || v1 == null) ? null : { de: v0, para: v1, d }; };
+  const out = { ap: pt('ap', 0), pib: pt('pib', 1), ipca: pt('ipca', 1), des: pt('des', 1), pob: pt('pob', 1), div: pt('div', 1), prim: pt('prim', 0), hom: pt('hom', 1), desm: pt('desm', 0), idh: pt('idh', 3) };
+  const e = (H.escFontes || []).map(x => x.e1); out.escMax = e.length ? Math.max(...e) : null;
+  out.medidas = (g.medidas || []).length; out.crises = (estOf(g).crises || 0); out.derrotas = (estOf(g).derrotas || 0); out.impSob = (estOf(g).impSob || 0);
+  return out;
 }
 // personagem leve (oposição) lança a própria candidatura
 function elLancaCandidatura(n) {
@@ -28925,6 +29181,7 @@ function elAbreMes(g, notas) {
     if (rel === 23 && m.fase === 'seg') { elMunApura2(g, m, notas); m.visto = false; }
   }
   if (rel === 37) elGerCria(g);
+  try { elSucMensal(g, notas); } catch (e) { if (typeof console !== 'undefined') console.warn('elSucMensal', e); } // I3
   elGerMensal(g, notas);
   if (rel === 1 && g.mes > 1) elGovernadoresNovos(g, notas);
   if (rel === 2 && g.mes > 2) elNovoCongresso(g, notas);
@@ -28956,8 +29213,10 @@ function elFimMandato(g, notas) {
     return;
   }
   if (!E.pj) { // o jogador era o presidente: o personagem acaba por derrota ou limite de mandatos
-    const motivo = meuCand ? 'derrota' : 'limite';
-    g.over = { tipo: 'personagem', motivo, leg: elLegado(g), posse, venc: { nome: W.nome, sigla: W.sigla, pct: ger.res.t2 ? ger.res.t2.nac[W.id] : ger.res.t1.nac[W.id] }, mes: g.mes }; return;
+    const motivo = meuCand ? 'derrota' : (E.mandatos >= 2 ? 'limite' : 'sucessao');
+    g.over = { tipo: 'personagem', motivo, leg: elLegado(g), posse, venc: { nome: W.nome, sigla: W.sigla, pct: ger.res.t2 ? ger.res.t2.nac[W.id] : ger.res.t1.nac[W.id] }, mes: g.mes };
+    try { g.over.suc = elSucResumo(g, ger, W); g.over.legado = elLegadoPainel(g); } catch (e) { if (typeof console !== 'undefined') console.warn('elSucResumo', e); }
+    return;
   }
   if (E.pj && (W.persId === E.pj.id)) { // o personagem do jogador venceu: governo pleno
     elPosse(g, posse, 'vitória nas urnas'); elDinFecha(g, 'eleito(a) presidente'); elDinAbre(g, elPersonaDe(elPessoas().find(x => x.id === E.pj.id) || { id: E.pj.id, nome: E.pj.nome, sigla: '', bloco: E.pj.bloco, uf: E.pj.uf, ideo: E.pj.ideo, camp: 'centro' }, 'presidente'), 'presidente'); E.pj = null;
@@ -29073,24 +29332,36 @@ function elPend(g, L) {
     if (elMunJanela(g)) L.push({ id: 'elmun', tipo: 'elmun', urg: 41, cat: 'Eleições municipais ' + m.ano, ic: 'Landmark', titulo: rel < 22 ? 'Municipais: escolha quem apoiar' : 'Municipais: 2º turno nas cidades indecisas', ctx: `${m.apoios} apoio(s) · ${EL_CIDADES.length} cidades em disputa. Cada apoio custa 1 ação e energia.`, extra: null, abrir: 'elmun', btns: [] });
     if ((m.fase === 'seg' || m.fase === 'fim') && !m.visto) L.push({ id: 'elapur-m', tipo: 'elapurm', urg: 97, cat: 'Noite da apuração', ic: 'Vote', titulo: m.fase === 'fim' ? `Municipais ${m.ano}: resultado final` : `Municipais ${m.ano}: 1º turno apurado`, ctx: 'Veja as prefeituras ganhas, os apoios que venceram e as vagas que mudam no Congresso.', extra: null, abrir: 'elapurm', btns: [] });
   }
+  { const pf = elSucPendForca(g); if (pf) L.push({ id: 'elforca', tipo: 'elforca', urg: 47, cat: 'Sucessão', ic: 'Gauge', titulo: pf.titulo, ctx: pf.ctx, extra: pf.extra, abrir: 'elforca', btns: [] }); } // I3
   if (ger && ger.c === elCiclo(g.mes)) {
     const sit = ger.cands[0];
-    if (E.mandatos >= 2 && !E.pj && ger.sucAuto && rel >= 37 && rel <= 43) L.push({ id: 'elsuc', tipo: 'elsuc', urg: rel >= 40 ? 93 : 86, cat: 'Sucessão', ic: 'UserCheck', titulo: 'Você não pode concorrer: escolha o sucessor', ctx: `Dois mandatos consecutivos (CF art. 14 §5º). Hoje o campo apoia ${sit.nome}. Escolha outro nome, passe a jogar com ele ou continue apoiando.`, extra: rel > 39 ? 'Prazo de desincompatibilização para ministros e governadores já passou.' : 'Ministros e governadores precisam sair até 6 de abril.', abrir: 'elsuc', btns: [] });
+    if (elSemReeleicao(g) && ger.sucAuto && rel >= 37 && rel <= 43) L.push({ id: 'elsuc', tipo: 'elsuc', urg: rel >= 40 ? 93 : 86, cat: 'Sucessão', ic: 'UserCheck', titulo: E.mandatos >= 2 ? 'Você não pode concorrer: escolha o sucessor' : 'Você não concorre: escolha o sucessor', ctx: `${E.mandatos >= 2 ? 'Dois mandatos consecutivos (CF art. 14 §5º).' : 'Você anunciou que não disputa a reeleição.'} Hoje o campo apoia ${sit.nome}. Escolha outro nome, passe a jogar com ele ou continue apoiando.`, extra: rel > 39 ? 'Prazo de desincompatibilização para ministros e governadores já passou.' : 'Ministros e governadores precisam sair até 6 de abril.', abrir: 'elsuc', btns: [] });
     if (E.pj && !ger.meuId && rel >= 37 && rel <= 43) L.push({ id: 'elcand', tipo: 'elcand', urg: 52, cat: 'Candidatura', ic: 'Flag', titulo: 'Lançar a sua candidatura à Presidência?', ctx: 'Até a convenção (julho). Sem candidatura, você apoia outro nome do campo.', extra: null, abrir: 'elcand', btns: [] });
     const nova = ger.pesq.filter(p => !p.lida).length;
     if (nova && rel >= 37) L.push({ id: 'elpesq', tipo: 'elpesq', urg: 46, cat: 'Pesquisa', ic: 'BarChart3', titulo: `${nova} pesquisa(s) nova(s) (simuladas)`, ctx: 'Intenção de voto, rejeição, avaliação do governo e cenários de 2º turno. Números do jogo, não são pesquisas reais.', extra: null, abrir: 'elpesq', btns: [] });
     const deb = ger.deb.find(d => (d.estado === 'andamento') || (d.estado === 'agendado' && rel >= d.rel && rel === d.rel));
     if (deb && ger.meuId && ger.meuId === ((E.pj ? (ger.cands.find(c => c.persId === E.pj.id) || {}).id : ger.sitId)) && (!deb.t2 || (ger.res && ger.res.fin && ger.res.fin.includes(ger.meuId)))) L.push({ id: 'eldeb', tipo: 'eldeb', urg: deb.estado === 'andamento' ? 88 : 84, cat: 'Debate', ic: 'Mic', titulo: deb.nome, ctx: deb.estado === 'andamento' ? 'Debate em andamento.' : 'Quatro blocos: pergunta de jornalista, pergunta a um adversário, pergunta de um adversário e considerações finais. Adversários são simulados.', extra: 'Não comparecer custa caro.', abrir: 'eldeb', btns: [] });
-    if (rel >= 43 && rel <= 46 && elCampPode(g) && ger.meuId !== null || (rel >= 43 && rel <= 46 && elCampPode(g) && E.mandatos >= 2 && !E.pj)) L.push({ id: 'elcamp', tipo: 'elcamp', urg: 50, cat: 'Campanha', ic: 'Megaphone', titulo: 'Campanha: comícios, propaganda, alianças e ataques', ctx: `Apoiando ${(elMeu(ger) || {}).nome}. Cada ação custa 1 ação política; o limite legal de gastos é R$ ${EL_CAP_GASTO} mi.`, extra: null, abrir: 'elcamp', btns: [] });
+    if (rel >= 43 && rel <= 46 && elCampPode(g) && ger.meuId !== null || (rel >= 43 && rel <= 46 && elCampPode(g) && elSemReeleicao(g))) L.push({ id: 'elcamp', tipo: 'elcamp', urg: 50, cat: 'Campanha', ic: 'Megaphone', titulo: 'Campanha: comícios, propaganda, alianças e ataques', ctx: `Apoiando ${(elMeu(ger) || {}).nome}. Cada ação custa 1 ação política; o limite legal de gastos é R$ ${EL_CAP_GASTO} mi.`, extra: null, abrir: 'elcamp', btns: [] });
     if (ger.res && ((ger.fase === 'apur1' && !ger.vista1) || (ger.fase === 'fim' && !ger.vista2))) L.push({ id: 'elapur-g', tipo: 'elapurg', urg: 98, cat: 'Noite da apuração', ic: 'Vote', titulo: ger.fase === 'fim' ? `Eleição ${ger.ano}: resultado final` : `Eleição ${ger.ano}: 1º turno apurado`, ctx: 'Mapa por estado, votos e discurso.', extra: null, abrir: 'elapurg', btns: [] });
   }
+}
+// I3: cartão mensal da Mesa com a força do candidato governista (some quando o painel é aberto no mês)
+function elSucPendForca(g) {
+  const E = g.el; if (!E || E.pj || g.over) return null; const rel = g.mes - 48 * elCiclo(g.mes); const ger = E.ger && E.ger.c === elCiclo(g.mes) ? E.ger : null;
+  if (rel < EL_SUC_MES || rel > 46 || (ger && ger.res)) return null;
+  const S = E.suc && E.suc.c === elCiclo(g.mes) ? E.suc : null;
+  if (S && S.visto === g.mes) return null;
+  if (!elSemReeleicao(g)) return (E.mandatos < 2 && (rel === EL_SUC_MES || rel === 38)) ? { titulo: 'Reeleição ou sucessor?', ctx: 'Você pode concorrer de novo ou anunciar que não vai e eleger um sucessor. Veja, em Eleições, o que pesa em cada caminho.', extra: 'Prazo: convenção em julho.' } : null;
+  if (!S) return null; const F = Math.round(S.forca || elSucForca(g).F);
+  return { titulo: `Força do candidato governista: ${F}/100`, ctx: `${S.nome || 'O candidato do governo'}: aprovação, economia, coligação, seu apoio em campanha e o nome do candidato decidem a eleição. Veja as alavancas e o que fazer.`, extra: F < EL_F0 ? 'Abaixo do ponto de equilíbrio.' : null };
 }
 function elAindaPend(g, kind) {
   const E = g.el; if (!E) return false; const ger = E.ger; const m = E.mun; const rel = g.mes - 48 * elCiclo(g.mes);
   switch (kind) {
     case 'elmun': return !!(m && m.c === elCiclo(g.mes) && elMunJanela(g));
     case 'elapurm': return !!(m && (m.fase === 'seg' || m.fase === 'fim') && !m.visto);
-    case 'elsuc': return !!(ger && E.mandatos >= 2 && !E.pj && ger.sucAuto && rel <= 43);
+    case 'elsuc': return !!(ger && elSemReeleicao(g) && ger.sucAuto && rel <= 43);
+    case 'elforca': return !!(elSucPendForca(g));
     case 'elcand': return !!(ger && E.pj && !ger.meuId && rel <= 43);
     case 'elpesq': return !!(ger && ger.pesq.some(p => !p.lida));
     case 'eldeb': return !!(ger && ger.deb.some(d => d.estado === 'andamento' || (d.estado === 'feito' && d.mesFeito === g.mes) || (d.estado === 'agendado' && rel === d.rel)));
@@ -29734,7 +30005,7 @@ function EntImprensa({ g, upd }) {
     ${gav && html`<${CenaImprensa} kind=${gav} g=${g} upd=${upd} onClose=${() => setGav(null)} />`}
   </div>`;
 }
-Object.assign(GAVETA_TIT, { entcol: 'Coletiva de imprensa', entconv: 'Entrevista', elmun: 'Eleições municipais', elapurm: 'Apuração municipal', elsuc: 'Sucessão', elcand: 'Candidatura', elpesq: 'Pesquisas', eldeb: 'Debate', elcamp: 'Campanha', elapurg: 'Apuração presidencial' });
+Object.assign(GAVETA_TIT, { entcol: 'Coletiva de imprensa', entconv: 'Entrevista', elmun: 'Eleições municipais', elapurm: 'Apuração municipal', elsuc: 'Sucessão', elforca: 'Força do candidato', elcand: 'Candidatura', elpesq: 'Pesquisas', eldeb: 'Debate', elcamp: 'Campanha', elapurg: 'Apuração presidencial' });
 function entCorpo(kind, g, upd) {
   if (kind === 'entcol') return html`<${EntColetiva} g=${g} upd=${upd} />`;
   if (kind === 'entconv') return html`<${EntConvites} g=${g} upd=${upd} />`;
@@ -29873,13 +30144,97 @@ function ElSucessao({ g, upd, onFeito }) {
   const ger = g.el.ger; const L = useMemo(() => elSucessores(g).slice(0, 14), [g.mes, g.el.pj && g.el.pj.id, ger && ger.cands[0].id]); const [id, setId] = useState('');
   const rel = g.mes - 48 * ger.c; const sit = ger.cands[0];
   return html`<div className="flex flex-col gap-3" data-el="sucessao">
-    <p className="text-sm">${g.cfg.nome} cumpre o segundo mandato consecutivo e não pode concorrer (CF art. 14 §5º). O candidato do campo hoje é <b>${sit.nome}</b> (${sit.sigla}). Você pode manter o nome, trocar por outro do mesmo campo e continuar presidente apoiando, ou <b>passar a jogar com o sucessor</b>.</p>
+    <p className="text-sm">${g.cfg.nome} ${g.el.mandatos >= 2 ? 'cumpre o segundo mandato consecutivo e não pode concorrer (CF art. 14 §5º)' : 'anunciou que não concorre à reeleição'}. O candidato do campo hoje é <b>${sit.nome}</b> (${sit.sigla}). Você pode manter o nome, trocar por outro do mesmo campo e continuar presidente apoiando, ou <b>passar a jogar com o sucessor</b>.</p>
     <p className="text-xs text-muted">O sucessor recebe apoio automático do presidente: transferência parcial da aprovação e palanques regionais, mas também herda parte da rejeição. Ministros e governadores precisam deixar o cargo até 6 de abril.</p>
     <ul className="flex flex-col divide-y divide-line">${L.map(x => html`<li key=${x.p.id} className="py-2 flex flex-wrap items-center gap-2"><div className="min-w-0 flex-1"><div className="font-medium flex flex-wrap items-center gap-2">${x.p.nome}<${Tag} cor=${PMAP[x.p.bloco] ? PMAP[x.p.bloco].cor : null}>${x.p.sigla ? sg(x.p.sigla) : 'sem partido'}</${Tag}>${x.p.cargo === 'sen' && html`<${Tag}>senador(a)</${Tag}>`}${(x.p.cargo === 'fig' || x.p.cargo === 'est') && html`<${Tag}>sem mandato</${Tag}>`}${x.p.fig && x.p.fig.inc && html`<${Tag} cor="var(--ambar)">incerto</${Tag}>`}${x.exige && html`<${Tag} cor=${x.bloq ? 'var(--rubro)' : 'var(--ambar)'}>${x.bloq ? 'prazo vencido' : 'desincompatibilização'}</${Tag}>`}</div>
       <div className="text-xs text-muted">${x.exige || ''} reconhecimento ${Math.round(x.rec)} · aprovação ${Math.round(x.apr)}</div></div>
       <button type="button" className="btn btn-ghost text-sm" disabled=${x.bloq} data-suc-apoiar=${x.p.id} onClick=${() => { upd(n => { elEscolheSucessor(n, x.p.id, false); }); onFeito && onFeito(); }}>Apoiar como presidente</button>
       <button type="button" className="btn btn-gold text-sm" disabled=${x.bloq} data-suc-jogar=${x.p.id} onClick=${() => { upd(n => { elEscolheSucessor(n, x.p.id, true); }); onFeito && onFeito(); }}>Jogar com ${x.p.nome.split(' ')[0]}</button></li>`)}</ul>
-    <button type="button" className="btn btn-ghost text-sm self-start" data-suc-manter="1" onClick=${() => { upd(n => { n.el.ger.sucAuto = false; }); onFeito && onFeito(); }}>Manter ${sit.nome} e continuar presidente</button>
+    <button type="button" className="btn btn-ghost text-sm self-start" data-suc-manter="1" onClick=${() => { upd(n => { n.el.ger.sucAuto = false; if (n.el.suc) n.el.suc.fixado = true; }); onFeito && onFeito(); }}>Manter ${sit.nome} e continuar presidente</button>
+  </div>`;
+}
+/* ---------- I3: força do candidato governista (painel) e legado ---------- */
+function ElForcaSuc({ g, upd }) {
+  const E = g.el; const rel = g.mes - 48 * elCiclo(g.mes); const ger = elSucGerAtual(g);
+  const S = E.suc && E.suc.c === elCiclo(g.mes) ? E.suc : null; const sem = elSemReeleicao(g);
+  const [msg, setMsg] = useState(''); const [troca, setTroca] = useState(false);
+  useEffect(() => { if (E.msgSuc) setMsg(E.msgSuc); }, [E.msgSuc]);
+  const f = useMemo(() => elSucForca(g), [g.mes, g.acoes, g.escandalo, S && S.apoio, S && S.id, ger && (ger.aliancas || []).length, g.groups]);
+  const nec = useMemo(() => { if (E.pj || rel < EL_SUC_MES || rel > 46 || (sem && !S)) return null; try { return elAprovNecessaria(g); } catch (e) { return null; } }, [g.mes, S && S.id, S && S.apoio, ger && (ger.aliancas || []).length, g.groups, sem]);
+  const opcoes = useMemo(() => (sem && S && rel <= 43 ? elSucessores(g).filter(x => !x.bloq).slice(0, 6) : []), [g.mes, S && S.id, sem]);
+  if (!E || E.pj) return null;
+  if (!sem) {
+    if (rel < EL_SUC_MES || rel > 43) return null;
+    return html`<section className="sec flex flex-col gap-3" data-el="suc-decisao" aria-labelledby="sucd-t">
+      <h4 id="sucd-t" className="disp text-xl font-extrabold uppercase">Reeleição ou sucessor?</h4>
+      <p className="text-sm">Você está no primeiro mandato e pode concorrer de novo. Se preferir, anuncie que não vai disputar e eleja um sucessor: o jogo passa a medir a <b>força do candidato governista</b> (aprovação, economia, coligação, seu apoio em campanha e o nome escolhido) e a eleição usa essa força. A decisão pode ser desfeita até a montagem do campo, em ${dataMes(48 * elCiclo(g.mes) + 37)}.</p>
+      ${nec && nec.rot === 'ok' && html`<p className="text-sm" data-el="suc-necessaria" data-suc-nec=${Math.round(nec.nec)}>Aprovação necessária para a sua reeleição, se a eleição fosse hoje: <b className="num">${fmt(nec.nec, 0)}%</b> (a sua: <span className="num">${fmt(nec.ap, 0)}%</span>${nec.ap >= nec.nec ? ', você venceria' : ', faltam ' + fmt(nec.nec - nec.ap, 1) + ' pontos'}).</p>`}
+      <div className="flex flex-wrap gap-2"><button type="button" className="btn btn-gold text-sm" data-suc-nao-concorrer="1" disabled=${!!(ger && ger.res)} onClick=${() => upd(n => { elNaoConcorrer(n, true); })}><${Icon} n="UserCheck" s=${14} /> Não concorrer e eleger um sucessor</button></div>
+    </section>`;
+  }
+  if (!S) return null;
+  const F = f.F; const cor = F >= 55 ? 'var(--verde)' : F >= EL_F0 ? 'var(--ouro)' : 'var(--rubro)';
+  const st = F >= 60 ? 'favorito' : F >= 50 ? 'competitivo' : F >= EL_F0 ? 'no limite' : 'em desvantagem';
+  const faz = (t, a) => upd(n => { const r = elSucAcao(n, t, a); n.el.msgSuc = r.msg; });
+  const pode = rel >= EL_SUC_MES && rel <= 46 && !(ger && ger.res && ger.res.fase === 'fim');
+  const alian = ger ? (ger.aliancas || []) : (S.aliados || []);
+  const partidos = PARTIDOS.filter(P => P.id !== 'OUTROS' && !alian.includes(P.id)).sort((a, b) => g.parties[b.id].rel - g.parties[a.id].rel).slice(0, 6);
+  const cand = ger ? ger.cands[0] : null; const nome = (cand && cand.sucessor ? cand.nome : S.nome) || 'Candidato(a) governista'; const real = !!(S.id && (!cand || cand.pid));
+  const ja = (t) => S.acoes && S.acoes[t] === g.mes;
+  const aliado = (t) => E.acoesAliado && E.acoesAliado[S.id] === g.mes;
+  return html`<section className="sec flex flex-col gap-4" data-el="forca-suc" aria-labelledby="forca-t">
+    <style>${GV_CSS}${PD_CSS}</style>
+    <div className="flex flex-wrap items-center gap-2"><h4 id="forca-t" className="disp text-xl font-extrabold uppercase">Sucessão · força do candidato governista</h4>${real && html`<${ElSim} />`}<${Tag} cor=${cor}>${st}</${Tag}>
+      <button type="button" className="btn btn-ghost text-xs ml-auto" data-suc-visto="1" onClick=${() => upd(n => { if (n.el.suc) n.el.suc.visto = n.mes; })}>Marcar como visto</button></div>
+    <div className="grid gap-4 lg:grid-cols-12 items-start">
+      <div className="lg:col-span-7 flex flex-col gap-3 min-w-0">
+        <div className="flex items-baseline gap-3 flex-wrap"><span className="num text-4xl font-extrabold" style=${{ color: cor }} data-suc-forca=${Math.round(F)}>${fmt(F, 0)}</span><span className="text-sm text-muted">de 100 · candidato: <b>${nome}</b>${cand && cand.sucessor ? ' (' + cand.sigla + ')' : ''}</span></div>
+        <div className="relative" role="meter" aria-valuenow=${Math.round(F)} aria-valuemin="0" aria-valuemax="100" aria-label="Força do candidato governista"><${Bar} v=${F} cor=${cor} h=${10} label="Força do candidato governista" /><span className="absolute top-0 bottom-0 w-px" style=${{ left: EL_F0 + '%', background: 'var(--fg)', opacity: .6 }} title=${'Ponto de equilíbrio: ' + EL_F0}></span></div>
+        <div className="text-xs text-muted">Marca em ${EL_F0}: abaixo dela o voto no candidato do governo perde para o voto de oposição; acima, ganha. A força entra direto no cálculo da eleição${f.pen >= .5 ? `; o escândalo tira ${fmt(f.pen, 1)} ponto${f.pen >= 1.05 ? 's' : ''}` : ''}.</div>
+        <ul className="flex flex-col gap-2" data-el="suc-alavancas">${Object.keys(EL_SUC_PESOS).map(k => html`<li key=${k} className="gv-meter" style=${{ gridTemplateColumns: '170px minmax(0,1fr) 34px' }} title=${EL_SUC_ROT[k][1]} data-suc-alavanca=${k}><span>${EL_SUC_ROT[k][0]}</span><${Bar} v=${f.L[k]} cor=${f.L[k] >= 55 ? 'var(--verde)' : f.L[k] >= 35 ? 'var(--ouro)' : 'var(--rubro)'} h=${6} label=${EL_SUC_ROT[k][0]} /><span className="num">${fmt(f.L[k], 0)}</span></li>`)}</ul>
+      </div>
+      <div className="lg:col-span-5 flex flex-col gap-3 min-w-0">
+        <div className="rounded-lg border border-line p-3" data-el="suc-necessaria">
+          <div className="eyebrow mb-1">Aprovação necessária (se a eleição fosse hoje)</div>
+          ${nec && nec.rot === 'ok' ? html`<div className="flex items-baseline gap-2 flex-wrap"><span className="num text-3xl font-extrabold" style=${{ color: nec.ap >= nec.nec ? 'var(--verde)' : 'var(--rubro)' }} data-suc-nec=${Math.round(nec.nec)}>${fmt(nec.nec, 0)}%</span><span className="text-sm text-muted">a sua hoje: <span className="num">${fmt(nec.ap, 0)}%</span> · ${nec.ap >= nec.nec ? 'o candidato venceria' : 'faltam ' + fmt(nec.nec - nec.ap, 1) + ' pontos'}</span></div>`
+            : nec && nec.rot === 'folga' ? html`<p className="text-sm" data-suc-nec="folga">Com esta coligação e este apoio, o candidato vence mesmo com aprovação muito menor.</p>`
+            : nec && nec.rot === 'fora' ? html`<p className="text-sm" data-suc-nec="fora">Hoje nem a aprovação máxima elegeria o candidato: é preciso reforçar coligação, apoio e nome.</p>` : html`<p className="text-sm text-muted">Sem estimativa.</p>`}
+          <p className="text-xs text-muted mt-1">Estimativa do jogo com o campo, as alianças e o apoio de hoje; muda até a eleição.</p>
+        </div>
+        <div className="rounded-lg border border-line p-3 flex flex-col gap-2" data-el="suc-acoes">
+          <div className="eyebrow">Fortalecer o candidato · ${g.acoes}/5 ações</div>
+          ${msg && html`<p className="text-sm p-2 rounded border border-line" role="status" data-el="msg-suc">${msg}</p>`}
+          <div className="flex flex-wrap gap-2">
+            <button type="button" className="btn btn-pri text-sm" disabled=${!pode || g.acoes <= 0 || ja('palanque')} data-suc-acao="palanque" title="Campanha ao lado do candidato: sobe o apoio do presidente (rende mais com a aprovação alta). 1 ação, 8 de energia." onClick=${() => faz('palanque')}><${Icon} n="Users" s=${14} /> Campanha com o candidato</button>
+            <button type="button" className="btn btn-ghost text-sm" disabled=${!pode || g.acoes <= 0 || !S.id || aliado()} data-suc-aliado="palco" title="Dar o palco de um anúncio do governo ao candidato: sobe reconhecimento e aprovação do nome" onClick=${() => upd(n => { elAliadoAcao(n, S.id, 'palco'); })}>Dar o palco</button>
+            <button type="button" className="btn btn-ghost text-sm" disabled=${!pode || g.acoes <= 0 || !S.id || aliado()} data-suc-aliado="x" title="Promover o candidato nas redes do governo" onClick=${() => upd(n => { elAliadoAcao(n, S.id, 'x'); })}>Promover no X</button>
+          </div>
+          <div className="text-xs text-muted">Coligação: ${alian.map(b => PMAP[b].curto).join(', ') || 'nenhum partido fechado'} (máx. 4)</div>
+          <div className="flex flex-wrap gap-2">${partidos.map(P => html`<button key=${P.id} type="button" className="btn btn-ghost text-xs" disabled=${!pode || g.acoes <= 0 || ja('coligar' + P.id) || alian.length >= 4} data-suc-coligar=${P.id} onClick=${() => faz('coligar', P.id)}>${P.curto} <span className="num text-muted">rel ${Math.round(g.parties[P.id].rel)}</span></button>`)}</div>
+        </div>
+      </div>
+    </div>
+    ${rel <= 43 && html`<div className="flex flex-col gap-2" data-el="suc-escolha">
+      <div className="flex flex-wrap items-center gap-2"><button type="button" className="btn btn-ghost text-sm" data-suc-trocar="1" aria-expanded=${troca} onClick=${() => setTroca(!troca)}>${troca ? 'Fechar a lista' : 'Trocar o candidato'}</button>
+        ${E.mandatos < 2 && !ger && html`<button type="button" className="btn btn-ghost text-sm" data-suc-voltar="1" onClick=${() => upd(n => { elNaoConcorrer(n, false); })}>Voltar atrás e concorrer à reeleição</button>`}
+        ${!S.fixado && html`<button type="button" className="btn btn-ghost text-sm" data-suc-confirmar="1" onClick=${() => upd(n => { if (n.el.suc) n.el.suc.fixado = true; if (n.el.ger) n.el.ger.sucAuto = false; })}>Confirmar ${nome.split(' ')[0]}</button>`}</div>
+      ${troca && html`<ul className="flex flex-col divide-y divide-line">${opcoes.map(x => html`<li key=${x.p.id} className="py-2 flex flex-wrap items-center gap-2"><div className="min-w-0 flex-1"><div className="font-medium flex flex-wrap items-center gap-2">${x.p.nome}<${Tag} cor=${PMAP[x.p.bloco] ? PMAP[x.p.bloco].cor : null}>${x.p.sigla ? sg(x.p.sigla) : 'sem partido'}</${Tag}>${x.exige && html`<${Tag} cor="var(--ambar)">desincompatibilização</${Tag}>`}</div><div className="text-xs text-muted">${x.exige || ''} reconhecimento ${Math.round(x.rec)} · aprovação ${Math.round(x.apr)}</div></div>
+        <button type="button" className="btn btn-ghost text-sm" disabled=${x.p.id === S.id} data-suc-escolher=${x.p.id} onClick=${() => upd(n => { elSucEscolhe(n, x.p.id); })}>${x.p.id === S.id ? 'Candidato atual' : 'Escolher'}</button></li>`)}</ul>`}
+    </div>`}
+    <p className="text-[11px] text-muted">Simulação do jogo: nomes de políticos vêm da base eleitoral e aparecem só com cargo, partido e posição; o jogo não atribui falas nem atos a eles.</p>
+  </section>`;
+}
+function ElLegadoPainel({ g, o }) {
+  const L = o.legado || elLegadoPainel(g); const sc = o.suc;
+  const linhas = [['Aprovação', 'ap', '%', 1], ['PIB', 'pib', '%', 1], ['Inflação (IPCA)', 'ipca', '%', -1], ['Desemprego', 'des', '%', -1], ['Pobreza', 'pob', '%', -1], ['Dívida/PIB', 'div', '%', -1], ['Resultado primário', 'prim', ' bi', 1], ['Homicídios por 100 mil', 'hom', '', -1], ['IDH', 'idh', '', 1]];
+  return html`<div className="rounded-lg border border-line p-4 flex flex-col gap-3" data-el="legado">
+    <div className="eyebrow">Painel de legado · do primeiro ao último mês do governo</div>
+    ${sc && html`<div className="flex flex-col gap-1" data-el="legado-sucessor"><div className="text-lg">${sc.venceu ? 'Seu candidato foi eleito' : 'Seu candidato foi derrotado'}: <b>${sc.nome}</b> (${sc.sigla})${sc.venceu ? '' : sc.venc ? ' perdeu para ' + sc.venc + ' (' + sc.vencSigla + ')' : ''} ${!sc.fic && html`<${ElSim} />`}</div>
+      <div className="text-sm text-muted">${sc.t1 != null ? fmt(sc.t1 * 100, 1) + '% dos votos válidos no 1º turno' : ''}${sc.t2 != null ? ' · ' + fmt(sc.t2 * 100, 1) + '% no 2º turno' : ''} · força final ${sc.forca}/100 · aprovação do governo no fim: ${fmt(sc.ap, 0)}%</div>
+      <div className="flex flex-wrap gap-2 mt-1">${Object.keys(EL_SUC_PESOS).map(k => html`<span key=${k} className="gv-chip" title=${EL_SUC_ROT[k][1]}>${EL_SUC_ROT[k][0]} <b className="num">${sc.L[k]}</b></span>`)}${sc.pen >= .5 && html`<span className="gv-chip neg">escândalo −${fmt(sc.pen, 1)}</span>`}</div></div>`}
+    <ul className="grid gap-x-6 gap-y-1 sm:grid-cols-2 lg:grid-cols-3" data-el="legado-numeros">${linhas.filter(r => L[r[1]]).map(([nome, k, u, pol]) => { const v = L[k]; const d = v.para - v.de; const bom = d * pol > 0; const fl = Math.abs(d) < Math.pow(10, -(v.d)) / 2;
+      return html`<li key=${k} className="flex justify-between gap-2 text-sm border-b border-line py-1"><span>${nome}</span><span className="num" style=${{ color: fl ? 'var(--muted)' : bom ? 'var(--verde)' : 'var(--rubro)' }}>${fmt(v.de, v.d)}${u} → ${fmt(v.para, v.d)}${u}</span></li>`; })}</ul>
+    <div className="flex flex-wrap gap-2 text-sm"><span className="gv-chip">${L.medidas} medidas em vigor ou registradas</span><span className="gv-chip">${L.crises} crises enfrentadas</span><span className="gv-chip">${L.derrotas} derrotas no plenário</span>${L.escMax != null && html`<span className="gv-chip">escândalo máximo ${fmt(L.escMax, 0)}</span>`}${L.impSob > 0 && html`<span className="gv-chip neg">${L.impSob} votação(ões) de impeachment</span>`}</div>
   </div>`;
 }
 function ElCandidatura({ g, upd }) {
@@ -29974,15 +30329,17 @@ function ElPresidencial({ g, upd }) {
   const E = g.el; const ger = E.ger; const [pq, setPq] = useState(null); const rel = ger ? g.mes - 48 * ger.c : 0;
   if (!ger || ger.c !== elCiclo(g.mes)) return html`<${PdSec} css=${true} eyebrow="Eleições · presidência" titulo=${'Eleição presidencial ' + elAnoGer(g.mes)} dado="pres-vazio" id="pres-v" dir="esq" tip="A pré-campanha traz pesquisas, escolha de sucessor (se o presidente for inelegível), alianças, campanha e debates.">
     <div className="pd-vazio" data-el="pres-vazio"><${Icon} n="CalendarClock" s=${20} /> A pré-campanha começa em ${dataMes(48 * elCiclo(g.mes) + 37)}.</div>
-    ${E.gerHist.length > 0 && html`<p className="text-sm mt-3">Última eleição (${E.gerHist[0].ano}): ${E.gerHist[0].venc} (${E.gerHist[0].sigla}).</p>`}</${PdSec}>`;
+    ${E.gerHist.length > 0 && html`<p className="text-sm mt-3">Última eleição (${E.gerHist[0].ano}): ${E.gerHist[0].venc} (${E.gerHist[0].sigla}).</p>`}</${PdSec}>
+    ${(g.mes - 48 * elCiclo(g.mes)) >= EL_SUC_MES && (elSemReeleicao(g) || (E.mandatos < 2 && !E.pj)) && html`<div className="mt-4"><${ElForcaSuc} g=${g} upd=${upd} /></div>`}`;
   const ult = ger.pesq[0]; const meu = elMeu(ger);
   const ordC = ger.cands.slice().sort((a, b) => (ult ? (ult.p1[b.id] || 0) - (ult.p1[a.id] || 0) : 0));
-  const precisaSuc = E.mandatos >= 2 && !E.pj && ger.sucAuto && rel <= 43;
+  const precisaSuc = elSemReeleicao(g) && ger.sucAuto && rel <= 43;
   const marcaLida = () => upd(n => { n.el.ger.pesq.forEach(p => { p.lida = true; }); });
   const maxP = ult ? Math.max(10, ...ordC.map(c => ult.p1[c.id] || 0)) * 1.1 : 100;
   return html`<div className="flex flex-col gap-6" data-el="presidencial">
     <style>${GV_CSS}${PD_CSS}</style>
-    <div className="flex flex-wrap items-center gap-2"><h3 className="disp text-2xl font-extrabold uppercase">Presidência ${ger.ano}</h3><${ElSim} /><${Tag}>${ger.fase === 'fim' ? 'encerrada' : rel >= 44 ? 'campanha oficial' : 'pré-campanha'}</${Tag}>${meu && html`<${Tag} cor="var(--verde)">você apoia ${meu.nome}</${Tag}>`}${E.mandatos >= 2 && !E.pj && html`<${Tag} cor="var(--ambar)">inelegível (2 mandatos)</${Tag}>`}</div>
+    <div className="flex flex-wrap items-center gap-2"><h3 className="disp text-2xl font-extrabold uppercase">Presidência ${ger.ano}</h3><${ElSim} /><${Tag}>${ger.fase === 'fim' ? 'encerrada' : rel >= 44 ? 'campanha oficial' : 'pré-campanha'}</${Tag}>${meu && html`<${Tag} cor="var(--verde)">você apoia ${meu.nome}</${Tag}>`}${E.mandatos >= 2 && !E.pj && html`<${Tag} cor="var(--ambar)">inelegível (2 mandatos)</${Tag}>`}${E.mandatos < 2 && elSemReeleicao(g) && html`<${Tag} cor="var(--ambar)">você não concorre</${Tag}>`}</div>
+    ${(elSemReeleicao(g) || (E.mandatos < 2 && !E.pj && rel >= EL_SUC_MES && rel <= 43)) && html`<${ElForcaSuc} g=${g} upd=${upd} />`}
     ${ger.apoioPres && html`<div className="rounded-lg border border-line p-3 text-sm" data-el="apoio-pres">Apoio automático de ${ger.apoioPres.nome}: ${ger.apoioPres.ativo ? 'ativo (mesmo campo). Parte da aprovação do governo vira intenção de voto para o sucessor, com palanques nos estados de maior aprovação, mas a rejeição também é herdada.' : 'sem efeito (campos diferentes).'}</div>`}
     ${precisaSuc && html`<section className="sec"><h4 className="disp text-xl font-extrabold uppercase mb-2">Sucessão</h4><${ElSucessao} g=${g} upd=${upd} /></section>`}
     ${E.pj && !ger.meuId && rel <= 43 && html`<section className="sec"><h4 className="disp text-xl font-extrabold uppercase mb-2">Candidatura</h4><${ElCandidatura} g=${g} upd=${upd} /></section>`}
@@ -30104,9 +30461,9 @@ function ElFigurasInicio({ onEscolher }) { return html`<${ElFiguras} g=${null} o
 function ElFim({ g, upd, reiniciar }) {
   const o = g.over; const leg = o.leg || elLegado(g); const E = g.el || {}; const [q, setQ] = useState(''); const [campo, setCampo] = useState('todos');
   const motivo = o.motivo || o.tipo;
-  const titulo = motivo === 'limite' ? 'Fim do personagem: limite de mandatos' : motivo === 'derrota' ? 'Derrotado nas urnas' : motivo === 'impeachment' ? 'Impeachment' : motivo === 'saude' ? 'Afastamento' : motivo === 'eleicao' ? (o.reeleito ? 'Reeleito' : 'Derrotado nas urnas') : 'Fim do personagem';
+  const titulo = motivo === 'sucessao' ? 'Fim do mandato: você passou a faixa' : motivo === 'limite' ? 'Fim do personagem: limite de mandatos' : motivo === 'derrota' ? 'Derrotado nas urnas' : motivo === 'impeachment' ? 'Impeachment' : motivo === 'saude' ? 'Afastamento' : motivo === 'eleicao' ? (o.reeleito ? 'Reeleito' : 'Derrotado nas urnas') : 'Fim do personagem';
   const sob = leg.nome;
-  const texto = motivo === 'limite' ? `${sob} cumpriu dois mandatos consecutivos e não pode concorrer de novo (CF art. 14 §5º).` : motivo === 'derrota' ? `${sob} perdeu a eleição${o.venc ? ' para ' + o.venc.nome + ' (' + o.venc.sigla + '), com ' + fmt(o.venc.pct * 100, 1) + '% dos votos válidos' : ''}.` : motivo === 'impeachment' ? `O Senado aprovou o impeachment de ${sob}.` : motivo === 'saude' ? `Por motivo de saúde, ${sob} se afasta do cargo.` : `Fim do mandato de ${sob}.`;
+  const texto = motivo === 'sucessao' ? `${sob} cumpriu o mandato e não concorreu à reeleição${o.venc ? '; a eleição foi vencida por ' + o.venc.nome + ' (' + o.venc.sigla + ')' : ''}.` : motivo === 'limite' ? `${sob} cumpriu dois mandatos consecutivos e não pode concorrer de novo (CF art. 14 §5º).` : motivo === 'derrota' ? `${sob} perdeu a eleição${o.venc ? ' para ' + o.venc.nome + ' (' + o.venc.sigla + '), com ' + fmt(o.venc.pct * 100, 1) + '% dos votos válidos' : ''}.` : motivo === 'impeachment' ? `O Senado aprovou o impeachment de ${sob}.` : motivo === 'saude' ? `Por motivo de saúde, ${sob} se afasta do cargo.` : `Fim do mandato de ${sob}.`;
   const alvoPosse = o.posse; const presNome = alvoPosse ? alvoPosse.nome : g.cfg.nome;
   const todos = useMemo(() => elPessoas(), []);
   const sugest = useMemo(() => { const dir = elDirIdeo(leg.bloco && PMAP[leg.bloco] ? ideoDoPartido((PMAP[leg.bloco].membros || ['PSD'])[0]) : g.cfg.ideo); return todos.map(p => ({ p, s: .55 * elPopDe(g, p.id).rec + .45 * elPopDe(g, p.id).apr - Math.abs((EL_CAMP_DIR[p.camp] || 0) - dir) * 25 + (p.cargo === 'dep' ? -15 : 0) })).sort((a, b) => b.s - a.s).slice(0, 8).map(x => x.p); }, [g.mes]);
@@ -30118,6 +30475,7 @@ function ElFim({ g, upd, reiniciar }) {
     <h1 className="disp text-5xl font-black uppercase leading-none" style=${{ color: motivo === 'eleicao' && o.reeleito ? 'var(--verde)' : 'var(--rubro)' }}>${titulo}</h1>
     <p className="text-lg">${texto}</p>
     <div className="grid grid-cols-2 sm:grid-cols-5 gap-3"><div><div className="eyebrow">Aprovação final</div><div className="num text-2xl">${fmt(leg.ap, 0)}%</div></div><div><div className="eyebrow">PIB</div><div className="num text-2xl">${fmt(leg.pib)}%</div></div><div><div className="eyebrow">IPCA</div><div className="num text-2xl">${fmt(leg.ipca)}%</div></div><div><div className="eyebrow">Atos assinados</div><div className="num text-2xl">${leg.atos}</div></div><div><div className="eyebrow">Marcos</div><div className="num text-2xl">${leg.marcos}</div></div></div>
+    ${html`<${ElLegadoPainel} g=${g} o=${o} />`}
     ${leg.prom && leg.prom.length > 0 && html`<div><div className="eyebrow mb-2">Promessas</div><ul className="flex flex-col gap-1">${leg.prom.map((p, i) => html`<li key=${i} className="flex gap-2 items-center"><span style=${{ color: p.ok ? 'var(--verde)' : 'var(--rubro)' }}><${Icon} n=${p.ok ? 'CircleCheck' : 'CircleX'} /></span>${p.nome}</li>`)}</ul></div>`}
     ${E.din && E.din.length > 0 && html`<div><div className="eyebrow mb-2">Linha do tempo de personagens</div><ol className="flex flex-col gap-1">${E.din.map((d, i) => html`<li key=${i} className="text-sm"><b>${d.nome}</b> (${d.sigla}) · ${d.papel} · ${dataCurta(d.de)}–${d.ate ? dataCurta(d.ate) : dataCurta(o.mes || g.mes)}</li>`)}</ol></div>`}
     <div className="border-t border-line pt-4 flex flex-col gap-3" data-el="proximo"><h2 className="disp text-3xl font-extrabold uppercase">Escolher próximo personagem</h2>
@@ -30136,6 +30494,7 @@ function elCorpo(kind, g, upd) {
   if (kind === 'elmun') return html`<${ElMunicipal} g=${g} upd=${upd} />`;
   if (kind === 'elapurm') return html`<div className="flex flex-col gap-3"><${ElMunicipal} g=${g} upd=${upd} /><button type="button" className="btn btn-gold self-start" data-el-visto="1" onClick=${() => upd(n => { n.el.mun.visto = true; })}>Marcar como visto</button></div>`;
   if (kind === 'elsuc') return html`<${ElSucessao} g=${g} upd=${upd} />`;
+  if (kind === 'elforca') return html`<${ElForcaSuc} g=${g} upd=${upd} />`;
   if (kind === 'elcand') return html`<${ElCandidatura} g=${g} upd=${upd} />`;
   if (kind === 'elpesq' && ger) return html`<div className="flex flex-col gap-4">${ger.pesq.filter(p => !p.lida).slice(0, 4).map((p, i) => html`<${ElPesqView} key=${i} g=${g} ger=${ger} pq=${p} />`)}<${ElGrafPesq} ger=${ger} /><button type="button" className="btn btn-gold self-start" data-el-lida="1" onClick=${() => upd(n => { n.el.ger.pesq.forEach(p => { p.lida = true; }); })}>Marcar como lidas</button></div>`;
   if (kind === 'eldeb' && ger) return html`<${ElDebates} g=${g} upd=${upd} />`;
