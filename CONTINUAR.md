@@ -5,7 +5,7 @@
 - **Código:** `index.html`, um app React/htm de arquivo único. Junto vão `fotos.json` e `logos.json`.
 - **Ramos:**
   - `main` é o que está publicado;
-  - `motor-v3.5` é o ramo de trabalho (nome antigo, pode ser renomeado), e hoje main = motor-v3.5 (commit 604c0ff).
+  - `desenvolvimento` é o ramo de trabalho (antes `motor-v3.5`); hoje main = desenvolvimento (commit 9b4ea64). O `motor-v3.5` antigo ainda existe no GitHub e pode ser apagado.
 - **Motor do jogo:** v4.3. O conjunto cego hold3 (700 frases) tem 48,0% totalmente certos. Nas 103 frases do Fable (fresh2), 78,6%.
 
 ## Regras do usuário (Gabriel, pt-BR, joga no PC Windows)
@@ -56,5 +56,5 @@
    - (4) opcional: a IA (conta Claude do jogador ou chave própria) preenche só a ficha.
    - Meta: hold3 ≥ 60%. Diagnóstico da v4.3: o valor em R$ é o maior erro (171 itens só com valor errado).
 2. Feijão e carne com instrumentos de abastecimento (hoje sem mercado ou sem tela de compra).
-3. Renomear o ramo `motor-v3.5` (ex.: `desenvolvimento`).
+3. Apagar o ramo antigo `motor-v3.5` no GitHub (o renome para `desenvolvimento` já foi feito).
 4. Ideias do Fable ainda não feitas: painel "o que sua ação fez", Mesa em duas camadas, modo leve com placar, comparador "e se", acessibilidade, jornal do dia seguinte. A lista completa está na seção (I) do relatório do Fable; o arquivo do relatório ficou no scratchpad da sessão anterior e não está no repositório.
