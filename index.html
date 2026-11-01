@@ -25226,7 +25226,7 @@ const IC_TIPS = {
   tipicoC: 'Volume típico: metade do que o Brasil importa por ano deste produto. É o tamanho de contrato usado para simular o efeito no preço.',
   tipicoV: 'Volume típico: quanto esse país costuma comprar do Brasil por ano deste produto. É o tamanho de contrato usado para simular o efeito no preço.',
   seFechar: 'Simulação do preço do produto dentro do Brasil se você fechar um contrato de 2 anos com o volume típico, com a mesma conta usada na hora de assinar. Seta verde para baixo: o preço no Brasil cai. Seta vermelha para cima: sobe.',
-  vsMundialC: 'Compara o preço entregue com a cotação mundial. Verde: mais barato que comprar à vista no mercado; vermelho: mais caro.',
+  vsMundialC: 'Compara o preço entregue com a cotação mundial. Verde: mais barato que a cotação mundial. Âmbar: um pouco mais caro que a cotação, mas ainda mais barato que comprar à vista (que custa ~6% acima da cotação). Vermelho: mais caro que comprar à vista.',
   contratado: 'Contratado: soma do volume por ano dos contratos ativos. O que não está contratado é comprado ou vendido à vista, ao preço do dia.',
   sobra: 'Sobra para vender: o que a produção nacional deixa depois de abastecer o consumo interno. Vender mais do que isso faz faltar no mercado interno e empurra o preço para cima.'
 };
@@ -25397,7 +25397,7 @@ function ComComprar({ g, upd }) {
       <${ComSituacao} g=${g} upd=${upd} tipo="compra" k=${k} nome=${nomeI(I)} />
       <div className="ic-tw vis"><table className="ic-tbl"><thead><tr><th>Vendedor</th><th>Preço entregue no Brasil${un ? ' (' + un + ')' : ''}<${GvTip} txt=${IC_TIPS.entregue} /></th><th>Comparado ao preço mundial<${GvTip} txt=${IC_TIPS.vsMundialC} /></th><th>Frete</th><th>Entrega</th><th>Relação</th><th>Preço de ${nomeI(I).toLowerCase()} no Brasil se fechar<${GvTip} txt=${IC_TIPS.seFechar} lado="dir" /></th><th></th></tr></thead><tbody>
         ${vend.map((c, i) => { const p1 = icPrecoPedidoCompra(g, k, c.k, 1, baseQ); const fp = icFreteEPrazo(I, c); const rel = icRel(g, c); const S = linhas[i] && linhas[i].S; return html`<tr key=${c.k} data-com-vendedor=${c.k}>
-          <td><${ComPais} k=${c.k} /></td><td className="num">${icPrecoTxt(ref, p1)}</td><td className="num" style=${{ color: p1 <= F.idx * 1.06 ? 'var(--verde)' : 'var(--rubro)' }}>${icCompTxt(p1 / F.idx, 'mais barato', 'mais caro')}</td><td className="num">${fmt(fp.frete * 100, 1)}%</td><td className="num">~${fp.dias} dias</td><td><${Tag} cor=${corRel(rel)}>${rotuloRel(rel)}</${Tag}></td>
+          <td><${ComPais} k=${c.k} /></td><td className="num">${icPrecoTxt(ref, p1)}</td><td className="num" style=${{ color: p1 <= F.idx ? 'var(--verde)' : p1 <= F.idx * 1.06 ? 'var(--ambar)' : 'var(--rubro)' }}>${icCompTxt(p1 / F.idx, 'mais barato', 'mais caro')}</td><td className="num">${fmt(fp.frete * 100, 1)}%</td><td className="num">~${fp.dias} dias</td><td><${Tag} cor=${corRel(rel)}>${rotuloRel(rel)}</${Tag}></td>
           <td data-com-se-fechar=${c.k} data-delta=${S ? S.d.toFixed(5) : ''}>${S ? html`<${IcSeta} d=${S.d} /><div className="mx-s">${icAB(S)}</div>` : null}</td>
           <td><button type="button" className="btn btn-ghost btn-sm" data-com-comprar-de=${c.k} aria-pressed=${iso === c.k} onClick=${() => setIso(c.k)}>Comprar</button></td></tr>`; })}
       </tbody></table></div>
@@ -25464,10 +25464,10 @@ function MundoComercio({ g, upd, decidir, go }) {
   return html`<div className="flex flex-col gap-6" data-mundo="comercio" data-com-root="1">
     <style>${IC_CSS}</style>
     <section aria-label="Resumo do comércio exterior" data-gv="com-resumo"><div className="gv-kpis">
-      <${GvKpi} dado="com-saldo-mes" ic="Scale" cor=${T.saldoMes >= 0 ? 'var(--verde)' : 'var(--rubro)'} k="Balança no mês" v=${(T.saldoMes >= 0 ? '+' : '−') + icUsd(Math.abs(T.saldoMes))} s="exportações menos importações" />
-      <${GvKpi} dado="com-saldo-ano" ic="TrendingUp" cor=${T.saldoAno >= 0 ? 'var(--verde)' : 'var(--rubro)'} k="Balança em 12 meses" v=${(T.saldoAno >= 0 ? '+' : '−') + icUsd(Math.abs(T.saldoAno))} s=${'ritmo atual · base 2025: +US$ ' + fmt(IC_SALDO0, 1) + ' bi'} />
+      <${GvKpi} dado="com-saldo-mes" ic="Scale" cor=${T.saldoMes >= 0 ? 'var(--verde)' : 'var(--rubro)'} k="Balança no mês" v=${(T.saldoMes >= 0 ? '+' : '−') + fmt(Math.abs(T.saldoMes), Math.abs(T.saldoMes) < 1 ? 2 : 1)} s="US$ bi · exportações menos importações" />
+      <${GvKpi} dado="com-saldo-ano" ic="TrendingUp" cor=${T.saldoAno >= 0 ? 'var(--verde)' : 'var(--rubro)'} k="Balança em 12 meses" v=${(T.saldoAno >= 0 ? '+' : '−') + fmt(Math.abs(T.saldoAno), Math.abs(T.saldoAno) < 1 ? 2 : 1)} s=${'US$ bi · ritmo atual (2025: +' + fmt(IC_SALDO0, 1) + ')'} />
       <${GvKpi} dado="com-acordos" ic="Handshake" cor="var(--ouro)" k="Acordos ativos" v=${ativos.length} s=${ativos.length ? icUsd(vol) + ' por ano em contratos' : 'nenhum contrato'} />
-      <${GvKpi} dado="com-propostas" ic="Inbox" cor="var(--ambar)" k="Propostas recebidas" v=${abertas.length} s=${abertas.filter(p => p.grande).length + ' grandes na Mesa'} />
+      <${GvKpi} dado="com-propostas" ic="Inbox" cor="var(--ambar)" k="Propostas" v=${abertas.length} s=${abertas.filter(p => p.grande).length + ' grandes na Mesa'} />
       <${GvKpi} dado="com-ipca" ic="Flame" cor=${Math.abs(C.mac.ipca) < .1 ? 'var(--muted)' : C.mac.ipca > 0 ? 'var(--ambar)' : 'var(--verde)'} k="Efeito no IPCA" v=${sgn(C.mac.ipca, 2) + ' pp'} s="preços de importados e alimentos" />
     </div></section>
     <div className="ic-tabs" role="tablist" aria-label="Comércio exterior">${ABAS.map(([k2, n2, ic]) => html`<button key=${k2} type="button" role="tab" aria-selected=${aba === k2} className="ic-tab" data-com-aba=${k2} onClick=${() => setAba(k2)}><${Icon} n=${ic} s=${16} /> ${n2}</button>`)}<span className="ml-auto self-center"><${PsAcoes} g=${g} /></span></div>
