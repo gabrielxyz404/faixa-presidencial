@@ -2501,6 +2501,7 @@ function novoJogo(cfg) {
   ensureGv(g);
   ensureConv(g);
   ensureJus(g);
+  try { ensureAreas(g); } catch (e) { delete g.areas; } // METAS POR ÁREA
   ensureMin(g);
   ensureCf(g);
   entEnsure(g); elEnsure(g);
@@ -13713,6 +13714,7 @@ function fimDoMes(g) {
   S.desm = clamp(S.desm + (desmT - S.desm) * .15, 200, 30000);
   S.idh = clamp(S.idh + .00002 * (O.educacao + O.saude) + (E.pib - 1.5) * .0002 - (S.pob - 23) * .00005, .5, .95);
   f3Social(g);
+  try { areasMensal(g, notas); } catch (e) { if (typeof console !== 'undefined') console.warn('areasMensal', e); } // METAS POR ÁREA: indicadores de área, efeito nacional e metas
   // grupos
   const G = g.groups;
   const misery = E.ipca + E.des;
@@ -18657,14 +18659,14 @@ function PaisSecao({ g, upd, decidir, chip, setChip, abrirPend }) {
     <div className="contents ps-root"><${PsStyle} />
     ${c === 'mapa' && html`<${PaisMapa} g=${g} />`}
     ${c === 'economia' && html`<div className="flex flex-col gap-6" data-pais="economia"><${EcoResumo} g=${g} /><${PainelUF} g=${g} area="economia" /><${Economia} g=${g} upd=${upd} decidir=${decidir} /><${FontesArea} area="economia" notas="Petrobras (fatia direta da União) e a carteira do BNDESPar são fatias distintas; a Caixa Seguridade já está dentro do patrimônio da Caixa. Valores marcados como estimativa vêm de cálculo do jogo sobre dados publicados e não de uma fonte direta." /></div>`}
-    ${c === 'industria' && html`<${PaisIndustria} g=${g} upd=${upd} decidir=${decidir} />`}
-    ${c === 'seguranca' && html`<${PaisSeguranca} g=${g} upd=${upd} decidir=${decidir} />`}
-    ${c === 'saude' && html`<${PaisSaude} g=${g} upd=${upd} decidir=${decidir} />`}
-    ${c === 'educacao' && html`<${PaisEducacao} g=${g} upd=${upd} decidir=${decidir} />`}
-    ${c === 'trabalho' && html`<div className="flex flex-col gap-6"><${TbResumo} g=${g} /><${PainelUF} g=${g} area="trabalho" /><${Trabalho} g=${g} decidir=${decidir} /><${FontesArea} area="trabalho" notas=${html`<${OrcFonte} area="trabalho" />`} /></div>`}
-    ${c === 'infraestrutura' && html`<${PaisInfra} g=${g} upd=${upd} decidir=${decidir} />`}
+    ${c === 'industria' && html`<div className="flex flex-col gap-6"><${MetasArea} g=${g} upd=${upd} area="industria" /><${PaisIndustria} g=${g} upd=${upd} decidir=${decidir} /></div>`}
+    ${c === 'seguranca' && html`<div className="flex flex-col gap-6"><${MetasArea} g=${g} upd=${upd} area="seguranca" /><${PaisSeguranca} g=${g} upd=${upd} decidir=${decidir} /></div>`}
+    ${c === 'saude' && html`<div className="flex flex-col gap-6"><${MetasArea} g=${g} upd=${upd} area="saude" /><${PaisSaude} g=${g} upd=${upd} decidir=${decidir} /></div>`}
+    ${c === 'educacao' && html`<div className="flex flex-col gap-6"><${MetasArea} g=${g} upd=${upd} area="educacao" /><${PaisEducacao} g=${g} upd=${upd} decidir=${decidir} /></div>`}
+    ${c === 'trabalho' && html`<div className="flex flex-col gap-6"><${MetasArea} g=${g} upd=${upd} area="trabalho" /><${TbResumo} g=${g} /><${PainelUF} g=${g} area="trabalho" /><${Trabalho} g=${g} decidir=${decidir} /><${FontesArea} area="trabalho" notas=${html`<${OrcFonte} area="trabalho" />`} /></div>`}
+    ${c === 'infraestrutura' && html`<div className="flex flex-col gap-6"><${MetasArea} g=${g} upd=${upd} area="infra" /><${PaisInfra} g=${g} upd=${upd} decidir=${decidir} /></div>`}
     ${c === 'sociedade' && html`<${Sociedade} g=${g} upd=${upd} setChip=${setChip} decidir=${decidir} />`}
-    ${c === 'justica' && html`<${PaisJustica} g=${g} upd=${upd} decidir=${decidir} />`}
+    ${c === 'justica' && html`<div className="flex flex-col gap-6"><${MetasArea} g=${g} upd=${upd} area="justica" /><${PaisJustica} g=${g} upd=${upd} decidir=${decidir} /></div>`}
     </div>
   </${Subpagina}>`;
 }
@@ -19659,7 +19661,8 @@ const PUF_LIGA = [
   { re: /mortalidade_infantil|mort_inf/, f: (g, v, B) => v * (g.ind.mi / B.mi) },
   { re: /ideb/, f: (g, v, B) => clamp(v + (g.ind.ideb - B.ideb), 0, 10) },
   { re: /esgoto|saneamento/, f: (g, v, B) => clamp(v + (g.ind.esgoto - B.esgoto) * (100 - v) / Math.max(1, 100 - B.esgoto), 0, 100) },
-  { re: /pobreza/, f: (g, v, B) => v * (g.soc.pob / B.pob) }
+  { re: /pobreza/, f: (g, v, B) => v * (g.soc.pob / B.pob) },
+  { re: /rodovias_boas/, f: (g, v, B) => clamp(v + areaDelta(g, 'rodovias'), 0, 100) } // METAS POR ÁREA
 ];
 const PUF_TIT = { economia: 'Economia por estado', trabalho: 'Trabalho por estado', saude: 'Saúde por estado', educacao: 'Educação por estado', infraestrutura: 'Infraestrutura por estado', infratransp: 'Infraestrutura e transportes por estado', transportes: 'Transportes por estado' };
 function pufDados(area) { return area === 'saude' ? SAUDE_UF : area === 'infratransp' ? infraTranspDados() : (AREAS_UF && AREAS_UF[area]) || null; }
@@ -19839,7 +19842,7 @@ function infraTranspDados() {
 // Dados reais só nacionais (sem série por estado verificada). Entram nos cartões como "Real", marcados como dado nacional fixo; "jogo" liga ao indicador do jogo quando existe.
 const PAIS_EXTRAS = {
   educacao: [
-    { nome: 'Matrículas em tempo integral', un: '% da educação básica', real: 25.8, ano: 2025, fonte: 'INEP, Censo Escolar 2025 (meta 6 do PNE: 25%; 22,9% em 2024)', url: 'https://www.gov.br/inep/pt-br/centrais-de-conteudo/noticias/censo-escolar/brasil-atingiu-maior-percentual-de-estudantes-em-tempo-integral', melhor: 'maior' }
+    { nome: 'Matrículas em tempo integral', un: '% da educação básica', real: 25.8, ano: 2025, jogo: (g) => areaVal(g, 'integral'), fonte: 'INEP, Censo Escolar 2025 (meta 6 do PNE: 25%; 22,9% em 2024)', url: 'https://www.gov.br/inep/pt-br/centrais-de-conteudo/noticias/censo-escolar/brasil-atingiu-maior-percentual-de-estudantes-em-tempo-integral', melhor: 'maior' }
   ],
   infratransp: [
     { nome: 'Água por rede geral', un: '% da população', real: 83.1, ano: 2023, fonte: 'SINISA 2024 (ano de referência 2023), Ministério das Cidades, na síntese do Banco do Nordeste (Caderno Setorial ETENE, nov/2025)', url: 'https://www.bnb.gov.br/revista/cse/article/view/3298', melhor: 'maior' },
@@ -20144,13 +20147,303 @@ function OrcamentoArea({ g, decidir, area }) {
 }
 function OrcFonte({ area }) { return html`<span className="block mt-2" data-orc-fonte=${area}><b className="text-fg">Orçamento da área.</b> ${ORC_FONTE[area]}</span>`; }
 const SAU_PROG = [
-  { l: 'Carreira médica do SUS', t: 'Criar a carreira federal de médico do SUS, com concurso, dedicação exclusiva e adicional de fixação no interior, R$ 4 bilhões por ano', i: 'Stethoscope', rx: /carreira (federal )?(de |do )?medic|medico do sus/, p2: { l: 'Mais R$ 2 bi na carreira', t: 'Elevar em mais R$ 2 bilhões por ano o adicional de fixação da carreira federal de médico do SUS no interior' } },
-  { l: 'Prazo máximo para cirurgias eletivas', t: 'Pagar R$ 3 bilhões por ano a hospitais privados para zerar a fila de cirurgias eletivas com mais de 180 dias de espera, e fixar esse prazo máximo em lei', i: 'Hospital', rx: /fila de cirurgias eletivas/, p2: { l: 'Prazo de 90 dias', t: 'Pagar mais R$ 2 bilhões por ano a hospitais privados para reduzir de 180 para 90 dias o prazo máximo de espera por cirurgia eletiva no SUS' } },
+  { l: 'Carreira médica do SUS', ind: [['medicos', .35, 24], ['fila', -8, 24]], t: 'Criar a carreira federal de médico do SUS, com concurso, dedicação exclusiva e adicional de fixação no interior, R$ 4 bilhões por ano', i: 'Stethoscope', rx: /carreira (federal )?(de |do )?medic|medico do sus/, p2: { l: 'Mais R$ 2 bi na carreira', t: 'Elevar em mais R$ 2 bilhões por ano o adicional de fixação da carreira federal de médico do SUS no interior' } },
+  { l: 'Prazo máximo para cirurgias eletivas', ind: [['fila', -60, 12]], t: 'Pagar R$ 3 bilhões por ano a hospitais privados para zerar a fila de cirurgias eletivas com mais de 180 dias de espera, e fixar esse prazo máximo em lei', i: 'Hospital', rx: /fila de cirurgias eletivas/, p2: { l: 'Prazo de 90 dias', t: 'Pagar mais R$ 2 bilhões por ano a hospitais privados para reduzir de 180 para 90 dias o prazo máximo de espera por cirurgia eletiva no SUS' } },
   { l: 'Canetas de obesidade no SUS', t: 'Incluir no Farmácia Popular a semaglutida e a tirzepatida para obesidade grave e diabetes, com R$ 3 bilhões por ano', i: 'Pill', rx: /semaglutida|tirzepatida|obesidade/, p2: { l: 'Mais R$ 2 bi em canetas', t: 'Elevar em mais R$ 2 bilhões por ano a oferta gratuita de semaglutida e tirzepatida no Farmácia Popular' } },
-  { l: 'Vacina contra herpes-zóster', t: 'Incluir no calendário do SUS a vacina contra herpes-zóster para maiores de 60 anos, R$ 1,5 bilhão por ano', i: 'Syringe', rx: /zoster/ },
+  { l: 'Vacina contra herpes-zóster', ind: [['vacinal', 1.2, 12]], t: 'Incluir no calendário do SUS a vacina contra herpes-zóster para maiores de 60 anos, R$ 1,5 bilhão por ano', i: 'Syringe', rx: /zoster/ },
   { l: 'Mosquitos com Wolbachia', t: 'Criar uma segunda fábrica de mosquitos com Wolbachia contra a dengue, R$ 800 milhões', i: 'Bug', rx: /wolbachia/ },
-  { l: 'Mais 5 mil leitos de UTI', t: 'Financiar 5 mil novos leitos de UTI no SUS, em hospitais filantrópicos e municipais, com R$ 3 bilhões por ano', i: 'Bed', rx: /novos leitos de uti/, p2: { l: 'Mais 5 mil leitos', t: 'Financiar mais 5 mil novos leitos de UTI no SUS, no interior e nas periferias, com R$ 3 bilhões por ano' } }
+  { l: 'Mais 5 mil leitos de UTI', ind: [['uti', 2.3, 18]], t: 'Financiar 5 mil novos leitos de UTI no SUS, em hospitais filantrópicos e municipais, com R$ 3 bilhões por ano', i: 'Bed', rx: /novos leitos de uti/, p2: { l: 'Mais 5 mil leitos', t: 'Financiar mais 5 mil novos leitos de UTI no SUS, no interior e nas periferias, com R$ 3 bilhões por ano' } }
 ];
+/* ============================== METAS POR ÁREA (indicadores de área com meta do mandato) ==============================
+   Cada aba do País ganha indicadores próprios, com linha de base real de 2025/2026, meta visível e tendência. Eles andam por três vias:
+   (1) programas aprovados (campo `ind` nos itens de programa: [indicador, variação no efeito pleno, meses de maturação]), lidos pela medida em vigor
+       que cobre o programa (psVigor); a variação entra pela rampa da própria medida e some aos poucos se ela for revogada;
+   (2) regras por texto (AREA_REGRAS) para medidas livres e para áreas sem cartões de programa (Segurança, Justiça, Trabalho, Indústria);
+   (3) o orçamento da área (controle em g.orc e medidas de despesa não cobertas por programa), com média móvel; cortar piora.
+   Os indicadores alimentam de volta o IDH, a pobreza, os homicídios e a aprovação dos grupos ligados; bater a meta rende aprovação e entra no Balanço e no legado.
+   Estado em g.areas (criado de forma preguiçosa; saves antigos funcionam sem o campo). Nada aqui altera funções de programas/orçamento: só lê medidas. */
+const AREA_DEF = {
+  saude: { nome: 'Saúde', ic: 'HeartPulse', orc: 'saude' },
+  educacao: { nome: 'Educação', ic: 'GraduationCap', orc: 'educacao' },
+  infra: { nome: 'Infraestrutura e transportes', ic: 'Construction', orc: 'infra' },
+  seguranca: { nome: 'Segurança', ic: 'Shield', orc: 'seguranca' },
+  justica: { nome: 'Justiça', ic: 'Scale' },
+  trabalho: { nome: 'Trabalho', ic: 'Briefcase' },
+  industria: { nome: 'Indústria', ic: 'Factory' }
+};
+/* bom: +1 (maior é melhor) ou -1 (menor é melhor). sug: variação sugerida no mandato (com sinal, na direção boa). teto: melhor valor realista (retorno decrescente).
+   nat: variação natural por ano (sem ação do governo). orc: variação por ano com +10% no orçamento da área. w: efeito nacional na meta cheia (idh em milésimos de IDH,
+   pob em p.p., hom em mortes por 100 mil; o IDH entra dividido por 400, e todas as metas sugeridas juntas somam cerca de +0,012). gr: grupos ligados. liga: indicador que já existe no jogo (valor lido de lá). est: linha de base estimada pelo jogo. */
+const AREA_IND = [
+  { id: 'fila', area: 'saude', nome: 'Espera por cirurgia eletiva', curto: 'fila de cirurgias', un: ' dias', dec: 0, base: 150, ano: 2025, est: true, bom: -1, sug: -45, teto: 60, nat: 2, orc: -6, w: { idh: .5, pob: -.05 }, gr: ['periferia', 'classemedia'],
+    fonte: 'Estimativa do jogo: não há série nacional oficial de espera por cirurgia eletiva. Ordem de grandeza a partir do programa Agora Tem Especialistas (Ministério da Saúde, 2025) e de auditorias do TCU. O programa de zerar a fila de mais de 180 dias parte daí.' },
+  { id: 'uti', area: 'saude', nome: 'Leitos de UTI no SUS', curto: 'leitos de UTI', un: ' por 100 mil', dec: 1, base: 21, ano: 2025, est: true, bom: 1, sug: 4, teto: 32, nat: .2, orc: .8, w: { idh: .4, pob: 0 }, gr: ['periferia', 'catolicos'],
+    fonte: 'CNES/DataSUS (leitos de UTI adulto, pediátrico e neonatal habilitados no SUS), ordem de grandeza 2025 sobre a população do IBGE; o valor exato varia com o recorte. Estimativa do jogo.' },
+  { id: 'vacinal', area: 'saude', nome: 'Cobertura vacinal infantil', curto: 'cobertura vacinal', un: '%', dec: 1, base: 86, ano: 2025, est: true, bom: 1, sug: 6, teto: 97, nat: .3, orc: 1.2, w: { idh: .4, pob: 0 }, gr: ['catolicos', 'classemedia'],
+    fonte: 'Ministério da Saúde, painel do PNI 2025 (preliminar): só BCG e hepatite B bateram a meta de 95%; a OPAS cita BCG 98,0% e tríplice viral 1ª dose 94,0%. A média de 86% é estimativa do jogo sobre as vacinas do calendário infantil.' },
+  { id: 'medicos', area: 'saude', nome: 'Médicos por mil habitantes no interior', curto: 'médicos no interior', un: ' por mil', dec: 2, base: 1.5, ano: 2025, est: true, bom: 1, sug: .35, teto: 2.6, nat: .02, orc: .05, w: { idh: .4, pob: 0 }, gr: ['periferia', 'universitarios'],
+    fonte: 'Demografia Médica no Brasil 2025 (USP/AMB): cerca de 2,7 médicos por mil no país e concentração nas capitais. O recorte do interior é estimativa do jogo.' },
+  { id: 'creche', area: 'educacao', nome: 'Cobertura de creche (0 a 3 anos)', curto: 'creches', un: '%', dec: 1, base: 43.3, ano: 2025, bom: 1, sug: 6.7, teto: 70, nat: .6, orc: 1.2, w: { idh: .4, pob: -.25, hom: -.1 }, gr: ['periferia', 'classemedia'],
+    fonte: 'IBGE, PNAD Contínua Educação 2025 (divulgada em 19/06/2026), na síntese do Todos Pela Educação: 43,3% das crianças de 0 a 3 anos frequentam creche, o maior valor da série (41,2% em 2024). Meta do PNE: 50%.' },
+  { id: 'integral', area: 'educacao', nome: 'Matrículas em tempo integral', curto: 'tempo integral', un: '%', dec: 1, base: 25.8, ano: 2025, bom: 1, sug: 6, teto: 45, nat: .8, orc: .9, w: { idh: .3, pob: -.1, hom: -.1 }, gr: ['periferia', 'classemedia'],
+    fonte: 'INEP, Censo Escolar 2025: 25,8% das matrículas da educação básica em tempo integral (22,9% em 2024; meta 6 do PNE: 25%).' },
+  { id: 'alfab', area: 'educacao', nome: 'Crianças alfabetizadas na idade certa', curto: 'alfabetização', un: '%', dec: 1, base: 59.2, ano: 2024, bom: 1, sug: 10, teto: 85, nat: .8, orc: .8, w: { idh: .4, pob: -.1 }, gr: ['catolicos', 'classemedia'],
+    fonte: 'MEC, Indicador Criança Alfabetizada 2024: 59,2% das crianças alfabetizadas ao fim do 2º ano (56,0% em 2023). Meta nacional de 2024: 60%.' },
+  { id: 'evasao', area: 'educacao', nome: 'Abandono no ensino médio (1º ano)', curto: 'evasão no ensino médio', un: '%', dec: 1, base: 2.2, ano: 2025, bom: -1, sug: -.7, teto: .6, nat: -.05, orc: -.15, w: { idh: .3, pob: -.1, hom: -.15 }, gr: ['periferia', 'universitarios'],
+    fonte: 'INEP, Censo Escolar 2025: a taxa de abandono no 1º ano do ensino médio caiu de 3,7% (2024) para 2,2% (2025); o abandono geral do ensino médio público caiu 61% entre 2022 e 2025.' },
+  { id: 'ideb', area: 'educacao', nome: 'Ideb (anos iniciais)', curto: 'Ideb', un: '', dec: 2, base: 6.3, ano: 2025, bom: 1, sug: .45, teto: 7.5, nat: 0, orc: 0, liga: 'ideb', w: { idh: .3 }, gr: ['catolicos', 'universitarios'],
+    fonte: 'INEP, Ideb 2025 (anos iniciais, rede pública): 6,3, o maior em 20 anos. No jogo este valor é o mesmo que alimenta o mapa de Educação.' },
+  { id: 'rodovias', area: 'infra', nome: 'Rodovias em estado ótimo ou bom', curto: 'rodovias em bom estado', un: '%', dec: 1, base: 37.9, ano: 2025, bom: 1, sug: 7, teto: 60, nat: -.4, orc: 1.5, w: { idh: .1, pob: -.05 }, gr: ['caminhoneiros', 'empresariado'],
+    fonte: 'CNT, Pesquisa CNT de Rodovias 2025: 37,9% da extensão avaliada em estado geral ótimo ou bom. No jogo o mapa por estado acompanha este valor.' },
+  { id: 'esgoto', area: 'infra', nome: 'População com esgoto coletado', curto: 'esgoto', un: '%', dec: 1, base: 62.3, ano: 2024, bom: 1, sug: 11, teto: 85, nat: 0, orc: 0, liga: 'esgoto', w: { idh: .3, pob: -.1 }, gr: ['periferia', 'catolicos'],
+    fonte: 'Instituto Água e Saneamento a partir do SINISA 2025 (ano de referência 2024): 62,3% da população com esgoto por rede coletora. É o mesmo valor que o jogo já move com saneamento.' },
+  { id: 'agua', area: 'infra', nome: 'População com água por rede', curto: 'água tratada', un: '%', dec: 1, base: 84.1, ano: 2024, bom: 1, sug: 3, teto: 95, nat: .1, orc: .5, w: { idh: .2, pob: -.05 }, gr: ['periferia', 'catolicos'],
+    fonte: 'Instituto Água e Saneamento a partir do SINISA 2025 (ano de referência 2024): 84,1% da população atendida por rede de água. Meta do Marco do Saneamento: 99% até 2033.' },
+  { id: 'deficit', area: 'infra', nome: 'Déficit habitacional (milhões de domicílios)', curto: 'déficit de moradias', un: ' mi', dec: 2, base: 5.77, ano: 2024, bom: -1, sug: -.45, teto: 4.2, nat: -.03, orc: -.05, w: { idh: .15, pob: -.2 }, gr: ['periferia', 'classemedia'],
+    fonte: 'Fundação João Pinheiro, déficit habitacional: 5,77 milhões de moradias em 2024, cerca de 7,4% dos domicílios (5,98 milhões em 2023; 6,2 milhões na edição de 2022). Valor de 2024 em síntese de imprensa, conferir na FJP.' },
+  { id: 'ferrovias', area: 'infra', nome: 'Malha ferroviária', curto: 'ferrovias', un: ' mil km', dec: 1, base: 30.5, ano: 2025, est: true, bom: 1, sug: 1.2, teto: 36, nat: .05, orc: .1, w: { idh: .05, pob: -.03 }, gr: ['empresariado', 'agro'],
+    fonte: 'ANTT: cerca de 30 mil km de malha ferroviária concedida e em operação, ordem de grandeza 2025. Estimativa do jogo; trechos novos (FICO, Transnordestina) somam algumas centenas de km cada.' },
+  { id: 'hom', area: 'seguranca', nome: 'Mortes violentas intencionais', curto: 'homicídios', un: ' por 100 mil', dec: 1, base: 19.1, ano: 2025, bom: -1, sug: -3, teto: 10, nat: 0, orc: 0, liga: 'hom', w: {}, gr: ['classemedia', 'policiais'],
+    fonte: 'Anuário Brasileiro de Segurança Pública 2025 (FBSP, 23/07/2026): 40.775 mortes violentas intencionais em 2025, 19,1 por 100 mil, queda de 8,2% e menor taxa desde 2012 (20,6 em 2024). Meta da Política Nacional: 16 por 100 mil até 2027.' },
+  { id: 'esclarec', area: 'seguranca', nome: 'Homicídios esclarecidos', curto: 'esclarecimento de homicídios', un: '%', dec: 1, base: 37, ano: 2024, bom: 1, sug: 8, teto: 70, nat: .2, orc: 1, w: { idh: 0, hom: -.8 }, gr: ['classemedia', 'policiais'],
+    fonte: 'Instituto Sou da Paz, Onde Mora a Impunidade (2025): 39% dos homicídios de 2022 tiveram ao menos um autor denunciado; 36% dos de 2023. Os critérios variam por estado e por polícia, e o valor do jogo é o do relatório mais recente.' },
+  { id: 'ocup', area: 'seguranca', nome: 'Ocupação do sistema prisional', curto: 'superlotação dos presídios', un: '% das vagas', dec: 0, base: 130, ano: 2025, est: true, bom: -1, sug: -12, teto: 100, nat: 1.5, orc: -2, w: { idh: 0, hom: -.3 }, gr: ['policiais', 'classemedia'],
+    fonte: 'Senappen/SISDEPEN: cerca de 670 mil presos para cerca de 515 mil vagas (ocupação de 130%), ordem de grandeza 2025. Estimativa do jogo: conferir no painel do Senappen.' },
+  { id: 'tempo', area: 'justica', nome: 'Duração do processo pendente', curto: 'tempo de processo', un: ' meses', dec: 0, base: 43, ano: 2025, bom: -1, sug: -5, teto: 28, nat: 0, w: { idh: 0, pob: -.05 }, gr: ['empresariado', 'classemedia'],
+    fonte: 'CNJ, Justiça em Números 2026 (ano-base 2025): 75,5 milhões de processos em acervo (queda de 4,3%); duração média de 3 anos e 7 meses (43 meses) para os pendentes e de 2 anos e 4 meses para os baixados.' },
+  { id: 'provis', area: 'justica', nome: 'Presos provisórios', curto: 'presos provisórios', un: '% dos presos', dec: 1, base: 25, ano: 2025, est: true, bom: -1, sug: -4, teto: 12, nat: 0, w: { idh: 0, hom: -.1 }, gr: ['universitarios', 'classemedia'],
+    fonte: 'Senappen/SISDEPEN e CNJ (BNMP): cerca de um quarto dos presos aguarda julgamento (34% em levantamento antigo do CNJ). Estimativa do jogo para 2025; conferir no painel do Senappen.' },
+  { id: 'des', area: 'trabalho', nome: 'Taxa de desemprego', curto: 'desemprego', un: '%', dec: 1, base: 6, ano: 2026, bom: -1, sug: -1, teto: 4, nat: 0, orc: 0, liga: 'des', w: {}, gr: ['periferia', 'classemedia'],
+    fonte: 'IBGE, PNAD Contínua. No jogo é o mesmo desemprego da economia; ele reage a crescimento e juros, e as medidas de Trabalho o movem pelo motor existente.' },
+  { id: 'inform', area: 'trabalho', nome: 'Informalidade', curto: 'informalidade', un: '% dos ocupados', dec: 1, base: 38, ano: 2026, bom: -1, sug: -2.5, teto: 30, nat: 0, orc: 0, liga: 'inform', w: {}, gr: ['sindicatos', 'periferia'],
+    fonte: 'IBGE, PNAD Contínua (ocupados sem carteira, conta própria sem CNPJ e auxiliares). No jogo é a informalidade calculada pelo painel de Trabalho.' },
+  { id: 'qualif', area: 'trabalho', nome: 'Trabalhadores qualificados por ano', curto: 'qualificação', un: ' mil por ano', dec: 0, base: 650, ano: 2025, est: true, bom: 1, sug: 250, teto: 1400, nat: 10, w: { idh: .2, pob: -.25 }, gr: ['periferia', 'sindicatos'],
+    fonte: 'Ministério do Trabalho e Emprego (Sine, Qualifica Brasil e Sistema S): ordem de grandeza de 650 mil trabalhadores em cursos de qualificação por ano. Estimativa do jogo; não há série consolidada.' },
+  { id: 'aprend', area: 'trabalho', nome: 'Jovens aprendizes contratados', curto: 'jovens aprendizes', un: ' mil', dec: 0, base: 600, ano: 2025, est: true, bom: 1, sug: 120, teto: 1000, nat: 5, w: { idh: .1, pob: -.1, hom: -.1 }, gr: ['periferia', 'universitarios'],
+    fonte: 'Ministério do Trabalho e Emprego, RAIS e Lei da Aprendizagem: cerca de 600 mil aprendizes contratados. Estimativa do jogo sobre o ano-base 2024/2025.' },
+  { id: 'pit', area: 'industria', nome: 'Indústria de transformação no PIB', curto: 'indústria no PIB', un: '% do PIB', dec: 1, base: 11.5, ano: 2025, est: true, bom: 1, sug: 1.2, teto: 15, nat: -.05, w: { idh: .1, pob: -.1 }, gr: ['empresariado', 'sindicatos'],
+    fonte: 'IBGE, Contas Nacionais Trimestrais: a indústria de transformação responde por cerca de 11 a 12% do PIB. Estimativa do jogo (ordem de grandeza, conferir na série do IBGE).' },
+  { id: 'iprod', area: 'industria', nome: 'Produção industrial (base 2025 = 100)', curto: 'produção industrial', un: ' pontos', dec: 1, base: 100, ano: 2025, bom: 1, sug: 7, teto: 130, nat: .5, w: { idh: 0, pob: -.1 }, gr: ['empresariado', 'sindicatos'],
+    fonte: 'IBGE, Pesquisa Industrial Mensal: índice reescalado para 2025 = 100. A produção por setor aparece na aba Indústria; este é o agregado.' }
+];
+const AREA_IND_ID = {}; for (const I of AREA_IND) AREA_IND_ID[I.id] = I;
+const AREA_NIVEIS = [{ k: 'cautelosa', nome: 'Cautelosa', f: .6, m: .6 }, { k: 'sugerida', nome: 'Sugerida', f: 1, m: 1 }, { k: 'ousada', nome: 'Ousada', f: 1.5, m: 1.6 }];
+/* regras por texto para medidas livres ou áreas sem cartão de programa: rx casa o tema/nome da medida (sem acento); ind = [indicador, variação no efeito pleno, meses] */
+const AREA_REGRAS = [
+  { k: 'presidios', rx: /presidi|penitenciar|vagas? (?:no|nos|em) (?:sistema|presidios)|vagas prisionais|unidades prisionais/, ind: [['ocup', -9, 24]] },
+  { k: 'investigacao', rx: /pericia|policia civil|inteligencia policial|banco (?:nacional )?de perfis|investigacao de homicidio|delegacias? de homicidio|esclarecimento/, ind: [['esclarec', 4, 24]] },
+  { k: 'policiamento', rx: /policia federal|forca nacional|faccao|crime organizado|policiamento|cameras? de seguranca|combate ao trafico|plano nacional de seguranca/, ind: [['hom', -.8, 12], ['esclarec', 1, 18]] },
+  { k: 'custodia', rx: /audiencias? de custodia|prisao provisoria|presos provisorios|alternativas penais|monitoramento eletronico|tornozeleira/, ind: [['provis', -3, 12], ['ocup', -3, 12]] },
+  { k: 'celeridade', rx: /juiz\w*|varas?|cnj|justica digital|celeridade|execucao fiscal|processo judicial|tribunais?|juizados?/, ind: [['tempo', -3, 18]] },
+  { k: 'qualif', rx: /qualificacao|capacitacao|formacao profissional|requalificacao|sistema s\b|\bsenai\b|\bsine\b|cursos? tecnicos?/, ind: [['qualif', 180, 12]] },
+  { k: 'aprend', rx: /aprendiz|primeiro emprego/, ind: [['aprend', 60, 12]] },
+  { k: 'industria', rx: /industrializacao|politica industrial|nova industria|industria nacional|conteudo local|semicondutor|parque industrial|manufatura|fabrica\b/, ind: [['pit', .4, 24], ['iprod', 2.5, 18]] }
+];
+// grupos ligados que existem em g.groups como base (os derivados andam junto por outro caminho)
+const AREA_GR_OK = new Set(['empresariado', 'agro', 'mercado', 'evangelicos', 'catolicos', 'periferia', 'classemedia', 'sindicatos', 'universitarios', 'indigenas', 'gamers', 'caminhoneiros', 'policiais']);
+function ensureAreas(g) {
+  if (!g || typeof g !== 'object') return null;
+  let A = g.areas;
+  if (!A || typeof A !== 'object' || Array.isArray(A) || A.v !== 1) {
+    A = { v: 1, val: {}, b0: {}, hist: {}, meta: {}, med: {}, ema: {}, nat: { pob: 0, hom: 0 }, ini: g.mes || 1, ult: 0, ids: '', nprog: {}, ok: [] };
+    g.areas = A;
+  }
+  for (const k of ['val', 'b0', 'hist', 'meta', 'med', 'ema', 'nprog']) if (!A[k] || typeof A[k] !== 'object' || Array.isArray(A[k])) A[k] = {};
+  if (!A.nat || typeof A.nat !== 'object') A.nat = { pob: 0, hom: 0 };
+  if (!Number.isFinite(A.nat.pob)) A.nat.pob = 0; if (!Number.isFinite(A.nat.hom)) A.nat.hom = 0;
+  if (!Array.isArray(A.ok)) A.ok = [];
+  for (const I of AREA_IND) {
+    if (!I.liga && !Number.isFinite(A.val[I.id])) A.val[I.id] = I.base;
+    if (I.liga && !Number.isFinite(A.b0[I.id])) { const v = areaVal(g, I.id); A.b0[I.id] = Number.isFinite(v) ? v : I.base; }
+  }
+  return A;
+}
+// valor atual de um indicador (leitura pura: não cria estado)
+function areaVal(g, id) {
+  const I = AREA_IND_ID[id]; if (!I) return null;
+  try {
+    if (I.liga === 'hom') return g.soc.hom;
+    if (I.liga === 'esgoto') return g.ind.esgoto;
+    if (I.liga === 'ideb') return g.ind.ideb;
+    if (I.liga === 'des') return g.eco.des;
+    if (I.liga === 'inform') { const v = tbVista(g); return v && Number.isFinite(v.inf) ? v.inf : I.base; }
+  } catch (e) { return I.base; }
+  const A = g.areas; const v = A && A.val ? A.val[id] : null;
+  return Number.isFinite(v) ? v : I.base;
+}
+const areaBase = (g, I) => { const b = g.areas && g.areas.b0 ? g.areas.b0[I.id] : null; return I.liga && Number.isFinite(b) ? b : I.base; };
+const areaDelta = (g, id) => { const I = AREA_IND_ID[id]; const v = areaVal(g, id); return I && v != null ? v - areaBase(g, I) : 0; };
+function areaFmt(I, v) { return v == null || !Number.isFinite(v) ? '–' : fmt(v, I.dec) + I.un; }
+function areaProg(g, I) {
+  const A = g.areas; const m = A && A.meta ? A.meta[I.id] : null; if (!m) return null;
+  const v = areaVal(g, I.id); const tot = m.alvo - m.ini; if (!tot) return 1;
+  return clamp((v - m.ini) / tot, 0, 1.5);
+}
+function areaTend(g, I) { // variação nos últimos 6 meses, na unidade do indicador
+  const h = g.areas && g.areas.hist && g.areas.hist[I.id]; const v = areaVal(g, I.id);
+  if (!h || h.length < 2) return 0;
+  return v - h[Math.max(0, h.length - 7)];
+}
+function areaSetMeta(g, id, nivel) {
+  const A = ensureAreas(g); const I = AREA_IND_ID[id]; const N = AREA_NIVEIS.find(x => x.k === nivel); if (!I || !N) return;
+  const cur = A.meta[id]; if (cur && cur.ok) return; // meta batida não se troca
+  const ini = areaVal(g, id);
+  A.meta[id] = { alvo: Math.round((ini + I.sug * N.f) * 1000) / 1000, ini, nivel: N.k, mes: g.mes, ok: null };
+}
+const areaMetasDe = (g, area) => AREA_IND.filter(I => I.area === area);
+const areaViva = (M) => M.estado === 'ativa' || M.estado === 'consolidada';
+function AREA_PROGS() { // programas com `ind` nas listas das abas
+  if (AREA_PROGS._c) return AREA_PROGS._c;
+  const out = [];
+  const pega = (it) => { for (const P of it) if (P.ind && P.ind.length) out.push(P); };
+  try { pega(SAU_PROG); pega(EDU_PROG); for (const G of INFRA_GRUPOS) pega(G.itens); pega(JUS_GOV); } catch (e) { /* listas ainda não carregadas */ }
+  if (out.length) AREA_PROGS._c = out;
+  return out;
+}
+function areasReivindica(g, A) {
+  const L = medL(g); const ids = L.map(m => m.id + ':' + m.estado).join(',');
+  if (A.ids === ids) return; A.ids = ids;
+  for (const P of AREA_PROGS()) { // 1) programas com `ind`: a medida em vigor que cobre o programa
+    let M = null; try { M = psVigor(g, P); } catch (e) { M = null; }
+    if (!M || A.med[M.id]) continue;
+    const n = A.nprog[P.l] = (A.nprog[P.l] || 0) + 1;
+    A.med[M.id] = { k: 'p:' + P.l, ind: P.ind, f: 0, e: n > 1 ? .5 : 1 };
+  }
+  for (const M of L) { // 2) regras por texto nas demais medidas vivas
+    if (A.med[M.id] || !areaViva(M)) continue;
+    const t = norm(M.topic || M.nm || '');
+    const R = AREA_REGRAS.find(r => r.rx.test(t));
+    if (R) { const ref = Math.abs((M.fis && M.fis.custo) || 0); A.med[M.id] = { k: 'r:' + R.k, ind: R.ind, f: 0, e: clamp(Math.sqrt(Math.max(ref, 1) / 3), .5, 1.5) }; }
+    else A.med[M.id] = { k: 'x', ind: [], f: 0, e: 0 }; // lida, sem indicador de área: conta no orçamento da área
+  }
+}
+// orçamento da área em % sobre a base: controle em g.orc + despesa das medidas suas que nenhum programa ou regra reivindicou
+function areaOrcPct(g, A, area) {
+  const D = AREA_DEF[area]; if (!D || !D.orc || !g.orc) return 0;
+  const k = D.orc; const rx = ORC_META[area] && ORC_META[area].rx; let net = 0;
+  if (rx) for (const m of medL(g)) {
+    if (!(m.estado === 'ativa' || m.estado === 'suspensa' || m.estado === 'consolidada') || !m.fis) continue;
+    const c = A.med[m.id]; if (c && c.k !== 'x') continue;
+    if (rx.test(norm(m.topic || m.nm || ''))) net += (m.fisAp && Number.isFinite(m.fisAp.custo) ? m.fisAp.custo : 0);
+  }
+  return (g.orc[k] || 0) + net / (ORC_BASE[k] || 100) * 100;
+}
+// pressão persistente sobre as mortes violentas: empurra a meta de cada estado, na mesma dinâmica de segMensal (10% do desvio por mês)
+function areasPressaoHom(g, off) {
+  const S = g.seg;
+  if (S && S.uf) { const h = Math.max(5, g.soc.hom); for (const u in S.uf) { const x = S.uf[u]; x.mvi = clamp(x.mvi + .1 * off * (x.mvi / h), 1, 120); } try { segSync(g); } catch (e) { } }
+  else g.soc.hom = clamp(g.soc.hom + .08 * off, 2, 60);
+}
+function areasMensal(g, notas) {
+  const A = ensureAreas(g); if (!A || A.ult === g.mes) return; A.ult = g.mes;
+  areasReivindica(g, A);
+  const dv = {}; for (const I of AREA_IND) dv[I.id] = 0;
+  for (const id in A.med) { // contribuição das medidas: parte realizada neste mês
+    const c = A.med[id]; if (!c.ind || !c.ind.length) continue;
+    const M = medL(g).find(m => m.id === id); let fn = c.f;
+    if (M) {
+      if (areaViva(M)) {
+        const mat = Math.max(1, ...c.ind.map(x => x[2] || 12));
+        const fT = Math.min(medRamp(M, g.mes), clamp((g.mes - M.m0 + 1) / mat, 0, 1));
+        fn = Math.max(c.f, Math.min(1, fT));
+      } else if (M.estado === 'revogada' || M.estado === 'caducada' || M.estado === 'derrubada') fn = c.f * .85;
+    }
+    const sg = M && M.pol < 0 ? -1 : 1; const kk = M && Number.isFinite(M.k) ? clamp(M.k, .3, 1.2) : 1;
+    const df = fn - c.f; c.f = fn;
+    if (Math.abs(df) < 1e-9) continue;
+    for (const [ik, d] of c.ind) if (dv[ik] != null) dv[ik] += df * d * sg * c.e * kk;
+  }
+  for (const area in AREA_DEF) { // orçamento da área
+    if (!AREA_DEF[area].orc) continue;
+    A.ema[area] = (A.ema[area] || 0) + (areaOrcPct(g, A, area) - (A.ema[area] || 0)) * .08;
+    for (const I of AREA_IND) if (I.area === area && I.orc) dv[I.id] += I.orc / 12 * (A.ema[area] / 10);
+  }
+  const du = {}; // aplica: retorno decrescente perto do teto; cortes e piora passam inteiros
+  for (const I of AREA_IND) {
+    let d = dv[I.id]; const cur = areaVal(g, I.id);
+    if (d * I.bom > 0 && cur != null) { const room = (I.teto - cur) * I.bom, full = Math.abs(I.teto - areaBase(g, I)); d *= clamp(room / Math.max(full, 1e-6), .1, 1); }
+    du[I.id] = d;
+    if (I.liga === 'hom') A.nat.hom += d;
+    else if (I.liga === 'esgoto') g.ind.esgoto = clamp(g.ind.esgoto + d, 0, 100);
+    else if (I.liga === 'ideb') g.ind.ideb = clamp(g.ind.ideb + d, 0, 10);
+    else if (!I.liga) A.val[I.id] = clamp(A.val[I.id] + d + I.nat / 12, Math.min(I.base, I.teto) * .7, Math.max(I.base, I.teto) * 1.4);
+  }
+  let idh = 0, pob = 0, hom = 0; const gr = {}; // efeito nacional: progresso normalizado pela meta sugerida vira IDH, pobreza, homicídios e aprovação
+  for (const I of AREA_IND) {
+    const d = du[I.id]; if (!d) continue;
+    const u = d * I.bom / Math.abs(I.sug || 1); // 1 = meta sugerida cumprida
+    idh += u * (I.w.idh || 0) / 400; pob += u * (I.w.pob || 0); hom += u * (I.w.hom || 0);
+    for (const k of I.gr) gr[k] = (gr[k] || 0) + u * .5;
+  }
+  const EF = A.efeito = A.efeito || { idh: 0, pob: 0, hom: 0, apr: 0 }; EF.idh += idh; EF.pob += pob; EF.hom += hom; // acumulado do efeito nacional dos indicadores de área
+  if (g.soc) { g.soc.idh = clamp(g.soc.idh + idh, .5, .95); A.nat.pob += pob; if (A.nat.pob) g.soc.pob = clamp(g.soc.pob + .08 * A.nat.pob, 2, 60); }
+  A.nat.hom += hom; if (A.nat.hom) areasPressaoHom(g, A.nat.hom);
+  for (const k in gr) if (AREA_GR_OK.has(k) && g.groups[k] != null) g.groups[k] = clamp(g.groups[k] + clamp(gr[k], -1.2, 1.2), 1, 99);
+  for (const I of AREA_IND) { // histórico, tendência e conquistas
+    const v = areaVal(g, I.id); const h = A.hist[I.id] = A.hist[I.id] || []; h.push(Math.round(v * 1000) / 1000); if (h.length > 13) h.shift();
+    const m = A.meta[I.id];
+    if (m && !m.ok && (I.bom > 0 ? v >= m.alvo : v <= m.alvo)) {
+      m.ok = g.mes; const N = AREA_NIVEIS.find(x => x.k === m.nivel) || AREA_NIVEIS[1];
+      for (const k of I.gr) if (AREA_GR_OK.has(k) && g.groups[k] != null) { g.groups[k] = clamp(g.groups[k] + 1.2 * N.m, 1, 99); EF.apr += 1.2 * N.m; }
+      const txt = `Meta de ${I.curto}: ${areaFmt(I, m.alvo)} atingida. Os grupos ligados à área reconhecem o resultado.`;
+      notas.push({ t: 'pos', x: txt }); A.ok.push({ id: I.id, mes: g.mes });
+      try { linhaAdd(g, 'METAS', txt); } catch (e) { }
+    }
+  }
+}
+// resumo para o legado e o fim de mandato
+function areasLegado(g) {
+  const out = [];
+  try {
+    for (const I of AREA_IND) {
+      const m = g.areas && g.areas.meta ? g.areas.meta[I.id] : null; if (!m) continue;
+      const p = Math.round(Math.min(areaProg(g, I), 1) * 100);
+      out.push({ id: I.id, area: AREA_DEF[I.area].nome, curto: I.curto, alvo: areaFmt(I, m.alvo), atual: areaFmt(I, areaVal(g, I.id)), ok: !!m.ok, mes: m.ok, pct: p, nivel: m.nivel,
+        txt: m.ok ? `Meta de ${I.curto}: ${areaFmt(I, m.alvo)} atingida` : `Meta de ${I.curto}: ${areaFmt(I, m.alvo)} não atingida (${areaFmt(I, areaVal(g, I.id))}, ${p}% do caminho)` });
+    }
+  } catch (e) { }
+  return out;
+}
+const AREA_COR = { saude: 'var(--verde)', educacao: 'var(--anil)', infra: 'var(--ambar)', seguranca: 'var(--rubro)', justica: 'var(--ouro)', trabalho: 'var(--anil)', industria: 'var(--ambar)' };
+function MetasArea({ g, upd, area }) {
+  const D = AREA_DEF[area]; const L = areaMetasDe(g, area); const cor = AREA_COR[area] || 'var(--ouro)';
+  const linhas = L.map(I => { const v = areaVal(g, I.id); const m = g.areas && g.areas.meta ? g.areas.meta[I.id] : null; const p = m ? areaProg(g, I) : null; const t = areaTend(g, I); return { I, v, m, p, t, melhor: t * I.bom > 0 && Math.abs(t) > Math.pow(10, -I.dec) / 2, pior: t * I.bom < 0 && Math.abs(t) > Math.pow(10, -I.dec) / 2 }; });
+  const defs = linhas.filter(x => x.m), oks = defs.filter(x => x.m.ok);
+  const emCurso = defs.filter(x => !x.m.ok).sort((a, b) => a.p - b.p);
+  const atras = emCurso[0], frente = emCurso.length ? emCurso[emCurso.length - 1] : null;
+  const sobe = linhas.filter(x => x.melhor).length, desce = linhas.filter(x => x.pior).length;
+  const aceita = () => upd(n => { ensureAreas(n); for (const I of areaMetasDe(n, area)) if (!n.areas.meta[I.id]) areaSetMeta(n, I.id, 'sugerida'); });
+  const kpis = [
+    { dado: 'metas-def', ic: 'Target', cor: defs.length ? cor : 'var(--muted)', k: 'Metas do mandato', v: defs.length + '/' + L.length, s: defs.length ? 'definidas nesta área' : 'escolha ou aceite as sugeridas' },
+    { dado: 'metas-ok', ic: 'Trophy', cor: oks.length ? 'var(--verde)' : 'var(--muted)', k: 'Metas batidas', v: String(oks.length), s: oks.length ? oks[oks.length - 1].I.curto : 'nenhuma ainda' },
+    { dado: 'metas-atras', ic: 'Hourglass', cor: atras && atras.p < .25 ? 'var(--rubro)' : 'var(--ambar)', k: 'Mais atrasada', sm: true, v: atras ? atras.I.curto : '–', s: atras ? Math.round(Math.min(atras.p, 1) * 100) + '% do caminho' : 'sem meta em curso' },
+    { dado: 'metas-frente', ic: 'Rocket', cor: 'var(--verde)', k: 'Mais adiantada', sm: true, v: frente ? frente.I.curto : '–', s: frente ? Math.round(Math.min(frente.p, 1) * 100) + '% do caminho' : 'sem meta em curso' },
+    { dado: 'metas-tend', ic: desce > sobe ? 'TrendingDown' : 'TrendingUp', cor: desce > sobe ? 'var(--rubro)' : sobe ? 'var(--verde)' : 'var(--muted)', k: 'Tendência (6 meses)', v: '▲ ' + sobe + ' · ▼ ' + desce, s: 'indicadores melhorando · piorando' }
+  ];
+  return html`<div className="flex flex-col gap-6 mt-2" data-metas-area=${area}>
+    <section aria-label=${'Metas: ' + D.nome} data-metas-resumo=${area}><div className="gv-kpis">${kpis.map(k => html`<${GvKpi} key=${k.dado} ...${k} />`)}</div></section>
+    <section className="sec min-w-0" data-metas=${area}>
+      <${MxHead} eb=${'Metas · ' + D.nome} t="Indicadores da área" tip="Cada indicador parte do dado real mais recente (passe o mouse no ? para a fonte). Os programas aprovados, o orçamento da área e as medidas de texto livre o movem ao longo dos meses; cortar piora. Bater a meta rende aprovação dos grupos ligados, entra no Balanço e no legado." right=${html`<button type="button" className="btn btn-ghost btn-sm" data-metas-aceitar=${area} disabled=${defs.length === L.length} onClick=${aceita}><${Icon} n="Check" s=${14} /> Aceitar metas sugeridas</button>`} />
+      <div className="mx-grid g3">${linhas.map(({ I, v, m, p, t, melhor, pior }) => {
+        const bom = m ? (p >= 1 ? 'var(--verde)' : p >= .4 ? 'var(--ouro)' : 'var(--ambar)') : 'var(--muted)';
+        const rel = (v - areaBase(g, I)) * I.bom;
+        return html`<div key=${I.id} className="mx-card panel" style=${{ '--st': m && m.ok ? 'var(--verde)' : cor }} data-meta=${I.id} data-meta-ok=${m && m.ok ? '1' : '0'}>
+          <div className="mx-lab flex items-center gap-1">${I.nome}<${GvTip} txt=${'Fonte: ' + I.fonte} />${I.est ? html`<${Tag}>estimativa</${Tag}>` : null}</div>
+          <div className="mx-num" style=${{ color: Math.abs(rel) < Math.pow(10, -I.dec) / 2 ? 'var(--fg)' : rel > 0 ? 'var(--verde)' : 'var(--rubro)' }} data-meta-val=${I.id}>${areaFmt(I, v)}</div>
+          <div className="mx-s">Base ${I.ano}: <span className="num">${areaFmt(I, areaBase(g, I))}</span> · 6 meses: <span className="num" style=${{ color: melhor ? 'var(--verde)' : pior ? 'var(--rubro)' : 'var(--muted)' }} data-meta-tend=${I.id}>${melhor ? '▲ ' + sgn(t, I.dec) : pior ? '▼ ' + sgn(t, I.dec) : 'estável'}</span></div>
+          ${m ? html`<div className="flex flex-col gap-1 mt-1" data-meta-def=${I.id}>
+              <div className="text-xs">Meta do mandato: <b className="num">${areaFmt(I, m.alvo)}</b> <span className="text-muted">(${(AREA_NIVEIS.find(x => x.k === m.nivel) || {}).nome})</span></div>
+              <${Bar} v=${Math.min(p, 1) * 100} cor=${bom} label=${'Progresso da meta de ' + I.curto} />
+              <div className="flex items-center justify-between text-xs"><span className="num" style=${{ color: bom }} data-meta-prog=${I.id}>${Math.round(Math.min(p, 1) * 100)}% do caminho</span>
+                ${m.ok ? html`<span className="gv-chip" style=${{ color: 'var(--verde)', borderColor: 'var(--verde)' }}>Atingida no mês ${m.ok}</span>` : html`<button type="button" className="btn btn-ghost btn-sm" data-meta-troca=${I.id} onClick=${() => upd(n => { ensureAreas(n); delete n.areas.meta[I.id]; })}>Trocar meta</button>`}</div>
+            </div>` : html`<div className="flex flex-col gap-1 mt-1" data-meta-esc=${I.id}>
+              <div className="text-xs text-muted">Meta do mandato (mais ousada rende mais aprovação):</div>
+              <div className="flex flex-wrap gap-1.5">${AREA_NIVEIS.map(N => html`<button key=${N.k} type="button" className=${'btn btn-sm ' + (N.k === 'sugerida' ? 'btn-pri' : 'btn-ghost')} data-meta-nivel=${I.id + ':' + N.k} title=${N.nome + ': ' + areaFmt(I, v + I.sug * N.f)} onClick=${() => upd(n => { areaSetMeta(n, I.id, N.k); })}>${N.nome} <span className="num">${areaFmt(I, v + I.sug * N.f)}</span></button>`)}</div>
+            </div>`}
+        </div>`; })}</div>
+    </section>
+  </div>`;
+}
 function PaisSeguranca({ g, upd, decidir }) {
   const [sel, setSel] = useState(g.cfg.estado && ELEITOS.gov[g.cfg.estado] ? g.cfg.estado : 'SP');
   const [preset, setPreset] = useState(null);
@@ -20176,34 +20469,34 @@ function PaisSaude({ g, upd, decidir }) {
   return html`<${PaisAreaAcao} g=${g} upd=${upd} decidir=${decidir} pa="saude" conv="sau" dp="saude" titulo="Saúde" sub="Situação nacional no jogo, com a linha de base real logo abaixo de cada número." grupos=${[{ itens: SAU_PROG }]} notas=${html`<${OrcFonte} area="saude" />`} orc="saude" />`;
 }
 const EDU_PROG = [
-  { l: 'Pé-de-Meia no fundamental II', t: 'Estender o Pé-de-Meia aos alunos do 8º e 9º ano do ensino fundamental da rede pública, R$ 3 bilhões por ano', i: 'Wallet', rx: /pe.de.meia.*fundamental|fundamental.*pe.de.meia/, p2: { l: 'Mais R$ 2 bi de Pé-de-Meia', t: 'Elevar em mais R$ 2 bilhões por ano o Pé-de-Meia para alunos do ensino fundamental' } },
-  { l: 'Mais 1 milhão de vagas em tempo integral', t: 'Elevar a meta do Escola em Tempo Integral em mais 1 milhão de matrículas, além das 3,2 milhões previstas, com R$ 3 bilhões por ano', i: 'Clock', rx: /mais 1 milhao de matriculas|meta do escola em tempo integral/, p2: { l: 'Mais 20% de matrículas', t: 'Elevar em mais 20% a meta de matrículas do Escola em Tempo Integral, com mais R$ 2 bilhões por ano' } },
-  { l: 'Vaga garantida em creche', t: 'Garantir vaga em creche a toda criança de 0 a 3 anos de famílias do CadÚnico, com R$ 5 bilhões por ano de cofinanciamento aos municípios', i: 'Baby', rx: /vaga em creche/, p2: { l: 'Mais R$ 3 bi por criança', t: 'Elevar em R$ 3 bilhões por ano o repasse da União por criança em creche conveniada, para famílias do CadÚnico de 0 a 3 anos' } },
-  { l: 'Adicional para professores de periferia', t: 'Pagar adicional de R$ 1.000 por mês a professores de escolas da periferia e da zona rural, com R$ 3 bilhões por ano', i: 'GraduationCap', rx: /adicional (de r\$ 1\.?000 )?.*professores/, p2: { l: 'Adicional de R$ 1.500', t: 'Elevar para R$ 1.500 por mês o adicional dos professores de escolas da periferia e da zona rural, com mais R$ 1 bilhão por ano' } },
-  { l: 'Reforço em leitura', t: 'Criar reforço escolar em contraturno para alunos do 2º ao 5º ano com atraso em leitura, R$ 2 bilhões por ano', i: 'BookOpen', rx: /reforco escolar/ },
-  { l: 'Notebooks para o ensino médio', t: 'Distribuir notebooks para 3 milhões de alunos do ensino médio público, R$ 4 bilhões', i: 'Laptop', rx: /notebooks/, p2: { l: 'Mais 2 milhões de notebooks', t: 'Distribuir mais 2 milhões de notebooks para alunos do ensino fundamental II da rede pública, R$ 2 bilhões' } },
-  { l: 'Vagas em licenciaturas e saúde', t: 'Criar 100 mil novas vagas em licenciaturas e cursos da saúde nas universidades federais, R$ 3 bilhões por ano', i: 'Landmark', rx: /licenciaturas/ },
-  { l: 'Merenda: valor por refeição +30%', t: 'Reajustar em 30% o valor por refeição do PNAE na rede pública, R$ 2 bilhões por ano', i: 'Utensils', rx: /merenda escolar|refeicao do pnae/ },
-  { l: 'Passe livre estudantil', t: 'Criar o passe livre nacional no transporte público para estudantes da rede pública de baixa renda, com R$ 4 bilhões por ano', i: 'Bus', rx: /passe livre/, p2: { l: 'Passe livre também nas férias', t: 'Estender o passe livre estudantil de baixa renda para os 12 meses do ano, com mais R$ 1 bilhão por ano' } },
-  { l: 'Mais vagas de ensino técnico', t: 'Ampliar em R$ 2 bilhões por ano os cursos técnicos para jovens do ensino médio, com 300 mil novas vagas gratuitas', i: 'Wrench', rx: /cursos tecnicos para jovens do ensino medio/ }
+  { l: 'Pé-de-Meia no fundamental II', ind: [['evasao', -.6, 12]], t: 'Estender o Pé-de-Meia aos alunos do 8º e 9º ano do ensino fundamental da rede pública, R$ 3 bilhões por ano', i: 'Wallet', rx: /pe.de.meia.*fundamental|fundamental.*pe.de.meia/, p2: { l: 'Mais R$ 2 bi de Pé-de-Meia', t: 'Elevar em mais R$ 2 bilhões por ano o Pé-de-Meia para alunos do ensino fundamental' } },
+  { l: 'Mais 1 milhão de vagas em tempo integral', ind: [['integral', 1.9, 24]], t: 'Elevar a meta do Escola em Tempo Integral em mais 1 milhão de matrículas, além das 3,2 milhões previstas, com R$ 3 bilhões por ano', i: 'Clock', rx: /mais 1 milhao de matriculas|meta do escola em tempo integral/, p2: { l: 'Mais 20% de matrículas', t: 'Elevar em mais 20% a meta de matrículas do Escola em Tempo Integral, com mais R$ 2 bilhões por ano' } },
+  { l: 'Vaga garantida em creche', ind: [['creche', 6, 30]], t: 'Garantir vaga em creche a toda criança de 0 a 3 anos de famílias do CadÚnico, com R$ 5 bilhões por ano de cofinanciamento aos municípios', i: 'Baby', rx: /vaga em creche/, p2: { l: 'Mais R$ 3 bi por criança', t: 'Elevar em R$ 3 bilhões por ano o repasse da União por criança em creche conveniada, para famílias do CadÚnico de 0 a 3 anos' } },
+  { l: 'Adicional para professores de periferia', ind: [['alfab', 1.5, 24], ['evasao', -.2, 24]], t: 'Pagar adicional de R$ 1.000 por mês a professores de escolas da periferia e da zona rural, com R$ 3 bilhões por ano', i: 'GraduationCap', rx: /adicional (de r\$ 1\.?000 )?.*professores/, p2: { l: 'Adicional de R$ 1.500', t: 'Elevar para R$ 1.500 por mês o adicional dos professores de escolas da periferia e da zona rural, com mais R$ 1 bilhão por ano' } },
+  { l: 'Reforço em leitura', ind: [['alfab', 3, 18]], t: 'Criar reforço escolar em contraturno para alunos do 2º ao 5º ano com atraso em leitura, R$ 2 bilhões por ano', i: 'BookOpen', rx: /reforco escolar/ },
+  { l: 'Notebooks para o ensino médio', ind: [['ideb', .03, 18], ['evasao', -.1, 12]], t: 'Distribuir notebooks para 3 milhões de alunos do ensino médio público, R$ 4 bilhões', i: 'Laptop', rx: /notebooks/, p2: { l: 'Mais 2 milhões de notebooks', t: 'Distribuir mais 2 milhões de notebooks para alunos do ensino fundamental II da rede pública, R$ 2 bilhões' } },
+  { l: 'Vagas em licenciaturas e saúde', ind: [['alfab', .5, 36]], t: 'Criar 100 mil novas vagas em licenciaturas e cursos da saúde nas universidades federais, R$ 3 bilhões por ano', i: 'Landmark', rx: /licenciaturas/ },
+  { l: 'Merenda: valor por refeição +30%', ind: [['evasao', -.2, 12]], t: 'Reajustar em 30% o valor por refeição do PNAE na rede pública, R$ 2 bilhões por ano', i: 'Utensils', rx: /merenda escolar|refeicao do pnae/ },
+  { l: 'Passe livre estudantil', ind: [['evasao', -.4, 12]], t: 'Criar o passe livre nacional no transporte público para estudantes da rede pública de baixa renda, com R$ 4 bilhões por ano', i: 'Bus', rx: /passe livre/, p2: { l: 'Passe livre também nas férias', t: 'Estender o passe livre estudantil de baixa renda para os 12 meses do ano, com mais R$ 1 bilhão por ano' } },
+  { l: 'Mais vagas de ensino técnico', ind: [['evasao', -.3, 18], ['qualif', 60, 18]], t: 'Ampliar em R$ 2 bilhões por ano os cursos técnicos para jovens do ensino médio, com 300 mil novas vagas gratuitas', i: 'Wrench', rx: /cursos tecnicos para jovens do ensino medio/ }
 ];
 const INFRA_GRUPOS = [
   { h: 'Saneamento e moradia', itens: [
-    { l: 'Esgoto nos municípios pequenos', t: 'Criar linha de R$ 6 bilhões por ano do Orçamento da União para esgoto nos municípios pequenos fora das concessões do Marco do Saneamento', i: 'Droplets', rx: /esgoto nos municipios pequenos|municipios pequenos/, p2: { l: 'Mais R$ 3 bi de esgoto', t: 'Elevar em mais R$ 3 bilhões por ano a linha da União para esgoto nos municípios pequenos' } },
-    { l: 'Mais Minha Casa Minha Vida', t: 'Construir mais 1 milhão de moradias na Faixa 1 do Minha Casa Minha Vida, além da meta atual, R$ 8 bilhões por ano', i: 'Home', rx: /1 milhao de moradias/, p2: { l: 'Mais 500 mil moradias', t: 'Construir mais 500 mil moradias na Faixa 1 do Minha Casa Minha Vida, R$ 4 bilhões por ano' } },
-    { l: 'Novo PAC 2027-2030', t: 'Lançar o Novo PAC 2027-2030, com R$ 75 bilhões por ano em obras de infraestrutura', i: 'Construction', rx: /novo pac/ }] },
+    { l: 'Esgoto nos municípios pequenos', ind: [['esgoto', 3, 30], ['agua', 1, 30]], t: 'Criar linha de R$ 6 bilhões por ano do Orçamento da União para esgoto nos municípios pequenos fora das concessões do Marco do Saneamento', i: 'Droplets', rx: /esgoto nos municipios pequenos|municipios pequenos/, p2: { l: 'Mais R$ 3 bi de esgoto', t: 'Elevar em mais R$ 3 bilhões por ano a linha da União para esgoto nos municípios pequenos' } },
+    { l: 'Mais Minha Casa Minha Vida', ind: [['deficit', -.45, 36]], t: 'Construir mais 1 milhão de moradias na Faixa 1 do Minha Casa Minha Vida, além da meta atual, R$ 8 bilhões por ano', i: 'Home', rx: /1 milhao de moradias/, p2: { l: 'Mais 500 mil moradias', t: 'Construir mais 500 mil moradias na Faixa 1 do Minha Casa Minha Vida, R$ 4 bilhões por ano' } },
+    { l: 'Novo PAC 2027-2030', ind: [['rodovias', 2, 30], ['esgoto', 1, 30], ['ferrovias', .3, 36], ['deficit', -.2, 36]], t: 'Lançar o Novo PAC 2027-2030, com R$ 75 bilhões por ano em obras de infraestrutura', i: 'Construction', rx: /novo pac/ }] },
   { h: 'Energia e comunicações', itens: [
     { l: 'Energia solar para famílias de baixa renda', t: 'Pagar R$ 5 bilhões para instalar painéis de energia solar em 500 mil casas de famílias de baixa renda', i: 'Zap', rx: /energia solar/, p2: { l: 'Mais 500 mil casas com solar', t: 'Pagar mais R$ 5 bilhões para instalar painéis de energia solar em mais 500 mil casas de famílias de baixa renda' } },
     { l: 'Transmissão para o Nordeste', t: 'Criar fundo de R$ 5 bilhões por ano para antecipar linhas de transmissão que escoam energia solar e eólica do Nordeste', i: 'Cable', rx: /escoam energia|fundo.*transmissao/ },
     { l: 'Internet rural por satélite', t: 'Criar programa de internet por satélite para 1 milhão de domicílios rurais, R$ 2 bilhões por ano', i: 'Wifi', rx: /internet por satelite/ }] },
   { h: 'Rodovias', itens: [
-    { l: 'Duplicar trechos de BRs', t: 'Duplicar 3 mil km de rodovias federais, com R$ 8 bilhões por ano', i: 'Route', rx: /3 mil km/, p2: { l: 'Mais 2 mil km duplicados', t: 'Duplicar mais 2 mil km de rodovias federais, com mais R$ 5 bilhões por ano' } },
-    { l: 'Manutenção das BRs (DNIT)', t: 'Recuperar 15 mil km de rodovias federais com R$ 3 bilhões por ano a mais para o DNIT', i: 'Wrench', rx: /15 mil km/ },
-    { l: 'Leilão de 6 mil km de rodovias', t: 'Decreto que inclui no Programa de Parcerias de Investimentos e leiloa mais 6 mil km de rodovias federais, com pedágio eletrônico free flow e ampliação de capacidade', i: 'Handshake', rx: /6 mil km/ },
-    { l: 'Conceder a BR-319 (polêmica ambiental)', t: 'Pavimentar o trecho do meio da BR-319 por concessão com pedágio, com R$ 1 bilhão da União contra o desmatamento nas margens', i: 'Trees', rx: /br.?319/ },
+    { l: 'Duplicar trechos de BRs', ind: [['rodovias', 1.5, 30]], t: 'Duplicar 3 mil km de rodovias federais, com R$ 8 bilhões por ano', i: 'Route', rx: /3 mil km/, p2: { l: 'Mais 2 mil km duplicados', t: 'Duplicar mais 2 mil km de rodovias federais, com mais R$ 5 bilhões por ano' } },
+    { l: 'Manutenção das BRs (DNIT)', ind: [['rodovias', 5, 18]], t: 'Recuperar 15 mil km de rodovias federais com R$ 3 bilhões por ano a mais para o DNIT', i: 'Wrench', rx: /15 mil km/ },
+    { l: 'Leilão de 6 mil km de rodovias', ind: [['rodovias', 2.5, 24]], t: 'Decreto que inclui no Programa de Parcerias de Investimentos e leiloa mais 6 mil km de rodovias federais, com pedágio eletrônico free flow e ampliação de capacidade', i: 'Handshake', rx: /6 mil km/ },
+    { l: 'Conceder a BR-319 (polêmica ambiental)', ind: [['rodovias', .5, 24]], t: 'Pavimentar o trecho do meio da BR-319 por concessão com pedágio, com R$ 1 bilhão da União contra o desmatamento nas margens', i: 'Trees', rx: /br.?319/ },
     { l: '3 mil radares nas BRs', t: 'Instalar 3 mil novos radares e câmeras de fiscalização eletrônica em trechos críticos das rodovias federais, R$ 1 bilhão', i: 'TriangleAlert', rx: /3 mil novos radares/ }] },
   { h: 'Ferrovias, portos e mobilidade', itens: [
-    { l: 'Ferrovia Centro-Oeste (FICO)', t: 'Estender a Ferrovia de Integração do Centro-Oeste de Água Boa a Lucas do Rio Verde (MT), R$ 6 bilhões', i: 'TrainFront', rx: /centro.oeste/ },
+    { l: 'Ferrovia Centro-Oeste (FICO)', ind: [['ferrovias', .4, 48]], t: 'Estender a Ferrovia de Integração do Centro-Oeste de Água Boa a Lucas do Rio Verde (MT), R$ 6 bilhões', i: 'TrainFront', rx: /centro.oeste/ },
     { l: 'Fundo de mobilidade urbana', t: 'Criar fundo federal de mobilidade urbana com R$ 5 bilhões por ano para metrô e BRT nas capitais', i: 'TramFront', rx: /fundo.*mobilidade/, p2: { l: 'Mais R$ 3 bi de mobilidade', t: 'Elevar em mais R$ 3 bilhões por ano o fundo federal de mobilidade urbana para metrô e BRT' } },
     { l: 'Cabotagem: AFRMM pela metade', t: 'Reduzir pela metade o adicional de frete AFRMM da cabotagem e criar linha de crédito de R$ 3 bilhões para navios de cabotagem', i: 'Ship', rx: /afrmm/ },
     { l: 'Bolsa-sucata para caminhões', t: 'Criar bolsa-sucata de R$ 20 mil por caminhão com mais de 30 anos entregue para desmonte, R$ 2 bilhões', i: 'Truck', rx: /sucata/ }] }
@@ -20245,16 +20538,16 @@ function PaisInfra({ g, upd, decidir }) {
   return html`<${PaisAreaAcao} g=${g} upd=${upd} decidir=${decidir} pa="infratransp" conv="infra" dp="infraestrutura" titulo="Infraestrutura e transportes" sub="Rodovias, saneamento, energia e conectividade: situação nacional no jogo, com a base real logo abaixo." grupos=${INFRA_GRUPOS} notas=${html`<span>${INFRA_NOTAS}<${OrcFonte} area="infra" /></span>`} ind0="rodovias_boas_pct" orc="infra" />`;
 }
 const JUS_GOV = [
-  { l: 'Mais 3 mil cargos na PF', t: 'Criar mais 3 mil cargos de delegado, agente e perito na Polícia Federal, R$ 1 bilhão por ano', i: 'Shield', rx: /3 mil cargos/, p2: { l: 'Mais 2 mil cargos na PF', t: 'Criar mais 2 mil cargos de delegado, agente e perito na Polícia Federal, R$ 700 milhões por ano' } },
+  { l: 'Mais 3 mil cargos na PF', ind: [['esclarec', 2, 24]], t: 'Criar mais 3 mil cargos de delegado, agente e perito na Polícia Federal, R$ 1 bilhão por ano', i: 'Shield', rx: /3 mil cargos/, p2: { l: 'Mais 2 mil cargos na PF', t: 'Criar mais 2 mil cargos de delegado, agente e perito na Polícia Federal, R$ 700 milhões por ano' } },
   { l: 'Autonomia da PF (PEC)', t: 'Enviar uma PEC dando autonomia funcional e orçamentária à Polícia Federal', i: 'ShieldCheck', rx: /autonomia.*policia federal|policia federal.*autonomia/ },
   { l: 'PGR com mandato único (PEC)', t: 'Enviar PEC fixando mandato único de 4 anos, sem recondução, ao Procurador-Geral da República', i: 'Scale', rx: /mandato unico/ },
   { l: 'Cortar penduricalhos (PLP)', t: 'Enviar projeto de lei complementar com a lista nacional das únicas verbas indenizatórias permitidas ao Judiciário e ao Ministério Público, limitadas a 20% do teto', i: 'Gavel', rx: /lista nacional/ },
   { l: 'Punir quem paga acima do teto', t: 'Enviar projeto de lei que enquadra como improbidade administrativa o pagamento de remuneração acima do teto constitucional, com devolução em dobro', i: 'Banknote', rx: /improbidade.*teto/ },
   { l: 'Mais 1.500 auditores na CGU', t: 'Enviar projeto de lei que cria 1.500 cargos de auditor na CGU para ampliar as auditorias e o combate à corrupção, R$ 400 milhões por ano', i: 'FileSearch', rx: /1\.?500 cargos/ },
-  { l: 'Balcão único da leniência', t: 'Enviar projeto de lei que unifica a leniência em um balcão único, com CGU, AGU, MPF e TCU, e prazo máximo de 12 meses para fechar o acordo', i: 'FileText', rx: /balcao unico/ },
-  { l: 'Sem delação de preso preventivo', t: 'Enviar projeto de lei que proíbe acordo de delação premiada com réu preso preventivamente por mais de 30 dias', i: 'Handshake', rx: /preso preventivamente/ },
+  { l: 'Balcão único da leniência', ind: [['tempo', -1, 12]], t: 'Enviar projeto de lei que unifica a leniência em um balcão único, com CGU, AGU, MPF e TCU, e prazo máximo de 12 meses para fechar o acordo', i: 'FileText', rx: /balcao unico/ },
+  { l: 'Sem delação de preso preventivo', ind: [['provis', -.5, 12]], t: 'Enviar projeto de lei que proíbe acordo de delação premiada com réu preso preventivamente por mais de 30 dias', i: 'Handshake', rx: /preso preventivamente/ },
   { l: 'Sigilo de 100 anos: vetar para gastos', t: 'Enviar projeto de lei que proíbe usar o sigilo de 100 anos para esconder gastos e agendas de agentes públicos', i: 'Eye', rx: /sigilo de 100 anos/ },
-  { l: 'Fundo contra as facções', t: 'Criar o Fundo Nacional de Combate às Facções, com R$ 3 bilhões por ano do perdimento de bens do crime organizado, para financiar a PF e as polícias civis', i: 'Siren', rx: /fundo nacional de combate/ }
+  { l: 'Fundo contra as facções', ind: [['hom', -.5, 12], ['esclarec', 1, 18]], t: 'Criar o Fundo Nacional de Combate às Facções, com R$ 3 bilhões por ano do perdimento de bens do crime organizado, para financiar a PF e as polícias civis', i: 'Siren', rx: /fundo nacional de combate/ }
 ];
 /* ============================== PAÍS: JUSTIÇA ============================== */
 /* Custos do Judiciário (CNJ, Justiça em Números, ano-base 2025, divulgado em 2026), escândalos de corrupção (fictícios, gerados na partida)
@@ -25589,6 +25882,7 @@ function qvValida(o) {
   if (!g.eco || typeof g.eco !== 'object' || typeof g.eco.pib !== 'number' || typeof g.eco.risco !== 'number') throw new Error('Faltam os dados da economia.');
   if (typeof g.mes !== 'number' || !(g.mes >= 1 && g.mes <= 48 * 20)) throw new Error('Mês do mandato inválido.');
   if (!g.parties || !g.groups || !Array.isArray(g.hist && g.hist.ap)) throw new Error('Faltam partidos, grupos ou histórico.');
+  if (g.areas != null && (typeof g.areas !== 'object' || Array.isArray(g.areas))) delete g.areas; // METAS POR ÁREA: campo opcional; se vier malformado, recomeça
   return g;
 }
 function qvMigra(g) {
@@ -28404,7 +28698,7 @@ function elVice(g) {
 function elLegado(g) {
   const c = g.cfg;
   return { nome: c.nome, sigla: nomePartido(c), bloco: c.partido, real: !!c.real, ap: aprovacao(g), pib: g.eco.pib, ipca: g.eco.ipca, des: g.eco.des, atos: (g.log || []).filter(l => l.res === 'aprovada').length, marcos: (g.marcos || []).length, mes: g.mes, cred: g.ent ? g.ent.cred : null,
-    prom: (c.promessas || []).map(k => { const P = PROMESSAS.find(p => p.k === k); return P ? { nome: P.nome, ok: !!P.check(g) } : null; }).filter(Boolean), mandatos: g.el ? g.el.mandatos : 1 };
+    prom: (c.promessas || []).map(k => { const P = PROMESSAS.find(p => p.k === k); return P ? { nome: P.nome, ok: !!P.check(g) } : null; }).filter(Boolean), mandatos: g.el ? g.el.mandatos : 1, metas: areasLegado(g) };
 }
 
 /* ---------- elegibilidade ---------- */
@@ -30265,6 +30559,7 @@ function ElFim({ g, upd, reiniciar }) {
     <p className="text-lg">${texto}</p>
     <div className="grid grid-cols-2 sm:grid-cols-5 gap-3"><div><div className="eyebrow">Aprovação final</div><div className="num text-2xl">${fmt(leg.ap, 0)}%</div></div><div><div className="eyebrow">PIB</div><div className="num text-2xl">${fmt(leg.pib)}%</div></div><div><div className="eyebrow">IPCA</div><div className="num text-2xl">${fmt(leg.ipca)}%</div></div><div><div className="eyebrow">Atos assinados</div><div className="num text-2xl">${leg.atos}</div></div><div><div className="eyebrow">Marcos</div><div className="num text-2xl">${leg.marcos}</div></div></div>
     ${leg.prom && leg.prom.length > 0 && html`<div><div className="eyebrow mb-2">Promessas</div><ul className="flex flex-col gap-1">${leg.prom.map((p, i) => html`<li key=${i} className="flex gap-2 items-center"><span style=${{ color: p.ok ? 'var(--verde)' : 'var(--rubro)' }}><${Icon} n=${p.ok ? 'CircleCheck' : 'CircleX'} /></span>${p.nome}</li>`)}</ul></div>`}
+    ${leg.metas && leg.metas.length > 0 && html`<div data-el="metas"><div className="eyebrow mb-2">Metas por área · ${leg.metas.filter(m => m.ok).length}/${leg.metas.length} atingidas</div><ul className="flex flex-col gap-1">${leg.metas.map(m => html`<li key=${m.id} className="flex gap-2 items-center" data-meta-leg=${m.id}><span style=${{ color: m.ok ? 'var(--verde)' : 'var(--rubro)' }}><${Icon} n=${m.ok ? 'CircleCheck' : 'CircleX'} s=${16} /></span><span>${m.txt}</span><span className="text-xs text-muted">${m.area}</span></li>`)}</ul></div>`}
     ${E.din && E.din.length > 0 && html`<div><div className="eyebrow mb-2">Linha do tempo de personagens</div><ol className="flex flex-col gap-1">${E.din.map((d, i) => html`<li key=${i} className="text-sm"><b>${d.nome}</b> (${d.sigla}) · ${d.papel} · ${dataCurta(d.de)}–${d.ate ? dataCurta(d.ate) : dataCurta(o.mes || g.mes)}</li>`)}</ol></div>`}
     <div className="border-t border-line pt-4 flex flex-col gap-3" data-el="proximo"><h2 className="disp text-3xl font-extrabold uppercase">Escolher próximo personagem</h2>
       <p className="text-sm text-muted">O jogo continua. Escolha qualquer político: o presidente em exercício (governo pleno), um aliado ou adversário, alguém com ou sem mandato. Quem não for presidente joga em modo leve (X, entrevistas, campanha e apoios) até vencer uma eleição presidencial.</p>
@@ -31209,6 +31504,7 @@ function migraSave(g) {
   ensureGv(g);
   ensureConv(g);
   ensureJus(g);
+  try { ensureAreas(g); } catch (e) { delete g.areas; } // METAS POR ÁREA
   ensureMin(g);
   ensureCf(g);
   try { entEnsure(g); elEnsure(g); } catch (e) { if (typeof console !== 'undefined') console.warn('migra ent/el', e); }
