@@ -113,7 +113,7 @@ with sync_playwright() as p:
     SET(pg, "n.jus.casos=[];n.jus.suplentes=[];n.jus.reacoes=[];n.acoes=5")
     secao(pg, 'poder')
     pg.select_option('#parl-casa', 'sen'); pg.select_option('#parl-bloco', 'PL'); pg.wait_for_timeout(500)
-    NOMES = "()=>Array.from(document.querySelectorAll('span.font-medium.truncate[title]')).map(e=>e.getAttribute('title'))"
+    NOMES = "()=>Array.from(document.querySelectorAll('span.font-medium.truncate[title]')).filter(e=>!e.closest('[data-suplente]')).map(e=>e.getAttribute('title'))"  # a linha do suplente também tem title (lote D): fica fora da contagem
     antes = pg.evaluate(NOMES); cont0 = pg.locator('[data-parl-contagem]').inner_text()
     ok('lista de parlamentares do PL no Senado tem nomes reais', len(antes) >= 3 and pg.locator('[data-suplente]').count() == 0, (len(antes), cont0))
     SET(pg, "const J=__J();J.ensureJus(n);const c=J.jusNovoCaso(n,{alvoT:'um senador do PL'});c.fase='ação penal';J.jusPrende(n,c,[])")
