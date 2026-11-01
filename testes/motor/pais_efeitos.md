@@ -194,8 +194,8 @@ A cobrança deixou de ser binária (relação >= 60): a chance de surtir efeito 
 | infraestrutura | programa | Manutenção das BRs (DNIT) | +6.8 → +6.8 | ok | ok | = | pob@24-0.16 pib@24+0.07 des@24-0.18 conf@12-1.09 conf@24-1.59 | pob@24-0.16 pib@24+0.07 des@24-0.18 conf@12-1.09 conf@24-1.59 |
 | infraestrutura | programa | Ferrovia Centro-Oeste (FICO) | +7.2 → +7.2 | ok | ok | = | pob@12-0.03 pob@24-0.03 ipca@24+0.05 conf@12-0.68 conf@24-1.45 | pob@12-0.04 pob@24-0.13 pib@12+0.06 pib@24+0.06 des@12-0.08 |
 | infraestrutura | programa | Bolsa-sucata para caminhões | +2.2 → +2.2 | ok | ok | = | pob@24-0.08 pib@24+0.05 des@24-0.09 | pob@24-0.08 pib@24+0.05 des@24-0.09 |
-| justica | programa | PGR com mandato único (PEC) | +0.0 → +0.0 | nulo | nulo | ok | pib@12+0.05 conf@12+2.01 conf@24+1.08 | pib@12+0.05 conf@12+2.01 conf@24+1.08 |
-| justica | programa | Balcão único da leniência | +0.0 → +0.0 | misto | **nulo** | = | pob@24-0.06 pib@12+0.06 des@12-0.03 desm@12+248.57 desm@24+186.12 | — |
+| justica | programa | PGR com mandato único (PEC) | +0.0 → +0.0 | nulo | nulo | ok | pib@12+0.05 conf@12+2.01 conf@24+1.08 | pib@12+0.05 conf@12+2.01 conf@24+1.08 | lote Justiça: **ok (efeito próprio)** |
+| justica | programa | Balcão único da leniência | +0.0 → +0.0 | misto | **nulo** | = | pob@24-0.06 pib@12+0.06 des@12-0.03 desm@12+248.57 desm@24+186.12 | — | lote Justiça: **ok (efeito próprio)** |
 | orc_educacao | orc_inv | Todo o MEC | +6.0 → +5.3 | ok | ok | = | idh@12+0.002 idh@24+0.004 ipca@24+0.03 conf@12-0.68 conf@24-1.10 | idh@12+0.001 idh@24+0.004 conf@12-1.03 conf@24-1.62 |
 | orc_educacao | orc_inv | Universidades e IFs | +5.5 → +5.4 | ok | ok | = | idh@12+0.001 idh@24+0.004 ipca@24+0.03 conf@12-0.66 conf@24-1.07 | idh@12+0.002 idh@24+0.004 ipca@24+0.03 conf@12-0.72 conf@24-1.08 |
 | orc_educacao | orc_cut | Creches | -5.0 → -5.0 | ok (piora social) | ok (piora social) | = | idh@12-0.003 idh@24-0.003 conf@12+0.63 conf@24+0.61 | idh@12-0.003 idh@24-0.003 conf@12+0.61 conf@24+0.60 |
@@ -301,8 +301,8 @@ A cobrança deixou de ser binária (relação >= 60): a chance de surtir efeito 
 | infraestrutura | programa | Conceder a BR-319 (polêmica ambiental) | +3.5 → +3.5 | misto | misto | = | idh@24+0.001 pob@12-0.06 pob@24-0.24 pib@12+0.16 pib@24+0.18 | idh@24+0.001 pob@12-0.06 pob@24-0.24 pib@12+0.16 pib@24+0.18 |
 | infraestrutura | programa_p2 | Fundo de mobilidade urbana > Mais R$ 3 bi de | +3.1 → +3.1 | ok | ok | = | pob@24-0.10 pib@24+0.06 des@24-0.12 ipca@24+0.04 conf@12-0.31 | pob@24-0.10 pib@24+0.06 des@24-0.12 ipca@24+0.04 conf@12-0.31 |
 | justica | programa_p2 | Mais 3 mil cargos na PF > Mais 2 mil cargos  | +0.7 → +0.7 | ok | ok | = | hom@12-0.40 hom@24-0.33 | hom@12-0.40 hom@24-0.33 |
-| justica | programa | Punir quem paga acima do teto | +0.0 → +0.0 | misto | **nulo** | = | pob@12-0.03 pob@24-0.07 pib@12+0.07 des@12-0.04 desm@12+284.08 | — |
-| justica | programa | Sigilo de 100 anos: vetar para gastos | +0.0 → +0.0 | nulo | nulo | ok | pib@12+0.05 conf@12+2.01 conf@24+1.08 | pib@12+0.05 conf@12+2.01 conf@24+1.08 |
+| justica | programa | Punir quem paga acima do teto | +0.0 → +0.0 | misto | **nulo** | = | pob@12-0.03 pob@24-0.07 pib@12+0.07 des@12-0.04 desm@12+284.08 | — | lote Justiça: **ok (efeito próprio)** |
+| justica | programa | Sigilo de 100 anos: vetar para gastos | +0.0 → +0.0 | nulo | nulo | ok | pib@12+0.05 conf@12+2.01 conf@24+1.08 | pib@12+0.05 conf@12+2.01 conf@24+1.08 | lote Justiça: **ok (efeito próprio)** |
 | orc_educacao | orc_inv | Educação básica | +5.3 → +5.4 | ok | ok | = | idh@12+0.003 idh@24+0.004 conf@12-1.05 conf@24-1.63 | idh@12+0.004 idh@24+0.004 ipca@24+0.03 conf@12-0.68 conf@24-1.07 |
 | orc_educacao | orc_cont | Universidades e IFs | -3.9 → -5.0 | INVERTIDO (melhora ao cortar) | **ok (piora social)** | = | idh@24+0.001 pob@24-0.04 pib@24+0.03 conf@12+1.58 conf@24+1.21 | idh@12-0.002 idh@24-0.002 conf@12+0.62 conf@24+0.58 |
 | orc_educacao | orc_inv | Merenda escolar | +5.5 → +5.7 | ok | ok | = | idh@12+0.004 idh@24+0.004 conf@12-0.49 | idh@12+0.004 idh@24+0.004 conf@12-0.45 |
@@ -409,7 +409,7 @@ A cobrança deixou de ser binária (relação >= 60): a chance de surtir efeito 
 Sem gabarito de sinal (o relatório os trata como informativos). As alavancas de Trabalho não foram alteradas por este lote (usam `tbMensal`, não o objeto de qualificação); as conversas mudaram só no sorteio da cobrança e nos textos do cartão (E4), e seus efeitos continuam no indicador do estado.
 
 
-## Não-ok que restam, com justificativa (32 de 203)
+## Não-ok que restam, com justificativa (28 de 203 depois do lote Justiça; os 4 "nulo" de Justiça saíram, ver a seção do lote Justiça)
 
 | veredito | área | grupo | ação | justificativa |
 |---|---|---|---|---|
@@ -423,10 +423,6 @@ Sem gabarito de sinal (o relatório os trata como informativos). As alavancas de
 | misto | industria | ind_inv | Soja em grão | Gasto novo: pobreza, PIB e desemprego melhoram; confiança e inflação pioram (custo de oportunidade do gasto sem lastro) e, em mineração e ouro, o desmatamento sobe. Troca coerente. |
 | misto | infraestrutura | programa | Conceder a BR-319 (polêmica ambiental) | Troca declarada no próprio texto do programa (polêmica ambiental): PIB e pobreza melhoram, desmatamento e inflação pioram. |
 | misto | orc_infra | orc_inv | Energia | Troca real: obras de energia e transmissão ganham PIB, emprego e menos pobreza, e pressionam desmatamento, inflação e a confiança (gasto novo). |
-| nulo | justica | programa | Balcão único da leniência | Norma institucional sem custo nem canal social ou macro modelado; o efeito está em grupos e aprovação (curto prazo) e na análise jurídica, por desenho. Não há gabarito econômico para ela. |
-| nulo | justica | programa | PGR com mandato único (PEC) | Norma institucional sem custo nem canal social ou macro modelado; o efeito está em grupos e aprovação (curto prazo) e na análise jurídica, por desenho. Não há gabarito econômico para ela. |
-| nulo | justica | programa | Punir quem paga acima do teto | Norma institucional sem custo nem canal social ou macro modelado; o efeito está em grupos e aprovação (curto prazo) e na análise jurídica, por desenho. Não há gabarito econômico para ela. |
-| nulo | justica | programa | Sigilo de 100 anos: vetar para gastos | Norma institucional sem custo nem canal social ou macro modelado; o efeito está em grupos e aprovação (curto prazo) e na análise jurídica, por desenho. Não há gabarito econômico para ela. |
 | só fiscal | industria | ind_cred | Café solúvel | Crédito a produto: efeito na produção do setor (aba Indústria), sem renda direta das famílias. O impulso macro é de 25% do investimento direto; abaixo do ruído nos indicadores nacionais. |
 | só fiscal | industria | ind_cred | Couros e peles | Crédito a produto: efeito na produção do setor (aba Indústria), sem renda direta das famílias. O impulso macro é de 25% do investimento direto; abaixo do ruído nos indicadores nacionais. |
 | só fiscal | industria | ind_cred | Farelo de soja | Crédito a produto: efeito na produção do setor (aba Indústria), sem renda direta das famílias. O impulso macro é de 25% do investimento direto; abaixo do ruído nos indicadores nacionais. |
@@ -448,3 +444,40 @@ Sem gabarito de sinal (o relatório os trata como informativos). As alavancas de
 
 Nenhum caso fica INVERTIDO sem explicação; com 24 repetições, os 8 que apareciam como INVERTIDO por IDH viraram "só fiscal" ou "ok".
 
+## Lote Justiça: os 4 programas "nulo" agora têm o efeito do texto
+
+Branch `justica-efeitos` (a partir de `motor-v3.5`, commit a9075cb). Os programas de Justiça → "Programas: ações do governo" PGR de mandato único, Punir quem paga acima do teto, Balcão único da leniência e Sigilo de 100 anos eram "nulo" (só a análise jurídica e a reação de grupos do anúncio). Agora um hook mensal (`jusProgMensal`, chamado depois de `areasMensal`) lê a medida em vigor do programa pela mesma `psVigor` do cartão (ativa, suspensa, aguardando gatilho ou consolidada) e aplica o efeito pela rampa da própria medida (`medRamp`, vezes a intensidade `M.k`), em incrementos: se a medida for revogada, derrubada ou caducar, o efeito é desfeito aos poucos (15% ao mês). O fiscal entra em `M.fis` (a medida já o sincroniza e o desfaz na revogação); o escândalo e os casos entram por `jusProgAtivo(g, id)` (0 a 1) em `eqEscDecaimento`, `jusNovoCaso` e `jusMensal`. Cada cartão ganhou uma linha "Efeito: ...".
+
+| programa | efeito pleno (medida em vigor) | onde entra |
+|---|---|---|
+| PGR com mandato único (PEC) | casos da Justiça que atingem o governo avançam +15% (chance de mudar de fase); confiança (índice de confiança da economia) +1,5; mercado +1,5, classe média +1, universitários +1; sem custo | `jusMensal` (agilidade do caso), `applyFx` |
+| Punir quem paga acima do teto | despesa −R$ 3 bi/ano; receita única de R$ 1 bi (abate a dívida pela rampa); servidores −2, tensão com o STF +2, classe média +1 | `M.fis.custo`, `M.once`, `applyFx` |
+| Balcão único da leniência | receita +R$ 2 bi/ano; empresariado +2; PIB +0,07 de impulso (0,04 medido); o indicador "tempo de processo" (`ind`) continua | `M.fis.receita`, `applyFx` |
+| Sigilo de 100 anos: vetar para gastos | decaimento do escândalo sem caso novo +20%; impacto de um caso novo da Justiça +10%; classe média +1, universitários/artistas +1 (o jogo não tem grupo "imprensa"), confiança +0,5 | `eqEscDecaimento`, `jusNovoCaso`, `applyFx` |
+
+Δ pareado (8 repetições, mesma semente; `~` = dentro do ruído) antes → depois, em 6, 12 e 24 meses. "Antes" = a9075cb. Em PGR e Sigilo o antes já traz um Δ de confiança (+1,86 em 12 meses), escândalo (−2,3) e grupos que vem do anúncio da medida e de uma diferença de eventos entre os braços, igual nos dois programas; o efeito do lote é a diferença entre as duas colunas.
+
+| programa | indicador | m6 | m12 | m24 |
+|---|---|---|---|---|
+| PGR | confiança | +0,00~ → +0,18~ | +1,86 → +3,06 | +1,13 → +2,14 |
+| PGR | mercado | +0,30 → +0,48 | +0,93 → +2,28 | +1,13 → +1,66~ |
+| PGR | classe média | +1,21 → +1,28 | +1,03 → +1,59 | +0,52 → +0,38~ |
+| PGR | universitários | +0,97 → +1,05 | +0,84 → +1,40 | +0,41 → +0,18~ |
+| Punir | despesa (custo, R$ bi) | 0~ → −3,00 | 0~ → −3,00 | −0,01~ → −3,04 |
+| Punir | servidores | +0,04~ → −1,21 | +0,03~ → −0,97 | +0,01~ → −0,34 |
+| Punir | tensão com o STF | −0,24~ → +1,15 | −0,38~ → +1,29 | −0,39~ → +0,63 |
+| Punir | classe média | +0,04~ → +0,66 | −0,03~ → +0,47 | −0,01~ → +0,12~ |
+| Punir | dívida (p.p. do PIB) | 0~ → −0,01~ | 0~ → −0,03~ | +0,01~ → −0,05~ (R$ 1 bi de receita única é pequeno) |
+| Leniência | receita (R$ bi) | 0~ → +2,00 | 0~ → +2,00 | 0~ → +2,00 |
+| Leniência | empresariado | +0,07~ → +1,27 | +0,08~ → +1,24 | +0,04~ → +0,62 |
+| Leniência | PIB (p.p.) | 0~ → +0,04 | 0~ → +0,04 | 0~ → +0,04 |
+| Sigilo | confiança | 0~ → +0,43 | +1,86 → +2,18 | +1,13 → +1,33 |
+| Sigilo | classe média | +2,19 → +2,97 | +1,45 → +1,74 | +0,59 → +0,69 |
+| Sigilo | universitários | +2,23 → +2,99 | +1,46 → +1,74 | +0,54 → +0,63 |
+| Sigilo | escândalo | 0~ → −0,06~ | −2,33 → −2,32 | −0,54 → −0,55 |
+
+Os grupos voltam para perto de onde estavam em 24 meses porque a dinâmica mensal do jogo os puxa de volta, como acontece com qualquer medida; a economia fiscal e a receita ficam. O decaimento do escândalo +20% só vale nos meses sem caso aberto; na simulação o escândalo cai 2,3 pontos nos dois braços por causa do anúncio e o efeito do decaimento fica dentro do ruído (o multiplicador está medido de forma direta em `ui_pais_efeitos.py`, check J4: 0,170 → 0,204 de decaimento mensal; caso novo 5,83 → 6,41 de escândalo).
+
+Veredito do `pais_relatorio.py` (que só conta IDH, pobreza, homicídios e desmatamento como "social"): continua "nulo" por regra, porque nenhum dos 4 muda indicador social. Aqui o "nulo" deixa de ser verdade: cada um mexe nos indicadores que o texto diz (fiscal, grupos, confiança, STF, PIB, escândalo e casos), todos acima do ruído e na direção prevista, exceto o decaimento do escândalo, travado só na checagem direta.
+
+Checagens novas (`ui_pais_efeitos.py`, seção 8, 29 no total): J1 PGR (efeitos de grupo e confiança; 3.000 sorteios por braço de `jusMensal`: 28,5% → 32,8% de avanço de fase, razão 1,15), J2 Punir, J3 Leniência, J4 Sigilo (decaimento 1,2x e impacto 1,1x; grupos e confiança) e a linha "Efeito:" nos 4 cartões.

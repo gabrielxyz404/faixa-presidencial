@@ -2,6 +2,7 @@
 # crédito do BNDES não agenda queda de pobreza; "Força Nacional para <UF>" é lida como plano de segurança (sem desmatamento); operações de Segurança
 # mexem em mortes violentas; Qualificação/Sine/Trabalho reduzem o desemprego; Ferrovias dão PIB; AFRMM com renúncia lida; cobrança do governador
 # com chance proporcional à relação e cartão que explica apoio/cobrar/pacto.
+# Lote Justiça (seção 8): PGR de mandato único, punir supersalários, balcão da leniência e sigilo de 100 anos têm o efeito que o texto diz.
 # uso: python3 run_sandbox.py ui_pais_efeitos.py <pasta com index.html, fotos.json e logos.json> <saida_dir> [porta]
 import sys, threading, functools, http.server, json, re, os
 from playwright.sync_api import sync_playwright
@@ -25,7 +26,7 @@ def start(pg):
         pg.locator('button:not([disabled])').filter(has_text=re.compile(r'^\s*Escolher\s*$')).first.click(timeout=5000); pg.wait_for_timeout(250)
     click(pg, "Avançar"); click(pg, "Tomar posse", 1000)
 errs = []
-INJ = ("window.__QV = () => QV; window.__P = () => ({ analisaLocal, ORC_AREAS, orcFmtV, IC_PROD, icTextoAcao, segPrevia, executaProposta, ensureIC, convAbre, convResponde, convChanceCobrar, INFRA_GRUPOS, TB_LEV });\n"
+INJ = ("window.__QV = () => QV; window.__P = () => ({ JUS_GOV, jusProgMensal, jusProgAtivo, jusMensal, jusNovoCaso, eqEscDecaimento, medSyncFiscal, medL, analisaLocal, ORC_AREAS, orcFmtV, IC_PROD, icTextoAcao, segPrevia, executaProposta, ensureIC, convAbre, convResponde, convChanceCobrar, INFRA_GRUPOS, TB_LEV });\n"
        "function analisaLegado(g, texto) {")
 with sync_playwright() as p:
     b = p.chromium.launch(); pg = b.new_page(viewport={'width': 1440, 'height': 900})
@@ -103,6 +104,38 @@ with sync_playwright() as p:
         ok('E4: cartão explica o efeito do pacto (1,6 vez o apoio, % ao mês, indicador do estado)', re.search(r'1,6 vez o apoio', t) and re.search(r'indicador do estado melhora [\d,]+% ao mês', t), t[:400])
     except Exception as e:
         ok('E4: cartão da conversa abre', False, str(e)[:200])
+    # 8. Justiça: os 4 programas que não mexiam em indicador algum agora têm o efeito do texto (hook mensal jusProgMensal, lido da medida em vigor)
+    JP = """(id, setup) => { const P = __P(); const g = structuredClone(__QV().gRef.current); g.seed = 7; const J = P.JUS_GOV.find(x => x.jus === id); const p = P.analisaLocal(g, J.t); P.executaProposta(g, p, 'aprovada');
+      const M = P.medL(g).find(m => m.pid === p.id); if (!M) return { erro: 'sem medida' }; g.mes = M.mPleno + 2; const k = M.k;
+      const a0 = { e: Object.assign({}, g.eco), gr: Object.assign({}, g.groups), stf: g.stf, fc: g.fiscal.custo, fr: g.fiscal.receita, div: g.eco.divida };
+      P.jusProgMensal(g); const fim = { f: P.jusProgAtivo(g, id), k };
+      P.medSyncFiscal(g, M, 1);
+      const dg = (kk) => +(g.groups[kk] - a0.gr[kk]).toFixed(3);
+      return Object.assign(fim, { conf: +(g.eco.conf - a0.e.conf).toFixed(3), pib: +(g.eco.pib - a0.e.pib).toFixed(3), stf: +(g.stf - a0.stf).toFixed(3), custo: +(g.fiscal.custo - a0.fc).toFixed(3), receita: +(g.fiscal.receita - a0.fr).toFixed(3),
+        once: M.once, div: +(g.eco.divida - a0.div).toFixed(4), merc: dg('mercado'), cm: dg('classemedia'), uni: dg('universitarios'), serv: dg('servidores'), emp: dg('empresariado') }); }"""
+    r = pg.evaluate("() => (%s)('pgr')" % JP)
+    ok('J1 PGR (PEC): em vigor, mercado +1,5, classe média e universitários +1, confiança +1,5, sem custo fiscal', r.get('f', 0) > .3 and abs(r['merc'] - 1.5 * r['f']) < .05 and abs(r['cm'] - r['f']) < .05 and abs(r['uni'] - r['f']) < .05 and abs(r['conf'] - 1.5 * r['f']) < .1 and r['custo'] == 0 and r['receita'] == 0, r)
+    r = pg.evaluate("""() => { const P = __P(); const g0 = structuredClone(__QV().gRef.current); const out = {};
+      for (const on of [0, 1]) { let av = 0, n = 0; for (let s = 1; s <= 3000; s++) { const g = structuredClone(g0); g.seed = s * 7 + 1; g.mes = 20; g.over = false; g.evento = null; g.jusProg = on ? { _ult: 20, pgr: { f: 1, mid: 'x' } } : {};
+          g.jus = { ver: 1, seq: 1, casos: [{ id: 'j1', nome: 'Teste', mes: 10, faseMes: 17, orgao: 'PF', orgaos: ['PF'], fase: 'inquérito', valor: 100, prova: 40, alvo: 'assessores do Planalto', p: null, gov: true, casa: null, cargo: null, sig: null, esquema: 'x', pend: false, pendMes: 10, trava: 0, sigilo: false, rastro: 0, acel: 0, forca: false, reab: 0, ult: 0, log: [] }], ultQuebra: 20, ult: null, pfCorte: 0, pfOrc: 0, nBloq: 0, nAvan: 0, ev: {}, suplentes: [], reacoes: [], cpiMes: 0 };
+          P.jusMensal(g, []); n++; if (g.jus.casos[0].fase === 'denúncia') av++; } out[on] = av / n; } return out; }""")
+    ok('J1 PGR (PEC): casos que atingem o governo avançam ~15% mais (3000 sorteios por braço)', 1.08 < r['1'] / r['0'] < 1.24, r)
+    r = pg.evaluate("() => (%s)('teto')" % JP)
+    ok('J2 Punir quem paga acima do teto: corta R$ 3 bi/ano, devolução única de R$ 1 bi, servidores −2, STF +2, classe média +1', r.get('f', 0) > .3 and abs(r['custo'] + 3) < .35 and r['once'] == r['k'] and abs(r['serv'] + 2 * r['f']) < .05 and abs(r['stf'] - 2 * r['f']) < .05 and abs(r['cm'] - r['f']) < .05 and r['div'] < 0, r)
+    r = pg.evaluate("() => (%s)('lenc')" % JP)
+    ok('J3 Balcão único da leniência: receita de R$ 2 bi/ano, empresariado +2, PIB levemente positivo', r.get('f', 0) > .3 and abs(r['receita'] - 2) < .25 and abs(r['emp'] - 2 * r['f']) < .05 and 0 < r['pib'] <= .08, r)
+    r = pg.evaluate("""() => { const P = __P(); const g0 = structuredClone(__QV().gRef.current); const o = {};
+      for (const on of [0, 1]) { const g = structuredClone(g0); g.escAberto = null; g.escRef = null; g.oposicao = g.oposicao || {}; g.oposicao.pedidoImp = null; if (g.eu && g.eu.bast) g.eu.bast.inv = false; g.mes = 30; g.jusProg = on ? { _ult: 30, sigilo: { f: 1, mid: 'x' } } : {}; o['dec' + on] = 1 - P.eqEscDecaimento(g); }
+      for (const on of [0, 1]) { const g = structuredClone(g0); g.seed = 5; g.mes = 12; g.escandalo = 5; g.jusProg = on ? { _ult: 12, sigilo: { f: 1, mid: 'x' } } : {}; const e0 = g.escandalo; P.jusNovoCaso(g, { gov: true, silencio: false }); o['imp' + on] = g.escandalo - e0; }
+      return o; }""")
+    ok('J4 Sigilo de 100 anos vetado para gastos: escândalo decai +20% sem caso novo, caso novo pesa +10%', abs(r['dec1'] / r['dec0'] - 1.2) < .02 and 1.07 < r['imp1'] / r['imp0'] < 1.13, r)
+    r = pg.evaluate("() => (%s)('sigilo')" % JP)
+    ok('J4 Sigilo: classe média e universitários (imprensa) +1 e confiança sobe levemente', r.get('f', 0) > .3 and abs(r['cm'] - r['f']) < .05 and abs(r['uni'] - r['f']) < .05 and 0 < r['conf'] <= .6, r)
+    pg.evaluate("()=>__QV().setG(p=>{const n=structuredClone(p);n.mes=Math.max(n.mes,2);return n})"); pg.wait_for_timeout(400)
+    pg.locator('#sec-tab-pais').click(timeout=6000); pg.wait_for_timeout(500)
+    pg.locator('.chipnav [role=tab]').filter(has_text=re.compile(r'^\s*Justiça\s*$')).first.click(timeout=6000); pg.wait_for_timeout(900)
+    ef = pg.locator('[data-jus=acoes-gov] [data-prog-ef]'); tx = ef.all_inner_texts()
+    ok('J: cartões dos 4 programas mostram o efeito esperado em uma linha', len(tx) == 4 and any('3 bi' in t and 'supersal' in t for t in tx) and all(t.startswith('Efeito:') for t in tx), tx)
     ok('0 erros de página/console', not errs, errs[:3])
     b.close()
 falhas = [n for c, n in checks if not c]
