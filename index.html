@@ -1390,8 +1390,11 @@ function vagaMinisterio(g, pk, notas) {
   g.feed.unshift({ mes: g.mes, src: 'globo', txt: `${pastaTxt(pk)} fica sem titular e passa a ser tocado por um interino` });
 }
 // escândalo do mês: cada pasta tem uma chance própria (risco simulado do titular; técnicos e correligionários valem metade). O texto cita só o ministério.
+// EQUILÍBRIO v2: o escândalo sorteado soma +8 (era +16) e tem 3 meses de carência (g.escSorteio), para o acaso não derrubar um governo que se comporta.
+const ESC_SORTEIO = 8, ESC_SORTEIO_CARENCIA = 3;
 function sorteiaEscandalo(g, notas) {
   if (g.abinEscudo === g.mes) return;
+  if (g.escSorteio != null && g.mes - g.escSorteio < ESC_SORTEIO_CARENCIA) return;
   const NM = g.cfg.nomeados || {}; const cand = [];
   for (const p of PASTAS) {
     const N = NM[p.k]; const tipo = g.cfg.ministros[p.k];
@@ -1403,7 +1406,7 @@ function sorteiaEscandalo(g, notas) {
   if (!soma || Math.random() >= 1 - cand.reduce((a, c) => a * (1 - c.p), 1)) return;
   let r = Math.random() * soma; const alvo = cand.find(c => (r -= c.p) < 0) || cand[cand.length - 1];
   const onde = alvo.pk ? `do ${pastaTxt(alvo.pk)}` : 'de um ministério de segundo escalão';
-  g.escandalo = clamp(g.escandalo + 16, 0, 100);
+  g.escandalo = clamp(g.escandalo + ESC_SORTEIO, 0, 100); g.escSorteio = g.mes;
   if (alvo.pk) minEst(g, alvo.pk).esc = g.mes;
   notas.push({ t: 'neg', x: pick([`Operação investiga contratos de assessores ${onde}.`, `Auditoria questiona licitações de terceirização ${onde}.`, `Reportagem aponta suspeitas em convênios ${onde}.`]) });
 }
@@ -1779,10 +1782,15 @@ const EVENTOS = [
     texto: 'A Polícia Federal cumpre mandados contra dois assessores por suspeita de desvio em contratos de merenda. A oposição já fala em CPI.',
     opcoes: [{ l: 'Apoiar a PF', t: 'Afastar os envolvidos e apoiar a investigação da PF' }, { l: 'Atacar a PF', t: 'Atacar a PF e dizer que é perseguição política' }, { l: 'Lei anticorrupção', t: 'Fortalecer a CGU e enviar pacote anticorrupção com transparência total' }],
     ignorar: { esc: 15, ap: -2 } },
-  { id: 'dolar', titulo: 'Dólar dispara', icone: 'TrendingUp', grav: 'alta', tags: ['corte_gastos', 'ataque', 'comunicacao'], w: g => 0.6 + Math.max(0, g.eco.risco - 200) / 80,
+  { id: 'dolar', titulo: 'Dólar dispara', icone: 'TrendingUp', grav: 'alta', tags: ['corte_gastos', 'ataque', 'comunicacao'], w: g => (0.6 + Math.max(0, g.eco.risco - 200) / 80) * (1 + Math.max(0, 20 - g.eco.conf) / 5), // EQUILÍBRIO v2: peso cresce com confiança abaixo de 20
     texto: 'Uma fala sobre gastos derrubou o real. O dólar subiu 4% em dois pregões e o Banco Central fez leilão extraordinário.',
     opcoes: [{ l: 'Cortar gastos', t: 'Anunciar pacote de corte de gastos de R$ 30 bilhões' }, { l: 'Acalmar', t: 'Pronunciamento reafirmando compromisso com o arcabouço fiscal' }, { l: 'Culpar especuladores', t: 'Culpar os especuladores da Faria Lima' }],
     ignorar: { e: { dol: .25, risco: 20, ipca: .2 }, g: { mercado: -5 } } },
+  // EQUILÍBRIO v2: crise automática de mercado; só entra no sorteio com confiança abaixo de 35 e pesa mais quanto mais perto de zero
+  { id: 'fuga_capitais', titulo: 'Fuga de capitais', icone: 'TrendingUp', grav: 'alta', tags: ['corte_gastos', 'ataque', 'comunicacao'], w: g => (g.eco.conf < 35 ? 0.3 + (35 - g.eco.conf) / 6 : 0),
+    texto: 'Investidores estrangeiros zeram posições no Brasil, a bolsa derrete e fundos sacam bilhões em um único pregão. O Banco Central vende reservas para segurar o câmbio.',
+    opcoes: [{ l: 'Choque fiscal', t: 'Anunciar pacote de corte de gastos de R$ 50 bilhões' }, { l: 'Acalmar', t: 'Pronunciamento reafirmando compromisso com o arcabouço fiscal' }, { l: 'Culpar o exterior', t: 'Culpar o mercado internacional pela fuga de capitais' }],
+    ignorar: { e: { dol: .4, risco: 40, ipca: .3, conf: -4, pib: -.3 }, g: { mercado: -6, empresariado: -4 } } },
   { id: 'caminhoneiros', titulo: 'Caminhoneiros ameaçam greve', icone: 'Truck', grav: 'alta', tags: ['combustivel', 'caminhoneiros', 'desbloqueio'],
     texto: 'Áudios no WhatsApp convocam paralisação nacional contra o preço do diesel. Supermercados temem desabastecimento em 72 horas.',
     opcoes: [{ l: 'Zerar PIS/Cofins', t: 'Zerar PIS/Cofins do diesel por 3 meses' }, { l: 'Piso do frete', t: 'Criar piso mínimo do frete para caminhoneiros' }, { l: 'PRF nas estradas', t: 'Usar a PRF para desbloquear as rodovias' }],
@@ -2388,6 +2396,13 @@ function idealRel(cfg, p, extra = 0) {
   if (p === cfg.partido) r = 90;
   return r;
 }
+// EQUILÍBRIO v2: aliados de largada do presidente Negociador = os 3 maiores blocos fisiológicos (fisio >= 60) que não são o próprio partido.
+// ALI_REL_INI: relação inicial mínima (acima do limiar de base 62); ALI_BONUS: empurrão permanente na relação-alvo enquanto a aprovação não desaba.
+const ALI_REL_INI = 64, ALI_BONUS = 22, ALI_N = 3;
+function aliadosCentrao(cfg) {
+  if (!cfg || !(cfg.tracos || []).includes('negociador')) return [];
+  return PARTIDOS.filter(P => P.fisio >= 60 && P.id !== cfg.partido && P.cam > 0).sort((a, b) => b.cam - a.cam).slice(0, ALI_N).map(P => P.id);
+}
 function novoJogo(cfg) {
   const ideo = cfg.ideo;
   const tr = (k) => cfg.tracos.includes(k);
@@ -2449,6 +2464,8 @@ function novoJogo(cfg) {
     const r = clamp(idealRel(cfg, P.id, extra), 5, 95);
     g.parties[P.id] = { rel: r, relS: clamp(r + 2, 5, 95), min: 0 };
   }
+  // EQUILÍBRIO v2: presidente Negociador já chega com 2-3 blocos do Centrão acima do limiar de base (62); a aliança também segura a relação nos meses seguintes (ver fimDoMes)
+  for (const id of aliadosCentrao(cfg)) { const st = g.parties[id]; st.ali = true; st.rel = Math.max(st.rel, ALI_REL_INI); st.relS = Math.max(st.relS, ALI_REL_INI + 2); }
   // ministérios: nomes escolhidos (cfg.nomeados) ou, sem nome, o Centrão em rodízio
   const NM = cfg.nomeados || {};
   for (const pk in NM) NM[pk] = reatribui(NM[pk], pk);
@@ -10742,6 +10759,10 @@ function posMotor(g, prop, texto) {
   prop.fx.g = derivaGrupos(prop.fx.g, s, (prop.entendimento && prop.entendimento.objetos) || [], (prop.entendimento || {}).polaridade || 0); prop.fx.gx = true;
   fadigaAgenda(g, prop);
   analiseJogo(g, prop);
+  // EQUILÍBRIO v2: medida repetida (já em vigor) e custo fiscal no voto aparecem no parecer
+  prop.repetida = medRepetida(g, prop);
+  if (prop.repetida && !(prop.tecnico || '').includes('Já aprovada')) prop.tecnico = (prop.tecnico ? prop.tecnico + ' ' : '') + `Já aprovada: ${prop.repetida.ato} (${prop.repetida.nm}) segue em vigor; repetir a medida não soma o efeito, só gasta uma ação.`;
+  { const cf = custoFiscalVoto(g, prop); prop.custoVoto = cf.pts ? { pts: Math.round(cf.pts * 10) / 10, net: Math.round(cf.net) } : null; if (prop.custoVoto && prop.custoVoto.pts <= -2 && !(prop.tecnico || '').includes('Custo fiscal pesa no voto')) prop.tecnico = (prop.tecnico ? prop.tecnico + ' ' : '') + `Custo fiscal pesa no voto: a Fazenda e o mercado pressionam o Congresso contra um gasto líquido de R$ ${fmt(cf.net, 0)} bi por ano (até ${fmt(-prop.custoVoto.pts, 0)} pontos a menos de apoio).`; }
   return prop;
 }
 const COER_CONTRA = -40, COER_BANDEIRA = 60;   // coerência com o partido: contradiz (≤ −40) ou é bandeira (≥ +60)
@@ -11075,8 +11096,18 @@ function votoIdeologico(g, prop, L, C) {
   const wf = w * lealdade;
   return { pts: conc / 100 * 75 * wf * (.35 + .65 * C.sal), amort: 1 - .7 * C.sal * wf, conc: Math.round(conc) };
 }
+/* EQUILÍBRIO v2: custo fiscal no voto. Gasto novo líquido (custo menos receita, R$ bi/ano, na escala da medida) acima de R$ 15 bi tira apoio dos parlamentares,
+   mais ainda dos blocos de mercado/liberais e menos dos fisiológicos (que gostam de gasto). A resistência cresce com o déficit primário e com a confiança baixa. Limite: −28 pontos. */
+function custoFiscalVoto(g, prop) {
+  const net = ((prop.cost || 0) - (prop.rev || 0)) * (prop.scale == null ? 1 : prop.scale);
+  if (!(net > 15)) return { pts: 0, net };
+  const prim = primario(g), conf = g.eco.conf;
+  const est = 1 + clamp((-prim - 100) / 300, 0, 1) + (conf < 40 ? (40 - conf) / 80 : 0);
+  return { pts: -clamp((net - 15) / 8, 0, 22) * est, net, est };
+}
+const pesoCustoBloco = (pid) => { const P = PMAP[pid] || PMAP.OUTROS; return Math.max(.3, 1 - P.fisio / 150 + P.eco / 400); };
 function projetaVotos(g, prop, ruido = 0, opt = null) {
-  const est = aprovEstados(g); const ctxI = contextoIdeologico(prop);
+  const est = aprovEstados(g); const ctxI = contextoIdeologico(prop); const cfv = custoFiscalVoto(g, prop);
   const rede = opt && opt.semRede ? SEM_REDE : pressaoRede(g, prop); // pressão das redes: calculada uma vez por medida
 
   const out = { cam: [], sen: [], totC: 0, totS: 0, nominal: { cam: [], sen: [] }, mult: multPlenario(g), rede };
@@ -11087,7 +11118,7 @@ function projetaVotos(g, prop, ruido = 0, opt = null) {
     const fp = prop.frPos;
     for (const L of elSubstitutos(g, casa)) {
       const iv = votoIdeologico(g, prop, L, ctxI);
-      const sup = 55 + (ap[L.bloco] - 55) * iv.amort * ctxI.popAmort + iv.pts + ctxI.popPts + L.pessoal + apoioUF(est, L.uf) + pressaoFrente(L, fp) + (rede.pts ? rede.pts * sensRede(L, rede) : 0);
+      const sup = 55 + (ap[L.bloco] - 55) * iv.amort * ctxI.popAmort + iv.pts + ctxI.popPts + L.pessoal + apoioUF(est, L.uf) + pressaoFrente(L, fp) + (rede.pts ? rede.pts * sensRede(L, rede) : 0) + (cfv.pts ? Math.max(-28, cfv.pts * pesoCustoBloco(L.bloco)) : 0);
       const p = 1 / (1 + Math.exp(-(sup - 55) / 8));
       const voto = hashStr(prop.id + L.nome) + (ruido ? rnd(-ruido, ruido) : 0) < p;
       const hv = taxaAus ? hashStr('au' + prop.id + L.nome) : 1;
@@ -12921,12 +12952,38 @@ function MedidasVigor({ g, upd, irPara }) {
 }
 
 /* ============================== EXECUÇÃO DA MEDIDA ============================== */
+/* EQUILÍBRIO v2: medida repetida. Se o mesmo objeto (mesma polaridade) já está numa medida em vigor, aprovar de novo NÃO soma o efeito
+   (o jogo já estava somando receita e custo a cada aprovação: -R$ 4,8 tri/ano no mês 43 do relatório). Respostas a crise e concessões a protesto ficam de fora. */
+function medRepetida(g, prop) {
+  try {
+    if (!prop || prop.transiente || prop.vago || prop.absurdo || prop.fromEvento || prop.fromProtesto) return null;
+    const pol = prop.entendimento ? prop.entendimento.polaridade : 0; if (!pol) return null;
+    const ids = (prop.objs || []).filter(o => o.sg).map(o => o.id); if (!ids.length) return null;
+    const M = medidasDe(g).find(m => medAtivo(m) && m.pid !== prop.id && m.pol === pol && (m.objIds || []).length && ids.every(i => m.objIds.includes(i)));
+    return M ? { mid: M.id, ato: M.ato, nm: M.nm || M.topic, topic: M.topic, m0: M.m0 } : null;
+  } catch (e) { return null; }
+}
+// comunicação: rendimento decrescente no mês (1º ato 100%, 2º 50%, 3º e seguintes 25%) e teto global do efeito transitório ainda em vigor (EQ_TRANS_CAP pontos de aprovação)
+const EQ_COM_FATOR = [1, .5, .25], EQ_TRANS_CAP = 4;
+// comunicação só mexe na opinião: sem efeito em pobreza/segurança/regiões e só uma fração do efeito em confiança, risco e dólar (30%)
+function fxComunicacao(fx) {
+  const o = Object.assign({}, fx); delete o.s; delete o.r;
+  if (fx && fx.e) { o.e = {}; for (const c of ['conf', 'risco', 'dol']) if (fx.e[c]) o.e[c] = fx.e[c] * .3; }
+  return o;
+}
+function efTransTotal(g) { // aprovação ponderada ainda "emprestada" pelos atos de comunicação
+  let t = 0, w = 0; for (const G of GRUPOS) w += G.w;
+  for (const r of (g.efTrans || [])) for (const kk in r.d) { const G = GRUPOS.find(x => x.k === kk); if (G) t += r.d[kk] * r.f * G.w; }
+  return w ? t / w : 0;
+}
 /* teto de saliência: uma única medida raramente move a aprovação geral em mais de ~5 pontos (a opinião reage ao conjunto, não a uma linha do orçamento).
    Acima de 3,5 pontos a variação é comprimida por tanh e o movimento de cada grupo é reescalado na mesma proporção. */
 function limitaImpactoAprovacao(g, g0, a0) {
   const d = aprovacao(g) - a0; const ad = Math.abs(d);
-  if (ad <= 3.5) return;
-  const alvo = 3.5 + 1.3 * Math.tanh((ad - 3.5) / 1.3);
+  // EQUILÍBRIO v2: a partir da 3ª medida aprovada no mês o teto por medida cai pela metade (3,5 -> 1,75): a opinião não reage a uma enxurrada de decretos
+  const T = (g.aprMes || 0) >= 2 ? 1.75 : 3.5, W = T / 3.5 * 1.3;
+  if (ad <= T) return;
+  const alvo = T + W * Math.tanh((ad - T) / W);
   const f = alvo / ad;
   for (const kk of Object.keys(g0)) if (g.groups[kk] != null) g.groups[kk] = clamp(g0[kk] + (g.groups[kk] - g0[kk]) * f, 1, 99);
 }
@@ -12938,26 +12995,31 @@ function executaProposta(g, prop, resultado) {
   const k = prop.scale;
   const est = estOf(g); let agendados = 0, novoProt = false, segNota = null, bloqNota = null;
   let medM = null, medRev = null; // v3.6
+  const repet = resultado === 'aprovada' ? medRepetida(g, prop) : null; // EQUILÍBRIO v2: medida já em vigor não soma efeito de novo
+  // EQUILÍBRIO v2: todo ato de comunicação puro (inst COM, sem custo nem receita, que não seja resposta a crise/protesto) também é transitório: só mexe na opinião (grupos, aprovação, relações),
+  // por poucas semanas. Antes só os marcados pelo motor eram, e discursos e visitas deixavam +1 ponto de aprovação permanente cada um e até derrubavam a pobreza (-12 p.p. de viés em 24 meses).
+  const ehCom = !!prop.transiente || (prop.inst === 'COM' && !(prop.cost > 0) && !prop.rev && !prop.fromEvento && !prop.fromProtesto);
   if (resultado === 'aprovada') {
     if (g.revogPend && g.revogPend.texto === prop.texto) { medRev = medidasDe(g).find(m => m.id === g.revogPend.mid && medAtivo(m)) || null; g.revogPend = null; }
     if (!medRev) medRev = medAchaRevogada(g, prop); // v3.6: proposta que reverte uma medida em vigor (texto livre) desfaz a original
     if (medRev) { medidaReverte(g, medRev, 1, 'revogada'); estOf(g).revogacoes = (estOf(g).revogacoes || 0) + 1; medNoticia(g, medRev, 'neu', `Revogação aprovada (${ato}): ${medRev.ato} deixa de valer e os efeitos já produzidos são em grande parte desfeitos`); }
+    else if (repet) { est.repetidas = (est.repetidas || 0) + 1; g.feed.unshift({ mes: g.mes, src: 'carta', txt: `${ato} repete ${repet.ato} (${repet.nm}), que já está em vigor: nada muda` }); linhaAdd(g, 'MEDIDAS', `${ato} já aprovada: ${repet.ato} segue em vigor e o efeito não se soma`); }
     else { try { medM = medidaCria(g, prop, k, ato); } catch (e) { medM = null; if (typeof console !== 'undefined') console.warn('medidaCria', e); } } // v3.6
     const espera = !!(medM && medM.estado === 'aguardando'); // v3.9: medida condicional ainda não disparou
-    if (!medRev) {
-    applyFx(g, medM ? medM.ag : prop.fx, k * (espera ? .1 : 1));
-    segNota = espera ? null : segAplicaMedida(g, prop, k);
+    if (!medRev && !repet) {
+    applyFx(g, medM ? medM.ag : (ehCom ? fxComunicacao(prop.fx) : prop.fx), k * (espera ? .1 : 1));
+    segNota = espera || ehCom ? null : segAplicaMedida(g, prop, k);
     if (medM) { if (!espera) medSyncFiscal(g, medM, 0); } // v3.6: custo e receita entram pela rampa (fração inicial conforme o tipo)
     else { g.fiscal.custo += (prop.cost || 0) * k; g.fiscal.receita += ((prop.rev || 0) - vigRev(prop)) * k; g.fiscal.extra += (prop.extra || 0) * k; }
     if (prop.once > 0 && !espera) g.eco.divida = Math.max(20, g.eco.divida - prop.once / ((g.eco.pibNom || 12000) / 100));
     }
-    for (const f of (espera ? [] : prop.flags)) {
+    for (const f of (espera || repet ? [] : prop.flags)) {
       if (f.startsWith('priv_')) g.estatais[f.slice(5)] = false;
       else if (!FLAGS_META.includes(f) && !g.flags.includes(f)) g.flags.push(f);
     }
-    if (!medRev) {
-    if (!espera) fase3Aprovada(g, prop, k);
-    if (!espera) agendados = agendaAtrasos(g, prop) + agendaVigencia(g, prop);
+    if (!medRev && !repet) {
+    if (!espera && !ehCom) fase3Aprovada(g, prop, k);
+    if (!espera && !ehCom) agendados = agendaAtrasos(g, prop) + agendaVigencia(g, prop);
     if (!espera && (prop.bloqueio || []).length) bloqNota = aplicaBloqueio(g, prop);
     }
     if (prop.inst === 'PEC') est.pec = (est.pec || 0) + 1;
@@ -12986,11 +13048,17 @@ function executaProposta(g, prop, resultado) {
   if (prop.icHook) { try { icResolve(g, prop, resultado); } catch (e) { if (typeof console !== 'undefined') console.warn('icResolve', e); } }
   if (prop.trHook) { try { trResolve(g, prop.trHook, resultado); } catch (e) { if (typeof console !== 'undefined') console.warn('trResolve', e); } }
   if (prop.gvHook) { try { gvResolve(g, prop.gvHook, resultado); } catch (e) { if (typeof console !== 'undefined') console.warn('gvResolve', e); } }
-  if (resultado === 'aprovada') { try { tbAprovada(g, prop); } catch (e) { if (typeof console !== 'undefined') console.warn('tbAprovada', e); } }
+  if (resultado === 'aprovada' && !repet) { try { tbAprovada(g, prop); } catch (e) { if (typeof console !== 'undefined') console.warn('tbAprovada', e); } }
   try { minResolve(g, prop, resultado); } catch (e) { if (typeof console !== 'undefined') console.warn('minResolve', e); }
   if (resultado === 'aprovada') limitaImpactoAprovacao(g, g0Cap, a0Cap);
-  if (resultado === 'aprovada' && prop.transiente) { // discurso, live e pronunciamento: o efeito na opinião some em poucas semanas
+  if (resultado === 'aprovada' && ehCom) { // discurso, live e pronunciamento: o efeito na opinião some em poucas semanas
     const dgT = {}; let any = false; for (const kk of Object.keys(g0Cap)) { const dv = g.groups[kk] - g0Cap[kk]; if (Math.abs(dv) > .01) { dgT[kk] = dv; any = true; } }
+    { // EQUILÍBRIO v2: rendimento decrescente (2º ato do mês 50%, 3º 25%) e teto global do efeito transitório em vigor
+      const nCom = g.comMes || 0; g.comMes = nCom + 1; let f = EQ_COM_FATOR[Math.min(nCom, EQ_COM_FATOR.length - 1)];
+      let wT = 0, wS = 0; for (const G of GRUPOS) { wS += G.w; wT += (dgT[G.k] || 0) * G.w; } const dAp = wS ? wT / wS : 0;
+      if (dAp > 0) f = Math.min(f, Math.max(0, EQ_TRANS_CAP - efTransTotal(g)) / dAp);
+      if (f < .999) { for (const kk of Object.keys(dgT)) { g.groups[kk] = clamp(g0Cap[kk] + dgT[kk] * f, 1, 99); dgT[kk] *= f; } g.comRed = { mes: g.mes, f }; }
+    }
     if (any) { g.efTrans = g.efTrans || []; g.efTrans.push({ mes: g.mes, d: dgT, f: 1 }); }
   }
   // crise
@@ -13014,7 +13082,7 @@ function executaProposta(g, prop, resultado) {
   }
   if (!prop.jaPaga) {
     g.acoes = Math.max(0, g.acoes - 1);
-    g.medMes = (g.medMes || 0) + 1;
+    g.medMes = (g.medMes || 0) + 1; if (resultado === 'aprovada') g.aprMes = (g.aprMes || 0) + 1;
     g.pes.energia = clamp(g.pes.energia - 14, 0, 100);
     g.pes.estresse = clamp(g.pes.estresse + 3, 0, 100);
   }
@@ -13037,6 +13105,73 @@ function sorteiaEvento(g) {
   for (let i = 0; i < cand.length; i++) { t -= ws[i]; if (t <= 0) return cand[i]; }
   return cand[0];
 }
+/* ============================== EQUILÍBRIO v2 (impeachment, base, macro, estresse) ==============================
+   Revisão de equilíbrio (relatório independente, seção 4). Todos os números abaixo são limites explícitos e comentados:
+   - impeachment: risco >= 80 por 3 meses seguidos (4 em Lua de mel ou dificuldade Fácil), com 1 mês de aviso ("admissibilidade") antes da votação;
+   - escândalo decai mais rápido sem caso aberto (−0,07 no fator mensal);
+   - relações com os partidos respondem à economia (PIB, primário, inflação), não só à aprovação;
+   - hiperinflação e confiança perto de zero derrubam alvo e teto do PIB;
+   - estresse recupera −6/mês sem crise; a saúde zerada afasta por 1 mês antes do fim definitivo. */
+const EQ_IMP_MESES = 3, EQ_IMP_MESES_LEVE = 4;       // meses seguidos com risco >= 80 até a votação
+const EQ_ESC_SEM_CASO = .07;                          // redução extra do fator de decaimento do escândalo quando não há caso aberto
+const EQ_ESTRESSE_REC = 6;                            // recuperação passiva de estresse por mês sem crise
+function eqImpNecessario(g) { const M = modoDe(g); return (M.k === 'lua' || (g.cfg && g.cfg.dif === 'facil')) ? EQ_IMP_MESES_LEVE : EQ_IMP_MESES; }
+// admissibilidade: no mês anterior à votação a Câmara "analisa o pedido"; o jogador ainda pode derrubar o risco abaixo de 80
+function impAdmissibilidade(g) {
+  const need = eqImpNecessario(g), st = g.impStreak || 0;
+  return { ativa: !g.over && st > 0 && st >= need - 1 && st < need, need, streak: st, risco: riscoImpeachment(g) };
+}
+function eqPibCrise(g) { const E = g.eco; return Math.max(0, 20 - E.conf) * .1 + Math.max(0, E.ipca - 10) * .12; }          // puxa o PIB-alvo: conf 0 = −2,0; IPCA 30% = −2,4
+function eqPibTeto(g) { const E = g.eco; return Math.max(.5, 9 - Math.max(0, 20 - E.conf) * .35 - Math.max(0, E.ipca - 10) * .25); } // teto do PIB: 9, caindo com a confiança e a inflação
+// caso de escândalo aberto: o escândalo subiu neste mês ou no anterior, há pedido de impeachment recente ou investigação em curso
+function eqEscDecaimento(g) {
+  const base = qvEscDec(g);
+  if (g.escRef != null && g.escandalo > g.escRef + .5) g.escAberto = g.mes;
+  const ped = !!(g.oposicao && g.oposicao.pedidoImp != null && g.mes - g.oposicao.pedidoImp < 4);
+  const inv = !!(g.eu && g.eu.bast && g.eu.bast.inv);
+  const aberto = ped || inv || (g.escAberto != null && g.mes - g.escAberto <= 1);
+  return aberto ? base : Math.max(.7, base - EQ_ESC_SEM_CASO);
+}
+// relação-alvo com os partidos: soma o desempenho da economia (PIB acima/abaixo de 2%, primário, inflação acima de 6%)
+function eqRelEconomia(g, prim) {
+  const E = g.eco;
+  return clamp((E.pib - 2) * 2.5, -7, 5) + clamp((prim + 60) / 30, -8, 3) + clamp(-(E.ipca - 6) * .7, -10, 0);
+}
+const fxNum = (v, d = 2) => (v > 0 ? '+' : v < 0 ? '−' : '') + fmt(Math.abs(v), d);
+// retorno das decisões de longo prazo no Balanço do mês: contratos de comércio, projetos de indústria e prioridade do trimestre
+function eqRetorno(g) {
+  const L = [];
+  try {
+    const C = g.comex, I = g.indu;
+    if (C) {
+      const ac = (C.acordos || []).filter(a => a.estado === 'ativo');
+      if (ac.length) {
+        const vendas = ac.filter(a => a.tipo === 'venda').length, mac = C.mac || {};
+        L.push({ k: 'comercio', ic: 'Ship', x: `Comércio: ${ac.length} ${ac.length === 1 ? 'contrato ativo' : 'contratos ativos'} (${vendas} de venda, ${ac.length - vendas} de compra). Saldo comercial e produção rendem R$ ${fxNum(C.tot ? C.tot.rec : 0, 1)} bi/ano à receita, PIB ${fxNum(mac.pib || 0)} p.p., desemprego ${fxNum(mac.des || 0)} p.p., inflação ${fxNum(mac.ipca || 0)} p.p.` });
+      }
+    }
+    if (I && I.proj) {
+      const pj = I.proj.filter(j => j.ativo && j.v > 0);
+      if (pj.length) {
+        const emObra = pj.filter(j => g.mes >= j.mes && g.mes < j.mes + j.atraso + j.dur), aguarda = pj.filter(j => g.mes < j.mes + j.atraso).length;
+        L.push({ k: 'industria', ic: 'Factory', x: `Indústria: ${pj.length} ${pj.length === 1 ? 'projeto' : 'projetos'} no radar, ${emObra.length} em obra${aguarda ? ' e ' + aguarda + ' ainda no prazo de implantação' : ''}. Os investimentos só mexem na produção depois do atraso.` });
+      }
+    }
+    const Pr = g.prioridade;
+    if (Pr && Pr.k && Pr.q === trimestreDe(g) && PRIORIDADEMAP[Pr.k] && g.mes >= Pr.ini && g.mes <= Pr.ini + 2) {
+      const D = PRIORIDADEMAP[Pr.k], f = D.fx || {}, m = Pr.mult || 1, bits = [];
+      for (const kk in (f.e || {})) bits.push(`${({ pib: 'PIB', des: 'desemprego', conf: 'confiança', risco: 'risco-país', ipca: 'inflação', dol: 'dólar' })[kk] || kk} ${fxNum(f.e[kk] * m, 2)}`);
+      if (f.ap) bits.push(`aprovação ${fxNum(f.ap * m, 2)}`); if (f.esc) bits.push(`escândalo ${fxNum(f.esc * m, 1)}`);
+      for (const kk in (f.g || {})) bits.push(`${medNomeG(kk).toLowerCase()} ${fxNum(f.g[kk] * m, 2)}`);
+      if (f.s && f.s.pob) bits.push(`pobreza ${fxNum(f.s.pob * m, 2)} p.p.`);
+      if (f.rel) bits.push('relação com o Centrão sobe');
+      if (D.cortaCusto) bits.push(`custeio −R$ ${fmt(D.cortaCusto * m, 1)} bi`);
+      L.push({ k: 'prioridade', ic: 'Target', x: `Prioridade do trimestre (${D.nome.toLowerCase()}), mês ${Math.min(3, g.mes - Pr.ini + 1)} de 3: ${bits.slice(0, 5).join(', ')}.` });
+    }
+  } catch (e) { }
+  return L;
+}
+
 function fimDoMes(g) {
   const antes = { ap: aprovacao(g), pib: g.eco.pib, ipca: g.eco.ipca, des: g.eco.des, dol: g.eco.dol, selic: g.eco.selic, risco: g.eco.risco, prim: primario(g), pob: g.soc.pob, hom: g.soc.hom, imp: riscoImpeachment(g), desm: g.soc.desm };
   const notas = [];
@@ -13046,9 +13181,13 @@ function fimDoMes(g) {
   // crise ignorada
   const evA = EV(g);
   if (evA && !g.eventoOk && evA.ignorar && Object.keys(evA.ignorar).length) {
+    const apIgn0 = aprovacao(g), escIgn0 = g.escandalo;
     applyFx(g, evA.ignorar, M.ignora * qvSev(g) * (g.eventoAntecip ? .75 : 1) * (emViagem(g) ? 1.15 : 1));
     if (evA.ufIgn && g.seg && g.eventoUF) segEfeitoUF(g, g.eventoUF, evA.ufIgn);
-    notas.push({ t: 'neg', x: `Crise ignorada: "${evA.titulo}" cobrou seu preço.` });
+    // EQUILÍBRIO v2: o custo de ignorar crises vira número (aprovação e escândalo), somado no acumulado g.ignAcum e mostrado na nota e no Balanço
+    const igA = Math.max(0, apIgn0 - aprovacao(g)), igE = Math.max(0, g.escandalo - escIgn0);
+    const IA = g.ignAcum = g.ignAcum || { n: 0, ap: 0, esc: 0 }; IA.n++; IA.ap += igA; IA.esc += igE;
+    notas.push({ t: 'neg', x: `Crise ignorada: "${evA.titulo}" cobrou seu preço: ${igA >= .05 ? '−' + fmt(igA, 1) + ' ponto' + (igA >= 1.05 ? 's' : '') + ' de aprovação' : 'sem perda imediata de aprovação'}${igE >= .5 ? ' e +' + fmt(igE, 0) + ' de escândalo' : ''}. Acumulado em ${IA.n} ${IA.n === 1 ? 'crise ignorada' : 'crises ignoradas'}: −${fmt(IA.ap, 1)} pontos de aprovação, +${fmt(IA.esc, 0)} de escândalo.` });
     g.pes.estresse += 6;
   }
   AP.mark('crises');
@@ -13081,8 +13220,8 @@ function fimDoMes(g) {
   g.fiscal.sH = g.fiscal.sH || []; g.fiscal.sH.push(sFis); if (g.fiscal.sH.length > 13) g.fiscal.sH.shift();
   const impFis = clamp((sFis - (g.fiscal.sH.length >= 13 ? g.fiscal.sH[0] : g.fiscal.s0)) / PIB_NOMINAL * 100, -1.5, 1.5);
   const infraEff = O.infra / 100 * .6 + O.educacao * .002;
-  const pibT = 2.6 + .3 * impFis - (E.selic - 10) * .22 + (E.conf - 50) * .03 + infraEff + B.pib + (g.dip.ue + g.dip.china + g.dip.eua + g.dip.merc - 225) / 400 + F3.dPib + MX.pib;
-  E.pib = clamp(E.pib + (pibT - E.pib) * .2 + rnd(-.12, .12), -8, 9);
+  const pibT = 2.6 + .3 * impFis - (E.selic - 10) * .22 + (E.conf - 50) * .03 + infraEff + B.pib + (g.dip.ue + g.dip.china + g.dip.eua + g.dip.merc - 225) / 400 + F3.dPib + MX.pib - eqPibCrise(g);
+  E.pib = clamp(E.pib + (pibT - E.pib) * .2 + rnd(-.12, .12), -8, eqPibTeto(g)); // EQUILÍBRIO v2: hiperinflação e confiança zero derrubam o PIB (alvo e teto)
   const desT = 6.3 - (E.pib - 1) * .9 + B.des + (MX.des || 0); // desemprego de equilíbrio ~5,6% com PIB de 1,8% (PNAD 2026: 5,3%, mínima da série)
   E.des = clamp(E.des + (desT - E.des) * .12 + rnd(-.05, .05), 2, 25);
   try { tbMensal(g); } catch (e) { if (typeof console !== 'undefined') console.warn('tbMensal', e); }
@@ -13111,13 +13250,15 @@ function fimDoMes(g) {
   // grupos
   const G = g.groups;
   const misery = E.ipca + E.des;
-  const mood = (11 - misery) * .25;
+  const excIpca = Math.max(0, E.ipca - 10);
+  const mood = (11 - misery) * .25 - excIpca * excIpca * .012; // EQUILÍBRIO v2: acima de 10% o humor da miséria cai ao quadrado (IPCA 20% = −1,2 ponto/mês extra; 30% = −4,8)
   const dg = (k, v) => { G[k] = clamp(G[k] + v, 1, 99); };
   const G0 = { ...G };
   dg('periferia', mood); dg('classemedia', mood * .8); dg('catolicos', mood * .6); dg('evangelicos', mood * .5); dg('caminhoneiros', mood * .6 - (E.dol - 5.4) * .8);
   dg('mercado', (E.conf - 50) * .08 + (prim > -20 ? .5 : -.5)); dg('empresariado', (E.pib - 1.5) * .6 + (E.conf - 50) * .03);
   dg('agro', (E.dol - 5) * .3 + (g.dip.china - 55) * .02 + MX.agro); dg('sindicatos', -(E.des - 6) * .3); dg('gamers', mood * .4);
   f3Grupos(g, dg);
+  if (E.conf < 20) for (const k of GKEYS) dg(k, -(20 - E.conf) * .04); // EQUILÍBRIO v2: confiança abaixo de 20 pesa em todos os grupos (zero = −0,8 ponto/mês)
   AP.mark('economia');
   dg('periferia', O.social * .012 + O.saude * .008); dg('universitarios', O.educacao * .012 + O.ambiente * .01); dg('sindicatos', O.educacao * .008 + O.saude * .005);
   AP.mark('medidas');
@@ -13145,7 +13286,8 @@ function fimDoMes(g) {
   eventosMinisterios(g, notas);
   AP.mark('crises');
   fase2Mensal(g, notas, AP);
-  g.escandalo *= qvEscDec(g); g.stf += (20 - g.stf) * .04;
+  const retorno = eqRetorno(g); g.retornoMes = retorno; // EQUILÍBRIO v2: retorno de contratos, projetos e prioridade no Balanço
+  g.escandalo *= eqEscDecaimento(g); g.escRef = g.escandalo; g.stf += (20 - g.stf) * .04; // EQUILÍBRIO v2: decai mais rápido sem caso aberto
   tickProtesto(g, notas);
   checaProtestoCrise(g);
   AP.mark('protestos');
@@ -13153,7 +13295,7 @@ function fimDoMes(g) {
   const ap = aprovacao(g);
   for (const P of PARTIDOS) {
     const st = g.parties[P.id];
-    const nat = idealRel(g.cfg, P.id, (ap - 42) * .45 + st.min * 6 - (g.cfg.tracos.includes('carismatico') ? 5 : 0) + (g.cfg.tracos.includes('negociador') && P.fisio > 60 ? 8 : 0));
+    const nat = idealRel(g.cfg, P.id, (ap - 42) * .45 + st.min * 6 - (g.cfg.tracos.includes('carismatico') ? 5 : 0) + (g.cfg.tracos.includes('negociador') && P.fisio > 60 ? 8 : 0) + eqRelEconomia(g, prim) + (st.ali ? ALI_BONUS : 0)); // EQUILÍBRIO v2: economia e aliança do Negociador
     st.rel = clamp(st.rel + (nat - st.rel) * .05, 0, 99);
     st.relS = clamp(st.relS + (nat + 2 - st.relS) * .05, 0, 99);
   }
@@ -13163,12 +13305,12 @@ function fimDoMes(g) {
   // vida pessoal
   const P = g.pes;
   const crises = (g.evento && !g.eventoOk ? 1 : 0);
-  P.estresse = clamp(P.estresse + (1.5 + crises * 4 + (ap < 30 ? 4 : 0) + (riscoImpeachment(g) > 60 ? 5 : 0)) * M.estresse - (g.acoes >= 3 ? 2 : 0), 0, 100);
+  P.estresse = clamp(P.estresse + (1.5 + crises * 4 + (ap < 30 ? 4 : 0) + (riscoImpeachment(g) > 60 ? 5 : 0)) * M.estresse - (g.acoes >= 3 ? 2 : 0) - (crises ? 0 : EQ_ESTRESSE_REC / M.estresse), 0, 100); // EQUILÍBRIO v2: recuperação passiva de ~6/mês sem crise
   P.energia = clamp(P.energia + 32, 0, 100);
   P.saude = clamp(P.saude - Math.max(0, P.estresse - 75) * .06 - (g.cfg.idade > 72 ? .7 : g.cfg.idade > 62 ? .25 : 0) + (P.estresse < 40 ? .8 : 0), 0, 100);
   P.conta += 31500;
   euMensal(g, notas);
-  if (P.saude < 25) notas.push({ t: 'neg', x: 'Equipe médica do Planalto recomenda repouso imediato. Sua saúde está em risco.' });
+  if (P.saude < 25) notas.push({ t: 'neg', x: 'Equipe médica do Planalto recomenda repouso imediato. Sua saúde está em risco.' + (g.afastUsado == null ? ' Se a saúde chegar a zero, você será afastado por um mês (sem ações); na segunda vez, o afastamento é definitivo.' : ' Você já foi afastado uma vez: se a saúde zerar de novo, o afastamento será definitivo.') });
   // fiscal: virada de ano
   if (g.mes % 12 === 0) { g.fiscal.extra = 0; notas.push({ t: 'neu', x: 'Novo exercício fiscal: gastos extraordinários e emendas do ano anterior saem da conta.' }); }
   // STF: vacância prolongada pesa e as aposentadorias compulsórias reais abrem vagas
@@ -13185,7 +13327,15 @@ function fimDoMes(g) {
   const risco = riscoImpeachment(g);
   let impeachment = null;
   if (risco >= 80) g.impStreak++; else g.impStreak = Math.max(0, g.impStreak - 1);
-  if (g.impStreak >= 2) impeachment = votaImpeachment(g);
+  const impNec = eqImpNecessario(g); // EQUILÍBRIO v2: 3 meses seguidos (4 em Lua de mel/Fácil), com 1 mês de aviso de admissibilidade
+  if (g.impStreak >= impNec) impeachment = votaImpeachment(g);
+  else if (g.impStreak === impNec - 1 && g.impStreak > 0 && g.impAdmMes !== g.mes) {
+    g.impAdmMes = g.mes;
+    const sobN = g.cfg.nome.split(' ').slice(-1)[0].toUpperCase();
+    notas.push({ t: 'neg', x: `Admissibilidade: a Câmara abre a análise do pedido de impeachment. Se o risco (hoje ${fmt(risco, 0)}%) continuar em 80% ou mais até o fim do próximo mês, haverá votação.` });
+    g.feed.unshift({ mes: g.mes, src: 'globo', txt: `CÂMARA ANALISA ADMISSIBILIDADE DO IMPEACHMENT DE ${sobN}; VOTAÇÃO PODE SAIR EM UM MÊS` }, { mes: g.mes, src: 'antag', txt: `${sobN} NA BERLINDA: OPOSIÇÃO CONTA VOTOS PARA ABRIR O PROCESSO` });
+    linhaAdd(g, 'CONGRESSO', 'Câmara abre a fase de admissibilidade do pedido de impeachment (aviso de 1 mês)');
+  }
   if (impeachment && !impeachment.cassado) estOf(g).impSob = (estOf(g).impSob || 0) + 1;
   for (const m of checaMarcos(g)) notas.push({ t: 'pos', x: `Marco do mandato: ${m.nome}. ${m.d}` });
   // avança
@@ -13193,7 +13343,7 @@ function fimDoMes(g) {
   g.negMes = {}; g.pesMes = {};
   g.acoes = 5;
   if (P.saude < 25) g.acoes = 2;
-  g.medMes = 0;
+  g.medMes = 0; g.aprMes = 0; g.comMes = 0;
   if (g.pesFerias) { g.pesFerias = false; }
   pushHist(g);
   apFim(g, AP);
@@ -13220,11 +13370,17 @@ function fimDoMes(g) {
   } catch (e) { }
   // fim de jogo
   if (impeachment && impeachment.cassado) g.over = { tipo: 'impeachment', imp: { votosC: impeachment.votosC, votosS: impeachment.votosS, aberto: impeachment.aberto, cassado: impeachment.cassado } };
+  else if (P.saude <= 0 && g.afastUsado == null) { // EQUILÍBRIO v2: afastamento temporário antes do fim definitivo (1 mês sem ações)
+    g.afastUsado = g.mes; P.saude = 30; P.estresse = Math.min(P.estresse, 45); P.humor = clamp(P.humor - 6, 0, 100); g.acoes = 0;
+    notas.push({ t: 'neg', x: 'Afastamento temporário: internado por exaustão, você perde as ações deste mês. A saúde volta a 30, mas se zerar de novo o afastamento será definitivo.' });
+    g.feed.unshift({ mes: g.mes - 1, src: 'globo', txt: `PRESIDENTE ${g.cfg.nome.split(' ').slice(-1)[0].toUpperCase()} É INTERNADO E FICA AFASTADO POR UM MÊS` });
+    linhaAdd(g, 'SAÚDE', 'Afastamento temporário por internação: sem ações neste mês');
+  }
   else if (P.saude <= 0) g.over = { tipo: 'saude' };
   try { elPosChecks(g, notas, impeachment); } catch (e) { if (typeof console !== 'undefined') console.warn('elPosChecks', e); }
   linhaDeNotas(g, notas, g.mes - 1);
   const depois = { ap: apN, pib: E.pib, ipca: E.ipca, des: E.des, dol: E.dol, selic: E.selic, risco: E.risco, prim: primario(g), pob: S.pob, hom: S.hom, imp: riscoImpeachment(g), desm: S.desm };
-  return { antes, depois, notas, copom, hd, impeachment, mesAnterior: g.mes - 1 };
+  return { antes, depois, notas, copom, hd, impeachment, mesAnterior: g.mes - 1, retorno, ignAcum: g.ignAcum ? { ...g.ignAcum } : null };
 }
 function votaImpeachment(g) {
   const ap = aprovacao(g); const est = aprovEstados(g);
@@ -16514,6 +16670,11 @@ function pendenciasMesa(g) {
     const temIgn = ev.ignorar && Object.keys(ev.ignorar).length > 0;
     L.push({ id: 'crise', tipo: 'crise', urg: ev.grav === 'alta' ? 96 : ev.grav === 'media' ? 86 : 76, cat: 'Crise do mês', ic: ev.icone || 'TriangleAlert', titulo: ev.titulo, ctx: ev.texto, extra: temIgn ? 'Se ignorar: ' + descreveIgnorar(ev, g) + '.' : null, abrir: 'crise', btns: ['responder', 'ignorar'] });
   }
+  { // EQUILÍBRIO v2: mês de aviso antes da votação do impeachment (admissibilidade) e mês de afastamento por saúde
+    const ad = impAdmissibilidade(g);
+    if (ad.ativa) L.push({ id: 'admissibilidade', tipo: 'admissibilidade', urg: 99, cat: 'Impeachment', ic: 'Gavel', titulo: 'Admissibilidade do impeachment', ctx: `A Câmara analisa o pedido: risco em ${fmt(ad.risco, 0)}%. Se continuar em 80% ou mais até o fim deste mês, haverá votação.`, extra: 'Baixe o risco: aprovação, base no Congresso, escândalo e STF.', abrir: 'admissibilidade', btns: [] });
+    if (g.afastUsado === g.mes) L.push({ id: 'afastamento', tipo: 'afastamento', urg: 94, cat: 'Saúde', ic: 'HeartPulse', titulo: 'Afastamento temporário', ctx: 'Você está internado e sem ações neste mês. A saúde volta a 30; se zerar de novo, o afastamento é definitivo.', extra: null, abrir: 'afastamento', btns: [] });
+  }
   if (g.protesto) {
     const p = g.protesto, G = grupoDe(p.grupo);
     L.push({ id: 'protesto', tipo: 'protesto', urg: 90 + Math.min(4, p.mesesAtivo || 0), cat: 'Ruas', ic: 'Megaphone', titulo: `${G.nome} nas ruas`, ctx: `Protestam contra ${p.motivo}: ${milTxt(p.pm)} ${p.cidade} (PM), ${milTxt(p.org)} segundo os organizadores.`, extra: 'Sem resposta até o fim do mês, o ato cresce e o desgaste se espalha.', abrir: 'protesto', btns: ['comissao'] });
@@ -16575,11 +16736,23 @@ function aindaPend(g, kind) {
   if (kind === 'bastidores') return !!bastOferta(g);
   if (kind === 'comercio') return !!(g.comex && g.comex.props.some(p => p.estado === 'aberta' && p.grande));
   if (kind === 'justica') return !!jusPendCaso(g);
+  if (kind === 'admissibilidade') return impAdmissibilidade(g).ativa;
+  if (kind === 'afastamento') return g.afastUsado === g.mes;
   if (/^(ent|el)/.test(kind)) return entAindaPend(g, kind);
   return true;
 }
-const GAVETA_TIT = { crise: 'Gabinete de crise', protesto: 'Termômetro das ruas', stf: 'Vaga no STF', pauta: 'Pauta do Congresso', qq: 'Quebra-queixo', abin: 'Serviço de inteligência', prioridade: 'Prioridade do trimestre', esplanada: 'Esplanada dos Ministérios', oposicao: 'Oposição rumo a 2030', contas: 'Contas a vencer', viagem: 'Visita de Estado', mesadip: 'Mesa diplomática', bastidores: 'Bastidores (ficção)', justica: 'Caso de corrupção' };
+const GAVETA_TIT = { crise: 'Gabinete de crise', protesto: 'Termômetro das ruas', stf: 'Vaga no STF', pauta: 'Pauta do Congresso', qq: 'Quebra-queixo', abin: 'Serviço de inteligência', prioridade: 'Prioridade do trimestre', esplanada: 'Esplanada dos Ministérios', oposicao: 'Oposição rumo a 2030', contas: 'Contas a vencer', viagem: 'Visita de Estado', mesadip: 'Mesa diplomática', bastidores: 'Bastidores (ficção)', justica: 'Caso de corrupção', admissibilidade: 'Admissibilidade do impeachment', afastamento: 'Afastamento temporário' };
 
+// EQUILÍBRIO v2: gaveta do aviso de impeachment e do afastamento por saúde
+function CartaoAdmissibilidade({ g, kind }) {
+  if (kind === 'afastamento') return html`<div className="flex flex-col gap-3" data-cartao="afastamento"><p>Depois de meses de estresse, você foi internado. Neste mês não há ações políticas. A saúde volta a 30 e o estresse cai; se a saúde zerar outra vez, o afastamento será definitivo.</p><p className="text-sm text-muted">Saúde ${fmt(g.pes.saude, 0)} · estresse ${fmt(g.pes.estresse, 0)}. Em Eu há ações de bem-estar para recuperar.</p></div>`;
+  const ad = impAdmissibilidade(g); const cam = bancadas(g, 'cam');
+  return html`<div className="flex flex-col gap-3" data-cartao="admissibilidade">
+    <p>O presidente da Câmara despachou o pedido de impeachment para a análise de admissibilidade. É o último aviso: se o risco de impeachment continuar em <b>80% ou mais</b> até o fim deste mês, a votação acontece (abertura exige 342 votos na Câmara; condenação, 54 no Senado).</p>
+    <div className="grid grid-cols-2 gap-3 text-sm"><div><div className="eyebrow">Risco hoje</div><div className="num text-2xl" style=${{ color: corRisco(ad.risco) }}>${fmt(ad.risco, 0)}%</div></div><div><div className="eyebrow">Base na Câmara</div><div className="num text-2xl">${cam.base}/513</div></div><div><div className="eyebrow">Aprovação</div><div className="num text-2xl">${fmt(aprovacao(g), 0)}%</div></div><div><div className="eyebrow">Escândalo</div><div className="num text-2xl">${fmt(g.escandalo, 0)}</div></div></div>
+    <p className="text-sm text-muted">Como baixar o risco: recupere aprovação (medidas populares e comunicação, sem exagero), reconstrua a base com o Centrão, resolva casos abertos e reduza a tensão com o STF.</p>
+  </div>`;
+}
 function CartaoPendencia({ p, g, agir, n }) {
   const nv = nivelUrg(p.urg);
   const semAcao = g.acoes <= 0;
@@ -16905,6 +17078,7 @@ function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino 
     : kind === 'bastidores' ? html`<${CartaoBastidores} g=${g} upd=${upd} />`
     : kind === 'justica' ? html`<${CartaoJustica} g=${g} upd=${upd} />`
     : kind === 'comercio' ? html`<${ComPropostas} g=${g} upd=${upd} soGrandes=${true} />`
+    : kind === 'admissibilidade' || kind === 'afastamento' ? html`<${CartaoAdmissibilidade} g=${g} kind=${kind} />`
     : kind === 'contas' ? html`<${CartaoContas} g=${g} />` : entCorpo(kind, g, upd));
   const itemArt = art ? g.pauta.find(x => x.id === art) : null;
   const corAc = g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)';
@@ -16927,7 +17101,7 @@ function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino 
         <div className="flex justify-end mt-3">
           <button type="button" className="btn btn-sign" disabled=${semAcoes || txt.trim().length < 4} onClick=${enviar}><${Icon} n="Send" /> Assinar e enviar</button>
         </div>
-        ${semAcoes && html`<p className="medida-ajuda mt-2">${elSemGoverno(g) ? 'Modo leve: você não é o presidente e não assina medidas de governo. Use X, entrevistas e campanha.' : g.acoes <= 0 ? 'Sem capital político neste mês. Encerre o mês.' : 'Energia esgotada. Descanse na seção Eu.'}</p>`}
+        ${semAcoes && html`<p className="medida-ajuda mt-2">${elSemGoverno(g) ? 'Modo leve: você não é o presidente e não assina medidas de governo. Use X, entrevistas e campanha.' : g.acoes <= 0 ? (g.afastUsado === g.mes ? 'Afastado por internação: sem ações neste mês. Encerre o mês para voltar ao trabalho.' : 'Sem capital político neste mês. Encerre o mês.') : 'Energia esgotada. Descanse na seção Eu.'}</p>`}
       </section>
       <section aria-labelledby="pv-t" data-precisa="1">
         <div className="flex flex-wrap items-end justify-between gap-2 mb-3">
@@ -21108,6 +21282,7 @@ const LIDERES = [
 ];
 const CUSTO_LIDER = 8000;
 const CUSTO_BANCADA = 12000;
+const BANCADA_FATOR = [1, .5, .25]; // EQUILÍBRIO v2: jantares com o mesmo bloco no trimestre rendem 100% / 50% / 25%
 
 /* ---- Eu: família (eventos só para famílias fictícias) ---- */
 const EV_FAMILIA = [
@@ -22180,8 +22355,11 @@ function fazArticulacao(g, k, arg) {
   if (k === 'bancada') {
     const pt = PMAP[arg]; if (!pt || pt.cam + pt.sen <= 0) return { ok: false, msg: 'Bloco inválido.' };
     if (P.conta < CUSTO_BANCADA) return { ok: false, msg: 'Saldo insuficiente na conta pessoal.' };
-    P.conta -= CUSTO_BANCADA; const st = g.parties[arg]; st.rel = clamp(st.rel + 4, 0, 99); st.relS = clamp(st.relS + 2, 0, 99); P.estresse += 2; P.humor += 2;
-    g.pesMes[nome] = true; clampPes(P); return { ok: true };
+    // EQUILÍBRIO v2: rendimento decrescente dentro do trimestre móvel (1º jantar 100%, 2º 50%, 3º e seguintes 25%): "a bancada estranha a frequência"
+    P.conta -= CUSTO_BANCADA; const st = g.parties[arg];
+    const jant = st.jant = (st.jant || []).filter(m => g.mes - m < 3), fJ = BANCADA_FATOR[Math.min(jant.length, BANCADA_FATOR.length - 1)];
+    st.rel = clamp(st.rel + 4 * fJ, 0, 99); st.relS = clamp(st.relS + 2 * fJ, 0, 99); P.estresse += 2; P.humor += 2; jant.push(g.mes);
+    g.pesMes[nome] = true; clampPes(P); return { ok: true, fator: fJ, dica: fJ < 1 ? 'A bancada estranha a frequência: o jantar rendeu ' + Math.round(fJ * 100) + '% do efeito.' : null };
   }
   const a = ARTICULACAO.find(x => x.k === k); if (!a) return { ok: false, msg: 'Ação indisponível.' };
   if (P.conta < a.custo) return { ok: false, msg: 'Saldo insuficiente na conta pessoal.' };
@@ -23305,7 +23483,12 @@ function icPrecoPedidoCompra(g, ik, iso, anos, qtd) { // preço "posto no Brasil
 function icFreteEPrazo(i, c) { return { frete: icFretePct(i, c), dias: Math.round(7 + c.dist_km / 450) }; }
 // avalia a proposta de venda do jogador. rodada = contrapropostas já feitas nesta negociação
 function icAvaliaVenda(g, k, iso, qtd, preco, anos, rodada) {
-  const max = icPrecoMaxVenda(g, k, iso, anos, qtd), base = icShareUsd(k, iso), r = preco / max;
+  // EQUILÍBRIO v2: a aceitação depende da demanda que o país já contratou do produto. Acima da cota (participação do país no mercado), o comprador paga menos;
+  // com mais de 1,6x a cota, recusa. O preço de referência continua o mesmo; só o aceite muda.
+  const base = icShareUsd(k, iso), jaCont = ((g.comex && g.comex.acordos) || []).filter(a => a.estado === 'ativo' && a.tipo === 'venda' && a.k === k && a.pais === iso).reduce((t, a) => t + a.qtd, 0);
+  const sat = (jaCont + qtd) / Math.max(base, .05), satF = sat > 1 ? Math.max(.6, 1 - .25 * (sat - 1)) : 1;
+  const max = icPrecoMaxVenda(g, k, iso, anos, qtd) * satF, r = preco / max;
+  if (sat > 1.6) return { res: 'rejeita', max, sat, motivo: 'Este país já tem contratada quase toda a demanda que absorve desse produto (' + fmt(jaCont, 2) + ' bi/ano já em contrato).' };
   if (qtd > 4 * Math.max(base, .05)) return { res: 'rejeita', max, motivo: 'O volume proposto é maior do que o país consegue absorver.' };
   if (r <= 1.005) return { res: 'aceita', max };
   if (rodada < 2 && r <= 1.1) return { res: 'contra', max, contra: Math.round((max + (preco - max) * .3) * 1000) / 1000, motivo: 'O preço está acima do que o país paga hoje.' };
@@ -24005,10 +24188,11 @@ function EuArticulacao({ g, upd }) {
         <div className="gv-chips"><${MxChip}>R$ ${fmt(CUSTO_LIDER, 0)}</${MxChip}></div>
         <div className="gv-acts">${LIDERES.map(L => html`<button key=${L.k} type="button" className="btn btn-ghost" disabled=${!!g.pesMes.art_lider || g.pes.conta < CUSTO_LIDER} data-lider=${L.k} onClick=${() => U(n => { fazArticulacao(n, 'lider', L.k); })}>${L.l}</button>`)}</div></div>
       <div className="mx-act" style=${{ '--c': 'var(--verde)', cursor: 'default' }} data-art="bancada">
-        <div className="mx-act-h"><span className="gv-ic" style=${{ '--c': 'var(--verde)' }}><${Icon} n="Utensils" s=${20} /></span><span>Jantar com a bancada de um bloco<${GvTip} txt="Relação com o bloco +4 na Câmara e +2 no Senado · estresse +2 · humor +2. Um jantar por bloco a cada mês." /></span></div>
+        <div className="mx-act-h"><span className="gv-ic" style=${{ '--c': 'var(--verde)' }}><${Icon} n="Utensils" s=${20} /></span><span>Jantar com a bancada de um bloco<${GvTip} txt="Relação com o bloco +4 na Câmara e +2 no Senado · estresse +2 · humor +2. Um jantar por bloco a cada mês; repetir com o mesmo bloco no trimestre rende 50% e depois 25%." /></span></div>
         <div className="gv-chips"><${MxChip}>R$ ${fmt(CUSTO_BANCADA, 0)}</${MxChip}></div>
         <div className="gv-acts"><select aria-label="Bloco para o jantar" value=${sel} onChange=${e => setPid(e.target.value)}>${blocos.map(b => html`<option key=${b.id} value=${b.id}>${b.curto} (${b.cam} dep.)</option>`)}</select>
-          <button type="button" className="btn btn-pri" disabled=${!sel || !!g.pesMes['art_bancada_' + sel] || g.pes.conta < CUSTO_BANCADA} data-bancada=${sel} onClick=${() => U(n => { fazArticulacao(n, 'bancada', sel); })}>Jantar</button></div></div>
+          <button type="button" className="btn btn-pri" disabled=${!sel || !!g.pesMes['art_bancada_' + sel] || g.pes.conta < CUSTO_BANCADA} data-bancada=${sel} onClick=${() => U(n => { fazArticulacao(n, 'bancada', sel); })}>Jantar</button></div>
+        ${(() => { const nJ = ((g.parties[sel] || {}).jant || []).filter(m => g.mes - m < 3).length; return nJ > 0 ? html`<div className="mx-txt" data-art-dica="bancada">A bancada estranha a frequência: ${nJ === 1 ? 'o próximo jantar com este bloco no trimestre rende 50%' : 'jantares com este bloco no trimestre rendem só 25%'} do efeito.</div>` : null; })()}</div>
     </div>
   </section>`;
 }
@@ -24453,6 +24637,8 @@ function ModalDecisao({ dec, g, upd, setDec, onClose }) {
       <div><div className="text-[11px] uppercase tracking-widest opacity-60" style=${{ fontFamily: 'var(--f-mono)' }}>Ementa</div>
         <div className="text-lg font-semibold leading-snug">${prop.texto}</div>
         ${prop.resumo && html`<div className="text-sm mt-1 opacity-80">${prop.resumo}</div>`}</div>
+      ${prop.repetida && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(240,166,58,.15)' }} data-parecer-repetida="1" role="status"><b>Já aprovada.</b> ${prop.repetida.ato} (${prop.repetida.nm}) segue em vigor desde ${dataCurta(prop.repetida.m0)}. Aprovar de novo não soma o efeito; revogue a anterior ou escreva uma medida diferente.</div>`}
+      ${prop.custoVoto && prop.custoVoto.pts <= -2 && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,90,78,.08)' }} data-parecer-custo-voto="1" role="status"><b>Custo fiscal no voto.</b> Gasto líquido de R$ ${fmt(prop.custoVoto.net, 0)} bi/ano: Fazenda e mercado pressionam o Congresso (${fmt(prop.custoVoto.pts, 0)} pontos de apoio, no máximo).</div>`}
       <${BlocoCusto} prop=${prop} congresso=${congresso} />
       ${dec.aviso && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,90,78,.08)' }} role="alert">${dec.aviso}</div>`}
       <div className="flex flex-col gap-2">
@@ -24602,6 +24788,7 @@ function ModalMes({ rel, g, onClose }) {
       </tbody></table></div>
       ${g.apDecomp && g.apDecomp.length > 0 && html`<div className="p-3 rounded-lg border border-line" data-modal-apdecomp="1"><div className="eyebrow mb-2">Por que a aprovação mudou</div><${ApBarras} d=${g.apDecomp[g.apDecomp.length - 1]} /></div>`}
       ${g.abin && g.abin.ativa && g.abin.prox && EVENTOS.find(e => e.id === g.abin.prox.id) && html`<div className="p-3 rounded-lg border border-line text-sm"><b>Alerta da inteligência:</b> no mês que vem, ${EVENTOS.find(e => e.id === g.abin.prox.id).titulo.toLowerCase()}.</div>`}
+      ${(rel.retorno && rel.retorno.length > 0 || rel.ignAcum) && html`<div className="p-3 rounded-lg border border-line" data-modal-retorno="1"><div className="eyebrow mb-2">Retorno das suas decisões</div><ul className="flex flex-col gap-1.5">${(rel.retorno || []).map(r => html`<li key=${r.k} className="text-sm flex gap-2" data-retorno=${r.k}><span className="text-ouro"><${Icon} n=${r.ic || 'Info'} s=${16} /></span><span>${r.x}</span></li>`)}${rel.ignAcum && html`<li className="text-sm flex gap-2" data-retorno="ignoradas"><span className="text-ouro"><${Icon} n="EyeOff" s=${16} /></span><span>Crises ignoradas até aqui: ${rel.ignAcum.n}, ao custo acumulado de −${fmt(rel.ignAcum.ap, 1)} pontos de aprovação e +${fmt(rel.ignAcum.esc, 0)} de escândalo.</span></li>`}</ul></div>`}
       ${rel.notas.length > 0 && html`<ul className="flex flex-col gap-2">${rel.notas.map((n, i) => html`<li key=${i} className="text-sm flex gap-2"><span style=${{ color: n.t === 'neg' ? 'var(--rubro)' : n.t === 'pos' ? 'var(--verde)' : 'var(--ouro)' }}><${Icon} n=${n.t === 'neg' ? 'TriangleAlert' : n.t === 'pos' ? 'CircleCheck' : 'Info'} /></span>${n.x}</li>`)}</ul>`}
       ${rel.impeachment && html`<div className="p-4 rounded-lg border-2 border-rubro">
         <div className="disp text-2xl font-black uppercase text-rubro">Votação do impeachment</div>
