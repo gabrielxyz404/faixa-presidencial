@@ -38,7 +38,7 @@
   .med-kpi { font-size: 24px; font-weight: 700; margin-top: 2px; } .med-kpi small { font-size: 11px; color: var(--muted); font-weight: 500; }
   @media (max-width: 640px) { .med-fase b { font-size: 10px; } .med-fase small { font-size: 9px; } .med-mini, .med-pr th:last-child { display: none; } .med-card { padding: 14px; } }
 
-.selo-sim{display:inline-flex;align-items:center;font-family:var(--f-mono,'IBM Plex Mono',monospace);font-size:12px;line-height:1;letter-spacing:.04em;color:var(--muted);opacity:.6;border:1px solid var(--line);border-radius:999px;padding:2px 6px;text-transform:lowercase;font-weight:400;background:transparent}
+.selo-sim,.chip.selo-sim{display:inline;font-family:inherit;font-size:12px;line-height:1;letter-spacing:0;color:var(--muted);opacity:.5;border:0;border-radius:0;padding:0;margin-left:.4em;text-transform:lowercase;font-weight:400;background:none;white-space:nowrap;vertical-align:baseline}
 </style></head><body>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -178,7 +178,7 @@
   .secnav button[aria-selected=true] { color: var(--fg); border-top-color: var(--ouro); }
   .secnav button:hover { color: var(--fg); }
   .secnav-ic { position: relative; display: inline-flex; }
-  .secnav-badge { position: absolute; top: -6px; right: -10px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px; background: var(--rubro); color: #fff; font-size: 10px; line-height: 16px; font-weight: 700; text-align: center; box-shadow: 0 0 0 2px var(--ink); }
+  .secnav-badge { position: absolute; top: -6px; right: -10px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 999px; background: var(--rubro); color: #fff; font-size: 12px; line-height: 18px; font-weight: 700; text-align: center; box-shadow: 0 0 0 2px var(--ink); }
   .shell-main { padding-top: 16px; padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)); min-width: 0; }
   @media (min-width: 1024px) {
     .shell { display: flex; gap: 24px; }
@@ -204,7 +204,7 @@
   .gav-b { flex: 1; overflow-y: auto; padding: 24px max(24px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) 24px; }
   @keyframes gavIn { from { transform: translateX(24px); opacity: .4; } to { transform: none; opacity: 1; } }
   @media (max-width: 1023px) { .gav { width: 100%; border-left: 0; animation-name: fadeIn; } .gav-h { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); } .gav-b { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); } }
-  .toast { position: fixed; z-index: 80; left: 50%; transform: translateX(-50%); bottom: calc(80px + env(safe-area-inset-bottom, 0px)); max-width: 92vw; }
+  .toast { position: fixed; z-index: 900; left: 50%; transform: translateX(-50%); bottom: calc(80px + env(safe-area-inset-bottom, 0px)); max-width: 92vw; }
   @media (min-width: 1024px) { .toast { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); } }
   .pulso-i { padding: 16px 0; border-top: 1px solid var(--line); }
   .pulso-i:first-child { border-top: 0; padding-top: 0; }
@@ -222,7 +222,7 @@
   .chip { font-size: 12px; padding: 2px 8px; }
   .vit-d { font-size: 12px; }
   .secnav button { font-size: 12px; }
-  .secnav-badge { font-size: 11px; }
+  .secnav-badge { font-size: 12px; }
   .btn-sm { font-size: 14px; }
   .linklike { font-size: 13px; }
   .med-fase small, .med-pr th, .med-kpi small, .med-pas .num, .med-not .num, .med-fim .num { font-size: 12px; }
@@ -318,7 +318,7 @@
   .jornal::after { content: ""; position: absolute; inset: 0; border-radius: 3px; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0,0,0,.025) 0 1px, transparent 1px 3px); }
   .j-mast { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 6px; border-bottom: 3px double var(--tinta); }
   .j-nome { font-family: var(--f-serif); font-weight: 900; font-size: 19px; line-height: 1.1; letter-spacing: .01em; }
-  .j-selo { font-family: var(--f-mono); font-size: 12px; letter-spacing: .04em; text-transform: lowercase; border: 1px solid currentColor; border-radius: 999px; padding: 1px 6px; opacity: .45; flex: none; font-weight: 400; } /* discreto, como o selo-sim do resto do jogo */
+  .j-selo { font-family: inherit; font-size: 12px; letter-spacing: 0; text-transform: lowercase; border: 0; padding: 0; opacity: .5; flex: none; font-weight: 400; background: none; } /* discreto, como o selo-sim do resto do jogo */
   .j-data { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-family: var(--f-mono); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: #4a493d; border-bottom: 1px solid rgba(0,0,0,.25); padding-bottom: 5px; }
   .j-tom { font-weight: 600; }
   .j-tom[data-tom=pos] { color: #14703a; } .j-tom[data-tom=neg] { color: #b3261e; } .j-tom[data-tom=neu] { color: #57564a; }
@@ -386,10 +386,11 @@
   .btn-sign { background: var(--fg); color: #000; padding: 10px 16px; }
   .btn-sign:hover { background: #fff; }
   .btn:disabled { opacity: .4; }
+  button.btn:disabled, button.btn:disabled:hover { opacity: 1; background: var(--panel2); color: #a3a39c; border: 1px solid var(--line2); cursor: not-allowed; } /* U4: desabilitado legível (contraste >= 4,5:1) */
   .chip { font-size: 12px; letter-spacing: .06em; border-radius: 5px; padding: 2px 8px; background: color-mix(in srgb, currentColor 12%, transparent); border-color: color-mix(in srgb, currentColor 30%, transparent) !important; }
   .chip.chip-ex { text-transform: none; letter-spacing: 0; font-family: var(--f-body); font-size: 13px; color: var(--muted); background: transparent; border-radius: 999px; padding: 3px 11px; white-space: normal; text-align: left; border-color: var(--line2) !important; }
   .chip.chip-ex:hover { color: var(--fg); border-color: var(--muted) !important; }
-  .selo-sim { color: var(--dim); opacity: 1; border-color: var(--line2); background: transparent; }
+  .selo-sim, .chip.selo-sim { color: var(--muted); opacity: .5; border: 0; background: none; }
   textarea, input[type=text], input[type=number], input[type=password], select { background: #000; border: 1px solid var(--line2); font-family: var(--f-body); }
   textarea:focus, input:focus, select:focus { border-color: var(--muted); outline: none; }
   input[type=checkbox], input[type=radio] { accent-color: var(--ouro); }
@@ -537,7 +538,7 @@
   .j-carta { --papel: #ebe5d8; }
   .j-antag { --papel: #ece6c8; transform: none; }
   .j-pos, .j-neg, .j-neu { box-shadow: 0 0 0 1px var(--line2); }
-  .j-selo { opacity: .9; color: #46453b; }
+  .j-selo { opacity: .5; color: #46453b; }
   .j-carta .j-mast, .j-antag .j-mast { border-radius: 6px 6px 0 0; }
   .j-carta .j-mast { background: #a82a22; }
   .j-neg .j-hl::before { background: #b3261e; } .j-pos .j-hl::before { background: #14703a; }
@@ -605,7 +606,8 @@
   .cn-top-n { font-family: var(--f-mono); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: #fff; text-shadow: 0 1px 6px #000; }
   .cn-top-d { margin-left: auto; display: flex; align-items: center; gap: 10px; }
   .cn-cap { font-family: var(--f-mono); font-size: 12px; color: #e4e4de; background: rgba(0, 0, 0, .55); padding: 3px 9px; border-radius: 999px; }
-  .cn-top .selo-sim { background: rgba(0, 0, 0, .55); color: #cfcfca; opacity: .85; }
+  .cn .selo-sim { background: none; color: #cfcfca; opacity: .5; border: 0; }
+  .cn .cn-bal .selo-sim { color: #3a3a36; opacity: .55; }
   .cn-x { width: 40px; height: 40px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, .65); border: 1.5px solid rgba(255, 255, 255, .4); color: #fff; cursor: pointer; }
   .cn-x:hover { border-color: var(--ouro); color: var(--ouro); }
   .cn-prog { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; gap: 6px; }
@@ -10890,6 +10892,8 @@ function analisaLocal(g, texto) {
     if (!MOTOR_FALHOU) { MOTOR_FALHOU = true; console.warn('Motor v2 falhou; usando o motor legado de palavras-chave.', e); }
     return analisaLegado(g, texto);
   }
+  // concordância: "500 mil de crianças" -> "500 mil crianças" (só "milhão/milhões/bilhão" pedem "de")
+  if (prop && typeof prop.topic === 'string') { const cc = (t) => t.replace(/(\d) mil de (?=\p{L})/gu, '$1 mil '); prop.topic = cc(prop.topic); if (typeof prop.resumo === 'string') prop.resumo = cc(prop.resumo); }
   return prop;
 }
 
@@ -12298,7 +12302,7 @@ function cfConselho(g, prop, jur) {
     if (jur.mpVedada) dicas.push('A urgência constitucional do art. 64 dá velocidade ao projeto sem os riscos da medida provisória.');
     if (jur.vicio === 'materia' && !jur.petrea) dicas.push('Mesmo ajustada, a matéria pode ir ao STF: pese o custo político antes de enviar.');
   }
-  return { pk: pk, pasta: P.nome, ministro: N ? N.nome : null, comp: comp, nivel: nivelCons, transv: transv, sugestoes: sug, semReparos: semReparos, resumo: resumo, dicas: dicas.slice(0, 2), falso: perdeu && vicioReal && sug.length === 0 };
+  return { pk: pk, pasta: P.nome, ministro: N ? N.nome : null, sim: !!(N && !N.interino), comp: comp, nivel: nivelCons, transv: transv, sugestoes: sug, semReparos: semReparos, resumo: resumo, dicas: dicas.slice(0, 2), falso: perdeu && vicioReal && sug.length === 0 };
 }
 function CfAnaliseMinistro({ dec, setDec, g, upd, onClose, semBase }) { // v3.8: semBase = a base jurídica fica fora (tela do parecer a mostra à parte)
   const prop = dec.prop;
@@ -12319,7 +12323,7 @@ function CfAnaliseMinistro({ dec, setDec, g, upd, onClose, semBase }) { // v3.8:
   const nivelCor = jur.nivel === 'ok' ? '#2fd27a' : jur.nivel === 'controverso' ? '#f0a63a' : '#ff5a4e';
   const cargo = cons.transv ? 'Casa Civil, com a AGU' : 'Ministério ' + (PASTA_DE[cons.pk] || 'da') + ' ' + cons.pasta;
   const quem = cons.ministro ? cons.ministro + ' (' + cargo + ')' : cargo + ' (titular a definir)';
-  const cab = html`<div className="flex flex-wrap items-center gap-2"><${Icon} n="Gavel" s=${16} /><b className="text-sm">Análise do ministro</b><${SeloSim} a="o" />
+  const cab = html`<div className="flex flex-wrap items-center gap-2"><${Icon} n="Gavel" s=${16} /><b className="text-sm">Análise do ministro</b>${cons.sim && html`<${SeloSim} a="o" txt="Pessoa real; a análise e a fala são simuladas pelo jogo e refletem só a posição técnica do cargo." />`}
       <span className="text-xs opacity-70">${quem} · competência ${fmt(cons.comp * 100, 0)}</span></div>`;
   const dispo = !semBase && jur.dispositivos && jur.dispositivos.length > 0 && html`<div className="mt-2"><button type="button" className="text-xs underline opacity-80" onClick=${() => setBase(!base)} aria-expanded=${base}>${base ? 'Ocultar' : 'Ver'} base jurídica (${jur.dispositivos.length})</button>
       ${base && html`<ul className="mt-1 flex flex-col gap-1" title=${MOTOR.CF.FONTE}>${jur.dispositivos.map((d, i) => html`<li key=${i} className="text-xs"><b>${d.art}</b> · ${d.tema}: ${d.efeito}</li>`)}</ul>`}</div>`;
@@ -12776,10 +12780,11 @@ function medMPConvertida(g, prop) { const M = medDoProp(g, prop); if (M) { M.mp 
 // resumo para a Mesa e o painel
 function medResumo(g) {
   const agu = medL(g).filter(m => m.estado === 'aguardando').length; // v3.9
+  const cons = medL(g).filter(m => m.estado === 'consolidada').length; // consolidada: ciclo completo, o efeito segue em vigor
   const L = medL(g).filter(m => medAtivo(m) && m.estado !== 'aguardando');
   const prob = L.filter(m => m.probs.length || m.estado === 'suspensa').length;
   const imp = L.filter(m => ['pub', 'reg', 'imp'].includes(medFase(g, m))).length;
-  return { agu, n: L.length, imp, prob, susp: L.filter(m => m.estado === 'suspensa').length, pleno: L.filter(m => ['pleno', 'mat'].includes(medFase(g, m))).length };
+  return { agu, n: L.length + cons, imp, prob, susp: L.filter(m => m.estado === 'suspensa').length, pleno: L.filter(m => ['pleno', 'mat'].includes(medFase(g, m))).length + cons };
 }
 function medResumoMesa(g) {
   const r = medResumo(g); if (!r.n) return null;
@@ -12890,9 +12895,9 @@ function MedidasVigor({ g, upd, irPara }) {
   const tot = vivas.filter(m => m.estado !== 'aguardando').reduce((a, m) => ({ c: a.c + m.fis.custo + m.fis.extra, ca: a.ca + m.fisAp.custo + m.fisAp.extra, r: a.r + m.fis.receita + (m.vigIt || []).reduce((x, v) => x + v.rev, 0), ra: a.ra + m.fisAp.receita + (m.vigIt || []).reduce((x, v) => x + (v.mes < g.mes ? v.rev : 0), 0) }), { c: 0, ca: 0, r: 0, ra: 0 });
   const saldoP = tot.r - tot.c, saldoR = tot.ra - tot.ca;
   const imp = (m) => medAtivo(m) && m.estado !== 'aguardando' && ['pub', 'reg', 'imp'].includes(medFase(g, m));
-  const vig = (m) => medAtivo(m) && m.estado !== 'aguardando';
+  const vig = (m) => (medAtivo(m) && m.estado !== 'aguardando') || m.estado === 'consolidada';
   const prb = (m) => medAtivo(m) && m.estado !== 'aguardando' && (m.probs.length > 0 || m.estado === 'suspensa');
-  const PRED = { todas: () => true, impl: imp, vigor: vig, prob: prb, agu: (m) => m.estado === 'aguardando', enc: (m) => !medAtivo(m) };
+  const PRED = { todas: () => true, impl: imp, vigor: vig, prob: prb, agu: (m) => m.estado === 'aguardando', enc: (m) => !medAtivo(m) && m.estado !== 'consolidada' };
   const conta = (k) => k === 'rej' ? rejL.length : todas.filter(PRED[k]).length;
   const filtros = MED_FILTROS.filter(([k]) => k !== 'agu' || conta('agu') > 0);
   const lista = fil === 'rej' ? [] : todas.filter(PRED[fil] || PRED.todas);
@@ -13327,6 +13332,7 @@ function fimDoMes(g) {
   const risco = riscoImpeachment(g);
   let impeachment = null;
   if (risco >= 80) g.impStreak++; else g.impStreak = Math.max(0, g.impStreak - 1);
+  if (g.impGraca && g.mes < g.impGraca) g.impStreak = 0; // carência do sucessor: sem votação de impeachment nos 6 primeiros meses
   const impNec = eqImpNecessario(g); // EQUILÍBRIO v2: 3 meses seguidos (4 em Lua de mel/Fácil), com 1 mês de aviso de admissibilidade
   if (g.impStreak >= impNec) impeachment = votaImpeachment(g);
   else if (g.impStreak === impNec - 1 && g.impStreak > 0 && g.impAdmMes !== g.mes) {
@@ -14042,7 +14048,6 @@ function fase2Default(g) {
 }
 function escolheEventoNovo(g) {
   g.eventoIgn = false; g.eventoAntecip = false; g.eventoOk = false;
-  if (g.mes > 48) { g.evento = null; g.eventoUF = null; return; }
   let novo = null, uf = null;
   if (g.forcaEvento) { novo = EVENTOS.find(e => e.id === g.forcaEvento) || null; g.forcaEvento = null; if (g.abin) g.abin.prox = null; }
   else if (g.abin && g.abin.prox && g.abin.prox.mes === g.mes) { novo = EVENTOS.find(e => e.id === g.abin.prox.id) || null; uf = g.abin.prox.uf; if (novo) g.eventoAntecip = true; g.abin.prox = null; }
@@ -15096,7 +15101,7 @@ const avisoSim38 = (pasta, nome) => (pasta === 'stf' && STF_PERFIL[nome]) ? 'Per
 function TracoOculto({ o, nome, chave, revelado }) {
   const rot = TRACO_ROT[chave];
   if (!revelado) return html`<div className="min-w-0" title=${TRACO_DICA[chave] + ' Oculto até pedir o dossiê.'}>
-    <div className="flex justify-between text-[11px]"><span className="text-muted">${rot}</span><span className="num text-muted inline-flex items-center gap-1"><${Icon} n="Lock" s=${10} />???</span></div>
+    <div className="flex justify-between gap-1 text-[11px] min-w-0"><span className="text-muted truncate min-w-0">${rot}</span><span className="num text-muted inline-flex items-center gap-1 shrink-0 whitespace-nowrap"><${Icon} n="Lock" s=${10} />—</span></div>
     <div className="bar-track" style=${{ height: '5px' }}></div></div>`;
   const F = faixaDossie(o, nome, chave); const pal = palavraTraco(chave, F.v);
   const cor = chave === 'garant' || chave === 'vies' || chave === 'indep' ? 'var(--anil)' : corAtr(chave === 'risco' ? 100 - F.v : F.v);
@@ -16500,7 +16505,7 @@ function CartaoEsplanada({ g, upd }) {
   const R = resumoEsplanada(g); const M = ensureMin(g);
   return html`<section className="sec" aria-labelledby="esp-t" data-gv="ministros">
     <div className="gv-sec-h">
-      <div><div className="eyebrow">Governo · Esplanada dos Ministérios</div><h3 id="esp-t" className="disp text-2xl font-extrabold uppercase">Ministros<${GvTip} txt="Trocar um ministro custa 1 ação política. Competência, popularidade e experiência vêm de dados públicos; lealdade, desgaste e risco são simulados nesta partida. Entrega = competência − desgaste/1,5 (mais 10 com metas cobradas): negativa quer dizer que a pasta gasta e não entrega." /></h3></div>
+      <div><div className="eyebrow">Governo · Esplanada dos Ministérios<span className="selo-sim" data-traco-sim="1" title="Competência, popularidade e experiência vêm de dados públicos. Lealdade, desgaste, risco de crise e as falas dos ministros reais são traços sorteados e inventados pelo jogo nesta partida; não descrevem a pessoa real.">traços simulados</span></div><h3 id="esp-t" className="disp text-2xl font-extrabold uppercase">Ministros<${GvTip} txt="Trocar um ministro custa 1 ação política. Competência, popularidade e experiência vêm de dados públicos; lealdade, desgaste e risco são simulados nesta partida. Entrega = competência − desgaste/1,5 (mais 10 com metas cobradas): negativa quer dizer que a pasta gasta e não entrega." /></h3></div>
       <button className="btn btn-ghost text-sm" disabled=${R.desgastados === 0 || semAcao} onClick=${() => setPasta('*reforma')} title="Troca de uma vez todos os titulares com desgaste acima de 60"><${Icon} n="Shuffle" s=${14} /> Reforma ministerial${R.desgastados ? ` (${R.desgastados})` : ''}</button>
     </div>
     <ul className="gv-min-grid" data-min-ministros="1" style=${{ listStyle: 'none', padding: 0, margin: 0 }}>${PASTAS.map(p => {
@@ -16513,7 +16518,7 @@ function CartaoEsplanada({ g, upd }) {
       return html`<li key=${p.k} className="gv-min" style=${{ '--st': S.c }} data-pasta=${p.k} data-min-linha=${p.k} data-st=${S.k}>
         <div className="gv-min-h">
           ${N ? html`<${Ef} nome=${N.nome} cor=${corEfigie(N)} papel="ministro" s=${48} p=${N} />` : html`<span className="gv-ic" style=${{ width: 48, height: 48, '--c': 'var(--muted)' }}><${Icon} n="UserRound" s=${22} /></span>`}
-          <div className="min-w-0"><div className="gv-min-p">${p.nome}</div><div className="gv-min-n" title=${pe.nome}>${N ? N.nome : 'a definir'}${pe.sim ? ' ' : ''}${pe.sim && html`<${Sim} />`}</div><div className="gv-min-s">${N ? subNomeado(N) : PERFIS_MIN[tipo].nome + (bloco && PMAP[bloco] ? ' · ' + PMAP[bloco].curto : '')}</div></div>
+          <div className="min-w-0"><div className="gv-min-p">${p.nome}</div><div className="gv-min-n" title=${pe.nome}>${N ? N.nome : 'a definir'}</div><div className="gv-min-s">${N ? subNomeado(N) : PERFIS_MIN[tipo].nome + (bloco && PMAP[bloco] ? ' · ' + PMAP[bloco].curto : '')}</div></div>
           ${bloco ? html`<${LogoPartido} sigla=${N && N.sigla} bloco=${bloco} tam=${34} />` : null}
         </div>
         <div className="gv-chips">
@@ -16621,7 +16626,7 @@ function Gaveta({ titulo, eyebrow, onClose, children }) {
     <aside className="gav" ref=${ref} tabIndex="-1" data-gaveta=${titulo}>
       <div className="gav-h"><div className="min-w-0">${eyebrow && html`<div className="eyebrow">${eyebrow}</div>`}<h2 className="disp text-3xl font-black uppercase leading-none mt-1">${titulo}</h2></div>
         <button type="button" className="btn btn-ghost shrink-0" onClick=${onClose} aria-label="Fechar painel"><${Icon} n="X" s=${16} /></button></div>
-      <div className="gav-b">${children}</div>
+      <div className="gav-b"><${ErroTela} nome="gaveta" onVoltar=${onClose}>${children}</${ErroTela}></div>
     </aside></div>`;
 }
 
@@ -16886,7 +16891,7 @@ function SinaisVitais({ g, onConfig, encerrar, irEu }) {
         ${g.cfg.partido && html`<span className="vit-partido hidden md:flex" title=${nomePartido(g.cfg)}><${LogoPartido} sigla=${g.cfg.siglaReal || null} bloco=${g.cfg.partido} tam=${34} limpo=${true} /><span className="faixa-sk" aria-hidden="true" style=${{ background: corPresidente(g.cfg) }}></span></span>`}
       </div>
       <div className="vit-ctl">
-        <div className="vit vit-mes" title="Mês do mandato"><div className="vit-k">Mês</div><div className="vit-v num"><span data-vital-v="mes">${g.mes} / 48</span></div></div>
+        <div className="vit vit-mes" title="Mês do mandato"><div className="vit-k">Mês</div><div className="vit-v num"><span data-vital-v="mes">${elCiclo(g.mes) > 0 ? `mês ${elO(g.mes) + 1} do ${Math.max(1, Math.min(2, (g.el && g.el.mandatos) || elCiclo(g.mes) + 1))}º mandato` : `${g.mes} / 48`}</span></div></div>
         <div className="vit vit-data" data-vital="data" title="Data atual do jogo"><div className="vit-k">Data</div><div className="vit-v num"><span data-vital-v="data">${dataCurtaAno(g.mes)}</span></div></div>
         <div className="vit vit-imp" data-vital="imp" title=${'Risco de impeachment: ' + fmt(imp, 0) + '%'}><div className="vit-k">Impeachment</div><div className="vit-v num" style=${{ color: imp >= 30 ? corRisco(imp) : 'var(--fg)' }}><span data-vital-v="imp">${fmt(imp, 0) + '%'}</span></div></div>
         <div className="flex items-center gap-2">
@@ -17131,11 +17136,12 @@ function CabecaSecao({ eyebrow, titulo }) {
 }
 function Subpagina({ id, chips, atual, onSel, rotulo, eyebrow, children, pend, abrirPend }) {
   const cur = chips.find(c => c.k === atual);
-  const P = pend || [];
+  const Pall = pend || [];
+  const P = Pall.filter(p => { const c = PEND_CHIP[p.tipo]; return !c || c === atual; }); // U7: o bloco só aparece na sub-aba onde a pendência se resolve; as outras ficam no selo do chip
   return html`<div className="flex flex-col gap-6">
     <${CabecaSecao} eyebrow=${eyebrow} titulo=${cur ? cur.nome : ""} />
     ${P.length > 0 && html`<div className="pend-aqui" data-pend-aqui=${id}><span className="pend-aqui-k">${P.length === 1 ? 'Pendência aqui' : P.length + ' pendências aqui'}</span>${P.map(p => html`<div key=${p.id} className="pend-aqui-i" data-nivel=${nivelUrg(p.urg)}><span className="pa-dot" aria-hidden="true"></span><span className="min-w-0 pa-t"><b>${p.pais && PAIS_MAP[p.pais] ? html`<${Bandeira} iso=${PAIS_MAP[p.pais].iso.toLowerCase()} tam=${16} est=${{ marginRight: 6 }} nome=${PAIS_MAP[p.pais].nome} />` : null}${p.titulo}</b>${PEND_CHIP[p.tipo] && chips.some(c => c.k === PEND_CHIP[p.tipo]) ? html` <span className="pa-onde">em ${chips.find(c => c.k === PEND_CHIP[p.tipo]).nome}</span>` : null}</span><button type="button" className="btn btn-sm btn-pri" data-resolver=${p.id} onClick=${() => abrirPend && abrirPend(p)}>Resolver <${Icon} n="ChevronRight" s=${14} /></button></div>`)}</div>`}
-    <${ChipsNav} id=${id} chips=${chips} atual=${atual} onSel=${onSel} rotulo=${rotulo} cont=${contChips(P)} />
+    <${ChipsNav} id=${id} chips=${chips} atual=${atual} onSel=${onSel} rotulo=${rotulo} cont=${contChips(Pall)} />
     <div role="tabpanel" id=${id + '-pan'} aria-labelledby=${id + '-chip-' + atual} className="fade-in min-w-0" key=${atual} tabIndex="-1">${children}</div>
   </div>`;
 }
@@ -18528,8 +18534,9 @@ function Est({ txt, rot = 'estimativa' }) {
 }
 const Real = ({ txt }) => html`<span className="chip cursor-help" style=${{ fontSize: '12px', padding: '0 6px', lineHeight: '18px', color: 'var(--verde)', borderColor: 'var(--verde)' }} title=${txt} tabIndex="0" role="note" data-base-real="1">base real</span>`;
 /* selo 'simulado' discreto: cinza, pequeno, sem cor de destaque (continua visível e com explicação ao passar o mouse) */
-const SeloSim = () => null; // selo removido das telas a pedido; o aviso geral fica no rodapé e nos posts do X
-const Sim = () => null;
+// selo "simulado": cinza, 12px, ~50% de opacidade, sem borda nem fundo; a explicação completa vai no title. Só junto da fala inventada de pessoa real.
+const SeloSim = ({ a = 'o', txt }) => html`<span className="selo-sim" title=${txt || 'Pessoa real; a fala é inventada pelo jogo, não é uma declaração dela. Trata só de política e parte de posições públicas.'} data-simulado="1">simulad${a}</span>`;
+const Sim = ({ txt }) => html`<span className="selo-sim" title=${txt || 'Pessoa real; a fala é inventada pelo jogo, não é uma declaração dela.'} data-simulado="1">simulado</span>`;
 
 /* ---- gráfico de linhas do mandato (SVG próprio, no estilo do Spark) com passagem do mouse/teclado por mês ---- */
 function GraficoLinhas({ titulo, series, compartilhado, id }) {
@@ -18688,6 +18695,15 @@ function CartaoPatrimonio({ g, decidir }) {
 }
 
 /* ---- Economia ---- */
+// U5: blocos recolhíveis (abertura lembrada enquanto a página está aberta) para a aba Economia não virar uma parede de 6.800 px
+const ECO_ABERTOS = {};
+function EcoBloco({ k, titulo, sub, children }) {
+  const [, force] = useState(0);
+  return html`<details className="lg:col-span-12 sec min-w-0" data-eco-bloco=${k} open=${!!ECO_ABERTOS[k]} onToggle=${e => { const o = e.currentTarget.open; if (!!ECO_ABERTOS[k] !== o) { ECO_ABERTOS[k] = o; force(x => x + 1); } }}>
+    <summary className="cursor-pointer select-none flex flex-wrap items-baseline gap-x-3 py-1"><span className="disp text-xl font-extrabold uppercase">${titulo}</span>${sub && html`<span className="text-xs text-muted">${sub}</span>`}</summary>
+    <div className="mt-4 grid gap-6 lg:grid-cols-12">${children}</div>
+  </details>`;
+}
 function Economia({ g, upd, decidir }) {
   const E = g.eco; const prim = primario(g);
   const ind = [
@@ -18712,7 +18728,8 @@ function Economia({ g, upd, decidir }) {
       </div>`)}
       <${CartaoExterno} g=${g} /></div>
     </section>
-    <div className="lg:col-span-12"><${GraficosMandato} g=${g} /></div>
+    <${EcoBloco} k="graficos" titulo="Gráficos do mandato" sub="aprovação, economia e contas ao longo do tempo"><div className="lg:col-span-12"><${GraficosMandato} g=${g} /></div></${EcoBloco}>
+    <${EcoBloco} k="fiscal" titulo="Fiscal e orçamento" sub="credibilidade, rating, Banco Central, contas e orçamento setorial">
     <div className="lg:col-span-6 flex flex-col gap-6 min-w-0"><${CartaoCredibilidade} g=${g} /><${CartaoRatingMeta} g=${g} /><${CartaoBC} g=${g} upd=${upd} /></div>
     <div className="lg:col-span-6 min-w-0"><${CartaoContasPais} g=${g} /></div>
     <section className="lg:col-span-5 sec flex flex-col gap-4">
@@ -18734,8 +18751,9 @@ function Economia({ g, upd, decidir }) {
         <input id=${'orc-' + k} type="range" min="-30" max="50" step="5" value=${g.orc[k]} onChange=${e => setOrc(k, +e.target.value)} />
       </div>`)}</div>
     </section>
-    <${CartaoPatrimonio} g=${g} decidir=${decidir} />
-    <div className="lg:col-span-12"><${GruposEconomia} g=${g} /></div>
+    </${EcoBloco}>
+    <${EcoBloco} k="patrimonio" titulo="Patrimônio da União" sub="estatais e participações, com venda em fatias"><${CartaoPatrimonio} g=${g} decidir=${decidir} /></${EcoBloco}>
+    <${EcoBloco} k="grupos" titulo="Como cada grupo sente" sub="aprovação por grupo social"><div className="lg:col-span-12"><${GruposEconomia} g=${g} /></div></${EcoBloco}>
   </div>`;
 }
 
@@ -19860,7 +19878,7 @@ function jusReage(g, c, momento) {
 }
 function jusPend(g, L) {
   if (g.over) return;
-  jusAbertos(g).filter(c => c.pend).slice(0, 2).forEach(c => L.push({ id: 'justica-' + c.id, tipo: 'justica', urg: 62 + clamp(c.valor / 60, 0, 14), cat: 'Justiça · caso novo', ic: 'Siren', titulo: `${jusRotulo(c)}: ${c.orgao} investiga ${c.esquema}`, ctx: `Envolve ${c.alvo}. Valor estimado de R$ ${c.valor} milhões. Fase: ${c.fase}.`, extra: 'Decida se avança ou tenta bloquear. Bloquear tem risco de reação.', abrir: 'justica', caso: c.id, btns: [] }));
+  jusAbertos(g).filter(c => c.pend).slice(0, 2).forEach(c => L.push({ id: 'justica-' + c.id, tipo: 'justica', urg: 62 + clamp(c.valor / 60, 0, 14), cat: 'Justiça · caso novo', ic: 'Siren', titulo: `${jusRotulo(c)}: ${c.orgao} investiga ${c.esquema}`, ctx: `Envolve ${c.alvo}${c.gov ? ' (caso fictício)' : ''}. Valor estimado de R$ ${c.valor} milhões. Fase: ${c.fase}.`, extra: 'Decida se avança ou tenta bloquear. Bloquear tem risco de reação.', abrir: 'justica', caso: c.id, btns: [] }));
 }
 const jusPendCaso = (g) => jusAbertos(g).find(c => c.pend) || null;
 // penduricalhos e auxílio-moradia: medidas suas em vigor que mexem nesses itens
@@ -19875,7 +19893,7 @@ function JusCaso({ g, upd, c }) {
   return html`<li className="pd-card" style=${{ '--st': JUS_FASE_COR[c.fase] || 'var(--line2)' }} data-caso=${c.id} data-fase=${c.fase}>
     <div className="flex flex-wrap items-start justify-between gap-2">
       <div className="min-w-0"><div className="eyebrow">${dataCurta(c.mes)} · ${c.orgaos.join(' + ')}${c.sigilo ? ' · sigilo' : ''}${c.forca ? ' · força-tarefa' : ''}</div><h4 className="font-semibold text-lg leading-tight">${jusRotulo(c)}</h4></div>
-      <div className="flex flex-wrap gap-1.5"><${MxChip} cor=${JUS_FASE_COR[c.fase]}>${c.fase}</${MxChip}>${c.gov && html`<${MxChip} cor="var(--rubro)">atinge o governo</${MxChip}>`}${c.trava >= g.mes && !arq && html`<${MxChip} cor="var(--anil)">travado até ${dataCurta(c.trava)}</${MxChip}>`}</div>
+      <div className="flex flex-wrap gap-1.5"><${MxChip} cor=${JUS_FASE_COR[c.fase]}>${c.fase}</${MxChip}>${c.gov && html`<${MxChip} cor="var(--rubro)">atinge o governo</${MxChip}>`}${c.gov && html`<span className="selo-sim" data-caso-ficticio="1" title="Caso inventado pelo jogo para dar enredo à partida; não se refere a nenhuma investigação, pessoa ou governo real.">caso fictício</span>`}${c.trava >= g.mes && !arq && html`<${MxChip} cor="var(--anil)">travado até ${dataCurta(c.trava)}</${MxChip}>`}</div>
     </div>
     <p className="text-sm">Apura ${c.esquema}. Envolve ${c.alvo}.${c.preso ? ' Prisão decretada: o suplente do ' + c.sig + ' assumiu a vaga.' : ''}${c.motivo ? ' Arquivado: ' + c.motivo + '.' : ''}</p>
     <div className="grid grid-cols-3 gap-3 text-sm">
@@ -22520,7 +22538,7 @@ const MX_CSS = `
 .mx-card{display:flex;flex-direction:column;gap:10px;padding:14px;background:var(--panel2);border:1px solid var(--line2);border-top:3px solid var(--st,var(--line2));border-radius:12px;min-width:0;list-style:none}
 .mx-card:hover{border-color:var(--muted);border-top-color:var(--st,var(--muted))}
 .mx-card.panel{background:var(--panel)}
-.mx-card.dim{opacity:.55}
+.mx-card.dim{opacity:.8}.mx-card.dim .gv-chips{opacity:1}
 .mx-h{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center}
 .mx-h.nr{grid-template-columns:auto minmax(0,1fr)}
 .mx-t{font-weight:600;font-size:15px;line-height:1.25;overflow-wrap:anywhere}
@@ -23789,6 +23807,7 @@ function IndDetalhe({ g, p, decidir, fechar }) {
   const v = acao === 'inv' || acao === 'cred' ? bi : icArred(base * (acao === 'isen' ? 1 : pct / 100));
   const texto = icTextoAcao(p, acao, v);
   const motor = useMemo(() => { try { return analisaLocal(g, texto) || null; } catch (e) { return null; } }, [g.mes, texto]);
+  const prev = useMemo(() => { try { if (!motor || !precisaCongresso(motor.inst)) return null; const vt = projetaVotos(g, motor), q = quorum(motor.inst); return { vt, q, ch: chanceVotos(vt.totC, q.c, 4.5) * chanceVotos(vt.totS, q.s, 1.7) }; } catch (e) { return null; } }, [g.mes, texto, motor]);
   const dir = acao === 'inv' || acao === 'cred';
   const sentidoOk = !!motor && !motor.vago && (dir ? motor.cost > 0 : motor.rev < 0);
   const semAcoes = !icAcaoOk(g);
@@ -23838,7 +23857,8 @@ function IndDetalhe({ g, p, decidir, fechar }) {
         <div className="flex flex-col gap-2 mx-box" style=${{ background: 'var(--panel)' }} aria-live="polite" data-ind-previa="1">
           <div className="eyebrow">Prévia antes de confirmar</div>
           <div className="text-sm italic leading-snug" data-ind-texto="1">“${texto}”</div>
-          ${motor ? html`<div className="flex flex-wrap gap-1.5"><${Tag} cor=${sentidoOk ? 'var(--verde)' : 'var(--rubro)'}>${INST_NOME[motor.inst] || motor.inst}${precisaCongresso(motor.inst) ? ' · precisa do Congresso' : ' · sem votação'}</${Tag}><${Tag}>${dir ? 'despesa +R$ ' + fmt(Math.abs(motor.cost || 0), 1) + ' bi' : 'renúncia −R$ ' + fmt(Math.abs(motor.rev || 0), 1) + ' bi/ano'}</${Tag}></div>` : html`<p className="text-xs text-muted">O motor não conseguiu ler este texto.</p>`}
+          ${motor ? html`<div className="flex flex-wrap gap-1.5"><${Tag} cor=${sentidoOk ? 'var(--verde)' : 'var(--rubro)'}>${INST_NOME[motor.inst] || motor.inst}${precisaCongresso(motor.inst) ? ' · precisa do Congresso' : ' · sem votação'}</${Tag}><${Tag}>${dir ? 'despesa +R$ ' + fmt(Math.abs(motor.cost || 0), 1) + ' bi' : 'renúncia −R$ ' + fmt(Math.abs(motor.rev || 0), 1) + ' bi/ano'}</${Tag}></div>
+          ${prev && html`<div className="text-sm p-2 rounded" style=${{ background: 'rgba(240,166,58,.10)' }} data-ind-aviso-congresso="1" role="note">Não é ato do Executivo: ${dir ? 'gasto novo' : 'renúncia fiscal'} exige lei. Isto vira ${INST_NOME[motor.inst] || motor.inst} e o Congresso pode derrubar. Previsão de voto: <b className="num">${prev.vt.totC}</b> de ${prev.q.c} na Câmara e <b className="num">${prev.vt.totS}</b> de ${prev.q.s} no Senado; chance de aprovar <b className="num">${fmtChance(prev.ch)}</b>${prev.ch < .5 ? '. Negocie antes: a ação é gasta mesmo se a proposta cair.' : '.'}</div>`}` : html`<p className="text-xs text-muted">O motor não conseguiu ler este texto.</p>`}
           <ul className="text-sm flex flex-col gap-1" data-ind-efeito="1">
             ${p.kind === 'nova' ? html`<li>Capacidade nova de até <b>${icUsd(capNova)}</b> por ano; a fábrica só começa a produzir em cerca de <b>${E.atraso}</b> meses.</li>` : html`<li>Produção <b>${sgn(dBoost * 100, 1)}%</b> (≈ ${icUsd(dBoost * B.PV0)} por ano), subindo ao longo de <b>${E.dur}</b> meses depois de ${E.atraso} de regulamentação.</li>`}
             <li>Emprego <b>+${fmt(empleos, empleos < 10 ? 1 : 0)} mil</b> vagas · investimento privado atraído <b>R$ ${fmt(priv, 1)} bi</b></li>
@@ -24605,7 +24625,7 @@ function GruposResultado({ gd }) { // v3.8
     ${gd.length > 9 && html`<button type="button" className="text-xs underline opacity-70 mt-2" onClick=${() => setTodos(!todos)}>${todos ? 'Mostrar só os maiores efeitos' : 'Ver os demais ' + (gd.length - 9) + ' grupos'}</button>`}
   </div>`;
 }
-function ModalDecisao({ dec, g, upd, setDec, onClose }) {
+function ModalDecisao({ dec, g, upd, setDec, onClose, votarItem }) {
   const [, force] = useState(0);
   if (dec.stage === 'loading') return html`<${Modal} label="Analisando medida"><div className="card p-8 text-center flex flex-col items-center gap-3">
     <span className="text-ouro pulse-dot"><${Icon} n="ScrollText" s=${36} /></span>
@@ -24622,17 +24642,21 @@ function ModalDecisao({ dec, g, upd, setDec, onClose }) {
   const stfCor = prop.stf.nivel === 'ok' ? '#2fd27a' : prop.stf.nivel === 'controverso' ? '#f0a63a' : '#ff5a4e';
 
   if (dec.stage === 'votando') return html`<${Modal} wide label="Votação ao vivo"><${VotacaoViva} plano=${dec.plano} idx0=${dec.idx0} onConcluir=${() => setDec({ ...dec, stage: 'resultado', resultado: aplicaPlano(dec.plano, dec.item) })} /></${Modal}>`;
-  if (dec.stage === 'enviado') return html`<${Modal} label="Enviada ao Congresso"><div className="card p-6 flex flex-col gap-3"><div className="eyebrow">Mensagem presidencial</div><h2 className="disp text-3xl font-black uppercase leading-none">${dec.envio.mp ? 'Medida provisória em vigor' : dec.envio.destino === 'gaveta' ? 'Enviada e guardada na gaveta' : 'Enviada para tramitar'}</h2><p className="text-sm">${prop.texto}</p><p className="text-sm text-muted">${dec.envio.mp ? 'Os efeitos já valem. O Congresso tem 4 meses para votar; sem votação, a MP caduca e 70% dos efeitos são desfeitos.' : dec.envio.destino === 'gaveta' ? 'A pauta está cheia. Na gaveta o texto não perde apoio, mas também não anda.' : 'Articule os votos na Pauta do Congresso. Sem trabalho, o apoio cai 3 pontos por mês e o texto é arquivado depois de 3 meses.'}</p><div className="flex justify-end"><button className="btn btn-gold" onClick=${onClose}>Voltar ao gabinete</button></div></div></${Modal}>`;
+  if (dec.stage === 'enviado') return html`<${Modal} label="Enviada ao Congresso"><div className="card p-6 flex flex-col gap-3"><div className="eyebrow">Mensagem presidencial</div><h2 className="disp text-3xl font-black uppercase leading-none">${dec.envio.mp ? 'Medida provisória em vigor' : dec.envio.destino === 'gaveta' ? 'Enviada e guardada na gaveta' : 'Enviada para tramitar'}</h2><p className="text-sm">${prop.texto}</p><p className="text-sm text-muted">${dec.envio.mp ? 'Os efeitos já valem. O Congresso tem 4 meses para votar; sem votação, a MP caduca e 70% dos efeitos são desfeitos.' : dec.envio.destino === 'gaveta' ? 'A pauta está cheia. Na gaveta o texto não perde apoio, mas também não anda.' : 'Articule os votos na Pauta do Congresso. Sem trabalho, o apoio cai 3 pontos por mês e o texto é arquivado depois de 3 meses.'}</p>${!dec.envio.mp && dec.envio.destino !== 'gaveta' && congresso && html`<div className="p-3 rounded-lg" style=${{ background: 'var(--panel2)' }} data-envio-proj="1"><div className="eyebrow mb-1">Projeção de voto hoje</div><div className="text-sm num">Câmara ${votos.totC} de ${q.c} necessários · Senado ${votos.totS} de ${q.s}</div></div>`}<div className="flex flex-wrap justify-end gap-2">${!dec.envio.mp && dec.envio.destino !== 'gaveta' && dec.envio.item && votarItem && html`<button className="btn btn-pri" data-envio-votar="1" onClick=${() => votarItem(dec.envio.item)}>Levar a voto agora</button>`}<button className="btn btn-gold" onClick=${onClose}>Voltar ao gabinete</button></div></div></${Modal}>`;
   if (dec.stage === 'parecer') {
     const indecisos = votos.cam.filter(v => v.id !== g.cfg.partido && v.frac > .1 && v.frac < .85 && v.total >= 4).sort((a, b) => b.total * (1 - b.frac) - a.total * (1 - a.frac)).slice(0, 6);
-    const emenda = (pid) => { const c = custoEmenda(g, pid); upd(n => { n.fiscal.extra += c; n.negMes[pid] = (n.negMes[pid] || 0) + 1; }); prop.bonus[pid] = (prop.bonus[pid] || 0) + 14; force(x => x + 1); };
+    const gastos = () => (prop.gastosPrev = prop.gastosPrev || { extra: 0, neg: {} });
+    // emendas e pesquisa são cobradas na hora, mas devolvidas se a proposta for retirada ou o parecer fechado sem votar nem tramitar
+    const reembolsa = () => { const G = prop.gastosPrev; if (!G || (!G.extra && !Object.keys(G.neg).length)) return; prop.gastosPrev = null; upd(n => { n.fiscal.extra = Math.max(0, n.fiscal.extra - G.extra); for (const k of Object.keys(G.neg)) n.negMes[k] = Math.max(0, (n.negMes[k] || 0) - G.neg[k]); }); };
+    const fecha = () => { reembolsa(); onClose(); };
+    const emenda = (pid) => { const c = custoEmenda(g, pid); const G = gastos(); G.extra += c; G.neg[pid] = (G.neg[pid] || 0) + 1; upd(n => { n.fiscal.extra += c; n.negMes[pid] = (n.negMes[pid] || 0) + 1; }); prop.bonus[pid] = (prop.bonus[pid] || 0) + 14; force(x => x + 1); };
     const desidratar = () => { prop.scale *= .6; prop.iv = { eco: prop.iv.eco * .5, soc: prop.iv.soc * .5 }; prop.desidratada++; for (const P of PARTIDOS) prop.bonus[P.id] = (prop.bonus[P.id] || 0) + 6; force(x => x + 1); };
     const votar = () => { if (congresso) setDec({ ...dec, stage: 'votando', plano: decideVotacao(g, prop, true, q) }); else setDec({ ...dec, stage: 'resultado', resultado: resolver(g, prop, congresso, q) }); };
-    const tramitar = () => { let r = null; RESOLVER_UPD(n => { r = enviaParaPauta(n, prop); }); if (r && r.ok) setDec({ ...dec, stage: 'enviado', envio: { destino: r.destino, mp: prop.inst === 'MP' } }); else setDec({ ...dec, aviso: (r && r.msg) || 'Não foi possível enviar.' }); };
+    const tramitar = () => { let r = null; RESOLVER_UPD(n => { r = enviaParaPauta(n, prop); }); if (r && r.ok) setDec({ ...dec, stage: 'enviado', envio: { destino: r.destino, mp: prop.inst === 'MP', item: r.item && r.item.id } }); else setDec({ ...dec, aviso: (r && r.msg) || 'Não foi possível enviar.' }); };
     const futuros = atrasosDe(prop);
-    const encomendar = () => { if (prop.poll) return; prop.poll = pesquisaDe(g, prop); prop.pesquisa = prop.poll.favor; upd(n => { n.fiscal.extra += 0.002; }); force(x => x + 1); };
+    const encomendar = () => { if (prop.poll) return; prop.poll = pesquisaDe(g, prop); prop.pesquisa = prop.poll.favor; gastos().extra += 0.002; upd(n => { n.fiscal.extra += 0.002; }); force(x => x + 1); };
     const PQ = prop.poll;
-    return html`<${Modal} wide label="Parecer da medida" onClose=${onClose}><${Documento} prop=${prop} g=${g}>
+    return html`<${Modal} wide label="Parecer da medida" onClose=${fecha}><${Documento} prop=${prop} g=${g}>
       <${FaixaCF} prop=${prop} />
       <div><div className="text-[11px] uppercase tracking-widest opacity-60" style=${{ fontFamily: 'var(--f-mono)' }}>Ementa</div>
         <div className="text-lg font-semibold leading-snug">${prop.texto}</div>
@@ -24674,7 +24698,7 @@ function ModalDecisao({ dec, g, upd, setDec, onClose }) {
       <${ParecerEspecialista} prop=${prop} g=${g} votos=${votos} q=${q} congresso=${congresso} so=${true} />
       <${BaseJuridica} prop=${prop} g=${g} />
       <div className="flex flex-wrap justify-end gap-2 pt-3 border-t border-black/10">
-        <button className="px-3 py-2 rounded border border-black/25 text-sm font-semibold hover:bg-black/5" onClick=${() => { upd(n => { n.log.unshift({ mes: n.mes, ato: 'Proposta retirada', texto: prop.texto, res: 'retirada' }); }); onClose(); }}>Retirar proposta</button>
+        <button className="px-3 py-2 rounded border border-black/25 text-sm font-semibold hover:bg-black/5" onClick=${() => { upd(n => { n.log.unshift({ mes: n.mes, ato: 'Proposta retirada', texto: prop.texto, res: 'retirada' }); }); fecha(); }} title=${prop.gastosPrev && prop.gastosPrev.extra ? 'As emendas e a pesquisa já pagas serão devolvidas' : ''}>Retirar proposta</button>
         ${congresso && !prop.jaPaga && html`<button className="px-3 py-2 rounded border border-black/25 text-sm font-semibold hover:bg-black/5 disabled:opacity-40" disabled=${!podeEnviar(g, prop).ok || g.acoes <= 0 || cfTravada(prop)} title="Vai para a Pauta do Congresso e gasta 1 ação" onClick=${tramitar}>Enviar e tramitar</button>`}
         <button className="px-4 py-2 rounded text-sm font-bold text-black disabled:opacity-40" style=${{ background: 'var(--ouro)' }} disabled=${!!gvBloqPEC(g, prop) || cfTravada(prop)} title=${gvBloqPEC(g, prop) ? gvBloqPEC(g, prop).msg : cfTravada(prop) ? 'PEC não pode ser votada durante intervenção federal, estado de defesa ou de sítio (art. 60, §1º)' : ''} onClick=${votar}>${congresso ? 'Votar agora' : prop.stf.nivel === 'inconstitucional' ? 'Assinar mesmo assim' : 'Assinar e publicar no DOU'}</button>
       </div>
@@ -24697,7 +24721,7 @@ function ModalDecisao({ dec, g, upd, setDec, onClose }) {
   return html`<${Modal} wide label="Resultado da medida" onClose=${onClose}><${Documento} prop=${prop} g=${g}>
     <div className="flex flex-wrap items-center gap-3">
       <div className="text-sm" style=${{ fontFamily: 'var(--f-mono)' }}>${R.ex.ato}</div>
-      <span className="ml-auto px-3 py-1 rounded-full text-white text-sm font-bold uppercase tracking-wide" style=${{ background: corRes }}>${R.label}</span>
+      <span className="ml-auto px-3 py-1 rounded-full text-sm font-bold uppercase tracking-wide" style=${{ background: corRes, color: '#04130b' }}>${R.label}</span>
     </div>
     <div className="text-lg font-semibold leading-snug">${prop.texto}</div>
     ${R.votacao && html`<div className="grid sm:grid-cols-2 gap-3 text-sm">
@@ -24854,7 +24878,7 @@ function ModalConfig({ ia, setIa, temClaude, onClose, reiniciar, voltarMenu, fot
     </div>`}
     <label className="flex items-start gap-3 p-3 rounded-lg border border-line cursor-pointer" htmlFor="cfg-fotos"><input id="cfg-fotos" type="checkbox" style=${{ width: 'auto', marginTop: 4 }} checked=${fotos !== false} onChange=${e => { if (setFotos) setFotos(e.target.checked); }} />
       <span className="min-w-0"><span className="font-semibold block">Mostrar fotos oficiais (TSE)</span><span className="text-xs text-muted block mt-1">Troca a silhueta genérica pela foto de registro de candidatura, com tratamento artístico, para eleitos e candidatos. Técnicos, juristas, ministros do STF e famosos seguem com a efígie.${temFotos ? '' : ' As fotos não foram carregadas nesta visualização (o arquivo fotos.json não está disponível): a efígie ilustrada continua valendo.'}</span></span></label>
-    ${FOTO_ST.cred && Object.keys(FOTO_ST.cred).length > 0 && html`<details className="p-3 rounded-lg border border-line text-xs text-muted"><summary className="cursor-pointer font-semibold text-ink">Créditos das fotos do Wikimedia Commons</summary>
+    ${FOTO_ST.cred && Object.keys(FOTO_ST.cred).length > 0 && html`<details className="p-3 rounded-lg border border-line text-xs text-muted"><summary className="cursor-pointer font-semibold text-fg">Créditos das fotos do Wikimedia Commons</summary>
       <ul className="mt-2 flex flex-col gap-1">${Object.entries(FOTO_ST.cred).map(([k, c]) => html`<li key=${k}>${k.split('|').pop()}: <a className="underline" href=${c.url} target="_blank" rel="noopener noreferrer">${c.autor}</a>, ${c.licenca}</li>`)}</ul></details>`}
     <label className="flex items-start gap-3 p-3 rounded-lg border border-line cursor-pointer" htmlFor="cfg-logos"><input id="cfg-logos" type="checkbox" style=${{ width: 'auto', marginTop: 4 }} checked=${logos !== false} onChange=${e => { if (setLogos) setLogos(e.target.checked); }} />
       <span className="min-w-0"><span className="font-semibold block">Mostrar logotipos oficiais dos partidos</span><span className="text-xs text-muted block mt-1">Troca o emblema ilustrado pelo logotipo do partido, sem alteração, quando ele existe. Siglas sem logotipo seguem com o emblema do jogo.${temLogos ? '' : ' Os logotipos não foram carregados nesta visualização (o arquivo logos.json não está disponível): o emblema ilustrado continua valendo.'}</span></span></label>
@@ -24928,7 +24952,7 @@ function qvValida(o) {
   if (o.formato && o.formato !== 'faixa-presidencial') throw new Error('Arquivo de outro jogo (formato "' + String(o.formato).slice(0, 30) + '").');
   if (!g.cfg || typeof g.cfg !== 'object' || typeof g.cfg.nome !== 'string' || !Array.isArray(g.cfg.tracos) || !g.cfg.ideo) throw new Error('Faltam os dados do presidente (cfg).');
   if (!g.eco || typeof g.eco !== 'object' || typeof g.eco.pib !== 'number' || typeof g.eco.risco !== 'number') throw new Error('Faltam os dados da economia.');
-  if (typeof g.mes !== 'number' || !(g.mes >= 1 && g.mes <= 49)) throw new Error('Mês do mandato inválido.');
+  if (typeof g.mes !== 'number' || !(g.mes >= 1 && g.mes <= 48 * 20)) throw new Error('Mês do mandato inválido.');
   if (!g.parties || !g.groups || !Array.isArray(g.hist && g.hist.ap)) throw new Error('Faltam partidos, grupos ou histórico.');
   return g;
 }
@@ -25153,7 +25177,7 @@ function QvSaves({ ctx }) {
         ${m ? html`<div className="min-w-0">
           <input type="text" maxLength="28" aria-label=${'Nome do slot ' + i} placeholder=${m.nome} defaultValue=${m.rot || ''} onBlur=${e => qvRenomeia(i, e.target.value)} className="!py-1 text-sm w-full" />
           <div className="text-sm font-semibold truncate mt-1">${m.nome}</div>
-          <div className="text-xs text-muted num">${m.mes > 48 || m.fim ? 'encerrado' : 'mês ' + m.mes + '/48'} · aprovação ${m.ap}% · ${(QV_DIF[m.dif] || QV_DIF.realista).nome}</div>
+          <div className="text-xs text-muted num">${m.fim ? 'encerrado' : m.mes > 48 ? 'mês ' + (((m.mes - 1) % 48) + 1) + ' do ' + (Math.floor((m.mes - 1) / 48) + 1) + 'º mandato' : 'mês ' + m.mes + '/48'} · aprovação ${m.ap}% · ${(QV_DIF[m.dif] || QV_DIF.realista).nome}</div>
           <div className="text-xs text-muted">salvo em ${qvQuando(m.ts)}</div></div>` : html`<div className="text-sm text-muted">vazio</div>`}
         <div className="flex flex-wrap gap-1 mt-auto">
           ${m && html`<button type="button" className="btn btn-ghost text-xs" data-qv="carregar" onClick=${() => qvCarregaSlot(i)}><${Icon} n="FolderOpen" s=${12} /> ${emJogo ? 'Carregar' : 'Continuar'}</button>`}
@@ -28473,6 +28497,7 @@ function elEscolheProximo(n, persona) {
   elDinAbre(n, persona, eh ? 'presidente' : (persona.tipo === 'candidato' ? 'candidato' : 'oposição'));
   n.over = null; n.acoes = 5; n.pes.energia = clamp(n.pes.energia + 20, 0, 100); n.pes.saude = Math.max(n.pes.saude, 60); n.pes.estresse = Math.min(n.pes.estresse, 40);
   n.impStreak = 0;
+  if (o && o.posse) n.impGraca = n.mes + 6; // sucessor ganha 6 meses sem votação de impeachment
   n.ent.colet = null; entGeraMes(n);
   const ger = E.ger;
   if (ger && ger.c === elCiclo(n.mes) && !ger.res) { ger.meuId = persona && !eh ? (ger.cands.find(c => c.persId === persona.id) || {}).id || null : (E.mandatos < 2 ? ger.sitId : null); ger.apoiadoId = ger.meuId || ger.sitId; }
@@ -29036,9 +29061,9 @@ function useCenaFoco(ref, onClose) {
     };
   }, []);
 }
-function CnBalao({ nome, veic, texto, lado, cauda, reacao }) {
+function CnBalao({ nome, veic, texto, lado, cauda, reacao, sim }) {
   return html`<div className="cn-bal" data-lado=${lado} data-reacao=${reacao ? '1' : '0'} style=${{ '--tx': cauda + '%' }} aria-live="polite">
-    <div className="cn-bal-who"><b>${nome}</b>${veic ? html`<span>${veic}</span>` : null}</div>
+    <div className="cn-bal-who"><b>${nome}</b>${sim ? html`<${SeloSim} a="o" txt="Apresentador(a) real; a pergunta e a fala são inventadas pelo jogo, não são declarações da pessoa. Tratam só de política." />` : null}${veic ? html`<span>${veic}</span>` : null}</div>
     <p className="cn-bal-q">${reacao ? '' : '“'}${texto}${reacao ? '' : '”'}</p></div>`;
 }
 function CnResponder({ ops, mais, onResp, attrLivre, attrEnviar }) {
@@ -29121,7 +29146,7 @@ function CenaImprensa({ kind, g, upd, onClose }) {
       <div className="cn-top-d">${(pod || C.t === 'est') && html`<span className="cn-cap">personagem ilustrado</span>`}${(pod && C.pod || (M.rep && M.rep.pod)) ? html`<${SeloSim} a="o" txt="Podcast real; perguntas e falas simuladas pelo jogo. Personagens são desenhos, não retratos." />` : null}
         <button type="button" className="cn-x" onClick=${onClose} aria-label="Fechar (Esc)" title="Fechar (Esc)"><${Icon} n="X" s=${18} /></button></div>
     </header>
-    <div className="cn-mid">${(M.modo === 'perg' || M.modo === 'resp') && html`<${CnBalao} key=${(M.q ? M.q.id : 'qq') + M.modo} nome=${M.rep.nome} veic=${M.rep.veic} texto=${M.texto} lado=${lado} cauda=${lado === 'c' ? 74 : 8} reacao=${M.reacao} />`}</div>
+    <div className="cn-mid">${(M.modo === 'perg' || M.modo === 'resp') && html`<${CnBalao} key=${(M.q ? M.q.id : 'qq') + M.modo} nome=${M.rep.nome} veic=${M.rep.veic} sim=${!!M.rep.pod} texto=${M.texto} lado=${lado} cauda=${lado === 'c' ? 74 : 8} reacao=${M.reacao} />`}</div>
     <div className="cn-low" data-ent=${M.ent || null}>
       ${M.modo === 'perg' && html`<div data-cena-perg="1" ...${M.attrs}>${M.ap && html`<p className="cn-nota">${M.ap}</p>`}<${CnResponder} key=${M.attrs && Object.values(M.attrs)[0]} ops=${M.ops} mais=${M.mais} onResp=${M.onResp} attrLivre=${M.attrLivre} attrEnviar=${M.attrEnviar} /></div>`}
       ${M.modo === 'resp' && html`<div className="cn-resp" ...${M.attrs} data-ent-res=${M.res.outAttr || null}>
@@ -29265,6 +29290,7 @@ function ElPesqView({ g, ger, pq }) {
 /* ---------- apuração presidencial: mapa por estado, tabela, discurso ---------- */
 function elDiscurso(g, ger, res) {
   const W = ger.cands.find(c => c.id === res.venc); const meu = ger.cands.find(c => c.id === (ger.meuId || ger.apoiadoId));
+  if (!W) { const fin = (res.fin || []).map(id => ger.cands.find(c => c.id === id)).filter(Boolean); const par = fin.length === 2 ? `${fin[0].nome} × ${fin[1].nome}` : 'os dois mais votados'; return meu && fin.some(c => c.id === meu.id) ? `Ninguém passou de 50% dos votos válidos: o 2º turno será ${par}. ${meu.nome} (simulado) segue na disputa e pede “mais quatro semanas de conversa com o eleitor”.` : `Ninguém passou de 50% dos votos válidos: o 2º turno será ${par}.${meu ? ` ${meu.nome} (simulado) ficou fora e reconhece o resultado do 1º turno.` : ''}`; }
   const ganhou = meu && meu.id === W.id;
   if (!meu) return `Discurso (simulado) de ${W.nome}: “Recebo a confiança dos brasileiros com humildade. Vou governar para todos, ouvir quem votou e quem não votou em mim.”`;
   return ganhou ? `Discurso de vitória (simulado) de ${W.nome}: “Agradeço a cada brasileiro e brasileira. Esta vitória é de quem acredita no país. Vamos governar para todos e dialogar com o Congresso.”`
@@ -30212,8 +30238,9 @@ function minGera(g) {
   const M = g.minProp; M.ger = g.mes; const novas = [];
   const pontos = minPontos(g);
   const nq = 2 + (hashStr(g.seed + '|minn|' + g.mes) < .45 || g.mes === 1 ? 1 : 0);
+  const nq2 = Math.min(nq, Math.max(0, 2 - M.lista.length)); // U6: no máximo 2 ideias abertas por vez (não expiram em massa)
   for (const pt of pontos) {
-    if (novas.length >= nq) break;
+    if (novas.length >= nq2) break;
     if (M.lista.some(e => e.pk === pt.pk)) continue; // uma ideia aberta por pasta
     const e = minCria(g, pt.pk, pt.why); if (e) { M.lista.push(e); novas.push(e); }
   }
@@ -30561,6 +30588,25 @@ function carregaSave() {
   } catch (e) { return null; }
 }
 function gravaSave(g) { try { qvGrava(g); } catch (e) { } }
+/* ---------- fronteira de erro: uma tela que quebra não derruba o jogo ---------- */
+class ErroTela extends React.Component {
+  constructor(p) { super(p); this.state = { erro: null }; }
+  static getDerivedStateFromError(e) { return { erro: e || true }; }
+  componentDidCatch(e, info) { try { console.error('[Faixa] erro na tela "' + (this.props.nome || '?') + '":', e, info && info.componentStack); } catch (x) { } }
+  componentDidUpdate(prev) { if (this.state.erro && prev.resetKey !== this.props.resetKey) this.setState({ erro: null }); }
+  render() {
+    if (!this.state.erro) return h(ErroGatilho, { nome: this.props.nome }, this.props.children);
+    const volta = () => { this.setState({ erro: null }); if (this.props.onVoltar) this.props.onVoltar(); };
+    return h('div', { className: 'card p-4 flex flex-col gap-2 items-start m-4', role: 'alert', 'data-erro-tela': this.props.nome || '' },
+      h('p', { className: 'text-sm' }, 'Algo deu errado nesta tela.'),
+      h('button', { type: 'button', className: 'btn btn-ghost', onClick: volta }, 'Voltar'));
+  }
+}
+// gancho de teste: window.__faixaErro = '<nome da tela>' força uma exceção de renderização dentro da fronteira
+function ErroGatilho({ nome, children }) {
+  try { if (typeof window !== 'undefined' && window.__faixaErro && window.__faixaErro === nome) throw new Error('erro forçado em ' + nome); } catch (e) { if (e && /forçado/.test(e.message)) throw e; }
+  return children === undefined ? null : children;
+}
 function App() {
   const [g, setG] = useState(null);
   const [save, setSave] = useState(carregaSave);
@@ -30610,6 +30656,14 @@ function App() {
       if (p && p.then) p.then(r => (r && r.ok ? r.json() : null)).then(j => { if (vivo && j && j.logos) { LOGO_ST.dados = j.logos; setFv(v => v + 1); } }).catch(() => { });
     } catch (e) { }
     return () => { vivo = false; };
+  }, []);
+  // U3: textos cortados com reticências ganham `title` com o texto completo (varredura leve, depois que a tela assenta)
+  useEffect(() => {
+    let t = null; const raiz = document.getElementById('root'); if (!raiz || typeof MutationObserver === 'undefined') return undefined;
+    const varre = () => { t = null; try { for (const el of raiz.querySelectorAll('span, div, td, a, b, p, li, h3, h4, summary')) { if (el.childElementCount > 1 || el.hasAttribute('title') || el.scrollWidth <= el.clientWidth + 1) continue; if (getComputedStyle(el).textOverflow !== 'ellipsis') continue; const tx = (el.textContent || '').trim(); if (tx) el.setAttribute('title', tx); } } catch (e) { } };
+    const mo = new MutationObserver(() => { if (t == null) t = setTimeout(varre, 250); });
+    mo.observe(raiz, { childList: true, subtree: true }); t = setTimeout(varre, 250);
+    return () => { mo.disconnect(); if (t != null) clearTimeout(t); };
   }, []);
   const jaG = !!g;
   useEffect(() => {
@@ -30680,13 +30734,13 @@ function App() {
     <div className="shell w-full flex-1">
       <${NavSecoes} atual=${sec} onSel=${(s) => irPara(s)} g=${g} />
       <main id="sec-painel" role="tabpanel" aria-labelledby=${'sec-tab-' + sec} className="shell-main gutter fade-in" key=${sec} tabIndex="-1" data-secao=${sec}>
-        ${sec === 'mesa' && html`<${Mesa} g=${g} decidir=${decidir} motorNome=${motorNome} upd=${upd} votarItem=${votarItem} encerrar=${encerrarMes} irPara=${irPara} refino=${refino} />`}
-        ${sec === 'pais' && html`<${PaisSecao} g=${g} upd=${upd} decidir=${decidir} chip=${chipAtual(g, 'pais')} setChip=${(c) => irPara('pais', c)} abrirPend=${(p) => { PEND_ABRIR = p.id; irPara('mesa'); }} />`}
-        ${sec === 'poder' && html`<${Poder} g=${g} upd=${upd} decidir=${decidir} votarItem=${votarItem} chip=${chipAtual(g, 'poder')} setChip=${(c) => irPara('poder', c)} abrirPend=${(p) => { PEND_ABRIR = p.id; irPara('mesa'); }} />`}
-        ${sec === 'medidas' && html`<${MedidasVigor} g=${g} upd=${upd} irPara=${irPara} />`}
-        ${sec === 'mundo' && html`<${Diplomacia} g=${g} decidir=${decidir} upd=${upd} chip=${chipAtual(g, 'mundo')} setChip=${(c) => irPara('mundo', c)} abrirPend=${(p) => { PEND_ABRIR = p.id; irPara('mesa'); }} />`}
-        ${sec === 'eu' && html`<${Eu} g=${g} upd=${upd} chip=${chipAtual(g, 'eu')} setChip=${(c) => irPara('eu', c)} abrirPend=${(p) => { PEND_ABRIR = p.id; irPara('mesa'); }} />`}
-        ${sec === 'x' && html`<${RedeX} g=${g} upd=${upd} />`}
+        ${sec === 'mesa' && html`<${ErroTela} nome="mesa" resetKey=${sec} onVoltar=${() => irPara('mesa')}><${Mesa} g=${g} decidir=${decidir} motorNome=${motorNome} upd=${upd} votarItem=${votarItem} encerrar=${encerrarMes} irPara=${irPara} refino=${refino} /></${ErroTela}>`}
+        ${sec === 'pais' && html`<${ErroTela} nome="pais" resetKey=${sec} onVoltar=${() => irPara('mesa')}><${PaisSecao} g=${g} upd=${upd} decidir=${decidir} chip=${chipAtual(g, 'pais')} setChip=${(c) => irPara('pais', c)} abrirPend=${(p) => { PEND_ABRIR = p.id; irPara('mesa'); }} /></${ErroTela}>`}
+        ${sec === 'poder' && html`<${ErroTela} nome="poder" resetKey=${sec} onVoltar=${() => irPara('mesa')}><${Poder} g=${g} upd=${upd} decidir=${decidir} votarItem=${votarItem} chip=${chipAtual(g, 'poder')} setChip=${(c) => irPara('poder', c)} abrirPend=${(p) => { PEND_ABRIR = p.id; irPara('mesa'); }} /></${ErroTela}>`}
+        ${sec === 'medidas' && html`<${ErroTela} nome="medidas" resetKey=${sec} onVoltar=${() => irPara('mesa')}><${MedidasVigor} g=${g} upd=${upd} irPara=${irPara} /></${ErroTela}>`}
+        ${sec === 'mundo' && html`<${ErroTela} nome="mundo" resetKey=${sec} onVoltar=${() => irPara('mesa')}><${Diplomacia} g=${g} decidir=${decidir} upd=${upd} chip=${chipAtual(g, 'mundo')} setChip=${(c) => irPara('mundo', c)} abrirPend=${(p) => { PEND_ABRIR = p.id; irPara('mesa'); }} /></${ErroTela}>`}
+        ${sec === 'eu' && html`<${ErroTela} nome="eu" resetKey=${sec} onVoltar=${() => irPara('mesa')}><${Eu} g=${g} upd=${upd} chip=${chipAtual(g, 'eu')} setChip=${(c) => irPara('eu', c)} abrirPend=${(p) => { PEND_ABRIR = p.id; irPara('mesa'); }} /></${ErroTela}>`}
+        ${sec === 'x' && html`<${ErroTela} nome="x" resetKey=${sec} onVoltar=${() => irPara('mesa')}><${RedeX} g=${g} upd=${upd} /></${ErroTela}>`}
         <footer className="mt-10 text-xs text-muted flex flex-col gap-2">
           <p>Congresso real eleito em 2026 (dados do TSE). Votos e comportamentos dos parlamentares são simulados. Famosos, podcasts e políticos reais citados em posts e entrevistas têm falas inventadas pelo jogo (nos posts do X, com o selo “simulado”): tratam só de medidas e política e partem de posições públicas declaradas (seguidores são ordens de grandeza). Veículos de imprensa aparecem como referência satírica; os cidadãos entrevistados, as manchetes e os indicadores são fictícios. Efígies e emblemas de reserva são ilustrações originais do jogo. Relações bilaterais, pesos de comércio e valores da diplomacia são estimativas do jogo; a seção Bastidores é ficção, com pessoas e empresas inventadas e indisponível para personagens reais.</p>
           <p data-credito-logos="1">Logotipos: sites oficiais de cada partido, usados apenas para identificação.</p>
@@ -30694,10 +30748,10 @@ function App() {
         </footer>
       </main>
     </div>
-    ${dec && html`<${ModalDecisao} dec=${dec} g=${g} upd=${upd} setDec=${setDec} onClose=${() => setDec(null)} />`}
-    ${relMes && html`<${ModalMes} rel=${relMes} g=${g} onClose=${() => setRelMes(null)} />`}
+    ${dec && html`<${ErroTela} nome="modal-decisao" onVoltar=${() => setDec(null)}><${ModalDecisao} dec=${dec} g=${g} upd=${upd} setDec=${setDec} onClose=${() => setDec(null)} votarItem=${votarItem} /></${ErroTela}>`}
+    ${relMes && html`<${ErroTela} nome="modal-mes" onVoltar=${() => setRelMes(null)}><${ModalMes} rel=${relMes} g=${g} onClose=${() => setRelMes(null)} /></${ErroTela}>`}
     ${aviso && html`<div className="toast card px-4 py-3 text-sm flex items-center gap-2 fade-in" role="status"><span className=${typeof aviso === 'string' ? 'text-ambar' : 'text-ouro'}><${Icon} n=${typeof aviso === 'string' ? 'TriangleAlert' : 'Award'} /></span>${typeof aviso === 'string' ? aviso : aviso.x}</div>`}
-    ${cfgOpen && html`<${ModalConfig} ia=${ia} setIa=${setIa} temClaude=${temClaude} onClose=${() => setCfgOpen(false)} reiniciar=${reiniciar} voltarMenu=${voltarMenu} fotos=${g.ui.fotos !== false} setFotos=${setFotos} temFotos=${!!FOTO_ST.dados} logos=${g.ui.logos !== false} setLogos=${setLogos} temLogos=${!!LOGO_ST.dados} />`}
+    ${cfgOpen && html`<${ErroTela} nome="modal-config" onVoltar=${() => setCfgOpen(false)}><${ModalConfig} ia=${ia} setIa=${setIa} temClaude=${temClaude} onClose=${() => setCfgOpen(false)} reiniciar=${reiniciar} voltarMenu=${voltarMenu} fotos=${g.ui.fotos !== false} setFotos=${setFotos} temFotos=${!!FOTO_ST.dados} logos=${g.ui.logos !== false} setLogos=${setLogos} temLogos=${!!LOGO_ST.dados} /></${ErroTela}>`}
   </div>`;
 }
 
