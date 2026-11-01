@@ -139,7 +139,7 @@ with sync_playwright() as p:
 
     # ---------- B8: toast acima da gaveta ----------
     z = pg.evaluate("()=>{const t=document.createElement('div');t.className='toast';document.body.appendChild(t);const z=parseInt(getComputedStyle(t).zIndex);t.remove();return z}")
-    ok('B8: toast fica acima da gaveta (z-index > 55 + profundidade)', z >= 200, z)
+    ok('B8 (lote D): toast fica abaixo das gavetas (z-index < 55) e nunca as cobre; entra por fila só sem gaveta/modal aberto', z < 55, z)
 
     # ---------- C1/C2: selos discretos ----------
     pg.evaluate("()=>{const s=document.createElement('span');s.className='selo-sim';s.textContent='simulado';s.id='tst-selo';document.body.appendChild(s)}")
