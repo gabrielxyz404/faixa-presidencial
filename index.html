@@ -24538,7 +24538,7 @@ function icFisTxt(p, usd) { const f = icFis(p, usd); return f ? fmt(f.v, f.v < 1
 function icPrecoTxt(p, mult) { // preço em unidade natural quando existe; senão índice
   const pr = p && p.preco_int;
   if (pr && pr.valor) { const v = pr.valor * mult; return 'US$ ' + fmt(v, v < 1 ? 2 : v < 100 ? 1 : 0) + ' ' + String(pr.unid).replace('US$', '').replace(/^\//, '/'); }
-  return 'índice ' + fmt(mult * 100, 0);
+  return 'índice ' + fmt(mult * 100, 0) + ' (2025 = 100)';
 }
 const icRefProd = (k) => IC_PROD[k] || IC_IMP[k] || (IC_MERC[k] && IC_MERC[k].dom) || null;
 const icPrecoRefDe = (k) => { const x = IC_PROD[k] || IC_IMP[k]; if (!x) return null; if (x.preco_int) return x; if (x.preco_ref) return { preco_int: x.preco_ref }; return x; };
@@ -24813,6 +24813,60 @@ function icFlow(g, mk) {
   return { mk, idx, pf, boost, cut, novaAno, Dsup, Dh, Exc, Imc, Ims, Xs, est: est1, def, sf, cutNew, scarNovo, shImp, pImp, pLoc, pdom, expAno: expRev * 12, impAno: impCost * 12, dSaldoAno: dSaldo * 12, dVal, jobs, estMeses: B.C0 > 0 ? est1 / (B.C0 / 12) : (B.PV0 > 0 ? est1 / (B.PV0 / 12) : 0), tot: (B.EV0 - B.IM0) * (idx - 1) };
 }
 const icFlowDe = (g, mk) => (g.comex.fl && g.comex.fl[mk]) || icFlow(g, mk);
+const icSg = (v, d = 1) => (Math.abs(v) < Math.pow(10, -d) / 2 ? fmt(0, d) : sgn(v, d));
+const icUsdF = (v) => 'US$ ' + fmt(v, Math.abs(v) < 1 ? 2 : Math.abs(v) < 100 ? 1 : 0) + ' bi';
+
+/* ---- clareza do Comércio e da Indústria: leituras puras, não mudam a economia ---- */
+let IC_PRE = null; // atalho vindo de País, Indústria: { aba, k, t } abre o Comércio já no produto (vale por 5 s)
+const icPre = () => (IC_PRE && Date.now() - IC_PRE.t < 5000 ? IC_PRE : null);
+const icMulta = (g, a) => clamp(.08 * a.qtd * a.preco * Math.max(0, a.mFim - g.mes) / 12, .01, 5); // mesma conta de icCancela
+const icContratos = (g, tipo, k) => g.comex.acordos.filter(a => a.estado === 'ativo' && a.tipo === tipo && a.k === k);
+const icUnid = (p) => { const pr = p && (p.preco_int || p.preco_ref); return pr && pr.unid ? pr.unid : null; };
+const icCompTxt = (r, menos, mais) => { const v = (r - 1) * 100; if (Math.abs(v) < .5) return 'igual ao preço mundial'; return fmt(Math.abs(v), Math.abs(v) < 2 ? 1 : 0) + '% ' + (v < 0 ? menos : mais); };
+// mercado como ficaria com um acordo a mais (acordo temporário + icFlow, como a prévia das crises)
+function icSimula(g, tipo, k, iso, qtd, preco, anos) {
+  const C = g.comex, mk = icMkDe(k);
+  C.acordos.push({ id: 'tmp', tipo, k, mk, pais: iso, qtd, preco, anos, estado: 'ativo' });
+  try { return icFlow(g, mk); } finally { C.acordos.pop(); }
+}
+function icSimPreco(g, tipo, k, iso, qtd, preco, anos) {
+  const mk = icMkDe(k), F0 = g.comex.fl[mk], F2 = icSimula(g, tipo, k, iso, qtd, preco, anos);
+  return { F0, F2, A: (F0.pdom - 1) * 100, B: (F2.pdom - 1) * 100, d: (F2.pdom / F0.pdom - 1) * 100, ipca: IC_BASE[mk].ipca * (F2.pdom - F0.pdom) };
+}
+function icSitCompra(g, k) { // necessidade de importação, quanto já está contratado e quanto falta comprar à vista
+  const I = IC_IMP[k], mk = icMkDe(k), F = g.comex.fl[mk], B = IC_BASE[mk];
+  const subst = B.IM0 > 0 ? clamp((F.Dsup - B.PV0 / 12) / (B.IM0 / 12), 0, 1) : 0;
+  const need = I.imp_usd_bi * (1 - subst), cs = icContratos(g, 'compra', k), contr = cs.reduce((s, a) => s + a.qtd, 0);
+  return { I, mk, F, B, need, cs, contr, falta: Math.max(0, need - contr), pct: need > 0 ? contr / need * 100 : 0 };
+}
+function icSitVenda(g, k) { // produção, o que sobra depois do consumo interno e quanto disso já está vendido
+  const F = g.comex.fl[k], cs = icContratos(g, 'venda', k), contr = cs.reduce((s, a) => s + a.qtd, 0);
+  const prod = F.Dsup * 12, imp = (F.Imc + F.Ims) * 12, consNac = Math.max(0, F.Dh * 12 - imp), sobra = Math.max(0, prod - consNac);
+  return { F, cs, contr, prod, consNac, sobra, livre: Math.max(0, sobra - contr), excesso: Math.max(0, contr - sobra), pct: sobra > 0 ? contr / sobra * 100 : 0 };
+}
+// previsão de uma ação da Indústria: aplica o projeto de verdade (projeto temporário + icFlow) e deixa o mercado assentar no patamar final
+function icPrevAcao(g, p, tipo, v, pct) {
+  const C = g.comex, I = g.indu, mk = p.k, E = icEfeitoAcao(p, tipo, v, pct);
+  const mes0 = g.mes, est0 = C.est[mk], cut0 = C.cut[mk], scar0 = C.scar[mk];
+  const roda = (com) => {
+    const j = com ? { id: 'tmp', k: p.k, tipo, v, mes: mes0, atraso: E.atraso, dur: E.dur, ef: E.ef, S: E.S, crowd: E.crowd, ativo: true } : null;
+    if (j) I.proj.push(j);
+    let F = null;
+    try {
+      g.mes = mes0 + E.atraso + E.dur;
+      const Bm = IC_BASE[mk]; C.est[mk] = .25 * Math.max(Bm.PV0, Bm.C0, .02); // longo prazo: estoque no limite, a produção extra vira exportação
+      for (let i = 0; i < 6; i++) { F = icFlow(g, mk); C.est[mk] = F.est; C.cut[mk] = clamp((C.cut[mk] || 0) * .8 + F.cutNew, 0, .5); C.scar[mk] = F.scarNovo; }
+    } finally { g.mes = mes0; C.est[mk] = est0; C.cut[mk] = cut0; C.scar[mk] = scar0; if (j) I.proj.pop(); }
+    return F;
+  };
+  const F0 = roda(false), F1 = roda(true);
+  const carga = IC_CARGA[p.setor] || .12, extra = (p.setor === 'mineracao' || p.setor === 'energia') ? .04 * (F1.expAno - F0.expAno) * IC_USD : 0;
+  return {
+    E, F0, F1, dProd: (F1.Dsup - F0.Dsup) * 12, dProdPct: F0.Dsup > 0 ? (F1.Dsup / F0.Dsup - 1) * 100 : null,
+    dExp: F1.expAno - F0.expAno, dImp: F1.impAno - F0.impAno, dJobs: F1.jobs - F0.jobs,
+    dRec: (F1.dVal - F0.dVal) * IC_USD * carga + extra, inicio: mes0 + E.atraso, pronto: mes0 + E.atraso + E.dur
+  };
+}
 
 /* ---- projetos ligados a medidas aprovadas ---- */
 function icResolve(g, prop, resultado) {
@@ -24942,6 +24996,27 @@ input.ic-in{width:84px!important;display:inline-block;border:1px solid var(--lin
 .ic-leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted)}
 .ic-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
 .ic-seg{display:flex;flex-wrap:wrap;gap:8px}
+.ic-pick.lg{grid-template-columns:repeat(auto-fill,minmax(236px,1fr))}
+.ic-pk.lg{flex-direction:column;align-items:flex-start;gap:3px;padding:10px 12px}
+.ic-pk-h{display:flex;align-items:center;gap:8px;min-width:0;width:100%;font-weight:600;font-size:14px}
+.ic-pk-h .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ic-pk-s{font-size:12px;color:var(--muted);line-height:1.35}
+.ic-pk-s b{color:var(--fg);font-weight:600}
+.ic-pk[aria-pressed=true] .ic-pk-s b{color:inherit}
+.ic-tw.vis{overflow:visible}
+.ic-tbl th{white-space:normal;vertical-align:bottom}
+.ic-bar{display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--line)}
+.ic-bar>i{display:block;height:100%}
+.ic-sit{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media (max-width:900px){.ic-sit{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ic-ct{display:grid;grid-template-columns:minmax(120px,1fr) minmax(0,1fr) minmax(0,1.2fr) minmax(0,1.4fr);gap:8px 16px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.ic-linha{padding:10px 12px;border-radius:10px;border:1px solid var(--line2);border-left:4px solid var(--ouro);background:var(--panel);font-size:13px;line-height:1.55}
+.ic-linha b{font-weight:600}
+.ic-prev{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 12px;font-size:14px;align-items:baseline}
+.ic-prev dt{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.ic-prev dd{margin:0}
+.ic-prog{height:8px;border-radius:4px;background:var(--line);overflow:hidden;min-width:90px}
+.ic-prog>i{display:block;height:100%;background:var(--verde)}
 `;
 function ComPais({ k, tam = 16, sem }) {
   const c = IC_PAIS[k]; if (!c) return html`<span>${k}</span>`;
@@ -24951,7 +25026,7 @@ function ComPais({ k, tam = 16, sem }) {
 function IcEst({ est, t }) { return est ? html`<span className="chip" style=${{ color: 'var(--ambar)', borderColor: 'var(--ambar)' }} title=${t || 'Valor estimado pelo jogo: veja Fontes e notas.'} data-estimativa="1">estimativa</span>` : null; }
 const IC_COR_SET = { agro: 'var(--verde)', mineracao: 'var(--ambar)', energia: 'var(--anil)', industria: 'var(--ouro)', nova: 'var(--rubro)' };
 const icCorEst = (m) => (m >= 1.2 ? 'var(--verde)' : m >= .5 ? 'var(--ambar)' : 'var(--rubro)');
-function IcTrend({ t }) { return html`<span className="ic-trend" style=${{ color: t > 0 ? 'var(--verde)' : t < 0 ? 'var(--rubro)' : 'var(--muted)' }} title="Tendência da produção"><${Icon} n=${t > 0 ? 'TrendingUp' : t < 0 ? 'TrendingDown' : 'Minus'} s=${14} />${t > 0 ? 'subindo' : t < 0 ? 'caindo' : 'estável'}</span>`; }
+function IcTrend({ t }) { return html`<span className="ic-trend" style=${{ color: t > 0 ? 'var(--verde)' : t < 0 ? 'var(--rubro)' : 'var(--muted)' }} title="Tendência da produção nacional deste produto nos últimos meses"><${Icon} n=${t > 0 ? 'TrendingUp' : t < 0 ? 'TrendingDown' : 'Minus'} s=${14} />produção ${t > 0 ? 'subindo' : t < 0 ? 'caindo' : 'estável'}</span>`; }
 // substitutos de redação para produtos cujo nome faz o motor ler outra política (vapes, minerais críticos, política naval, ferrovias): testados com a sonda
 const IC_ALT = {
   niobio: { loc: 'na mineração de nióbio', obj: 'a mineração de nióbio', tax: 'a produção de ferroligas' },
@@ -24974,7 +25049,7 @@ function icTextoAcao(p, acao, v) {
 const icArred = (v) => Math.max(.5, Math.round(v * 2) / 2);
 const IC_ACOES = [['inv', 'Investir', 'TrendingUp'], ['imp', 'Baixar impostos', 'Percent'], ['isen', 'Isentar', 'BadgeCheck'], ['cred', 'Crédito do BNDES', 'Landmark']];
 
-function IndDetalhe({ g, p, decidir, fechar }) {
+function IndDetalhe({ g, p, decidir, fechar, upd }) {
   const C = g.comex, I = g.indu, F = C.fl[p.k], B = IC_BASE[p.k];
   const [acao, setAcao] = useState(p.kind === 'nova' ? 'isen' : 'inv'); const [bi, setBi] = useState(5); const [pct, setPct] = useState(50);
   const base = icBaseTributo(p);
@@ -24986,6 +25061,8 @@ function IndDetalhe({ g, p, decidir, fechar }) {
   const sentidoOk = !!motor && !motor.vago && (dir ? motor.cost > 0 : motor.rev < 0);
   const semAcoes = !icAcaoOk(g);
   const E = icEfeitoAcao(p, acao, v, acao === 'isen' ? 1 : pct / 100);
+  const PV = useMemo(() => { try { return icPrevAcao(g, p, acao, v, acao === 'isen' ? 1 : pct / 100); } catch (e) { return null; } }, [g.mes, p.k, acao, v, pct, I.proj.length]);
+  const irCom = (aba, k) => { IC_PRE = { aba, k, t: Date.now() }; upd(n => { n.ui = uiNav(n.ui, 'mundo', 'comercio'); }); try { window.scrollTo(0, 0); } catch (e) { } };
   const efAtual = I.proj.filter(j => j.ativo && j.k === p.k).reduce((s, j) => s + (j.ef || 0), 0);
   const dBoost = p.kind === 'nova' ? 0 : .5 * Math.tanh((efAtual + E.ef) / .5) - .5 * Math.tanh(efAtual / .5);
   const sCur = I.proj.filter(j => j.ativo && j.k === p.k).reduce((s, j) => s + (j.S || 0), 0);
@@ -24997,6 +25074,7 @@ function IndDetalhe({ g, p, decidir, fechar }) {
   const var12 = hist.length > 1 ? (hist[hist.length - 1] / hist[0] - 1) * 100 : 0;
   const bu = p.kind === 'exp' ? icBuyerLista(p.k).slice(0, 5) : [];
   const projs = icProjAtivos(g, p.k);
+  const sv = p.kind === 'exp' ? icSitVenda(g, p.k) : null, impK = p.kind === 'nova' && IC_MERC[p.k] && IC_MERC[p.k].imps[0] ? IC_MERC[p.k].imps[0].k : null;
   const prodFis = p.prod != null && p.unid ? fmt(p.prod * F.pf + (p.kind === 'nova' ? F.novaAno : 0), p.prod < 10 ? 2 : 0) + ' ' + p.unid : null;
   const consFis = p.cons_int != null && p.unid ? fmt(p.cons_int, p.cons_int < 10 ? 2 : 0) + ' ' + p.unid : null;
   const titulo = semAcoes ? (g.acoes <= 0 ? 'Sem ações políticas neste mês' : 'Energia esgotada') : !sentidoOk ? 'O motor não leu este texto como a medida pretendida: escolha outro valor' : 'Custa 1 ação política e passa pelo parecer da Casa Civil e pelo Congresso quando exigido';
@@ -25005,19 +25083,26 @@ function IndDetalhe({ g, p, decidir, fechar }) {
     <${MxHead} eb=${'Indústria · ' + IC_SETOR_MAP[p.setor].nome} t=${p.nome} right=${html`<div className="flex items-center gap-2"><${IcEst} est=${p.est} /><button type="button" className="btn btn-ghost btn-sm" onClick=${fechar} data-ind-fechar="1"><${Icon} n="X" s=${14} /> Fechar</button></div>`} />
     <div className="ic-det">
       <div className="flex flex-col gap-4 min-w-0">
-        <div className="ic-nums">
-          <div className="mx-box"><div className="eyebrow">Exportação</div><div className="num text-xl font-semibold">${icUsd(F.expAno)}</div><div className="mx-s">por ano · ${fmt(F.expAno / IC_PIB_USD * 100, 2)}% do PIB</div></div>
-          <div className="mx-box"><div className="eyebrow">Produção</div><div className="num text-xl font-semibold">${prodFis || icUsd(B.PV0 * F.pf + F.novaAno)}</div><div className="mx-s">${prodFis ? 'por ano ' : ''}<${IcTrend} t=${F.trend} />${F.boost > .001 ? ' · +' + fmt(F.boost * 100, 1) + '% por projetos' : ''}</div></div>
-          <div className="mx-box"><div className="eyebrow">Consumo interno</div><div className="num text-xl font-semibold">${consFis || icUsd(B.C0)}</div><div className="mx-s">${p.kind === 'nova' ? 'Importa ' + icUsd(B.IM0) + ' por ano (' + (p.dep_import_pct || 0) + '% de dependência)' : 'preço interno ' + sgn((F.pdom - 1) * 100, 1) + '% vs. base'}</div></div>
-          <div className="mx-box"><div className="eyebrow">Estoque</div><div className="num text-xl font-semibold" style=${{ color: icCorEst(F.estMeses) }}>${fmt(F.estMeses, 1)} meses</div><div className="mx-s">${p.estocavel ? 'de consumo guardados' : 'pouco estocável'}${F.sf > .05 ? ' · FALTA no mercado' : ''}</div></div>
+        <div className="ic-nums" data-ind-numeros="1">
+          <div className="mx-box"><div className="eyebrow">Valor exportado<${GvTip} txt="Quanto o Brasil vende deste produto ao exterior por ano, em bilhões de dólares (US$ bi). O % do PIB compara esse valor com tudo o que o país produz em um ano." /></div><div className="num text-xl font-semibold">${icUsd(F.expAno)} por ano</div><div className="mx-s">${fmt(F.expAno / IC_PIB_USD * 100, 2)}% do PIB (PIB de US$ ${fmt(IC_PIB_USD / 1000, 2)} tri)</div></div>
+          <div className="mx-box"><div className="eyebrow">Produção<${GvTip} txt="Quanto o Brasil produz do produto por ano, na unidade dele (mi t = milhões de toneladas). Sobe com investimento, isenção e crédito, e cai com seca ou importação muito barata." /></div><div className="num text-xl font-semibold">${prodFis ? prodFis + ' por ano' : icUsd(B.PV0 * F.pf + F.novaAno) + ' por ano'}</div><div className="mx-s"><${IcTrend} t=${F.trend} />${F.boost > .001 ? ' · +' + fmt(F.boost * 100, 1) + '% por projetos' : ''}</div></div>
+          <div className="mx-box"><div className="eyebrow">Consumo interno<${GvTip} txt="Quanto os brasileiros consomem do produto por ano. O que a produção deixa depois do consumo interno é o que sobra para exportar." /></div><div className="num text-xl font-semibold">${consFis ? consFis + ' por ano' : icUsd(B.C0) + ' por ano'}</div><div className="mx-s">${p.kind === 'nova' ? 'Importa ' + icUsd(B.IM0) + ' por ano (' + (p.dep_import_pct || 0) + '% de dependência)' : 'preço no Brasil ' + sgn((F.pdom - 1) * 100, 1) + '% vs. 2025'}</div></div>
+          <div className="mx-box"><div className="eyebrow">Estoque<${GvTip} txt=${IC_TIPS.estoque} /></div><div className="num text-xl font-semibold" style=${{ color: icCorEst(F.estMeses) }}>${fmt(F.estMeses, 1)} meses</div><div className="mx-s">${p.estocavel ? 'de consumo guardados' : 'pouco estocável'}${F.sf > .05 ? ' · FALTA no mercado' : ''}</div></div>
         </div>
         <div className="mx-box" data-ind-preco="1">
-          <div className="flex items-center justify-between gap-3 flex-wrap"><div><div className="eyebrow">Preço mundial · 24 meses</div><div className="num text-lg font-semibold">${p.preco_int && p.preco_int.valor ? icPrecoTxt(p, F.idx) : 'índice ' + fmt(F.idx * 100, 0)} <span className="mx-s" style=${{ color: 'var(--muted)' }}>${sgn(var12, 1)}% no período</span></div></div><${Spark} data=${hist} cor=${var12 >= 0 ? 'var(--verde)' : 'var(--rubro)'} w=${180} hh=${44} /></div>
-          ${p.preco_int && p.preco_int.fonte ? html`<div className="mx-s mt-2">Referência: ${p.preco_int.fonte}</div>` : null}
+          <div className="flex items-center justify-between gap-3 flex-wrap"><div><div className="eyebrow">Preço internacional · últimos ${hist.length} meses<${GvTip} txt=${IC_TIPS.mundial} /></div><div className="num text-lg font-semibold">${p.preco_int && p.preco_int.valor ? icPrecoTxt(p, F.idx) : 'índice ' + fmt(F.idx * 100, 0) + ' (2025 = 100)'} <span className="mx-s" style=${{ color: var12 >= 0 ? 'var(--verde)' : 'var(--rubro)' }}>${var12 >= 0 ? 'subiu' : 'caiu'} ${fmt(Math.abs(var12), 1)}% no período</span></div></div><${Spark} data=${hist} cor=${var12 >= 0 ? 'var(--verde)' : 'var(--rubro)'} w=${180} hh=${44} /></div>
+          ${p.preco_int && p.preco_int.fonte ? html`<div className="mx-s mt-2">Referência: ${p.preco_int.fonte}. O preço muda sozinho todo mês e reage a seca, guerra e crise na China.</div>` : html`<div className="mx-s mt-2">O preço muda sozinho todo mês e reage a seca, guerra e crise na China.</div>`}
         </div>
         ${bu.length ? html`<div className="mx-box"><div className="eyebrow mb-2">Principais compradores</div><ul className="mx-list">${bu.map(b => html`<li key=${b.iso}><${ComPais} k=${b.iso} /><span className="num ml-auto">${fmt(b.pct, b.pct % 1 ? 1 : 0)}%</span></li>`)}</ul></div>` : null}
         <div className="text-sm text-muted leading-relaxed">${p.nota ? p.nota + ' ' : ''}Efeito de investimento leva de ${(p.tempo_meses || IC_SETOR_MAP[p.setor].tempo_meses)[0]} a ${(p.tempo_meses || IC_SETOR_MAP[p.setor].tempo_meses)[1]} meses. ${(p.emprego_mil || 0) > 0 ? 'Emprega cerca de ' + fmt(p.emprego_mil * 1000, 0) + ' pessoas hoje. ' : ''}${p.impacto_amb >= 2 ? 'Expansão tem custo ambiental alto.' : p.impacto_amb === 1 ? 'Expansão tem custo ambiental moderado.' : ''}</div>
-        ${projs.length ? html`<div className="mx-box" data-ind-projetos="1"><div className="eyebrow mb-2">Projetos aprovados neste produto</div><ul className="mx-list">${projs.map(j => html`<li key=${j.id}><b>${j.nm || ({ inv: 'Investimento', cred: 'Crédito do BNDES', imp: 'Redução de impostos', isen: 'Isenção' }[j.tipo])}</b>${j.v ? html`<span className="num">${orcFmtV(j.v)}${j.tipo === 'imp' || j.tipo === 'isen' ? '/ano' : ''}</span>` : null}<span className="mx-s ml-auto">${icRamp(g, j) >= .999 ? 'em pleno efeito' : 'produção sobe até ' + dataCurta(j.mes + j.atraso + j.dur)}</span></li>`)}</ul></div>` : null}
+        ${projs.length ? html`<div className="mx-box" data-ind-projetos="1"><div className="eyebrow mb-2">Projetos aprovados neste produto</div><ul className="mx-list">${projs.map(j => { const r = icRamp(g, j), pronto = j.mes + j.atraso + j.dur, espera = g.mes < j.mes + j.atraso; return html`<li key=${j.id}><b>${j.nm || ({ inv: 'Investimento', cred: 'Crédito do BNDES', imp: 'Redução de impostos', isen: 'Isenção' }[j.tipo])}</b>${j.v ? html`<span className="num">${orcFmtV(j.v)}${j.tipo === 'imp' || j.tipo === 'isen' ? ' por ano' : ''}</span>` : null}<span className="ic-prog" role="img" aria-label=${'Progresso ' + fmt(r * 100, 0) + '%'}><i style=${{ width: (r * 100) + '%' }}></i></span><span className="mx-s ml-auto" data-ind-pronto="1">${r >= .999 ? 'em pleno efeito' : (espera ? 'regulamentação até ' + dataCurta(j.mes + j.atraso) + ' · ' : '') + 'fica pronto em ' + dataCurta(pronto) + ' (' + fmt(r * 100, 0) + '%)'}</span></li>`; })}</ul></div>` : null}
+        <div className="mx-box flex flex-col gap-2" data-ind-ligacao="1">
+          <div className="eyebrow">Ligação com o Comércio exterior</div>
+          ${p.kind === 'exp' ? html`<div className="text-sm leading-relaxed">Produção maior = mais para vender. O Brasil produz <b>${icUsd(sv.prod)}</b> por ano, consome <b>${icUsd(sv.consNac)}</b> por ano e sobram <b>${icUsd(sv.sobra)}</b> por ano para exportar; <b>${icUsd(sv.contr)}</b> por ano (${fmt(sv.pct, 0)}%) já estão vendidos em contratos.${PV && PV.dProd > 0.005 ? ' A ação em preparação soma ' + icUsdF(PV.dProd) + ' por ano à produção.' : ''} Vender mais do que sobra faz faltar no mercado interno e o preço sobe.</div>
+            <button type="button" className="btn btn-ghost btn-sm self-start" data-ind-vender=${p.k} onClick=${() => irCom('vender', p.k)}><${Icon} n="Ship" s=${14} /> Vender ${icNomeTxt(p)}</button>`
+          : html`<div className="text-sm leading-relaxed">${impK ? 'Hoje o Brasil importa ' + icUsd(B.IM0) + ' por ano deste produto. Produção própria maior = menos importação e mais dólares no caixa. Os contratos de compra ficam em Comércio exterior.' : 'Produto novo: sem importação cadastrada no Comércio exterior. Produção própria maior = mais para vender e menos dependência de fora.'}</div>
+            ${impK ? html`<button type="button" className="btn btn-ghost btn-sm self-start" data-ind-vender=${p.k} onClick=${() => irCom('comprar', impK)}><${Icon} n="ShoppingCart" s=${14} /> Ver a importação</button>` : null}`}
+        </div>
         ${p.k === 'terras_raras' ? html`<div className="mx-s">O processamento no Brasil e a venda aos parceiros ficam em Mundo, Comércio exterior.</div>` : null}
       </div>
       <div className="mx-box flex flex-col gap-4 min-w-0" data-ind-acoes="1">
@@ -25033,12 +25118,17 @@ function IndDetalhe({ g, p, decidir, fechar }) {
           <div className="text-sm italic leading-snug" data-ind-texto="1">“${texto}”</div>
           ${motor ? html`<div className="flex flex-wrap gap-1.5"><${Tag} cor=${sentidoOk ? 'var(--verde)' : 'var(--rubro)'}>${INST_NOME[motor.inst] || motor.inst}${precisaCongresso(motor.inst) ? ' · precisa do Congresso' : ' · sem votação'}</${Tag}><${Tag}>${dir ? 'despesa +R$ ' + fmt(Math.abs(motor.cost || 0), 1) + ' bi' : 'renúncia −R$ ' + fmt(Math.abs(motor.rev || 0), 1) + ' bi/ano'}</${Tag}></div>
           ${prev && html`<div className="text-sm p-2 rounded" style=${{ background: 'rgba(240,166,58,.10)' }} data-ind-aviso-congresso="1" role="note">Não é ato do Executivo: ${dir ? 'gasto novo' : 'renúncia fiscal'} exige lei. Isto vira ${INST_NOME[motor.inst] || motor.inst} e o Congresso pode derrubar. Previsão de voto: <b className="num">${prev.vt.totC}</b> de ${prev.q.c} na Câmara e <b className="num">${prev.vt.totS}</b> de ${prev.q.s} no Senado; chance de aprovar <b className="num">${fmtChance(prev.ch)}</b>${prev.ch < .5 ? '. Negocie antes: a ação é gasta mesmo se a proposta cair.' : '.'}</div>`}` : html`<p className="text-xs text-muted">O motor não conseguiu ler este texto.</p>`}
-          <ul className="text-sm flex flex-col gap-1" data-ind-efeito="1">
-            ${p.kind === 'nova' ? html`<li>Capacidade nova de até <b>${icUsd(capNova)}</b> por ano; a fábrica só começa a produzir em cerca de <b>${E.atraso}</b> meses.</li>` : html`<li>Produção <b>${sgn(dBoost * 100, 1)}%</b> (≈ ${icUsd(dBoost * B.PV0)} por ano), subindo ao longo de <b>${E.dur}</b> meses depois de ${E.atraso} de regulamentação.</li>`}
-            ${acao === 'cred' ? html`<li data-ind-cred-nota="1">Crédito do BNDES: o Tesouro paga só a equalização dos juros (cerca de ${fmt((motor && motor.cost ? motor.cost : 0) / Math.max(v, .5) * 100, 0)}% do valor, <b>R$ ${fmt(Math.abs((motor && motor.cost) || 0), 1)} bi</b> de despesa); o resto volta ao banco. O efeito é na produção do setor, não em renda direta das famílias.</li>` : null}
-            <li>Emprego <b>+${fmt(empleos, empleos < 10 ? 1 : 0)} mil</b> vagas · investimento privado atraído <b>R$ ${fmt(priv, 1)} bi</b></li>
-            <li>Mais produção rende PIB, arrecadação e saldo comercial; ${p.impacto_amb > 0 ? 'o custo ambiental ' + (p.impacto_amb >= 2 ? 'é alto' : 'é moderado') + '.' : 'sem custo ambiental relevante.'}</li>
-          </ul>
+          <dl className="ic-prev" data-ind-efeito="1">
+            <dt>Custo</dt><dd data-ind-prev-custo="1">${dir ? 'Despesa de R$ ' + fmt(Math.abs((motor && motor.cost) || v), 1) + ' bi, paga uma vez' : 'Renúncia de R$ ' + fmt(Math.abs((motor && motor.rev) || v), 1) + ' bi por ano de imposto que o governo deixa de receber'}${acao === 'cred' ? ' (só a equalização dos juros; o resto volta ao banco)' : ''}. Gasta 1 ação.</dd>
+            <dt>Quando</dt><dd data-ind-prev-quando="1">${PV ? html`começa a ter efeito em <b>${dataCurta(PV.inicio)}</b> (daqui a ${PV.E.atraso} ${PV.E.atraso === 1 ? 'mês' : 'meses'} de regulamentação) e chega ao novo patamar em <b>${dataCurta(PV.pronto)}</b> (daqui a ${PV.E.atraso + PV.E.dur} meses). Setor ${IC_SETOR_MAP[p.setor].nome.toLowerCase()}: ${(p.tempo_meses || IC_SETOR_MAP[p.setor].tempo_meses)[0]} a ${(p.tempo_meses || IC_SETOR_MAP[p.setor].tempo_meses)[1]} meses.${motor && precisaCongresso(motor.inst) ? ' A contagem só começa se o Congresso aprovar.' : ''}` : '-'}</dd>
+            <dt>Produção</dt><dd data-ind-prev-prod="1">${PV ? (p.kind === 'nova' ? html`passa a produzir até <b>${icUsdF(PV.dProd)}</b> por ano${icFisTxt(p, PV.dProd) ? ' (≈ ' + icFisTxt(p, PV.dProd) + ')' : ''}; a fábrica só começa a produzir em cerca de ${E.atraso} meses` : html`<b>${sgn(PV.dProdPct == null ? 0 : PV.dProdPct, 1)}%</b>, ou ${icUsdF(PV.dProd)} a mais por ano${icFisTxt(p, PV.dProd) ? ' (≈ ' + icFisTxt(p, PV.dProd) + ')' : ''}`) : '-'}</dd>
+            <dt>Exportação</dt><dd data-ind-prev-exp="1">${PV ? html`<b>${PV.dExp >= 0 ? '+' : '−'}${icUsdF(Math.abs(PV.dExp))}</b> por ano vendidos ao exterior${PV.dImp < -0.005 ? ' e ' + icUsdF(-PV.dImp) + ' por ano a menos de importação' : ''}${PV.dExp < 0.005 && p.kind === 'exp' ? '. A produção extra abastece primeiro o mercado interno e o estoque' : ''}` : '-'}</dd>
+            <dt>Empregos</dt><dd data-ind-prev-emp="1">${PV ? html`<b>${PV.dJobs >= 0 ? '+' : '−'}${fmt(Math.abs(PV.dJobs), Math.abs(PV.dJobs) < 10 ? 1 : 0)} mil</b> vagas · investimento privado atraído <b>R$ ${fmt(priv, 1)} bi</b>` : '-'}</dd>
+            <dt>Efeito fiscal</dt><dd data-ind-prev-fiscal="1">${PV ? html`arrecadação <b>${PV.dRec >= 0 ? '+' : '−'}R$ ${fmt(Math.abs(PV.dRec), 1)} bi</b> por ano quando a produção chegar ao novo patamar${dir ? (PV.dRec > .05 ? '; o gasto se paga em cerca de ' + fmt(Math.abs((motor && motor.cost) || v) / PV.dRec, 1) + ' anos' : '') : '; saldo por ano: ' + (PV.dRec - v >= 0 ? '+' : '−') + 'R$ ' + fmt(Math.abs(PV.dRec - v), 1) + ' bi depois da renúncia'}` : '-'}</dd>
+            <dt>Congresso</dt><dd data-ind-prev-cong="1">${motor ? (precisaCongresso(motor.inst) ? 'precisa de lei: o Congresso vota e pode derrubar' : 'não precisa: é ato do Executivo') : '-'}</dd>
+          </dl>
+          ${acao === 'cred' ? html`<div className="mx-s" data-ind-cred-nota="1">Crédito do BNDES: o Tesouro paga só a equalização dos juros (cerca de ${fmt((motor && motor.cost ? motor.cost : 0) / Math.max(v, .5) * 100, 0)}% do valor, <b>R$ ${fmt(Math.abs((motor && motor.cost) || 0), 1)} bi</b> de despesa); o resto volta ao banco. O efeito é na produção do setor, não em renda direta das famílias.</div>` : null}
+          <div className="mx-s">Mais produção rende PIB, arrecadação e saldo comercial; ${p.impacto_amb > 0 ? 'o custo ambiental ' + (p.impacto_amb >= 2 ? 'é alto' : 'é moderado') + '.' : 'sem custo ambiental relevante.'} Previsão feita com a mesma conta do jogo, no patamar final.</div>
           <button type="button" className="btn btn-pri mt-1 justify-center" data-ind-confirm=${p.k} disabled=${semAcoes || !sentidoOk || !decidir} title=${titulo} onClick=${() => decidir(texto, false, false, null, { tipo: acao, k: p.k, v, pct: acao === 'isen' ? 1 : pct / 100 })}><${Icon} n=${IC_ACOES.find(a => a[0] === acao)[2]} s=${15} /> ${IC_ACOES.find(a => a[0] === acao)[1]} · ${orcFmtV(v)}${dir ? '' : '/ano'} · 1 ação</button>
         </div>
       </div>
@@ -25050,11 +25140,16 @@ function IndCartao({ g, p, sel, onSel }) {
   const bu = p.kind === 'exp' ? icBuyerLista(p.k)[0] : null;
   const pct = F.expAno / IC_PIB_USD * 100;
   const cor = IC_COR_SET[p.setor];
+  const hist = C.hist[p.k] || [], var12 = hist.length > 1 ? (hist[hist.length - 1] / hist[Math.max(0, hist.length - 13)] - 1) * 100 : 0;
+  const prodTxt = p.kind === 'exp' && p.prod != null && p.unid ? fmt(p.prod * F.pf, p.prod < 10 ? 2 : 0) + ' ' + p.unid + ' por ano' : null;
+  const precoTxt = p.preco_int && p.preco_int.valor ? icPrecoTxt(p, F.idx) : null;
   return html`<button type="button" className="mx-act ic-card" style=${{ '--c': cor }} aria-pressed=${sel} data-ind-prod=${p.k} onClick=${() => onSel(p.k)}>
-    <div className="mx-act-h"><span className="gv-ic" style=${{ '--c': cor }}><${Icon} n=${p.icon || 'Package'} s=${18} /></span><span className="min-w-0" style=${{ overflowWrap: 'anywhere' }}>${p.nome}</span><${IcTrend} t=${F.trend} /></div>
+    <div className="mx-act-h"><span className="gv-ic" style=${{ '--c': cor }}><${Icon} n=${p.icon || 'Package'} s=${18} /></span><span className="min-w-0" style=${{ overflowWrap: 'anywhere' }}>${p.nome}</span></div>
     ${p.kind === 'nova' ? html`<div><div className="mx-num">${F.novaAno > .005 ? icUsd(F.novaAno) : 'sem produção'}</div><div className="mx-s">${F.novaAno > .005 ? 'por ano, substitui importação' : 'importa ' + icUsd(B.IM0) + ' por ano'}</div></div>`
     : html`<div><div className="mx-num">${icUsd(F.expAno)}</div><div className="mx-s">exportados por ano</div></div>`}
-    <div className="flex flex-wrap gap-1.5"><span className="gv-chip ouro" data-ind-pib="1">${pct < .005 ? '<0,01' : fmt(pct, 2)}% do PIB</span><span className="gv-chip" style=${{ color: icCorEst(F.estMeses) }}>estoque ${fmt(F.estMeses, 1)} m</span><${IcEst} est=${p.est} /></div>
+    <div className="flex flex-wrap gap-1.5"><span className="gv-chip ouro" data-ind-pib="1" title="Quanto a exportação deste produto pesa no PIB do Brasil">${p.kind === 'nova' ? 'exporta ' : 'exportação = '}${pct < .005 ? '<0,01' : fmt(pct, 2)}% do PIB</span><span className="gv-chip" style=${{ color: icCorEst(F.estMeses) }} title="Meses de consumo guardados em estoque">estoque ${fmt(F.estMeses, 1)} meses</span><${IcEst} est=${p.est} /></div>
+    <div><${IcTrend} t=${F.trend} /></div>
+    ${p.kind === 'exp' ? html`<div className="mx-s" data-ind-card-prod="1">${prodTxt ? 'Produção: ' + prodTxt + '. ' : ''}${precoTxt ? 'Preço mundial: ' + precoTxt + ', ' + (var12 >= 0.5 ? 'subiu ' : var12 <= -0.5 ? 'caiu ' : 'estável, ') + (Math.abs(var12) < .5 ? '' : fmt(Math.abs(var12), 0) + '% ') + 'em 12 meses.' : ''}</div>` : null}
     <div className="mx-s flex items-center gap-1.5 min-w-0">${bu ? html`<span>Maior comprador:</span><${ComPais} k=${bu.iso} />` : (p.kind === 'nova' ? 'Nova indústria: começa do zero' : 'Sem comprador principal')}</div>
   </button>`;
 }
@@ -25068,23 +25163,25 @@ function PaisIndustria({ g, upd, decidir }) {
   const invTot = Object.values(I.inv).reduce((a, b) => a + b, 0), renuncia = I.proj.filter(j => j.ativo && (j.tipo === 'imp' || j.tipo === 'isen')).reduce((s, j) => s + (j.v || 0), 0);
   const nProj = new Set(I.proj.filter(j => j.ativo).map(j => j.k)).size, nProd = Object.keys(IC_PROD).length;
   const P = sel && IC_PROD[sel] ? IC_PROD[sel] : null;
+  const andamento = I.proj.filter(j => j.ativo && IC_PROD[j.k] && icRamp(g, j) < .999);
   const escolhe = (k) => { setSel(k === sel ? null : k); setTimeout(() => { try { const el = document.querySelector('[data-ind-detalhe]'); if (el && el.scrollIntoView) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) { } }, 60); };
   return html`<div className="flex flex-col gap-6" data-pais="industria" data-ind-root="1">
     <style>${IC_CSS}</style>
     <section aria-label="Resumo da indústria" data-gv="ind-resumo"><div className="gv-kpis">
       <${GvKpi} dado="ind-exp" ic="Ship" cor="var(--ouro)" k="Exportações" v=${icUsd(T.expAno)} s="por ano, total do país" />
       <${GvKpi} dado="ind-pib" ic="PieChart" cor="var(--anil)" k="Exportações no PIB" v=${fmt(T.pctPib, 1) + '%'} s=${'de US$ ' + fmt(IC_PIB_USD / 1000, 2) + ' tri'} />
-      <${GvKpi} dado="ind-saldo" ic="Scale" cor=${T.saldoAno >= 0 ? 'var(--verde)' : 'var(--rubro)'} k="Balança comercial" v=${(T.saldoAno >= 0 ? '+' : '−') + icUsd(Math.abs(T.saldoAno))} s=${sgn(T.dSaldoAno, 1) + ' bi/ano pelas suas medidas e pelo mercado'} />
+      <${GvKpi} dado="ind-saldo" ic="Scale" cor=${T.saldoAno >= 0 ? 'var(--verde)' : 'var(--rubro)'} k="Balança comercial" v=${(T.saldoAno >= 0 ? '+' : '−') + icUsd(Math.abs(T.saldoAno))} s=${'US$ ' + sgn(T.dSaldoAno, 1) + ' bi/ano pelas suas medidas e pelo mercado'} />
       <${GvKpi} dado="ind-setores" ic="Factory" cor="var(--verde)" k="Setores" v=${IC_SETORES.length} s=${nProd + ' produtos · ' + nProj + ' com projeto'} />
       <${GvKpi} dado="ind-inv" ic="HandCoins" cor="var(--ambar)" k="Investido no mandato" v=${'R$ ' + fmt(invTot, 1) + ' bi'} s=${renuncia > 0 ? '+ R$ ' + fmt(renuncia, 1) + ' bi/ano em isenções' : 'investimento e crédito do BNDES'} />
     </div></section>
     <section className="sec" aria-label="Setores e produtos">
-      <${MxHead} eb="País · Indústria" t="Produtos e setores" tip="Valores de 2025 (MDIC, Conab, ANP, IBRAM e outras fontes; veja Fontes e notas). Tag estimativa: valor aproximado pelo jogo. Investir, baixar impostos, isentar ou liberar crédito do BNDES aumentam a produção depois do tempo do setor; a produção alimenta o que o país pode vender em Mundo, Comércio exterior." right=${html`<${PsAcoes} g=${g} />`} />
+      <${MxHead} eb="País · Indústria" t="Produtos e setores" sub="Valores por ano, em dólares (US$ bi = bilhões). % do PIB = quanto a exportação do produto pesa no PIB do Brasil. Produção na unidade do produto (mi t = milhões de toneladas). Preço internacional = cotação mundial de hoje. Clique num produto para ver o que cada ação faz antes de confirmar." tip="Valores de 2025 (MDIC, Conab, ANP, IBRAM e outras fontes; veja Fontes e notas). Tag estimativa: valor aproximado pelo jogo. Investir, baixar impostos, isentar ou liberar crédito do BNDES aumentam a produção depois do tempo do setor; a produção alimenta o que o país pode vender em Mundo, Comércio exterior." right=${html`<${PsAcoes} g=${g} />`} />
       <div className="ic-tabs mb-4" role="tablist" aria-label="Setores">${IC_SETORES.map(s => html`<button key=${s.key} type="button" role="tab" aria-selected=${setor === s.key} className="ic-tab" data-ind-setor=${s.key} onClick=${() => { setSetor(s.key); setSel(null); }}><${Icon} n=${s.icon} s=${16} /> ${s.nome}</button>`)}</div>
       <div className="mx-s mb-3">Efeito de uma medida neste setor: ${IC_SETOR_MAP[setor].tempo_meses[0]} a ${IC_SETOR_MAP[setor].tempo_meses[1]} meses${setor === 'nova' ? '. Começa do zero: sem investimento ou isenção, nada é produzido.' : '.'}</div>
-      ${P && P.setor === setor ? html`<div className="mb-4" ref=${ref}><${IndDetalhe} key=${P.k} g=${g} p=${P} decidir=${decidir} fechar=${() => setSel(null)} /></div>` : null}
+      ${P && P.setor === setor ? html`<div className="mb-4" ref=${ref}><${IndDetalhe} key=${P.k} g=${g} p=${P} decidir=${decidir} upd=${upd} fechar=${() => setSel(null)} /></div>` : null}
       <div className="mx-grid g3" data-ind-grid=${setor}>${lista.map(p => html`<${IndCartao} key=${p.k} g=${g} p=${p} sel=${sel === p.k} onSel=${escolhe} />`)}</div>
     </section>
+    ${andamento.length ? html`<section className="sec sec-sm" data-ind-andamento="1"><div className="eyebrow mb-2">Projetos em andamento (${andamento.length})</div><ul className="mx-list">${andamento.slice(0, 8).map(j => { const r = icRamp(g, j), pj = IC_PROD[j.k], espera = g.mes < j.mes + j.atraso; return html`<li key=${j.id} data-ind-proj=${j.id}><b>${j.nm || ({ inv: 'Investimento', cred: 'Crédito do BNDES', imp: 'Redução de impostos', isen: 'Isenção' }[j.tipo])} em ${icNomeTxt(pj)}</b>${j.v ? html`<span className="num">${orcFmtV(j.v)}${j.tipo === 'imp' || j.tipo === 'isen' ? ' por ano' : ''}</span>` : null}<span className="ic-prog" role="img" aria-label=${'Progresso ' + fmt(r * 100, 0) + '%'}><i style=${{ width: (r * 100) + '%' }}></i></span><span className="mx-s">${espera ? 'em regulamentação até ' + dataCurta(j.mes + j.atraso) + ' · ' : ''}fica pronto em <b>${dataCurta(j.mes + j.atraso + j.dur)}</b> (${fmt(r * 100, 0)}%)</span><button type="button" className="btn btn-ghost btn-sm ml-auto" onClick=${() => { setSetor(pj.setor); escolhe(j.k); }}>Ver produto</button></li>`; })}</ul></section>` : null}
     ${I.nots.length ? html`<section className="sec sec-sm" data-ind-notas="1"><div className="eyebrow mb-2">Últimas decisões</div><ul className="mx-list">${I.nots.slice(0, 4).map((x, i) => html`<li key=${i}><span className="mx-date">${dataCurta(x.mes)}</span><span className="flex-1 min-w-0">${x.x}</span></li>`)}</ul></section>` : null}
     <${NotaFim} area="industria"><p><b className="text-fg">Fontes.</b> Exportações por produto: MDIC/Secex (Comex Stat) 2025, Insper Agro Global, Conab, ANP, IBRAM/ANM, Abiove, ABPA, Ibá, Anfavea e USGS; PIB: IBGE (R$ 12,7 tri) e Austin Rating (US$ 2,27 tri). Parte dos valores (produção, consumo, preços de referência, volatilidade, participação dos compradores, emprego e peso no IPCA) é estimativa do jogo, marcada com a etiqueta estimativa.</p><p>${COM_REF.nota}</p><p>Regras do jogo: o efeito de cada ação sobre a produção, o emprego, a arrecadação e o investimento privado é simulado e limitado; não corresponde a estudo real. ${AVISO_SIM}</p></${NotaFim}>
   </div>`;
@@ -25121,13 +25218,71 @@ function MapaComercio({ g }) {
   </div>`;
 }
 const icPctMerc = (g, k, preco) => (preco / (g.comex.idx[icMkDe(k)] || 1) - 1) * 100;
+const IC_TIPS = {
+  entregue: 'Preço entregue no Brasil: quanto custa cada unidade (tonelada, barril etc.) já posta no país, somando o produto, o frete e a tarifa de importação. Não é o preço de prateleira.',
+  mundial: 'Preço mundial: cotação internacional do produto hoje, sem frete nem tarifa. Muda todo mês e reage a seca, guerra e crise na China.',
+  interno: 'Preço interno: quanto o produto custa dentro do Brasil. Mistura a produção nacional e as importações. 0% é o nível de referência de 2025; +3% é 3% mais caro que isso.',
+  estoque: 'Estoque: quantos meses de consumo do país estão guardados. Abaixo de 0,5 mês qualquer falha vira falta e o preço sobe; acima de 1,2 mês há folga.',
+  tipicoC: 'Volume típico: metade do que o Brasil importa por ano deste produto. É o tamanho de contrato usado para simular o efeito no preço.',
+  tipicoV: 'Volume típico: quanto esse país costuma comprar do Brasil por ano deste produto. É o tamanho de contrato usado para simular o efeito no preço.',
+  seFechar: 'Simulação do preço do produto dentro do Brasil se você fechar um contrato de 2 anos com o volume típico, com a mesma conta usada na hora de assinar. Seta verde para baixo: o preço no Brasil cai. Seta vermelha para cima: sobe.',
+  vsMundialC: 'Compara o preço entregue com a cotação mundial. Verde: mais barato que comprar à vista no mercado; vermelho: mais caro.',
+  contratado: 'Contratado: soma do volume por ano dos contratos ativos. O que não está contratado é comprado ou vendido à vista, ao preço do dia.',
+  sobra: 'Sobra para vender: o que a produção nacional deixa depois de abastecer o consumo interno. Vender mais do que isso faz faltar no mercado interno e empurra o preço para cima.'
+};
+function IcSeta({ d, dec = 2 }) {
+  const z = Math.abs(d) < .005;
+  return html`<span className="num font-semibold" style=${{ color: z ? 'var(--muted)' : d < 0 ? 'var(--verde)' : 'var(--rubro)' }}>${z ? '≈ sem efeito' : (d < 0 ? '↓ ' : '↑ ') + sgn(d, dec) + '%'}</span>`;
+}
+const icAB = (S) => { const dec = Math.abs(S.d) < .1 ? 2 : 1; return icSg(S.A, dec) + '% → ' + icSg(S.B, dec) + '%'; };
+function ComLinha({ g, tipo, nome, S, dias, anos }) {
+  return html`<div className="ic-linha" data-com-linha=${tipo} role="note">
+    <b>Ao assinar:</b> começa este mês (<b>${dataCurta(g.mes)}</b>) · entrega em ~<b>${dias} dias</b> · vale até <b data-com-fim="1">${dataCurta(g.mes + anos * 12)}</b> · preço de ${nome} no Brasil <b data-com-linha-preco="1">${icAB(S)}</b> · IPCA <b>${sgn(S.ipca, 2)} pp</b> · custa 1 ação · cancelar antes custa multa e piora a relação.</div>`;
+}
+function ComSituacao({ g, upd, tipo, k, nome }) {
+  const [conf, setConf] = useState(null);
+  const C = g.comex, ok = icAcaoOk(g), compra = tipo === 'compra';
+  const S = compra ? icSitCompra(g, k) : icSitVenda(g, k);
+  const F = S.F, ref = compra ? icPrecoRefDe(k) : IC_PROD[k];
+  const base = compra ? S.need : S.sobra;
+  const fis = (x) => { const t = icFisTxt(ref, x); return t ? ' (≈ ' + t + ')' : ''; };
+  const wC = base > 0 ? Math.min(100, S.contr / base * 100) : 0;
+  const rotC = compra ? 'Importamos' : 'Produção nacional';
+  return html`<div className="mx-box flex flex-col gap-4" data-com-sit=${tipo} data-com-sit-k=${k}>
+    <div className="eyebrow">Situação do ${nome}</div>
+    <div className="ic-sit">
+      <div><div className="mx-s">${rotC}${compra ? ' por ano' : ''}</div><div className="num text-lg font-semibold" data-com-sit-base="1">${icUsd(compra ? S.need : S.prod)}${compra ? '' : '/ano'}</div><div className="mx-s">${compra ? 'necessidade de importação' : 'consumo interno: ' + icUsd(S.consNac) + '/ano'}${fis(compra ? S.need : S.prod)}</div></div>
+      <div><div className="mx-s">${compra ? 'Já contratado' : 'Sobra para vender'}<${GvTip} txt=${compra ? IC_TIPS.contratado : IC_TIPS.sobra} /></div><div className="num text-lg font-semibold" data-com-sit-contratado=${S.contr.toFixed(4)}>${compra ? icUsd(S.contr) + '/ano' : icUsd(S.sobra) + '/ano'}</div><div className="mx-s">${compra ? fmt(S.pct, 0) + '% da necessidade' : 'depois do consumo interno'}${fis(compra ? S.contr : S.sobra)}</div></div>
+      <div><div className="mx-s">${compra ? 'Falta comprar à vista' : 'Já vendido em contratos'}</div><div className="num text-lg font-semibold" style=${{ color: !compra && S.excesso > 0 ? 'var(--rubro)' : null }} data-com-sit-falta=${(compra ? S.falta : S.contr).toFixed(4)}>${icUsd(compra ? S.falta : S.contr)}/ano</div><div className="mx-s">${compra ? 'no mercado à vista, ao preço do dia' : fmt(S.pct, 0) + '% da sobra' + (S.excesso > 0 ? ' · ' + icUsd(S.excesso) + ' acima do que sobra' : '')}</div></div>
+      <div><div className="mx-s">Preço de ${nome.toLowerCase()} no Brasil hoje<${GvTip} txt=${IC_TIPS.interno} lado="dir" /></div><div className="num text-lg font-semibold" data-com-sit-interno="1" style=${{ color: F.pdom <= 1 ? 'var(--verde)' : 'var(--ambar)' }}>${icSg((F.pdom - 1) * 100, 1)}%</div><div className="mx-s">vs. 2025 · estoque <b style=${{ color: icCorEst(F.estMeses) }}>${fmt(F.estMeses, 1)} meses</b><${GvTip} txt=${IC_TIPS.estoque} lado="dir" /></div></div>
+    </div>
+    <div>
+      <div className="ic-bar" role="img" aria-label=${compra ? 'Contratado ' + fmt(wC, 0) + '% da necessidade de importação' : 'Vendido em contratos ' + fmt(wC, 0) + '% do que sobra'}><i style=${{ width: wC + '%', background: 'var(--verde)' }}></i><i style=${{ width: (100 - wC) + '%', background: S.excesso > 0 ? 'var(--rubro)' : 'var(--ambar)', opacity: .55 }}></i></div>
+      <div className="ic-leg mt-1.5"><span><i className="ic-dot" style=${{ background: 'var(--verde)' }}></i>${compra ? 'contratado' : 'vendido em contrato'} ${fmt(wC, 0)}%</span><span><i className="ic-dot" style=${{ background: 'var(--ambar)' }}></i>${compra ? 'falta comprar à vista' : 'sobra sem contrato (vendida à vista)'} ${fmt(100 - wC, 0)}%</span></div>
+    </div>
+    ${!compra ? html`<div className="text-sm leading-relaxed" data-com-sit-aviso="1">${S.excesso > 0 ? html`<b style=${{ color: 'var(--rubro)' }}>Contratos acima da sobra:</b> faltam ${icUsd(S.excesso)}/ano no mercado interno, o estoque acaba e o preço sobe no Brasil.` : html`Dá para fechar mais <b>${icUsd(S.livre)}/ano</b> sem faltar no mercado interno. Passou disso, o estoque acaba e o preço sobe no Brasil.`}${F.sf > .05 ? ' Hoje já falta no mercado interno.' : ''}</div>` : null}
+    <div data-com-sit-contratos="1">
+      <div className="eyebrow mb-1">Contratos ativos de ${compra ? 'compra' : 'venda'} (${S.cs.length})</div>
+      ${S.cs.length === 0 ? html`<p className="text-sm text-muted">Nenhum contrato ativo deste produto.</p>` : S.cs.map(a => { const rest = Math.max(0, a.mFim - g.mes), multa = icMulta(g, a); return html`<div key=${a.id} className="ic-ct" data-com-sit-contrato=${a.id}>
+        <${ComPais} k=${a.pais} />
+        <div><div className="num">${icUsd(a.qtd)}/ano</div><div className="mx-s">${icFisTxt(ref, a.qtd) ? '≈ ' + icFisTxt(ref, a.qtd) + ' por ano' : 'volume por ano'}</div></div>
+        <div><div className="num">${icPrecoTxt(icPrecoRefDe(a.k), a.preco)}</div><div className="mx-s" data-com-sit-ate=${dataCurta(a.mFim)}>até <b>${dataCurta(a.mFim)}</b> · faltam ${rest} ${rest === 1 ? 'mês' : 'meses'}</div></div>
+        ${conf === a.id ? html`<span className="flex flex-wrap gap-1.5 items-center"><span className="text-xs" data-com-sit-multa="1">Multa de ${icBrl(multa)} e a relação com ${IC_PAIS[a.pais].nome} piora</span><button type="button" className="btn btn-sm" style=${{ borderColor: 'var(--rubro)', color: 'var(--rubro)' }} data-com-sit-cancelar-ok=${a.id} disabled=${!ok} onClick=${() => { upd(n => { ensureIC(n); icCancela(n, a.id); }); setConf(null); }}>Confirmar · 1 ação</button><button type="button" className="btn btn-ghost btn-sm" onClick=${() => setConf(null)}>Voltar</button></span>`
+          : html`<button type="button" className="btn btn-ghost btn-sm" data-com-sit-cancelar=${a.id} onClick=${() => setConf(a.id)}>Cancelar contrato</button>`}
+      </div>`; })}
+    </div>
+  </div>`;
+}
 function ComProposta({ g, upd, pr }) {
   const [neg, setNeg] = useState(false); const [pc, setPc] = useState(105);
   const P = IC_PROD[pr.k], c = IC_PAIS[pr.pais]; const ok = icAcaoOk(g);
-  const max = icPrecoMaxVenda(g, pr.k, pr.pais, pr.anos, pr.qtd);
+  const S = icSimPreco(g, 'venda', pr.k, pr.pais, pr.qtd, pr.preco, pr.anos);
+  const sv = icSitVenda(g, pr.k), dias = icFreteEPrazo(P, c).dias, vm = icPctMerc(g, pr.k, pr.preco);
   return html`<li className="mx-card" style=${{ '--st': pr.grande ? 'var(--ambar)' : 'var(--line2)' }} data-com-proposta=${pr.id} data-grande=${pr.grande ? '1' : '0'}>
     <div className="mx-h"><span className="gv-ic" style=${{ '--c': 'var(--ambar)' }}><${Icon} n=${P.icon || 'Package'} s=${18} /></span><div className="min-w-0"><div className="mx-t flex items-center gap-2 flex-wrap"><${ComPais} k=${pr.pais} /> quer comprar ${P.nome.toLowerCase()}</div><div className="mx-s">${pr.grande ? 'Proposta grande · ' : ''}vale até ${dataCurta(pr.exp)}</div></div><${IcEst} est=${P.est} /></div>
-    <div className="flex flex-wrap gap-1.5"><span className="gv-chip">${icUsd(pr.qtd)} por ano${icFisTxt(P, pr.qtd) ? ' (' + icFisTxt(P, pr.qtd) + ')' : ''}</span><span className="gv-chip">${pr.anos} ${pr.anos === 1 ? 'ano' : 'anos'}</span><span className="gv-chip ouro">${icPrecoTxt(P, pr.preco)}</span><span className=${'gv-chip ' + (icPctMerc(g, pr.k, pr.preco) >= 0 ? 'pos' : 'neg')}>${sgn(icPctMerc(g, pr.k, pr.preco), 1)}% vs. mercado</span></div>
+    <div className="flex flex-wrap gap-1.5"><span className="gv-chip">${icUsd(pr.qtd)} por ano${icFisTxt(P, pr.qtd) ? ' (' + icFisTxt(P, pr.qtd) + ')' : ''}</span><span className="gv-chip">${pr.anos} ${pr.anos === 1 ? 'ano' : 'anos'}</span><span className="gv-chip ouro">${icPrecoTxt(P, pr.preco)} por unidade</span><span className=${'gv-chip ' + (vm >= 0 ? 'pos' : 'neg')}>${icCompTxt(pr.preco / (g.comex.idx[icMkDe(pr.k)] || 1), 'abaixo do preço mundial', 'acima do preço mundial')}</span></div>
+    <div className="mx-s" data-com-pr-sobra="1">Já vendido em contratos: ${icUsd(sv.contr)}/ano (${fmt(sv.pct, 0)}% da sobra de ${icUsd(sv.sobra)}/ano).${sv.contr + pr.qtd > sv.sobra ? ' Esta proposta passa do que sobra: falta no mercado interno.' : ''} Preço de ${icNomeTxt(P)} no Brasil: <${IcSeta} d=${S.d} /> (${icAB(S)}).</div>
+    <${ComLinha} g=${g} tipo="proposta" nome=${icNomeTxt(P)} S=${S} dias=${dias} anos=${pr.anos} />
     ${pr.msg ? html`<div className="text-sm" data-com-pr-msg="1">${pr.msg}</div>` : null}
     ${neg ? html`<div className="flex flex-wrap items-center gap-2 text-sm">Contraproposta: <input type="number" className="ic-in" value=${pc} min="90" max="130" step="1" data-com-pr-preco="1" aria-label="Preço pedido em percentual da oferta" onChange=${e => setPc(parseFloat(e.target.value) || 100)} /> % da oferta (${icPrecoTxt(P, pr.preco * pc / 100)}) <span className="text-muted text-xs">rodada ${pr.rodada + 1} de até 3</span></div>` : null}
     <div className="flex flex-wrap gap-2">
@@ -25157,9 +25312,9 @@ function ComTerras({ g, upd, decidir, go }) {
   </div>`;
 }
 function ComVender({ g, upd, decidir, go }) {
-  const [setor, setSetor] = useState('todos'); const [k, setK] = useState(null); const [iso, setIso] = useState(null);
+  const [setor, setSetor] = useState('todos'); const [k, setK] = useState(() => (icPre() && icPre().aba === 'vender' && IC_PROD[icPre().k]) ? icPre().k : null); const [iso, setIso] = useState(null);
   const [qm, setQm] = useState(1); const [pc, setPc] = useState(100); const [anos, setAnos] = useState(2); const [res, setRes] = useState(null);
-  const C = g.comex; const ok = icAcaoOk(g);
+  const C = g.comex; const ok = icAcaoOk(g); const acSig = C.acordos.map(a => a.id + a.estado).join();
   const prods = Object.values(IC_PROD).filter(p => p.kind === 'exp' && p.exp_usd_bi >= .01 && (setor === 'todos' || p.setor === setor)).sort((a, b) => b.exp_usd_bi - a.exp_usd_bi);
   const P = k ? IC_PROD[k] : null; const F = P ? C.fl[icMkDe(k)] : null;
   const compr = P ? icBuyerLista(k).map(b => ({ iso: b.iso, pct: b.pct, c: IC_PAIS[b.iso], sh: icShareUsd(k, b.iso) })).sort((a, b) => b.sh - a.sh).slice(0, 12) : [];
@@ -25168,21 +25323,30 @@ function ComVender({ g, upd, decidir, go }) {
   const maxP = sel ? icPrecoMaxVenda(g, k, iso, anos, qtd) : 0, preco = Math.round(maxP * pc / 100 * 1000) / 1000;
   const escolheProd = (x) => { setK(x); setIso(null); setRes(null); };
   const escolhePais = (x) => { setIso(x); setRes(null); setQm(1); setPc(100); };
-  const prevEst = useMemo(() => { if (!sel || !P) return null; const mk = icMkDe(k); const a = { id: 'tmp', tipo: 'venda', k, mk, pais: iso, qtd, preco, anos, estado: 'ativo' }; C.acordos.push(a); let f; try { f = icFlow(g, mk); } finally { C.acordos.pop(); } return f; }, [k, iso, qtd, preco, anos, g.mes, C.acordos.length]);
+  const prevEst = useMemo(() => { if (!sel || !P) return null; return icSimPreco(g, 'venda', k, iso, qtd, preco, anos); }, [k, iso, qtd, preco, anos, g.mes, acSig]);
+  // coluna "se fechar": volume típico, 2 anos, preço máximo que o país paga (a mesma conta de assinar com os valores padrão)
+  const linhas = useMemo(() => P ? compr.map(b => { const q = Math.round(b.sh * 100) / 100, p2 = Math.round(icPrecoMaxVenda(g, k, b.iso, 2, q) * 1000) / 1000; return { iso: b.iso, S: icSimPreco(g, 'venda', k, b.iso, q, p2, 2) }; }) : [], [k, g.mes, acSig]);
   const envia = () => {
     const rod = (res && res.rodada) || 0; const r = icAvaliaVenda(g, k, iso, qtd, preco, anos, rod);
     setRes(Object.assign({}, r, { rodada: r.res === 'contra' ? rod + 1 : rod, qtd, preco, anos, iso, k }));
   };
   const fecha = (pcontr) => { const pr = pcontr != null ? pcontr : res.preco; upd(n => { ensureIC(n); icContrata(n, { tipo: 'venda', k, iso, qtd: res.qtd, preco: pr, anos: res.anos }); }); setRes(null); setIso(null); };
+  const un = icUnid(P);
   return html`<div className="flex flex-col gap-4" data-com-vender="1">
     <div className="ic-tabs" role="group" aria-label="Filtrar produtos por setor">${[['todos', 'Todos']].concat(IC_SETORES.filter(s => s.key !== 'nova').map(s => [s.key, s.nome])).map(([key, nome]) => html`<button key=${key} type="button" className="ic-tab" aria-selected=${setor === key} onClick=${() => setSetor(key)}>${nome}</button>`)}</div>
-    <div className="ic-pick" data-com-picker="vender">${prods.map(p => html`<button key=${p.k} type="button" className="ic-pk" aria-pressed=${k === p.k} data-com-prod=${p.k} onClick=${() => escolheProd(p.k)}><${Icon} n=${p.icon || 'Package'} s=${16} /><span className="t">${p.nome}</span><span className="num ml-auto text-xs text-muted">${fmt(C.fl[p.k].expAno, 1)}</span></button>`)}</div>
+    <div className="ic-pick lg" data-com-picker="vender">${prods.map(p => { const f = C.fl[p.k], sv = icSitVenda(g, p.k); return html`<button key=${p.k} type="button" className="ic-pk lg" aria-pressed=${k === p.k} data-com-prod=${p.k} onClick=${() => escolheProd(p.k)}>
+      <span className="ic-pk-h"><${Icon} n=${p.icon || 'Package'} s=${16} /><span className="t">${p.nome}</span></span>
+      <span className="ic-pk-s">exportamos <b className="num">${icUsd(f.expAno)}/ano</b></span>
+      <span className="ic-pk-s"><b className="num">${fmt(sv.pct, 0)}%</b> da sobra já vendido em contratos${f.sf > .05 ? ' · falta no mercado interno' : ''}</span>
+      <span className="ic-pk-s">preço mundial <b className="num" style=${{ color: f.idx >= 1 ? 'var(--verde)' : 'var(--ambar)' }}>${icPrecoTxt(p, f.idx)}</b></span></button>`; })}</div>
     ${P ? html`<section className="flex flex-col gap-4" data-com-produto=${k}>
-      <div className="flex flex-wrap items-center gap-3"><h4 className="disp text-xl font-bold">${P.nome}</h4><${IcEst} est=${P.est} /><span className="gv-chip ouro">mercado: ${icPrecoTxt(P, F.idx)}</span><span className="gv-chip" style=${{ color: icCorEst(F.estMeses) }}>estoque ${fmt(F.estMeses, 1)} meses</span><span className="gv-chip">exportamos ${icUsd(F.expAno)}/ano</span>${F.sf > .05 ? html`<span className="gv-chip neg">falta no mercado interno</span>` : null}</div>
-      <div className="ic-tw"><table className="ic-tbl"><thead><tr><th>Comprador</th><th>Paga hoje</th><th>Vs. mercado</th><th>Frete</th><th>Relação</th><th>Volume típico</th><th></th></tr></thead><tbody>
-        ${compr.map(b => { const mp = icPrecoMaxVenda(g, k, b.iso, 1, b.sh); const rel = icRel(g, b.c); return html`<tr key=${b.iso} data-com-pais=${b.iso}>
-          <td><${ComPais} k=${b.iso} /></td><td className="num">${icPrecoTxt(P, mp)}</td><td className="num" style=${{ color: mp >= F.idx ? 'var(--verde)' : 'var(--rubro)' }}>${sgn((mp / F.idx - 1) * 100, 1)}%</td>
+      <div className="flex flex-wrap items-center gap-3"><h4 className="disp text-xl font-bold">${P.nome}</h4><${IcEst} est=${P.est} /><span className="gv-chip ouro">preço mundial hoje: ${icPrecoTxt(P, F.idx)}<${GvTip} txt=${IC_TIPS.mundial} /></span>${F.sf > .05 ? html`<span className="gv-chip neg">falta no mercado interno</span>` : null}</div>
+      <${ComSituacao} g=${g} upd=${upd} tipo="venda" k=${k} nome=${P.nome} />
+      <div className="ic-tw vis"><table className="ic-tbl"><thead><tr><th>Comprador</th><th>Preço que paga${un ? ' (' + un + ')' : ''}<${GvTip} txt=${'Preço por unidade que o país paga hoje por um contrato de 1 ano, já descontado o frete. ' + IC_TIPS.mundial} /></th><th>Comparado ao preço mundial</th><th>Frete</th><th>Relação</th><th>Volume típico por ano<${GvTip} txt=${IC_TIPS.tipicoV} /></th><th>Preço de ${icNomeTxt(P)} no Brasil se fechar<${GvTip} txt=${IC_TIPS.seFechar} lado="dir" /></th><th></th></tr></thead><tbody>
+        ${compr.map((b, i) => { const mp = icPrecoMaxVenda(g, k, b.iso, 1, b.sh); const rel = icRel(g, b.c); const S = linhas[i] && linhas[i].S; return html`<tr key=${b.iso} data-com-pais=${b.iso}>
+          <td><${ComPais} k=${b.iso} /></td><td className="num">${icPrecoTxt(P, mp)}</td><td className="num" style=${{ color: mp >= F.idx ? 'var(--verde)' : 'var(--rubro)' }}>${icCompTxt(mp / F.idx, 'abaixo do mundial', 'acima do mundial')}</td>
           <td className="num">${fmt(icFretePct(P, b.c) * 100, 1)}%</td><td><${Tag} cor=${corRel(rel)}>${rotuloRel(rel)}</${Tag}></td><td className="num">${icUsd(b.sh)}/ano</td>
+          <td data-com-se-fechar=${b.iso} data-delta=${S ? S.d.toFixed(5) : ''}>${S ? html`<${IcSeta} d=${S.d} /><div className="mx-s">${icAB(S)}</div>` : null}</td>
           <td><button type="button" className="btn btn-ghost btn-sm" data-com-propor=${b.iso} aria-pressed=${iso === b.iso} onClick=${() => escolhePais(b.iso)}>Propor</button></td></tr>`; })}
       </tbody></table></div>
       ${sel ? html`<div className="mx-box flex flex-col gap-4" data-com-form="venda">
@@ -25190,7 +25354,8 @@ function ComVender({ g, upd, decidir, go }) {
         <div><div className="eyebrow mb-1.5">Quantidade por ano</div><div className="flex flex-wrap items-center gap-1.5" role="radiogroup" aria-label="Quantidade">${[.5, 1, 1.5, 2].map(x => html`<button key=${x} type="button" role="radio" aria-checked=${qm === x} className="ic-opt" data-com-qtd=${x} onClick=${() => { setQm(x); setRes(null); }}>${x * 100}% do volume típico</button>`)}</div><div className="mx-s mt-1">${icUsd(qtd)} por ano${icFisTxt(P, qtd) ? ' (' + icFisTxt(P, qtd) + ')' : ''}</div></div>
         <div><div className="eyebrow mb-1.5">Preço</div><div className="flex flex-wrap items-center gap-2"><input type="number" className="ic-in" value=${pc} min="80" max="130" step="1" data-com-preco="1" aria-label="Preço proposto em percentual do que o país paga" onChange=${e => { setPc(parseFloat(e.target.value) || 100); setRes(null); }} /> % do que o país paga hoje<span className="num">= ${icPrecoTxt(P, preco)}</span><span className="mx-s">(o país paga até ${icPrecoTxt(P, maxP)})</span></div></div>
         <div><div className="eyebrow mb-1.5">Duração</div><div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Duração do contrato">${[1, 2, 4].map(x => html`<button key=${x} type="button" role="radio" aria-checked=${anos === x} className="ic-opt" data-com-anos=${x} onClick=${() => { setAnos(x); setRes(null); }}>${x} ${x === 1 ? 'ano' : 'anos'}</button>`)}</div><div className="mx-s mt-1">Mais longo = preço melhor (+${fmt(((IC_DUR_V[anos] || 1) - 1) * 100, 0)}% aqui), mas prende o Brasil: cancelar custa multa e piora a relação.</div></div>
-        ${prevEst ? html`<div className="mx-s" data-com-previa="1">Efeito no estoque: ${fmt(F.estMeses, 1)} → ${fmt(prevEst.estMeses, 1)} meses${prevEst.sf > .05 ? ' · FALTA no mercado interno: o preço sobe' : ''}. Preço interno ${sgn((prevEst.pdom - 1) * 100, 1)}%.</div>` : null}
+        ${prevEst ? html`<div className="mx-s" data-com-previa="1">Efeito no estoque: ${fmt(F.estMeses, 1)} → ${fmt(prevEst.F2.estMeses, 1)} meses${prevEst.F2.sf > .05 ? ' · FALTA no mercado interno: o preço sobe' : ''}. Preço interno ${sgn((prevEst.F2.pdom - 1) * 100, 1)}%.</div>` : null}
+        ${prevEst ? html`<${ComLinha} g=${g} tipo="venda" nome=${icNomeTxt(P)} S=${prevEst} dias=${icFreteEPrazo(P, sel.c).dias} anos=${anos} />` : null}
         <button type="button" className="btn btn-pri self-start" data-com-enviar="1" onClick=${envia}><${Icon} n="Send" s=${15} /> Enviar proposta</button>
         ${res ? html`<div className="ic-res" style=${{ '--c': res.res === 'aceita' ? 'var(--verde)' : res.res === 'contra' ? 'var(--ambar)' : 'var(--rubro)' }} data-com-resposta=${res.res} role="status">
           <b>${res.res === 'aceita' ? 'A proposta foi aceita' : res.res === 'contra' ? 'Contraproposta recebida' : 'Proposta recusada'}</b>
@@ -25201,12 +25366,12 @@ function ComVender({ g, upd, decidir, go }) {
           </div></div>` : null}
       </div>` : null}
       ${P.k === 'terras_raras' ? html`<${ComTerras} g=${g} upd=${upd} decidir=${decidir} go=${go} />` : null}
-    </section>` : html`<p className="text-sm text-muted">Escolha um produto para ver quais países querem comprar, quanto pagam e propor um contrato.</p>`}
+    </section>` : html`<p className="text-sm text-muted">Escolha um produto para ver quanto já está vendido, quais países querem comprar, quanto pagam e propor um contrato.</p>`}
   </div>`;
 }
 function ComComprar({ g, upd }) {
-  const [k, setK] = useState(null); const [iso, setIso] = useState(null); const [qm, setQm] = useState(1); const [anos, setAnos] = useState(2);
-  const C = g.comex; const ok = icAcaoOk(g);
+  const [k, setK] = useState(() => (icPre() && icPre().aba === 'comprar' && IC_IMP[icPre().k]) ? icPre().k : null); const [iso, setIso] = useState(null); const [qm, setQm] = useState(1); const [anos, setAnos] = useState(2);
+  const C = g.comex; const ok = icAcaoOk(g); const acSig = C.acordos.map(a => a.id + a.estado).join();
   const prods = COM_IMPORTS.slice().sort((a, b) => b.imp_usd_bi - a.imp_usd_bi);
   const I = k ? IC_IMP[k] : null; const mk = k ? icMkDe(k) : null; const F = mk ? C.fl[mk] : null; const B = mk ? IC_BASE[mk] : null;
   const vend = I ? Object.values(IC_PAIS).filter(c => c.vende.some(v => v.k === k)) : [];
@@ -25215,26 +25380,37 @@ function ComComprar({ g, upd }) {
   const baseQ = I ? Math.max(I.imp_usd_bi * .5, .05) : 0;
   const qtd = Math.round(baseQ * qm * 100) / 100;
   const preco = sel ? Math.round(icPrecoPedidoCompra(g, k, iso, anos, qtd) * 1000) / 1000 : 0;
-  const prev = useMemo(() => { if (!sel) return null; const a = { id: 'tmp', tipo: 'compra', k, mk, pais: iso, qtd, preco, anos, estado: 'ativo' }; C.acordos.push(a); let f; try { f = icFlow(g, mk); } finally { C.acordos.pop(); } return f; }, [k, iso, qtd, preco, anos, g.mes, C.acordos.length]);
-  const dPreco = prev ? (prev.pdom / F.pdom - 1) * 100 : 0;
-  const dIpca = prev ? B.ipca * (prev.pdom - F.pdom) : 0;
+  const prevS = useMemo(() => sel ? icSimPreco(g, 'compra', k, iso, qtd, preco, anos) : null, [k, iso, qtd, preco, anos, g.mes, acSig]);
+  const prev = prevS ? prevS.F2 : null;
+  const dPreco = prevS ? prevS.d : 0;
+  const dIpca = prevS ? prevS.ipca : 0;
+  // coluna "se fechar": volume típico, 2 anos, preço pedido (a mesma conta de fechar com os valores padrão)
+  const linhas = useMemo(() => I ? vend.map(c => { const q = Math.round(baseQ * 100) / 100, p2 = Math.round(icPrecoPedidoCompra(g, k, c.k, 2, q) * 1000) / 1000; return { iso: c.k, S: icSimPreco(g, 'compra', k, c.k, q, p2, 2) }; }) : [], [k, g.mes, acSig]);
+  const ref = k ? icPrecoRefDe(k) : null; const un = icUnid(ref);
   return html`<div className="flex flex-col gap-4" data-com-comprar="1">
-    <div className="ic-pick" data-com-picker="comprar">${prods.map(i => html`<button key=${i.k} type="button" className="ic-pk" aria-pressed=${k === i.k} data-com-imp=${i.k} onClick=${() => { setK(i.k); setIso(null); setQm(1); }}><${Icon} n=${i.icon || 'Package'} s=${16} /><span className="t">${nomeI(i)}</span><span className="num ml-auto text-xs text-muted">${fmt(i.imp_usd_bi, 1)}</span></button>`)}</div>
+    <div className="ic-pick lg" data-com-picker="comprar">${prods.map(i => { const s = icSitCompra(g, i.k); return html`<button key=${i.k} type="button" className="ic-pk lg" aria-pressed=${k === i.k} data-com-imp=${i.k} onClick=${() => { setK(i.k); setIso(null); setQm(1); }}>
+      <span className="ic-pk-h"><${Icon} n=${i.icon || 'Package'} s=${16} /><span className="t">${nomeI(i)}</span></span>
+      <span className="ic-pk-s">importamos <b className="num">${icUsd(s.need)}/ano</b></span>
+      <span className="ic-pk-s"><b className="num">${fmt(s.pct, 0)}%</b> já contratado · preço no Brasil <b className="num" style=${{ color: s.F.pdom <= 1 ? 'var(--verde)' : 'var(--ambar)' }}>${icSg((s.F.pdom - 1) * 100, 1)}%</b> vs. 2025</span></button>`; })}</div>
     ${I ? html`<section className="flex flex-col gap-4" data-com-produto=${k}>
-      <div className="flex flex-wrap items-center gap-3"><h4 className="disp text-xl font-bold">${nomeI(I)}</h4><${IcEst} est=${I.est} /><span className="gv-chip">importamos ${icUsd(F.impAno)}/ano</span><span className="gv-chip" data-com-preco-interno=${k} style=${{ color: F.pdom <= 1 ? 'var(--verde)' : 'var(--ambar)' }}>preço interno ${sgn((F.pdom - 1) * 100, 1)}%</span><span className="gv-chip" style=${{ color: icCorEst(F.estMeses) }}>estoque ${fmt(F.estMeses, 1)} meses</span>${I.autossuf_pct != null ? html`<span className="gv-chip">produção nacional cobre ${I.autossuf_pct}%</span>` : null}<span className="gv-chip">peso no IPCA ${fmt(I.ipca_peso || 0, 2)}%</span></div>
-      <div className="ic-tw"><table className="ic-tbl"><thead><tr><th>Vendedor</th><th>Preço no Brasil</th><th>Vs. mercado</th><th>Frete</th><th>Prazo</th><th>Relação</th><th></th></tr></thead><tbody>
-        ${vend.map(c => { const p1 = icPrecoPedidoCompra(g, k, c.k, 1, baseQ); const fp = icFreteEPrazo(I, c); const rel = icRel(g, c); return html`<tr key=${c.k} data-com-vendedor=${c.k}>
-          <td><${ComPais} k=${c.k} /></td><td className="num">${icPrecoTxt(icPrecoRefDe(k), p1)}</td><td className="num" style=${{ color: p1 <= F.idx * 1.06 ? 'var(--verde)' : 'var(--rubro)' }}>${sgn((p1 / F.idx - 1) * 100, 1)}%</td><td className="num">${fmt(fp.frete * 100, 1)}%</td><td className="num">${fp.dias} dias</td><td><${Tag} cor=${corRel(rel)}>${rotuloRel(rel)}</${Tag}></td>
+      <div className="flex flex-wrap items-center gap-3"><h4 className="disp text-xl font-bold">${nomeI(I)}</h4><${IcEst} est=${I.est} /><span className="gv-chip ouro">preço mundial hoje: ${icPrecoTxt(ref, F.idx)}<${GvTip} txt=${IC_TIPS.mundial} /></span>${I.autossuf_pct != null ? html`<span className="gv-chip">produção nacional cobre ${I.autossuf_pct}% do consumo</span>` : null}<span className="gv-chip">peso no IPCA ${fmt(I.ipca_peso || 0, 2)}%</span></div>
+      <${ComSituacao} g=${g} upd=${upd} tipo="compra" k=${k} nome=${nomeI(I)} />
+      <div className="ic-tw vis"><table className="ic-tbl"><thead><tr><th>Vendedor</th><th>Preço entregue no Brasil${un ? ' (' + un + ')' : ''}<${GvTip} txt=${IC_TIPS.entregue} /></th><th>Comparado ao preço mundial<${GvTip} txt=${IC_TIPS.vsMundialC} /></th><th>Frete</th><th>Entrega</th><th>Relação</th><th>Preço de ${nomeI(I).toLowerCase()} no Brasil se fechar<${GvTip} txt=${IC_TIPS.seFechar} lado="dir" /></th><th></th></tr></thead><tbody>
+        ${vend.map((c, i) => { const p1 = icPrecoPedidoCompra(g, k, c.k, 1, baseQ); const fp = icFreteEPrazo(I, c); const rel = icRel(g, c); const S = linhas[i] && linhas[i].S; return html`<tr key=${c.k} data-com-vendedor=${c.k}>
+          <td><${ComPais} k=${c.k} /></td><td className="num">${icPrecoTxt(ref, p1)}</td><td className="num" style=${{ color: p1 <= F.idx * 1.06 ? 'var(--verde)' : 'var(--rubro)' }}>${icCompTxt(p1 / F.idx, 'mais barato', 'mais caro')}</td><td className="num">${fmt(fp.frete * 100, 1)}%</td><td className="num">~${fp.dias} dias</td><td><${Tag} cor=${corRel(rel)}>${rotuloRel(rel)}</${Tag}></td>
+          <td data-com-se-fechar=${c.k} data-delta=${S ? S.d.toFixed(5) : ''}>${S ? html`<${IcSeta} d=${S.d} /><div className="mx-s">${icAB(S)}</div>` : null}</td>
           <td><button type="button" className="btn btn-ghost btn-sm" data-com-comprar-de=${c.k} aria-pressed=${iso === c.k} onClick=${() => setIso(c.k)}>Comprar</button></td></tr>`; })}
       </tbody></table></div>
+      <div className="mx-s">Volume típico<${GvTip} txt=${IC_TIPS.tipicoC} />: ${icUsd(Math.round(baseQ * 100) / 100)} por ano${icFisTxt(ref, baseQ) ? ' (' + icFisTxt(ref, baseQ) + ')' : ''}. Estoque<${GvTip} txt=${IC_TIPS.estoque} /> e preço interno<${GvTip} txt=${IC_TIPS.interno} /> aparecem na Situação, acima.</div>
       ${sel ? html`<div className="mx-box flex flex-col gap-4" data-com-form="compra">
         <div className="flex items-center gap-2 flex-wrap"><div className="eyebrow">Compra de</div><b><${ComPais} k=${iso} /></b></div>
-        <div><div className="eyebrow mb-1.5">Quantidade por ano</div><div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Quantidade">${[.5, 1, 2, 4].map(x => html`<button key=${x} type="button" role="radio" aria-checked=${qm === x} className="ic-opt" data-com-qtd=${x} onClick=${() => setQm(x)}>${icUsd(Math.round(Math.max(I.imp_usd_bi * .5, .05) * x * 100) / 100)}</button>`)}</div><div className="mx-s mt-1">${icUsd(qtd)} por ano${icFisTxt(icPrecoRefDe(k), qtd) ? ' (' + icFisTxt(icPrecoRefDe(k), qtd) + ')' : ''}; hoje o Brasil importa ${icUsd(I.imp_usd_bi)} por ano.</div></div>
+        <div><div className="eyebrow mb-1.5">Quantidade por ano</div><div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Quantidade">${[.5, 1, 2, 4].map(x => html`<button key=${x} type="button" role="radio" aria-checked=${qm === x} className="ic-opt" data-com-qtd=${x} onClick=${() => setQm(x)}>${icUsd(Math.round(Math.max(I.imp_usd_bi * .5, .05) * x * 100) / 100)}/ano</button>`)}</div><div className="mx-s mt-1">${icUsd(qtd)} por ano${icFisTxt(ref, qtd) ? ' (' + icFisTxt(ref, qtd) + ')' : ''}; hoje o Brasil importa ${icUsd(I.imp_usd_bi)} por ano.</div></div>
         <div><div className="eyebrow mb-1.5">Duração</div><div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Duração do contrato">${[1, 2, 4].map(x => html`<button key=${x} type="button" role="radio" aria-checked=${anos === x} className="ic-opt" data-com-anos=${x} onClick=${() => setAnos(x)}>${x} ${x === 1 ? 'ano' : 'anos'}</button>`)}</div><div className="mx-s mt-1">Contrato mais longo tem preço melhor (${fmt(((IC_DUR_C[anos] || 1) - 1) * 100, 0)}%), mas prende o Brasil.</div></div>
-        <div className="text-sm leading-relaxed" data-com-previa="1">Preço fechado: <b>${icPrecoTxt(icPrecoRefDe(k), preco)}</b> posto no Brasil (${sgn((preco / F.idx - 1) * 100, 1)}% vs. mercado). Preço interno de ${nomeI(I).toLowerCase()}: <b>${sgn((F.pdom - 1) * 100, 1)}% → ${sgn((prev.pdom - 1) * 100, 1)}%</b> (${sgn(dPreco, 1)}%). Efeito no IPCA: <b>${sgn(dIpca, 2)} pp</b>. ${prev.cutNew > .01 || (g.comex.cut[mk] || 0) > .01 ? 'Importar muito barato derruba a produção nacional e o emprego do setor.' : ''}</div>
+        <div className="text-sm leading-relaxed" data-com-previa="1">Preço fechado: <b>${icPrecoTxt(ref, preco)}</b> entregue no Brasil (${icCompTxt(preco / F.idx, 'mais barato', 'mais caro')} que o preço mundial). Preço interno de ${nomeI(I).toLowerCase()}: <b>${sgn((F.pdom - 1) * 100, 1)}% → ${sgn((prev.pdom - 1) * 100, 1)}%</b> (${sgn(dPreco, 1)}%). Efeito no IPCA: <b>${sgn(dIpca, 2)} pp</b>. ${prev.cutNew > .01 || (g.comex.cut[mk] || 0) > .01 ? 'Importar muito barato derruba a produção nacional e o emprego do setor.' : ''}</div>
+        <${ComLinha} g=${g} tipo="compra" nome=${nomeI(I).toLowerCase()} S=${prevS} dias=${icFreteEPrazo(I, sel).dias} anos=${anos} />
         <button type="button" className="btn btn-pri self-start" disabled=${!ok} data-com-fechar-compra="1" onClick=${() => { upd(n => { ensureIC(n); icContrata(n, { tipo: 'compra', k, iso, qtd, preco, anos }); }); setIso(null); }}><${Icon} n="ShoppingCart" s=${15} /> Fechar compra · 1 ação</button>
       </div>` : null}
-    </section>` : html`<p className="text-sm text-muted">Escolha o que importar para ver os países que vendem, com preço no Brasil, frete e prazo.</p>`}
+    </section>` : html`<p className="text-sm text-muted">Escolha o que importar para ver quanto já está contratado, os países que vendem, o preço entregue no Brasil, o frete e a entrega.</p>`}
   </div>`;
 }
 const IC_TLC = [
@@ -25280,7 +25456,7 @@ function ComGeral({ g, upd }) {
 }
 function MundoComercio({ g, upd, decidir, go }) {
   useEffect(() => { if (!g.comex || !g.indu) upd(n => { ensureIC(n); }); }, [!!g.comex && !!g.indu]);
-  const [aba, setAba] = useState('geral');
+  const [aba, setAba] = useState(() => (icPre() && icPre().aba) || 'geral');
   if (!g.comex || !g.indu || !g.comex.fl[IC_MK[0]]) return null;
   const C = g.comex, T = C.tot;
   const ativos = C.acordos.filter(a => a.estado === 'ativo'); const abertas = C.props.filter(p => p.estado === 'aberta'); const vol = ativos.reduce((s, a) => s + a.qtd, 0);
