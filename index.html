@@ -17092,9 +17092,128 @@ function Gaveta({ titulo, eyebrow, onClose, children }) {
     </aside></div>`;
 }
 
+/* ---- I5: prévia de custo e risco das opções de crise ----
+   Os números vêm da MESMA função que aplica a medida (analisaLocal + executaProposta), rodada sobre um clone do jogo como se fosse aprovada.
+   Nada é aplicado ao jogo real: o clone é descartado. A prévia mostra o efeito imediato (opinião, mercado, Congresso); o resto chega mês a mês. */
+let PREVIA_MODO = false; // silencia sons enquanto a prévia roda
+const PV_INST = { PL: 'Projeto de lei', PEC: 'PEC', MP: 'Medida provisória', DEC: 'Decreto', ADM: 'Ato do Executivo', COM: 'Ato político (só discurso)' };
+// opções que, lidas pelo motor, não fazem nada de concreto: a prévia diz isso em claro ("Não age de fato")
+const PV_NADA = { stf_drogas: ['Silêncio'], gasolina: ['Respeitar'], jogo: ['Trabalhar'], tr_ctrl_susp: ['Esperar e observar'] };
+const pvNada = (ev, o) => !!(ev && o && (PV_NADA[ev.id] || []).includes(o.l));
+const PV_IND = [ // k, rótulo, casas decimais, mínimo para aparecer, sentido bom (+1: subir é bom; −1: descer é bom)
+  { k: 'ap', n: 'Aprovação', u: ' p.p.', d: 1, min: .05, b: 1 }, { k: 'ipca', n: 'Inflação', u: ' p.p.', d: 2, min: .02, b: -1 }, { k: 'pib', n: 'PIB', u: ' p.p.', d: 2, min: .02, b: 1 },
+  { k: 'imp', n: 'Risco de impeachment', u: '', d: 1, min: .2, b: -1 }, { k: 'cong', n: 'Relação com o Congresso', u: '', d: 1, min: .2, b: 1 }, { k: 'esc', n: 'Escândalo', u: '', d: 1, min: .2, b: -1 }];
+function pvRelCongresso(g) { let s = 0, w = 0; for (const P of PARTIDOS) { s += g.parties[P.id].rel * P.cam; w += P.cam; } return w ? s / w : 0; }
+function pvMede(c) { return { ap: aprovacao(c), ipca: c.eco.ipca, pib: c.eco.pib, imp: riscoImpeachment(c), cong: pvRelCongresso(c), esc: c.escandalo }; }
+function pvDelta(a, b) { const d = {}; for (const k in a) d[k] = b[k] - a[k]; return d; }
+function pvGrupos(g0, g1) {
+  const L = GKEYS.map(k => ({ k, d: g1[k] - g0[k], nome: (GRUPOS.find(x => x.k === k) || { nome: k }).nome })).filter(x => Math.abs(x.d) >= .05).sort((a, b) => Math.abs(b.d) - Math.abs(a.d));
+  return { gan: L.filter(x => x.d > 0).slice(0, 3), per: L.filter(x => x.d < 0).slice(0, 3) };
+}
+// rótulo de risco: custo fiscal, chance de derrota no Congresso, parecer do STF, perdas de opinião/escândalo/impeachment e gravidade da crise
+function pvRisco(P, grav) {
+  let s = grav === 'alta' ? (P.ignorar ? 3 : 2) : grav === 'media' ? (P.ignorar ? 2 : 1) : 0; const d = P.d || {};
+  if (P.stf === 'inconstitucional') s += 3; else if (P.stf === 'controverso') s += 1;
+  if (P.chance != null) s += P.chance < .3 ? 2 : P.chance < .6 ? 1 : 0;
+  if (P.net > 20) s += 2; else if (P.net > 8) s += 1;
+  if (d.ap <= -2) s += 2; else if (d.ap <= -.8) s += 1;
+  if (d.imp >= 4) s += 2; else if (d.imp >= 1.5) s += 1;
+  if (d.esc >= 5) s += 1;
+  if (P.vago) s += 1;
+  return s >= 5 ? 'alto' : s >= 3 ? 'médio' : 'baixo';
+}
+function previaTexto(g, texto, grav) {
+  const R = { texto, ok: false }; const antesModo = PREVIA_MODO, rnd0 = Math.random; PREVIA_MODO = true;
+  Math.random = () => .5; // sem sorteios: a prévia é o valor esperado (a aplicação real varia poucos décimos de ponto)
+  try {
+    const c = structuredClone(g);
+    const prop = analisaLocal(c, texto); if (!prop) return R;
+    gvMarca(c, prop, texto); prop.fromEvento = true; tbMarca(prop, texto); // as mesmas marcas que decidir() põe antes do parecer
+    const k = prop.scale, ce = prop.cond && !prop.cond.jaVale && prop.cond.pleno ? prop.cond.pleno : null, pe = ce ? (prop.cond.p || 0) : 1;
+    const pc = (x) => (ce ? (ce[x] || 0) * pe : (prop[x] || 0));
+    R.custo = pc('cost') * k; R.rec = pc('rev') * k; R.net = R.custo - R.rec; R.extra = pc('extra') * k; R.once = pc('once') * k;
+    R.inst = prop.inst; R.instNome = PV_INST[prop.inst] || prop.inst; R.cong = precisaCongresso(prop.inst); R.stf = prop.stf && prop.stf.nivel; R.vago = !!prop.vago;
+    if (R.cong) { const q = quorum(prop.inst), v = projetaVotos(c, prop); R.chance = chanceVotos(v.totC, q.c, 4.5) * chanceVotos(v.totS, q.s, 1.7); }
+    const m0 = pvMede(c), g0 = { ...c.groups };
+    const ex = executaProposta(c, prop, 'aprovada'); // a função real de aplicação
+    R.d = pvDelta(m0, pvMede(c)); R.grupos = pvGrupos(g0, c.groups); R.medida = ex && ex.medida ? ex.medida.pleno : null; R.repetida = !!prop.repetida;
+    R.risco = pvRisco(R, grav); R.ok = true;
+  } catch (e) { if (typeof console !== 'undefined') console.warn('previaTexto', e); }
+  finally { PREVIA_MODO = antesModo; Math.random = rnd0; }
+  return R;
+}
+// "não agir": o que a crise cobra ao encerrar o mês (mesma conta de fimDoMes: M.ignora × gravidade × antecipação × viagem)
+function previaIgnorar(g, ev) {
+  const R = { ok: false, ignorar: true, net: 0 };
+  try {
+    const c = structuredClone(g), M = modoDe(g);
+    const m0 = pvMede(c), g0 = { ...c.groups };
+    if (ev.ignorar && Object.keys(ev.ignorar).length) applyFx(c, ev.ignorar, M.ignora * qvSev(g) * (g.eventoAntecip ? .75 : 1) * (emViagem(g) ? 1.15 : 1));
+    R.d = pvDelta(m0, pvMede(c)); R.grupos = pvGrupos(g0, c.groups); R.risco = pvRisco(R, ev.grav); R.ok = true;
+  } catch (e) { if (typeof console !== 'undefined') console.warn('previaIgnorar', e); }
+  return R;
+}
+function pvInerte(P) {
+  if (!P || !P.ok || P.ignorar) return false;
+  const sem = !(Math.abs(P.custo || 0) > .005 || Math.abs(P.rec || 0) > .005 || P.extra > .005 || P.once > .005);
+  return sem && !P.grupos.gan.length && !P.grupos.per.length && !PV_IND.some(i => Math.abs(P.d[i.k] || 0) >= i.min);
+}
+const PV_CSS = `
+.cr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:16px}
+.cr-op{display:flex;flex-direction:column;gap:8px;padding:12px 14px;background:var(--panel);border:1px solid var(--line2);border-radius:12px;min-width:0}
+.cr-op.nao{border-style:dashed}
+.cr-h{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cr-h b{font-family:var(--f-disp);font-size:17px;text-transform:uppercase;letter-spacing:.01em}
+.cr-tx{font-size:12px;color:var(--muted);line-height:1.35}
+.cr-row{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.cr-k{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-right:2px}
+.cr-ch{font-family:var(--f-mono);font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.cr-ch.bom{color:var(--verde);border-color:color-mix(in srgb,var(--verde) 45%,transparent)}
+.cr-ch.mau{color:var(--rubro);border-color:color-mix(in srgb,var(--rubro) 45%,transparent)}
+.cr-ch.ouro{color:var(--ouro);border-color:color-mix(in srgb,var(--ouro) 45%,transparent)}
+.cr-inerte{font-size:12px;padding:6px 8px;border-radius:8px;background:color-mix(in srgb,var(--rubro) 10%,transparent);line-height:1.35}
+.cr-btn{margin-top:auto;justify-content:center}
+`;
+const fmtD = (v, d) => (v > 0 ? '+' : v < 0 ? '−' : '') + fmt(Math.abs(v), d);
+function PreviaOpcao({ P, g, ev, o, idx, semAcoes, decidir, ign }) {
+  const cor = { baixo: 'var(--verde)', 'médio': 'var(--ouro)', alto: 'var(--rubro)' };
+  const btn = !ign && html`<button type="button" className="btn btn-ghost text-sm cr-btn" disabled=${semAcoes} title=${o.t} onClick=${() => decidir(o.t, true)}><${Icon} n="ChevronRight" s=${14} />${o.l}</button>`;
+  if (!P || !P.ok) return html`<div className="cr-op" data-crise-op=${ign ? 'ignorar' : idx}><div className="cr-h"><b>${ign ? 'Não agir' : o.l}</b></div>${!ign && html`<div className="cr-tx">${o.t}</div>`}${btn}</div>`;
+  const inerte = !ign && (pvInerte(P) || pvNada(ev, o));
+  const ind = PV_IND.filter(i => Math.abs(P.d[i.k] || 0) >= i.min);
+  const gr = (L) => L.map(x => html`<span key=${x.k} className=${'cr-ch ' + (x.d > 0 ? 'bom' : 'mau')} data-pv-grupo=${x.k}>${x.nome} ${fmtD(x.d, 1)}</span>`);
+  const tem = (x) => Math.abs(x) > .005;
+  const ign0 = descreveIgnorar(ev, g);
+  return html`<div className=${'cr-op' + (ign ? ' nao' : '')} data-crise-op=${ign ? 'ignorar' : idx} data-risco=${P.risco}>
+    <div className="cr-h"><b>${ign ? 'Não agir' : o.l}</b><${Tag} cor=${cor[P.risco]}><span data-risco-rot="1">risco ${P.risco}</span></${Tag}></div>
+    ${ign ? html`<div className="cr-tx">Ignorar a crise: ela segue em aberto e cobra ao encerrar o mês.</div>` : html`<div className="cr-tx">${o.t}</div>`}
+    <div className="cr-row" data-pv="custo">
+      ${ign ? html`<span className="cr-ch">sem ato · sem custo fiscal</span>` : html`
+        <span className="cr-ch ouro" data-pv-inst="1">${P.instNome}${P.cong ? ' · precisa do Congresso' + (P.chance != null ? ' (' + fmtChance(P.chance) + ')' : '') : ''}</span>
+        ${tem(P.custo) && html`<span className="cr-ch mau" data-pv-custo="1">gasto ${bi(P.custo)}/ano</span>`}
+        ${tem(P.rec) && html`<span className="cr-ch bom" data-pv-rec="1">receita ${bi(P.rec)}/ano</span>`}
+        ${P.extra > .005 && html`<span className="cr-ch mau" data-pv-extra="1">único ${bi(P.extra)}</span>`}
+        ${P.once > .005 && html`<span className="cr-ch bom" data-pv-once="1">receita única ${bi(P.once)}</span>`}
+        ${!(tem(P.custo) || tem(P.rec) || P.extra > .005 || P.once > .005) && html`<span className="cr-ch" data-pv-custo="0">sem custo fiscal</span>`}`}
+    </div>
+    ${(P.grupos.gan.length > 0 || P.grupos.per.length > 0) && html`<div className="cr-row" data-pv="grupos"><span className="cr-k">grupos</span>${gr(P.grupos.gan)}${gr(P.grupos.per)}</div>`}
+    ${ind.length > 0 && html`<div className="cr-row" data-pv="ind"><span className="cr-k">${ign ? 'cobra' : P.cong ? 'se aprovada' : 'indicadores'}</span>${ind.map(i => { const v = P.d[i.k]; return html`<span key=${i.k} className=${'cr-ch ' + (v * i.b > 0 ? 'bom' : 'mau')} data-pv-ind=${i.k}>${i.n} ${fmtD(v, i.d)}${i.u}</span>`; })}</div>`}
+    ${!ign && P.medida && html`<div className="cr-tx">Efeito pleno em ${P.medida}; o que vem depois chega mês a mês.</div>`}
+    ${!ign && P.repetida && html`<div className="cr-tx">Medida parecida já está em vigor: não soma de novo.</div>`}
+    ${inerte && html`<div className="cr-inerte" data-pv-inerte="1"><b>Não age de fato.</b> Sem medida concreta: o problema de fundo segue${ign0 !== 'nenhum custo direto' ? ' (' + ign0 + ')' : ' e a crise não cobra preço direto'}.</div>`}
+    ${ign && ign0 === 'nenhum custo direto' && html`<div className="cr-tx">Sem custo direto, mas a crise segue em aberto.</div>`}
+    ${btn}
+  </div>`;
+}
+
 /* ---- crise do mês (cartão completo, usado na Mesa e na gaveta) ---- */
 function CartaoCrise({ g, upd, decidir }) {
   const ev = EV(g);
+  const chavePv = ev ? [ev.id, g.mes, g.eventoUF, g.log.length, g.acoes, g.aprMes, (g.medidas || []).length, g.eventoOk ? 1 : 0].join('|') : '';
+  const pv = useMemo(() => { // prévia das opções: roda a aplicação real sobre um clone (I5)
+    if (!ev || g.eventoOk) return null;
+    return { ops: ev.opcoes.map(o => previaTexto(g, o.t, ev.grav)), ign: previaIgnorar(g, ev) };
+  }, [chavePv]);
   if (!ev) return null;
   const semAcoes = g.acoes <= 0 || g.pes.energia < 10;
   const gravCor = { alta: 'var(--rubro)', media: 'var(--ambar)', baixa: 'var(--anil)' };
@@ -17116,8 +17235,11 @@ function CartaoCrise({ g, upd, decidir }) {
           <div className="min-w-0"><h2 className="disp text-3xl font-extrabold uppercase leading-tight">${EVENTO_PAIS[ev.id] ? html`<${Bandeira} iso=${PAIS_REF[EVENTO_PAIS[ev.id]].iso} tam=${32} est=${{ marginRight: 10, verticalAlign: '-3px' }} />` : null}${ev.titulo}</h2>
           <p className="text-[15px] mt-1 max-w-2xl">${ev.texto}</p></div>
         </div>
+        ${!g.eventoOk && pv && html`<style>${PV_CSS}</style><div className="cr-grid" data-crise-opcoes="1">
+          ${ev.opcoes.map((o, i) => html`<${PreviaOpcao} key=${o.l} P=${pv.ops[i]} g=${g} ev=${ev} o=${o} idx=${i} semAcoes=${semAcoes} decidir=${decidir} />`)}
+          <${PreviaOpcao} key="ign" P=${pv.ign} g=${g} ev=${ev} ign=${true} />
+        </div>`}
         ${!g.eventoOk && html`<div className="flex flex-wrap gap-2 mt-4">
-          ${ev.opcoes.map(o => html`<button key=${o.l} className="btn btn-ghost text-sm" disabled=${semAcoes} title=${o.t} onClick=${() => decidir(o.t, true)}><${Icon} n="ChevronRight" s=${14} />${o.l}</button>`)}
           <button className="btn btn-ghost text-sm" disabled=${g.eventoIgn} onClick=${() => upd(n => { ignoraCrise(n); })} title="Marca a crise como ignorada agora. A cobrança continua valendo no fim do mês; você ganha −3 de estresse."><${Icon} n="EyeOff" s=${14} /> Ignorar esta crise</button>
         </div>`}
         ${!g.eventoOk && temIgn && html`<div className="text-xs text-muted mt-3" data-se-ignorar="1">Se ignorar: ${descreveIgnorar(ev, g)}.${g.eventoIgn ? ' (será cobrado ao encerrar o mês)' : ''}</div>`}
@@ -25617,6 +25739,7 @@ function qvSom(nome, forca) {
   } catch (e) { return false; }
 }
 function qvSomRes(resultado, prop) {
+  if (PREVIA_MODO) return;
   try {
     if (resultado === 'derrubada') { qvSom('stf'); return; }
     if (prop && precisaCongresso(prop.inst)) qvSom(resultado === 'aprovada' ? 'aprovada' : 'rejeitada');
