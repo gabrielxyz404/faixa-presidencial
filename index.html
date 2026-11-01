@@ -17095,8 +17095,8 @@ const TB_LEV = [
   {
     id: 'abono', grupo: 'Proteção ao desempregado', nome: 'Abono salarial (PIS/Pasep)', icone: 'Coins', eng: 'ok',
     atual: g => tbReg(g).abono === 0 ? 'até 2 SM (corrige pelo INPC até 1,5 SM em 2035, EC 135/2024)' : (tbReg(g).abono > 0 ? 'ampliado' : 'reduzido'),
-    vals: g => [{ v: 1, rot: 'ampliar' }, { v: -1, rot: 'reduzir' }],
-    texto: (g, v) => v > 0 ? 'PEC que amplia o abono salarial PIS/Pasep para quem ganha até dois salários mínimos' : 'PEC que reduz o abono salarial PIS/Pasep',
+    vals: g => [{ v: 1, rot: 'manter o teto de 2 SM (revogar a regra de 2035)' }, { v: -1, rot: 'reduzir' }],
+    texto: (g, v) => v > 0 ? 'PEC que mantém o teto do abono salarial PIS/Pasep em dois salários mínimos, sem a redução gradual da EC 135/2024' : 'PEC que reduz o abono salarial PIS/Pasep',
     inst: () => 'PEC', base: 'CF, art. 239, §3º fixa o abono (já alterado pela EC 135/2024). Mudar o valor ou o teto de renda: emenda.',
     det: nt => /(abono salarial|pis.?pasep)/.test(nt) && !/seguro/.test(nt) ? (/(reduz|corta|menos|diminu|acab|extin)/.test(nt) ? -1 : 1) : null,
     ef: (g, v) => ({ reg: { abono: Math.max(-1, Math.min(1, tbReg(g).abono + v)) }, dcc: 0, nota: 'Transferência a trabalhadores de baixa renda (26,9 mi de beneficiários em 2026); não muda a composição do emprego.' })
@@ -17206,8 +17206,8 @@ const TB_LEV = [
   {
     id: 'licenca', grupo: 'Jornada e remuneração', nome: 'Licença-paternidade', icone: 'Baby', eng: 'falta',
     atual: g => tbN(tbReg(g).licPat) + ' dias' + (tbReg(g).licPat < 20 ? ' (20 dias em 2029)' : ''),
-    vals: g => [20, 30].filter(x => x > tbReg(g).licPat).map(v => ({ v, rot: v + ' dias' })),
-    texto: (g, v) => `Projeto de lei que amplia a licença-paternidade para ${v} dias, paga pela Previdência`, inst: () => 'PL',
+    vals: g => [20, 30].filter(x => x > tbReg(g).licPat).map(v => ({ v, rot: v === 20 && tbReg(g).licPat < 20 ? '20 dias já (antecipar 2029)' : v + ' dias' })),
+    texto: (g, v) => v <= 20 && tbReg(g).licPat < 20 ? 'Projeto de lei que antecipa para já os 20 dias de licença-paternidade previstos para 2029, pagos pela Previdência' : `Projeto de lei que amplia a licença-paternidade para ${v} dias, paga pela Previdência`, inst: () => 'PL',
     base: 'CF, art. 7º, XIX e ADCT, art. 10, §1º; lei de 31/03/2026 escalonou 10, 15 e 20 dias (2027 a 2029). Mudar o calendário: lei ordinária.',
     det: nt => /licenca.?paternidade/.test(nt) ? (tbNumsTxt(nt).filter(n => n >= 6 && n <= 120)[0] || 20) : null,
     ef: (g, v) => ({ reg: { licPat: v }, dcc: (v - tbReg(g).licPat) * .02, nota: 'Custo recai sobre a Previdência (reembolso a micro e pequenas); efeito pequeno sobre o emprego.' }),
@@ -17565,9 +17565,35 @@ const psSemAcoes = (g) => g.acoes <= 0 || g.pes.energia < 10;
 const psTitulo = (g) => (psSemAcoes(g) ? (g.acoes <= 0 ? 'Sem ações políticas neste mês' : 'Energia esgotada') : 'Custa 1 ação política e passa pelo parecer da Casa Civil');
 const PS_COR = { saude: 'var(--verde)', educacao: 'var(--anil)', infratransp: 'var(--ambar)', justica: 'var(--ouro)', seguranca: 'var(--rubro)' };
 function PsAcoes({ g }) { return html`<span className=${'gv-chip ' + (g.acoes > 0 ? 'ouro' : 'neg')}>${g.acoes}/5 ações</span>`; }
+// programa já em vigor no save: medida sua (ativa, suspensa, aguardando gatilho ou consolidada) cujo tema casa com a regex `rx` do programa
+const PS_TOPICO = new Map(); // texto do programa -> tema que o motor lê (cache: o tema não depende do estado do jogo)
+function psTopico(g, a) {
+  if (!PS_TOPICO.has(a.t)) { let tp = null; try { const p = analisaLocal(g, a.t); tp = p && p.topic ? p.topic : null; } catch (e) { tp = null; } PS_TOPICO.set(a.t, tp); }
+  return PS_TOPICO.get(a.t);
+}
+function psVigor(g, a) {
+  const vivas = medL(g).filter(m => medAtivo(m) || m.estado === 'consolidada');
+  if (!vivas.length) return null;
+  const tp = psTopico(g, a);
+  const L = vivas.filter(m => (tp && m.topic === tp) || (a.rx && a.rx.test(norm(m.topic || m.nm || ''))));
+  return L.length ? L[L.length - 1] : null;
+}
 // cartão de programa: ícone, título, efeito em uma linha, botão. O cartão inteiro é o botão (data-prog) que manda a proposta ao motor.
+// Se o save já tem medida que cobre o programa, vira cartão "Em vigor" (fase da medida, link para Medidas e, se houver, o próximo passo).
 function PsProg({ g, a, pa, cor, decidir }) {
   const off = psSemAcoes(g) || !decidir;
+  const M = psVigor(g, a);
+  if (M) {
+    const fase = medFase(g, M), fr = MED_FASE_ROT[fase], est = MED_ESTADOS[M.estado] || MED_ESTADOS.ativa;
+    const rot = M.estado === 'ativa' && fr ? fr : est;
+    return html`<div key=${a.l} className="mx-act" style=${{ '--c': 'var(--verde)', cursor: 'default' }} data-prog=${pa} data-prog-vigor=${M.id}>
+      <span className="mx-act-h"><span className="gv-ic" style=${{ '--c': 'var(--verde)' }}><${Icon} n="Check" s=${18} /></span><span>${a.l}</span><span></span></span>
+      <span className="mx-txt c2">Em vigor: ${M.nm || M.topic}</span>
+      <span className="gv-chips"><span className="gv-chip" style=${{ color: 'var(--verde)', borderColor: 'var(--verde)' }}>Em vigor</span><span className="gv-chip" data-prog-fase="1" style=${{ color: rot[1] }}>${rot[0]}</span></span>
+      <span className="flex flex-wrap gap-2 self-start ps-go"><a href="#medidas" className="btn btn-ghost btn-sm" data-prog-medidas="1">Ver em Medidas</a>
+        ${a.p2 ? html`<button type="button" className="btn btn-pri btn-sm" data-prog-prox=${pa} disabled=${off} title=${a.p2.t} onClick=${() => decidir(a.p2.t)}><${Icon} n="Send" s=${14} /> ${a.p2.l}</button>` : null}</span>
+    </div>`;
+  }
   return html`<button key=${a.l} type="button" className="mx-act" style=${{ '--c': cor }} data-prog=${pa} disabled=${off} title=${psTitulo(g)} onClick=${() => decidir(a.t)}>
     <span className="mx-act-h"><span className="gv-ic" style=${{ '--c': cor }}><${Icon} n=${a.i} s=${18} /></span><span>${a.l}</span><span></span></span>
     <span className="mx-txt c2">${a.t}</span>
@@ -19095,12 +19121,12 @@ function OrcamentoArea({ g, decidir, area }) {
 }
 function OrcFonte({ area }) { return html`<span className="block mt-2" data-orc-fonte=${area}><b className="text-fg">Orçamento da área.</b> ${ORC_FONTE[area]}</span>`; }
 const SAU_PROG = [
-  { l: 'Ampliar o Mais Médicos', t: 'Ampliar o Programa Mais Médicos, com mais vagas e incentivo à fixação de médicos no interior e nas periferias', i: 'Stethoscope' },
-  { l: 'Mutirão nacional de cirurgias eletivas', t: 'Lançar um mutirão nacional de cirurgias eletivas para reduzir as filas do SUS', i: 'Hospital' },
-  { l: 'Ampliar a Farmácia Popular', t: 'Ampliar o programa Farmácia Popular, com mais medicamentos gratuitos', i: 'Pill' },
-  { l: 'Campanha nacional de vacinação', t: 'Lançar uma campanha nacional de vacinação para recuperar as coberturas vacinais', i: 'Syringe' },
-  { l: 'Reforçar o combate à dengue', t: 'Reforçar o combate à dengue com vigilância, mutirões de limpeza e a vacina', i: 'Bug' },
-  { l: 'Expandir leitos de UTI', t: 'Expandir leitos de UTI e de retaguarda nos hospitais do SUS', i: 'Bed' }
+  { l: 'Carreira médica do SUS', t: 'Criar a carreira federal de médico do SUS, com concurso, dedicação exclusiva e adicional de fixação no interior, R$ 4 bilhões por ano', i: 'Stethoscope', rx: /carreira (federal )?(de |do )?medic|medico do sus/, p2: { l: 'Mais R$ 2 bi na carreira', t: 'Elevar em mais R$ 2 bilhões por ano o adicional de fixação da carreira federal de médico do SUS no interior' } },
+  { l: 'Prazo máximo para cirurgias eletivas', t: 'Pagar R$ 3 bilhões por ano a hospitais privados para zerar a fila de cirurgias eletivas com mais de 180 dias de espera, e fixar esse prazo máximo em lei', i: 'Hospital', rx: /fila de cirurgias eletivas/, p2: { l: 'Prazo de 90 dias', t: 'Pagar mais R$ 2 bilhões por ano a hospitais privados para reduzir de 180 para 90 dias o prazo máximo de espera por cirurgia eletiva no SUS' } },
+  { l: 'GLP-1 na Farmácia Popular', t: 'Incluir no Farmácia Popular os medicamentos para obesidade e diabetes do tipo GLP-1, como a semaglutida, com R$ 3 bilhões por ano', i: 'Pill', rx: /glp|semaglutida|obesidade/, p2: { l: 'Mais R$ 2 bi em GLP-1', t: 'Elevar em mais R$ 2 bilhões por ano a oferta gratuita de medicamentos GLP-1 para obesidade no Farmácia Popular' } },
+  { l: 'Vacina contra herpes-zóster', t: 'Incluir no calendário do SUS a vacina contra herpes-zóster para maiores de 60 anos, R$ 1,5 bilhão por ano', i: 'Syringe', rx: /zoster/ },
+  { l: 'Mosquitos com Wolbachia', t: 'Criar uma segunda fábrica de mosquitos com Wolbachia contra a dengue, R$ 800 milhões', i: 'Bug', rx: /wolbachia/ },
+  { l: 'Mais 5 mil leitos de UTI', t: 'Financiar 5 mil novos leitos de UTI no SUS, em hospitais filantrópicos e municipais, com R$ 3 bilhões por ano', i: 'Bed', rx: /novos leitos de uti/, p2: { l: 'Mais 5 mil leitos', t: 'Financiar mais 5 mil novos leitos de UTI no SUS, no interior e nas periferias, com R$ 3 bilhões por ano' } }
 ];
 function PaisSeguranca({ g, upd, decidir }) {
   const [sel, setSel] = useState(g.cfg.estado && ELEITOS.gov[g.cfg.estado] ? g.cfg.estado : 'SP');
@@ -19127,37 +19153,37 @@ function PaisSaude({ g, upd, decidir }) {
   return html`<${PaisAreaAcao} g=${g} upd=${upd} decidir=${decidir} pa="saude" conv="sau" dp="saude" titulo="Saúde" sub="Situação nacional no jogo, com a linha de base real logo abaixo de cada número." grupos=${[{ itens: SAU_PROG }]} notas=${html`<${OrcFonte} area="saude" />`} orc="saude" />`;
 }
 const EDU_PROG = [
-  { l: 'Ampliar o Pé-de-Meia', t: 'Ampliar o Pé-de-Meia, com mais bolsas para estudantes do ensino médio público permanecerem na escola', i: 'Wallet' },
-  { l: 'Escola em tempo integral', t: 'Expandir as escolas de ensino em tempo integral em parceria com os estados', i: 'Clock' },
-  { l: 'Creches', t: 'Ampliar o número de creches públicas em parceria com os municípios', i: 'Baby' },
-  { l: 'Reajustar o piso dos professores', t: 'Reajustar o piso salarial dos professores', i: 'GraduationCap' },
-  { l: 'Alfabetização na idade certa', t: 'Lançar um programa nacional de alfabetização na idade certa', i: 'BookOpen' },
-  { l: 'Internet nas escolas', t: 'Conectar todas as escolas públicas à internet de alta velocidade', i: 'Wifi' },
-  { l: 'Vagas em universidades e institutos federais', t: 'Criar novas vagas e campi nas universidades e institutos federais', i: 'Landmark' },
-  { l: 'Merenda escolar (PNAE)', t: 'Aumentar o repasse da merenda escolar do PNAE', i: 'Utensils' },
-  { l: 'Transporte escolar', t: 'Ampliar o programa de transporte escolar rural', i: 'Bus' },
-  { l: 'Ensino técnico', t: 'Ampliar os cursos técnicos e profissionalizantes para jovens do ensino médio', i: 'Wrench' }
+  { l: 'Pé-de-Meia no fundamental II', t: 'Estender o Pé-de-Meia aos alunos do 8º e 9º ano do ensino fundamental da rede pública, R$ 3 bilhões por ano', i: 'Wallet', rx: /pe.de.meia.*fundamental|fundamental.*pe.de.meia/, p2: { l: 'Mais R$ 2 bi de Pé-de-Meia', t: 'Elevar em mais R$ 2 bilhões por ano o Pé-de-Meia para alunos do ensino fundamental' } },
+  { l: 'Mais 1 milhão de vagas em tempo integral', t: 'Elevar a meta do Escola em Tempo Integral em mais 1 milhão de matrículas, além das 3,2 milhões previstas, com R$ 3 bilhões por ano', i: 'Clock', rx: /mais 1 milhao de matriculas|meta do escola em tempo integral/, p2: { l: 'Mais 20% de matrículas', t: 'Elevar em mais 20% a meta de matrículas do Escola em Tempo Integral, com mais R$ 2 bilhões por ano' } },
+  { l: 'Vaga garantida em creche', t: 'Garantir vaga em creche a toda criança de 0 a 3 anos de famílias do CadÚnico, com R$ 5 bilhões por ano de cofinanciamento aos municípios', i: 'Baby', rx: /vaga em creche/, p2: { l: 'Creche em tempo integral', t: 'Pagar creche em tempo integral para crianças de 0 a 3 anos de famílias do CadÚnico, com mais R$ 3 bilhões por ano aos municípios' } },
+  { l: 'Adicional para professores de periferia', t: 'Pagar adicional de R$ 1.000 por mês a professores de escolas da periferia e da zona rural, com R$ 3 bilhões por ano', i: 'GraduationCap', rx: /adicional (de r\$ 1\.?000 )?.*professores/, p2: { l: 'Adicional de R$ 1.500', t: 'Elevar para R$ 1.500 por mês o adicional dos professores de escolas da periferia e da zona rural, com mais R$ 1 bilhão por ano' } },
+  { l: 'Reforço em leitura', t: 'Criar reforço escolar em contraturno para alunos do 2º ao 5º ano com atraso em leitura, R$ 2 bilhões por ano', i: 'BookOpen', rx: /reforco escolar/ },
+  { l: 'Notebooks para o ensino médio', t: 'Distribuir notebooks para 3 milhões de alunos do ensino médio público, R$ 4 bilhões', i: 'Laptop', rx: /notebooks/, p2: { l: 'Mais 2 milhões de notebooks', t: 'Distribuir mais 2 milhões de notebooks para alunos do ensino fundamental II da rede pública, R$ 2 bilhões' } },
+  { l: 'Vagas em licenciaturas e saúde', t: 'Criar 100 mil novas vagas em licenciaturas e cursos da saúde nas universidades federais, R$ 3 bilhões por ano', i: 'Landmark', rx: /licenciaturas/ },
+  { l: 'Café da manhã escolar', t: 'Criar o café da manhã escolar na rede pública, com R$ 3 bilhões por ano', i: 'Utensils', rx: /cafe da manha/ },
+  { l: 'Passe livre estudantil', t: 'Criar o passe livre nacional no transporte público para estudantes da rede pública de baixa renda, com R$ 4 bilhões por ano', i: 'Bus', rx: /passe livre/, p2: { l: 'Passe livre também nas férias', t: 'Estender o passe livre estudantil de baixa renda para os 12 meses do ano, com mais R$ 1 bilhão por ano' } },
+  { l: 'Mais vagas de ensino técnico', t: 'Ampliar em R$ 2 bilhões por ano os cursos técnicos para jovens do ensino médio, com 300 mil novas vagas gratuitas', i: 'Wrench', rx: /cursos tecnicos para jovens do ensino medio/ }
 ];
 const INFRA_GRUPOS = [
   { h: 'Saneamento e moradia', itens: [
-    { l: 'Acelerar água e esgoto (Marco do Saneamento)', t: 'Acelerar as obras de água e esgoto com recursos do Marco do Saneamento', i: 'Droplets' },
-    { l: 'Minha Casa Minha Vida', t: 'Ampliar o Minha Casa Minha Vida com mais unidades para famílias de baixa renda', i: 'Home' },
-    { l: 'Nova etapa do PAC', t: 'Lançar uma nova etapa do PAC com obras de infraestrutura', i: 'Construction' }] },
+    { l: 'Esgoto nos municípios pequenos', t: 'Criar linha de R$ 6 bilhões por ano do Orçamento da União para esgoto nos municípios pequenos fora das concessões do Marco do Saneamento', i: 'Droplets', rx: /esgoto nos municipios pequenos|municipios pequenos/, p2: { l: 'Mais R$ 3 bi de esgoto', t: 'Elevar em mais R$ 3 bilhões por ano a linha da União para esgoto nos municípios pequenos' } },
+    { l: 'Mais Minha Casa Minha Vida', t: 'Elevar a meta do Minha Casa Minha Vida em mais 1 milhão de moradias na Faixa 1, além das 3 milhões já previstas, R$ 8 bilhões por ano', i: 'Home', rx: /mais 1 milhao de moradias|meta do minha casa/, p2: { l: 'Mais 500 mil moradias', t: 'Elevar a meta do Minha Casa Minha Vida em mais 500 mil moradias na Faixa 1, R$ 4 bilhões por ano' } },
+    { l: 'Novo PAC 2027-2030', t: 'Lançar o Novo PAC 2027-2030, com R$ 300 bilhões em obras de infraestrutura', i: 'Construction', rx: /pac 2027/ }] },
   { h: 'Energia e comunicações', itens: [
-    { l: 'Luz para Todos: energia no campo e na Amazônia', t: 'Universalizar o acesso à energia elétrica nas áreas rurais', i: 'Zap' },
-    { l: 'Leilão de linhas de transmissão', t: 'Leiloar novas linhas de transmissão de energia elétrica', i: 'Cable' },
-    { l: '5G e internet rural', t: 'Levar internet 5G e banda larga para áreas rurais', i: 'Wifi' }] },
+    { l: 'Energia solar para famílias de baixa renda', t: 'Instalar energia solar em 500 mil casas de famílias de baixa renda, R$ 5 bilhões', i: 'Zap', rx: /energia solar/, p2: { l: 'Mais 500 mil casas com solar', t: 'Instalar energia solar em mais 500 mil casas de famílias de baixa renda, R$ 5 bilhões' } },
+    { l: 'Transmissão para o Nordeste', t: 'Criar fundo de R$ 5 bilhões por ano para antecipar linhas de transmissão que escoam energia solar e eólica do Nordeste', i: 'Cable', rx: /escoam energia|fundo.*transmissao/ },
+    { l: 'Internet rural por satélite', t: 'Criar programa de internet por satélite para 1 milhão de domicílios rurais, R$ 2 bilhões por ano', i: 'Wifi', rx: /internet por satelite/ }] },
   { h: 'Rodovias', itens: [
-    { l: 'Duplicar trechos de BRs', t: 'Duplicar as principais rodovias federais', i: 'Route' },
-    { l: 'Recuperar e manter as BRs (DNIT)', t: 'Recuperar e manter as rodovias federais com mais verba para o DNIT', i: 'Wrench' },
-    { l: 'Novos leilões de rodovias', t: 'Fazer novos leilões de concessão de rodovias federais', i: 'Handshake' },
-    { l: 'Pavimentar a BR-319 (polêmica ambiental)', t: 'Concluir a pavimentação da BR-319', i: 'Trees' },
-    { l: 'Segurança viária e radares', t: 'Ampliar a fiscalização e os radares nas rodovias federais para reduzir as mortes no trânsito', i: 'TriangleAlert' }] },
+    { l: 'Duplicar trechos de BRs', t: 'Duplicar 3 mil km de rodovias federais, com R$ 8 bilhões por ano', i: 'Route', rx: /3 mil km/, p2: { l: 'Mais 2 mil km duplicados', t: 'Duplicar mais 2 mil km de rodovias federais, com mais R$ 5 bilhões por ano' } },
+    { l: 'Manutenção das BRs (DNIT)', t: 'Elevar em R$ 3 bilhões por ano a verba de manutenção do DNIT para recuperar 15 mil km de rodovias federais', i: 'Wrench', rx: /manutencao do dnit|15 mil km/ },
+    { l: 'Leilão de 6 mil km de rodovias', t: 'Leiloar mais 6 mil km de rodovias federais, com pedágio eletrônico free flow e obras obrigatórias de duplicação', i: 'Handshake', rx: /6 mil km/ },
+    { l: 'Pavimentar a BR-319 (polêmica ambiental)', t: 'Concluir a pavimentação da BR-319', i: 'Trees', rx: /br.?319/ },
+    { l: '3 mil radares nas BRs', t: 'Instalar 3 mil novos radares e câmeras de fiscalização eletrônica em trechos críticos das rodovias federais, R$ 1 bilhão', i: 'TriangleAlert', rx: /3 mil novos radares/ }] },
   { h: 'Ferrovias, portos e mobilidade', itens: [
-    { l: 'Ferrogrão', t: 'Autorizar a concessão da Ferrogrão', i: 'TrainFront' },
-    { l: 'BRT e metrô nas capitais', t: 'Financiar BRT e metrô nas capitais', i: 'TramFront' },
-    { l: 'Cabotagem', t: 'Incentivar a cabotagem para transportar cargas pela costa', i: 'Ship' },
-    { l: 'Renovar a frota de caminhões', t: 'Financiar a renovação da frota de caminhões antigos', i: 'Truck' }] }
+    { l: 'Ferrovia Centro-Oeste (FICO)', t: 'Construir a Ferrovia de Integração do Centro-Oeste até Lucas do Rio Verde, R$ 6 bilhões', i: 'TrainFront', rx: /centro.oeste/ },
+    { l: 'Fundo de mobilidade urbana', t: 'Criar fundo federal de mobilidade urbana com R$ 5 bilhões por ano para metrô e BRT nas capitais', i: 'TramFront', rx: /fundo.*mobilidade/, p2: { l: 'Mais R$ 3 bi de mobilidade', t: 'Elevar em mais R$ 3 bilhões por ano o fundo federal de mobilidade urbana para metrô e BRT' } },
+    { l: 'Cabotagem: AFRMM pela metade', t: 'Reduzir pela metade o adicional de frete AFRMM da cabotagem e criar linha de crédito de R$ 3 bilhões para navios de cabotagem', i: 'Ship', rx: /afrmm/ },
+    { l: 'Bolsa-sucata para caminhões', t: 'Criar bolsa-sucata de R$ 20 mil por caminhão com mais de 30 anos entregue para desmonte, R$ 2 bilhões', i: 'Truck', rx: /sucata/ }] }
 ];
 function PaisAreaAcao({ g, upd, decidir, pa, conv, dp, titulo, sub, grupos, notas, ind0, orc }) {
   const [sel, setSel] = useState(g.cfg.estado && ELEITOS.gov[g.cfg.estado] ? g.cfg.estado : 'SP');
@@ -19196,16 +19222,16 @@ function PaisInfra({ g, upd, decidir }) {
   return html`<${PaisAreaAcao} g=${g} upd=${upd} decidir=${decidir} pa="infratransp" conv="infra" dp="infraestrutura" titulo="Infraestrutura e transportes" sub="Rodovias, saneamento, energia e conectividade: situação nacional no jogo, com a base real logo abaixo." grupos=${INFRA_GRUPOS} notas=${html`<span>${INFRA_NOTAS}<${OrcFonte} area="infra" /></span>`} ind0="rodovias_boas_pct" orc="infra" />`;
 }
 const JUS_GOV = [
-  { l: 'Reforçar o orçamento da PF', t: 'Reforçar o orçamento da Polícia Federal', i: 'Shield' },
-  { l: 'Autonomia da PF (PEC)', t: 'Enviar uma PEC dando autonomia funcional e orçamentária à Polícia Federal', i: 'ShieldCheck' },
-  { l: 'PGR com mandato fixo (PEC)', t: 'Enviar PEC dando mandato fixo e independência ao Procurador-Geral da República', i: 'Scale' },
-  { l: 'Cortar penduricalhos do Judiciário (PLP)', t: 'Enviar projeto de lei complementar para cortar penduricalhos do Judiciário', i: 'Gavel' },
-  { l: 'Teto remuneratório', t: 'Aplicar o teto remuneratório do funcionalismo e limitar os supersalários por lei', i: 'Banknote' },
-  { l: 'Fortalecer a CGU', t: 'Reforçar o orçamento da CGU para ampliar as auditorias e o combate à corrupção', i: 'FileSearch' },
-  { l: 'Lei anticorrupção e leniência', t: 'Reforçar a lei anticorrupção e os acordos de leniência', i: 'FileText' },
-  { l: 'Delação premiada', t: 'Regulamentar a delação premiada', i: 'Handshake' },
-  { l: 'Fim do sigilo de 100 anos (LAI)', t: 'Reforçar a Lei de Acesso à Informação e acabar com o sigilo de 100 anos', i: 'Eye' },
-  { l: 'Força-tarefa contra o crime organizado', t: 'Criar uma força-tarefa nacional contra o crime organizado e a lavagem de dinheiro', i: 'Siren' }
+  { l: 'Mais 3 mil cargos na PF', t: 'Criar mais 3 mil cargos de delegado, agente e perito na Polícia Federal, R$ 1 bilhão por ano', i: 'Shield', rx: /3 mil cargos/, p2: { l: 'Mais 2 mil cargos na PF', t: 'Criar mais 2 mil cargos de delegado, agente e perito na Polícia Federal, R$ 700 milhões por ano' } },
+  { l: 'Autonomia da PF (PEC)', t: 'Enviar uma PEC dando autonomia funcional e orçamentária à Polícia Federal', i: 'ShieldCheck', rx: /autonomia.*policia federal|policia federal.*autonomia/ },
+  { l: 'PGR com mandato único (PEC)', t: 'Enviar PEC fixando mandato único de 4 anos, sem recondução, ao Procurador-Geral da República', i: 'Scale', rx: /mandato unico/ },
+  { l: 'Cortar penduricalhos (PLP)', t: 'Enviar projeto de lei complementar com a lista nacional das únicas verbas indenizatórias permitidas ao Judiciário e ao Ministério Público, limitadas a 20% do teto', i: 'Gavel', rx: /lista nacional/ },
+  { l: 'Punir quem paga acima do teto', t: 'Enviar projeto de lei que enquadra como improbidade administrativa o pagamento de remuneração acima do teto constitucional, com devolução em dobro', i: 'Banknote', rx: /improbidade.*teto/ },
+  { l: 'Mais 1.500 auditores na CGU', t: 'Criar 1.500 cargos de auditor na CGU para ampliar as auditorias e o combate à corrupção, R$ 400 milhões por ano', i: 'FileSearch', rx: /1\.?500 cargos/ },
+  { l: 'Balcão único da leniência', t: 'Enviar projeto de lei que unifica a leniência em um balcão único, com CGU, AGU, MPF e TCU, e prazo máximo de 12 meses para fechar o acordo', i: 'FileText', rx: /balcao unico/ },
+  { l: 'Sem delação de preso preventivo', t: 'Enviar projeto de lei que proíbe acordo de delação premiada com réu preso preventivamente por mais de 30 dias', i: 'Handshake', rx: /preso preventivamente/ },
+  { l: 'Sigilo de 100 anos: vetar para gastos', t: 'Enviar projeto de lei que proíbe usar o sigilo de 100 anos para esconder gastos e agendas de agentes públicos', i: 'Eye', rx: /sigilo de 100 anos/ },
+  { l: 'Fundo contra as facções', t: 'Criar o Fundo Nacional de Combate às Facções, com R$ 3 bilhões por ano do perdimento de bens do crime organizado, para financiar a PF e as polícias civis', i: 'Siren', rx: /fundo nacional de combate/ }
 ];
 /* ============================== PAÍS: JUSTIÇA ============================== */
 /* Custos do Judiciário (CNJ, Justiça em Números, ano-base 2025, divulgado em 2026), escândalos de corrupção (fictícios, gerados na partida)
@@ -19696,8 +19722,8 @@ function SegurancaPublica({ g, decidir, sel: selP, setSel: setSelP, parte }) {
     { l: `Decretar GLO ${emUF(sel)}`, t: `Decretar GLO ${emUF(sel)} e enviar as Forças Armadas`, i: 'Gavel' }
   ];
   const nacionais = [
-    { l: 'Plano nacional de câmeras corporais', t: 'Lançar o plano nacional de câmeras corporais para as polícias estaduais', i: 'Camera' },
-    { l: 'Programa de prevenção da violência juvenil', t: 'Criar o programa nacional de prevenção da violência juvenil, com escola em tempo integral e esporte nas periferias', i: 'Users' }
+    { l: 'Mais 100 mil câmeras corporais', t: 'Equipar as polícias estaduais com 100 mil câmeras corporais, com gravação ininterrupta nas abordagens, R$ 600 milhões', i: 'Camera', rx: /100 mil cameras/ },
+    { l: 'Centros de Juventude nas periferias', t: 'Criar 2 mil Centros de Juventude com esporte e cultura nos bairros com mais homicídios, R$ 2 bilhões por ano', i: 'Users', rx: /centros de juventude/ }
   ];
   const btn = (a) => html`<button key=${a.l} className="btn btn-ghost justify-start text-sm text-left" disabled=${semAcoes} title=${semAcoes ? (g.acoes <= 0 ? 'Sem ações políticas neste mês' : 'Energia esgotada') : 'Custa 1 ação política e passa pelo parecer da Casa Civil'} onClick=${() => decidir(a.t)}><${Icon} n=${a.i} s=${15} /> ${a.l}</button>`;
   const topo = html`<div className="flex flex-col gap-4">
@@ -22085,10 +22111,10 @@ function MundoPanorama({ g, decidir, go }) {
   const M = g.mundo; const D = g.dip; const a = alin100(g); const me = mundoEcon(g);
   const acoes = [
     { l: 'Visita oficial a Washington', t: 'Fazer visita oficial aos Estados Unidos e reunião na Casa Branca', i: 'Plane', c: 'var(--anil)' },
-    { l: 'Cúpula do BRICS', t: 'Liderar a cúpula do BRICS e defender a desdolarização com a China', i: 'Globe', c: 'var(--rubro)' },
-    { l: 'Fechar acordo Mercosul-UE', t: 'Fechar o acordo comercial Mercosul-União Europeia', i: 'Handshake', c: 'var(--ouro)' },
-    { l: 'Pedir entrada na OCDE', t: 'Formalizar a adesão do Brasil à OCDE com abertura comercial', i: 'Landmark', c: 'var(--anil)' },
-    { l: 'COP: meta climática ambiciosa', t: 'Anunciar meta de desmatamento zero e transição energética na COP do clima', i: 'Leaf', c: 'var(--verde)' },
+    { l: 'Cúpula do BRICS na Índia', t: 'Participar da cúpula do BRICS na Índia e propor um sistema de pagamentos em moedas locais com a China', i: 'Globe', c: 'var(--rubro)' },
+    { l: 'Negociar Mercosul-Japão', t: 'Abrir negociação de acordo comercial entre o Mercosul e o Japão', i: 'Handshake', c: 'var(--ouro)' },
+    { l: 'Avançar na adesão à OCDE', t: 'Aderir ao Código de Liberalização de Capitais da OCDE como passo da adesão do Brasil', i: 'Landmark', c: 'var(--anil)' },
+    { l: 'COP: antecipar desmatamento zero', t: 'Anunciar na COP do clima a antecipação da meta de desmatamento zero de 2030 para 2028', i: 'Leaf', c: 'var(--verde)' },
     { l: 'Viagem comercial à China', t: 'Missão comercial à China para vender carne e soja e atrair investimentos', i: 'Ship', c: 'var(--ambar)' }
   ];
   const dec = decisaoAtual(g);
