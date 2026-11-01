@@ -2784,6 +2784,7 @@ function segTipos(prop) {
   if (cats.includes('seguranca_dura') || /\bglo\b|garantia da lei e da ordem/.test(s)) t.push('dura');
   if (cats.includes('seguranca_plano') || (/forca nacional/.test(s) && !cats.includes('ambiente'))) t.push('plano');
   if (cats.includes('garantista')) t.push('garantista');
+  if (/centros? de juventude|prevencao (?:d[aeo]s? )?violencia|violencia juvenil/.test(s) && !t.length) t.push('prevencao'); // lote A4: prevenção social também mexe em mortes violentas
   return t;
 }
 // efeitos esperados (percentuais; mviD em 6 meses, mviP em 10). Determinístico: o mesmo texto no mesmo jogo sempre dá o mesmo resultado.
@@ -2792,6 +2793,10 @@ function segPrevia(g, prop) {
   const tipos = segTipos(prop); if (!tipos.length) return null;
   const esc = segEscopo(g, prop.texto); const tx = norm(prop.texto);
   const fortes = esc.nomeado ? esc.ufs : segTop(g, 8);
+  // lote A2: cortar a verba (despesa negativa) de polícia/plano de segurança piora o resultado: sinal invertido, sem letalidade nem presos
+  const corte = (prop.cost || 0) < 0 && (tipos.includes('dura') || tipos.includes('plano'));
+  // lote A4: operação federal concentrada em 1-3 estados atua com mais intensidade onde está, e o efeito nacional sai ponderado pela população da UF (segMedia)
+  const conc = esc.nomeado && esc.ufs.length <= 3 ? 2 : 1;
   const efeitos = [];
   for (const u of esc.ufs) {
     const w = fortes.includes(u) ? 1 : .35;
@@ -2799,10 +2804,13 @@ function segPrevia(g, prop) {
     const e = { uf: u, w, mviD: 0, mviP: 0, letal: 0, presos: 0, controle: 0, retal: false };
     if (tipos.includes('dura')) { e.mviD = -(3 + 5 * r('a')) * w; e.letal += (15 + 15 * r('b')) * w; e.controle -= (4 + 4 * r('c')) * w; e.presos += 2 * w; if (w >= 1 && r('r') < .25) e.retal = true; }
     if (tipos.includes('plano')) { e.mviP = -(2 + 3 * r('d')) * w; e.controle -= (5 + 5 * r('e')) * w; if (/cameras corporais|controle externo/.test(tx)) e.letal -= (10 + 10 * r('f')) * w; }
-    if (tipos.includes('garantista')) { e.letal -= 20 * w; e.presos -= 3 * w; e.controle += 2 * w; }
+    if (tipos.includes('garantista')) { e.letal -= 20 * w; e.presos -= 3 * w; e.controle += 2 * w; e.mviP -= (.6 + 1.2 * r('g')) * w; } // menos mortes por intervenção policial: parte das mortes violentas
+    if (tipos.includes('prevencao')) { e.mviP -= (.8 + 1.4 * r('h')) * w; e.controle -= (1 + 2 * r('i')) * w; }
+    e.mviD *= conc; e.mviP *= conc;
+    if (corte) { e.mviD = -e.mviD; e.mviP = -e.mviP; e.controle = -e.controle; e.letal = 0; e.presos = 0; e.retal = false; }
     efeitos.push(e);
   }
-  return { tipos, nacional: !esc.nomeado, rotulo: esc.rotulo, efeitos };
+  return { tipos, nacional: !esc.nomeado, rotulo: esc.rotulo, efeitos, corte };
 }
 const segDesc = (e) => {
   const p = []; const mvi = e.mviD + e.mviP;
@@ -2814,7 +2822,7 @@ const segDesc = (e) => {
 };
 function segTextoPrevia(pv) {
   const fortes = pv.efeitos.filter(e => e.w >= 1); const fracos = pv.efeitos.length - fortes.length;
-  const prazo = [pv.tipos.includes('dura') ? 'mortes violentas em 6 meses (linha dura)' : null, pv.tipos.includes('plano') ? 'mortes violentas em 10 meses (plano e inteligência)' : null].filter(Boolean).join('; ');
+  const prazo = [pv.tipos.includes('dura') ? 'mortes violentas em 6 meses (linha dura)' : null, (pv.tipos.includes('plano') || pv.tipos.includes('prevencao') || pv.tipos.includes('garantista')) ? 'mortes violentas em 10 meses (' + (pv.corte ? 'corte de verba' : pv.tipos.includes('plano') ? 'plano e inteligência' : 'prevenção e controle da letalidade') + ')' : null].filter(Boolean).join('; ');
   let t;
   if (pv.nacional) t = `Estados afetados: ${fortes.map(e => e.uf).join(', ')}, os 8 de maior pressão do crime organizado (efeito pleno), e os outros ${fracos} com 35% do efeito. Exemplos: ${fortes.slice(0, 3).map(segDesc).join('; ')}.`;
   else t = `Estados afetados: ${fortes.slice(0, 8).map(segDesc).join('; ')}${fortes.length > 8 ? ` e mais ${fortes.length - 8}` : ''}.`;
@@ -3107,7 +3115,7 @@ P('ensino_domiciliar', 'o ensino domiciliar', 'educacao domiciliar|homeschool\\w
 P('minha_casa', 'o Minha Casa Minha Vida', 'minha casa|minha vida|moradia\\w*|habitacao|habitacional|casas? populares|casas para|aluguel social|desabrigad\\w+|sem.?teto|conjuntos? habitaciona\\w+', { ch: 'invest', base: 14, def: 8, cap: 50, ben: .5, b: 'pobres', rg: 'urb', pob: .5, lag: 9, pa: 'infra', pn: 'Cidades', inst: 'MP', uc: 60000, emp: 1.6, e: { des: -.02 }, iv: [-.4, 0], cat: 'moradia', nota: 'Construção civil emprega rápido; atenção a conjuntos em áreas sem infraestrutura.' });
 P('infra_geral', 'o pacote de obras de infraestrutura', 'transmissao de energia|linhas? de transmissao|rede eletrica|infraestrutura|obras? publicas?|\\bobras?\\b|\\bpac\\b|novo pac|investimentos? em obras|investimento publico|rodovias?|estradas?|ferrovias?|pontes?|portos?|aeroportos?|hidrovias?|duplicacao|duplicar|asfaltar|pavimentar|pavimentacao|corredor logistico', { ger: 1, ch: 'invest', base: 70, def: 15, cap: 100, b: 'emp', rg: 'pop', pob: .15, lag: 8, pa: 'infra', pn: 'Transportes', inst: 'ADM', ukm: 3000000, emp: 1.4, val: { caminhoneiros: 3, agro: 2, empresariado: 2 }, cat: 'infra', iv: [-.1, 0], nota: 'TCU costuma apontar sobrepreço em obras; licenciamento ambiental pode atrasar.' });
 P('br319', 'a BR-319 (Manaus–Porto Velho)', 'br.?319|rodovia manaus.?porto velho|estrada de manaus', { ch: 'invest', base: 0, def: 3, cap: 10, b: 'cam', rg: 'amaz', pob: .2, lag: 14, pa: 'infra', pn: 'Transportes', inst: 'ADM', ukm: 4000000, emp: 1.4, val: { caminhoneiros: 3, agro: 3, empresariado: 2, indigenas: -8, universitarios: -5 }, desm: 600, d: { ue: -3 }, cat: 'desenvolvimento', iv: [.2, .2], nota: 'O licenciamento do trecho do meio é o gargalo; desmatamento no entorno aumenta com a pavimentação.' });
-P('ferrovias', 'as ferrovias', 'ferrovia\\w*|trem de carga|ferrograo|trens? de passageiros|trem bala|tav\\b', { ch: 'invest', base: 5, def: 8, cap: 60, b: 'emp', rg: 'agro', pob: .1, lag: 24, pa: 'infra', inst: 'ADM', ukm: 25000000, emp: 1.4, val: { agro: 4, empresariado: 3, caminhoneiros: -2 }, cat: 'infra', iv: [.1, 0] });
+P('ferrovias', 'as ferrovias', 'ferrovia\\w*|trem de carga|ferrograo|trens? de passageiros|trem bala|tav\\b', { ch: 'invest', base: 5, def: 8, cap: 60, b: 'emp', rg: 'agro', pob: .1, lag: 16, mult: 2.4, pa: 'infra', inst: 'ADM', ukm: 25000000, emp: 1.4, val: { agro: 4, empresariado: 3, caminhoneiros: -2 }, cat: 'infra', iv: [.1, 0] });
 P('portos_aeroportos', 'os portos e aeroportos', 'portos?|aeroportos?|terminais portuarios|dragagem|porto de santos', { ch: 'invest', base: 4, def: 5, cap: 30, b: 'emp', rg: 'pop', lag: 14, pa: 'infra', pn: 'Portos e Aeroportos', inst: 'ADM', val: { agro: 3, empresariado: 3 }, cat: 'infra', iv: [.2, 0] });
 P('saneamento', 'o saneamento básico', 'saneamento\\w*|esgoto|agua tratada|agua encanada|marco do saneamento|abastecimento de agua', { ch: 'invest', base: 6, def: 10, cap: 60, b: 'pobres', rg: 'pobre', pob: .6, lag: 18, pa: 'infra', pn: 'Cidades', inst: 'ADM', idh: .003, emp: 1.5, cat: 'infra', iv: [-.1, 0] });
 P('seca_hidrica', 'as obras hídricas do semiárido', 'semiarido|transposicao|sao francisco|cisternas?|poco\\w* artesiano\\w*|combate a seca|seca no nordeste|adutora\\w*|dessaliniza\\w+', { ch: 'invest', base: 3, def: 3, cap: 15, b: 'rural', rg: 'semi', pob: .7, lag: 12, pa: 'infra', pn: 'Integração Regional', inst: 'ADM', idh: .002, emp: 1.4, cat: 'infra', iv: [-.2, 0] });
@@ -3452,7 +3460,7 @@ function fiscPos(A) {
 P('mae_auxilio', 'o auxílio às mães e gestantes', 'maes? solo|maes? solteiras?|mae atipica|auxilio.?mae|bolsa.?mae|auxilio.?gestante|licenca.?maternidade|auxilio.?creche|chefes de familia mulheres', { ch: 'transf', base: 0, ex: 0, def: 5, cap: 40, ben: 3, vu: 300, fr: 12, b: 'pobres', rg: 'pobre', pob: .8, lag: 3, pa: 'casacivil', pn: 'Desenvolvimento e Assistência Social', inst: 'MP', val: { catolicos: 2, evangelicos: 1.5, universitarios: 1 }, iv: [-.5, 0], cat: 'programa_social', ax: { gasto_social: -1 }, pf: 'transferencia', nota: 'Programa focalizado depende do Cadastro Único.' });
 P('desenrola', 'o programa de renegociação de dívidas (Desenrola)', 'desenrola|renegociacao de dividas|dividas das familias|limpa nome|endividamento das familias|perdao de dividas|negativados|inadimplencia das familias|fundo garantidor de dividas', { ch: 'subs', base: 0, ex: 0, def: 3, cap: 25, b: 'media', rg: 'urb', pob: .4, lag: 3, pa: 'fazenda', inst: 'MP', val: { periferia: 3, classemedia: 3, mercado: -1.5, empresariado: .5 }, iv: [-.3, 0], cat: 'programa_social', ax: { gasto_social: -1 }, st: { bancos: -1, varejo: 2 }, pf: 'desenrola', nota: 'O custo fiscal é a garantia do Fundo Garantidor; bancos concedem os descontos.' });
 P('fies', 'o Fies e o Prouni', '\\bfies\\b|\\bprouni\\b|financiamento estudantil|credito educativo|bolsas? integrais?|bolsa de estudo|isencao de mensalidade', { ch: 'educ', base: 12, def: 4, cap: 20, ben: 1.2, vu: 700, fr: 12, b: 'jov', rg: 'urb', pob: .35, lag: 6, pa: 'educacao', inst: 'MP', val: { universitarios: 5, classemedia: 2, periferia: 1.5 }, iv: [-.2, -.1], cat: 'educacao', idh: .0015, ax: { gasto_social: -1 }, st: { servicos: 1 } });
-P('primeiro_emprego', 'o programa de primeiro emprego e aprendizagem', 'primeiro emprego|emprego jovem|jovem aprendiz|aprendizagem profissional|estagio|bolsa estagio|contratacao de jovens|qualificacao profissional|capacitacao profissional|requalificacao|\\bsenai\\b|\\bsenac\\b|sistema s\\b', { ch: 'subs', base: 3, def: 3, cap: 20, ben: 1, vu: 500, fr: 12, b: 'jov', rg: 'urb', pob: .3, lag: 6, pa: 'casacivil', pn: 'Trabalho e Emprego', inst: 'MP', emp: 1.6, lab: -.003, val: { universitarios: 3, periferia: 2, empresariado: 1 }, iv: [-.1, 0], cat: 'trabalho', ax: { trabalho: -1 }, st: { servicos: 1 } });
+P('primeiro_emprego', 'o programa de primeiro emprego e aprendizagem', 'primeiro emprego|emprego jovem|jovem aprendiz|aprendizagem profissional|estagio|bolsa estagio|contratacao de jovens|qualificacao profissional|capacitacao profissional|requalificacao|\\bsenai\\b|\\bsenac\\b|sistema s\\b', { ch: 'subs', base: 3, def: 3, cap: 20, ben: 1, vu: 500, fr: 12, b: 'jov', rg: 'urb', pob: .3, lag: 6, pa: 'casacivil', pn: 'Trabalho e Emprego', inst: 'MP', emp: 1.6, lab: -.012, val: { universitarios: 3, periferia: 2, empresariado: 1 }, iv: [-.1, 0], cat: 'trabalho', ax: { trabalho: -1 }, st: { servicos: 1 } });
 P('alfabetizacao', 'a alfabetização e o Compromisso Criança Alfabetizada', 'alfabetizacao|alfabetizar|crianca alfabetizada|analfabetismo|\\bsaeb\\b|\\bideb\\b|\\benem\\b|livros? didaticos?|\\bpnld\\b|conectividade nas escolas|internet nas escolas|tablets? nas escolas|formacao de professores|reforco escolar', { ch: 'educ', base: 4, def: 3, cap: 15, b: 'jov', rg: 'pobre', pob: .5, lag: 18, pa: 'educacao', inst: 'ADM', idh: .002, val: { classemedia: 2, periferia: 2, universitarios: 2, sindicatos: 1 }, iv: [-.1, 0], cat: 'educacao', ax: { gasto_social: -1 }, nota: 'Efeito sobre desempenho escolar só aparece em ciclos de 2 a 4 anos.' });
 P('alto_custo', 'os medicamentos de alto custo e doenças raras', 'alto custo|doencas? raras?|medicamentos? (de )?alto custo|oncologia|tratamento (do )?cancer|cancer|judicializacao da saude|medicamentos? judiciais|terapias? genicas?|\\bcar.?t\\b|\\bconitec\\b|incorporar medicamentos', { ch: 'saude', base: 10, def: 4, cap: 20, b: 'saude', rg: 'pop', pob: .3, lag: 4, pa: 'saude', inst: 'ADM', idh: .002, val: { periferia: 2, classemedia: 3, catolicos: 1 }, iv: [-.2, 0], cat: 'saude', ax: { gasto_social: -1 }, st: { servicos: 1 } });
 P('aposentadoria_rural', 'a previdência rural', 'aposentadoria rural|previdencia rural|funrural|segurado especial|aposentadoria do trabalhador rural|contribuicao rural', { ch: 'transf', base: 150, def: 8, cap: 60, ben: 10, vu: 1621, fr: 13, b: 'rural', rg: 'ne', pob: .6, lag: 3, pa: 'casacivil', pn: 'Previdência Social', inst: 'PL', val: { agro: 3, periferia: 2, catolicos: 1 }, iv: [-.4, 0], cat: 'programa_social', ax: { gasto_social: -1 }, pf: 'previdencia', nota: 'A previdência rural tem déficit estrutural superior a R$ 100 bi/ano; reduzi-la é politicamente explosivo.' });
@@ -4308,6 +4316,7 @@ setProp('sus_geral', { pibCur: 4 });
 setProp('ciencia_tec', { pibCur: .4 });
 setProp('universidades_fed', { pibCur: .8 });
 setProp('bndes_credito', { sub: .1 });
+setProp('bndes_credito', { cat: null }); // lote A3: linha de crédito a produtor/exportador não é programa social (a categoria 'programa_social' agendava −1,2 p.p. de pobreza)
 setProp('creches', { vu: 700 });
 setProp('filas_sus', { def: 8, cap: 30 });
 setProp('hospital_novo', { uc: 450000000 });
@@ -4484,6 +4493,7 @@ addSyn('condicionalidade_trabalho', '(?:so|apenas|somente) (?:pagar|dar|conceder
 addSyn('auxilio_generico', '(?:todo|cada|todos os|todas as) (?:brasileir\\w+|cidadaos?|pessoas?|adultos?)(?: vai| vao| ira| irao| podera)? (?:receber|ganhar|ter direito a|ficar com)(?: um| uma)?(?: bonus| auxilio| beneficio| salario| renda)?(?: de)? r\\$ ?\\d+(?:\\.\\d+)? ?(?:mil|milhoes)?(?: reais)?(?: por mes| ao mes| mensais| por ano)?');
 addSyn('agentes_saude', 'piso(?: salarial)?(?: nacional)?(?: d[eao]s?)? agentes (?:comunitarios )?(?:de saude|de combate a endemias)');
 setProp('credito_subsidiado', { sub: .1 });
+setProp('credito_subsidiado', { cat: null }); // lote A3/E3: idem (cabotagem/AFRMM, Pronampe): o efeito é na produção, não em renda das famílias
 setProp('agric_familiar', { sub: .08 }); setProp('plano_safra', { sub: .08 }); // v3.5: R$ bi de crédito rural custa só a equalização de juros
 setProp('cameras_corporais', { b: 'todos', val: { universitarios: 3, policiais: -3, classemedia: 1 } });
 setProp('creches', { val: { classemedia: 2, periferia: 1 } });
@@ -4658,6 +4668,7 @@ ABSORVE.cannabis_regulacao = ['drogas_legalizar'];
 ABSORVE.fgts_dividas = ['fgts', 'desenrola', 'auxilio_generico'];
 ABSORVE.estatal_nova = ['reestatizacao_geral', 'est_outras', 'minerais_criticos', 'data_centers', 'ciencia_tec'];
 ABSORVE.celular_escola = ['educacao_geral'];
+addSyn('primeiro_emprego', 'sine\\b|sistema nacional de emprego|intermediacao de mao de obra'); // lote E1: o Sine entra no objeto de qualificação e emprego (lab: reduz o desemprego)
 replSyn('reforma_adm', 'fim da estabilidade|', 'fim da estabilidade(?: d[eo]s? (?:servidor\\w*|funcionalismo|funcionarios publicos))?|');
 replSyn('reforma_adm', 'acabar com a estabilidade|', 'acabar com a estabilidade(?: d[eo]s? (?:servidor\\w*|funcionalismo|funcionarios publicos))?|');
 setProp('reforma_adm', { def: 8, pn: 'Gestão e Inovação', info: 'A estabilidade está no art. 41 da Constituição: acabar com ela exige PEC, e uma regra só para os novos servidores (a saída que respeita o direito adquirido, art. 5º, XXXVI) economiza pouco nos primeiros anos; a conta cheia só aparece em décadas, com a renovação do quadro.' }); // v3.5: a regra vale só para novos servidores; a economia dos primeiros anos é pequena (a faixa de R$ 25 bi/ano era do regime pleno)
@@ -4804,7 +4815,7 @@ const AREAS35 = [
   { id: 'educacao', n: 'educação', rx: /\b(?:educacao|escolas?|ensino|alunos?|estudantes?|professor\w*|universidad\w+|creches?|faculdades?|vestibular|enem|merenda|alfabetiz\w+|bolsas? de estudo|sala de aula|salas de aula|pre.?escola|colegios?|escolar\w*|curriculo|formacao)\b/, pa: 'educacao', ch: 'educ', b: 'jov', pg: 'emp', cat: 'educacao', vG: { universitarios: 2, periferia: 1.5, classemedia: 1.5, sindicatos: 1 }, vN: { universitarios: 1.5, classemedia: .5, sindicatos: .5, evangelicos: -.5 }, iv: [-.1, -.1], def: 3, cap: 20, vu: 2000, uc: 8e6, lag: 8 },
   { id: 'seguranca', n: 'segurança pública', rx: /\b(?:policia\w*|policiais?|seguranca publica|crimes?|criminos\w+|trafic\w+|facc\w+|armas?|presidios?|penitenciar\w+|prisao|presos?|delegacias?|violencia|homicidios?|bombeir\w+|patrulh\w+|fronteiras?|roubos?|furtos?|milicias?|latrocinio|feminicidio|crime organizado|lavagem de dinheiro)\b/, pa: 'justica', ch: 'seg', b: 'todos', pg: 'emp', cat: 'seguranca_plano', vG: { policiais: 3, classemedia: 1.5, evangelicos: 1, universitarios: -1 }, vN: { policiais: 2, classemedia: 1.5, evangelicos: 1, universitarios: -2, periferia: -.5 }, iv: [0, .4], def: 2, cap: 15, vu: 12000, uc: 30e6, lag: 8 },
   { id: 'justica', n: 'justiça', rx: /\b(?:tribunal|tribunais|juizes?|juiz|judiciario|processos? judicia(?:l|is)|defensoria|ministerio publico|advogad\w+|cartorios?|codigo (?:civil|penal|de processo)|justica|inquerito|sentencas?|recursos judiciais|foro|stf|stj)\b/, pa: 'justica', ch: 'custeio', b: 'todos', pg: 'emp', cat: 'garantista', vG: { classemedia: 1, universitarios: .5 }, vN: { classemedia: .5, universitarios: 1, policiais: -.5 }, iv: [0, -.1], def: 1, cap: 10, vu: 800, uc: 15e6, lag: 8 },
-  { id: 'trabalho', n: 'trabalho', rx: /\b(?:trabalh\w+|empregos?|salarios?|empregad\w+|patroes|patrao|clt|sindicat\w+|jornada|ferias|demiss\w+|carteira assinada|aprendiz\w*|estagi\w+|terceiriz\w+|informa(?:l|is)|autonomos?|mei|hora extra|horas extras|desemprego|desempregad\w+|vagas de emprego|empregadores?|licenca (?:maternidade|paternidade))\b/, pa: 'casacivil', pn: 'Trabalho e Emprego', ch: 'subs', b: 'trab', pg: 'folha', cat: 'trabalho', vG: { sindicatos: 2, periferia: 1.5, classemedia: 1 }, vN: { sindicatos: 3, periferia: 1.5, empresariado: -3, mercado: -1 }, iv: [-.4, 0], def: 2, cap: 20, vu: 1800, uc: 5e6, lag: 6 },
+  { id: 'trabalho', n: 'trabalho', rx: /\b(?:trabalh\w+|empregos?|salarios?|empregad\w+|patroes|patrao|clt|sindicat\w+|jornada|ferias|demiss\w+|carteira assinada|aprendiz\w*|estagi\w+|terceiriz\w+|informa(?:l|is)|autonomos?|mei|hora extra|horas extras|desemprego|desempregad\w+|vagas de emprego|empregadores?|licenca (?:maternidade|paternidade))\b/, pa: 'casacivil', pn: 'Trabalho e Emprego', ch: 'subs', b: 'trab', pg: 'folha', cat: 'trabalho', lab: -.01, vG: { sindicatos: 2, periferia: 1.5, classemedia: 1 }, vN: { sindicatos: 3, periferia: 1.5, empresariado: -3, mercado: -1 }, iv: [-.4, 0], def: 2, cap: 20, vu: 1800, uc: 5e6, lag: 6 },
   { id: 'ambiente', n: 'meio ambiente', rx: /\b(?:ambient\w+|florestas?|florestal|desmat\w+|amazon\w+|clima\w*|carbono|poluic\w+|reciclag\w+|lixo|residuos|rios?|biodivers\w+|fauna|flora|animais|queimad\w+|ibama|unidades de conservacao|sustentab\w+|plastico\w*|emissoes|mata atlantica|cerrado|pantanal|oceanos?|mares?|agrotox\w+|energia limpa|aquecimento global)\b/, pa: 'ambiente', ch: 'amb', b: 'todos', pg: 'emp', cat: 'ambiente', vG: { universitarios: 2, indigenas: 1.5, agro: -.5 }, vN: { universitarios: 3, indigenas: 2, agro: -2.5, empresariado: -1 }, iv: [-.3, -.2], def: 1.5, cap: 15, vu: 500, uc: 10e6, lag: 10 },
   { id: 'energia', n: 'energia', rx: /\b(?:energia|eletric\w+|luz|solar|eolic\w+|hidreletric\w+|petroleo|gas natural|combustiv\w+|gasolina|diesel|etanol|biocombust\w+|usinas?|nuclear|apagoes?|transmissao|distribuidoras?)\b/, pa: 'infra', pn: 'Minas e Energia', ch: 'invest', b: 'cons', pg: 'comb', cat: 'infra', vG: { empresariado: 1, classemedia: 1, periferia: .5 }, vN: { empresariado: -1.5, classemedia: .5, universitarios: 1 }, iv: [0, 0], def: 3, cap: 25, vu: 300, uc: 200e6, lag: 12 },
   { id: 'transporte', n: 'transporte', rx: /\b(?:rodovias?|ferrovias?|portos?|aeroportos?|transporte\w*|onibus|metro|trens?|estradas?|pontes?|mobilidade|frete|caminhoes|caminhao|caminhoneir\w+|hidrovias?|transito|motoristas?|bicicletas?|ciclovias?|aviacao|navegacao|carros?|veiculos?)\b/, pa: 'infra', pn: 'Transportes', ch: 'invest', b: 'todos', pg: 'comb', cat: 'infra', vG: { caminhoneiros: 1.5, classemedia: 1.5, empresariado: 1, periferia: 1 }, vN: { caminhoneiros: -2, empresariado: -1.5, classemedia: .5 }, iv: [.1, 0], def: 4, cap: 30, vu: 400, uc: 50e6, lag: 14 },
@@ -4817,12 +4828,12 @@ const AREAS35 = [
   { id: 'defesa', n: 'defesa', rx: /\b(?:forcas armadas|exercito|marinha|aeronautica|militares?|defesa nacional|soberania|armamentos?|submarinos?|caca|blindados?)\b/, pa: 'defesa', ch: 'seg', b: 'pol', pg: 'emp', cat: 'seguranca_plano', vG: { policiais: 2, classemedia: .5, evangelicos: .5 }, vN: { policiais: 1.5 }, iv: [.1, .2], def: 3, cap: 25, vu: 15000, uc: 100e6, lag: 12 },
   { id: 'exterior', n: 'relações exteriores', rx: /\b(?:diplomac\w+|embaixadas?|acordos? (?:internacionais?|comerciais?)|tratados?|onu|brics|mercosul|exporta\w+|importa\w+|comercio exterior|vistos?|imigra\w+|refugiad\w+|estrangeir\w+|cooperacao internacional)\b/, pa: 'itamaraty', ch: 'custeio', b: 'emp', pg: 'emp', cat: 'comercio', vG: { empresariado: 1, universitarios: .5 }, vN: { empresariado: -1, universitarios: 1 }, iv: [0, 0], def: 1, cap: 10, vu: 15000, uc: 10e6, lag: 8 },
   { id: 'esporte', n: 'esporte', rx: /\b(?:esportes?|esportiv\w+|atletas?|futebol|olimpiad\w+|copa do mundo|estadios?|quadras?|ginasios?)\b/, pa: 'casacivil', pn: 'Esporte', ch: 'subs', b: 'jov', pg: 'emp', cat: 'futebol', vG: { periferia: 2, gamers: 1.5, classemedia: 1 }, vN: { periferia: .5 }, iv: [-.1, 0], def: 1, cap: 8, vu: 300, uc: 5e6, lag: 8 },
-  { id: 'turismo', n: 'turismo', rx: /\b(?:turismo|turistas?|hoteis|hotel|viagens?|pousadas?|pontos turisticos|parques nacionais)\b/, pa: 'casacivil', pn: 'Turismo', ch: 'subs', b: 'emp', pg: 'emp', cat: 'desenvolvimento', vG: { empresariado: 1.5, classemedia: 1, mercado: .5 }, vN: { empresariado: -.5 }, iv: [.1, 0], def: 1, cap: 8, vu: 300, uc: 10e6, lag: 8 },
+  { id: 'turismo', n: 'turismo', rx: /\b(?:turismo|turistas?|hoteis|hotel|viagens?|pousadas?|pontos turisticos|parques nacionais)\b/, pa: 'casacivil', pn: 'Turismo', ch: 'subs', b: 'emp', pg: 'emp', cat: null, vG: { empresariado: 1.5, classemedia: 1, mercado: .5 }, vN: { empresariado: -.5 }, iv: [.1, 0], def: 1, cap: 8, vu: 300, uc: 10e6, lag: 8 },
   { id: 'ciencia', n: 'ciência e tecnologia', rx: /\b(?:ciencia|cientific\w+|pesquisa\w*|pesquisadores?|inovacao|laboratorios?|startups?|tecnolog\w+|semicondutores|nanotecnologia|biotecnologia)\b/, pa: 'educacao', pn: 'Ciência e Tecnologia', ch: 'invest', b: 'jov', pg: 'emp', cat: 'educacao', vG: { universitarios: 3, empresariado: 1 }, vN: { universitarios: 1, empresariado: -.5 }, iv: [0, -.1], def: 2, cap: 15, vu: 5000, uc: 20e6, lag: 14 },
   { id: 'consumo', n: 'consumo e finanças', rx: /\b(?:consumidor\w*|precos?|bancos?|credito|juros|emprestimos?|cartao|cartoes|dividas?|seguros?|empresas?|empresari\w+|comercio|industria|negocios?|concorrencia|monopolio\w*|cartel|cartorio|mercado|financeir\w+|boletos?|tarifas bancarias)\b/, pa: 'fazenda', ch: 'subs', b: 'cons', pg: 'cons', cat: 'comercio', vG: { classemedia: 1.5, periferia: 1, empresariado: .5 }, vN: { classemedia: 1.5, periferia: 1, empresariado: -2.5, mercado: -1.5 }, iv: [-.2, 0], def: 2, cap: 20, vu: 500, uc: 10e6, lag: 6 },
   { id: 'institucional', n: 'instituições', rx: /\b(?:eleic\w+|votos?|partidos?|congress\w+|deputad\w+|senador\w*|vereador\w*|mandatos?|transparencia|lobby|servidores?|funcionalismo|concursos?|ministerios?|agencias?|orgaos?|gestao publica|administracao publica|licitac\w+|compras publicas|ouvidoria|dados abertos)\b/, pa: 'casacivil', pn: 'Relações Institucionais', ch: 'custeio', b: 'todos', pg: 'emp', cat: 'anticorrupcao', vG: { classemedia: 1, universitarios: .5 }, vN: { classemedia: 2, universitarios: 1.5, mercado: .5 }, iv: [0, 0], def: 1, cap: 10, vu: 600, uc: 8e6, lag: 8 }
 ];
-const AREA_GERAL = { id: 'geral', n: 'administração geral', pa: 'casacivil', ch: 'custeio', b: 'todos', pg: 'emp', cat: 'desenvolvimento', vG: {}, vN: {}, iv: [0, 0], def: 1.5, cap: 10, vu: 600, uc: 8e6, lag: 8 };
+const AREA_GERAL = { id: 'geral', n: 'administração geral', pa: 'casacivil', ch: 'custeio', b: 'todos', pg: 'emp', cat: null, /* lote A: antes 'desenvolvimento': todo texto genérico (auditores na CGU, Força Nacional) agendava +600 km² de desmatamento e −3 com a UE */ vG: {}, vN: {}, iv: [0, 0], def: 1.5, cap: 10, vu: 600, uc: 8e6, lag: 8 };
 const GEN_PARAR = /\.(?!\d)|[;!?\n]|,\s*(?:bora|simbora|partiu|vai ficar|vamos)\b|\s(?:para financiar|para bancar|para custear|para pagar|financiad[oa]s?|custead[oa]s?|bancad[oa]s?|pago com|pagando com|com recursos|usando recursos|sem aumentar|mas|porem)\b/;
 const GEN_FINAIS = /^(?:e|ou|de|do|da|dos|das|em|no|na|nos|nas|para|por|com|a|o|as|os|que|ao|aos|um|uma|ate|mais|menos|sem)$/;
 const GEN_NOMES_PES = /medic|enfermeir|professor|policial|agente|servidor|militar|delegad|soldad|bombeir|engenheir|tecnic|analist|pesquisador|funcionari|profission|fiscal|inspetor|auditor|juiz|defensor|promotor|cuidador|psicolog|assistentes? social|guardas|vigilante|monitor|instrutor|orientador|especialist|trabalhador|empregad|cargos|dentist|auxiliar|atendente|motorista/;
@@ -5386,6 +5397,8 @@ function genItem(A, force) {
     id: 'gen_' + area.id, n: genTopico(L, topCls), k: k, gen: { area: area.n, verbo: v.inf, kind: kind, cls: v.cls, novo: novo, areaId: area.id },
     pa: area.pa, pn: area.pn, cat: area.cat, lag: area.lag, iv: area.iv || [0, 0], v3: 1
   };
+  if (area.lab) o.lab = area.lab; // lote E1: gasto em trabalho/emprego (Sine, qualificação) reduz o desemprego
+  if (area.id === 'agro' && !/\b(?:lavour\w+|safr\w+|pecuari\w+|produc\w+|produt\w+|soja|gado|fertiliz\w+|irriga\w+|credito rural|plano safra|terras?|agricult\w+|agropecuari\w+|pronaf|defensiv\w+|rebanho|plantio|colheita)\b/.test(s)) o.cat = null; // lote A: "internet rural" não é expansão agropecuária (a categoria 'desenvolvimento' agendava +284 km² de desmatamento)
   if (k === 'R') {
     const vv = {}; const base = area.vN || {};
     for (const g in base) vv[g] = (v.cls === 'lib' ? -1 : 1) * base[g];
@@ -5561,7 +5574,7 @@ function leituraV35(A) {
     if (it && amplos && (it.o.k === 'R' || (it.o.gen && it.o.gen.kind === 'corte')) && its.some(i => i.o.sav && i.o.k === 'G' && i.sg)) it = null; // v4: corte amplo de gastos não vira norma sem custo
     if (it && amplos) {
       const cob = foldTxt(its.map(i => (i.o.ger ? '' : i.t + ' ') + i.o.n).join(' '));
-      const fortes = foldTxt(it.t).split(/[^a-z0-9]+/).filter(w => w.length >= 4 && !GEN_STOP.test(w) && !GEN_FRACAS.test(w));
+      const fortes = foldTxt(it.t).split(/[^a-z0-9]+/).filter(w => w.length >= 4 && !GEN_STOP.test(w) && !GEN_FRACAS.test(w) && !(UF_PALAVRAS_GEN || (UF_PALAVRAS_GEN = new Set(Object.values(UF_INFO).flatMap(x => foldTxt(x.nome).split(/[^a-z0-9]+/)))), UF_PALAVRAS_GEN).has(w)); // lote A4: o nome do estado ("Força Nacional para Pernambuco") não é um segundo assunto que o objeto do catálogo deixou de cobrir
       const expl = fortes.filter(w => cob.indexOf(w.slice(0, 4)) >= 0).length;
       if (!fortes.length || expl * 2 > fortes.length) it = null; else A.items = A.items.filter(i => ['big_techs', 'grandes_fortunas', 'dividendos', 'csll_bancos', 'imposto_bets', 'imposto_seletivo', 'ir_pf', 'ir_pj', 'cbs_ibs', 'ipi', 'iof', 'icms'].indexOf(i.o.id) >= 0); // v4: o tributo específico nomeado continua na conta; só os programas amplos cedem à leitura genérica
     }
@@ -5613,6 +5626,7 @@ function v4Clausulas(s) { // v4: orações de um texto de várias medidas, com a
   return out;
 }
 var V4_SPLIT = false;
+var UF_PALAVRAS_GEN = null;
 const AMPLOS_R = ['aposentadoria', 'universidades_fed', 'sus_geral', 'publicidade_governo', 'drogas_legalizar', 'reforma_politica', 'educacao_geral', 'seguranca_geral', 'infra_geral', 'rodovias', 'servidores', 'cultura', 'ciencia_tec', 'energia_limpa', 'plano_safra', 'transporte_publico', 'penas', 'oriente_medio', 'israel_ruptura', 'abertura_comercial', 'redes_regulacao', 'ia_regulacao', 'internet', 'esporte', 'futebol'];
 const GEN_FRACAS = /^(?:orcamento|verba|verbas|recursos|investimento|investimentos|gastos?|programa|programas|politica|sistema|numero|valor|dinheiro|rede|pacote|projeto|medida|medidas|bilhoes|bilhao|milhoes|milhao|reais|porcento|mensais|anuais|nacional|federal|federais|publica|publico|publicas|publicos|brasil|brasileiro|brasileiros|brasileira|pais|todo|toda|todos|todas|ainda|sempre|menos|maior|maiores|melhor|governo|apenas|somente|quando|depois|antes|durante|mesmo|novos|novas|nova|novo|mais|cada|qualquer|inteira|inteiro)$/;
 const GEN_STOP = /^(?:para|pelo|pela|pelos|pelas|como|sobre|entre|todo|toda|todos|todas|mais|menos|dessa|desse|esta|este|quem|cada|ainda|quando|onde|qual|todo)$/;
@@ -8199,6 +8213,7 @@ function v4Sentido(objs, s) {
   });
 }
 function v4Leve(t) {
+  { const t0 = t; t = t.replace(/\b(?:conting\w*|bloque\w*)(?:ar|ie|iem|ando|amos|aremos|ou)(?= (?:(?:de |d[aeo]s? )?r\$ ?[\d.,]+|[\d.,]+ ?(?:bi|mi)\w*|(?:o |os |a |as )?(?:orcamento|verba|gastos|despesas|recursos|dotac\w+)\b))/g, 'cortar'); if (t !== t0 && !/\bpor (?:decreto|lei|projeto|medida|pec|mp)\b/.test(t)) t += ' por decreto'; } // lote A1: contingenciar/bloquear verba é reduzir a dotação do objeto (piora a área), por decreto de programação orçamentária; exige valor ou orçamento logo depois (não pega "bloquear o Telegram")
   if (/\b(?:vend\w+|privatiz\w+|leiloar)\b/.test(t) && /\b(?:tud[oa]s?|tds|todos|todas)\b/.test(t) && /\b(?:estatal|estatais|bancos?|governo|empresas? (?:publicas|estatais))\b/.test(t) && !/\b(?:proib\w+|impedir|nao privatiz\w+|n privatiz\w+|contra|reestatiz\w+|ved(?:ar|e))\b/.test(t) && !/\b(?:petrobras|banco do brasil|caixa|correios|eletrobras|bndes)\b/.test(t)) t = 'privatizar todas as estatais'; // v4: vender tudo que é do governo é a venda de todas as estatais
   else if (/\b(?:vend\w+|privatiz\w+)\b[^.;]{0,25}\bo que nao e estrategic\w+/.test(t)) t = 'privatizar estatais nao estrategicas'; // v4
   t = t.replace(/\b(privatiz\w+|vend\w+|leiloar)\s+tudo\b(?! (?:que|o que) )/g, '$1 todas as estatais'); // v4: "privatiza tudo" é privatizar todas as estatais // v4: verbo leve + substantivo de corte ("aplicar um corte linear de 5%") vira o verbo pleno
@@ -8242,6 +8257,7 @@ function parse(orig) {
   const unitOf = (p) => { let n = 0; for (let i = 0; i < breaks.length; i++) if (breaks[i] <= p) n++; return n; };
   A.unitOf = unitOf;
   objs = v42Ancora(objs, vs, s, unitOf); A.v42Rel = objs.v42Rel || []; // v4.2: o objeto do catálogo só vale se for o complemento do verbo da sua oração
+  objs = objs.map(m => (m.o.id === 'anticorrupcao' && /^(?:cgu|controladoria|portal da transparencia|dados abertos|lei de acesso)\b/.test(String(m.t || ''))) ? Object.assign({}, m, { o: Object.assign({}, m.o, { mal: 0 }) }) : m); // lote A: cortar a CGU (órgão de controle) piora o combate à corrupção; o objeto é 'mal' só quando o texto fala da corrupção em si // v4.2: o objeto do catálogo só vale se for o complemento do verbo da sua oração
   A.cobre = { fala: false };
   // itens
   for (const m of objs) {
@@ -13585,6 +13601,8 @@ function limitaImpactoAprovacao(g, g0, a0) {
   for (const kk of Object.keys(g0)) if (g.groups[kk] != null) g.groups[kk] = clamp(g0[kk] + (g.groups[kk] - g0[kk]) * f, 1, 99);
 }
 function executaProposta(g, prop, resultado) {
+  // lote A3: crédito do BNDES a um produto não é transferência de renda: sem efeito direto em pobreza/IDH/homicídios (só o industrial, via icResolve)
+  if (prop.icHook && prop.icHook.tipo === 'cred' && prop.fx) { const e0 = prop.fx.e || {}; prop.fx = Object.assign({}, prop.fx, { s: {}, e: Object.assign({}, e0, { pib: (e0.pib || 0) * .25, des: (e0.des || 0) * .25, ipca: (e0.ipca || 0) * .25 }) }); } // crédito: o impulso macro é uma fração (25%) do que o mesmo valor investido diretamente gera; o resto vem de icResolve/icTick
   const numInst = cfNum(g, prop);
   const g0Cap = { ...g.groups }, a0Cap = aprovacao(g);
   const ato = { MP: `Medida Provisória nº ${fmt(numInst, 0)}`, PL: `${prop.instDetalhe === 'LC' ? 'PLP' : prop.instDetalhe === 'AUT' ? 'PDL' : 'PL'} nº ${fmt(numInst, 0)}/${2027 + Math.floor((g.mes - 1) / 12)}`, PEC: `PEC nº ${numInst}/${2027 + Math.floor((g.mes - 1) / 12)}`, DEC: `Decreto nº ${fmt(numInst, 0)}`, ADM: `Despacho Presidencial nº ${numInst}`, COM: `Nota da Secom nº ${numInst}` }[prop.inst];
@@ -13616,7 +13634,7 @@ function executaProposta(g, prop, resultado) {
     }
     if (!medRev && !repet) {
     if (!espera && !ehCom) fase3Aprovada(g, prop, k);
-    if (!espera && !ehCom) agendados = agendaAtrasos(g, prop) + agendaVigencia(g, prop);
+    if (!espera && !ehCom) agendados = (prop.icHook && prop.icHook.tipo === 'cred' ? 0 : agendaAtrasos(g, prop)) + agendaVigencia(g, prop); // lote A3: crédito do BNDES não agenda os eventos por categoria do catálogo (programa social −1,2 p.p. de pobreza, "mineração e petróleo" +284 km², chips...)
     if (!espera && (prop.bloqueio || []).length) bloqNota = aplicaBloqueio(g, prop);
     }
     if (prop.inst === 'PEC') est.pec = (est.pec || 0) + 1;
@@ -20075,18 +20093,20 @@ function convDrift(g, area, u, T, f, n) {
   if (area !== 'seg') { const D = pufDados(CONV_AREAS[area].pa); campo = pufInds(D).find(k => T.re.test(k)) || null; if (!campo) return false; st = (D.fontes[campo].melhor === 'menor' ? -1 : 1) * Math.abs(T.st) * f; }
   C.dr.push({ area, uf: u, campo, st, n, i: 0 }); while (C.dr.length > 60) C.dr.shift(); return true;
 }
+// lote E4: a cobrança surte efeito com chance proporcional à relação com o governador (30 ou menos: 5%; 50: 36%; 60: 55%; 85 ou mais: 95%)
+const convChanceCobrar = (rel) => clamp((rel - 30) / 55, .05, .95);
 function convResponde(g, area, u, r) {
   const A = CONV_AREAS[area]; const C = ensureConv(g); const U = C.ult[area + '|' + u]; if (!U || U.resp) return;
   const T = A.topicos.find(x => x.k === U.t); if (!T) return;
-  const S = ensureGv(g).uf[u]; const P = gvPerfil(u); const nome = nomeUF(u); const alto = S.rel >= 60; const fp = A.fator(P, T); const tl = T.nome.toLowerCase();
+  const S = ensureGv(g).uf[u]; const P = gvPerfil(u); const nome = nomeUF(u); const alto = hashStr(`${g.seed}|cobrar|${area}|${u}|${g.mes}`) < convChanceCobrar(S.rel); const fp = A.fator(P, T); const tl = T.nome.toLowerCase();
   U.resp = r; let res = '', cat = 'info', tom = 'neu', xtxt = '';
   if (r === 'apoio') {
     g.fiscal.extra += T.custo; S.rel = clamp(S.rel + 3, 0, 100); S.conf = clamp(S.conf + 2, 0, 100); convDrift(g, area, u, T, fp, T.n);
     res = `Apoio federal oferecido a ${nome} em ${tl} (R$ ${fmt(T.custo, 1)} bi). Relação +3; o indicador melhora aos poucos nos próximos ${T.n} meses.`; cat = 'pos'; tom = 'pos';
     xtxt = `Recebemos o compromisso de apoio da União em ${tl}. Seguimos trabalhando juntos pelo resultado.`;
   } else if (r === 'cobrar') {
-    if (alto) { S.rel = clamp(S.rel - 2, 0, 100); convDrift(g, area, u, T, .5 * fp, Math.max(3, T.n - 2)); res = `A cobrança surtiu efeito: ${P.nome} aceita metas em ${tl}. Relação −2; melhora modesta do indicador.`; tom = 'neu'; xtxt = `Recebemos a cobrança do governo federal em ${tl} e vamos apresentar metas.`; }
-    else { S.rel = clamp(S.rel - 5, 0, 100); S.postura = 'culpa'; g.ufBonus[u] = (g.ufBonus[u] || 0) - .5; res = `A cobrança azedou a relação: ${P.nome} reage em público. Relação −5, sem efeito no indicador.`; cat = 'neg'; tom = 'neg'; xtxt = `Cobrança sem apoio não resolve ${tl}. O estado faz a sua parte; falta a União fazer a dela.`; }
+    if (alto) { S.rel = clamp(S.rel - 2, 0, 100); convDrift(g, area, u, T, .5 * fp, Math.max(3, T.n - 2)); res = `A cobrança surtiu efeito (chance de ${fmt(convChanceCobrar(S.rel) * 100, 0)}% com a relação em ${fmt(S.rel, 0)}): ${P.nome} aceita metas em ${tl}. Relação −2; melhora modesta do indicador do estado.`; tom = 'neu'; xtxt = `Recebemos a cobrança do governo federal em ${tl} e vamos apresentar metas.`; }
+    else { S.rel = clamp(S.rel - 5, 0, 100); S.postura = 'culpa'; g.ufBonus[u] = (g.ufBonus[u] || 0) - .5; res = `A cobrança azedou a relação (a chance de surtir efeito era de ${fmt(convChanceCobrar(S.rel) * 100, 0)}% com a relação em ${fmt(S.rel, 0)}): ${P.nome} reage em público. Relação −5, sem efeito no indicador.`; cat = 'neg'; tom = 'neg'; xtxt = `Cobrança sem apoio não resolve ${tl}. O estado faz a sua parte; falta a União fazer a dela.`; }
   } else {
     S.rel = clamp(S.rel + 1, 0, 100);
     if (area !== 'seg') { g.fiscal.extra += T.custo * 2; convDrift(g, area, u, T, 1.6 * fp, T.n + 3); res = `Pacto estadual de ${A.nome} firmado com ${nome} em ${tl} (R$ ${fmt(T.custo * 2, 1)} bi). Relação +1; melhora mais forte e duradoura.`; cat = 'pos'; }
@@ -20126,9 +20146,9 @@ function ConversaGov({ g, upd, area, uf, onPlano }) {
   const bloqueio = itv ? 'Estado sob intervenção federal' : doMes ? 'Já conversou com este governador neste mês' : semAcoes ? (g.acoes <= 0 ? 'Sem ações políticas neste mês' : 'Energia esgotada') : 'Custa 1 ação política';
   const titulo = A.titulo;
   const resp = [
-    { k: 'apoio', l: 'Oferecer apoio federal', d: T ? `R$ ${fmt(T.custo, 1)} bi · relação +3 · melhora o indicador` : '', ico: 'HeartHandshake' },
-    { k: 'cobrar', l: 'Cobrar resultados', d: S.rel >= 60 ? 'relação −2 · relação alta: pode melhorar o indicador' : 'relação −5 · com relação baixa, só azeda', ico: 'Megaphone' },
-    { k: 'plano', l: area === 'seg' ? 'Propor plano conjunto' : 'Propor pacto estadual', d: area === 'seg' ? 'abre a negociação abaixo com as ofertas do tema' : T ? `R$ ${fmt(T.custo * 2, 1)} bi · melhora mais forte e duradoura` : '', ico: 'Handshake' }
+    { k: 'apoio', l: 'Oferecer apoio federal', d: T ? `R$ ${fmt(T.custo, 1)} bi · relação +3 · indicador do estado melhora ${fmt(T.st, 1)}% ao mês por ${T.n} meses` : '', ico: 'HeartHandshake' },
+    { k: 'cobrar', l: 'Cobrar resultados', d: `${fmt(convChanceCobrar(S.rel) * 100, 0)}% de chance de surtir efeito (cresce com a relação, hoje ${fmt(S.rel, 0)}): melhora metade do apoio e custa relação −2; se azedar, relação −5`, ico: 'Megaphone' },
+    { k: 'plano', l: area === 'seg' ? 'Propor plano conjunto' : 'Propor pacto estadual', d: area === 'seg' ? 'abre a negociação abaixo com as ofertas do tema' : T ? `R$ ${fmt(T.custo * 2, 1)} bi (o dobro do apoio) · relação +1 · indicador do estado melhora ${fmt(T.st * 1.6, 1)}% ao mês por ${T.n + 3} meses, 1,6 vez o apoio e mais duradouro` : '', ico: 'Handshake' }
   ];
   return html`<section className="sec" data-conv=${area}>
     <${MxHead} eb=${'Governadores · ' + titulo} t="Conversar com o governador" tip=${titulo + ' · ' + nomeUF(uf) + '. Escolha um tema (1 ação, uma conversa por estado por mês). Selecione outro estado no mapa ou na tabela.'} right=${html`<${PsAcoes} g=${g} />`} />
@@ -20158,7 +20178,7 @@ function ConversaGov({ g, upd, area, uf, onPlano }) {
 /* ---------- abas do País com mapa por estado ---------- */
 const ORC_AREAS = {
   educacao: { alvos: [
-    { k: 'geral', nome: 'Todo o MEC', inv: 'Ampliar em {V} por ano os gastos federais com educação', cut: 'Cortar {V} do orçamento do Ministério da Educação', nc: 1 },
+    { k: 'geral', nome: 'Todo o MEC', inv: 'Ampliar em {V} por ano os gastos federais com educação', cut: 'Cortar {V} da educação federal', nc: 1 },
     { k: 'basica', nome: 'Educação básica', inv: 'Ampliar em {V} por ano o Fundeb e o FNDE para a educação básica', cut: 'Cortar {V} do Fundeb e do FNDE para a educação básica', nc: 1 },
     { k: 'univ', nome: 'Universidades e IFs', inv: 'Ampliar em {V} por ano o orçamento das universidades e institutos federais', cut: 'Cortar {V} do orçamento das universidades e institutos federais' },
     { k: 'creches', nome: 'Creches', inv: 'Ampliar em {V} por ano o orçamento das creches', cut: 'Cortar {V} do orçamento das creches' },
@@ -20183,11 +20203,11 @@ const ORC_AREAS = {
     { k: 'rod', nome: 'Rodovias', inv: 'Ampliar em {V} por ano as rodovias federais', cut: 'Cortar {V} das rodovias federais' },
     { k: 'fer', nome: 'Ferrovias', inv: 'Ampliar em {V} por ano os investimentos federais em ferrovias', cut: 'Cortar {V} das ferrovias' },
     { k: 'san', nome: 'Saneamento', inv: 'Ampliar em {V} por ano os investimentos federais em saneamento básico, água e esgoto', cut: 'Cortar {V} do saneamento básico' },
-    { k: 'ene', nome: 'Energia', inv: 'Ampliar em {V} por ano os investimentos federais em energia elétrica e transmissão', cut: 'Cortar {V} do investimento em energia' },
+    { k: 'ene', nome: 'Energia', inv: 'Ampliar em {V} por ano os investimentos federais em energia elétrica e transmissão', cut: 'Cortar {V} das obras de energia elétrica e transmissão' },
     { k: 'hab', nome: 'Habitação', inv: 'Ampliar em {V} por ano o orçamento do Minha Casa Minha Vida', cut: 'Cortar {V} do orçamento do Minha Casa Minha Vida' }
   ] },
   trabalho: { alvos: [
-    { k: 'geral', nome: 'Todo o Trabalho', inv: 'Ampliar em {V} por ano o Ministério do Trabalho e Emprego', cut: 'Cortar {V} dos gastos do Ministério do Trabalho e Emprego', nc: 1 },
+    { k: 'geral', nome: 'Todo o Trabalho', inv: 'Ampliar em {V} por ano a qualificação e a intermediação de mão de obra do Ministério do Trabalho e Emprego', cut: 'Cortar {V} da qualificação e da intermediação de mão de obra do Ministério do Trabalho e Emprego', nc: 1 },
     { k: 'qual', nome: 'Qualificação', inv: 'Ampliar em {V} por ano o orçamento da qualificação profissional de trabalhadores', cut: 'Cortar {V} do orçamento da qualificação profissional de trabalhadores' },
     { k: 'seg', nome: 'Seguro-desemprego', inv: 'Ampliar em {V} por ano o orçamento do seguro-desemprego', cut: 'Cortar {V} do orçamento do seguro-desemprego' },
     { k: 'int', nome: 'Intermediação (Sine)', inv: 'Ampliar em {V} por ano o Sistema Nacional de Emprego (Sine)', cut: 'Cortar {V} do Sistema Nacional de Emprego (Sine)', nc: 1 }
@@ -20310,7 +20330,7 @@ function OrcamentoArea({ g, decidir, area }) {
           <${Tag}>${custo != null ? 'despesa ' + (custo > 0 ? '+' : '−') + 'R$ ' + fmt(Math.abs(custo), 1) + ' bi/ano' : ''}</${Tag}>
           ${motor.pastaNome ? html`<${Tag}>${String(motor.pastaNome).replace(/\s*\(.*$/, '')}</${Tag}>` : null}
         </div>` : html`<p className="text-xs text-muted">O motor não conseguiu ler este texto.</p>`}
-        ${motor && custo != null ? html`<div className="text-sm" data-orc-primario="1"><b>Resultado primário:</b> <span className="num" style=${{ color: custo > 0 ? 'var(--rubro)' : 'var(--verde)' }}>${custo > 0 ? 'piora' : 'melhora'} cerca de R$ ${fmt(Math.abs(custo), 1)} bi por ano</span>${usaCont ? html` <span className="text-muted">(o contingenciamento segura só parte da dotação)</span>` : null}</div>` : null}
+        ${motor && custo != null ? html`<div className="text-sm" data-orc-primario="1"><b>Resultado primário:</b> <span className="num" style=${{ color: custo > 0 ? 'var(--rubro)' : 'var(--verde)' }}>${custo > 0 ? 'piora' : 'melhora'} cerca de R$ ${fmt(Math.abs(custo), 1)} bi por ano</span>${usaCont ? html` <span className="text-muted">(contingenciar congela a dotação por decreto: o efeito sobre a área é o do corte, e o governo pode liberar a verba depois)</span>` : null}</div>` : null}
         <div className="flex flex-col gap-1" data-orc-ef="1"><div className="eyebrow">Indicadores esperados (${dir > 0 ? 'com a verba' : 'com o corte'}, em meses)</div>
           <div className="flex flex-wrap gap-1.5">${efs.map(e => { const ar = e.d * dir; const bom = ar * e.b > 0; return html`<span key=${e.n} className="chip" style=${{ color: bom ? 'var(--verde)' : 'var(--rubro)', borderColor: bom ? 'var(--verde)' : 'var(--rubro)' }}>${ar > 0 ? '▲' : '▼'} ${e.n}</span>`; })}</div></div>
         ${(grupos.gan.length + grupos.per.length) > 0 ? html`<div className="text-xs leading-relaxed" data-orc-grupos="1">${grupos.gan.length ? html`<div><span className="text-muted">Tendem a ganhar:</span> ${grupos.gan.map(x => x.nome || x.quem).join(', ')}</div>` : null}${grupos.per.length ? html`<div><span className="text-muted">Tendem a perder:</span> ${grupos.per.map(x => x.nome || x.quem).join(', ')}</div>` : null}</div>` : null}
@@ -20673,7 +20693,7 @@ const INFRA_GRUPOS = [
   { h: 'Ferrovias, portos e mobilidade', itens: [
     { l: 'Ferrovia Centro-Oeste (FICO)', ind: [['ferrovias', .4, 48]], t: 'Estender a Ferrovia de Integração do Centro-Oeste de Água Boa a Lucas do Rio Verde (MT), R$ 6 bilhões', i: 'TrainFront', rx: /centro.oeste/ },
     { l: 'Fundo de mobilidade urbana', t: 'Criar fundo federal de mobilidade urbana com R$ 5 bilhões por ano para metrô e BRT nas capitais', i: 'TramFront', rx: /fundo.*mobilidade/, p2: { l: 'Mais R$ 3 bi de mobilidade', t: 'Elevar em mais R$ 3 bilhões por ano o fundo federal de mobilidade urbana para metrô e BRT' } },
-    { l: 'Cabotagem: AFRMM pela metade', t: 'Reduzir pela metade o adicional de frete AFRMM da cabotagem e criar linha de crédito de R$ 3 bilhões para navios de cabotagem', i: 'Ship', rx: /afrmm/ },
+    { l: 'Cabotagem: AFRMM pela metade', t: 'Desonerar pela metade o AFRMM (adicional de frete) da cabotagem, com renúncia de R$ 1,5 bilhão por ano', i: 'Ship', rx: /afrmm/, p2: { l: 'Linha de crédito para navios', t: 'Ampliar em R$ 3 bilhões a linha de crédito subsidiado para navios de cabotagem, financiada pelo AFRMM' } },
     { l: 'Bolsa-sucata para caminhões', t: 'Criar bolsa-sucata de R$ 20 mil por caminhão com mais de 30 anos entregue para desmonte, R$ 2 bilhões', i: 'Truck', rx: /sucata/ }] }
 ];
 function PaisAreaAcao({ g, upd, decidir, pa, conv, dp, titulo, sub, grupos, notas, ind0, orc }) {
@@ -24968,6 +24988,7 @@ function IndDetalhe({ g, p, decidir, fechar }) {
           ${prev && html`<div className="text-sm p-2 rounded" style=${{ background: 'rgba(240,166,58,.10)' }} data-ind-aviso-congresso="1" role="note">Não é ato do Executivo: ${dir ? 'gasto novo' : 'renúncia fiscal'} exige lei. Isto vira ${INST_NOME[motor.inst] || motor.inst} e o Congresso pode derrubar. Previsão de voto: <b className="num">${prev.vt.totC}</b> de ${prev.q.c} na Câmara e <b className="num">${prev.vt.totS}</b> de ${prev.q.s} no Senado; chance de aprovar <b className="num">${fmtChance(prev.ch)}</b>${prev.ch < .5 ? '. Negocie antes: a ação é gasta mesmo se a proposta cair.' : '.'}</div>`}` : html`<p className="text-xs text-muted">O motor não conseguiu ler este texto.</p>`}
           <ul className="text-sm flex flex-col gap-1" data-ind-efeito="1">
             ${p.kind === 'nova' ? html`<li>Capacidade nova de até <b>${icUsd(capNova)}</b> por ano; a fábrica só começa a produzir em cerca de <b>${E.atraso}</b> meses.</li>` : html`<li>Produção <b>${sgn(dBoost * 100, 1)}%</b> (≈ ${icUsd(dBoost * B.PV0)} por ano), subindo ao longo de <b>${E.dur}</b> meses depois de ${E.atraso} de regulamentação.</li>`}
+            ${acao === 'cred' ? html`<li data-ind-cred-nota="1">Crédito do BNDES: o Tesouro paga só a equalização dos juros (cerca de ${fmt((motor && motor.cost ? motor.cost : 0) / Math.max(v, .5) * 100, 0)}% do valor, <b>R$ ${fmt(Math.abs((motor && motor.cost) || 0), 1)} bi</b> de despesa); o resto volta ao banco. O efeito é na produção do setor, não em renda direta das famílias.</li>` : null}
             <li>Emprego <b>+${fmt(empleos, empleos < 10 ? 1 : 0)} mil</b> vagas · investimento privado atraído <b>R$ ${fmt(priv, 1)} bi</b></li>
             <li>Mais produção rende PIB, arrecadação e saldo comercial; ${p.impacto_amb > 0 ? 'o custo ambiental ' + (p.impacto_amb >= 2 ? 'é alto' : 'é moderado') + '.' : 'sem custo ambiental relevante.'}</li>
           </ul>
