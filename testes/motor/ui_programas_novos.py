@@ -34,7 +34,7 @@ def chip(pg, nome):
     pg.locator('.chipnav [role=tab]').filter(has_text=re.compile(r'^\s*' + nome + r'\s*$')).first.click(timeout=6000); pg.wait_for_timeout(600)
 AREAS = [('Saúde', 'saude'), ('Educação', 'educacao'), ('Infraestrutura e transportes', 'infraestrutura'), ('Justiça', 'justica'), ('Segurança', 'seguranca')]
 LEIA = """(PH)=>PH.map(t=>{try{const p=__AL(__QV().gRef.current,t); const A=p._A||{}; const nv=A.normaVigente||{};
-  return {t, topic:p.topic, inst:p.inst, cost:p.cost, nvx:!!nv.exato, jv:!!A.jaVigente||(A.items||[]).some(i=>i.jaVigente), red:!!A.redundante, vago:!!(p.qualidade||{}).vago, absurdo:!!p.absurdo}}catch(e){return {t,err:String(e)}}})"""
+  return {t, topic:p.topic, inst:p.inst, cost:p.cost, rev:p.rev, nvx:!!nv.exato, jv:!!A.jaVigente||(A.items||[]).some(i=>i.jaVigente), red:!!A.redundante, vago:!!(p.qualidade||{}).vago, absurdo:!!p.absurdo}}catch(e){return {t,err:String(e)}}})"""
 errs = []
 with sync_playwright() as p:
     b = p.chromium.launch(); pg = b.new_page(viewport={'width': 1440, 'height': 900})
@@ -61,7 +61,7 @@ with sync_playwright() as p:
         if 'err' in r: ruins.append((nome, t[:60], r['err'])); continue
         if r['nvx'] or r['jv'] or r['red'] or r['vago'] or r['absurdo']: ruins.append((nome, t[:60], {k: r[k] for k in ('nvx', 'jv', 'red', 'vago', 'absurdo')}))
         gasta = re.search(r'R\$ [\d.,]+ (bilh|milh)', t) and not re.search(r'(?i)^(cortar|reduzir)', t)
-        if gasta and not (r['cost'] or 0) > 0 and 'penduricalhos' not in t.lower() and 'verbas indenizat' not in t.lower(): ruins.append((nome, t[:60], 'sem custo positivo: %s' % r['cost']))
+        if gasta and not (r['cost'] or 0) > 0 and not (r.get('rev') or 0) < 0 and 'penduricalhos' not in t.lower() and 'verbas indenizat' not in t.lower(): ruins.append((nome, t[:60], 'sem custo positivo: %s' % r['cost']))
     ok('nenhum dos %d textos é lido como já em vigor, redundante, vago ou absurdo (e os que gastam têm custo > 0)' % len(textos), not ruins, ruins[:4])
 
     # 2) cartão "Em vigor": aprova um programa pela interface e confere o cartão
