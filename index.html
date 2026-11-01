@@ -2386,6 +2386,10 @@ const CONQ_NOVAS = [
   { id: 'isolado', nome: 'Ilha diplomática', d: 'Isolamento internacional acima de 80. Até o GPS evita passar por aqui.', cat: 'Mundo', raro: 'comum', secreto: true, t: g => g.mundo && g.mundo.isol >= 80 },
   { id: 'amigo_de_todos', nome: 'Amigo de todo mundo', d: 'Pelo menos dez países com relação de amizade (40 ou mais).', cat: 'Mundo', raro: 'epica', t: g => g.mundo && nPaisesAmigos(g, 40) >= 10 },
   // Poder
+  { id: 'mun_capitais', nome: 'Capitais na mão', d: 'A base vence em 15 capitais ou mais nas eleições municipais.', cat: 'Poder', raro: 'epica', t: g => !!(g.el && (g.el.munHist || []).some(h => (h.capBase || 0) >= 15)) },
+  { id: 'mun_virada_sp', nome: 'Virada em São Paulo', d: 'A prefeitura de São Paulo muda de lado e passa para a base do governo.', cat: 'Poder', raro: 'epica', t: g => !!(g.el && (g.el.munHist || []).some(h => h.viradaSP)) },
+  { id: 'mun_onda', nome: 'Onda governista', d: 'A base ganha 10 prefeituras líquidas ou mais numa eleição municipal.', cat: 'Poder', raro: 'rara', t: g => !!(g.el && (g.el.munHist || []).some(h => (h.dN || 0) >= 10)) },
+  { id: 'mun_apostas', nome: 'Faro de cabo eleitoral', d: 'Apoiou dez ou mais candidatos nas municipais e a maioria venceu.', cat: 'Poder', raro: 'rara', t: g => !!(g.el && (g.el.munHist || []).some(h => (h.nApoio || 0) >= 10 && (h.nVit || 0) * 2 > h.nApoio)) },
   { id: 'toga_amiga', nome: 'Toga com a sua digital', d: 'Três ministros do STF aprovados pelo Senado em seu mandato.', cat: 'Poder', raro: 'epica', t: g => (estOf(g).stfOk || 0) >= 3 },
   // Escândalo
   { id: 'tempestade', nome: 'Tempestade perfeita', d: 'Índice de escândalo acima de 40. As manchetes já nem esperam o café.', cat: 'Escândalo', raro: 'comum', t: g => g.escandalo >= 40 },
@@ -2566,7 +2570,7 @@ function novoJogo(cfg) {
 }
 
 /* ============================== CÁLCULOS ============================== */
-function aprovacao(g) { let s = 0, w = 0; for (const G of GRUPOS) { s += g.groups[G.k] * G.w; w += G.w; } return s / w; }
+function aprovacao(g) { let s = 0, w = 0; for (const G of GRUPOS) { s += g.groups[G.k] * G.w; w += G.w; } return s / w + (g.el && g.el.munEfeito && !g.el.pj ? g.el.munEfeito.ap * elMunFator(g) : 0); } // + efeito das municipais, que decai em ~6 meses (só a aprovação geral; os grupos não reagem)
 function aprovRegiao(g, r) { return clamp(aprovacao(g) + g.regOff[r] + penalAbismo(g, r), 0, 100); }
 const UF_INFO = {
   AC: { nome: 'Acre', capital: 'Rio Branco', eleit: .4, lean: .8 },
@@ -2609,7 +2613,7 @@ function aprovEstados(g) {
   const out = {}; let sw = 0, sv = 0;
   for (const uf in UF_INFO) {
     const I = UF_INFO[uf];
-    const v = clamp(aprovRegiao(g, ESTADOS[uf]) + I.lean * ide * 0.09 + (uf === g.cfg.estado ? 6 : 0) + (hashStr('uf' + uf) - .5) * 4 + bonusGov(g, uf) + segAprov(g, uf) + ((g.ufBonus || {})[uf] || 0), 0, 100);
+    const v = clamp(aprovRegiao(g, ESTADOS[uf]) + I.lean * ide * 0.09 + (uf === g.cfg.estado ? 6 : 0) + (hashStr('uf' + uf) - .5) * 4 + bonusGov(g, uf) + segAprov(g, uf) + ((g.ufBonus || {})[uf] || 0) + elMunAprovUF(g, uf), 0, 100);
     out[uf] = v; sw += I.eleit; sv += v * I.eleit;
   }
   const off = sv / sw - aprovacao(g);
@@ -11669,6 +11673,7 @@ function apoioPartido(g, pid, prop, casa) {
   if (g.protesto && prop.fx && prop.fx.g && prop.fx.g[g.protesto.grupo] < 0) s -= 4; // rua cheia pesa no plenário
   if (prop.pesquisa != null) { if (prop.pesquisa >= 60) s += (prop.pesquisa - 50) * .3; else if (prop.pesquisa <= 40) s -= (50 - prop.pesquisa) * .2; }
   if (g.eu) s += g.eu.embalo * 1.5; // embalo do governo
+  s += elMunApoioPartido(g, pid); // municipais: resultado recente e pressão dos prefeitos sobre os deputados do partido
   return s > 0 ? s * multPlenario(g) : s; // multiplicador em plenário: saúde, energia e humor
 }
 const PROP_NEUTRA = { iv: { eco: 0, soc: 0 }, rev: 0, cost: 0, bonus: {}, aiApoio: {}, inst: 'PL' };
@@ -13786,6 +13791,7 @@ function eqRetorno(g) {
       if (D.cortaCusto) bits.push(`custeio −R$ ${fmt(D.cortaCusto * m, 1)} bi`);
       L.push({ k: 'prioridade', ic: 'Target', x: `Prioridade do trimestre (${D.nome.toLowerCase()}), mês ${Math.min(3, g.mes - Pr.ini + 1)} de 3: ${bits.slice(0, 5).join(', ')}.` });
     }
+    const mf = elMunRetorno(g); if (mf) L.push(mf); // municipais: efeito do resultado que ainda decai
   } catch (e) { }
   return L;
 }
@@ -17692,7 +17698,7 @@ function SinaisVitais({ g, onConfig, encerrar, irEu }) {
 /* seção onde cada pendência da Mesa se resolve (o que não está claro fica na Mesa) */
 function secaoDaPendencia(p) {
   const k = p.tipo || '';
-  if (['stf', 'pauta', 'oposicao', 'desgaste', 'prioridade', 'abin', 'qq', 'entcol', 'entconv', 'elmun', 'elapurm', 'elsuc', 'elforca', 'elcand', 'elpesq', 'eldeb', 'elcamp', 'elapurg'].includes(k)) return 'poder';
+  if (['stf', 'pauta', 'oposicao', 'desgaste', 'prioridade', 'abin', 'qq', 'entcol', 'entconv', 'elmun', 'elmunped', 'elapurm', 'elsuc', 'elforca', 'elcand', 'elpesq', 'eldeb', 'elcamp', 'elapurg'].includes(k)) return 'poder';
   if (['crise', 'protesto', 'seguranca', 'governadores', 'justica'].includes(k)) return 'pais';
   if (['viagem', 'mesadip', 'terras_raras', 'comercio'].includes(k)) return 'mundo';
   if (['saude', 'estresse', 'bastidores', 'vida'].includes(k)) return 'eu';
@@ -27667,21 +27673,56 @@ false,
    Cidades das municipais, institutos de pesquisa (selo "simulado"), pré-candidatos à Presidência, temas e falas de debate.
    Nomes reais são cenário do jogo: toda fala, candidatura e pesquisa é simulada, só sobre posições políticas. */
 const EL_AVISO_PESQ = 'Números do jogo, não são pesquisas reais. Institutos e candidatos reais aparecem só como cenário simulado.';
-/* 26 capitais (DF não elege prefeito) + 20 maiores cidades. eleit = eleitorado aproximado (mil); b24 = bloco da gestão atual (aproximado, só para medir ganhos e perdas). */
+/* ~100 cidades: 26 capitais (DF não elege prefeito), 20 maiores cidades e ~54 cidades médias, com pelo menos 2–3 por UF além da capital.
+   eleit = eleitorado aproximado de 2024 (mil, TSE, arredondado); b24 = bloco do prefeito eleito em 2024 (aproximado, só para medir ganhos e perdas);
+   lat/lon = posição no mapa. flags: 'g' = candidatos genéricos por partido; 'e' = números estimados (eleitorado e/ou partido sem conferência).
+   [id, nome, UF, eleitorado (mil), capital, bloco 2024, lat, lon, flags] */
 const EL_CIDADES = [
-  ['sao-paulo', 'São Paulo', 'SP', 9300, 1, 'MDB'], ['rio-de-janeiro', 'Rio de Janeiro', 'RJ', 5000, 1, 'PSD'], ['salvador', 'Salvador', 'BA', 2050, 1, 'UNIAO'], ['fortaleza', 'Fortaleza', 'CE', 1900, 1, 'PT'],
-  ['belo-horizonte', 'Belo Horizonte', 'MG', 1950, 1, 'PSD'], ['manaus', 'Manaus', 'AM', 1500, 1, 'AVANTE'], ['curitiba', 'Curitiba', 'PR', 1400, 1, 'PSD'], ['recife', 'Recife', 'PE', 1200, 1, 'PSB'],
-  ['goiania', 'Goiânia', 'GO', 1100, 1, 'UNIAO'], ['porto-alegre', 'Porto Alegre', 'RS', 1100, 1, 'MDB'], ['belem', 'Belém', 'PA', 1050, 1, 'MDB'], ['sao-luis', 'São Luís', 'MA', 800, 1, 'PSD'],
-  ['maceio', 'Maceió', 'AL', 750, 1, 'PL'], ['campo-grande', 'Campo Grande', 'MS', 670, 1, 'UNIAO'], ['teresina', 'Teresina', 'PI', 660, 1, 'UNIAO'], ['natal', 'Natal', 'RN', 600, 1, 'UNIAO'],
-  ['joao-pessoa', 'João Pessoa', 'PB', 620, 1, 'UNIAO'], ['aracaju', 'Aracaju', 'SE', 440, 1, 'PL'], ['cuiaba', 'Cuiabá', 'MT', 440, 1, 'PL'], ['florianopolis', 'Florianópolis', 'SC', 400, 1, 'PSD'],
-  ['porto-velho', 'Porto Velho', 'RO', 370, 1, 'PODE'], ['macapa', 'Macapá', 'AP', 330, 1, 'PSD'], ['vitoria', 'Vitória', 'ES', 270, 1, 'REP'], ['rio-branco', 'Rio Branco', 'AC', 270, 1, 'PL'],
-  ['boa-vista', 'Boa Vista', 'RR', 290, 1, 'PL'], ['palmas', 'Palmas', 'TO', 210, 1, 'PODE'],
-  ['guarulhos', 'Guarulhos', 'SP', 920, 0, 'PL'], ['campinas', 'Campinas', 'SP', 850, 0, 'REP'], ['sao-goncalo', 'São Gonçalo', 'RJ', 770, 0, 'PL'], ['duque-de-caxias', 'Duque de Caxias', 'RJ', 680, 0, 'MDB'],
-  ['nova-iguacu', 'Nova Iguaçu', 'RJ', 640, 0, 'UNIAO'], ['sao-bernardo', 'São Bernardo do Campo', 'SP', 600, 0, 'PSDB'], ['osasco', 'Osasco', 'SP', 530, 0, 'PODE'], ['santo-andre', 'Santo André', 'SP', 560, 0, 'REP'],
-  ['ribeirao-preto', 'Ribeirão Preto', 'SP', 520, 0, 'PSD'], ['sorocaba', 'Sorocaba', 'SP', 480, 0, 'PL'], ['uberlandia', 'Uberlândia', 'MG', 520, 0, 'PSD'], ['contagem', 'Contagem', 'MG', 440, 0, 'PSD'],
-  ['juiz-de-fora', 'Juiz de Fora', 'MG', 400, 0, 'PL'], ['joinville', 'Joinville', 'SC', 450, 0, 'PL'], ['feira-de-santana', 'Feira de Santana', 'BA', 400, 0, 'UNIAO'], ['londrina', 'Londrina', 'PR', 420, 0, 'PL'],
-  ['niteroi', 'Niterói', 'RJ', 400, 0, 'PL'], ['serra', 'Serra', 'ES', 370, 0, 'REP'], ['jaboatao', 'Jaboatão dos Guararapes', 'PE', 520, 0, 'PL'], ['aparecida-de-goiania', 'Aparecida de Goiânia', 'GO', 420, 0, 'UNIAO']
-].map(r => ({ id: r[0], nome: r[1], uf: r[2], eleit: r[3], cap: !!r[4], b24: r[5] }));
+  ['sao-paulo', 'São Paulo', 'SP', 9300, 1, 'MDB', -23.55, -46.63], ['rio-de-janeiro', 'Rio de Janeiro', 'RJ', 5000, 1, 'PSD', -22.91, -43.17], ['salvador', 'Salvador', 'BA', 2050, 1, 'UNIAO', -12.97, -38.50], ['fortaleza', 'Fortaleza', 'CE', 1900, 1, 'PT', -3.73, -38.53],
+  ['belo-horizonte', 'Belo Horizonte', 'MG', 1950, 1, 'PSD', -19.92, -43.94], ['manaus', 'Manaus', 'AM', 1500, 1, 'AVANTE', -3.12, -60.02], ['curitiba', 'Curitiba', 'PR', 1400, 1, 'PSD', -25.43, -49.27], ['recife', 'Recife', 'PE', 1200, 1, 'PSB', -8.05, -34.88],
+  ['goiania', 'Goiânia', 'GO', 1100, 1, 'UNIAO', -16.68, -49.25], ['porto-alegre', 'Porto Alegre', 'RS', 1100, 1, 'MDB', -30.03, -51.23], ['belem', 'Belém', 'PA', 1050, 1, 'MDB', -1.46, -48.50], ['sao-luis', 'São Luís', 'MA', 800, 1, 'PSD', -2.53, -44.30],
+  ['maceio', 'Maceió', 'AL', 750, 1, 'PL', -9.67, -35.74], ['campo-grande', 'Campo Grande', 'MS', 670, 1, 'UNIAO', -20.47, -54.62], ['teresina', 'Teresina', 'PI', 660, 1, 'UNIAO', -5.09, -42.80], ['natal', 'Natal', 'RN', 600, 1, 'UNIAO', -5.79, -35.21],
+  ['joao-pessoa', 'João Pessoa', 'PB', 620, 1, 'UNIAO', -7.12, -34.86], ['aracaju', 'Aracaju', 'SE', 440, 1, 'PL', -10.91, -37.07], ['cuiaba', 'Cuiabá', 'MT', 440, 1, 'PL', -15.60, -56.10], ['florianopolis', 'Florianópolis', 'SC', 400, 1, 'PSD', -27.59, -48.55],
+  ['porto-velho', 'Porto Velho', 'RO', 370, 1, 'PODE', -8.76, -63.90], ['macapa', 'Macapá', 'AP', 330, 1, 'PSD', 0.03, -51.07], ['vitoria', 'Vitória', 'ES', 270, 1, 'REP', -20.32, -40.34], ['rio-branco', 'Rio Branco', 'AC', 270, 1, 'PL', -9.97, -67.81],
+  ['boa-vista', 'Boa Vista', 'RR', 290, 1, 'PL', 2.82, -60.67], ['palmas', 'Palmas', 'TO', 210, 1, 'PODE', -10.18, -48.33],
+  ['guarulhos', 'Guarulhos', 'SP', 920, 0, 'PL', -23.46, -46.53], ['campinas', 'Campinas', 'SP', 850, 0, 'REP', -22.91, -47.06], ['sao-goncalo', 'São Gonçalo', 'RJ', 770, 0, 'PL', -22.83, -43.05], ['duque-de-caxias', 'Duque de Caxias', 'RJ', 680, 0, 'MDB', -22.79, -43.31],
+  ['nova-iguacu', 'Nova Iguaçu', 'RJ', 640, 0, 'UNIAO', -22.76, -43.45], ['sao-bernardo', 'São Bernardo do Campo', 'SP', 600, 0, 'PSDB', -23.69, -46.56], ['osasco', 'Osasco', 'SP', 530, 0, 'PODE', -23.53, -46.79], ['santo-andre', 'Santo André', 'SP', 560, 0, 'REP', -23.66, -46.53],
+  ['ribeirao-preto', 'Ribeirão Preto', 'SP', 520, 0, 'PSD', -21.18, -47.81], ['sorocaba', 'Sorocaba', 'SP', 480, 0, 'PL', -23.50, -47.46], ['uberlandia', 'Uberlândia', 'MG', 520, 0, 'PSD', -18.92, -48.28], ['contagem', 'Contagem', 'MG', 440, 0, 'PSD', -19.93, -44.05],
+  ['juiz-de-fora', 'Juiz de Fora', 'MG', 400, 0, 'PL', -21.76, -43.35], ['joinville', 'Joinville', 'SC', 450, 0, 'PL', -26.30, -48.85], ['feira-de-santana', 'Feira de Santana', 'BA', 400, 0, 'UNIAO', -12.27, -38.97], ['londrina', 'Londrina', 'PR', 420, 0, 'PL', -23.31, -51.16],
+  ['niteroi', 'Niterói', 'RJ', 400, 0, 'PL', -22.88, -43.10], ['serra', 'Serra', 'ES', 370, 0, 'REP', -20.13, -40.31], ['jaboatao', 'Jaboatão dos Guararapes', 'PE', 520, 0, 'PL', -8.11, -35.01], ['aparecida-de-goiania', 'Aparecida de Goiânia', 'GO', 420, 0, 'UNIAO', -16.82, -49.24],
+  // cidades médias (candidatos genéricos por partido; eleitorado de 2024 arredondado e partido do prefeito de 2024 conferidos só em parte)
+  ['caucaia', 'Caucaia', 'CE', 265, 0, 'PSB', -3.74, -38.66, 'ge'], ['juazeiro-do-norte', 'Juazeiro do Norte', 'CE', 200, 0, 'PODE', -7.21, -39.32, 'g'], ['maracanau', 'Maracanaú', 'CE', 175, 0, 'UNIAO', -3.88, -38.63, 'ge'],
+  ['caxias-do-sul', 'Caxias do Sul', 'RS', 355, 0, 'PSDB', -29.17, -51.18, 'g'], ['pelotas', 'Pelotas', 'RS', 255, 0, 'PT', -31.77, -52.34, 'g'], ['canoas', 'Canoas', 'RS', 250, 0, 'PSD', -29.92, -51.18, 'g'],
+  ['ananindeua', 'Ananindeua', 'PA', 390, 0, 'PODE', -1.37, -48.37, 'ge'], ['santarem', 'Santarém', 'PA', 220, 0, 'UNIAO', -2.44, -54.71, 'g'], ['maraba', 'Marabá', 'PA', 190, 0, 'PL', -5.37, -49.12, 'g'],
+  ['imperatriz', 'Imperatriz', 'MA', 190, 0, 'REP', -5.52, -47.48, 'ge'], ['sao-jose-de-ribamar', 'São José de Ribamar', 'MA', 140, 0, 'PSD', -2.55, -44.06, 'ge'],
+  ['arapiraca', 'Arapiraca', 'AL', 180, 0, 'MDB', -9.75, -36.66, 'g'], ['palmeira-dos-indios', 'Palmeira dos Índios', 'AL', 55, 0, 'PSD', -9.41, -36.63, 'ge'],
+  ['dourados', 'Dourados', 'MS', 160, 0, 'PSDB', -22.22, -54.81, 'g'], ['tres-lagoas', 'Três Lagoas', 'MS', 90, 0, 'PSDB', -20.75, -51.68, 'ge'],
+  ['parnaiba', 'Parnaíba', 'PI', 115, 0, 'PSDB', -2.90, -41.78, 'ge'], ['picos', 'Picos', 'PI', 65, 0, 'PT', -7.08, -41.47, 'ge'],
+  ['mossoro', 'Mossoró', 'RN', 190, 0, 'UNIAO', -5.19, -37.34, 'g'], ['parnamirim', 'Parnamirim', 'RN', 170, 0, 'PL', -5.92, -35.26, 'ge'],
+  ['campina-grande', 'Campina Grande', 'PB', 320, 0, 'UNIAO', -7.23, -35.88, 'g'], ['santa-rita', 'Santa Rita', 'PB', 105, 0, 'PSD', -7.11, -34.98, 'ge'],
+  ['socorro', 'Nossa Senhora do Socorro', 'SE', 130, 0, 'PODE', -10.85, -37.13, 'ge'], ['lagarto', 'Lagarto', 'SE', 80, 0, 'PL', -10.92, -37.65, 'ge'],
+  ['varzea-grande', 'Várzea Grande', 'MT', 200, 0, 'MDB', -15.65, -56.13, 'g'], ['rondonopolis', 'Rondonópolis', 'MT', 180, 0, 'PSD', -16.47, -54.64, 'ge'],
+  ['ji-parana', 'Ji-Paraná', 'RO', 95, 0, 'MDB', -10.88, -61.95, 'g'], ['ariquemes', 'Ariquemes', 'RO', 70, 0, 'PSD', -9.91, -63.04, 'ge'],
+  ['santana', 'Santana', 'AP', 75, 0, 'UNIAO', 0.06, -51.17, 'ge'], ['laranjal-do-jari', 'Laranjal do Jari', 'AP', 28, 0, 'UNIAO', -0.80, -52.46, 'ge'],
+  ['cruzeiro-do-sul', 'Cruzeiro do Sul', 'AC', 62, 0, 'UNIAO', -7.63, -72.67, 'g'], ['sena-madureira', 'Sena Madureira', 'AC', 28, 0, 'UNIAO', -9.07, -68.66, 'ge'],
+  ['rorainopolis', 'Rorainópolis', 'RR', 22, 0, 'PL', 0.94, -60.43, 'ge'], ['caracarai', 'Caracaraí', 'RR', 14, 0, 'REP', 1.82, -61.13, 'ge'],
+  ['araguaina', 'Araguaína', 'TO', 130, 0, 'PL', -7.19, -48.21, 'g'], ['gurupi', 'Gurupi', 'TO', 60, 0, 'PODE', -11.73, -49.07, 'ge'],
+  ['parintins', 'Parintins', 'AM', 75, 0, 'REP', -2.63, -56.74, 'ge'], ['itacoatiara', 'Itacoatiara', 'AM', 70, 0, 'PSD', -3.14, -58.44, 'ge'],
+  ['blumenau', 'Blumenau', 'SC', 270, 0, 'MDB', -26.92, -49.07, 'g'], ['sao-jose-sc', 'São José', 'SC', 180, 0, 'PSD', -27.61, -48.64, 'ge'],
+  ['vitoria-da-conquista', 'Vitória da Conquista', 'BA', 270, 0, 'UNIAO', -14.87, -40.84, 'g'], ['camacari', 'Camaçari', 'BA', 230, 0, 'UNIAO', -12.70, -38.32, 'g'],
+  ['maringa', 'Maringá', 'PR', 300, 0, 'UNIAO', -23.42, -51.94, 'g'], ['ponta-grossa', 'Ponta Grossa', 'PR', 250, 0, 'PSD', -25.09, -50.16, 'g'], ['cascavel', 'Cascavel', 'PR', 270, 0, 'PL', -24.96, -53.46, 'g'],
+  ['vila-velha', 'Vila Velha', 'ES', 360, 0, 'PODE', -20.33, -40.29, 'g'], ['cariacica', 'Cariacica', 'ES', 270, 0, 'MDB', -20.26, -40.42, 'ge'],
+  ['caruaru', 'Caruaru', 'PE', 260, 0, 'PSDB', -8.28, -35.98, 'g'], ['olinda', 'Olinda', 'PE', 270, 0, 'PSD', -8.01, -34.86, 'g'], ['petrolina', 'Petrolina', 'PE', 220, 0, 'UNIAO', -9.39, -40.50, 'g'],
+  ['anapolis', 'Anápolis', 'GO', 300, 0, 'PL', -16.33, -48.95, 'g'], ['rio-verde', 'Rio Verde', 'GO', 190, 0, 'UNIAO', -17.80, -50.93, 'g'],
+  ['montes-claros', 'Montes Claros', 'MG', 285, 0, 'PSD', -16.73, -43.86, 'ge'], ['betim', 'Betim', 'MG', 330, 0, 'PL', -19.97, -44.20, 'ge'],
+  ['sao-jose-dos-campos', 'São José dos Campos', 'SP', 520, 0, 'PSD', -23.22, -45.89, 'g']
+].map(r => ({ id: r[0], nome: r[1], uf: r[2], eleit: r[3], cap: !!r[4], b24: r[5], lat: r[6], lon: r[7], gen: /g/.test(r[8] || ''), est: /e/.test(r[8] || '') }));
+// posição no mapa do Brasil (mesma projeção de MAPA_BR: x = (lon + 73,99) × 14,42; y = (5,27 − lat) × 14,93)
+const elMunXY = (ct) => ({ x: Math.round((ct.lon + 73.99) * 14.42 * 10) / 10, y: Math.round((5.27 - ct.lat) * 14.93 * 10) / 10 });
+// peso de cada cidade no balanço: o eleitorado pesa, mas com retorno decrescente (São Paulo pesa muito mais que uma cidade pequena, sem engolir o resto)
+const elMunPeso = (ct) => Math.pow(ct.eleit, .8);
+const EL_MUN_PESO_TOT = EL_CIDADES.reduce((a, c) => a + elMunPeso(c), 0);
+const elMunShare = (ct) => elMunPeso(ct) / EL_MUN_PESO_TOT;
 
 /* institutos: ef = efeito de casa (pontos para candidatos de direita/esquerda), n = amostra típica */
 const EL_INST = [
@@ -28774,6 +28815,8 @@ function elEnsure(g) {
   const E = g.el;
   if (!E.subs) E.subs = { cam: {}, sen: {} }; if (!E.pop) E.pop = {}; if (!E.din) E.din = []; if (!E.munHist) E.munHist = []; if (!E.gerHist) E.gerHist = []; if (!E.govs) E.govs = {}; if (!E.acoesAliado) E.acoesAliado = {};
   if (E.mandatos == null) E.mandatos = 1; if (E.pj === undefined) E.pj = null;
+  if (E.munEfeito === undefined) E.munEfeito = null; if (E.munPed === undefined) E.munPed = null; // municipais: efeito que decai, pedido de verba de prefeito de oposição
+  if (E.mun && E.mun.v !== 2) elMunMigra(g);
   return E;
 }
 
@@ -28898,7 +28941,8 @@ function elVice(g) {
 function elLegado(g) {
   const c = g.cfg;
   return { nome: c.nome, sigla: nomePartido(c), bloco: c.partido, real: !!c.real, ap: aprovacao(g), pib: g.eco.pib, ipca: g.eco.ipca, des: g.eco.des, atos: (g.log || []).filter(l => l.res === 'aprovada').length, marcos: (g.marcos || []).length, mes: g.mes, cred: g.ent ? g.ent.cred : null,
-    prom: (c.promessas || []).map(k => { const P = PROMESSAS.find(p => p.k === k); return P ? { nome: P.nome, ok: !!P.check(g) } : null; }).filter(Boolean), mandatos: g.el ? g.el.mandatos : 1, metas: areasLegado(g) };
+    prom: (c.promessas || []).map(k => { const P = PROMESSAS.find(p => p.k === k); return P ? { nome: P.nome, ok: !!P.check(g) } : null; }).filter(Boolean), mandatos: g.el ? g.el.mandatos : 1, metas: areasLegado(g),
+    mun: ((g.el && g.el.munHist) || []).filter(h => h.lado).map(h => ({ ano: h.ano, dN: h.dN, base: h.lado.depois.base, n: h.n, capBase: h.capBase, nCap: h.nCap, apoios: h.nApoio, vit: h.nVit })).reverse() };
 }
 
 /* ---------- elegibilidade ---------- */
@@ -28983,7 +29027,7 @@ function elMunCands(g, ct, porUF, usados, ano) {
   };
   const rd = (s) => hashStr(String(g.seed) + s + ct.id + ano);
   // 1) figuras da UF (na capital) — presidenciáveis só às vezes
-  if (ct.cap) {
+  if (ct.cap && !ct.gen) {
     for (const f of elFigurasOk(g)) {
       if (f.uf !== ct.uf || !(f.tipo === 'fig' || f.tipo === 'est' || f.tipo === 'pref')) continue;
       if (f.tipo === 'pref' && !((f.id === 'amanda-vettorazzo-sp' && ct.id === 'sao-paulo') || (f.id === 'eduardo-cavaliere-rj' && ct.id === 'rio-de-janeiro') || (f.id === 'ricardo-nunes-sp' && ct.id === 'sao-paulo'))) continue;
@@ -28998,7 +29042,7 @@ function elMunCands(g, ct, porUF, usados, ano) {
   }
   // 2) deputados federais que se lançam (maiores votações da UF)
   const deps = (porUF[ct.uf] || []).map(x => ({ x, p: elPessoaPorNome(x.L.nome, x.L.uf) })).sort((a, b) => (b.p ? b.p.rec0 : 0) - (a.p ? a.p.rec0 : 0) || (a.x.i - b.x.i));
-  const nd = ct.cap ? (grande ? 2 : 1) : (rd('dd') < .5 ? 1 : 0);
+  const nd = ct.gen ? 0 : ct.cap ? (grande ? 2 : 1) : (rd('dd') < .5 ? 1 : 0);
   let k = 0;
   for (const d of deps.slice(0, 8)) {
     if (k >= nd || cands.length >= alvo) break;
@@ -29028,9 +29072,18 @@ function elMunCria(g) {
   const E = elEnsure(g); const c = elCiclo(g.mes); const ano = elAnoMun(g.mes);
   const porUF = {}; elBaseCasa(g, 'cam').forEach((L, i) => { (porUF[L.uf] = porUF[L.uf] || []).push({ L, i }); });
   const usados = new Set();
-  const mun = { ano, c, mes: elMesMun(c), cidades: {}, fase: 'pre', apoios: 0, pesq: {}, res: null, visto: false };
-  for (const ct of EL_CIDADES) mun.cidades[ct.id] = elMunCands(g, ct, porUF, usados, ano);
+  const mun = { v: 2, ano, c, mes: elMesMun(c), cidades: {}, fase: 'pre', apoios: 0, pesq: {}, res: null, visto: false };
+  for (const ct of EL_CIDADES) { const S = elMunCands(g, ct, porUF, usados, ano); S.verba = 0; S.caso = null; S.cass = null; mun.cidades[ct.id] = S; }
   E.mun = mun; return mun;
+}
+// save antigo (46 cidades): completa as cidades novas que faltam enquanto a eleição ainda não foi apurada
+function elMunMigra(g) {
+  const E = g.el; const m = E && E.mun; if (!m || m.v === 2) return;
+  m.v = 2;
+  if (m.fase === 'fim') return;
+  const porUF = {}; elBaseCasa(g, 'cam').forEach((L, i) => { (porUF[L.uf] = porUF[L.uf] || []).push({ L, i }); });
+  const usados = new Set();
+  for (const ct of EL_CIDADES) { const S = m.cidades[ct.id]; if (S) { if (S.verba == null) S.verba = 0; if (S.caso === undefined) S.caso = null; if (S.cass === undefined) S.cass = null; continue; } const N = elMunCands(g, ct, porUF, usados, m.ano); N.verba = 0; N.caso = null; N.cass = null; m.cidades[ct.id] = N; }
 }
 const elCidade = (id) => EL_CIDADES.find(c => c.id === id);
 // prestígio do jogador na cidade: presidente depende da aprovação local; personagem leve, da própria popularidade
@@ -29038,22 +29091,45 @@ function elPrestigio(g, uf, AE) {
   if (elLeve(g)) { const p = elPopDe(g, g.el.pj.id); return clamp((p.apr - 50) / 55 + (p.rec - 40) / 200, -.7, .7); }
   return clamp(((AE || aprovEstados(g))[uf] - 50) / 45, -.8, .8);
 }
-function elMunScores(g, mun, ct, AE) {
+/* verba de campanha: ajuda do candidato apoiado (0..1, retorno decrescente; valor em R$ mi) e risco de virar caso no TSE */
+const EL_MUN_VERBA_MAX = 200, EL_MUN_VERBA_PASSO = 10;
+const elMunVerbaEf = (v) => 1 - Math.exp(-(v || 0) / 70);
+// atenção diluída: quem apoia candidatos demais em todo o país consegue ajudar menos cada um (a partir de ~12 apoios)
+const elMunDil = (mun) => 1 / (1 + .015 * Math.max(0, (mun.apoios || 0) - 15));
+function elMunRiscoTSE(g, verba, nCid) {
+  if (!(verba > 0)) return 0;
+  const base = .015 + .16 * Math.pow(verba / EL_MUN_VERBA_MAX, 1.3);
+  return clamp(base * (1 + .06 * Math.max(0, nCid - 1)) * (1 + g.escandalo / 120), 0, .85);
+}
+// zb = true na apuração: surpresa (a zebra ganha um empurrão em ~13% das cidades); as pesquisas e as estimativas não enxergam a zebra
+function elMunScores(g, mun, ct, AE, zb) {
   const S = mun.cidades[ct.id]; const lean = (UF_INFO[ct.uf].lean) + S.lean; const ap = AE[ct.uf];
-  const pres = elPrestigio(g, ct.uf, AE);
-  return S.cands.map(cd => {
+  const pres = elPrestigio(g, ct.uf, AE); const esc = clamp(g.escandalo / 50, 0, 1.6);
+  const sc = S.cands.map(cd => {
     const dir = EL_CAMP_DIR[cd.camp] != null ? EL_CAMP_DIR[cd.camp] : 0;
     let s = 2.0 * cd.fama + 2.6 * elForcaPartidoUF(g, cd.bloco, ct.uf) + .5 * lean * dir + (cd.inc ? .45 : 0) + (hashStr(String(g.seed) + 'mn' + cd.id + mun.ano) - .5) * .6;
     const st = g.parties[cd.bloco] ? status(g.parties[cd.bloco].rel) : 'indep';
-    if (!elLeve(g)) { if (st === 'opos') s += .4 * (50 - ap) / 50; else if (st === 'base') s += .3 * (ap - 50) / 50; }
-    if (S.apoio === cd.id) s += .45 + 1.15 * pres + .22 * Math.min(2, S.visita);
+    if (!elLeve(g)) {
+      if (st === 'opos') s += .4 * (50 - ap) / 50; else if (st === 'base') s += .3 * (ap - 50) / 50;
+      if (st === 'base') s -= .9 * esc; // escândalos do governo pesam sobre os candidatos da base, na proporção do escândalo
+    }
+    if (S.apoio === cd.id) s += (.30 + .9 * pres + .18 * Math.min(2, S.visita)) * elMunDil(mun) + .40 * elMunVerbaEf(S.verba);
     return s;
   });
+  if (zb && sc.length > 2 && hashStr(String(g.seed) + 'zb' + ct.id + mun.ano) < .13) {
+    let top = 0; sc.forEach((x, i) => { if (x > sc[top]) top = i; });
+    const outros = sc.map((x, i) => i).filter(i => i !== top);
+    sc[outros[Math.floor(hashStr(String(g.seed) + 'zi' + ct.id + mun.ano) * outros.length) % outros.length]] += 1.5;
+  }
+  return sc;
 }
+// chance estimada de cada candidato (sem a zebra): vira "favorito / disputa / azarão" nas cidades sem pesquisa
+function elMunChances(g, mun, ct, AE) { return elSoftmax(elMunScores(g, mun, ct, AE || aprovEstados(g), false)); }
+const elMunRotChance = (p) => (p >= .38 ? 'favorito(a)' : p >= .17 ? 'disputa' : 'azarão');
 function elMunPesquisa(g, mun, AE) {
-  const E = g.el; const grandes = EL_CIDADES.slice().sort((a, b) => b.eleit - a.eleit).slice(0, 12);
+  const E = g.el; const grandes = EL_CIDADES.filter(c => mun.cidades[c.id]).sort((a, b) => b.eleit - a.eleit).slice(0, 12);
   for (const ct of grandes) {
-    const S = mun.cidades[ct.id]; const sh = elSoftmax(elMunScores(g, mun, ct, AE));
+    const S = mun.cidades[ct.id]; const sh = elSoftmax(elMunScores(g, mun, ct, AE, false));
     const I = EL_INST[Math.floor(hashStr(String(g.seed) + 'pm' + ct.id + g.mes) * EL_INST.length) % EL_INST.length]; const n = 1000 + Math.floor(hashStr(ct.id + 'n') * 4) * 200;
     const ind = clamp(.2 - (mun.mes - g.mes) * .035, .04, .3);
     const r = {}; S.cands.forEach((cd, i) => { const p = sh[i] * (1 - ind); r[cd.id] = Math.max(0, Math.round((p + elGauss(g.seed + I.k + cd.id + g.mes) * Math.sqrt(p * (1 - p) / n) * I.ru + I.ef * .004 * (EL_CAMP_DIR[cd.camp] || 0)) * 1000) / 10); });
@@ -29061,74 +29137,273 @@ function elMunPesquisa(g, mun, AE) {
   }
 }
 function elMunApura1(g, mun, notas) {
-  const AE = aprovEstados(g); let nSeg = 0;
+  const AE = aprovEstados(g); let nSeg = 0, v1 = 0;
   for (const ct of EL_CIDADES) {
-    const S = mun.cidades[ct.id]; const sh = elSoftmax(elMunScores(g, mun, ct, AE));
+    const S = mun.cidades[ct.id]; if (!S) continue; const sh = elSoftmax(elMunScores(g, mun, ct, AE, true));
     S.r1 = {}; S.cands.forEach((cd, i) => { S.r1[cd.id] = Math.round(sh[i] * 1000) / 10; });
     const ord = S.cands.map((cd, i) => ({ id: cd.id, p: sh[i] })).sort((a, b) => b.p - a.p);
-    if (ord[0].p >= .5) S.venc = ord[0].id; else { S.fin = [ord[0].id, ord[1].id]; nSeg++; }
+    if (ord[0].p >= .5) { S.venc = ord[0].id; v1++; } else { S.fin = [ord[0].id, ord[1].id]; nSeg++; }
   }
   mun.fase = 'seg'; mun.nSeg = nSeg;
-  const v1 = EL_CIDADES.filter(c => mun.cidades[c.id].venc).length;
-  notas.push({ t: 'neu', x: `Eleições municipais ${mun.ano}, 1º turno: ${v1} prefeituras definidas e ${nSeg} cidades vão ao 2º turno (29/10).` });
+  notas.push({ t: 'neu', x: `Eleições municipais ${mun.ano}, 1º turno: ${v1} prefeituras definidas e ${nSeg} cidades vão ao 2º turno (29/10). Ainda dá para apoiar nas cidades indecisas.` });
   g.feed.unshift({ mes: g.mes, src: 'globo', txt: `Municipais ${mun.ano}: ${nSeg} cidades vão ao 2º turno; ${v1} prefeitos eleitos já no 1º turno` }); g.feed = g.feed.slice(0, 40);
 }
 function elMunApura2(g, mun, notas) {
-  const E = g.el; const AE = aprovEstados(g);
+  const AE = aprovEstados(g);
   for (const ct of EL_CIDADES) {
-    const S = mun.cidades[ct.id]; if (S.venc) continue;
-    const sc = elMunScores(g, mun, ct, AE); const sh = elSoftmax(sc);
+    const S = mun.cidades[ct.id]; if (!S || S.venc) continue;
+    const sc = elMunScores(g, mun, ct, AE, true); const sh = elSoftmax(sc);
     const idx = (id) => S.cands.findIndex(c => c.id === id); const ia = idx(S.fin[0]), ib = idx(S.fin[1]);
     const A = S.cands[ia], B = S.cands[ib]; let pa = sh[ia], pb = sh[ib];
     S.cands.forEach((cd, i) => { if (i === ia || i === ib) return; const da = Math.exp(-2 * Math.abs((EL_CAMP_DIR[cd.camp] || 0) - (EL_CAMP_DIR[A.camp] || 0))), db = Math.exp(-2 * Math.abs((EL_CAMP_DIR[cd.camp] || 0) - (EL_CAMP_DIR[B.camp] || 0))); pa += sh[i] * da / (da + db); pb += sh[i] * db / (da + db); });
-    const bo = (S.apoio === A.id ? .12 : S.apoio === B.id ? -.12 : 0) * (1 + Math.min(2, S.visita) * .2) * (1 + elPrestigio(g, ct.uf, AE));
+    const vb = elMunVerbaEf(S.verba);
+    const bo = (S.apoio === A.id ? .12 : S.apoio === B.id ? -.12 : 0) * (1 + Math.min(2, S.visita) * .2 + vb * .5) * (1 + elPrestigio(g, ct.uf, AE)) * elMunDil(mun);
     let a = pa / (pa + pb) + bo * .25 + (hashStr(String(g.seed) + 'r2' + ct.id + mun.ano) - .5) * .05; a = clamp(a, .3, .7);
     S.r2 = { [A.id]: Math.round(a * 1000) / 10, [B.id]: Math.round((1 - a) * 1000) / 10 }; S.venc = a >= .5 ? A.id : B.id;
   }
-  // balanço: prefeituras por bloco, antes (gestão atual, aproximada) e depois
-  const antes = {}, depois = {}; const lista = [];
+  elMunResultado(g, mun, notas);
+}
+/* ---------- resultado: placar da base, efeito no governo (aprovação, Congresso, governadores), caso no TSE ---------- */
+const elMunLado = (BB, OO, b) => (BB.has(b) ? 'base' : OO.has(b) ? 'opos' : 'indep');
+function elMunResultado(g, mun, notas) {
+  const E = elEnsure(g); const leve = elLeve(g);
+  const BB = new Set(PARTIDOS.filter(P => status(g.parties[P.id].rel) === 'base').map(P => P.id));
+  const OO = new Set(PARTIDOS.filter(P => status(g.parties[P.id].rel) === 'opos').map(P => P.id));
+  const antes = {}, depois = {}, lista = []; const ld = { antes: { base: 0, opos: 0, indep: 0 }, depois: { base: 0, opos: 0, indep: 0 } };
+  let dN = 0, dP = 0, capA = 0, capD = 0, nCap = 0, viradaSP = false, nApoio = 0, nVit = 0, peso = 0, prest = 0; const ufs = {};
   for (const ct of EL_CIDADES) {
-    const S = mun.cidades[ct.id]; const W = S.cands.find(c => c.id === S.venc);
-    antes[ct.b24] = (antes[ct.b24] || 0) + 1; depois[W.bloco] = (depois[W.bloco] || 0) + 1;
-    lista.push({ cid: ct.id, nome: ct.nome, uf: ct.uf, venc: W.nome, sigla: W.sigla, bloco: W.bloco, tipo: W.tipo, apoiado: S.apoio === W.id, turno: S.r2 ? 2 : 1, pct: S.r2 ? S.r2[W.id] : S.r1[W.id] });
+    const S = mun.cidades[ct.id]; if (!S) continue; const W = S.cands.find(c => c.id === S.venc); const sh = elMunShare(ct);
+    const a = elMunLado(BB, OO, ct.b24), d = elMunLado(BB, OO, W.bloco); const ba = a === 'base' ? 1 : 0, bd = d === 'base' ? 1 : 0;
+    antes[ct.b24] = (antes[ct.b24] || 0) + 1; depois[W.bloco] = (depois[W.bloco] || 0) + 1; ld.antes[a]++; ld.depois[d]++;
+    dN += bd - ba; dP += sh * (bd - ba); if (ct.cap) { nCap++; capA += ba; capD += bd; }
+    if (ct.id === 'sao-paulo' && !ba && bd) viradaSP = true;
+    const U = ufs[ct.uf] = ufs[ct.uf] || { s: 0, w: 0 }; U.s += elMunPeso(ct) * (bd - ba); U.w += elMunPeso(ct);
+    const apoio = S.apoio ? (S.apoio === W.id ? 'ganhou' : 'perdeu') : null; const cdAp = S.apoio ? S.cands.find(c => c.id === S.apoio) : null;
+    if (apoio) { nApoio++; peso += sh; const pw = .6 + Math.min(2.4, 10 * sh); if (apoio === 'ganhou') { nVit++; prest += .06 * pw; } else prest -= .26 * pw; }
+    lista.push({ cid: ct.id, nome: ct.nome, uf: ct.uf, venc: W.nome, sigla: W.sigla, bloco: W.bloco, tipo: W.tipo, apoiado: S.apoio === W.id, apoio, apoiou: cdAp ? cdAp.nome : null, apoiouSigla: cdAp ? cdAp.sigla : null, turno: S.r2 ? 2 : 1, pct: S.r2 ? S.r2[W.id] : S.r1[W.id], b24: ct.b24, lado: d, ladoAntes: a, cap: ct.cap, verba: S.verba || 0, ov: null });
     // popularidade dos candidatos
     for (const cd of S.cands) if (cd.pid) { if (cd.id === S.venc) elPopMove(g, cd.pid, 10, 4); else elPopMove(g, cd.pid, 3, -2); }
     if (S.apoio && S.apoio === S.venc && W.pid) elPopMove(g, W.pid, 3, 3);
     // titular que vira prefeito deixa a cadeira; o suplente assume na posse (1/1 do ano seguinte)
     if (W.ref) { const sub = elTrocaCadeira(g, W.ref.casa, W.ref.idx, mun.mes + 3, 'eleito prefeito de ' + ct.nome); if (sub) { sub.cid = ct.id; } }
   }
-  const blocosBase = PARTIDOS.filter(P => status(g.parties[P.id].rel) === 'base').map(P => P.id);
-  const blocosOpos = PARTIDOS.filter(P => status(g.parties[P.id].rel) === 'opos').map(P => P.id);
-  const soma = (m, ids) => ids.reduce((a, b) => a + (m[b] || 0), 0);
-  const ref = (soma(depois, blocosBase) - soma(antes, blocosBase)) / 10;
-  for (const P of PARTIDOS) { const d = (depois[P.id] || 0) - (antes[P.id] || 0); if (d) { const dr = clamp(d * .35, -3, 3); g.parties[P.id].rel = clamp(g.parties[P.id].rel + dr, 0, 99); g.parties[P.id].relS = clamp(g.parties[P.id].relS + dr * .6, 0, 99); } }
-  const nApoio = lista.filter(x => x.apoiado).length, nTotApoio = EL_CIDADES.filter(c => mun.cidades[c.id].apoio).length;
-  if (!elLeve(g)) { embaloMove(g, clamp(ref * 2, -1, 1)); applyFx(g, { ap: clamp(ref * 1.2, -.8, .8) }); }
-  for (const x of lista) if (x.apoiado) { const P = g.parties[x.bloco]; if (P) P.rel = clamp(P.rel + 1, 0, 99); }
-  mun.res = { antes, depois, lista, ref: Math.round(ref * 100) / 100, nApoio, nTotApoio, fase: 'fim' };
+  // 1) tamanho da vitória ou derrota: prefeituras líquidas da base (todos os partidos da base, antes e depois) e peso do eleitorado
+  const X = clamp(.5 * dN / 12 + .5 * dP / .10, -1.7, 1.7);
+  // 2) envolvimento: apoios declarados e o peso das cidades onde você apostou (sem apoios o efeito vale ~55%, nunca zero)
+  const eng = .55 + .45 * (.5 * Math.min(1, nApoio / 14) + .5 * Math.min(1, peso / .30));
+  const perda = X < 0 ? 1.3 : 1; // perder dói mais que ganhar ajuda
+  const apBase = clamp(3.8 * X * perda, -6.5, 5) * eng, cong = clamp(5 * X * perda, -7, 6) * eng;
+  const prestC = clamp(prest, -4, 1.5); // cada apoiado derrotado custa prestígio (e cada vitória rende um pouco); decai junto com o resto
+  const ap = apBase + prestC;
+  const apUF = {}; const govD = {};
+  for (const uf in ufs) { const sc = ufs[uf].s / ufs[uf].w; if (!sc) continue; apUF[uf] = Math.round(clamp(2.2 * sc * eng * (sc < 0 ? 1.3 : 1), -3.5, 3.5) * 100) / 100; govD[uf] = Math.round(clamp(5 * sc * (sc < 0 ? 1.3 : 1), -6, 5) * (.6 + .4 * eng) * 10) / 10; }
+  // 3) relação com os partidos pelo saldo de prefeituras; aliado derrotado na mesma cidade irrita o outro partido da base
+  for (const P of PARTIDOS) { const d = (depois[P.id] || 0) - (antes[P.id] || 0); if (d) { const dr = clamp(d * .3, -3, 3); g.parties[P.id].rel = clamp(g.parties[P.id].rel + dr, 0, 99); g.parties[P.id].relS = clamp(g.parties[P.id].relS + dr * .6, 0, 99); } }
+  const irrit = {};
+  for (const ct of EL_CIDADES) { const S = mun.cidades[ct.id]; if (!S || !S.apoio) continue; const mine = S.cands.find(c => c.id === S.apoio); if (!mine) continue; if (!BB.has(mine.bloco)) continue; for (const cd of S.cands) if (cd.bloco !== mine.bloco && BB.has(cd.bloco) && ((S.r1 && S.r1[cd.id]) || 0) >= 15) irrit[cd.bloco] = (irrit[cd.bloco] || 0) + 1; }
+  const irritados = [];
+  for (const b in irrit) { const P = g.parties[b]; if (P) { const dr = -Math.min(3, .8 * irrit[b]); P.rel = clamp(P.rel + dr, 0, 99); irritados.push(PMAP[b].curto); } }
+  for (const x of lista) if (x.apoio === 'ganhou') { const P = g.parties[x.bloco]; if (P) P.rel = clamp(P.rel + .6, 0, 99); }
+  // 4) governadores: a relação sobe onde a base ganhou e cai onde perdeu
+  let govSobe = 0, govCai = 0;
+  try { const GV = ensureGv(g); for (const uf in govD) { const S = GV.uf[uf]; if (S) { S.rel = clamp(S.rel + govD[uf], 0, 100); if (govD[uf] > 0) govSobe++; else if (govD[uf] < 0) govCai++; } } } catch (e) { }
+  // 5) aplicação: aprovação nacional no mês do resultado (decai em ~6 meses; ver elMunMensal) e prestígio dos apoiados
+  const efeito = { ano: mun.ano, desde: g.mes, ap: Math.round(ap * 100) / 100, apBase: Math.round(apBase * 100) / 100, cong: Math.round(cong * 100) / 100, apUF, apAplic: 0, X: Math.round(X * 100) / 100, eng: Math.round(eng * 100) / 100, dN, dP: Math.round(dP * 1000) / 1000, prest: Math.round(prestC * 100) / 100, govD };
+  if (!leve) {
+    embaloMove(g, clamp(X * .8 + prestC * .4, -1, 1));
+  } else {
+    const pj = E.pj; if (pj) elPopMove(g, pj.id, clamp(4 * X + prestC * 3, -8, 8), clamp(5 * X * perda + prestC * 4, -9, 8));
+  }
+  E.munEfeito = efeito;
+  // 6) verbas de campanha: risco de virar caso no TSE (cresce com o valor, com o número de cidades e com o escândalo)
+  const cidV = EL_CIDADES.filter(ct => mun.cidades[ct.id] && mun.cidades[ct.id].apoio && mun.cidades[ct.id].verba > 0); const casos = [];
+  for (const ct of cidV) {
+    const S = mun.cidades[ct.id]; if (hashStr(String(g.seed) + 'tse' + ct.id + mun.ano) < elMunRiscoTSE(g, S.verba, cidV.length)) casos.push(elMunAbreCaso(g, mun, ct, S, notas));
+  }
+  const totVerba = cidV.reduce((a, ct) => a + mun.cidades[ct.id].verba, 0);
+  mun.res = { antes, depois, lista, ref: Math.round(X * 100) / 100, nApoio, nTotApoio: nApoio, nVit, fase: 'fim', lado: ld, dN, X: efeito.X, ap: efeito.ap, apBase: efeito.apBase, cong: efeito.cong, eng: efeito.eng, prest: efeito.prest, capA, capD, nCap, govSobe, govCai, irritados, casos, totVerba };
   mun.fase = 'fim';
   const top = Object.keys(depois).sort((a, b) => depois[b] - depois[a]).slice(0, 3).map(k => `${PMAP[k].curto} ${depois[k]}`).join(', ');
-  notas.push({ t: ref >= 0 ? 'pos' : 'neg', x: `Municipais ${mun.ano}, resultado final: ${top}. Seus candidatos: ${nApoio} de ${nTotApoio} apoiados venceram.` });
-  g.feed.unshift({ mes: g.mes, src: ref >= 0 ? 'globo' : 'antag', txt: `Municipais ${mun.ano}: ${top} nas 46 maiores cidades; ${nApoio} de ${nTotApoio} apoios do ${elLeve(g) ? 'personagem' : 'Planalto'} vencem` }); g.feed = g.feed.slice(0, 40);
-  linhaAdd(g, 'AÇÃO', `Eleições municipais ${mun.ano}: ${top}.`);
+  const sd = (n) => (n > 0 ? '+' : n < 0 ? '−' : '') + Math.abs(n);
+  const ano = mun.ano, nc = EL_CIDADES.length;
+  notas.push({ t: X >= 0 ? 'pos' : 'neg', x: `Municipais ${ano}: a base fica com ${ld.depois.base} das ${nc} prefeituras (${sd(dN)} em relação a 2024); aprovação ${sgn(ap, 1)} ponto(s) no mês, diminuindo ao longo de ~6 meses.${nApoio ? ` Seus apoios: ${nVit} de ${nApoio} venceram.` : ' Você ficou neutro.'}` });
+  if (casos.length) notas.push({ t: 'neg', x: `TSE abre ${casos.length === 1 ? 'um caso' : casos.length + ' casos'} sobre o uso de verbas federais em campanha. Veja em País, Justiça.` });
+  if (viradaSP) notas.push({ t: 'pos', x: 'Virada em São Paulo: a prefeitura passa para a base do governo.' });
+  const mk = (src, txt) => g.feed.unshift({ mes: g.mes, src, txt });
+  if (X >= .35) { mk('globo', `Base do governo avança nas capitais: ${capD} das ${nCap} ficam com aliados`); mk('carta', `Eleição municipal fortalece o Planalto: base soma ${sd(dN)} prefeituras`); mk('antag', `OPOSIÇÃO TENTA MINIMIZAR AVANÇO GOVERNISTA NAS PREFEITURAS`); }
+  else if (X <= -.35) { mk('antag', `URNAS DÃO RECADO AO PLANALTO: BASE PERDE ${Math.abs(dN)} PREFEITURAS`); mk('globo', `Urnas dão recado ao Planalto: base perde espaço nas capitais`); mk('carta', `Derrota nas cidades expõe desgaste do governo e da base`); }
+  else mk('globo', `Municipais ${ano}: placar equilibrado entre governo e oposição nas ${nc} maiores cidades`);
+  if (viradaSP) mk('globo', 'Virada em São Paulo: base do governo conquista a maior prefeitura do país');
+  g.feed = g.feed.slice(0, 40);
+  linhaAdd(g, 'AÇÃO', `Eleições municipais ${ano}: base ${ld.depois.base} prefeituras (${sd(dN)}); ${top}.`);
   const trocas = Object.values(E.subs.cam).concat(Object.values(E.subs.sen)).filter(s => s.mes === mun.mes + 3).length;
   if (trocas) notas.push({ t: 'neu', x: `${trocas} parlamentar(es) eleito(s) prefeito(s) deixam o mandato na posse (1/1): entram suplentes e o plenário muda.` });
-  E.munHist.unshift({ ano: mun.ano, depois, antes, ref: mun.res.ref, trocas }); E.munHist = E.munHist.slice(0, 6);
+  // histórico: guarda a lista de prefeitos (compacta) para os bônus dos prefeitos, o legado e a presidencial seguinte
+  const h = { ano, depois, antes, ref: mun.res.ref, trocas, n: nc, dN, X: efeito.X, lado: ld, capBase: capD, nCap, viradaSP, nApoio, nVit, lista: lista.map(x => ({ cid: x.cid, uf: x.uf, bloco: x.bloco, ov: null })) };
+  elMunAgrega(h); E.munHist.unshift(h); E.munHist = E.munHist.slice(0, 6);
 }
-// janela de apoio: da convenção ao 2º turno
-function elMunJanela(g) { const E = g.el; const m = E && E.mun; if (!m) return false; const rel = g.mes - 48 * m.c; return m.fase !== 'fim' && rel >= 19 && rel <= 22; }
+/* ---------- prefeitos eleitos: agregados por UF e por partido (leitura rápida) ---------- */
+const elMunHist = (g) => (g && g.el && g.el.munHist && g.el.munHist[0]) || null;
+function elMunAgrega(h) {
+  const uf = {}, pp = {};
+  for (const x of h.lista) {
+    const ct = elCidade(x.cid); if (!ct) continue; const U = uf[x.uf] = uf[x.uf] || { tot: 0, b: {} };
+    const k = x.ov === 'aliado' ? '@aliado' : x.ov === 'neutro' ? '@neutro' : x.bloco;
+    U.tot += ct.eleit; U.b[k] = (U.b[k] || 0) + ct.eleit; pp[x.bloco] = (pp[x.bloco] || 0) + elMunShare(ct);
+  }
+  h.uf = uf; h.pp = pp; return h;
+}
+// postura de um bloco (ou de um prefeito reclassificado) diante do governo: +1 aliado, 0 neutro, −1 oposição
+const elMunStance = (g, k) => (k === '@aliado' ? 1 : k === '@neutro' ? 0 : (g.parties && g.parties[k] ? ({ base: 1, indep: 0, opos: -1 })[status(g.parties[k].rel)] : 0));
+const elMunPostura = (g, x) => (x.ov === 'aliado' ? 1 : x.ov === 'neutro' ? 0 : elMunStance(g, x.bloco));
+const elMunUFMil = (uf) => UF_INFO[uf].eleit * 1564;
+// saldo de prefeitos aliados (+) e de oposição (−) numa UF, de −1 a +1 (peso = eleitorado das cidades do jogo)
+function elMunSaldoUF(g, uf) {
+  const h = elMunHist(g); const U = h && h.uf && h.uf[uf]; if (!U) return 0;
+  let s = 0; for (const k in U.b) s += elMunStance(g, k) * U.b[k];
+  return s / Math.max(U.tot, .25 * elMunUFMil(uf));
+}
+// fator de decaimento do efeito da última eleição: 1 no mês do resultado, 0 depois de ~6 meses
+function elMunFator(g) { const ef = g && g.el && g.el.munEfeito; if (!ef) return 0; return clamp(1 - (g.mes - ef.desde) / 6, 0, 1); }
+// programas federais em vigor rendem ±10–20% a mais (ou a menos) no estado com prefeitos aliados (ou de oposição)
+function elMunProgMult(g, uf) { const s = elMunSaldoUF(g, uf); if (Math.abs(s) < .04) return 1; return 1 + Math.sign(s) * (.10 + .10 * Math.min(1, Math.abs(s) / .6)); }
+let _elMunProg = { g: null, k: '', v: 0 };
+function elMunProgPts(g) {
+  const k = g.mes + '|' + medL(g).length; if (_elMunProg.g === g && _elMunProg.k === k) return _elMunProg.v;
+  const v = clamp(.5 * medL(g).filter(M => M.estado === 'ativa' || M.estado === 'consolidada').length, 0, 5); _elMunProg = { g, k, v }; return v;
+}
+// aprovação extra numa UF: choque do último resultado (decai) + prefeitos aliados/oposição (permanente até a eleição seguinte) + rendimento dos programas
+function elMunAprovUF(g, uf) {
+  const E = g.el; if (!E || !E.munHist || !E.munHist.length) return 0;
+  const ef = E.munEfeito; let v = ef && ef.apUF && ef.apUF[uf] ? ef.apUF[uf] * elMunFator(g) : 0;
+  const s = elMunSaldoUF(g, uf); if (s) v += 1.6 * s + elMunProgPts(g) * (elMunProgMult(g, uf) - 1);
+  return v;
+}
+// pressão dos prefeitos e do último resultado sobre os deputados do partido (somada ao apoio do partido na votação)
+function elMunApoioPartido(g, pid) {
+  const E = g.el; if (!E) return 0; let s = 0; const ef = E.munEfeito;
+  if (ef && ef.cong) s += ef.cong * elMunFator(g);
+  const h = elMunHist(g); if (h && h.pp && h.pp[pid]) s += elMunStance(g, pid) * Math.min(3, h.pp[pid] * 25);
+  return s;
+}
+// presidencial seguinte: prefeitos aliados somam votos ao governista; os de oposição, ao candidato da oposição (proporcional ao eleitorado das cidades)
+function elMunBonusPres(g, uf, bl, c) {
+  const h = elMunHist(g); const U = h && h.uf && h.uf[uf]; if (!U) return 0;
+  const P = g.parties && g.parties[bl]; const st = c && c.sit ? 'base' : (P ? status(P.rel) : 'indep'); const alvo = st === 'base' ? 1 : st === 'opos' ? -1 : 0;
+  let al = 0, own = 0; for (const k in U.b) { if (alvo && elMunStance(g, k) === alvo) al += U.b[k]; if (k === bl) own += U.b[k]; }
+  const mil = elMunUFMil(uf); return .20 * al / mil + .08 * own / mil;
+}
+/* ---------- verba de campanha: caso no TSE, cassação e nova eleição na cidade ---------- */
+function elMunAbreCaso(g, mun, ct, S, notas) {
+  const cd = S.cands.find(c => c.id === S.apoio);
+  const c = jusNovoCaso(g, { gov: true, silencio: true, esquema: 'uso irregular de verbas federais em campanha municipal' });
+  c.alvo = `uma campanha municipal do ${cd ? cd.sigla : 'partido apoiado'} que recebeu verbas federais`; c.mun = ct.id; c.valor = Math.max(20, Math.round(S.verba)); c.pend = true; c.pendMes = g.mes; c.p = null; c.orgaos = ['TSE', 'PF']; c.orgao = 'TSE';
+  g.escandalo = clamp(g.escandalo + clamp(2 + S.verba / 40, 2, 7), 0, 100);
+  applyFx(g, { ap: -(.5 + S.verba / 200) });
+  jusManchete(g, 'antag', `TSE abre ação sobre uso de verbas federais na campanha em ${ct.nome}`);
+  linhaAdd(g, 'ESCÂNDALO', `Operação ${c.nome}: TSE investiga verbas de campanha em ${ct.nome}`);
+  notas.push({ t: 'neg', x: `Operação ${c.nome}: o TSE abre ação sobre as verbas federais da campanha em ${ct.nome} (R$ ${Math.round(S.verba)} mi).` });
+  S.caso = { id: c.id, mes: g.mes };
+  if (S.apoio === S.venc && hashStr(String(g.seed) + 'cass' + ct.id + mun.ano) < clamp(.25 + S.verba / 400, .25, .7)) S.cass = { mes: g.mes + 2 + Math.floor(hashStr(String(g.seed) + 'cm' + ct.id) * 3), fase: 'julgando' };
+  return { cid: ct.id, nome: ct.nome, caso: c.id, nomeCaso: c.nome, verba: Math.round(S.verba), cass: !!S.cass };
+}
+// atualiza o prefeito de uma cidade na lista guardada (histórico e resultado em vista) e recalcula os agregados
+function elMunTrocaPrefeito(g, cid, campos) {
+  const E = g.el; const h = elMunHist(g); if (h) { const x = h.lista.find(i => i.cid === cid); if (x) { Object.assign(x, campos.h || {}); elMunAgrega(h); } }
+  const m = E.mun; if (m && m.res) { const x = m.res.lista.find(i => i.cid === cid); if (x) Object.assign(x, campos.r || {}); }
+}
+function elMunCassa(g, ct, S, notas) {
+  const E = g.el; const m = E.mun; const cd = S.cands.find(c => c.id === S.venc);
+  S.cass.fase = 'cassado'; S.cass.nova = g.mes + 3; S.cass.nome = cd ? cd.nome : '';
+  elMunTrocaPrefeito(g, ct.id, { r: { cassado: true } });
+  g.escandalo = clamp(g.escandalo + 2, 0, 100); applyFx(g, { ap: -.4 });
+  jusManchete(g, 'antag', `TSE cassa o prefeito eleito em ${ct.nome}; cidade terá nova eleição`);
+  linhaAdd(g, 'ESCÂNDALO', `TSE cassa o prefeito eleito em ${ct.nome} por abuso na campanha; nova eleição em ${dataMes(S.cass.nova)}`);
+  notas.push({ t: 'neg', x: `O TSE cassa o prefeito eleito em ${ct.nome}. A cidade terá nova eleição em ${dataMes(S.cass.nova)}.` });
+}
+function elMunNovaEleicao(g, ct, S, notas) {
+  const E = g.el; const m = E.mun; const AE = aprovEstados(g);
+  const apoio = S.apoio; S.apoio = null; // sem o empurrão do Planalto
+  const sc = elMunScores(g, m, ct, AE, false); S.apoio = apoio;
+  const ok = S.cands.map((cd, i) => ({ cd, p: cd.id === S.venc ? -1 : Math.exp(sc[i] + (hashStr(String(g.seed) + 'ne' + cd.id) - .5) * 1.2) })).filter(x => x.p >= 0).sort((a, b) => b.p - a.p);
+  const W = ok[0].cd; const tot = ok.reduce((a, x) => a + x.p, 0);
+  S.cass.fase = 'nova'; S.cass.novo = W.id; S.venc2 = W.id;
+  const BB = new Set(PARTIDOS.filter(P => status(g.parties[P.id].rel) === 'base').map(P => P.id));
+  elMunTrocaPrefeito(g, ct.id, { h: { bloco: W.bloco, ov: null }, r: { venc: W.nome, sigla: W.sigla, bloco: W.bloco, tipo: W.tipo, pct: Math.round(ok[0].p / tot * 1000) / 10, lado: BB.has(W.bloco) ? 'base' : (g.parties[W.bloco] && status(g.parties[W.bloco].rel) === 'opos' ? 'opos' : 'indep'), cassado: false, nova: true, apoiado: false } });
+  jusManchete(g, 'globo', `${ct.nome} elege novo prefeito em eleição suplementar: ${W.sigla} vence`);
+  notas.push({ t: 'neu', x: `Eleição suplementar em ${ct.nome}: ${W.nome} (${W.sigla}) é eleito(a) prefeito(a).` });
+}
+/* ---------- mês a mês: decaimento do efeito, cassações, críticas da oposição e pedidos de verba ---------- */
+function elMunMensal(g, notas) {
+  const E = elEnsure(g); if (g.over) return;
+  const ef = E.munEfeito;
+  const m = E.mun;
+  if (m) for (const ct of EL_CIDADES) { const S = m.cidades[ct.id]; if (!S || !S.cass) continue; if (S.cass.fase === 'julgando' && g.mes >= S.cass.mes) elMunCassa(g, ct, S, notas); else if (S.cass.fase === 'cassado' && g.mes >= S.cass.nova) elMunNovaEleicao(g, ct, S, notas); }
+  elMunPrefeitosMes(g, notas);
+}
+const EL_MUN_TEMAS = ['repasses para a saúde', 'repasses para o transporte público', 'apoio à segurança nos municípios', 'recursos para a educação básica', 'compensação pelas perdas de arrecadação'];
+function elMunPrefeitosMes(g, notas) {
+  const E = g.el; const h = elMunHist(g); if (!h || !h.lista.length) return;
+  const ops = h.lista.filter(x => elMunPostura(g, x) < 0);
+  if (!ops.length) { if (E.munPed && E.munPed.estado === 'aberto') E.munPed.estado = 'expirado'; return; }
+  if (E.munPed && E.munPed.estado === 'aberto' && g.mes - E.munPed.mes >= 2) E.munPed.estado = 'expirado';
+  const r = (t) => hashStr(String(g.seed) + t + g.mes);
+  // críticas ao governo na mídia, de vez em quando, vindas de prefeitos de oposição das grandes cidades (sem nomes: "prefeito(a) de <cidade> (<partido>)")
+  const grandes = ops.filter(x => { const c = elCidade(x.cid); return c && c.eleit >= 1000; });
+  if (grandes.length && g.mes - (E.munCrit || -9) >= 2 && r('crit') < Math.min(.3, .08 + .04 * grandes.length)) {
+    const x = grandes[Math.floor(r('critc') * grandes.length) % grandes.length]; const ct = elCidade(x.cid); const sig = PMAP[x.bloco] ? PMAP[x.bloco].curto : x.bloco;
+    E.munCrit = g.mes; const tema = EL_MUN_TEMAS[Math.floor(r('critt') * EL_MUN_TEMAS.length) % EL_MUN_TEMAS.length];
+    g.feed.unshift({ mes: g.mes, src: 'antag', txt: `Prefeito(a) de ${ct.nome} (${sig}) critica o governo federal e cobra ${tema}` }); g.feed = g.feed.slice(0, 40);
+    applyFx(g, { ap: -.08 });
+  }
+  // prefeito de oposição pede verbas: vira cartão na Mesa
+  if ((!E.munPed || E.munPed.estado !== 'aberto') && g.mes - (E.munPedMes || -9) >= 3 && r('ped') < .22) {
+    const x = ops[Math.floor(r('pedc') * ops.length) % ops.length]; const valor = 40 + 20 * Math.floor(r('pedv') * 4);
+    E.munPed = { cid: x.cid, mes: g.mes, valor, estado: 'aberto' }; E.munPedMes = g.mes;
+  }
+}
+// o jogador responde ao pedido de verbas de um prefeito de oposição: mais verba, mais chance de torná-lo neutro ou aliado (sem garantia)
+const EL_MUN_PED_OPC = { pouco: { f: .5, pn: .35, pa: .08 }, medio: { f: 1, pn: .40, pa: .25 }, muito: { f: 2, pn: .35, pa: .45 } };
+function elMunPedResp(n, opc) {
+  const E = elEnsure(n); const P = E.munPed; if (!P || P.estado !== 'aberto') return null;
+  const ct = elCidade(P.cid); const h = elMunHist(n); const x = h && h.lista.find(i => i.cid === P.cid); const sig = x && PMAP[x.bloco] ? PMAP[x.bloco].curto : '';
+  if (opc === 'recusar') { P.estado = 'recusado'; P.res = 'nada'; applyFx(n, { ap: -.1 }); return 'nada'; }
+  const o = EL_MUN_PED_OPC[opc]; if (!o) return null;
+  const valor = Math.round(P.valor * o.f); n.fiscal.extra += valor / 1000; P.estado = 'respondido'; P.pago = valor;
+  const r = hashStr(String(n.seed) + 'pedr' + P.cid + n.mes); let res = 'nada';
+  if (r < o.pa) res = 'aliado'; else if (r < o.pa + o.pn) res = 'neutro';
+  P.res = res;
+  if (res !== 'nada') elMunTrocaPrefeito(n, P.cid, { h: { ov: res } });
+  n.feed.unshift({ mes: n.mes, src: res === 'aliado' ? 'globo' : 'carta', txt: res === 'aliado' ? `Prefeito(a) de ${ct.nome} (${sig}) se aproxima do governo federal depois de liberação de verbas` : res === 'neutro' ? `Prefeito(a) de ${ct.nome} (${sig}) modera o tom diante do governo federal` : `Prefeito(a) de ${ct.nome} (${sig}) recebe verba federal e segue na oposição` }); n.feed = n.feed.slice(0, 40);
+  return res;
+}
+// janela de apoio: só no mês da eleição (1º turno, setembro) e no 2º turno (outubro). Apoiar é livre: não gasta ação nem energia.
+function elMunJanela(g) { const E = g.el; const m = E && E.mun; if (!m || m.fase === 'fim') return false; const rel = g.mes - 48 * m.c; return rel === 21 || (rel === 22 && m.fase === 'seg'); }
+const elMunNApoios = (m) => EL_CIDADES.filter(c => m.cidades[c.id] && m.cidades[c.id].apoio).length;
 function elMunApoia(n, cid, candId) {
   const E = elEnsure(n); const m = E.mun; if (!m || !elMunJanela(n)) return false;
   const S = m.cidades[cid]; if (!S || S.venc && !S.fin) return false; if (S.r1 && !S.fin) return false;
   if (S.fin && !S.fin.includes(candId)) return false;
-  if (n.acoes <= 0 || n.pes.energia < 8) return false;
   if (S.apoio === candId) return false;
-  n.acoes--; n.pes.energia = clamp(n.pes.energia - 8, 0, 100);
-  if (!S.apoio) m.apoios++; S.apoio = candId; S.visita = 0;
-  const cd = S.cands.find(c => c.id === candId); const ct = elCidade(cid);
+  const cd = S.cands.find(c => c.id === candId); const ct = elCidade(cid); if (!cd || !ct) return false;
+  S.apoio = candId; S.visita = 0; m.apoios = elMunNApoios(m);
   if (ct.eleit > 1000) { n.feed.unshift({ mes: n.mes, src: 'globo', txt: `${elSobPJ(n)} declara apoio a ${cd.nome} (${cd.sigla}) em ${ct.nome}` }); n.feed = n.feed.slice(0, 40); }
   if (cd.pid) elPopMove(n, cd.pid, 2, 0);
   return true;
+}
+// retira o apoio (volta a ficar neutro na cidade) e devolve a verba prometida
+function elMunRetira(n, cid) {
+  const E = elEnsure(n); const m = E.mun; if (!m || !elMunJanela(n)) return false;
+  const S = m.cidades[cid]; if (!S || !S.apoio) return false;
+  if (S.verba) n.fiscal.extra -= S.verba / 1000;
+  S.apoio = null; S.verba = 0; S.visita = 0; m.apoios = elMunNApoios(m); return true;
+}
+// libera (ou ajusta) a verba federal para a campanha do candidato apoiado; o custo entra no fiscal (R$ bi)
+function elMunVerba(n, cid, valor) {
+  const E = elEnsure(n); const m = E.mun; if (!m || !elMunJanela(n)) return false;
+  const S = m.cidades[cid]; if (!S || !S.apoio) return false;
+  const v = clamp(Math.round((+valor || 0) / EL_MUN_VERBA_PASSO) * EL_MUN_VERBA_PASSO, 0, EL_MUN_VERBA_MAX); const ant = S.verba || 0; if (v === ant) return false;
+  n.fiscal.extra += (v - ant) / 1000; S.verba = v; return true;
 }
 function elMunVisita(n, cid) {
   const E = elEnsure(n); const m = E.mun; if (!m || !elMunJanela(n)) return false;
@@ -29136,6 +29411,25 @@ function elMunVisita(n, cid) {
   n.acoes--; n.pes.energia = clamp(n.pes.energia - 6, 0, 100); S.visita++;
   const cd = S.cands.find(c => c.id === S.apoio); if (cd && cd.pid) elPopMove(n, cd.pid, 2, 1);
   return true;
+}
+// linha do Balanço do mês: resultado das municipais e o que ainda resta do efeito (decai em ~6 meses)
+function elMunRetorno(g) {
+  const E = g.el; const ef = E && E.munEfeito; const h = elMunHist(g); if (!ef || !h || elMunFator(g) <= 0 || g.mes <= ef.desde) return null;
+  const f = elMunFator(g); const restam = Math.max(0, ef.desde + 6 - g.mes); const sd = (n) => (n > 0 ? '+' : n < 0 ? '−' : '') + Math.abs(n);
+  return { k: 'municipais', ic: 'Landmark', x: `Municipais ${ef.ano}: a base ${h.dN >= 0 ? 'ganhou' : 'perdeu'} ${Math.abs(h.dN)} prefeituras líquidas (${sd(h.dN)}). ${elLeve(g) ? 'Seu personagem sente o resultado na popularidade.' : 'O efeito na aprovação ainda é ' + elMunPP(ef.ap * f) + ' ponto(s) e no Congresso ' + elMunPP(ef.cong * f) + ' ponto(s) de apoio'}; some em ${restam} mês(es).` };
+}
+/* ---------- o que está em jogo (projeção antes da eleição) ---------- */
+function elMunEng(m) { let n = 0, peso = 0; for (const ct of EL_CIDADES) { const S = m.cidades[ct.id]; if (S && S.apoio) { n++; peso += elMunShare(ct); } } return { n, peso, eng: .55 + .45 * (.5 * Math.min(1, n / 14) + .5 * Math.min(1, peso / .30)) }; }
+const elMunApDeX = (X, eng) => clamp(3.8 * X * (X < 0 ? 1.3 : 1), -6.5, 5) * eng;
+function elMunProjecao(g, m) {
+  const AE = aprovEstados(g); const BB = new Set(PARTIDOS.filter(P => status(g.parties[P.id].rel) === 'base').map(P => P.id));
+  let dN = 0, dP = 0, base0 = 0;
+  for (const ct of EL_CIDADES) {
+    const S = m.cidades[ct.id]; if (!S) continue; const sh = elMunChances(g, m, ct, AE); const ba = BB.has(ct.b24) ? 1 : 0; base0 += ba;
+    let pb = 0; S.cands.forEach((cd, i) => { if (BB.has(cd.bloco)) pb += sh[i]; }); dN += pb - ba; dP += elMunShare(ct) * (pb - ba);
+  }
+  const X = clamp(.5 * dN / 12 + .5 * dP / .10, -1.7, 1.7); const E = elMunEng(m);
+  return { dN, X, eng: E.eng, nApoios: E.n, ap: elMunApDeX(X, E.eng), apVit: elMunApDeX(1, E.eng), apDer: elMunApDeX(-1, E.eng), base0 };
 }
 
 /* ============================== ELEIÇÕES (el*): LÓGICA 3 — eleição presidencial (2030, 2034, 2038…) ==============================
@@ -29256,7 +29550,8 @@ function elScoresUF(g, ger, uf, AE, prog) {
     if (c.sit) s += EL_K1 * (apu - 45) / 10 * c.tr + .1 + (c.sucessor ? EL_KF * ((ger.forca != null ? ger.forca : EL_F0) - EL_F0) / 50 : 0); else s -= EL_K2 * c.opo * (apu - 45) / 10; // I3: a força do candidato governista (alavancas) decide
     if (c.sit) s += .3 * ger.compAntigo;
     s += cs.mom + (cs.uf[uf] || 0) + 1.5 * elTVshare(g, ger, c) * (rel >= 44 ? 1 : .3);
-    if (ph && ph.depois) s += .5 * (ph.depois[c.bloco] || 0) / 46;
+    if (ph && ph.depois) s += (ph.n ? 1.15 : .5) * (ph.depois[c.bloco] || 0) / (ph.n || 46);
+    s += elMunBonusPres(g, uf, c.bloco, c); // prefeitos aliados/de oposição eleitos nas municipais (proporcional ao eleitorado)
     const gv = elGov(g, uf); if (gv && bloco(gv[1]) === c.bloco) s += .15;
     s += (hashStr(String(g.seed) + 'gs' + ger.ano + c.id + uf) - .5) * .3;
     s -= .011 * (elRejeicao(g, ger, c) - 30);
@@ -29711,6 +30006,7 @@ function elAbreMes(g, notas) {
   const E = elEnsure(g); const rel = elO(g.mes) + 1; const c = elCiclo(g.mes);
   elPopMensal(g);
   if (rel === 15) elMunCria(g);
+  elMunMensal(g, notas);
   const m = E.mun;
   if (m && m.c === c) {
     if (rel >= 16 && rel <= 21) elMunPesquisa(g, m, aprovEstados(g));
@@ -29797,7 +30093,7 @@ function elFatores(g) {
   for (const P of PARTIDOS) {
     const st = status(g.parties[P.id].rel); const al = st === 'base' ? 1 : st === 'opos' ? -1 : 0;
     let x = 1.1 * al * (ap - 50) / 50;
-    if (ph && ph.antes) x += .6 * ((ph.depois[P.id] || 0) - (ph.antes[P.id] || 0)) / 10;
+    if (ph && ph.antes) x += .6 * ((ph.depois[P.id] || 0) - (ph.antes[P.id] || 0)) / (10 * (ph.n || 46) / 46);
     if (ger && ger.aliancas && ger.aliancas.includes(P.id)) x += .15;
     x += (hashStr(String(g.seed) + 'fp' + P.id + g.mes) - .5) * .2;
     f[P.id] = Math.exp(x);
@@ -29864,9 +30160,10 @@ function elPend(g, L) {
   const E = g.el; if (!E || g.over) return;
   const rel = g.mes - 48 * elCiclo(g.mes);
   const m = E.mun, ger = E.ger;
+  if (E.munPed && E.munPed.estado === 'aberto' && elCidade(E.munPed.cid)) { const ctp = elCidade(E.munPed.cid), hp = elMunHist(g), xp = hp && hp.lista.find(i => i.cid === E.munPed.cid); L.push({ id: 'elmunped', tipo: 'elmunped', urg: 57, cat: 'Prefeito de oposição', ic: 'Landmark', titulo: `Prefeito(a) de ${ctp.nome} (${xp && PMAP[xp.bloco] ? PMAP[xp.bloco].curto : '—'}) pede verbas`, ctx: `A prefeitura cobra cerca de R$ ${E.munPed.valor} mi em repasses. Mandar verba pode moderar o tom ou aproximar o prefeito, sem garantia.`, extra: 'Custo fiscal; não gasta ação.', abrir: 'elmunped', btns: [] }); }
   if (E.pj) L.push({ id: 'elmodo', tipo: 'elmodo', urg: 6, cat: 'Modo leve', ic: 'UserRound', titulo: `Você joga como ${E.pj.nome} (${E.pj.sigla})`, ctx: `Presidente em exercício: ${g.cfg.nome}. Você usa o X, entrevistas, apoia candidatos e faz campanha; medidas de governo voltam se você vencer uma eleição presidencial.`, extra: null, abrir: 'elmodo', btns: [] });
   if (m && m.c === elCiclo(g.mes)) {
-    if (elMunJanela(g)) L.push({ id: 'elmun', tipo: 'elmun', urg: 41, cat: 'Eleições municipais ' + m.ano, ic: 'Landmark', titulo: rel < 22 ? 'Municipais: escolha quem apoiar' : 'Municipais: 2º turno nas cidades indecisas', ctx: `${m.apoios} apoio(s) · ${EL_CIDADES.length} cidades em disputa. Cada apoio custa 1 ação e energia.`, extra: null, abrir: 'elmun', btns: [] });
+    if (elMunJanela(g)) { const EN = elMunEng(m); L.push({ id: 'elmun', tipo: 'elmun', urg: 80, cat: 'Precisa de você · municipais ' + m.ano, ic: 'Landmark', titulo: rel < 22 ? 'Municipais: este é o mês de apoiar candidatos' : 'Municipais: 2º turno nas cidades indecisas', ctx: `${m.apoios} apoio(s) em ${EL_CIDADES.length} cidades. Apoiar não gasta ação, mas cada apoiado derrotado custa prestígio; verbas de campanha ajudam e têm risco no TSE.`, extra: `Em jogo: base vencendo muito, ${elMunPP(elMunApDeX(1, EN.eng))} de aprovação; perdendo, ${elMunPP(elMunApDeX(-1, EN.eng))}. Neutro vale cerca de 55%.`, abrir: 'elmun', btns: [] }); }
     if ((m.fase === 'seg' || m.fase === 'fim') && !m.visto) L.push({ id: 'elapur-m', tipo: 'elapurm', urg: 97, cat: 'Noite da apuração', ic: 'Vote', titulo: m.fase === 'fim' ? `Municipais ${m.ano}: resultado final` : `Municipais ${m.ano}: 1º turno apurado`, ctx: 'Veja as prefeituras ganhas, os apoios que venceram e as vagas que mudam no Congresso.', extra: null, abrir: 'elapurm', btns: [] });
   }
   { const pf = elSucPendForca(g); if (pf) L.push({ id: 'elforca', tipo: 'elforca', urg: 47, cat: 'Sucessão', ic: 'Gauge', titulo: pf.titulo, ctx: pf.ctx, extra: pf.extra, abrir: 'elforca', btns: [] }); } // I3
@@ -29897,6 +30194,7 @@ function elAindaPend(g, kind) {
   switch (kind) {
     case 'elmun': return !!(m && m.c === elCiclo(g.mes) && elMunJanela(g));
     case 'elapurm': return !!(m && (m.fase === 'seg' || m.fase === 'fim') && !m.visto);
+    case 'elmunped': return !!(E.munPed && E.munPed.estado === 'aberto');
     case 'elsuc': return !!(ger && elSemReeleicao(g) && ger.sucAuto && rel <= 43);
     case 'elforca': return !!(elSucPendForca(g));
     case 'elcand': return !!(ger && E.pj && !ger.meuId && rel <= 43);
@@ -30542,6 +30840,8 @@ function EntImprensa({ g, upd }) {
     ${gav && html`<${CenaImprensa} kind=${gav} g=${g} upd=${upd} onClose=${() => setGav(null)} />`}
   </div>`;
 }
+Object.assign(PEND_CHIP, { elmunped: 'eleicoes' });
+Object.assign(GAVETA_TIT, { elmunped: 'Pedido de verbas de prefeito' });
 Object.assign(GAVETA_TIT, { entcol: 'Coletiva de imprensa', entconv: 'Entrevista', elmun: 'Eleições municipais', elapurm: 'Apuração municipal', elsuc: 'Sucessão', elforca: 'Força do candidato', elcand: 'Candidatura', elpesq: 'Pesquisas', eldeb: 'Debate', elcamp: 'Campanha', elapurg: 'Apuração presidencial' });
 function entCorpo(kind, g, upd) {
   if (kind === 'entcol') return html`<${EntColetiva} g=${g} upd=${upd} />`;
@@ -30819,46 +31119,170 @@ function ElVisao({ g, upd, ir }) {
   </div>`;
 }
 /* ---------- municipais ---------- */
+const MUN_CSS = `
+.mun-mapa circle{transition:r .12s}.mun-mapa circle:hover,.mun-mapa circle:focus{outline:none;stroke:var(--fg);stroke-width:2.6}
+.mun-chip{padding:5px 11px;border-radius:999px;border:1px solid var(--line2);background:var(--panel2);color:var(--fg);font:inherit;font-size:13px;cursor:pointer}
+.mun-chip[aria-pressed=true]{border-color:var(--ouro);color:var(--ouro)}
+.mun-placar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.mun-lista{max-height:560px;overflow:auto;padding-right:4px}
+.mun-leg{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:8px;font-size:12px}.mun-leg i{display:inline-block;width:10px;height:10px;border-radius:999px;margin-right:5px;vertical-align:-1px}
+`;
+const elMunCorLado = (l) => (l === 'base' ? 'var(--verde)' : l === 'opos' ? 'var(--rubro)' : 'var(--ouro)');
+const elMunNomeLado = (l) => (l === 'base' ? 'Base' : l === 'opos' ? 'Oposição' : 'Independentes');
+const elMunPP = (v) => sgn(v, 1).replace('-', '−');
+// mapa do Brasil com as cidades como pontos (tamanho pelo eleitorado). cor(ct) = preenchimento; anel(ct) = contorno de destaque
+function ElMunMapa({ cidades, cor, rotulo, anel, sel, onSel, aria }) {
+  const [hov, setHov] = useState(null);
+  const ord = useMemo(() => cidades.slice().sort((a, b) => b.eleit - a.eleit), [cidades]);
+  const hc = hov ? cidades.find(c => c.id === hov) : null;
+  return html`<div className="w-full mx-auto mun-mapa" style=${{ maxWidth: 620 }} data-el="mapa-cidades">
+    <svg viewBox=${MAPA_BR.viewBox} className="w-full h-auto block" role="group" aria-label=${aria}>
+      ${Object.keys(MAPA_BR.uf).map(u => html`<path key=${u} d=${MAPA_BR.uf[u].d} fill="var(--panel2)" fillRule="evenodd" stroke="var(--line2)" strokeWidth="0.8" strokeLinejoin="round"></path>`)}
+      ${ord.map(ct => { const p = elMunXY(ct); const r = clamp(Math.sqrt(ct.eleit) / 5.2, 3.4, 15); const an = anel(ct);
+        return html`<circle key=${ct.id} cx=${p.x} cy=${p.y} r=${r} fill=${cor(ct)} fillOpacity=".93" stroke=${ct.id === sel ? 'var(--fg)' : an || 'var(--ink)'} strokeWidth=${ct.id === sel ? 2.8 : an ? 2.4 : .8} style=${{ cursor: 'pointer' }}
+          tabIndex=${0} role="button" aria-label=${rotulo(ct)} aria-pressed=${ct.id === sel} data-mapa-cidade=${ct.id}
+          onClick=${() => onSel(ct.id)} onPointerEnter=${() => setHov(ct.id)} onPointerLeave=${() => setHov(null)} onFocus=${() => setHov(ct.id)} onBlur=${() => setHov(h => (h === ct.id ? null : h))}
+          onKeyDown=${(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSel(ct.id); } }}></circle>`; })}
+    </svg>
+    <div className="text-sm mt-1 min-h-[1.4em]" aria-live="polite" data-mapa-dica="1">${hc ? rotulo(hc) : 'Passe o mouse ou toque numa cidade. O tamanho do ponto é o eleitorado.'}</div>
+  </div>`;
+}
+/* controle de verba de campanha: valor escolhido pelo jogador (ajuda cresce com o valor; o risco de caso no TSE também) */
+function ElMunVerba({ g, m, ct, S, upd }) {
+  const [v, setV] = useState(S.verba || 0);
+  useEffect(() => { setV(S.verba || 0); }, [ct.id, S.verba]);
+  const nOutras = EL_CIDADES.filter(c => c.id !== ct.id && m.cidades[c.id] && m.cidades[c.id].apoio && m.cidades[c.id].verba > 0).length;
+  const risco = elMunRiscoTSE(g, v, nOutras + (v > 0 ? 1 : 0)); const ef = elMunVerbaEf(v);
+  const custoBi = (v - (S.verba || 0)) / 1000;
+  return html`<div className="pd-card flex flex-col gap-2" data-verba-box="1" style=${{ '--st': 'var(--ouro)' }}>
+    <div className="flex flex-wrap items-center justify-between gap-2"><div className="font-semibold">Verba federal para a campanha<${GvTip} txt="A verba ajuda o candidato apoiado (retorno decrescente), custa caixa e pode virar caso no TSE: o risco cresce com o valor, com o número de cidades que recebem verba e com o escândalo do governo. Um caso aberto gera um caso fictício na Justiça e pode cassar o prefeito eleito." /></div><span className="gv-chip num">R$ ${v} mi</span></div>
+    <input type="range" min="0" max=${EL_MUN_VERBA_MAX} step=${EL_MUN_VERBA_PASSO} value=${v} aria-label="Valor da verba de campanha em milhões de reais" data-verba-range="1" onInput=${e => setV(+e.target.value)} onChange=${e => setV(+e.target.value)} />
+    <div className="text-sm grid grid-cols-2 gap-2"><div><div className="eyebrow">Ajuda ao candidato</div><div className="num font-semibold">${ef < .05 ? 'nenhuma' : ef < .35 ? 'pequena' : ef < .65 ? 'média' : 'grande'}</div></div><div><div className="eyebrow">Risco de caso no TSE</div><div className="num font-semibold" style=${{ color: risco > .15 ? 'var(--rubro)' : risco > .06 ? 'var(--ambar)' : 'var(--verde)' }} data-verba-risco="1">${fmt(risco * 100, 0)}%</div></div></div>
+    <div className="gv-acts"><button type="button" className="btn btn-pri text-sm" disabled=${v === (S.verba || 0)} data-verba-ok="1" onClick=${() => upd(n => { elMunVerba(n, ct.id, v); })}>${S.verba ? 'Ajustar para' : 'Liberar'} R$ ${v} mi${custoBi ? ' (' + (custoBi > 0 ? '+' : '−') + 'R$ ' + fmt(Math.abs(custoBi), 2) + ' bi no caixa)' : ''}</button>${S.verba > 0 && html`<button type="button" className="btn btn-ghost text-sm" data-verba-zera="1" onClick=${() => upd(n => { elMunVerba(n, ct.id, 0); })}>Cancelar a verba</button>`}</div>
+    ${S.verba > 0 && html`<p className="pd-s">Verba liberada: R$ ${S.verba} mi. Sai do caixa já (fiscal); o caso no TSE, se houver, aparece na apuração.</p>`}
+  </div>`;
+}
+/* ---------- tela de apuração: mapa, placar, efeito no governo, seus apoiados ---------- */
+function ElApurM({ g, m }) {
+  const E = g.el; const R = m.res; const ef = E.munEfeito; const h = elMunHist(g);
+  const [sel, setSel] = useState(null);
+  const f = elMunFator(g); const restam = ef ? Math.max(0, ef.desde + 6 - g.mes) : 0;
+  const cts = EL_CIDADES.filter(c => m.cidades[c.id]); const L = Object.fromEntries(R.lista.map(x => [x.cid, x]));
+  const pos = h ? Object.keys(h.uf || {}).map(u => ({ u, s: elMunSaldoUF(g, u) })).filter(x => Math.abs(x.s) >= .04) : [];
+  const alia = pos.filter(x => x.s > 0).sort((a, b) => b.s - a.s).slice(0, 3), opo = pos.filter(x => x.s < 0).sort((a, b) => a.s - b.s).slice(0, 3);
+  const govs = Object.entries(ef && ef.govD ? ef.govD : {}).filter(e => Math.abs(e[1]) >= .5).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])).slice(0, 4);
+  const apoiados = R.lista.filter(x => x.apoio); const selX = sel ? L[sel] : null; const selCt = sel ? elCidade(sel) : null;
+  const cores = Object.keys(R.depois).sort((a, b) => R.depois[b] - R.depois[a]).slice(0, 6);
+  const bon = (uf) => elMunBonusPres(g, uf, '@', { sit: true });
+  return html`<section className="sec flex flex-col gap-4" data-el="mun-apuracao" aria-label="Apuração das eleições municipais">
+    <div className="gv-sec-h" style=${{ marginBottom: 0 }}><div><div className="eyebrow">Noite da apuração</div><h3 className="disp text-2xl font-extrabold uppercase">Municipais ${m.ano}: o recado das urnas</h3></div><div className="gv-chips"><span className=${'gv-chip ' + (R.X >= 0 ? 'pos' : 'neg')} data-mun-saldo="1">base ${R.dN >= 0 ? '+' : '−'}${Math.abs(R.dN)} prefeituras</span><${ElSim} /></div></div>
+    <div className="mun-placar" data-el="mun-placar">${['base', 'opos', 'indep'].map(l => { const a = R.lado.antes[l], d = R.lado.depois[l]; return html`<div key=${l} className="pd-card !p-3" style=${{ '--st': elMunCorLado(l) }} data-placar=${l}><div className="text-sm font-semibold" style=${{ color: elMunCorLado(l) }}>${elMunNomeLado(l)}</div><div className="num text-2xl font-bold">${a} → ${d}</div><div className="pd-s num">${d - a >= 0 ? '+' : '−'}${Math.abs(d - a)} em relação a 2024${l === 'base' ? ' · capitais: ' + R.capA + ' → ' + R.capD + ' de ' + R.nCap : ''}</div></div>`; })}</div>
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] items-start">
+      <div className="min-w-0"><${ElMunMapa} cidades=${cts} sel=${sel} onSel=${setSel} aria="Mapa das cidades: partido que venceu em cada uma"
+        cor=${ct => { const x = L[ct.id]; return x && PMAP[x.bloco] ? PMAP[x.bloco].cor : 'var(--panel2)'; }}
+        anel=${ct => { const x = L[ct.id]; return x && x.apoio ? (x.apoio === 'ganhou' ? 'var(--verde)' : 'var(--rubro)') : null; }}
+        rotulo=${ct => { const x = L[ct.id]; return ct.nome + ' (' + ct.uf + '): ' + (x ? x.venc + ' (' + x.sigla + ')' + (x.cassado ? ', cassado(a)' : '') + (x.apoio ? ' · seu apoio ' + (x.apoio === 'ganhou' ? 'venceu' : 'perdeu') : '') : 'sem eleição'); }} />
+        <div className="mun-leg" data-el="mun-legenda">${cores.map(k => html`<span key=${k}><i style=${{ background: PMAP[k].cor }}></i>${PMAP[k].curto} ${R.depois[k]}</span>`)}<span><i style=${{ background: 'transparent', border: '2px solid var(--verde)' }}></i>apoio venceu</span><span><i style=${{ background: 'transparent', border: '2px solid var(--rubro)' }}></i>apoio perdeu</span></div>
+        ${selX && html`<p className="text-sm mt-2" data-mun-sel="1"><b>${selCt.nome}</b>: ${selX.venc} (${selX.sigla}) com ${fmt(selX.pct, 1)}% no ${selX.turno}º turno${selX.apoiou ? ' · você apoiou ' + selX.apoiou + ' (' + selX.apoio + ')' : ''}.</p>`}</div>
+      <div className="min-w-0 flex flex-col gap-3" data-el="mun-efeito">
+        <div className="eyebrow">Efeito no governo</div>
+        <div className="grid gap-2 sm:grid-cols-2">
+          <div className="pd-card !p-3" style=${{ '--st': R.ap >= 0 ? 'var(--verde)' : 'var(--rubro)' }} data-efeito="aprovacao"><div className="eyebrow">Aprovação</div><div className="num text-xl font-bold">${elMunPP(R.ap)} no mês</div><div className="pd-s">${R.nApoio ? 'Resultado ' + elMunPP(R.apBase) + ' e prestígio dos apoiados ' + elMunPP(R.prest) + '. ' : ''}${ef && !elLeve(g) ? 'Hoje ' + elMunPP(ef.ap * f) + (restam ? '; some em ' + restam + ' mês(es)' : '; efeito encerrado') : 'sem efeito na aprovação do presidente em exercício'}. Mais forte nos estados das cidades.</div></div>
+          <div className="pd-card !p-3" style=${{ '--st': R.cong >= 0 ? 'var(--verde)' : 'var(--rubro)' }} data-efeito="congresso"><div className="eyebrow">Congresso</div><div className="num text-xl font-bold">${elMunPP(R.cong)} pts de apoio</div><div className="pd-s">${R.cong >= 0 ? 'Deputados votam mais com o governo' : 'Deputados se afastam do governo'} por ~6 meses.</div></div>
+          <div className="pd-card !p-3" style=${{ '--st': R.govSobe >= R.govCai ? 'var(--verde)' : 'var(--rubro)' }} data-efeito="governadores"><div className="eyebrow">Governadores</div><div className="num text-xl font-bold">${R.govSobe} sobem · ${R.govCai} caem</div><div className="pd-s">${govs.length ? govs.map(e => e[0] + ' ' + elMunPP(e[1])).join(' · ') : 'relação quase igual'}.</div></div>
+          <div className="pd-card !p-3" style=${{ '--st': 'var(--anil)' }} data-efeito="presidencial"><div className="eyebrow">Presidencial seguinte</div><div className="pd-s">${alia.length ? 'Prefeitos aliados somam votos em ' + alia.map(x => x.u + ' (~+' + fmt(bon(x.u) * 29, 1) + ' p.p.)').join(', ') + '. ' : 'Sem saldo de aliados por estado. '}${opo.length ? 'Prefeitos de oposição fortalecem o rival em ' + opo.map(x => x.u).join(', ') + '.' : ''}</div></div>
+        </div>
+        ${pos.length > 0 && html`<p className="pd-s" data-efeito="programas">Programas federais em vigor rendem ${alia.length ? '+10 a +20% em ' + alia.map(x => x.u).join(', ') : ''}${alia.length && opo.length ? ' e ' : ''}${opo.length ? 'menos em ' + opo.map(x => x.u).join(', ') : ''}, conforme o saldo de prefeitos aliados.</p>`}
+        ${R.irritados && R.irritados.length > 0 && html`<p className="pd-s">Apoiar um candidato da base contra outro partido da base irritou: ${R.irritados.join(', ')}.</p>`}
+      </div>
+    </div>
+    <div data-el="mun-apoiados"><div className="eyebrow mb-1">Seus apoiados (${R.nVit} de ${R.nApoio} venceram${R.prest ? ' · prestígio ' + elMunPP(R.prest) : ''})</div>
+      ${apoiados.length === 0 ? html`<p className="text-sm text-muted">Você ficou neutro: o efeito no governo vale cerca de 55% do que valeria com o seu envolvimento.</p>` : html`<div className="scroll-x"><table className="w-full text-sm"><thead><tr className="text-muted text-xs"><th className="text-left font-normal py-1">Cidade</th><th className="text-left font-normal">Seu apoio</th><th className="text-left font-normal">Resultado</th><th className="text-right font-normal">Venceu com</th><th className="text-right font-normal">Verba</th></tr></thead><tbody>
+        ${apoiados.map(x => html`<tr key=${x.cid} className="border-t border-line" data-apoiado=${x.cid} data-res=${x.apoio}><td className="py-1.5">${x.nome} <span className="text-xs text-muted">${x.uf}</span></td><td>${x.apoiou} <span className="text-xs text-muted">${x.apoiouSigla}</span></td><td style=${{ color: x.apoio === 'ganhou' ? 'var(--verde)' : 'var(--rubro)' }}>${x.apoio === 'ganhou' ? 'venceu' : 'perdeu para ' + x.sigla}${x.cassado ? ' · cassado(a)' : ''}${x.nova ? ' · nova eleição' : ''}</td><td className="num text-right">${fmt(x.pct, 1)}%</td><td className="num text-right">${x.verba ? 'R$ ' + x.verba + ' mi' : '—'}</td></tr>`)}</tbody></table></div>`}
+      ${R.casos && R.casos.length > 0 && html`<ul className="flex flex-col gap-1 mt-2" data-el="mun-casos">${R.casos.map(c => html`<li key=${c.caso} className="text-sm flex flex-wrap items-center gap-2" style=${{ color: 'var(--rubro)' }}><${Icon} n="Gavel" s=${14} /> TSE abriu o caso ${c.nomeCaso} sobre a verba de R$ ${c.verba} mi em ${c.nome}${c.cass ? ' (o prefeito eleito corre risco de cassação)' : ''}. <span className="selo-sim">caso fictício</span></li>`)}</ul>`}
+    </div>
+  </section>`;
+}
 function ElMunicipal({ g, upd }) {
-  const E = g.el; const m = E.mun; const [sel, setSel] = useState('sao-paulo'); const [fil, setFil] = useState('');
+  const E = g.el; const m = E.mun; const [sel, setSel] = useState('sao-paulo'); const [fil, setFil] = useState(''); const [uf, setUf] = useState(''); const [modo, setModo] = useState('todas');
+  const emCurso = !!(m && m.c === elCiclo(g.mes));
+  const AE = useMemo(() => aprovEstados(g), [g]);
+  const ch = useMemo(() => { const o = {}; if (emCurso) for (const ct of EL_CIDADES) if (m.cidades[ct.id]) o[ct.id] = elMunChances(g, m, ct, AE); return o; }, [g, m, emCurso, AE]);
+  const proj = useMemo(() => (emCurso && m.fase !== 'fim' ? elMunProjecao(g, m) : null), [g, m, emCurso]);
+  const BB = useMemo(() => new Set(PARTIDOS.filter(P => status(g.parties[P.id].rel) === 'base').map(P => P.id)), [g]);
+  const h0 = elMunHist(g);
+  if (!emCurso) {
+    const ef = E.munEfeito; const f = elMunFator(g); const n3 = h0 && h0.lista ? h0.lista.reduce((a, x) => { const p = elMunPostura(g, x); a[p > 0 ? 0 : p < 0 ? 2 : 1]++; return a; }, [0, 0, 0]) : null;
+    return html`<${PdSec} css=${true} eyebrow="Eleições · municipais" titulo=${'Municipais ' + elAnoMun(g.mes)} dado="mun-vazio" id="mun-v" dir="esq" tip=${'Nas ' + EL_CIDADES.length + ' maiores cidades você poderá apoiar candidatos e liberar verbas de campanha em setembro (1º turno) e outubro (2º turno). Ganhar ou perder prefeituras mexe na aprovação, no Congresso e nos governadores.'}>
+    <div className="pd-vazio" data-el="mun-vazio"><${Icon} n="CalendarClock" s=${20} /> As pré-candidaturas aparecem em ${dataMes(48 * elCiclo(g.mes) + 15)}; o apoio abre em ${dataMes(48 * elCiclo(g.mes) + 21)}.</div>
+    ${h0 && html`<div className="mt-3 flex flex-col gap-2" data-el="mun-ultima"><p className="text-sm">Última eleição (${h0.ano}): ${h0.lado ? html`a base ficou com <b>${h0.lado.depois.base}</b> prefeituras (${h0.dN >= 0 ? '+' : '−'}${Math.abs(h0.dN || 0)}).` : ''} Balanço: ${Object.keys(h0.depois).sort((a, b) => h0.depois[b] - h0.depois[a]).slice(0, 3).map(k => PMAP[k].curto + ' ' + h0.depois[k]).join(', ')}.</p>
+      ${n3 && html`<p className="text-sm">Prefeitos eleitos: <b>${n3[0]}</b> aliados, <b>${n3[1]}</b> neutros, <b>${n3[2]}</b> de oposição.${ef && f > 0 ? ' Efeito do resultado na aprovação: ' + elMunPP(ef.ap * f) + ' (diminui até ' + dataMes(ef.desde + 6) + ').' : ''}</p>`}</div>`}</${PdSec}>`;
+  }
   const rel = g.mes - 48 * elCiclo(g.mes);
-  if (!m || m.c !== elCiclo(g.mes)) return html`<${PdSec} css=${true} eyebrow="Eleições · municipais" titulo=${'Municipais ' + elAnoMun(g.mes)} dado="mun-vazio" id="mun-v" dir="esq" tip="Nas 26 capitais e nas 20 maiores cidades você poderá apoiar candidatos (figuras sem mandato, deputados que se lançam e prefeitos), a partir das convenções de julho.">
-    <div className="pd-vazio" data-el="mun-vazio"><${Icon} n="CalendarClock" s=${20} /> As pré-candidaturas aparecem em ${dataMes(48 * elCiclo(g.mes) + 15)}.</div>
-    ${E.munHist.length > 0 && html`<p className="text-sm mt-3">Última: ${E.munHist[0].ano}, balanço: ${Object.keys(E.munHist[0].depois).sort((a, b) => E.munHist[0].depois[b] - E.munHist[0].depois[a]).slice(0, 3).map(k => PMAP[k].curto + ' ' + E.munHist[0].depois[k]).join(', ')}.</p>`}</${PdSec}>`;
-  const ct = EL_CIDADES.find(c => c.id === sel) || EL_CIDADES[0]; const S = m.cidades[ct.id]; const janela = elMunJanela(g);
-  const lista = EL_CIDADES.filter(c => !fil || norm(c.nome + c.uf).includes(norm(fil)));
-  const ult = (m.pesq[ct.id] || []).slice(-1)[0];
-  const trocas = elMudancasCongresso(g); const proj = trocas.length ? elProjecaoTrocas(g) : null;
+  const ct = EL_CIDADES.find(c => c.id === sel && m.cidades[c.id]) || EL_CIDADES[0]; const S = m.cidades[ct.id]; const janela = elMunJanela(g);
+  const ult = (m.pesq[ct.id] || []).slice(-1)[0]; const chS = ch[ct.id] || [];
+  const cts = EL_CIDADES.filter(c => m.cidades[c.id]);
+  const passa = (c) => { const s = m.cidades[c.id];
+    if (uf && c.uf !== uf) return false; if (fil && !norm(c.nome + c.uf).includes(norm(fil))) return false;
+    if (modo === 'capitais') return c.cap; if (modo === 'disputadas') return Math.max(...(ch[c.id] || [1])) < .42; if (modo === 'base') return s.cands.some(x => BB.has(x.bloco)); if (modo === 'apoios') return !!s.apoio; return true; };
+  const lista = cts.filter(passa);
+  const trocas = elMudancasCongresso(g); const projT = trocas.length ? elProjecaoTrocas(g) : null;
+  const fase = m.fase === 'pre' ? (janela ? 'apoios abertos' : 'pré-campanha') : m.fase === 'seg' ? '2º turno' : m.fase === 'fim' ? 'encerrada' : 'campanha';
   return html`<div className="flex flex-col gap-6" data-el="municipal">
-    <style>${GV_CSS}${PD_CSS}</style>
-    <div className="gv-sec-h" style=${{ marginBottom: 0 }}><div><div className="eyebrow">Eleições · municipais</div><h3 className="disp text-2xl font-extrabold uppercase">Municipais ${m.ano}<${GvTip} lado="esq" txt=${'Apoiar um candidato custa 1 ação e 8 de energia' + (janela ? '.' : ' e só é possível na janela de julho a outubro.') + ' Pesquisas e resultados são simulados.'} /></h3></div><div className="gv-chips"><span className="gv-chip ouro">${m.fase === 'pre' ? 'pré-campanha' : m.fase === 'seg' ? '2º turno' : m.fase === 'fim' ? 'encerrada' : 'campanha'}</span><${ElSim} /><span className="gv-chip">${m.apoios} apoio(s)</span></div></div>
+    <style>${GV_CSS}${PD_CSS}${MUN_CSS}</style>
+    <div className="gv-sec-h" style=${{ marginBottom: 0 }}><div><div className="eyebrow">Eleições · municipais</div><h3 className="disp text-2xl font-extrabold uppercase">Municipais ${m.ano}<${GvTip} lado="esq" txt=${'Apoiar não gasta ação política' + (janela ? '.' : ' e só é possível em setembro (1º turno) e outubro (2º turno).') + ' Cada apoiado derrotado custa prestígio. Verbas de campanha ajudam, custam caixa e têm risco no TSE. Pesquisas e resultados são simulados.'} /></h3></div><div className="gv-chips"><span className="gv-chip ouro" data-mun-fase="1">${fase}</span><${ElSim} /><span className="gv-chip" data-mun-napoios="1">${m.apoios} apoio(s)</span><span className="gv-chip">${cts.length} cidades</span></div></div>
+    ${m.res && m.res.lado && html`<${ElApurM} g=${g} m=${m} />`}
+    ${m.res && !m.res.lado && html`<section className="sec flex flex-col gap-2" data-el="mun-resultado"><h3 className="disp text-2xl font-extrabold uppercase">Balanço: prefeituras por bloco</h3><p className="text-sm">${Object.keys(m.res.depois).sort((a, b) => m.res.depois[b] - m.res.depois[a]).slice(0, 5).map(k => PMAP[k].curto + ' ' + m.res.depois[k]).join(' · ')}. Seus apoios: <b>${m.res.nApoio}</b> de ${m.res.nTotApoio} venceram.</p></section>`}
+    ${proj && html`<section className="sec flex flex-col gap-2" data-el="em-jogo" aria-label="O que está em jogo"><div className="flex flex-wrap items-center gap-2"><${Icon} n="Scale" s=${18} /><h4 className="font-semibold text-lg">O que está em jogo</h4>${janela ? html`<span className="gv-chip pos">apoios abertos</span>` : html`<span className="gv-chip">apoios abrem em setembro</span>`}</div>
+      <p className="text-sm" data-em-jogo-txt="1">Se a base ganhar muito (12 prefeituras líquidas ou mais): <b className="num" style=${{ color: 'var(--verde)' }}>${elMunPP(proj.apVit)} de aprovação</b>. Se perder: <b className="num" style=${{ color: 'var(--rubro)' }}>${elMunPP(proj.apDer)}</b> (derrota pesa 30% mais), além de efeito no Congresso, nos governadores e na presidencial seguinte. O efeito diminui ao longo de ~6 meses.</p>
+      <p className="text-sm">Hoje o jogo projeta a base com <b className="num">${proj.dN >= 0 ? '+' : '−'}${fmt(Math.abs(proj.dN), 1)}</b> prefeituras líquidas (≈ ${elMunPP(elMunApDeX(proj.X, proj.eng))} de aprovação). Seu envolvimento: <b className="num">${proj.nApoios}</b> apoio(s), efeito em ${fmt(proj.eng * 100, 0)}% do máximo${proj.nApoios === 0 ? ' (neutro: menor, mas não zero)' : ''}.</p></section>`}
+    <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Filtros de cidades" data-el="mun-filtros">${[['todas', 'Todas'], ['capitais', 'Capitais'], ['disputadas', 'Disputadas'], ['base', 'Base tem candidato'], ['apoios', 'Meus apoios']].map(([k, n]) => html`<button key=${k} type="button" className="mun-chip" aria-pressed=${modo === k} data-filtro=${k} onClick=${() => setModo(k)}>${n}</button>`)}
+      <select aria-label="Filtrar por estado" value=${uf} onChange=${e => setUf(e.target.value)} data-filtro-uf="1" style=${{ maxWidth: 190 }}><option value="">Todos os estados</option>${Object.keys(UF_INFO).filter(u => cts.some(c => c.uf === u)).map(u => html`<option key=${u} value=${u}>${UF_INFO[u].nome}</option>`)}</select></div>
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] items-start">
       <section className="sec min-w-0" aria-label="Cidades"><input type="text" aria-label="Buscar cidade" placeholder="Buscar cidade ou UF" value=${fil} onChange=${e => setFil(e.target.value)} className="mb-3" />
-        <div className="pd-list">
-          ${lista.map(c => { const s = m.cidades[c.id]; const W = s.venc ? s.cands.find(x => x.id === s.venc) : null; return html`<button type="button" key=${c.id} className=${'pd-city ' + (c.id === sel ? 'sel' : '')} data-cidade=${c.id} aria-pressed=${c.id === sel} onClick=${() => setSel(c.id)}>
+        <div className="pd-s mb-2" data-mun-contagem="1">${lista.length} de ${cts.length} cidades</div>
+        <div className="pd-list mun-lista">
+          ${lista.map(c => { const s = m.cidades[c.id]; const W = s.venc ? s.cands.find(x => x.id === s.venc) : null; const cc = ch[c.id] || []; const fav = cc.length ? Math.max(...cc) : 0; return html`<button type="button" key=${c.id} className=${'pd-city ' + (c.id === ct.id ? 'sel' : '')} data-cidade=${c.id} aria-pressed=${c.id === ct.id} onClick=${() => setSel(c.id)}>
             <span className="font-medium">${c.nome} <span className="pd-s">${c.uf}${c.cap ? ' · capital' : ''}</span></span>
-            <span className="text-sm text-right">${W ? html`<span style=${{ color: PMAP[W.bloco].cor }}>${W.sigla}</span>` : s.fin ? '2º turno' : s.apoio ? 'apoio' : ''}${s.apoio && W ? (s.apoio === W.id ? ' ✓' : ' ✗') : ''}</span>
-            <span className="pd-s num">${c.eleit.toLocaleString('pt-BR')} mil eleitores</span></button>`; })}</div></section>
-      <section className="sec min-w-0 flex flex-col gap-4" data-el="cidade"><div className="gv-sec-h" style=${{ marginBottom: 0 }}><div><div className="eyebrow">Cidade selecionada</div><h4 className="disp text-2xl font-extrabold uppercase">${ct.nome}</h4></div><div className="gv-chips"><span className="gv-chip">${ct.uf}</span><span className="gv-chip num">~${ct.eleit.toLocaleString('pt-BR')} mil eleitores</span></div></div>
-        <ul className="pd-grid" style=${{ '--w': '250px' }}>${S.cands.map(cd => { const pv = ult ? ult.sh[cd.id] : null; const r1 = S.r1 ? S.r1[cd.id] : null; const r2 = S.r2 ? S.r2[cd.id] : null; const apoiado = S.apoio === cd.id; const pode = janela && !S.venc || janela && S.fin && S.fin.includes(cd.id) && !S.r2;
+            <span className="text-sm text-right">${W ? html`<span style=${{ color: PMAP[W.bloco].cor }}>${W.sigla}</span>` : s.fin ? '2º turno' : s.apoio ? 'apoio' : html`<span className="pd-s">${fav < .42 ? 'disputa' : 'favorito'}</span>`}${s.apoio && W ? (s.apoio === W.id ? ' ✓' : ' ✗') : ''}</span>
+            <span className="pd-s num">${c.eleit.toLocaleString('pt-BR')} mil eleitores${c.est ? ' (est.)' : ''}</span></button>`; })}</div></section>
+      <section className="min-w-0 flex flex-col gap-4">
+        ${!m.res && html`<div className="sec min-w-0"><${ElMunMapa} cidades=${cts} sel=${ct.id} onSel=${setSel} aria="Mapa das cidades da eleição municipal"
+          cor=${c => { const s = m.cidades[c.id]; const W = s.venc ? s.cands.find(x => x.id === s.venc) : null; return PMAP[W ? W.bloco : c.b24] ? PMAP[W ? W.bloco : c.b24].cor : 'var(--panel2)'; }}
+          anel=${c => { const s = m.cidades[c.id]; return s.apoio ? 'var(--ouro)' : null; }}
+          rotulo=${c => { const s = m.cidades[c.id]; const W = s.venc ? s.cands.find(x => x.id === s.venc) : null; return c.nome + ' (' + c.uf + ')' + (W ? ': ' + W.nome + ' (' + W.sigla + ')' : ' · prefeitura atual: ' + (PMAP[c.b24] ? PMAP[c.b24].curto : c.b24) + (s.apoio ? ' · seu apoio' : '')); }} />
+          <p className="text-xs text-muted mt-1">${m.fase === 'pre' || m.fase === 'seg' ? 'Cor = partido da prefeitura atual (em 2024, aproximado) ou do eleito. Contorno dourado = seu apoio.' : 'Cor = partido do prefeito eleito.'}</p></div>`}
+        <div className="sec min-w-0 flex flex-col gap-4" data-el="cidade"><div className="gv-sec-h" style=${{ marginBottom: 0 }}><div><div className="eyebrow">Cidade selecionada</div><h4 className="disp text-2xl font-extrabold uppercase">${ct.nome}</h4></div><div className="gv-chips"><span className="gv-chip">${ct.uf}</span><span className="gv-chip num">~${ct.eleit.toLocaleString('pt-BR')} mil eleitores${ct.est ? ' (estimativa)' : ''}</span><span className="gv-chip num">peso ${fmt(elMunShare(ct) * 100, 1)}% do balanço</span></div></div>
+        <ul className="pd-grid" style=${{ '--w': '250px' }}>${S.cands.map((cd, ci) => { const pv = ult ? ult.sh[cd.id] : null; const r1 = S.r1 ? S.r1[cd.id] : null; const r2 = S.r2 ? S.r2[cd.id] : null; const apoiado = S.apoio === cd.id; const pode = janela && (!S.venc || S.fin && S.fin.includes(cd.id)) && !S.r2; const p = chS[ci] != null ? chS[ci] : null;
           return html`<li key=${cd.id} className=${'pd-card' + (apoiado ? ' sel' : '')} style=${{ '--st': PMAP[cd.bloco].cor }} data-cand=${cd.id}>
             <div className="pd-h" style=${{ gridTemplateColumns: 'auto minmax(0,1fr) auto' }}><span className="pd-dot" style=${{ background: PMAP[cd.bloco].cor }}></span><div className="pd-n">${cd.nome}</div>${pv != null && html`<span className="pd-big">${fmt(pv, 0)}%</span>`}</div>
-            <div className="gv-chips"><span className="gv-chip">${cd.sigla}</span>${cd.tipo !== 'gen' && html`<${ElSim} />`}${cd.tipo === 'dep' && html`<span className="gv-chip">dep. federal</span>`}${cd.tipo === 'sen' && html`<span className="gv-chip">senador(a)</span>`}${cd.tipo === 'fig' && html`<span className="gv-chip">sem mandato</span>`}${cd.tipo === 'est' && html`<span className="gv-chip">dep. estadual</span>`}${cd.inc && html`<span className="gv-chip">prefeitura atual</span>`}${apoiado && html`<span className="gv-chip pos">seu apoio</span>`}${S.venc === cd.id && html`<span className="gv-chip ouro">eleito(a)</span>`}</div>
+            <div className="gv-chips"><span className="gv-chip">${cd.sigla}</span>${cd.tipo !== 'gen' && html`<${ElSim} />`}${cd.tipo === 'dep' && html`<span className="gv-chip">dep. federal</span>`}${cd.tipo === 'sen' && html`<span className="gv-chip">senador(a)</span>`}${cd.tipo === 'fig' && html`<span className="gv-chip">sem mandato</span>`}${cd.tipo === 'est' && html`<span className="gv-chip">dep. estadual</span>`}${cd.inc && html`<span className="gv-chip">prefeitura atual</span>`}${BB.has(cd.bloco) && html`<span className="gv-chip pos">base</span>`}${apoiado && html`<span className="gv-chip pos">seu apoio</span>`}${S.venc === cd.id && html`<span className="gv-chip ouro">eleito(a)</span>`}</div>
             ${pv != null && html`<${Bar} v=${pv} max=${Math.max(40, pv)} cor=${PMAP[cd.bloco].cor} h=${6} label=${'Pesquisa: ' + cd.nome} />`}
-            <div className="pd-s">${r1 != null ? '1º turno ' + fmt(r1, 1) + '%' : ''}${r2 != null ? ' · 2º turno ' + fmt(r2, 1) + '%' : ''}${r1 == null && r2 == null ? (pv != null ? 'pesquisa simulada' : 'sem pesquisa ainda') : ''}</div>
-            <div className="gv-acts mt-auto"><button type="button" className="btn btn-pri" disabled=${!pode || apoiado || g.acoes <= 0 || g.pes.energia < 8} data-apoiar=${cd.id} onClick=${() => upd(n => { elMunApoia(n, ct.id, cd.id); })}>Apoiar</button></div></li>`; })}</ul>
-        ${S.apoio && janela && html`<button type="button" className="btn btn-pri text-sm self-start" disabled=${S.visita >= 3 || g.acoes <= 0} data-visita=${ct.id} onClick=${() => upd(n => { elMunVisita(n, ct.id); })}><${Icon} n="MapPin" s=${14} /> Fazer campanha na cidade (${S.visita}/3) · 1 ação</button>`}
+            <div className="pd-s">${r1 != null ? '1º turno ' + fmt(r1, 1) + '%' : ''}${r2 != null ? ' · 2º turno ' + fmt(r2, 1) + '%' : ''}${r1 == null && r2 == null ? (pv != null ? 'pesquisa simulada' : p != null ? 'chance estimada: ' + elMunRotChance(p) : 'sem pesquisa ainda') : ''}</div>
+            <div className="gv-acts mt-auto"><button type="button" className="btn btn-pri" disabled=${!pode || apoiado} data-apoiar=${cd.id} onClick=${() => upd(n => { elMunApoia(n, ct.id, cd.id); })}>${apoiado ? 'Apoiado' : 'Apoiar'}</button></div></li>`; })}</ul>
+        ${!janela && m.fase !== 'fim' && html`<p className="pd-s" data-el="apoio-fechado"><${Icon} n="Lock" s=${13} /> Os apoios e as verbas abrem em ${dataMes(48 * m.c + 21)} (1º turno) e no 2º turno. Até lá, acompanhe as pesquisas.</p>`}
+        ${S.apoio && janela && html`<div className="flex flex-wrap gap-2 items-center"><button type="button" className="btn btn-ghost text-sm" data-retirar=${ct.id} onClick=${() => upd(n => { elMunRetira(n, ct.id); })}><${Icon} n="X" s=${14} /> Retirar apoio (ficar neutro)</button><button type="button" className="btn btn-pri text-sm" disabled=${S.visita >= 3 || g.acoes <= 0} data-visita=${ct.id} onClick=${() => upd(n => { elMunVisita(n, ct.id); })}><${Icon} n="MapPin" s=${14} /> Fazer campanha na cidade (${S.visita}/3) · 1 ação</button></div>
+          <${ElMunVerba} g=${g} m=${m} ct=${ct} S=${S} upd=${upd} />`}
+        ${S.cass && html`<p className="text-sm" style=${{ color: 'var(--rubro)' }} data-el="cass">${S.cass.fase === 'julgando' ? 'O TSE julga o caso desta campanha: o prefeito eleito pode ser cassado.' : S.cass.fase === 'cassado' ? 'Prefeito cassado pelo TSE. Nova eleição em ' + dataMes(S.cass.nova) + '.' : 'Eleição suplementar realizada.'}</p>`}
         ${(m.pesq[ct.id] || []).length > 0 && html`<div><div className="eyebrow mb-1">Pesquisas simuladas</div><ul className="flex flex-col gap-1">${m.pesq[ct.id].slice(-3).reverse().map((p, i) => html`<li key=${i} className="text-xs"><b>${elInstNome(p.inst)}</b> (${p.dia}/${String(((p.mes - 1) % 12) + 1).padStart(2, '0')}, ±${fmt(98 / Math.sqrt(p.n), 1)} p.p.): ${S.cands.map(c => c.nome.split(' ')[0] + ' ' + fmt(p.sh[c.id], 0) + '%').join(' · ')}</li>`)}</ul><${ElAviso} /></div>`}
-      </section></div>
-    ${m.res && html`<section className="sec flex flex-col gap-3" data-el="mun-resultado"><h3 className="disp text-2xl font-extrabold uppercase">Balanço: prefeituras por bloco</h3>
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start"><div className="min-w-0"><${MapaUF} cor=${u => { const ct = EL_CIDADES.find(c => c.cap && c.uf === u); if (!ct) return 'var(--panel2)'; const S = m.cidades[ct.id]; const W = S.cands.find(c => c.id === S.venc); return W ? PMAP[W.bloco].cor : 'var(--panel2)'; }} rotulo=${u => { const ct = EL_CIDADES.find(c => c.cap && c.uf === u); if (!ct) return UF_INFO[u].nome + ': sem eleição de prefeito'; const S = m.cidades[ct.id]; const W = S.cands.find(c => c.id === S.venc); return ct.nome + ': ' + (W ? W.nome + ' (' + W.sigla + ')' : 'indefinido'); }} aria="Mapa do Brasil: partido que venceu em cada capital" selecionado=${ct.uf} onSel=${u => { const c2 = EL_CIDADES.find(c => c.cap && c.uf === u); if (c2) setSel(c2.id); }} tip=${u => { const c2 = EL_CIDADES.find(c => c.cap && c.uf === u); if (!c2) return html`<div>${UF_INFO[u].nome}: sem prefeito</div>`; const S = m.cidades[c2.id]; const W = S.cands.find(c => c.id === S.venc); return html`<div><div className="font-bold text-sm">${c2.nome}</div><div>${W ? W.nome + ' · ' + W.sigla : ''}</div></div>`; }} /><p className="text-xs text-muted mt-2">Cor = bloco do prefeito eleito na capital.</p></div>
-      <div className="min-w-0 flex flex-col gap-2">
-      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">${Object.keys(m.res.depois).sort((a, b) => m.res.depois[b] - m.res.depois[a]).map(k => html`<div key=${k} className="pd-card !p-3" style=${{ '--st': PMAP[k].cor }}><div className="text-sm font-semibold" style=${{ color: PMAP[k].cor }}>${PMAP[k].curto}</div><div className="num">${m.res.depois[k]} <span className="text-xs text-muted">(antes ~${m.res.antes[k] || 0}, aprox.)</span></div></div>`)}</div>
-      <p className="text-sm">Seus apoios: <b>${m.res.nApoio}</b> de ${m.res.nTotApoio} venceram. Leitura para o campo do governo: <b className="num">${sgn(m.res.ref * 10, 0)}</b> prefeituras líquidas.</p></div></div></section>`}
+      </div></section></div>
     ${trocas.length > 0 && html`<section className="sec flex flex-col gap-3" data-el="trocas"><h3 className="disp text-2xl font-extrabold uppercase">Parlamentares que viram prefeitos</h3>
       <div className="scroll-x"><table className="w-full text-sm"><thead><tr className="text-muted text-xs"><th className="text-left font-normal py-1">Titular</th><th className="text-left font-normal">Suplente</th><th className="text-left font-normal">Casa</th><th className="text-right font-normal">Fidelidade</th><th className="text-left font-normal pl-2">Quando</th></tr></thead><tbody>
         ${trocas.map((t, i) => html`<tr key=${i} className="border-t border-line"><td className="py-1.5">${t.de} <span className="text-xs text-muted">${sg(t.sigla)}-${t.uf}</span></td><td>${t.para}</td><td>${t.casa === 'cam' ? 'Câmara' : 'Senado'}</td><td className="num text-right">${t.fid0} → ${t.fid1}</td><td className="pl-2 text-xs">${t.ativo ? 'em exercício' : 'assume em ' + dataCurta(t.mes)}</td></tr>`)}</tbody></table></div>
-      ${proj && html`<p className="text-sm" data-el="proj-trocas">Votação neutra de teste (só efeito do elenco): Câmara <b className="num">${proj.antes.c} → ${proj.depois.c}</b> votos · Senado <b className="num">${proj.antes.s} → ${proj.depois.s}</b>. Nas cadeiras trocadas, o índice médio de apoio ao governo vai de <b className="num">${fmt(proj.sup.antes, 1)}</b> para <b className="num">${fmt(proj.sup.depois, 1)}</b>: o suplente tem o mesmo partido, mas não a fidelidade pessoal do titular.</p>`}</section>`}
+      ${projT && html`<p className="text-sm" data-el="proj-trocas">Votação neutra de teste (só efeito do elenco): Câmara <b className="num">${projT.antes.c} → ${projT.depois.c}</b> votos · Senado <b className="num">${projT.antes.s} → ${projT.depois.s}</b>. Nas cadeiras trocadas, o índice médio de apoio ao governo vai de <b className="num">${fmt(projT.sup.antes, 1)}</b> para <b className="num">${fmt(projT.sup.depois, 1)}</b>: o suplente tem o mesmo partido, mas não a fidelidade pessoal do titular.</p>`}</section>`}
+  </div>`;
+}
+/* prefeito de oposição pedindo verbas (cartão na Mesa): mandar verba pode torná-lo neutro ou aliado, com chance e sem garantia */
+function ElMunPedido({ g, upd }) {
+  const E = g.el; const P = E.munPed; const h = elMunHist(g);
+  if (!P || P.estado !== 'aberto') return html`<p className="text-sm text-muted" data-el="ped-vazio">Nenhum pedido de verbas em aberto.</p>`;
+  const ct = elCidade(P.cid); const x = h && h.lista.find(i => i.cid === P.cid); const sig = x && PMAP[x.bloco] ? PMAP[x.bloco].curto : '';
+  const opc = [['pouco', 'Mandar ' + Math.round(P.valor * .5) + ' mi', 'chance baixa de moderar o tom'], ['medio', 'Mandar ' + P.valor + ' mi', 'chance razoável de neutralizar ou aproximar'], ['muito', 'Mandar ' + P.valor * 2 + ' mi', 'maior chance de torná-lo aliado']];
+  return html`<div className="flex flex-col gap-3" data-el="ped" data-ped-cid=${P.cid}>
+    <div><div className="eyebrow">Prefeito de oposição</div><h3 className="disp text-2xl font-extrabold uppercase">Prefeito(a) de ${ct.nome} (${sig}) pede verbas</h3></div>
+    <p className="text-sm">A prefeitura cobra cerca de R$ ${P.valor} mi em repasses federais. Hoje o prefeito está na oposição: os programas federais rendem menos no estado e ele pode voltar a criticar o governo na mídia. Mandar verba custa caixa (fiscal) e <b>não garante</b> a mudança de postura. Não gasta ação.</p>
+    <ul className="flex flex-col gap-2">${opc.map(([k, n, d]) => html`<li key=${k}><button type="button" className="btn btn-pri w-full justify-start text-left" data-ped=${k} onClick=${() => upd(nn => { elMunPedResp(nn, k); })}>${n} <span className="opacity-70 text-xs ml-2">${d}</span></button></li>`)}
+      <li><button type="button" className="btn btn-ghost w-full justify-start" data-ped="recusar" onClick=${() => upd(nn => { elMunPedResp(nn, 'recusar'); })}>Recusar o pedido <span className="opacity-70 text-xs ml-2">sem custo; leve desgaste</span></button></li></ul>
   </div>`;
 }
 /* ---------- presidencial ---------- */
@@ -31013,6 +31437,7 @@ function ElFim({ g, upd, reiniciar }) {
     <p className="text-lg">${texto}</p>
     <div className="grid grid-cols-2 sm:grid-cols-5 gap-3"><div><div className="eyebrow">Aprovação final</div><div className="num text-2xl">${fmt(leg.ap, 0)}%</div></div><div><div className="eyebrow">PIB</div><div className="num text-2xl">${fmt(leg.pib)}%</div></div><div><div className="eyebrow">IPCA</div><div className="num text-2xl">${fmt(leg.ipca)}%</div></div><div><div className="eyebrow">Atos assinados</div><div className="num text-2xl">${leg.atos}</div></div><div><div className="eyebrow">Marcos</div><div className="num text-2xl">${leg.marcos}</div></div></div>
     ${html`<${ElLegadoPainel} g=${g} o=${o} />`}
+    ${leg.mun && leg.mun.length > 0 && html`<div data-legado-mun="1"><div className="eyebrow mb-2">Eleições municipais</div><ul className="flex flex-col gap-1">${leg.mun.map((x, i) => html`<li key=${i} className="text-sm">Municipais ${x.ano}: base ${x.dN >= 0 ? '+' : '−'}${Math.abs(x.dN)} prefeituras (${x.base} de ${x.n}); ${x.capBase} de ${x.nCap} capitais${x.apoios ? '; ' + x.vit + ' de ' + x.apoios + ' apoios venceram' : '; neutro'}.</li>`)}</ul></div>`}
     ${leg.prom && leg.prom.length > 0 && html`<div><div className="eyebrow mb-2">Promessas</div><ul className="flex flex-col gap-1">${leg.prom.map((p, i) => html`<li key=${i} className="flex gap-2 items-center"><span style=${{ color: p.ok ? 'var(--verde)' : 'var(--rubro)' }}><${Icon} n=${p.ok ? 'CircleCheck' : 'CircleX'} /></span>${p.nome}</li>`)}</ul></div>`}
     ${leg.metas && leg.metas.length > 0 && html`<div data-el="metas"><div className="eyebrow mb-2">Metas por área · ${leg.metas.filter(m => m.ok).length}/${leg.metas.length} atingidas</div><ul className="flex flex-col gap-1">${leg.metas.map(m => html`<li key=${m.id} className="flex gap-2 items-center" data-meta-leg=${m.id}><span style=${{ color: m.ok ? 'var(--verde)' : 'var(--rubro)' }}><${Icon} n=${m.ok ? 'CircleCheck' : 'CircleX'} s=${16} /></span><span>${m.txt}</span><span className="text-xs text-muted">${m.area}</span></li>`)}</ul></div>`}
     ${E.din && E.din.length > 0 && html`<div><div className="eyebrow mb-2">Linha do tempo de personagens</div><ol className="flex flex-col gap-1">${E.din.map((d, i) => html`<li key=${i} className="text-sm"><b>${d.nome}</b> (${d.sigla}) · ${d.papel} · ${dataCurta(d.de)}–${d.ate ? dataCurta(d.ate) : dataCurta(o.mes || g.mes)}</li>`)}</ol></div>`}
@@ -31030,6 +31455,7 @@ function elCorpo(kind, g, upd) {
   const ger = g.el && g.el.ger;
   if (kind === 'elmodo') return html`<${ElVisao} g=${g} upd=${upd} />`;
   if (kind === 'elmun') return html`<${ElMunicipal} g=${g} upd=${upd} />`;
+  if (kind === 'elmunped') return html`<${ElMunPedido} g=${g} upd=${upd} />`;
   if (kind === 'elapurm') return html`<div className="flex flex-col gap-3"><${ElMunicipal} g=${g} upd=${upd} /><button type="button" className="btn btn-gold self-start" data-el-visto="1" onClick=${() => upd(n => { n.el.mun.visto = true; })}>Marcar como visto</button></div>`;
   if (kind === 'elsuc') return html`<${ElSucessao} g=${g} upd=${upd} />`;
   if (kind === 'elforca') return html`<${ElForcaSuc} g=${g} upd=${upd} />`;
