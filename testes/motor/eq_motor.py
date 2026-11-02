@@ -15,7 +15,7 @@ JS = """(args)=>{const [PROPS,off]=args,E=window.__E(),out=[];
   if(off)E.FAMOSOS.splice(0);
   const seed=(n)=>{let a=n;Math.random=()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}};
   const g0=window.__g0;
-  for(let i=0;i<PROPS.length;i++){seed(1000+i);const g=structuredClone(g0);g.seed=777;g.acoes=5;
+  for(let i=0;i<PROPS.length;i++){seed(1000+i);const g=structuredClone(g0);g.seed=777;g.acoes=5;g.props=5;
     try{const p=E.analisaLocal(g,PROPS[i]);const v=E.projetaVotos(g,p);const r=E.executaProposta(g,p,'aprovada');for(let m=0;m<6;m++)E.fimDoMes(g);
       out.push({t:PROPS[i],famlen:E.FAMOSOS.length,fam:(g.x&&g.x.fam?g.x.fam.posts.length:0),topic:p.topic,cost:p.cost,rev:p.rev,cf:p.stf.nivel,totC:v.totC,totS:v.totS,ap:+E.aprovacao(g).toFixed(3),prim:+E.primario(g).toFixed(2),g:Object.keys(g.groups).map(k=>k+':'+g.groups[k].toFixed(2)).join(',')})}
     catch(e){out.push({t:PROPS[i],err:String(e).slice(0,120)})}}

@@ -42,7 +42,7 @@ with sync_playwright() as p:
     src = src.replace('function analisaLegado(g, texto) {', 'window.__QV = () => QV; window.__AL = analisaLocal; window.__X = () => ({ executaProposta, ensureIC, IC_IMP });\nfunction analisaLegado(g, texto) {', 1)
     pg.route('**/index.html', lambda r: r.fulfill(status=200, content_type='text/html; charset=utf-8', body=src))
     start(pg); fecha_modais(pg)
-    SET(pg, "n.acoes=5;n.pes.energia=90")
+    SET(pg, "n.acoes=5;n.props=5;n.pes.energia=90")
     secao(pg, 'Mundo'); chip(pg, 'Comércio exterior')
     pg.locator('[data-com-aba=comprar]').click(); pg.wait_for_timeout(400)
     # ---------- Comprar ----------

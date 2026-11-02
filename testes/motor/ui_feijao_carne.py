@@ -31,7 +31,7 @@ def fecha_modais(pg):
 def G(pg, expr): return pg.evaluate("()=>{const g=__QV().gRef.current;return (" + expr + ")}")
 def SET(pg, js): pg.evaluate("()=>__QV().setG(p=>{const n=structuredClone(p);const X=__X();" + js + ";return n})"); pg.wait_for_timeout(600)
 def J(pg, js):
-    return pg.evaluate("()=>{const X=__X();const g=structuredClone(__QV().gRef.current);X.ensureIC(g);g.acoes=9;g.pes.energia=90;" + js + "}")
+    return pg.evaluate("()=>{const X=__X();const g=structuredClone(__QV().gRef.current);X.ensureIC(g);g.acoes=9;g.props=9;g.pes.energia=90;" + js + "}")
 def secao(pg, nome): pg.locator('#sec-tab-' + nome.lower().replace('í', 'i')).click(timeout=6000); pg.wait_for_timeout(500)
 def chip(pg, nome):
     pg.locator('.chipnav [role=tab]').filter(has_text=re.compile(r'^\s*' + nome + r'\s*$')).first.click(timeout=6000); pg.wait_for_timeout(600)
@@ -50,7 +50,7 @@ with sync_playwright() as p:
     src = src.replace('function analisaLegado(g, texto) {', 'window.__QV = () => QV; window.__X = () => ({ ensureIC, IC_IMP, IC_BASE, IC_BAS, IC_RX, fimDoMes, aprovacao, icFlow, icTecZero, icConabCompra, icConabVende, icCreditoProdutor, icLeilaoImport, icAbastPrev, icTick, icPesoInfo });\nfunction analisaLegado(g, texto) {', 1)
     pg.route('**/index.html', lambda r: r.fulfill(status=200, content_type='text/html; charset=utf-8', body=src))
     start(pg); fecha_modais(pg)
-    SET(pg, "n.acoes=9;n.pes.energia=90;X.ensureIC(n)")
+    SET(pg, "n.acoes=9;n.props=9;n.pes.energia=90;X.ensureIC(n)")
 
     # ---------- save novo e pesos ----------
     r = G(pg, "(()=>{const X=__X();const f=g.comex.fl;return {pd:['feijao','bovina','arroz','trigo'].map(k=>f[k].pdom), mac:g.comex.mac.ipca, w:[X.IC_BASE.feijao.ipca,X.IC_BASE.bovina.ipca], sh:X.IC_BASE.bovina.shI, im:X.IC_BASE.bovina.IM0, ev:X.IC_BASE.bovina.EV0}})()")
@@ -92,17 +92,17 @@ with sync_playwright() as p:
     pg.screenshot(path=OUT + '/3_vender_carne.png', full_page=False)
 
     # ---------- efeito real (média de 6 sementes, tratado menos controle) ----------
-    D = DIFF(pg, 'feijao', 6, "g.acoes=9;X.icTecZero(g,'feijao',12)", "delete g.comex.abast.feijao;X.icTick(g,null,'calc')")
+    D = DIFF(pg, 'feijao', 6, "g.acoes=9;g.props=9;X.icTecZero(g,'feijao',12)", "delete g.comex.abast.feijao;X.icTick(g,null,'calc')")
     ok('Feijão: TEC zero deixa o preço mais de 1,5% abaixo do controle em 3 meses', D[3][7] < -.015, D[3][7])
-    D = DIFF(pg, 'feijao', 4, "g.acoes=9;X.icLeilaoImport(g,'feijao',.6)", "delete g.comex.abast.feijao;X.icTick(g,null,'calc')")
+    D = DIFF(pg, 'feijao', 4, "g.acoes=9;g.props=9;X.icLeilaoImport(g,'feijao',.6)", "delete g.comex.abast.feijao;X.icTick(g,null,'calc')")
     ok('Feijão: leilão baixa o preço na hora e a periferia melhora', D[1][7] < -.04 and D[2][5] > .3, (D[1][7], D[2][5]))
-    D = DIFF(pg, 'bovina', 6, "g.acoes=9;X.icTecZero(g,'bovina',12)")
+    D = DIFF(pg, 'bovina', 6, "g.acoes=9;g.props=9;X.icTecZero(g,'bovina',12)")
     ok('Carne: TEC zero deixa o preço mais de 1% abaixo do controle em 3 meses e o IPCA do comércio cai', D[3][7] < -.01 and D[3][1] < -.01, (D[3][7], D[3][1]))
-    D = DIFF(pg, 'bovina', 14, "g.acoes=9;X.icCreditoProdutor(g,'bovina',2)")
+    D = DIFF(pg, 'bovina', 14, "g.acoes=9;g.props=9;X.icCreditoProdutor(g,'bovina',2)")
     ok('Carne: crédito ao produtor só baixa o preço depois de 6 meses', abs(D[3][7]) < .005 and D[14][7] < -.01, (D[3][7], D[14][7]))
 
     # ---------- save antigo (sem o mercado do feijão) e 24 meses sem NaN ----------
-    r = J(pg, "delete g.comex.abast.feijao;delete g.comex.idx.feijao;delete g.comex.est.feijao;delete g.comex.fl.feijao;X.ensureIC(g);const ok1=g.comex.fl.feijao&&Math.abs(g.comex.fl.feijao.pdom-1)<1e-6;X.icConabCompra(g,'bovina',1);g.acoes=9;X.icLeilaoImport(g,'feijao',.3);for(let m=0;m<24;m++){g.acoes=9;if(m===8)X.icConabVende(g,'bovina',.5);X.fimDoMes(g)}const v=[g.eco.ipca,g.comex.mac.ipca,g.comex.fl.feijao.pdom,g.comex.fl.bovina.pdom,g.fiscal.extra];return {ok1, v, fin:v.every(Number.isFinite)}")
+    r = J(pg, "delete g.comex.abast.feijao;delete g.comex.idx.feijao;delete g.comex.est.feijao;delete g.comex.fl.feijao;X.ensureIC(g);const ok1=g.comex.fl.feijao&&Math.abs(g.comex.fl.feijao.pdom-1)<1e-6;X.icConabCompra(g,'bovina',1);g.acoes=9;g.props=9;X.icLeilaoImport(g,'feijao',.3);for(let m=0;m<24;m++){g.acoes=9;g.props=9;if(m===8)X.icConabVende(g,'bovina',.5);X.fimDoMes(g)}const v=[g.eco.ipca,g.comex.mac.ipca,g.comex.fl.feijao.pdom,g.comex.fl.bovina.pdom,g.fiscal.extra];return {ok1, v, fin:v.every(Number.isFinite)}")
     ok('Save antigo ganha o mercado do feijão no preço inicial; 24 meses com os instrumentos sem NaN', r['ok1'] and r['fin'], r)
     ok('Sem erros de página', not errs, errs[:3])
     print('\n%d/%d checagens' % (sum(c for c, _ in checks), len(checks))); b.close()

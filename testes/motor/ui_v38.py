@@ -202,7 +202,7 @@ with sync_playwright() as p:
         got = G(pg, "g.ent.rival?{q:g.ent.rival.quem.nome+' ('+g.ent.rival.quem.papel+')',tipo:g.ent.rival.tipo,pod:g.ent.rival.pod,frase:g.ent.rival.frase,est:g.ent.rival.estado}:null")
         if got: break
     ok('rival/aliado foi a um podcast e falou de uma medida (rotina mensal)', got is not None, got)
-    SET(pg, "n.ent.convites=n.ent.convites.filter(c=>c.estado!=='pendente');n.ent.convites.push({id:'cvt1',veic:'flow',mes:n.mes,estado:'pendente'},{id:'cvt2',veic:'irontalks',mes:n.mes,estado:'pendente'});n.acoes=5")
+    SET(pg, "n.ent.convites=n.ent.convites.filter(c=>c.estado!=='pendente');n.ent.convites.push({id:'cvt1',veic:'flow',mes:n.mes,estado:'pendente'},{id:'cvt2',veic:'irontalks',mes:n.mes,estado:'pendente'});n.acoes=5;n.props=5")
     pg.evaluate("location.hash='#/poder/imprensa'"); pg.wait_for_timeout(900)
     click(pg, 'Convites de entrevista', 700)
     cv = pg.locator('[data-convite=flow]')

@@ -39,13 +39,13 @@ SIM = r"""(modo) => {
     if (R() < .55) g.log.unshift({ mes: m, ato: 'PL aprovado', texto: 't', res: R() < .72 ? 'aprovada' : 'rejeitada', topic: TOP[Math.floor(R() * TOP.length)] });
     if (R() < .3) { try { F.jusNovoCaso(g, { silencio: true }); } catch (e) { } }
     if (R() < .7) g.ent.hist.unshift({ mes: m - 1, tema: ['economia', 'fiscal', 'emprego', 'saude'][Math.floor(R() * 4)], resp: 'Vamos manter o rumo, reduzir a inflação com responsabilidade fiscal e proteger quem ganha menos.', arq: 'defesa', out: 'bom', perg: 'x' });
-    g.acoes = 5; g.ent.colet = null; g.ent.entrev = null; g.ent.rival = null; g.ent.rivalMes = m; g.ent.convites = [];
+    g.acoes=5;g.props=5; g.ent.colet = null; g.ent.entrev = null; g.ent.rival = null; g.ent.rivalMes = m; g.ent.convites = [];
     F.entGeraMes(g); g.ent.convites = [];
     const mes = [];
     for (const q of g.ent.colet.qs) rows.push({ m, show: 'coletiva', id: q.id, tema: q.tema, v2: !!q.v2, texto: q.texto, ops: q.ops.map(o => o.txt) });
     const lista = modo === 'pesado' ? POD.concat(OUTROS) : (R() < .65 ? [(POD.concat(OUTROS))[Math.floor(R() * 12)]] : []);
     for (const k of lista) {
-      g.ent.entrev = null; g.acoes = 5; g.ent.convites.push({ id: 'c' + m + k, veic: k, mes: m, estado: 'pendente' });
+      g.ent.entrev = null; g.acoes=5;g.props=5; g.ent.convites.push({ id: 'c' + m + k, veic: k, mes: m, estado: 'pendente' });
       if (!F.entAceita(g, 'c' + m + k)) continue;
       const Rr = g.ent.entrev; for (let i = 0; i < Rr.qs.length; i++) { const q = Rr.qs[i]; if (i > 0) { q.res = null; } rows.push({ m, show: k, id: q.id, tema: q.tema, v2: !!q.v2, texto: q.texto, ops: q.ops.map(o => o.txt) }); }
       g.ent.entrev = null;

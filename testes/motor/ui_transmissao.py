@@ -31,7 +31,7 @@ def fecha_modais(pg):
 def G(pg, expr): return pg.evaluate("()=>{const g=__QV().gRef.current;return (" + expr + ")}")
 def SET(pg, js): pg.evaluate("()=>__QV().setG(p=>{const n=structuredClone(p);const X=__X();" + js + ";return n})"); pg.wait_for_timeout(600)
 def J(pg, js):
-    return pg.evaluate("()=>{const X=__X();const g=structuredClone(__QV().gRef.current);X.ensureIC(g);g.acoes=9;g.pes.energia=90;" + js + "}")
+    return pg.evaluate("()=>{const X=__X();const g=structuredClone(__QV().gRef.current);X.ensureIC(g);g.acoes=9;g.props=9;g.pes.energia=90;" + js + "}")
 def secao(pg, nome): pg.locator('#sec-tab-' + nome.lower().replace('í', 'i')).click(timeout=6000); pg.wait_for_timeout(500)
 def chip(pg, nome):
     pg.locator('.chipnav [role=tab]').filter(has_text=re.compile(r'^\s*' + nome + r'\s*$')).first.click(timeout=6000); pg.wait_for_timeout(600)
@@ -50,7 +50,7 @@ with sync_playwright() as p:
     src = src.replace('function analisaLegado(g, texto) {', 'window.__QV = () => QV; window.__X = () => ({ ensureIC, IC_IMP, IC_BASE, IC_BAS, IC_IND, IC_RX, icContrata, icPrecoPedidoCompra, icSimPreco, fimDoMes, aprovacao, icFlow, icTecZero, icTecRevoga, icConabCompra, icConabVende, icCreditoProdutor, icLeilaoImport, icAbastPrev, icAbastFaz, icMkDe, icTick, icPesoInfo });\nfunction analisaLegado(g, texto) {', 1)
     pg.route('**/index.html', lambda r: r.fulfill(status=200, content_type='text/html; charset=utf-8', body=src))
     start(pg); fecha_modais(pg)
-    SET(pg, "n.acoes=9;n.pes.energia=90")
+    SET(pg, "n.acoes=9;n.props=9;n.pes.energia=90")
 
     # ---------- save novo ----------
     SET(pg, "X.ensureIC(n)")
@@ -111,7 +111,7 @@ with sync_playwright() as p:
     ok('TEC zero: o preço do arroz fica mais de 2% abaixo do controle em 3 meses', D[3][7] < -.02, D[3][7])
     ok('TEC zero: agro e agricultura familiar caem em relação ao controle e a produção nacional encolhe', D[8][3] < -.4 and D[8][10] < -.15 and D[8][8] > .015, (D[8][3], D[8][10], D[8][8]))
     ok('TEC zero: a periferia ganha (preço do arroz mais baixo)', D[6][5] > .1, D[6][5])
-    r = J(pg, "const a=g.comex.abast.arroz.tec;g.acoes=9;const e0=g.acoes;X.icTecRevoga(g,'arroz');return [g.comex.abast.arroz.tec.ate===g.mes, e0-g.acoes, g.comex.fl.arroz.pdom]")
+    r = J(pg, "const a=g.comex.abast.arroz.tec;g.acoes=9;g.props=9;const e0=g.acoes;X.icTecRevoga(g,'arroz');return [g.comex.abast.arroz.tec.ate===g.mes, e0-g.acoes, g.comex.fl.arroz.pdom]")
     ok('TEC zero pode ser revogada (1 ação) e o preço volta a subir', r[0] and r[1] == 1, r)
     pg.screenshot(path=OUT + '/arroz_abastecimento_tec.png', full_page=True)
 

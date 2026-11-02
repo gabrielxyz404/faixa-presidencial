@@ -71,7 +71,7 @@ with sync_playwright() as p:
         ok('%s: sem rolagem horizontal em 1280' % nome, not pg.evaluate("()=>document.documentElement.scrollWidth>document.documentElement.clientWidth"))
     pg.set_viewport_size({'width': 1440, 'height': 900})
     # cartões de programa: Saúde, Segurança e Justiça
-    SET(pg, "n.acoes=5"); fecha_modais(pg)
+    SET(pg, "n.acoes=5;n.props=5"); fecha_modais(pg)
     chip(pg, 'Saúde')
     ok('Saúde: programas viram cartões (botões data-prog)', pg.locator('[data-pais=saude] button.mx-act[data-prog=saude]').count() == 6, pg.locator('[data-pais=saude] button[data-prog]').count())
     a0 = G(pg, 'g.acoes')

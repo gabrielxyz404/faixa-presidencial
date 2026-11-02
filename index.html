@@ -458,6 +458,7 @@
   .acoes-sq { display: inline-flex; gap: 3px; }
   .acoes-sq i { display: block; width: 10px; height: 10px; border-radius: 2px; background: var(--line2); }
   .acoes-sq i[data-on="1"] { background: var(--ouro); }
+.vit-sq { margin-right: 8px; vertical-align: 2px; }
   .meter-mini { background: var(--line); }
   /* fila "Precisa de você" */
   .fila { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
@@ -690,6 +691,7 @@
   /* glossário: (?) automático ao lado de siglas e termos técnicos (ver GLOSSARIO) */
   .gl-t { white-space: nowrap; }
   .gl-tip { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; margin-left: 3px; border-radius: 50%; border: 1px solid var(--muted); color: var(--muted); font-family: var(--f-body, 'IBM Plex Sans', system-ui, sans-serif); font-size: 12px; font-weight: 600; line-height: 1; cursor: help; vertical-align: 1px; text-transform: none; letter-spacing: 0; white-space: normal; }
+  .gl-tip::after { content: '?'; } /* o '?' só no CSS: aparece na tela, mas não entra no texto da página (cópia, leitura, buscas) */
   .gl-tip:hover, .gl-tip:focus { color: var(--fg); border-color: var(--fg); outline: none; }
   .gl-tip:focus-visible { outline: 2px solid var(--ouro); outline-offset: 2px; }
   .gl-box { position: fixed; z-index: 9999; padding: 10px 12px; border: 1px solid var(--line2); border-radius: 8px; background: #101010; color: var(--fg); font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13px; font-weight: 400; line-height: 1.45; text-align: left; text-transform: none; letter-spacing: 0; box-shadow: 0 8px 24px rgba(0,0,0,.7); pointer-events: none; }
@@ -774,7 +776,7 @@ function Termo({ t, n, d }) { // o balão vai para o fim do <body> (portal), com
   const [pos, setPos] = React.useState(null), ref = React.useRef(null);
   const abre = () => setPos(glPos(ref.current)), fecha = () => setPos(null);
   const box = glBox(pos, n ? h0('b', null, n) : null, n ? ' ' : null, d);
-  return h0('span', { className: 'gl-t' }, t, h0('span', { ref, className: 'gl-tip', tabIndex: 0, role: 'note', 'aria-label': (n ? n + ': ' : '') + d, 'data-gl': n || t, onMouseEnter: abre, onMouseLeave: fecha, onFocus: abre, onBlur: fecha }, '?'), box);
+  return h0('span', { className: 'gl-t' }, t, h0('span', { ref, className: 'gl-tip', tabIndex: 0, role: 'note', 'aria-label': (n ? n + ': ' : '') + d, 'data-gl': n || t, onMouseEnter: abre, onMouseLeave: fecha, onFocus: abre, onBlur: fecha }), box);
 }
 function glProc(s) {
   if (s.length < 3 || !GL_RX.test(s)) return s;
@@ -2570,7 +2572,7 @@ function novoJogo(cfg) {
   const ideo = cfg.ideo;
   const tr = (k) => cfg.tracos.includes(k);
   const g = {
-    cfg, mes: 1, acoes: 5, over: null,
+    cfg, mes: 1, acoes: ACOES_MES, props: PROPS_MES, over: null,
     // ponto de partida calibrado com dados de out/2026 (Focus, PNAD, BC, Tesouro, CDS 5 anos ~150 pb; ver v4/brasil_hoje.md)
     eco: { pib: 1.8, ipca: 4.6, selic: 13.25, des: 5.3, dol: 5.35, risco: 165, conf: 50, divida: 82.9 },
     bias: { pib: 0, ipca: 0, conf: 0, risco: 0, dol: 0, des: 0, pob: 0, hom: 0, desm: 0 },
@@ -3024,6 +3026,10 @@ function bancadas(g, casa = 'cam') {
   return o;
 }
 function competencia(g) { return competenciaCfg(g.cfg); }
+/* ações do mês: 3 propostas escritas na Caixa de decisão + 3 ações para as outras abas (País, Mundo, Poder...) */
+const ACOES_MES = 3, PROPS_MES = 3;
+const saldoDe = (g, prop) => (prop && prop.daCaixa ? (g.props != null ? g.props : PROPS_MES) : g.acoes);
+function gastaDe(g, prop) { if (prop && prop.daCaixa) g.props = Math.max(0, (g.props != null ? g.props : PROPS_MES) - 1); else g.acoes = Math.max(0, g.acoes - 1); }
 function riscoImpeachment(g) {
   let hostil = 0;
   for (const P of PARTIDOS) { const r = g.parties[P.id].rel; hostil += P.cam * (r < 42 ? 1 : r < 62 ? .45 : .05); }
@@ -13801,7 +13807,7 @@ function executaProposta(g, prop, resultado) {
     else if (!(medM && medM.estado === 'aguardando')) novoProt = checaProtestoMedida(g, prop);
   }
   if (!prop.jaPaga) {
-    g.acoes = Math.max(0, g.acoes - 1);
+    gastaDe(g, prop);
     g.medMes = (g.medMes || 0) + 1; if (resultado === 'aprovada') g.aprMes = (g.aprMes || 0) + 1;
     g.pes.energia = clamp(g.pes.energia - 14, 0, 100);
     g.pes.estresse = clamp(g.pes.estresse + 3, 0, 100);
@@ -14076,8 +14082,8 @@ function fimDoMes(g) {
   // avança
   g.mes++;
   g.negMes = {}; g.pesMes = {};
-  g.acoes = 5;
-  if (P.saude < 25) g.acoes = 2;
+  g.acoes = ACOES_MES; g.props = PROPS_MES;
+  if (P.saude < 25) { g.acoes = 1; g.props = 1; }
   g.medMes = 0; g.aprMes = 0; g.comMes = 0;
   if (g.pesFerias) { g.pesFerias = false; }
   pushHist(g);
@@ -14107,7 +14113,7 @@ function fimDoMes(g) {
   // fim de jogo
   if (impeachment && impeachment.cassado) g.over = { tipo: 'impeachment', imp: { votosC: impeachment.votosC, votosS: impeachment.votosS, aberto: impeachment.aberto, cassado: impeachment.cassado } };
   else if (P.saude <= 0 && g.afastUsado == null) { // EQUILÍBRIO v2: afastamento temporário antes do fim definitivo (1 mês sem ações)
-    g.afastUsado = g.mes; P.saude = 30; P.estresse = Math.min(P.estresse, 45); P.humor = clamp(P.humor - 6, 0, 100); g.acoes = 0;
+    g.afastUsado = g.mes; P.saude = 30; P.estresse = Math.min(P.estresse, 45); P.humor = clamp(P.humor - 6, 0, 100); g.acoes = 0; g.props = 0;
     notas.push({ t: 'neg', x: 'Afastamento temporário: internado por exaustão, você perde as ações deste mês. A saúde volta a 30, mas se zerar de novo o afastamento será definitivo.' });
     g.feed.unshift({ mes: g.mes - 1, src: 'globo', txt: `PRESIDENTE ${g.cfg.nome.split(' ').slice(-1)[0].toUpperCase()} É INTERNADO E FICA AFASTADO POR UM MÊS` });
     linhaAdd(g, 'SAÚDE', 'Afastamento temporário por internação: sem ações neste mês');
@@ -14145,7 +14151,7 @@ function eleicao(g) {
 
 /* ============================== FASE 2: PAINEL, TRAMITAÇÃO E GOVERNO (LÓGICA) ============================== */
 const KPI_MAX = 12;
-const KPI_PADRAO = ['ap', 'pib', 'pibpc', 'des', 'ipca', 'selic', 'dol', 'prim', 'risco'];
+const KPI_PADRAO = ['ap', 'pib', 'pibpc', 'des', 'ipca', 'selic', 'dol', 'prim', 'risco', 'imp'];
 const PIB_NOMINAL = 12000; // R$ bi, ordem de grandeza
 const jurosDivida = (g) => g.eco.divida / 100 * (g.eco.pibNom || PIB_NOMINAL) * (g.eco.selic * .8) / 100; // dívida × PIB nominal × Selic efetiva (0,8 × Selic, mesma taxa usada na dinâmica da dívida)
 const KPIS = [
@@ -14165,7 +14171,8 @@ const KPIS = [
   { k: 'conf', nome: 'Confiança do mercado', u: ' pts', d: 0, pol: 1, get: (g) => g.eco.conf, hs: 'conf' },
   { k: 'desm', nome: 'Desmatamento', u: ' km²', d: 0, pol: -1, get: (g) => g.soc.desm, hs: 'desm' },
   { k: 'idh', nome: 'IDH', u: '', d: 3, pol: 1, get: (g) => g.soc.idh, hs: 'idh' },
-  { k: 'stf', nome: 'Tensão com o STF', u: ' pts', d: 0, pol: -1, get: (g) => g.stf, hs: 'stf' }
+  { k: 'stf', nome: 'Tensão com o STF', u: ' pts', d: 0, pol: -1, get: (g) => g.stf, hs: 'stf' },
+  { k: 'imp', nome: 'Impeachment', u: '%', d: 0, pol: -1, get: (g) => riscoImpeachment(g), hs: 'imp' }
 ];
 const KPIMAP = Object.fromEntries(KPIS.map(k => [k.k, k]));
 // PIB per capita nacional: valor real de 2025 (IBGE) atualizado pelo PIB nominal simulado, igual ao PIB per capita por UF (ufDados)
@@ -14557,7 +14564,7 @@ function podeEnviar(g, prop) {
   return { ok: false, msg: 'A pauta e a gaveta estão cheias. Vote, retire ou arquive um item antes.' };
 }
 function enviaParaPauta(g, prop) {
-  const pode = podeEnviar(g, prop); if (!pode.ok || g.acoes <= 0) return { ok: false, msg: pode.msg || 'Sem ações políticas neste mês.' };
+  const pode = podeEnviar(g, prop); if (!pode.ok || saldoDe(g, prop) <= 0) return { ok: false, msg: pode.msg || (prop.daCaixa ? 'Sem propostas neste mês.' : 'Sem ações políticas neste mês.') };
   const p = JSON.parse(JSON.stringify(prop)); const mp = p.inst === 'MP';
   p.analise = null; // o texto do parecer (~18 KB) já foi lido; o que o jogo usa depois (coerP, frPos, vig, bloqueio, atrasos) fica na proposta e o save não incha
   const it = { id: 'pt' + g.mes + '-' + (g.seqPauta = (g.seqPauta || 0) + 1), prop: p, inst: p.inst, mesEnvio: g.mes, apoioBonus: 6, bloc: {}, meses: 0, trabMes: 0, mp, mpAplicada: false };
@@ -14566,7 +14573,7 @@ function enviaParaPauta(g, prop) {
     ex = executaProposta(g, p, 'aprovada'); p.jaPaga = true; it.mpAplicada = true;
     linhaAdd(g, 'CONGRESSO', `MP em vigor: ${p.topic}. O Congresso tem 4 meses para votar.`);
   } else {
-    g.acoes = Math.max(0, g.acoes - 1); g.medMes = (g.medMes || 0) + 1; g.pes.energia = clamp(g.pes.energia - 14, 0, 100); g.pes.estresse = clamp(g.pes.estresse + 3, 0, 100);
+    gastaDe(g, p); g.medMes = (g.medMes || 0) + 1; g.pes.energia = clamp(g.pes.energia - 14, 0, 100); g.pes.estresse = clamp(g.pes.estresse + 3, 0, 100);
     p.jaPaga = true;
     const num = cfNum(g, p);
     g.log.unshift({ mes: g.mes, ato: `${p.inst === 'PEC' ? 'PEC' : p.instDetalhe === 'LC' ? 'PLP' : p.instDetalhe === 'AUT' ? 'Pedido de autorização (PDL)' : 'PL'} nº ${fmt(num, 0)} enviada ao Congresso`, texto: p.texto, res: 'tramitando', topic: p.topic });
@@ -14771,7 +14778,7 @@ function orientacoesBloco(nominal, casa) {
 /* ---- inicialização e migração dos campos novos ---- */
 function fase2Default(g) {
   f3Default(g);
-  g.ui = g.ui || {}; if (!Array.isArray(g.ui.kpis)) g.ui.kpis = KPI_PADRAO.slice(); else if (g.ui.kpis.join() === 'ap,pib,des,ipca,selic,dol,prim,risco') g.ui.kpis = KPI_PADRAO.slice(); g.ui.kpis = g.ui.kpis.filter(k => KPIMAP[k]).slice(0, KPI_MAX); if (g.ui.vista !== 'lista') g.ui.vista = 'cartoes';
+  g.ui = g.ui || {}; if (!Array.isArray(g.ui.kpis)) g.ui.kpis = KPI_PADRAO.slice(); else if (g.ui.kpis.join() === 'ap,pib,des,ipca,selic,dol,prim,risco') g.ui.kpis = KPI_PADRAO.slice(); g.ui.kpis = g.ui.kpis.filter(k => KPIMAP[k]).slice(0, KPI_MAX); if (!g.ui.kpiImp) { g.ui.kpiImp = 1; if (!g.ui.kpis.includes('imp')) { if (g.ui.kpis.length >= KPI_MAX) g.ui.kpis.pop(); g.ui.kpis.push('imp'); } } if (g.props == null) { g.props = Math.min(PROPS_MES, Math.max(0, g.acoes)); g.acoes = Math.min(g.acoes, ACOES_MES); } if (g.ui.vista !== 'lista') g.ui.vista = 'cartoes';
   if (typeof g.ui.fotos !== 'boolean') g.ui.fotos = true; if (typeof g.ui.logos !== 'boolean') g.ui.logos = true; if (!SECAO_KS.includes(g.ui.sec)) g.ui.sec = 'mesa'; if (!g.ui.chip || typeof g.ui.chip !== 'object') g.ui.chip = {};
   const H = g.hist; const n = H.ap.length;
   const cur = { div: g.eco.divida, prim: primario(g), juros: jurosDivida(g), hom: g.soc.hom, pob: g.soc.pob, conf: g.eco.conf, desm: g.soc.desm, idh: g.soc.idh, stf: g.stf, imp: riscoImpeachment(g) };
@@ -17788,7 +17795,7 @@ function SinaisVitais({ g, onConfig, encerrar, irEu }) {
       <div className="vit-ctl">
         <div className="vit vit-mes" title="Mês do mandato"><div className="vit-k">Mês</div><div className="vit-v num"><span data-vital-v="mes">${elCiclo(g.mes) > 0 ? `mês ${elO(g.mes) + 1} do ${Math.max(1, Math.min(2, (g.el && g.el.mandatos) || elCiclo(g.mes) + 1))}º mandato` : `${g.mes} / 48`}</span></div></div>
         <div className="vit vit-data" data-vital="data" title="Data atual do jogo"><div className="vit-k">Data</div><div className="vit-v num"><span data-vital-v="data">${dataCurtaAno(g.mes)}</span></div></div>
-        <div className="vit vit-imp" data-vital="imp" title=${'Risco de impeachment: ' + fmt(imp, 0) + '%'}><div className="vit-k">Impeachment</div><div className="vit-v num" style=${{ color: imp >= 30 ? corRisco(imp) : 'var(--fg)' }}><span data-vital-v="imp">${fmt(imp, 0) + '%'}</span></div></div>
+        <div className="vit vit-acoes" data-vital="acoes" data-acoes=${g.acoes} title=${'Ações para usar nas outras abas (País, Mundo, Poder...) neste mês: ' + g.acoes + ' de ' + ACOES_MES + '. As propostas escritas têm contador próprio na Caixa de decisão.'}><div className="vit-k">Ações</div><div className="vit-v num" style=${{ color: g.acoes > 0 ? 'var(--fg)' : 'var(--rubro)' }}><span className="acoes-sq vit-sq" aria-hidden="true">${Array.from({ length: ACOES_MES }, (_, i) => html`<i key=${i} data-on=${i < g.acoes ? '1' : '0'}></i>`)}</span><span data-vital-v="acoes">${g.acoes} de ${ACOES_MES}</span></div></div>
         <div className="flex items-center gap-2">
         <button type="button" className="btn btn-ghost" style=${{ padding: '8px' }} onClick=${onConfig} aria-label="Configurações e motor de IA" title="Motor de IA e configurações"><${Icon} n="Settings" s=${18} /></button>
         <button type="button" className="btn btn-pri btn-enc" onClick=${encerrar}><${Icon} n="CalendarDays" s=${16} /> Encerrar mês</button>
@@ -17949,8 +17956,8 @@ function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino 
   const [stfIdx, setStfIdx] = useState(null);
   const [art, setArt] = useState(null);
   const [todas, setTodas] = useState(false);
-  const semAcoes = g.acoes <= 0 || g.pes.energia < 10 || elSemGoverno(g);
-  const enviar = () => { if (txt.trim().length < 4 || semAcoes) return; decidir(txt.trim()); setTxt(''); };
+  const semAcoes = g.props <= 0 || g.pes.energia < 10 || elSemGoverno(g);
+  const enviar = () => { if (txt.trim().length < 4 || semAcoes) return; decidir(txt.trim(), null, null, null, null, true); setTxt(''); };
   const pend = pendenciasMesa(g);
   let resMed = null; try { resMed = medResumoMesa(g); } catch (e) { } // v3.6
   const vis = todas ? pend : pend.slice(0, 4);
@@ -17985,7 +17992,7 @@ function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino 
     : kind === 'admissibilidade' || kind === 'afastamento' ? html`<${CartaoAdmissibilidade} g=${g} kind=${kind} />`
     : kind === 'contas' ? html`<${CartaoContas} g=${g} />` : entCorpo(kind, g, upd));
   const itemArt = art ? g.pauta.find(x => x.id === art) : null;
-  const corAc = g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)';
+  const corAc = g.props > 0 ? 'var(--ouro)' : 'var(--rubro)';
   return html`<div className="mesa">
     <div className="mesa-esq">
       ${elSemGoverno(g) && html`<section className="modo-leve" aria-labelledby="ml-t" data-modo-leve="1">
@@ -18003,10 +18010,10 @@ function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino 
           <div><div className="eyebrow">Caixa de decisão</div><label id="caixa-t" htmlFor="caixa" className="disp tit-l block">Escreva sua medida</label></div>
           <div className="flex flex-wrap items-center gap-3 justify-end">
             
-            <div className="acoes-q" data-vital="acoes" data-acoes=${g.acoes} title="Ações políticas restantes neste mês e energia do presidente">
-              <span className="acoes-rot">ações do mês</span>
-              <span className="acoes-sq" role="img" aria-label=${g.acoes + ' de 5 ações'}>${[0, 1, 2, 3, 4].map(i => html`<i key=${i} data-on=${i < g.acoes ? '1' : '0'}></i>`)}</span>
-              <span className="num acoes-n" style=${{ color: corAc }} data-vital-v="acoes">${g.acoes} de 5</span>
+            <div className="acoes-q" data-vital="props" data-props=${g.props} title="Propostas que você ainda pode escrever e enviar neste mês, e energia do presidente. As outras abas usam as ações (no topo).">
+              <span className="acoes-rot">propostas do mês</span>
+              <span className="acoes-sq" role="img" aria-label=${g.props + ' de ' + PROPS_MES + ' propostas'}>${Array.from({ length: PROPS_MES }, (_, i) => html`<i key=${i} data-on=${i < g.props ? '1' : '0'}></i>`)}</span>
+              <span className="num acoes-n" style=${{ color: corAc }} data-vital-v="props">${g.props} de ${PROPS_MES}</span>
               <span className="meter-mini" role="meter" aria-label="Energia" aria-valuenow=${Math.round(g.pes.energia)} aria-valuemin="0" aria-valuemax="100" title=${'Energia ' + fmt(g.pes.energia, 0)}><i style=${{ width: clamp(g.pes.energia, 0, 100) + '%', background: g.pes.energia < 25 ? 'var(--rubro)' : 'var(--verde)' }}></i></span>
             </div>
           </div>
@@ -18015,7 +18022,7 @@ function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino 
         <div className="flex justify-end mt-3">
           <button type="button" className="btn btn-sign" disabled=${semAcoes || txt.trim().length < 4} onClick=${enviar}><${Icon} n="Send" /> Assinar e enviar</button>
         </div>
-        ${semAcoes && html`<p className="medida-ajuda mt-2">${elSemGoverno(g) ? 'Modo leve: você não é o presidente e não assina medidas de governo. Use X, entrevistas e campanha.' : g.acoes <= 0 ? (g.afastUsado === g.mes ? 'Afastado por internação: sem ações neste mês. Encerre o mês para voltar ao trabalho.' : 'Sem capital político neste mês. Encerre o mês.') : 'Energia esgotada. Descanse na seção Eu.'}</p>`}
+        ${semAcoes && html`<p className="medida-ajuda mt-2">${elSemGoverno(g) ? 'Modo leve: você não é o presidente e não assina medidas de governo. Use X, entrevistas e campanha.' : g.props <= 0 ? (g.afastUsado === g.mes ? 'Afastado por internação: sem ações neste mês. Encerre o mês para voltar ao trabalho.' : 'As ' + PROPS_MES + ' propostas do mês já foram usadas. Ainda dá para usar as ações nas outras abas, ou encerre o mês.') : 'Energia esgotada. Descanse na seção Eu.'}</p>`}
       </section>`}
       <section aria-labelledby="pv-t" data-precisa="1">
         <div className="flex flex-wrap items-end justify-between gap-2 mb-3">
@@ -18704,7 +18711,7 @@ function TbResumo({ g }) {
     { dado: 'inf', ic: 'Users', cor: V.inf > TB_REF.inf + .3 ? 'var(--rubro)' : V.inf < TB_REF.inf - .3 ? 'var(--verde)' : 'var(--anil)', k: 'Informalidade', v: fmt(V.inf, 1) + '%', s: fmt(V.infMi, 1) + ' mi de pessoas' },
     { dado: 'rend', ic: 'Wallet', cor: 'var(--ouro)', k: 'Rendimento médio', v: 'R$ ' + fmt(V.rend, 0), s: 'real R$ ' + fmt(TB_REF.rend, 0) },
     { dado: 'caged', ic: 'ChartColumn', cor: cg >= 0 ? 'var(--verde)' : 'var(--rubro)', k: 'Saldo do Caged', v: (cg >= 0 ? '+' : '−') + fmt(Math.abs(cg), 0) + ' mil', s: 'empregos com carteira no mês' },
-    { dado: 'acoes', ic: 'Zap', cor: g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)', k: 'Ações do mês', v: g.acoes + '/5', s: 'cada alavanca gasta 1 ação' }
+    { dado: 'acoes', ic: 'Zap', cor: g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)', k: 'Ações do mês', v: g.acoes + '/' + ACOES_MES, s: 'cada alavanca gasta 1 ação' }
   ]} />`;
 }
 function TbKpis({ g }) {
@@ -18873,7 +18880,7 @@ function PsStyle() { return html`<style>${GV_CSS}${PD_CSS}${MX_CSS}${PS_CSS}</st
 const psSemAcoes = (g) => g.acoes <= 0 || g.pes.energia < 10;
 const psTitulo = (g) => (psSemAcoes(g) ? (g.acoes <= 0 ? 'Sem ações políticas neste mês' : 'Energia esgotada') : 'Custa 1 ação política e passa pelo parecer da Casa Civil');
 const PS_COR = { saude: 'var(--verde)', educacao: 'var(--anil)', infratransp: 'var(--ambar)', justica: 'var(--ouro)', seguranca: 'var(--rubro)' };
-function PsAcoes({ g }) { return html`<span className=${'gv-chip ' + (g.acoes > 0 ? 'ouro' : 'neg')}>${g.acoes}/5 ações</span>`; }
+function PsAcoes({ g }) { return html`<span className=${'gv-chip ' + (g.acoes > 0 ? 'ouro' : 'neg')}>${g.acoes}/${ACOES_MES} ações</span>`; }
 // programa já em vigor no save. Mesma noção do motor (medRepetida e B7): conta medida ativa, suspensa, aguardando gatilho ou consolidada (ciclo completo, o efeito segue valendo).
 // Casa por (1) mesmo tema lido pelo motor, (2) mesmos objetos e mesma polaridade de uma medida viva (a conta de "Já aprovada" no parecer; objetos genéricos gen_* não contam) ou (3) a regex `rx` do programa.
 const PS_LEITURA = new Map(); // texto do programa -> { topic, pol, ids } (cache: a leitura não depende do estado do jogo)
@@ -18933,7 +18940,7 @@ function psAreaKpis(g, area, D, inds, cards, nProg, ic) {
     { dado: 'acima', ic: 'TrendingUp', cor: bom ? 'var(--verde)' : 'var(--muted)', k: 'Acima da base real', v: bom, s: bom ? 'melhor que o dado oficial' : 'nenhum melhor que o oficial' },
     { dado: 'abaixo', ic: 'TrendingDown', cor: mal ? 'var(--rubro)' : 'var(--muted)', k: 'Abaixo da base real', v: mal, s: mal ? 'pior que o dado oficial' : 'nenhum pior que o oficial' },
     { dado: 'critico', ic: 'MapPin', cor: 'var(--ambar)', k: 'Estado mais crítico', v: pior ? pior.u : '—', s: pior ? nomeUF(pior.u) + ' · ' + D.fontes[inds[0]].nome + ' ' + pufFmt(D, inds[0], pior.v) : 'sem dado por estado' },
-    { dado: 'acoes', ic: 'Zap', cor: g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)', k: 'Ações do mês', v: g.acoes + '/5', s: nProg + ' programas prontos abaixo' }
+    { dado: 'acoes', ic: 'Zap', cor: g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)', k: 'Ações do mês', v: g.acoes + '/' + ACOES_MES, s: nProg + ' programas prontos abaixo' }
   ];
 }
 function MapaResumo({ g }) {
@@ -21205,7 +21212,7 @@ function PaisJustica({ g, upd, decidir }) {
       { dado: 'abertos', ic: 'FileSearch', cor: ab.length ? 'var(--ambar)' : 'var(--muted)', k: 'Casos abertos', v: ab.length, s: ar.length + (ar.length === 1 ? ' arquivado' : ' arquivados') + ' nesta partida' },
       { dado: 'bloq-avan', ic: 'Scale', cor: 'var(--anil)', k: 'Bloqueio · avanço', v: (J.nBloq || 0) + ' · ' + (J.nAvan || 0), s: 'ações suas nos casos' },
       { dado: 'stf-pf', ic: 'Gavel', cor: corRisco(g.stf), k: 'Relação com STF e PF', v: fmt(g.stf, 0) + '/100', s: 'tensão com o STF · PF ' + (J.pfCorte >= g.mes ? 'com verba cortada' : (J.pfOrc || 0) > 0 ? 'reforçada em R$ ' + fmt(J.pfOrc, 1) + ' bi' : 'sem mudança') },
-      { dado: 'acoes', ic: 'Zap', cor: g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)', k: 'Ações do mês', v: g.acoes + '/5', s: 'no máximo uma por caso' }
+      { dado: 'acoes', ic: 'Zap', cor: g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)', k: 'Ações do mês', v: g.acoes + '/' + ACOES_MES, s: 'no máximo uma por caso' }
     ]} />
     <section className="sec" data-jus="custos">
       <${MxHead} eb="Justiça · custos" t="Quanto custa a Justiça" tip=${'Poder Judiciário inteiro, CNJ, Justiça em Números (ano-base ' + JUS_CUSTO.ano + ').'} right=${html`<${PsAcoes} g=${g} />`} />
@@ -21456,7 +21463,7 @@ function SegurancaPublica({ g, decidir, sel: selP, setSel: setSelP, parte }) {
     { dado: 'letalidade', ic: 'ShieldAlert', cor: rk(kpis[1]), k: 'Intervenção policial', v: fmt(nac.mdip, 0), s: 'mortes no ano · real 2025: ' + fmt(NAC.letalidade_policial, 0) },
     { dado: 'presos', ic: 'Lock', cor: rk(kpis[3]), k: 'População prisional', v: fmt(nac.presos, 0), s: 'presos por 100 mil hab.' },
     { dado: 'acordos', ic: 'Handshake', cor: gres.acordos ? 'var(--verde)' : 'var(--muted)', k: 'Acordos com governadores', v: gres.acordos, s: gres.interv ? 'intervenção federal ' + emUF(gres.interv) : 'nenhuma intervenção federal' },
-    { dado: 'acoes', ic: 'Zap', cor: g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)', k: 'Ações do mês', v: g.acoes + '/5', s: 'cada operação gasta 1 ação' }
+    { dado: 'acoes', ic: 'Zap', cor: g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)', k: 'Ações do mês', v: g.acoes + '/' + ACOES_MES, s: 'cada operação gasta 1 ação' }
   ]} />`;
   return parte === 'resumo' ? resumo : parte === 'ops' ? opsBloco : parte === 'fontes' ? fontesFim : topo;
 }
@@ -23032,7 +23039,7 @@ function mundoAbreMes(g, notas) {
   ensureF4(g); const M = g.mundo;
   // início da viagem: consome a agenda do mês
   if (M.visita && M.visita.mes === g.mes) {
-    g.acoes = Math.min(g.acoes, 2);
+    g.acoes = Math.min(g.acoes, 1); g.props = Math.min(g.props, 1);
     g.pes.energia = clamp(g.pes.energia - 30, 0, 100); g.pes.estresse = clamp(g.pes.estresse + 8, 0, 100);
     linhaAdd(g, 'MUNDO', `Presidente em viagem de Estado: ${PAIS_MAP[M.visita.pais].nome}`);
     if (notas) notas.push({ t: 'neu', x: `Começa a visita de Estado a ${PAIS_MAP[M.visita.pais].nome}: o mês tem só 2 ações e a crise do mês fica sem presença do presidente.` });
@@ -23937,7 +23944,7 @@ function MundoPanorama({ g, decidir, go }) {
     </section>
 
     <section className="sec" data-secao-mundo="agenda" aria-labelledby="mp-ag">
-      <${MxHead} id="mp-ag" eb="Mundo · missões" t="Agenda externa" tip="Cada missão gasta 1 ação do mês e passa pelo motor de decisão." right=${html`<${MxChip} cor=${g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)'}>${g.acoes}/5 ações</${MxChip}>`} />
+      <${MxHead} id="mp-ag" eb="Mundo · missões" t="Agenda externa" tip="Cada missão gasta 1 ação do mês e passa pelo motor de decisão." right=${html`<${MxChip} cor=${g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)'}>${g.acoes}/${ACOES_MES} ações</${MxChip}>`} />
       <div className="mx-grid">${acoes.map(x => html`<div key=${x.l} className="mx-card panel" style=${{ '--st': x.c }}>
         <div className="mx-h nr"><span className="gv-ic" style=${{ '--c': x.c }}><${Icon} n=${x.i} s=${20} /></span><div className="mx-t">${x.l}</div>${x.pk && html`<${Pais} k=${x.pk} sem />`}</div>
         <p className="mx-txt c2" title=${x.t}>${x.t}</p>
@@ -24229,7 +24236,7 @@ function MundoBlocos({ g, upd }) {
   const nomeSt = (o, s) => (o.k === 'mercosul_ue' ? (s.st === 'membro' ? 'em vigor' : 'em tramitação') : s.st === 'membro' ? (o.k === 'onu' && s.assento ? 'membro com assento permanente' : 'membro') : s.st === 'candidato' ? 'candidato' : 'fora');
   const corSt = (s) => (s.st === 'membro' ? 'var(--verde)' : s.st === 'candidato' ? 'var(--ouro)' : 'var(--rubro)');
   return html`<section className="sec" data-mundo="blocos" aria-labelledby="mb-t">
-    <${MxHead} id="mb-t" eb="Mundo · organismos" t="Blocos e organismos" tip="Cada ação em um bloco custa 1 ação política e 8 de energia, e só pode ser repetida conforme o prazo indicado. Sair de um organismo tem consequências pesadas: duas etapas de confirmação." right=${html`<${MxChip} cor=${g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)'}>${g.acoes}/5 ações</${MxChip}>`} />
+    <${MxHead} id="mb-t" eb="Mundo · organismos" t="Blocos e organismos" tip="Cada ação em um bloco custa 1 ação política e 8 de energia, e só pode ser repetida conforme o prazo indicado. Sair de um organismo tem consequências pesadas: duas etapas de confirmação." right=${html`<${MxChip} cor=${g.acoes > 0 ? 'var(--ouro)' : 'var(--rubro)'}>${g.acoes}/${ACOES_MES} ações</${MxChip}>`} />
     <ul className="mx-grid g2" data-orgs="1" style=${{ padding: 0, margin: 0 }}>${ORGS.map(o => { const s = M.orgs[o.k]; const acs = ORG_ACOES.filter(a => a.org === o.k);
       return html`<li key=${o.k} className="mx-card panel" style=${{ '--st': corSt(s) }} data-org=${o.k}>
         <div className="mx-h"><span className="gv-ic" style=${{ '--c': corSt(s) }}><${Pais} k=${o.k} sem tam=${26} /></span><h4 className="mx-t">${o.nome}</h4><${Tag} cor=${corSt(s)}>${nomeSt(o, s)}</${Tag}></div>
@@ -30838,7 +30845,7 @@ function elEscolheProximo(n, persona) {
   const eh = norm(persona.nome) === norm(n.cfg.nome);
   E.pj = eh ? null : persona;
   elDinAbre(n, persona, eh ? 'presidente' : (persona.tipo === 'candidato' ? 'candidato' : 'oposição'));
-  n.over = null; n.acoes = 5; n.pes.energia = clamp(n.pes.energia + 20, 0, 100); n.pes.saude = Math.max(n.pes.saude, 60); n.pes.estresse = Math.min(n.pes.estresse, 40);
+  n.over = null; n.acoes = ACOES_MES; n.props = PROPS_MES; n.pes.energia = clamp(n.pes.energia + 20, 0, 100); n.pes.saude = Math.max(n.pes.saude, 60); n.pes.estresse = Math.min(n.pes.estresse, 40);
   n.impStreak = 0;
   if (o && o.posse) n.impGraca = n.mes + 6; // sucessor ganha 6 meses sem votação de impeachment
   n.ent.colet = null; entGeraMes(n);
@@ -31725,7 +31732,7 @@ function ElCampanha({ g, upd }) {
   const rivais = ger.cands.filter(c => c.id !== meu.id);
   const partidos = PARTIDOS.filter(P => P.id !== 'OUTROS' && P.id !== meu.bloco && !(ger.aliancas || []).includes(P.id)).sort((a, b) => g.parties[b.id].rel - g.parties[a.id].rel).slice(0, 6);
   return html`<div className="flex flex-col gap-4" data-el="campanha">
-    <div className="text-sm">Você apoia <b>${meu.nome}</b> (${meu.sigla}). ${g.acoes}/5 ações neste mês · gasto de campanha R$ <span className="num">${ger.gasto}</span> mi de R$ ${EL_CAP_GASTO} mi (limite legal).</div>
+    <div className="text-sm">Você apoia <b>${meu.nome}</b> (${meu.sigla}). ${g.acoes}/${ACOES_MES} ações neste mês · gasto de campanha R$ <span className="num">${ger.gasto}</span> mi de R$ ${EL_CAP_GASTO} mi (limite legal).</div>
     ${msg && html`<p className="text-sm p-2 rounded border border-line" role="status" data-el="msg-campanha">${msg}</p>`}
     <div className="grid gap-3 lg:grid-cols-2">
       <div className="rounded-lg border border-line p-3 flex flex-col gap-2"><b className="text-sm">Comício em um estado</b><div className="flex gap-2"><select value=${uf} onChange=${e => setUf(e.target.value)} aria-label="Estado do comício">${Object.keys(UF_INFO).map(u => html`<option key=${u} value=${u}>${UF_INFO[u].nome}</option>`)}</select><button type="button" className="btn btn-pri text-sm shrink-0" disabled=${!pode || g.acoes <= 0} data-camp="comicio" onClick=${() => faz('comicio', uf)}>1 ação</button></div><p className="text-xs text-muted">Sobe o apoio no estado e um pouco na região.</p></div>
@@ -31799,7 +31806,7 @@ function ElForcaSuc({ g, upd }) {
           <p className="text-xs text-muted mt-1">Estimativa do jogo com o campo, as alianças e o apoio de hoje; muda até a eleição.</p>
         </div>
         <div className="rounded-lg border border-line p-3 flex flex-col gap-2" data-el="suc-acoes">
-          <div className="eyebrow">Fortalecer o candidato · ${g.acoes}/5 ações</div>
+          <div className="eyebrow">Fortalecer o candidato · ${g.acoes}/${ACOES_MES} ações</div>
           ${msg && html`<p className="text-sm p-2 rounded border border-line" role="status" data-el="msg-suc">${msg}</p>`}
           <div className="flex flex-wrap gap-2">
             <button type="button" className="btn btn-pri text-sm" disabled=${!pode || g.acoes <= 0 || ja('palanque')} data-suc-acao="palanque" title="Campanha ao lado do candidato: sobe o apoio do presidente (rende mais com a aprovação alta). 1 ação, 8 de energia." onClick=${() => faz('palanque')}><${Icon} n="Users" s=${14} /> Campanha com o candidato</button>
@@ -33278,9 +33285,9 @@ function App() {
   }, [jaG]);
 
   const [refino, setRefino] = useState(null); // texto devolvido pelo parecer à caixa de decisão
-  const decidir = async (texto, fromEvento, fromProtesto, trHook, icHook) => {
-    if (!g || g.acoes <= 0 || elSemGoverno(g)) return;
-    const marca = (prop) => { minMarca(prop, texto); gvMarca(gRef.current || g, prop, texto); prop.fromEvento = !!fromEvento; tbMarca(prop, texto); if (trHook) trMarcaProp(gRef.current || g, prop, trHook); if (icHook) prop.icHook = icHook; if (fromProtesto) ajustaConcessao(prop, gRef.current.protesto); return prop; };
+  const decidir = async (texto, fromEvento, fromProtesto, trHook, icHook, daCaixa) => {
+    if (!g || (daCaixa ? g.props <= 0 : g.acoes <= 0) || elSemGoverno(g)) return;
+    const marca = (prop) => { if (daCaixa) prop.daCaixa = true; minMarca(prop, texto); gvMarca(gRef.current || g, prop, texto); prop.fromEvento = !!fromEvento; tbMarca(prop, texto); if (trHook) trMarcaProp(gRef.current || g, prop, trHook); if (icHook) prop.icHook = icHook; if (fromProtesto) ajustaConcessao(prop, gRef.current.protesto); return prop; };
     if (ia.motor === 'local') {
       const prop = marca(analisaLocal(g, texto));
       setDec({ stage: 'parecer', prop });

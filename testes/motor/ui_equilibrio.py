@@ -56,7 +56,7 @@ with sync_playwright() as p:
     need = G(pg, "__X().impAdmissibilidade(g).need")
     ok('Impeachment: exige 3 meses seguidos com risco >= 80 (modo Brasília, dificuldade Realista)', need == 3, need)
     def passa_mes():
-        return pg.evaluate("()=>{let r=null;__QV().setG(p=>{const n=structuredClone(p);" + DERRETE + ";r=__X().fimDoMes(n);n.acoes=5;n.pes.energia=90;n.eventoOk=true;n.evento=null;window.__r={imp:r.impeachment?{c:r.impeachment.votosC,s:r.impeachment.votosS}:null,notas:r.notas.map(x=>x.x),feed:n.feed.slice(0,4).map(f=>f.txt),streak:n.impStreak,over:n.over?n.over.tipo:null};return n});return null}")
+        return pg.evaluate("()=>{let r=null;__QV().setG(p=>{const n=structuredClone(p);" + DERRETE + ";r=__X().fimDoMes(n);n.acoes=5;n.props=5;n.pes.energia=90;n.eventoOk=true;n.evento=null;window.__r={imp:r.impeachment?{c:r.impeachment.votosC,s:r.impeachment.votosS}:null,notas:r.notas.map(x=>x.x),feed:n.feed.slice(0,4).map(f=>f.txt),streak:n.impStreak,over:n.over?n.over.tipo:null};return n});return null}")
     passa_mes(); pg.wait_for_timeout(600); r1 = pg.evaluate("()=>window.__r")
     ok('Mês 1 de risco >= 80: sem votação, sem aviso ainda', r1['imp'] is None and r1['streak'] == 1 and not any('Admissibilidade' in x for x in r1['notas']), r1['streak'])
     passa_mes(); pg.wait_for_timeout(800); r2 = pg.evaluate("()=>window.__r")
@@ -85,7 +85,7 @@ with sync_playwright() as p:
     ok('Lua de mel exige 4 meses (mais fácil); Brasília raiz exige 3', cfgmod == [4, 3], cfgmod)
 
     # ---------------- medida repetida ----------------
-    SET(pg, "n.evento=null; n.eventoOk=true; n.acoes=5; n.pes.energia=100; n.impStreak=0; n.over=null")
+    SET(pg, "n.evento=null; n.eventoOk=true; n.acoes=5;n.props=5; n.pes.energia=100; n.impStreak=0; n.over=null")
     pg.evaluate("()=>{__QV().setG(p=>{const n=structuredClone(p);const pr=__AL(n,'Ampliar o Bolsa Família em R$ 100 por família');__X().executaProposta(n,pr,'aprovada');return n})}"); pg.wait_for_timeout(600)
     ok('1ª aprovação do Bolsa Família cria a medida em vigor', G(pg, "g.medidas.filter(m=>m.estado==='ativa'&&/Bolsa/i.test(m.topic)).length") >= 1, G(pg, "g.medidas.map(m=>m.topic+'/'+m.estado)"))
     rep = pg.evaluate("()=>{const g=__QV().gRef.current;const p=__AL(g,'Reajustar o Bolsa Família em R$ 50 por família');return {rep:!!p.repetida,tec:(p.tecnico||'').includes('Já aprovada')}}")
@@ -105,7 +105,7 @@ with sync_playwright() as p:
     ok('Voto do Congresso tem termo de custo fiscal: gasto líquido gigante é marcado no parecer', cv['a'] and cv['a']['pts'] <= -10 and cv['ta'] and not cv['b'], cv)
 
     # ---------------- comunicação com rendimento decrescente ----------------
-    SET(pg, "n.evento=null; n.eventoOk=true; n.acoes=5; n.pes.energia=100; n.efTrans=[]; n.comMes=0; n.aprMes=0")
+    SET(pg, "n.evento=null; n.eventoOk=true; n.acoes=5;n.props=5; n.pes.energia=100; n.efTrans=[]; n.comMes=0; n.aprMes=0")
     d = pg.evaluate("()=>{let out=null;__QV().setG(p=>{const n=structuredClone(p);const X=__X();const ds=[];for(let i=0;i<4;i++){const a0=X.aprovacao(n);const pr=__AL(n,'Fazer um pronunciamento em cadeia nacional sobre a economia');X.executaProposta(n,pr,'aprovada');ds.push(X.aprovacao(n)-a0)}out={ds,tot:X.efTransTotal(n),cap:X.EQ_TRANS_CAP};window.__r=out;return n});return null}")
     pg.wait_for_timeout(500); d = pg.evaluate("()=>window.__r"); ds = d['ds']
     ok('Comunicação: 2º ato rende ~50% do 1º e o 3º ~25%', ds[0] > 0.2 and 0.3 <= ds[1] / ds[0] <= 0.7 and ds[2] / ds[0] <= 0.4 and ds[3] <= ds[1], [round(x, 2) for x in ds])
@@ -128,33 +128,33 @@ with sync_playwright() as p:
     secao(pg, 'Mesa')
 
     # ---------------- estresse ----------------
-    SET(pg, "n.pes.estresse=60; n.pes.saude=80; n.evento=null; n.eventoOk=true; n.acoes=1; n.escandalo=0; for(const k of Object.keys(n.groups)) n.groups[k]=55")
-    e = pg.evaluate("()=>{let out=null;__QV().setG(p=>{const n=structuredClone(p);__X().fimDoMes(n);out=n.pes.estresse;window.__r=out;n.acoes=5;n.eventoOk=true;n.evento=null;return n});return null}")
+    SET(pg, "n.pes.estresse=60; n.pes.saude=80; n.evento=null; n.eventoOk=true; n.acoes=1;n.props=1; n.escandalo=0; for(const k of Object.keys(n.groups)) n.groups[k]=55")
+    e = pg.evaluate("()=>{let out=null;__QV().setG(p=>{const n=structuredClone(p);__X().fimDoMes(n);out=n.pes.estresse;window.__r=out;n.acoes=5;n.props=5;n.eventoOk=true;n.evento=null;return n});return null}")
     pg.wait_for_timeout(400); e = pg.evaluate("()=>window.__r")
     ok('Estresse recupera sozinho (~ -6/mês) quando não há crise: 60 -> menos de 58', e < 58, e)
-    SET(pg, "n.pes.estresse=60; n.eventoOk=false; n.evento='podcast'; n.acoes=1")
-    e2 = pg.evaluate("()=>{__QV().setG(p=>{const n=structuredClone(p);__X().fimDoMes(n);window.__r=n.pes.estresse;n.acoes=5;n.eventoOk=true;n.evento=null;return n});return null}")
+    SET(pg, "n.pes.estresse=60; n.eventoOk=false; n.evento='podcast'; n.acoes=1;n.props=1")
+    e2 = pg.evaluate("()=>{__QV().setG(p=>{const n=structuredClone(p);__X().fimDoMes(n);window.__r=n.pes.estresse;n.acoes=5;n.props=5;n.eventoOk=true;n.evento=null;return n});return null}")
     pg.wait_for_timeout(400); e2 = pg.evaluate("()=>window.__r")
     ok('Com crise ignorada o estresse continua subindo', e2 > 60, e2)
     # afastamento temporário
-    SET(pg, "n.pes.saude=0.2; n.pes.estresse=100; n.evento=null; n.eventoOk=true; n.afastUsado=null; n.over=null; n.acoes=5")
+    SET(pg, "n.pes.saude=0.2; n.pes.estresse=100; n.evento=null; n.eventoOk=true; n.afastUsado=null; n.over=null; n.acoes=5;n.props=5")
     pg.evaluate("()=>{__QV().setG(p=>{const n=structuredClone(p);const r=__X().fimDoMes(n);window.__r={over:n.over?n.over.tipo:null,acoes:n.acoes,saude:n.pes.saude,afast:n.afastUsado===n.mes,nota:r.notas.some(x=>/Afastamento temporário/.test(x.x))};return n})}"); pg.wait_for_timeout(700)
     a1 = pg.evaluate("()=>window.__r")
     ok('Saúde zerada pela 1ª vez: afastamento temporário (sem ações no mês, saúde volta a 30), não o fim do jogo', a1['over'] is None and a1['acoes'] == 0 and a1['afast'] and a1['saude'] >= 25 and a1['nota'], a1)
     fecha_modais(pg)
     ok('Mesa: cartão "Afastamento temporário"', pg.locator('[data-pend=afastamento]').count() == 1)
     pg.screenshot(path=OUT + '/eq_afastamento_mesa.png')
-    SET(pg, "n.pes.saude=0.2; n.pes.estresse=100; n.evento=null; n.eventoOk=true; n.acoes=5")
+    SET(pg, "n.pes.saude=0.2; n.pes.estresse=100; n.evento=null; n.eventoOk=true; n.acoes=5;n.props=5")
     pg.evaluate("()=>{__QV().setG(p=>{const n=structuredClone(p);__X().fimDoMes(n);window.__r={over:n.over?n.over.tipo:null};return n})}"); pg.wait_for_timeout(500)
     ok('Segunda vez com a saúde zerada: aí sim o afastamento é definitivo', pg.evaluate("()=>window.__r")['over'] == 'saude')
-    SET(pg, "n.over=null; n.pes.saude=70; n.pes.estresse=20; n.acoes=5; n.afastUsado=null"); fecha_modais(pg)
+    SET(pg, "n.over=null; n.pes.saude=70; n.pes.estresse=20; n.acoes=5;n.props=5; n.afastUsado=null"); fecha_modais(pg)
 
     # ---------------- Comércio: aceite depende da demanda já contratada ----------------
     r = pg.evaluate("()=>{const g=structuredClone(__QV().gRef.current);const X=__X();X.ensureIC(g);const k='soja_grao',iso='CHN';const base=X.icShareUsd(k,iso);const q1=Math.round(base*.5*100)/100;const fresh=X.icAvaliaVenda(g,k,iso,q1,0.0001,2,0);const max=fresh.max;const a1=X.icAvaliaVenda(g,k,iso,q1,max,2,0);X.icContrata(g,{tipo:'venda',k,iso,qtd:Math.round(base*.8*100)/100,preco:max,anos:2});const a2=X.icAvaliaVenda(g,k,iso,q1,max,2,0);const a3=X.icAvaliaVenda(g,k,iso,Math.round(base*1.2*100)/100,max,2,0);return {a1:a1.res,a2:a2.res,a3:a3.res,m1:max,m2:a2.max}}")
     ok('Comércio: com a demanda ainda livre, preço cheio é aceito; com demanda já contratada o mesmo preço deixa de ser aceito', r['a1'] == 'aceita' and r['a2'] != 'aceita' and r['a3'] == 'rejeita' and r['m2'] < r['m1'], r)
 
     # ---------------- Balanço do mês: retorno das decisões ----------------
-    SET(pg, "n.prioridade={q:Math.floor((n.mes-1)/3),k:'gastos',ini:n.mes,mult:1,n:0}; n.evento=null; n.eventoOk=true; n.acoes=5; n.over=null; n.ignAcum={n:2,ap:3.4,esc:12}; n.impStreak=0")
+    SET(pg, "n.prioridade={q:Math.floor((n.mes-1)/3),k:'gastos',ini:n.mes,mult:1,n:0}; n.evento=null; n.eventoOk=true; n.acoes=5;n.props=5; n.over=null; n.ignAcum={n:2,ap:3.4,esc:12}; n.impStreak=0")
     secao(pg, 'Mesa'); pg.wait_for_timeout(300)
     click(pg, 'Encerrar m', 1500)
     ok('Balanço do mês: bloco "Retorno das suas decisões" com a prioridade do trimestre e o custo acumulado das crises ignoradas', pg.locator('[data-modal-retorno]').count() == 1 and pg.locator('[data-retorno=prioridade]').count() == 1 and pg.locator('[data-retorno=ignoradas]').count() == 1, pg.locator('[data-modal-retorno]').inner_text()[:300].replace('\n', ' ') if pg.locator('[data-modal-retorno]').count() else 'sem bloco')

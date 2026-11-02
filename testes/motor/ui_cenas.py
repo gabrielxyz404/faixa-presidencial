@@ -125,7 +125,7 @@ with sync_playwright() as p:
     ok('Esc fecha a cena da coletiva', pg.locator('.cn').count() == 0)
 
     # ---------- 3) podcast: convite → aceite → pergunta com texto livre ----------
-    SET(pg, "n.ent.entrev=null;n.ent.convites=n.ent.convites.filter(c=>c.estado!=='pendente');n.ent.convites.push({id:'cvtA',veic:'flow',mes:n.mes,estado:'pendente'});n.acoes=5;n.pes.energia=90")
+    SET(pg, "n.ent.entrev=null;n.ent.convites=n.ent.convites.filter(c=>c.estado!=='pendente');n.ent.convites.push({id:'cvtA',veic:'flow',mes:n.mes,estado:'pendente'});n.acoes=5;n.props=5;n.pes.energia=90")
     ok('convite de podcast aparece na Mesa', pend(pg, 'entconv').count() >= 1)
     pend(pg, 'entconv').click(timeout=5000); pg.wait_for_timeout(900)
     ok('convite abre a cena do podcast em tela cheia', cobre_ok(pg)[0] and pg.locator('[data-cena-tipo="podcast:flow"]').count() == 1, cobre(pg))
@@ -154,7 +154,7 @@ with sync_playwright() as p:
     # ---------- 4) uma cena diferente por podcast (+ estúdios simples) ----------
     vistos = {}
     for k in POD + ['podcast', 'tv', 'radio', 'jesq', 'jdir', 'sabat', 'intl']:
-        SET(pg, "n.ent.entrev=null;n.ent.convites=n.ent.convites.filter(c=>c.estado!=='pendente');n.ent.convites.push({id:'cv_%s',veic:'%s',mes:n.mes,estado:'pendente'});n.acoes=5;n.pes.energia=90" % (k, k))
+        SET(pg, "n.ent.entrev=null;n.ent.convites=n.ent.convites.filter(c=>c.estado!=='pendente');n.ent.convites.push({id:'cv_%s',veic:'%s',mes:n.mes,estado:'pendente'});n.acoes=5;n.props=5;n.pes.energia=90" % (k, k))
         pend(pg, 'entconv').click(timeout=5000); pg.wait_for_timeout(600)
         pg.locator('[data-conv-aceitar=%s]' % k).click(timeout=4000); pg.wait_for_timeout(700)
         vistos[k] = pg.evaluate("()=>{const s=document.querySelector('.cn-bg svg');return {len:s.innerHTML.length,sig:s.innerHTML.replace(/[0-9.\\-]+/g,'').length,tipo:document.querySelector('.cn').dataset.cenaTipo,full:s.textContent}}")

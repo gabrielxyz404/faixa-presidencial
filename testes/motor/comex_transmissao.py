@@ -34,7 +34,7 @@ CEN = [
 SNAP = """(F,g)=>{ const gr={}; for(const k in g.groups) gr[k]=+g.groups[k].toFixed(3);
   const pd={}, ct={}, es={}; for(const mk in g.comex.fl){ pd[mk]=+g.comex.fl[mk].pdom.toFixed(5); const c=g.comex.cut[mk]||0; if(c>0.0005) ct[mk]=+c.toFixed(4); }
   return {ipca:g.eco.ipca, pib:g.eco.pib, des:g.eco.des, ap:F.aprovacao(g), mac:g.comex.mac.ipca, macAgro:g.comex.mac.agro, gr, rec:g.fiscal.receita, extra:g.fiscal.extra, pd, ct, sal:g.comex.tot.saldoAno}}"""
-JS = """([cenId, setup, seed, arm, pre])=>{ const F=__F(); const base=__QV().gRef.current; const g=structuredClone(base); g.seed=seed; F.ensureIC(g); g.acoes=9; g.pes.energia=90; if(pre && F.icConabVende) (new Function('g','F',pre))(g,F);
+JS = """([cenId, setup, seed, arm, pre])=>{ const F=__F(); const base=__QV().gRef.current; const g=structuredClone(base); g.seed=seed; F.ensureIC(g); g.acoes=9;g.props=9; g.pes.energia=90; if(pre && F.icConabVende) (new Function('g','F',pre))(g,F);
   const snap=%s; let R={};
   if(arm==='trat'){ let r; try{ r=(new Function('g','F', setup+';'))(g,F); }catch(e){ return {err:String(e)} } if(r==='na') return {na:1}; }
   const serie=[snap(F,g)];

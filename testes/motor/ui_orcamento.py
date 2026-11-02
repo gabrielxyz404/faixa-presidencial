@@ -118,10 +118,10 @@ with sync_playwright() as p:
     ok('Educação: programas mantidos (10 botões)', pg.locator('[data-pais=educacao] button[data-prog]').count() == 10)
 
     # --- travas: sem ações ou energia baixa
-    SET(pg, "n.acoes=0")
+    SET(pg, "n.acoes=0;n.props=0")
     pg.wait_for_timeout(400)
     ok('sem ações: Confirmar desabilitado', pg.locator('[data-orcamento=educacao] [data-orc-confirm]').is_disabled())
-    SET(pg, "n.acoes=5;n.pes.energia=5")
+    SET(pg, "n.acoes=5;n.props=5;n.pes.energia=5")
     ok('energia baixa: Confirmar desabilitado', pg.locator('[data-orcamento=educacao] [data-orc-confirm]').is_disabled())
     SET(pg, "n.pes.energia=80")
     ok('com ação e energia: Confirmar habilitado', pg.locator('[data-orcamento=educacao] [data-orc-confirm]').is_enabled())

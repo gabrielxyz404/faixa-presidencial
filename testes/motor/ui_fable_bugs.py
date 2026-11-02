@@ -38,7 +38,7 @@ def fecha(pg):
         if overlay(pg): pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
 def avanca(pg, n):
     """fimDoMes via JS n vezes, mantendo o personagem vivo (ações, energia, saúde, escândalo, base)"""
-    pg.evaluate("(n)=>{__QV().setG(p=>{const x=structuredClone(p);for(let i=0;i<n;i++){if(x.over)break;__X().fimDoMes(x);x.acoes=5;x.pes.energia=90;x.pes.saude=Math.max(x.pes.saude,80);x.pes.estresse=Math.min(x.pes.estresse,40);x.escandalo=Math.min(x.escandalo,10);for(const k in x.parties){x.parties[k].rel=Math.max(x.parties[k].rel,55)}}return x})}", n)
+    pg.evaluate("(n)=>{__QV().setG(p=>{const x=structuredClone(p);for(let i=0;i<n;i++){if(x.over)break;__X().fimDoMes(x);x.acoes=5;x.props=5;x.pes.energia=90;x.pes.saude=Math.max(x.pes.saude,80);x.pes.estresse=Math.min(x.pes.estresse,40);x.escandalo=Math.min(x.escandalo,10);for(const k in x.parties){x.parties[k].rel=Math.max(x.parties[k].rel,55)}}return x})}", n)
     pg.wait_for_timeout(700)
 def vai(pg, sec, chip=None):
     pg.locator('#sec-tab-' + sec).click(timeout=5000); pg.wait_for_timeout(400)
@@ -156,7 +156,7 @@ with sync_playwright() as p:
     ok('B2: qvValida aceita meses 50, 96 e 97', st['v50'] == st['v96'] == st['v97'] == 'ok', st)
 
     # ---------- B9: aviso de Congresso na prévia de investimento da Indústria ----------
-    SET(pg, "n.ui.sec='pais';n.ui.chip=n.ui.chip||{};n.ui.chip.pais='industria';n.acoes=5;n.pes.energia=90")
+    SET(pg, "n.ui.sec='pais';n.ui.chip=n.ui.chip||{};n.ui.chip.pais='industria';n.acoes=5;n.props=5;n.pes.energia=90")
     cards = pg.locator('[data-ind-prod]')
     if cards.count():
         cards.first.click(timeout=3000); pg.wait_for_timeout(600)

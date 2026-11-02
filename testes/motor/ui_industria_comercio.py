@@ -36,7 +36,7 @@ def secao(pg, nome): pg.locator('#sec-tab-' + nome.lower().replace('í', 'i')).c
 def chip(pg, nome):
     pg.locator('.chipnav [role=tab]').filter(has_text=re.compile(r'^\s*' + nome + r'\s*$')).first.click(timeout=6000); pg.wait_for_timeout(600)
 def avanca(pg, n):
-    pg.evaluate("(n)=>__QV().setG(p=>{const x=structuredClone(p);for(let i=0;i<n;i++){__X().fimDoMes(x);x.acoes=5;x.pes.energia=90;x.eventoOk=true;x.evento=null}return x})", n); pg.wait_for_timeout(700)
+    pg.evaluate("(n)=>__QV().setG(p=>{const x=structuredClone(p);for(let i=0;i<n;i++){__X().fimDoMes(x);x.acoes=5;x.props=5;x.pes.energia=90;x.eventoOk=true;x.evento=null}return x})", n); pg.wait_for_timeout(700)
 errs = []
 with sync_playwright() as p:
     b = p.chromium.launch(); pg = b.new_page(viewport={'width': 1440, 'height': 900})
@@ -106,7 +106,7 @@ with sync_playwright() as p:
     n_ac = G(pg, 'g.acoes')
 
     # ---------------- Comércio exterior ----------------
-    SET(pg, "n.acoes=5;n.pes.energia=90")
+    SET(pg, "n.acoes=5;n.props=5;n.pes.energia=90")
     secao(pg, 'Mundo'); chip(pg, 'Comércio exterior')
     ok('Comércio: sub-aba abre', pg.locator('[data-com-root]').count() == 1)
     ok('Comércio: 5 indicadores (balança mês/ano, acordos, propostas, IPCA)', pg.locator('[data-com-root] [data-gv-kpi^=com-]').count() == 5)
@@ -147,7 +147,7 @@ with sync_playwright() as p:
     pg.locator('[data-com-pr-rejeitar=prT3]').click(); pg.wait_for_timeout(400)
     ok('Recusar a proposta fecha a pendência', pg.locator('[data-com-proposta=prT3]').count() == 0)
     # comprar arroz
-    SET(pg, "n.acoes=5;n.pes.energia=90")
+    SET(pg, "n.acoes=5;n.props=5;n.pes.energia=90")
     pg.locator('[data-com-aba=comprar]').click(); pg.wait_for_timeout(400)
     pg.locator('[data-com-imp=arroz_imp]').click(); pg.wait_for_timeout(400)
     ok('Comprar arroz: Portugal e China entre os vendedores', pg.locator('[data-com-vendedor=PRT]').count() == 1 and pg.locator('[data-com-vendedor=CHN]').count() == 1)
@@ -188,7 +188,7 @@ with sync_playwright() as p:
     pg.locator('[data-com-prod=terras_raras]').click(); pg.wait_for_timeout(500)
     ok('Terras raras é produto do Comércio, com a opção de exigir processamento no Brasil', pg.locator('[data-com-terras]').count() == 1 and pg.locator('[data-com-exigir-proc]').count() == 1)
     pg.screenshot(path=OUT + '/com_terras_raras.png')
-    SET(pg, "n.acoes=5;n.pes.energia=90")
+    SET(pg, "n.acoes=5;n.props=5;n.pes.energia=90")
     pg.locator('[data-com-exigir-proc]').click(timeout=5000); pg.wait_for_timeout(2500)
     t = pg.locator('.modal-wrap').first.inner_text() if pg.locator('.modal-wrap').count() else ''
     ok('Exigir processamento no Brasil abre o parecer', len(t) > 150, t[:100].replace('\n', ' '))
