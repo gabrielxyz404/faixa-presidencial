@@ -38,7 +38,7 @@ def fecha(pg):
         if overlay(pg): pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
 def avanca(pg, n):
     """fimDoMes via JS n vezes, mantendo o personagem vivo (ações, energia, saúde, escândalo, base)"""
-    pg.evaluate("(n)=>{__QV().setG(p=>{const x=structuredClone(p);for(let i=0;i<n;i++){if(x.over)break;__X().fimDoMes(x);x.acoes=5;x.props=5;x.pes.energia=90;x.pes.saude=Math.max(x.pes.saude,80);x.pes.estresse=Math.min(x.pes.estresse,40);x.escandalo=Math.min(x.escandalo,10);for(const k in x.parties){x.parties[k].rel=Math.max(x.parties[k].rel,55)}}return x})}", n)
+    pg.evaluate("(n)=>{__QV().setG(p=>{const x=structuredClone(p);for(let i=0;i<n;i++){if(x.over)break;__X().fimDoMes(x);if(x.el&&x.el.ger&&x.el.ger.contagem)x.el.ger.contagem.visto=true;x.acoes=5;x.props=5;x.pes.energia=90;x.pes.saude=Math.max(x.pes.saude,80);x.pes.estresse=Math.min(x.pes.estresse,40);x.escandalo=Math.min(x.escandalo,10);for(const k in x.parties){x.parties[k].rel=Math.max(x.parties[k].rel,55)}}return x})}", n)
     pg.wait_for_timeout(700)
 def vai(pg, sec, chip=None):
     pg.locator('#sec-tab-' + sec).click(timeout=5000); pg.wait_for_timeout(400)
