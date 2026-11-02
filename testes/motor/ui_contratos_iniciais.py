@@ -69,13 +69,13 @@ with sync_playwright() as p:
     pctg = float(pg.locator('[data-com-sit-contratado]').get_attribute('data-com-sit-contratado'))
     ok('Gás: o acordo real conta no "já contratado" e aparece na lista com o selo', pctg > 0.9 and pg.locator('[data-com-sit] [data-com-real]').count() == 1 and 'Bolívia' in sit, (pctg, sit[:200]))
     item = pg.locator('[data-com-imp=gas_natural]').inner_text()
-    m = re.search(r'(\d+)% já contratado', item)
+    m = re.search(r'(\d+)% em acordo do governo', item)
     ok('Lista do gás mostra a % já contratada (> 0)', m and int(m.group(1)) >= 20, item.replace('\n', ' '))
     ok('Preço interno em palavras (sem "−2,6%" solto)', re.search(r'(\d+,\d+% mais (barato|caro) que em 2025|nível de 2025)', pg.locator('[data-com-sit-interno]').inner_text()), pg.locator('[data-com-sit-interno]').inner_text())
     # produto sem contrato: texto de 0%
     pg.locator('[data-com-imp=trigo]').click(); pg.wait_for_timeout(500)
     z = pg.locator('[data-com-sit-zero]')
-    ok('Produto sem contrato (trigo): texto do 0% contratado', z.count() == 1 and '0% contratado: tudo é comprado por empresas privadas no mercado, ao preço do dia. Contratos de governo são opcionais: fixam preço e volume, mas prendem o Brasil.' in z.inner_text().replace('\n', ' '), z.inner_text() if z.count() else '')
+    ok('Produto sem contrato (trigo): texto do 0% contratado', z.count() == 1 and '0% em acordo do governo: tudo é comprado por empresas privadas no mercado, ao preço do dia. Contratos de governo são opcionais: fixam preço e volume, mas prendem o Brasil.' in z.inner_text().replace('\n', ' '), z.inner_text() if z.count() else '')
     ok('Barra: rótulo "mercado (empresas, preço do dia)"', 'mercado (empresas, preço do dia)' in pg.locator('[data-com-sit=compra] .ic-leg').inner_text(), pg.locator('[data-com-sit=compra] .ic-leg').inner_text())
     pg.screenshot(path=OUT + '/trigo.png')
     # coluna "se fechar": novo formato
