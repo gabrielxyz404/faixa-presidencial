@@ -794,7 +794,16 @@ function glProc(s) {
 }
 function h(type, props, ...ch) {
   if (typeof type === 'string' && ch.length && !GL_SKIP.has(type) && !(props && typeof props.className === 'string' && /(?:^|\s)(?:gv-tip|gv-tipbox|gl-tip|gl-box|gl-no)(?:\s|$)/.test(props.className)))
-    for (let i = 0; i < ch.length; i++) if (typeof ch[i] === 'string') ch[i] = glProc(ch[i]);
+  { // junta textos vizinhos (ex.: "peso no IPCA: " + "1,2%") para o trecho com o termo não ficar separado do resto dentro de caixas flex
+    const out = []; let i = 0;
+    while (i < ch.length) {
+      if (typeof ch[i] !== 'string') { out.push(ch[i++]); continue; }
+      let j = i, run = ''; while (j < ch.length && (typeof ch[j] === 'string' || typeof ch[j] === 'number')) run += ch[j++];
+      const r = glProc(run); if (r === run) for (let k = i; k < j; k++) out.push(ch[k]); else out.push(r);
+      i = j;
+    }
+    ch = out;
+  }
   return h0(type, props, ...ch);
 }
 const html = htm.bind(h);
