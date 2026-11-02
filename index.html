@@ -11660,12 +11660,8 @@ function normTexto(g, t) {
   });
   // 9) "fechar o Ministério X" -> "extinguir o Ministério X" (fechar era lido como gasto no tema do ministério)
   s = s.replace(/\b(?:fechar|acabar com)\s+(o\s+)?(minist[eé]rio)/gi, 'extinguir $1$2');
-  // 10) fundo eleitoral "para R$ X": o custo é a diferença para o tamanho atual (o motor lia X inteiro)
-  s = s.replace(/\b(reduzir|cortar|diminuir|aumentar|elevar|ampliar)\s+(o\s+)?(fundo eleitoral|fund[aã]o(?: eleitoral)?|fefc)\s+para\s+R\$\s*([\d.,]+)\s*(bilh[^\s,.;)]*|bi\b|milh[^\s,.;)]*|mi\b)?/i, (m, v, art, obj, n, u) => {
-    const alvo = ntNum(n) * (u && /^mi/i.test(u) ? .001 : 1), T = fefcTotal(g) / 1000, d = Math.round(Math.abs(alvo - T) * 100) / 100;
-    if (!(alvo >= 0) || d < .01) return m;
-    const vb = alvo < T ? 'reduzir' : 'aumentar'; return (/^[A-ZÀ-Ú]/.test(v) ? vb[0].toUpperCase() + vb.slice(1) : vb) + ' ' + (art || '') + obj + ' em R$ ' + fmt(d, 2) + ' bilhões (para R$ ' + fmt(alvo, 2) + ' bi)';
-  });
+  // 10) fundo eleitoral: a oração do fundo vira a forma padrão (diferença para o tamanho atual, por ano)
+  if (FEFC_RX.test(norm(s))) s = fefcCanon(g, s);
   return s;
 }
 function analisaLocal(g, texto) {
@@ -11845,6 +11841,7 @@ function apoioPartido(g, pid, prop, casa) {
   if (prop.pesquisa != null) { if (prop.pesquisa >= 60) s += (prop.pesquisa - 50) * .3; else if (prop.pesquisa <= 40) s -= (50 - prop.pesquisa) * .2; }
   if (g.eu) s += g.eu.embalo * 1.5; // embalo do governo
   s += elMunApoioPartido(g, pid); // municipais: resultado recente e pressão dos prefeitos sobre os deputados do partido
+  s += fefcApoioProp(g, pid, prop); // fundo eleitoral: quem perde dinheiro resiste; Novo e Missão apoiam o corte
   return s > 0 ? s * multPlenario(g) : s; // multiplicador em plenário: saúde, energia e humor
 }
 const PROP_NEUTRA = { iv: { eco: 0, soc: 0 }, rev: 0, cost: 0, bonus: {}, aiApoio: {}, inst: 'PL' };
@@ -29852,8 +29849,8 @@ const elGauss = (seed) => { const u = Math.max(1e-6, hashStr(seed + 'a')), v = h
    (aqui aproximados pela bancada), 48% pela bancada na Câmara e 15% pela bancada no Senado, com as bancadas do seu jogo.
    Peso moderado: mais dinheiro dá alguns pontos ao partido nas cidades, na Câmara/Senado e na disputa presidencial; o tamanho do fundo muda por lei. */
 const FEFC_2026 = [['PL', 881.6], ['PT', 615.3], ['UNIÃO', 526.2], ['PSD', 421], ['PP', 417], ['MDB', 400], ['REPUBLICANOS', 348.5], ['PODE', 245.9], ['PDT', 169], ['PSB', 152.2], ['PSDB', 147.8], ['PSOL', 131.5], ['SOLIDARIEDADE', 88.5], ['AVANTE', 72.5], ['PRD', 71.8], ['CIDADANIA', 60.1], ['PCDOB', 60], ['PV', 45.1], ['NOVO', 37], ['REDE', 35.8],
-  ['MISSAO', 3.3], ['AGIR', 3.3], ['DC', 3.3], ['MOBILIZA', 3.3], ['PCB', 3.3], ['PCO', 3.3], ['PRTB', 3.3], ['PSTU', 3.3], ['UP', 3.3]];
-const FEFC_NOME = { 'UNIÃO': 'União Brasil', REPUBLICANOS: 'Republicanos', PODE: 'Podemos', SOLIDARIEDADE: 'Solidariedade', CIDADANIA: 'Cidadania', PCDOB: 'PCdoB', NOVO: 'Novo', REDE: 'Rede', AGIR: 'Agir', MOBILIZA: 'Mobiliza', MISSAO: 'Missão' };
+  ['MISSAO', 3.3], ['OUTRO', 5.02], ['AGIR', 3.3], ['DC', 3.3], ['MOBILIZA', 3.3], ['PCB', 3.3], ['PCO', 3.3], ['PRTB', 3.3], ['PSTU', 3.3], ['UP', 3.3]];
+const FEFC_NOME = { 'UNIÃO': 'União Brasil', REPUBLICANOS: 'Republicanos', PODE: 'Podemos', SOLIDARIEDADE: 'Solidariedade', CIDADANIA: 'Cidadania', PCDOB: 'PCdoB', NOVO: 'Novo', REDE: 'Rede', AGIR: 'Agir', MOBILIZA: 'Mobiliza', MISSAO: 'Missão', OUTRO: 'Outro partido (não listado na matéria; diferença para o total do TSE)' };
 const FEFC_TOTAL_2026 = 4961.52; // R$ mi (TSE)
 const FEFC_BLOCO = (sig) => ({ 'UNIÃO': 'UNIAO', PP: 'UNIAO', PCDOB: 'PT', PV: 'PT', REPUBLICANOS: 'REP', REDE: 'PSOL', CIDADANIA: 'PSDB', SOLIDARIEDADE: 'PRD' })[sig] || (PMAP[sig] ? sig : 'OUTROS');
 const FEFC_REAL = (() => { const o = {}; for (const [sg2, v] of FEFC_2026) { const b = FEFC_BLOCO(sg2); o[b] = (o[b] || 0) + v; } return o; })();
@@ -29865,7 +29862,7 @@ const fefcTotal = (g) => (g && g.fefc ? g.fefc.total : FEFC_TOTAL_2026);
 // fatias da próxima eleição pela regra da lei, com as bancadas atuais do jogo (cache por legislatura)
 let _fefcCache = { k: null, v: null };
 function fefcFatias(g) {
-  const k = (g && g.el && g.el.leg ? g.el.leg.desde : 0) + '|' + (g && g.el && g.el.leg ? g.el.leg.cam.length : 0);
+  const k = (g ? g.seed : '') + '|' + (g && g.el && g.el.leg ? g.el.leg.desde : 0) + '|' + (g && g.el && g.el.leg ? g.el.leg.cam.length : 0) + '|' + (g && g.el && g.el.fefcBase ? g.el.fefcBase.desde : 0);
   if (_fefcCache.k === k && _fefcCache.v) return _fefcCache.v;
   const FB = g && g.el && g.el.fefcBase && g.el.leg && g.el.fefcBase.desde === g.el.leg.desde ? g.el.fefcBase : null;
   let nc = {}, ns = {}, tc, ts;
@@ -29880,21 +29877,49 @@ const fefcDin = (g, b) => fefcTotal(g) * ((fefcFatias(g) || {})[b] || 0); // R$ 
 const FEFC_PISO = 150; // R$ mi que um partido consegue sem o fundo (doações, militância, candidatos conhecidos): cortar o fundo aproxima grandes e pequenos
 const fefcEf = (g, b) => (PMAP[b] ? Math.log((fefcDin(g, b) + FEFC_PISO) / (FEFC_REF + FEFC_PISO)) : 0);
 // lei aprovada que muda o tamanho: lê o novo total no texto; reação dos partidos pela perda ou ganho de cada um
+// leitura do texto: só a oração que fala do fundo conta (evita pegar "R$ 800" do Bolsa Família na mesma frase)
+const FEFC_RX = /fundo eleitoral|fundos? partidario e eleitoral|fundo especial de financiamento|\bfefc\b|fundao|financiamento (?:publico )?de campanhas?/;
+const FEFC_SEP = /[;:]|,(?!\d)|\.(?!\d)|\s+e\s+(?=(?:[a-zà-ú]+(?:ar|er|ir)|investir|manter|criar)\b)/i;
+const fefcOracao = (t) => { const partes = String(t || '').split(FEFC_SEP); return partes.find(x => FEFC_RX.test(norm(x))) || null; };
+const FEFC_PAL = { zero: 0, um: 1, uma: 1, dois: 2, duas: 2, tres: 3, quatro: 4, cinco: 5, seis: 6, sete: 7, oito: 8, nove: 9, dez: 10 };
+function fefcValor(str) { // R$ mi; número sem unidade: >= 100 é milhão, menor é bilhão
+  const m = str.match(/(?:r\$\s*)?(\d[\d.,]*|\b(?:zero|uma?|dois|duas|tres|quatro|cinco|seis|sete|oito|nove|dez)\b)\s*(trilh\w*|tri\b|bilh\w*|bi\b|milh\w*|mi\b|mil\b)?/); if (!m) return null;
+  let n = FEFC_PAL[m[1]] != null ? FEFC_PAL[m[1]] : +m[1].replace(/\.(?=\d{3}(?!\d))/g, '').replace(',', '.'); if (!isFinite(n)) return null;
+  const u = m[2] || ''; if (/^tri/.test(u)) return n * 1e6; if (/^bi/.test(u)) return n * 1000; if (/^mil$/.test(u)) return n / 1000; if (/^mi/.test(u)) return n; return n >= 100 ? n : n * 1000;
+}
 function fefcNovoTotal(g, texto) {
-  const t = norm(texto || ''); if (!/fundo eleitoral|fundo especial de financiamento|\bfefc\b|fundao( eleitoral)?|financiamento (publico )?de campanha/.test(t)) return null;
-  const T0 = fefcTotal(g);
-  const val = (m) => { const n = +String(m[1]).replace(/\.(?=\d{3}(?!\d))/g, '').replace(',', '.'); const u = m[2] || 'bi'; return n * (/^tri/.test(u) ? 1e6 : /^bi/.test(u) ? 1000 : /^mi/.test(u) ? 1 : 1000); };
-  const NUM = 'r\\$\\s*([\\d.,]+)\\s*(tri\\w*|bi\\w*|mi\\w*)?';
-  if (/(?:acabar|extinguir|extincao|fim d[oe]|zerar|eliminar|abolir)/.test(t) && !new RegExp(NUM).test(t)) return 0;
-  if (/pela metade|em 50 ?%/.test(t) && /(?:reduz|cort|diminu)/.test(t)) return T0 / 2;
-  let m = t.match(/(?:reduz|cort|diminu|aument|elev|ampli|subi|dobr)\w*[^.;]{0,60}?\bem\s+([\d.,]+)\s*%/); if (m) { const p = +m[1].replace(',', '.') / 100; return /(?:aument|elev|ampli|subi)/.test(t) ? T0 * (1 + p) : T0 * (1 - p); }
-  if (/dobrar/.test(t)) return T0 * 2;
-  m = t.match(new RegExp('\\bpara\\s+' + NUM)); if (m) return val(m);
-  m = t.match(new RegExp('\\bem\\s+' + NUM)); if (m) { const d = val(m); return /(?:aument|elev|ampli|subi)/.test(t) ? T0 + d : T0 - d; }
-  m = t.match(new RegExp('\\bmais\\s+' + NUM)); if (m) return T0 + val(m);
-  m = t.match(new RegExp(NUM)); if (m && /(?:aument|elev|ampli|subi)/.test(t)) return val(m) > T0 ? val(m) : T0 + val(m);
-  if (m && /(?:reduz|cort|diminu)/.test(t)) return val(m) < T0 ? val(m) : Math.max(0, T0 - val(m));
+  const o = fefcOracao(texto); if (!o) return null; const c = norm(o), T0 = fefcTotal(g);
+  if (/\b(?:manter|mantem|mantendo|preservar|conservar|congelar|nao mexer|sem mexer|sem mudanca|debater|discutir|estudar)\b/.test(c)) return null;
+  const red = /\b(?:reduz|reducao|cort|diminu|enxug|limit|teto\b|recu|baix|no maximo)/.test(c), inc = /\b(?:aument|elev|ampli|subi|reforc|turbin|dobr|duplic|tripl)/.test(c);
+  const VAL = '(?:r\\$\\s*)?(?:\\d[\\d.,]*|\\b(?:zero|uma?|dois|duas|tres|quatro|cinco|seis|sete|oito|nove|dez)\\b)(?:\\s*(?:trilh\\w*|tri\\b|bilh\\w*|bi\\b|milh\\w*|mi\\b|mil\\b))?';
+  const fim = (v) => clamp(v, FEFC_MIN, FEFC_MAX);
+  let m = c.match(new RegExp('\\b(?:para|a|ate|teto de|limite de|no maximo|limitar a|limitado a)\\s+(' + VAL + ')(?!\\s*(?:%|por cento|\\/))'));
+  if (m && (red || inc || /\bpara\b/.test(c))) { const v = fefcValor(m[1]); if (v != null) return fim(v); }
+  if (/\b(?:acabar|extingu|extincao|fim d|zera|eliminar|abolir|proibir|revogar)/.test(c)) return 0;
+  if (/\b(?:triplic)/.test(c)) return fim(T0 * 3);
+  if (/\b(?:dobr|duplic)/.test(c)) return fim(T0 * 2);
+  m = c.match(/(\d+(?:[.,]\d+)?)\s*(?:%|por cento)/);
+  if (m) { const p = +m[1].replace(',', '.') / 100; if (/\bpara\s+\d/.test(c)) return fim(T0 * p); if (red) return fim(T0 * (1 - p)); if (inc) return fim(T0 * (1 + p)); return null; }
+  const fr = /metade/.test(c) ? .5 : /dois tercos|2\/3/.test(c) ? 2 / 3 : /um terco|1\/3/.test(c) ? 1 / 3 : /um quarto|1\/4/.test(c) ? .25 : null;
+  if (fr != null) { if (/\bpara\s+(?:um|dois|a)\b/.test(c) && !/metade/.test(c)) return fim(T0 * fr); if (red) return fim(/metade/.test(c) ? T0 / 2 : T0 * (1 - fr)); if (inc) return fim(T0 * (1 + fr)); }
+  m = c.match(new RegExp('\\bmais\\s+(' + VAL + ')')); if (m) { const v = fefcValor(m[1]); if (v != null) return fim(T0 + v); }
+  m = c.match(new RegExp('(' + VAL + ')')); const v = m ? fefcValor(m[1]) : null;
+  if (v != null && (red || inc)) return fim(red ? T0 - v : T0 + v); // "reduzir em R$ 1 bi", "corte de R$ 1 bi", "aumentar em 1,5 bilhão"
+  if (v != null) return fim(v); // "fundo eleitoral de R$ 2 bi" (sem verbo): o tamanho novo
+  if (red) return fim(T0 * .8); if (inc) return fim(T0 * 1.2); // sem valor: 20%
   return null;
+}
+// forma que o motor lê certo: o custo fiscal é a diferença para o tamanho atual, por ano, nos dois sentidos
+function fefcCanon(g, s) {
+  const o = fefcOracao(s); if (!o) return s; const T0 = fefcTotal(g), T1 = fefcNovoTotal(g, o);
+  let rep;
+  if (T1 == null || Math.abs(T1 - T0) < 5) rep = /\b(?:debater|discutir|estudar)\b/i.test(o) ? o : 'manter o fundo eleitoral sem mudança';
+  else { const d = Math.abs(T1 - T0) / 1000; rep = (T1 < T0 ? 'reduzir' : 'aumentar') + ' o fundo eleitoral em R$ ' + fmt(d, d < 1 ? 2 : 2) + ' bilhões por ano (para R$ ' + fmt(T1 / 1000, 2) + ' bi)'; }
+  const no = norm(o); const inst = /medida provis|\bmp\b/.test(no) ? ' por medida provisória' : /\bdecreto/.test(no) ? ' por decreto' : /\bpec\b|emenda constitucional|emenda a constituicao/.test(no) ? ' por PEC' : '';
+  if (inst === ' por medida provisória' || inst === ' por decreto') rep = 'manter o fundo eleitoral sem mudança'; // MP e decreto não podem mexer no fundo (CF art. 62 §1º, I, a): sem efeito e sem custo
+  if (inst && rep.indexOf(inst) < 0) rep += inst; // mantém o instrumento escolhido pelo jogador
+  if (/^[A-ZÀ-Ú]/.test(o.trim())) rep = rep.charAt(0).toUpperCase() + rep.slice(1);
+  return s.replace(o.trim(), rep);
 }
 // partidos que defendem o fim do financiamento público (Novo, Missão) apoiam cortes e rejeitam aumentos, mesmo perdendo dinheiro
 const FEFC_CONTRA = { MISSAO: 2.5, NOVO: 1.5 };
@@ -29902,14 +29927,20 @@ function fefcReacao(g, T0, T1) {
   const fat = fefcFatias(g), out = {};
   for (const P of PARTIDOS) {
     let dr;
-    if (FEFC_CONTRA[P.id]) dr = Math.sign(T0 - T1) * FEFC_CONTRA[P.id] * clamp(Math.abs(T1 - T0) / 1500, .5, 1.6);
-    else { const d = (T1 - T0) * (fat[P.id] || 0); dr = d < 0 ? clamp(d / 60, -6, 0) : clamp(d / 120, 0, 3); } // perder dinheiro irrita; ganhar agrada menos (R$ 60 mi a menos ≈ −1, teto −6)
+    if (FEFC_CONTRA[P.id]) dr = Math.sign(T0 - T1) * FEFC_CONTRA[P.id] * clamp(Math.abs(T1 - T0) / 1500, 0, 1.6);
+    else { const d = (T1 - T0) * (fat[P.id] || 0); dr = d < 0 ? clamp(d / 150, -8, 0) : clamp(d / 300, 0, 3); } // perder dinheiro irrita; ganhar agrada menos (R$ 150 mi a menos ≈ −1, teto −8)
     if (Math.abs(dr) >= .3) out[P.id] = Math.round(dr * 10) / 10;
   }
   return out;
 }
+function fefcApoioProp(g, pid, prop) {
+  if (!prop || !prop.texto || !FEFC_RX.test(norm(prop.texto))) return 0;
+  if (prop._fefcT == null) { const T1 = fefcNovoTotal(g, prop.texto); prop._fefcT = T1 == null ? -1 : T1; }
+  if (prop._fefcT < 0) return 0; const RX = fefcReacao(g, fefcTotal(g), prop._fefcT); return 2.5 * (RX[pid] || 0);
+}
 function fefcAplicaProp(g, prop) {
   const F = fefcEnsure(g); const novo = fefcNovoTotal(g, prop.texto); if (novo == null) return null;
+  if (!['PL', 'PEC'].includes(prop.inst)) { try { linhaAdd(g, 'CONGRESSO', 'Medida provisória e decreto não podem mudar o fundo eleitoral (direito eleitoral, CF art. 62 §1º, I, a): o tamanho do fundo não muda. Para isso, envie um projeto de lei.'); } catch (e) { } return null; }
   const T0 = F.total, T1 = clamp(Math.round(novo * 10) / 10, FEFC_MIN, FEFC_MAX); if (Math.abs(T1 - T0) < 1) return null;
   const RX = fefcReacao(g, T0, T1); const irrit = [], gostam = [];
   for (const id in RX) { const dr = RX[id], P = PMAP[id]; if (!g.parties[id]) continue; g.parties[id].rel = clamp(g.parties[id].rel + dr, 0, 99); g.parties[id].relS = clamp((g.parties[id].relS || g.parties[id].rel) + dr * .6, 0, 99); (dr < 0 ? irrit : gostam).push(P.curto); }
@@ -29930,12 +29961,12 @@ const BARREIRA_REGRA = (ano) => (ano >= 2030 ? { voto: 3, uf: 2, dep: 15 } : { v
 let _barCache = { k: null, v: null };
 function elBarreira(g) {
   const E = g && g.el; if (E && E.leg && E.barreira && E.barreira.desde === E.leg.desde) return E.barreira;
-  const k = (E && E.leg ? E.leg.desde : 0) + '|' + (E && E.leg ? E.leg.cam.length : 0); if (_barCache.k === k && _barCache.v) return _barCache.v;
+  const k = (g ? g.seed : '') + '|' + (E && E.leg ? E.leg.desde : 0) + '|' + (E && E.leg ? E.leg.cam.length : 0); if (_barCache.k === k && _barCache.v) return _barCache.v;
   const cam = elBaseCasa(g, 'cam'), tc = cam.length || 513, ano = (E && E.leg && E.leg.ano) || 2026, R = BARREIRA_REGRA(ano), P = {};
   const ufs = {}; for (const L of cam) { (ufs[L.bloco] = ufs[L.bloco] || {})[L.uf] = ((ufs[L.bloco] || {})[L.uf] || 0) + 1; }
   for (const X of PARTIDOS) {
     const U = ufs[X.id] || {}, nDep = Object.values(U).reduce((a, b) => a + b, 0), nUF = Object.keys(U).length, voto = nDep / tc * 100;
-    const ok = ano < 2030 ? !BARREIRA_2026_FORA.includes(X.id) : X.id !== 'OUTROS' && (voto >= R.voto || (nDep >= R.dep && nUF >= 9)); // votos: aproximados pela bancada (os votos se espalham pelos estados mesmo onde o partido não elege); deputados: precisam estar em 9 estados
+    const ok = ano < 2030 ? !BARREIRA_2026_FORA.includes(X.id) : X.id !== 'OUTROS' && ((voto >= R.voto && nUF >= 6) || (nDep >= R.dep && nUF >= 9)); // votos: aproximados pela bancada; os 2% em 9 estados viram bancada em pelo menos 6 estados // votos: aproximados pela bancada (os votos se espalham pelos estados mesmo onde o partido não elege); deputados: precisam estar em 9 estados
     P[X.id] = { nDep, nUF, voto: Math.round(voto * 10) / 10, ok };
   }
   const v = { desde: E && E.leg ? E.leg.desde : 0, ano, R, P, real: ano < 2030 }; _barCache = { k, v }; return v;
@@ -30467,7 +30498,7 @@ function elRejeicao(g, ger, c) {
 }
 function elTVshare(g, ger, c) {
   let s = (PMAP[c.bloco] && barreiraOk(g, c.bloco) ? elSeatsBloco(g, c.bloco) : 0) / 513; // cláusula de barreira: partido barrado não tem tempo de TV
-  const al = ger.aliancas || []; if (ger.meuId === c.id || (c.sit && !ger.meuId)) for (const b of al) if (barreiraOk(g, b)) s += elSeatsBloco(g, b) / 513;
+  const al = ger.aliancas || []; if (ger.meuId === c.id || (c.sit && !ger.meuId)) { for (const b of al) if (barreiraOk(g, b)) s += elSeatsBloco(g, b) / 513; }
   else if (c.camp === 'dir' || c.camp === 'cdir') s += .04;
   return s;
 }
@@ -32303,7 +32334,10 @@ const FEFC_REGRA = 'Lei 9.504/97, art. 16-D: 2% divididos igualmente entre os pa
 const FEFC_OPC = [2000, 3000, 4000, 6000, 7000];
 function ElFundo({ g, decidir }) {
   const T = fefcTotal(g), fat = fefcFatias(g), H = (g.fefc && g.fefc.hist) || [], bar = elBarreira(g);
-  const [alvo, setAlvo] = useState(T > 3500 ? 3000 : 6000);
+  const opcs = FEFC_OPC.filter(v => Math.abs(v - T) >= 100);
+  const [alvo0, setAlvo] = useState(T > 3500 ? 3000 : 6000);
+  const alvo = opcs.includes(alvo0) ? alvo0 : (opcs.find(v => v < T) || opcs[0]); // depois de aprovar, o valor escolhido pode virar o tamanho atual: escolhe outro
+  const FB = g.el && g.el.fefcBase && g.el.leg && g.el.fefcBase.desde === g.el.leg.desde; const anoBase = FB ? (g.el.leg.ano || 2030) : 2026;
   const ok = g.acoes > 0 && g.pes.energia >= 10 && !elSemGoverno(g);
   const blocos = PARTIDOS.map(P => ({ P, real: FEFC_REAL[P.id] || 0, prox: T * (fat[P.id] || 0) })).sort((a, b) => b.prox - a.prox);
   const max = Math.max(...blocos.map(x => Math.max(x.real, x.prox)), 1);
@@ -32313,12 +32347,12 @@ function ElFundo({ g, decidir }) {
   return html`<div className="flex flex-col gap-5" data-el-fundo="1">
     <div className="sec flex flex-col gap-3">
       <div className="flex flex-wrap items-baseline gap-3"><div className="eyebrow">Fundo eleitoral da próxima eleição<${GvTip} txt=${FEFC_REGRA} /></div><b className="disp text-2xl" data-fefc-total=${T}>${mi(T)}</b>
-        <span className="gv-chip">em 2026 foi ${mi(FEFC_TOTAL_2026)} (30 partidos)</span></div>
+        <span className="gv-chip">em 2026 foi ${mi(FEFC_TOTAL_2026)} (30 partidos)</span>${T >= FEFC_MAX ? html`<span className="gv-chip" style=${{ color: 'var(--ambar)' }}>no teto do jogo (R$ 12 bi)</span>` : null}</div>
       <p className="text-sm text-muted leading-relaxed">Dinheiro público que os partidos usam nas campanhas. Mais dinheiro dá alguns pontos ao partido nas cidades (municipais), na eleição da Câmara e do Senado e na disputa presidencial, mas não decide sozinho: fama dos candidatos, aprovação do governo e escândalos pesam mais. A próxima divisão segue a regra da lei com as bancadas do seu jogo.</p>
     </div>
     <div className="sec flex flex-col gap-2" data-fefc-tabela="1">
       <div className="eyebrow">Quanto cada partido recebe</div>
-      <div className="text-sm text-muted">Barra cinza: 2026 (valor real publicado, calculado com as bancadas eleitas em 2022). Barra colorida: próxima eleição, pela mesma regra com as bancadas eleitas em 2026 no seu jogo e o tamanho atual do fundo. Por isso quem cresceu na eleição de 2026 recebe mais.</div>
+      <div className="text-sm text-muted">Barra cinza: 2026 (valor real publicado, calculado com as bancadas eleitas em 2022). Barra colorida: próxima eleição, pela mesma regra com as bancadas eleitas em ${anoBase} no seu jogo e o tamanho atual do fundo. Por isso quem cresceu na eleição de ${anoBase} recebe mais.</div>
       ${blocos.map(x => html`<div key=${x.P.id} className="grid items-center gap-3" style=${{ gridTemplateColumns: 'minmax(150px,220px) minmax(0,1fr) 170px' }} data-fefc-bloco=${x.P.id}>
         <span className="text-sm font-semibold truncate" title=${x.P.full}>${x.P.nome}</span>
         <span className="flex flex-col gap-1"><i style=${{ display: 'block', height: '6px', borderRadius: '3px', width: (x.real / max * 100) + '%', background: 'var(--line2)' }}></i><i style=${{ display: 'block', height: '8px', borderRadius: '3px', width: (x.prox / max * 100) + '%', background: x.P.cor }}></i></span>
@@ -32334,13 +32368,13 @@ function ElFundo({ g, decidir }) {
         return html`<div key=${P.id} className="flex flex-col gap-1.5" style=${{ padding: '10px 12px', borderRadius: '10px', background: 'color-mix(in srgb, ' + P.cor + ' ' + (x.ok ? 14 : 7) + '%, var(--panel))', border: '1px solid color-mix(in srgb, ' + P.cor + ' 45%, transparent)', borderLeft: '5px solid ' + P.cor, opacity: x.ok ? 1 : .85 }} data-barreira-bloco=${P.id} data-ok=${x.ok ? '1' : '0'}>
           <div className="flex items-center justify-between gap-2"><b className="text-sm" style=${{ color: P.cor }}>${P.curto}</b><span className="text-xs font-semibold" style=${{ color: cor, background: x.ok ? 'rgba(47,210,122,.14)' : 'rgba(255,90,78,.14)', padding: '2px 8px', borderRadius: '999px' }}>${x.ok ? 'passa' : 'barrado'}</span></div>
           <div style=${{ height: '6px', borderRadius: '3px', background: 'color-mix(in srgb, ' + P.cor + ' 20%, var(--line))', overflow: 'hidden' }}><i style=${{ display: 'block', height: '100%', width: (prog * 100) + '%', background: P.cor }}></i></div>
-          <div className="text-xs text-muted num">${x.nDep} ${x.nDep === 1 ? 'deputado' : 'deputados'} em ${x.nUF} ${x.nUF === 1 ? 'estado' : 'estados'}${bar.real ? '' : ' · ' + fmt(x.voto, 1) + '% da Câmara'}</div></div>`; })}</div>
-      ${bar.real ? html`<div className="text-sm text-muted">Resultado real de 2026 (TSE). O PSOL-Rede passou por decisão unânime do TSE em 27/10/2026, que arredondou 1,49% no Espírito Santo para 1,5%. PDT, Avante, Missão e Renovação Solidária (PRD-Solidariedade) ficaram abaixo, assim como as siglas pequenas de "Outros". A barra mostra a bancada perto do mínimo de deputados.</div>` : html`<div className="text-sm text-muted">Calculado com o resultado da eleição de ${bar.ano} no seu jogo (votos aproximados pela bancada). "Outros" reúne siglas pequenas, que ficam abaixo.</div>`}
+          <div className="text-xs text-muted num">${x.nDep} ${x.nDep === 1 ? 'deputado' : 'deputados'} em ${x.nUF} ${x.nUF === 1 ? 'estado' : 'estados'}${bar.real ? '' : ' · ' + fmt(x.voto, 1) + '% da Câmara'}${x.ok && (x.nDep < bar.R.dep || x.nUF < 9) ? ' · passou pelos votos' : ''}</div></div>`; })}</div>
+      ${bar.real ? html`<div className="text-sm text-muted">Resultado real de 2026 (TSE). Quem tem menos de 13 deputados ou está em menos de 9 estados e mesmo assim passa atingiu o critério dos votos (2,5% no país, com 1,5% em 9 estados). O PSOL-Rede passou por decisão unânime do TSE em 27/10/2026, que arredondou 1,49% no Espírito Santo para 1,5%. PDT, Avante, Missão e Renovação Solidária (PRD-Solidariedade) ficaram abaixo, assim como as siglas pequenas de "Outros". A barra mostra a bancada perto do mínimo de deputados.</div>` : html`<div className="text-sm text-muted">Calculado com o resultado da eleição de ${bar.ano} no seu jogo (votos aproximados pela bancada). "Outros" reúne siglas pequenas, que ficam abaixo.</div>`}
     </div>
     <div className="sec flex flex-col gap-3" data-fefc-mudar="1">
       <div className="eyebrow">Mudar o tamanho do fundo</div>
-      <div className="text-sm text-muted">Vira um projeto de lei e vai ao Congresso (1 ação). Também dá para escrever na Caixa de decisão, como "reduzir o fundo eleitoral para R$ 3 bilhões". Vale para a próxima eleição. Cortar agrada a opinião pública e irrita os partidos que perdem dinheiro, menos Novo e Missão, que defendem o fim do financiamento público e apoiam o corte; aumentar faz o contrário.</div>
-      <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Novo tamanho do fundo">${FEFC_OPC.filter(v => Math.abs(v - T) >= 100).map(v => html`<button key=${v} type="button" role="radio" aria-checked=${alvo === v} aria-pressed=${alvo === v} className="btn btn-ghost btn-sm" data-fefc-opc=${v} onClick=${() => setAlvo(v)}>R$ ${fmt(v / 1000, 0)} bi</button>`)}</div>
+      <div className="text-sm text-muted">Vira um projeto de lei e vai ao Congresso (1 ação). Também dá para escrever na Caixa de decisão, como "reduzir o fundo eleitoral para R$ 3 bilhões". Vale para a próxima eleição. Só por lei: medida provisória e decreto não podem mexer no fundo (CF art. 62). O jogo limita o fundo a R$ 12 bi. Cortar agrada a opinião pública e irrita os partidos que perdem dinheiro, menos Novo e Missão, que defendem o fim do financiamento público e apoiam o corte; aumentar faz o contrário.</div>
+      <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Novo tamanho do fundo">${opcs.map(v => html`<button key=${v} type="button" role="radio" aria-checked=${alvo === v} aria-pressed=${alvo === v} className="btn btn-ghost btn-sm" data-fefc-opc=${v} onClick=${() => setAlvo(v)}>R$ ${fmt(v / 1000, 0)} bi</button>`)}</div>
       <div className="text-sm leading-relaxed" data-fefc-previa="1">${alvo < T ? 'Corte' : 'Aumento'} de <b>${mi(Math.abs(alvo - T))}</b> por eleição.${prev.length ? html` Relação com os partidos, se aprovado: ${prev.map((x, i) => html`<span key=${x.P.id}>${i ? ', ' : ''}${x.P.curto} <b style=${{ color: x.dr < 0 ? 'var(--rubro)' : 'var(--verde)' }}>${sgn(x.dr, 1)}</b></span>`)}.` : ''}</div>
       <button type="button" className="btn btn-pri btn-sm self-start" disabled=${!ok || !decidir} data-fefc-propor="1" onClick=${() => decidir && decidir(texto)}><${Icon} n="Send" s=${14} /> ${texto} · 1 ação</button>
       ${H.length ? html`<div className="text-sm text-muted">Mudanças aprovadas: ${H.map(h => dataCurta(h.mes) + ': ' + mi(h.de) + ' → ' + mi(h.para)).join(' · ')}.</div>` : null}
