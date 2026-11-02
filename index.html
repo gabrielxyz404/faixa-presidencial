@@ -790,7 +790,7 @@ function glProc(s) {
   }
   if (!out.length) return s;
   if (i < s.length) out.push(s.slice(i));
-  return out;
+  return h0('span', { className: 'gl-w' }, ...out); // um só elemento: dentro de caixas flex o texto não se parte em pedaços
 }
 function h(type, props, ...ch) {
   if (typeof type === 'string' && ch.length && !GL_SKIP.has(type) && !(props && typeof props.className === 'string' && /(?:^|\s)(?:gv-tip|gv-tipbox|gl-tip|gl-box|gl-no)(?:\s|$)/.test(props.className)))
