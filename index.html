@@ -29867,9 +29867,11 @@ let _fefcCache = { k: null, v: null };
 function fefcFatias(g) {
   const k = (g && g.el && g.el.leg ? g.el.leg.desde : 0) + '|' + (g && g.el && g.el.leg ? g.el.leg.cam.length : 0);
   if (_fefcCache.k === k && _fefcCache.v) return _fefcCache.v;
-  const cam = elBaseCasa(g, 'cam'), sen = elBaseCasa(g, 'sen'); const nc = {}, ns = {};
-  for (const L of cam) nc[L.bloco] = (nc[L.bloco] || 0) + 1; for (const L of sen) ns[L.bloco] = (ns[L.bloco] || 0) + 1;
-  const tc = cam.length || 513, ts = sen.length || 81, tp = Object.values(FEFC_NPART).reduce((a, b) => a + b, 0); const v = {};
+  const FB = g && g.el && g.el.fefcBase && g.el.leg && g.el.fefcBase.desde === g.el.leg.desde ? g.el.fefcBase : null;
+  let nc = {}, ns = {}, tc, ts;
+  if (FB) { nc = FB.nc; ns = FB.ns; tc = FB.tc || 513; ts = FB.ts || 81; } // bancada eleita (antes das migrações da cláusula de barreira)
+  else { const cam = elBaseCasa(g, 'cam'), sen = elBaseCasa(g, 'sen'); for (const L of cam) nc[L.bloco] = (nc[L.bloco] || 0) + 1; for (const L of sen) ns[L.bloco] = (ns[L.bloco] || 0) + 1; tc = cam.length || 513; ts = sen.length || 81; }
+  const tp = Object.values(FEFC_NPART).reduce((a, b) => a + b, 0); const v = {};
   for (const P of PARTIDOS) v[P.id] = .02 * (FEFC_NPART[P.id] || 0) / tp + .35 * (nc[P.id] || 0) / tc + .48 * (nc[P.id] || 0) / tc + .15 * (ns[P.id] || 0) / ts;
   _fefcCache = { k, v }; return v;
 }
@@ -29894,14 +29896,23 @@ function fefcNovoTotal(g, texto) {
   if (m && /(?:reduz|cort|diminu)/.test(t)) return val(m) < T0 ? val(m) : Math.max(0, T0 - val(m));
   return null;
 }
+// partidos que defendem o fim do financiamento público (Novo, Missão) apoiam cortes e rejeitam aumentos, mesmo perdendo dinheiro
+const FEFC_CONTRA = { MISSAO: 2.5, NOVO: 1.5 };
+function fefcReacao(g, T0, T1) {
+  const fat = fefcFatias(g), out = {};
+  for (const P of PARTIDOS) {
+    let dr;
+    if (FEFC_CONTRA[P.id]) dr = Math.sign(T0 - T1) * FEFC_CONTRA[P.id] * clamp(Math.abs(T1 - T0) / 1500, .5, 1.6);
+    else { const d = (T1 - T0) * (fat[P.id] || 0); dr = d < 0 ? clamp(d / 60, -6, 0) : clamp(d / 120, 0, 3); } // perder dinheiro irrita; ganhar agrada menos (R$ 60 mi a menos ≈ −1, teto −6)
+    if (Math.abs(dr) >= .3) out[P.id] = Math.round(dr * 10) / 10;
+  }
+  return out;
+}
 function fefcAplicaProp(g, prop) {
   const F = fefcEnsure(g); const novo = fefcNovoTotal(g, prop.texto); if (novo == null) return null;
   const T0 = F.total, T1 = clamp(Math.round(novo * 10) / 10, FEFC_MIN, FEFC_MAX); if (Math.abs(T1 - T0) < 1) return null;
-  const fat = fefcFatias(g); const irrit = [], gostam = [];
-  for (const P of PARTIDOS) { // perder dinheiro irrita; ganhar agrada menos (R$ 60 mi a menos ≈ −1 de relação, teto −6)
-    const d = (T1 - T0) * (fat[P.id] || 0); const dr = d < 0 ? clamp(d / 60, -6, 0) : clamp(d / 120, 0, 3);
-    if (Math.abs(dr) >= .3 && g.parties[P.id]) { g.parties[P.id].rel = clamp(g.parties[P.id].rel + dr, 0, 99); g.parties[P.id].relS = clamp((g.parties[P.id].relS || g.parties[P.id].rel) + dr * .6, 0, 99); (dr < 0 ? irrit : gostam).push(P.curto); }
-  }
+  const RX = fefcReacao(g, T0, T1); const irrit = [], gostam = [];
+  for (const id in RX) { const dr = RX[id], P = PMAP[id]; if (!g.parties[id]) continue; g.parties[id].rel = clamp(g.parties[id].rel + dr, 0, 99); g.parties[id].relS = clamp((g.parties[id].relS || g.parties[id].rel) + dr * .6, 0, 99); (dr < 0 ? irrit : gostam).push(P.curto); }
   F.hist.unshift({ mes: g.mes, de: T0, para: T1 }); F.hist = F.hist.slice(0, 8); F.total = T1;
   const tx = T1 < T0 ? `Congresso corta o fundo eleitoral de R$ ${fmt(T0 / 1000, 2)} bi para R$ ${fmt(T1 / 1000, 2)} bi` : `Fundo eleitoral sobe de R$ ${fmt(T0 / 1000, 2)} bi para R$ ${fmt(T1 / 1000, 2)} bi`;
   g.feed.unshift({ mes: g.mes, src: T1 < T0 ? 'globo' : 'antag', txt: T1 < T0 ? tx + (irrit.length ? `; ${irrit.slice(0, 3).join(', ')} reclamam` : '') : (tx + ' e a oposição fala em farra').toUpperCase() }); g.feed = g.feed.slice(0, 40);
@@ -29913,6 +29924,8 @@ function fefcAplicaProp(g, prop) {
    2026: 2,5% dos votos válidos em 9 estados (1,5% em cada) ou 13 deputados em 9 estados. 2030 em diante: 3% (2% em cada) ou 15 deputados em 9 estados.
    Federações contam como um partido. No jogo, os votos são aproximados pela bancada; "Outros" reúne siglas pequenas que ficam abaixo.
    Quem foi eleito por partido barrado pode trocar de partido sem perder o mandato (art. 17 §5º): depois de 2030, parte desses deputados migra. */
+// resultado real de 2026 (TSE): PSOL-Rede passou por decisão unânime do TSE (27/10/2026, arredondamento de 1,49% no ES); PDT, Avante, Missão e Renovação Solidária (PRD-SD) ficaram abaixo
+const BARREIRA_2026_FORA = ['PDT', 'AVANTE', 'MISSAO', 'PRD', 'OUTROS'];
 const BARREIRA_REGRA = (ano) => (ano >= 2030 ? { voto: 3, uf: 2, dep: 15 } : { voto: 2.5, uf: 1.5, dep: 13 });
 let _barCache = { k: null, v: null };
 function elBarreira(g) {
@@ -29922,10 +29935,10 @@ function elBarreira(g) {
   const ufs = {}; for (const L of cam) { (ufs[L.bloco] = ufs[L.bloco] || {})[L.uf] = ((ufs[L.bloco] || {})[L.uf] || 0) + 1; }
   for (const X of PARTIDOS) {
     const U = ufs[X.id] || {}, nDep = Object.values(U).reduce((a, b) => a + b, 0), nUF = Object.keys(U).length, voto = nDep / tc * 100;
-    const ok = X.id !== 'OUTROS' && (voto >= R.voto || (nDep >= R.dep && nUF >= 9)); // votos: aproximados pela bancada (os votos se espalham pelos estados mesmo onde o partido não elege); deputados: precisam estar em 9 estados
+    const ok = ano < 2030 ? !BARREIRA_2026_FORA.includes(X.id) : X.id !== 'OUTROS' && (voto >= R.voto || (nDep >= R.dep && nUF >= 9)); // votos: aproximados pela bancada (os votos se espalham pelos estados mesmo onde o partido não elege); deputados: precisam estar em 9 estados
     P[X.id] = { nDep, nUF, voto: Math.round(voto * 10) / 10, ok };
   }
-  const v = { desde: E && E.leg ? E.leg.desde : 0, ano, R, P }; _barCache = { k, v }; return v;
+  const v = { desde: E && E.leg ? E.leg.desde : 0, ano, R, P, real: ano < 2030 }; _barCache = { k, v }; return v;
 }
 const barreiraOk = (g, b) => { const x = elBarreira(g).P[b]; return !x || x.ok; };
 // depois da eleição: deputados de partido barrado podem migrar (60% migram, para o partido aprovado mais próximo nas ideias)
@@ -31065,6 +31078,7 @@ function elNovoCongresso(g, notas) {
   E.leg = { desde: g.mes, rot: 'simulado (após ' + (ano) + ')', cam, sen, ano }; E.subs = { cam: {}, sen: {} }; _elSubCache = { k: null, v: null };
   // cláusula de barreira: vale o resultado das urnas (antes das migrações); depois, parte dos deputados dos partidos barrados troca de partido
   _barCache = { k: null, v: null }; E.barreira = Object.assign({}, elBarreira(g), { desde: g.mes });
+  { const nc = {}, ns = {}; cam.forEach(L => { nc[L.bloco] = (nc[L.bloco] || 0) + 1; }); sen.forEach(L => { ns[L.bloco] = (ns[L.bloco] || 0) + 1; }); E.fefcBase = { desde: g.mes, nc, ns, tc: cam.length, ts: sen.length }; } // o fundo segue a bancada eleita nas urnas, não as migrações
   const barrados = PARTIDOS.filter(P => E.barreira.P[P.id] && !E.barreira.P[P.id].ok && E.barreira.P[P.id].nDep > 0 && P.id !== 'OUTROS').map(P => P.curto);
   const mig = elBarreiraMigra(g, cam, ano); E.leg.cam = cam; _fefcCache = { k: null, v: null };
   if (barrados.length || mig.n) {
@@ -32293,7 +32307,7 @@ function ElFundo({ g, decidir }) {
   const ok = g.acoes > 0 && g.pes.energia >= 10 && !elSemGoverno(g);
   const blocos = PARTIDOS.map(P => ({ P, real: FEFC_REAL[P.id] || 0, prox: T * (fat[P.id] || 0) })).sort((a, b) => b.prox - a.prox);
   const max = Math.max(...blocos.map(x => Math.max(x.real, x.prox)), 1);
-  const prev = PARTIDOS.map(P => { const d = (alvo - T) * (fat[P.id] || 0); const dr = d < 0 ? clamp(d / 60, -6, 0) : clamp(d / 120, 0, 3); return { P, d, dr }; }).filter(x => Math.abs(x.dr) >= .3).sort((a, b) => a.dr - b.dr);
+  const RX = fefcReacao(g, T, alvo); const prev = Object.keys(RX).map(id => ({ P: PMAP[id], dr: RX[id] })).sort((a, b) => a.dr - b.dr);
   const mi = (v) => v >= 1000 ? 'R$ ' + fmt(v / 1000, 2) + ' bi' : 'R$ ' + fmt(v, v < 10 ? 1 : 0) + ' mi';
   const texto = (alvo < T ? 'Reduzir' : 'Aumentar') + ' o fundo eleitoral para R$ ' + fmt(alvo / 1000, alvo % 1000 ? 1 : 0) + ' bilhões';
   return html`<div className="flex flex-col gap-5" data-el-fundo="1">
@@ -32316,12 +32330,16 @@ function ElFundo({ g, decidir }) {
     <div className="sec flex flex-col gap-2" data-barreira="1">
       <div className="eyebrow">Cláusula de barreira<${GvTip} txt=${'EC 97/2017: o partido que não atinge o desempenho mínimo na eleição para a Câmara perde o fundo partidário e o tempo de rádio e TV (o fundo eleitoral continua). Regra de ' + bar.ano + ': ' + fmt(bar.R.voto, bar.R.voto % 1 ? 1 : 0) + '% dos votos válidos em 9 estados (' + fmt(bar.R.uf, bar.R.uf % 1 ? 1 : 0) + '% em cada) ou ' + bar.R.dep + ' deputados em 9 estados. Federações contam como um partido. Quem foi eleito por partido barrado pode trocar de partido sem perder o mandato. No jogo, os votos são aproximados pela bancada.'} /></div>
       <div className="text-sm text-muted">Regra da eleição de ${bar.ano}: ${fmt(bar.R.voto, bar.R.voto % 1 ? 1 : 0)}% dos votos ou ${bar.R.dep} deputados, em pelo menos 9 estados. ${bar.ano < 2030 ? 'Na eleição de 2030 sobe para 3% ou 15 deputados.' : ''} Quem fica abaixo não tem tempo de TV na disputa presidencial e faz campanha mais fraca (sem fundo partidário).</div>
-      <div className="grid gap-x-6 gap-y-1 mt-1 text-sm" style=${{ gridTemplateColumns: 'repeat(auto-fill,minmax(260px,1fr))' }}>${PARTIDOS.map(P => { const x = bar.P[P.id]; return html`<span key=${P.id} className="flex justify-between gap-2" data-barreira-bloco=${P.id} data-ok=${x.ok ? '1' : '0'}><span>${P.curto}</span><span className="num">${x.nDep} dep. · ${x.nUF} UF · <b style=${{ color: x.ok ? 'var(--verde)' : 'var(--rubro)' }}>${x.ok ? 'passa' : 'barrado'}</b></span></span>`; })}</div>
-      ${bar.P.OUTROS ? html`<div className="text-sm text-muted">"Outros" reúne siglas pequenas que ficam abaixo do mínimo.</div>` : null}
+      <div className="grid gap-2 mt-1" style=${{ gridTemplateColumns: 'repeat(auto-fill,minmax(250px,1fr))' }}>${PARTIDOS.filter(P => P.id !== 'OUTROS').map(P => { const x = bar.P[P.id]; const prog = Math.min(1, Math.max(x.voto / bar.R.voto, x.nDep / bar.R.dep)); const cor = x.ok ? 'var(--verde)' : 'var(--rubro)';
+        return html`<div key=${P.id} className="flex flex-col gap-1.5" style=${{ padding: '10px 12px', borderRadius: '10px', background: 'var(--panel2)', border: '1px solid var(--line2)', borderLeft: '4px solid ' + P.cor }} data-barreira-bloco=${P.id} data-ok=${x.ok ? '1' : '0'}>
+          <div className="flex items-center justify-between gap-2"><b className="text-sm" style=${{ color: P.cor }}>${P.curto}</b><span className="text-xs font-semibold" style=${{ color: cor, background: x.ok ? 'rgba(47,210,122,.14)' : 'rgba(255,90,78,.14)', padding: '2px 8px', borderRadius: '999px' }}>${x.ok ? 'passa' : 'barrado'}</span></div>
+          <div style=${{ height: '6px', borderRadius: '3px', background: 'var(--line)', overflow: 'hidden' }}><i style=${{ display: 'block', height: '100%', width: (prog * 100) + '%', background: cor }}></i></div>
+          <div className="text-xs text-muted num">${x.nDep} ${x.nDep === 1 ? 'deputado' : 'deputados'} em ${x.nUF} ${x.nUF === 1 ? 'estado' : 'estados'}${bar.real ? '' : ' · ' + fmt(x.voto, 1) + '% da Câmara'}</div></div>`; })}</div>
+      ${bar.real ? html`<div className="text-sm text-muted">Resultado real de 2026 (TSE). O PSOL-Rede passou por decisão unânime do TSE em 27/10/2026, que arredondou 1,49% no Espírito Santo para 1,5%. PDT, Avante, Missão e Renovação Solidária (PRD-Solidariedade) ficaram abaixo, assim como as siglas pequenas de "Outros". A barra mostra a bancada perto do mínimo de deputados.</div>` : html`<div className="text-sm text-muted">Calculado com o resultado da eleição de ${bar.ano} no seu jogo (votos aproximados pela bancada). "Outros" reúne siglas pequenas, que ficam abaixo.</div>`}
     </div>
     <div className="sec flex flex-col gap-3" data-fefc-mudar="1">
       <div className="eyebrow">Mudar o tamanho do fundo</div>
-      <div className="text-sm text-muted">Vira um projeto de lei e vai ao Congresso (1 ação). Também dá para escrever na Caixa de decisão, como "reduzir o fundo eleitoral para R$ 3 bilhões". Vale para a próxima eleição. Cortar agrada a opinião pública e irrita os partidos que perdem dinheiro; aumentar faz o contrário.</div>
+      <div className="text-sm text-muted">Vira um projeto de lei e vai ao Congresso (1 ação). Também dá para escrever na Caixa de decisão, como "reduzir o fundo eleitoral para R$ 3 bilhões". Vale para a próxima eleição. Cortar agrada a opinião pública e irrita os partidos que perdem dinheiro, menos Novo e Missão, que defendem o fim do financiamento público e apoiam o corte; aumentar faz o contrário.</div>
       <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Novo tamanho do fundo">${FEFC_OPC.filter(v => Math.abs(v - T) >= 100).map(v => html`<button key=${v} type="button" role="radio" aria-checked=${alvo === v} aria-pressed=${alvo === v} className="btn btn-ghost btn-sm" data-fefc-opc=${v} onClick=${() => setAlvo(v)}>R$ ${fmt(v / 1000, 0)} bi</button>`)}</div>
       <div className="text-sm leading-relaxed" data-fefc-previa="1">${alvo < T ? 'Corte' : 'Aumento'} de <b>${mi(Math.abs(alvo - T))}</b> por eleição.${prev.length ? html` Relação com os partidos, se aprovado: ${prev.map((x, i) => html`<span key=${x.P.id}>${i ? ', ' : ''}${x.P.curto} <b style=${{ color: x.dr < 0 ? 'var(--rubro)' : 'var(--verde)' }}>${sgn(x.dr, 1)}</b></span>`)}.` : ''}</div>
       <button type="button" className="btn btn-pri btn-sm self-start" disabled=${!ok || !decidir} data-fefc-propor="1" onClick=${() => decidir && decidir(texto)}><${Icon} n="Send" s=${14} /> ${texto} · 1 ação</button>
