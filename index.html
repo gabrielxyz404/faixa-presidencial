@@ -30637,7 +30637,8 @@ function elGerCria(g) {
   return ger;
 }
 function elGerMensal(g, notas) {
-  const E = g.el; const ger = E.ger; if (!ger || ger.c !== elCiclo(g.mes)) return;
+  const E = g.el; const ger0 = E && E.ger; if (ger0 && ger0.contagem && !ger0.contagem.visto && g.mes > ger0.contagem.mes) ger0.contagem.visto = true; // contagem que ficou para trás (um mês passou sem ser vista) não reabre depois
+  const ger = E.ger; if (!ger || ger.c !== elCiclo(g.mes)) return;
   const rel = g.mes - 48 * ger.c;
   // momentum esfria; adversários oscilam um pouco; tema prioritário rende ou pesa
   for (const c of ger.cands) {
