@@ -62,7 +62,7 @@ with sync_playwright() as p:
     start(pg)
     ok = 0
     for i, t in enumerate(PROPS):
-        if i == 4:  # acabaram as ações do mês: avança e segue
+        if i == 3:  # acabaram as 3 propostas do mês: avança e segue
             encerra(pg)
         try:
             r = propoe(pg, t); ok += 1 if r else 0; print('proposta', i + 1, t[:40], r, flush=True)
