@@ -19951,7 +19951,7 @@ function PoderesUF({ g, uf }) {
 }
 /* ---- mapa interativo dos 27 estados (compartilhado pelas subseções Mapa e Segurança, em País) ----
    cor(uf) -> preenchimento; rotulo(uf) -> aria-label; tip(uf) -> conteúdo do tooltip; hatch(uf) -> hachura por cima (opcional) */
-function MapaUF({ cor, rotulo, tip, selecionado, onSel, aria, hatch, tipW = 176, larg = 620 }) {
+function MapaUF({ cor, rotulo, tip, selecionado, onSel, aria, hatch, tipW = 176, larg = 620, interativo = true }) {
   const [hov, setHov] = useState(null);
   const [tp, setTp] = useState({ x: 0, y: 0 });
   const wrap = useRef(null);
@@ -19964,9 +19964,9 @@ function MapaUF({ cor, rotulo, tip, selecionado, onSel, aria, hatch, tipW = 176,
     <svg viewBox=${MAPA_BR.viewBox} className="w-full h-auto block" aria-label=${aria}>
       ${hatch ? html`<defs><pattern id="mapa-hachura" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="#0b110f" strokeWidth="2.6"></line></pattern></defs>` : null}
       ${ordem.map(uf => html`<path key=${uf} d=${MAPA_BR.uf[uf].d} className="uf-path" fill=${cor(uf)} fillRule="evenodd" stroke="var(--ink)" strokeWidth="0.8" strokeLinejoin="round"
-        tabIndex=${0} role="button" aria-pressed=${uf === selecionado} aria-label=${rotulo(uf)}
-        onPointerEnter=${() => setHov(uf)} onFocus=${(e) => onFocus(e, uf)} onBlur=${() => setHov(h => (h === uf ? null : h))} onClick=${() => onSel(uf)}
-        onKeyDown=${(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSel(uf); } }}></path>`)}
+        tabIndex=${interativo ? 0 : -1} role=${interativo ? 'button' : 'img'} aria-pressed=${interativo ? uf === selecionado : undefined} aria-label=${rotulo(uf)}
+        onPointerEnter=${() => setHov(uf)} onFocus=${(e) => onFocus(e, uf)} onBlur=${() => setHov(h => (h === uf ? null : h))} onClick=${() => { if (interativo && onSel) onSel(uf); }}
+        onKeyDown=${(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (interativo && onSel) onSel(uf); } }}></path>`)}
       ${hatch ? ordem.filter(uf => hatch(uf)).map(uf => html`<path key=${'h' + uf} d=${MAPA_BR.uf[uf].d} fill="url(#mapa-hachura)" fillRule="evenodd" stroke="none" pointerEvents="none"></path>`) : null}
       ${ordem.filter(uf => !MAPA_SEM_ROTULO[uf]).map(uf => html`<text key=${'t' + uf} x=${MAPA_BR.uf[uf].x} y=${MAPA_BR.uf[uf].y} textAnchor="middle" dominantBaseline="central" fill="var(--ink)" fontSize="11" fontWeight="700" fontFamily="var(--f-mono)" pointerEvents="none">${uf}</text>`)}
       ${ativos.map(uf => html`<path key=${'o' + uf} d=${MAPA_BR.uf[uf].d} fill="none" fillRule="evenodd" stroke="var(--ouro)" strokeWidth=${uf === selecionado ? 2.4 : 2} strokeLinejoin="round" pointerEvents="none"></path>`)}
@@ -31904,21 +31904,26 @@ function elDiscurso(g, ger, res) {
 /* ---------- contagem ao vivo da eleição presidencial (tela cheia, 3 minutos, dá para pular) ----------
    Só revela aos poucos o resultado que a apuração já calculou: cada estado começa e termina de apurar num momento diferente (por isso pode haver virada).
    Azul = você (ou o candidato do governo), vermelho = principal rival, cinza = demais. */
-const CONT_SEG = 180, CONT_AZUL = '#3d7bff', CONT_VERM = '#ff4b4b', CONT_CINZA = '#6b6b6b';
+const CONT_SEG = 180, CONT_AZUL = '#3d7bff', CONT_VERM = '#ff4b4b', CONT_CINZA = '#9a9a9a', CONT_VAZIO = '#262626';
 function elContagemDados(g, ger) {
   const res = ger.res, turno = ger.contagem.turno, R = turno === 2 && res.t2 ? res.t2 : res.t1;
-  const ids = Object.keys(R.nac), meu = ger.meuId || ger.sitId || ger.apoiadoId;
-  const azul = ids.includes(meu) ? meu : ids.slice().sort((a, b) => R.nac[b] - R.nac[a])[0];
+  const ids = Object.keys(R.nac), meu = ger.meuId || ger.sitId || ger.apoiadoId, Cm = ger.cands.find(c => c.id === meu);
+  const meuNaDisputa = ids.includes(meu);
+  // seu candidato fora do 2º turno: o azul vai para o finalista mais próximo de você nas ideias (e a etiqueta diz isso)
+  const azul = meuNaDisputa ? meu : ids.slice().sort((a, b) => { const A = ger.cands.find(c => c.id === a), B = ger.cands.find(c => c.id === b); return Cm ? Math.abs((A.dir || 0) - (Cm.dir || 0)) - Math.abs((B.dir || 0) - (Cm.dir || 0)) : R.nac[b] - R.nac[a]; })[0];
   const verm = ids.filter(i => i !== azul).sort((a, b) => R.nac[b] - R.nac[a])[0];
-  const ufs = Object.keys(UF_INFO).map(u => {
-    const vU = UF_INFO[u].eleit / 100 * EL_ELEIT_TOT * EL_COMP * (1 - EL_BN), h1 = hashStr(String(g.seed) + 'ct' + u + turno + ger.ano), h2 = hashStr(String(g.seed) + 'cd' + u + turno + ger.ano);
-    const ini = .02 + .4 * h1, dur = Math.min(.98 - ini, .3 + .35 * h2);
-    return { u, vU, ini, dur, sh: R.ufs[u] };
+  // ritmo: cada estado começa entre 0% e 20% do tempo e termina entre 60% e 100%; o último termina exatamente no fim (aí sai o resultado)
+  let ufs = Object.keys(UF_INFO).map(u => {
+    const vU = UF_INFO[u].eleit / 100 * EL_ELEIT_TOT * EL_COMP * (turno === 2 && res.t2 ? (1 - .035) : (1 - EL_BN)); // mesma base de votos válidos da apuração oficial (2º turno: brancos e nulos de 3,5%)
+    const h1 = hashStr(String(g.seed) + 'ct' + u + turno + ger.ano), h2 = hashStr(String(g.seed) + 'cd' + u + turno + ger.ano);
+    return { u, vU, ini: .2 * h1, fim: .6 + .4 * h2, sh: R.ufs[u] };
   });
+  const i0 = Math.min(...ufs.map(x => x.ini)), f1 = Math.max(...ufs.map(x => x.fim));
+  ufs = ufs.map(x => { const ini = x.ini - i0, fim = (x.fim - i0) / (f1 - i0); return Object.assign(x, { ini, dur: Math.max(.05, fim - ini) }); });
   const tot = ufs.reduce((a, x) => a + x.vU, 0);
-  return { turno, ids, azul, verm, ufs, tot, res, nac: R.nac };
+  return { turno, ids, azul, verm, ufs, tot, res, nac: R.nac, meuNaDisputa, meu };
 }
-const contProg = (x, f) => { const t = clamp((f - x.ini) / x.dur, 0, 1); return t * t * (3 - 2 * t); };
+const contProg = (x, f) => clamp((f - x.ini) / x.dur, 0, 1);
 function contEstado(D, f) {
   const v = {}; D.ids.forEach(i => { v[i] = 0; }); let ap = 0;
   for (const x of D.ufs) { const p = contProg(x, f); ap += x.vU * p; for (const i of D.ids) v[i] += (x.sh[i] || 0) * x.vU * p; }
@@ -31927,51 +31932,70 @@ function contEstado(D, f) {
   let decidido = null;
   if (D.turno === 2 || D.res.venc && !D.res.t2) { if (v[ord[0]] - v[ord[1]] > rest * 1.02 && v[ord[0]] > 0) decidido = 'eleito'; } // eleito antes do fim
   if (D.turno === 1 && D.res.fin && D.ids.every(i => (v[i] + rest) / D.tot < .5)) decidido = 'segundo';
-  return { v, pct, ap: ap / D.tot * 100, ord, decidido };
+  return { v, pct, ap: f >= 1 ? 100 : Math.min(99.9, ap / D.tot * 100), ord, decidido };
 }
+const contApTxt = (ap) => (ap >= 100 ? '100' : fmt(Math.floor(ap * 10) / 10, 1)); // nunca arredonda para 100% antes de terminar
 function ElContagem({ g, ger, onFim }) {
   const D = useMemo(() => elContagemDados(g, ger), [ger.contagem.mes, ger.contagem.turno]);
   const C = (id) => ger.cands.find(c => c.id === id); const cor = (id) => id === D.azul ? CONT_AZUL : id === D.verm ? CONT_VERM : CONT_CINZA;
   const t0 = useRef(performance.now()); const [f, setF] = useState(0); const [pulou, setPulou] = useState(false);
-  const notas = useRef([]); const ult = useRef({ lider: null, marcos: {}, ufs: {}, dec: null });
+  const notas = useRef([]); const seq = useRef(0); const ult = useRef({ lider: null, marcos: {}, ufs: {}, dec: null, fim: false });
+  const caixa = useRef(null), btnFim = useRef(null);
   const fim = f >= 1;
   useEffect(() => { if (fim) return; const id = setInterval(() => setF(Math.min(1, (performance.now() - t0.current) / 1000 / CONT_SEG)), 200); return () => clearInterval(id); }, [fim]);
+  // a tela de trás fica inerte (Enter, Espaço e Tab não alcançam a Mesa); o foco vai para a contagem e, no fim, para "Continuar"
+  useEffect(() => { const r = document.getElementById('root'); if (r) r.inert = true; try { caixa.current && caixa.current.focus(); } catch (e) { } return () => { if (r) r.inert = false; }; }, []);
+  useEffect(() => { if (fim) { try { btnFim.current && btnFim.current.focus(); } catch (e) { } } }, [fim]);
   const pular = () => { setPulou(true); setF(1); };
-  useEffect(() => { const k = (e) => { if (e.key === 'Escape') { if (!fim) pular(); else onFim(); } }; window.addEventListener('keydown', k); return () => window.removeEventListener('keydown', k); }, [fim]);
-  const E = contEstado(D, f); const add = (t) => { notas.current.unshift({ t, ap: E.ap }); notas.current = notas.current.slice(0, 6); };
-  if (!pulou) { // manchetes ao longo da contagem
-    const U = ult.current;
-    if (E.ap > .5 && E.ord[0] !== U.lider) { if (U.lider) add(`Virada! ${C(E.ord[0]).nome} passa ${C(U.lider).nome} com ${fmt(E.ap, 0)}% das urnas apuradas`); else add(`Primeiros números: ${C(E.ord[0]).nome} larga na frente`); U.lider = E.ord[0]; }
+  useEffect(() => {
+    const k = (e) => {
+      if (e.key === 'Escape') { e.preventDefault(); if (!fim) pular(); else onFim(); }
+      else if (e.key === 'Tab' && caixa.current) { // o Tab circula só pelos botões da contagem
+        const bs = [...caixa.current.querySelectorAll('button')]; if (!bs.length) return; e.preventDefault();
+        const i = bs.indexOf(document.activeElement); bs[(i + (e.shiftKey ? -1 : 1) + bs.length) % bs.length].focus();
+      }
+    };
+    window.addEventListener('keydown', k); return () => window.removeEventListener('keydown', k);
+  }, [fim]);
+  const E = contEstado(D, f); const add = (t) => { notas.current.unshift({ t, ap: E.ap, id: ++seq.current }); notas.current = notas.current.slice(0, 6); };
+  const U = ult.current;
+  if (!pulou && !fim) { // manchetes ao longo da contagem
+    if (!U.lider && E.ap > .2) { add(`Primeiros números: ${C(E.ord[0]).nome} larga na frente`); U.lider = E.ord[0]; }
+    else if (U.lider && E.ord[0] !== U.lider && E.ap >= 10) { add(`Virada! ${C(E.ord[0]).nome} passa ${C(U.lider).nome} com ${contApTxt(E.ap)}% das urnas apuradas`); U.lider = E.ord[0]; }
+    else if (U.lider && E.ord[0] !== U.lider) U.lider = E.ord[0]; // trocas no comecinho não viram manchete
     for (const m of [25, 50, 75, 90]) if (E.ap >= m && !U.marcos[m]) { U.marcos[m] = 1; add(`${m}% das urnas apuradas: ${C(E.ord[0]).nome} ${fmt(E.pct[E.ord[0]], 1)}% × ${C(E.ord[1]).nome} ${fmt(E.pct[E.ord[1]], 1)}%`); }
     for (const x of D.ufs) if (contProg(x, f) >= 1 && !U.ufs[x.u] && UF_INFO[x.u].eleit >= 4) { U.ufs[x.u] = 1; const lid = D.ids.slice().sort((a, b) => (x.sh[b] || 0) - (x.sh[a] || 0))[0]; add(`${UF_INFO[x.u].nome} termina a apuração: ${C(lid).nome} vence com ${fmt((x.sh[lid] || 0) * 100, 1)}%`); }
-    if (E.decidido && !U.dec) { U.dec = E.decidido; add(E.decidido === 'eleito' ? `Projeção: ${C(E.ord[0]).nome} não pode mais ser alcançado(a)` : 'Projeção: ninguém chega a 50% e haverá 2º turno'); }
+    if (E.decidido && !U.dec) { U.dec = E.decidido; add(E.decidido === 'eleito' ? `Projeção: a vitória de ${C(E.ord[0]).nome} está garantida` : 'Projeção: ninguém chega a 50% e haverá 2º turno'); }
   }
   const W = D.res.venc && (D.turno === 2 || !D.res.t2) ? C(D.res.venc) : null;
-  const corUF = (u) => { const x = D.ufs.find(z => z.u === u); const p = contProg(x, f); if (p < .03) return '#3a3a3a'; const lid = D.ids.slice().sort((a, b) => (x.sh[b] || 0) - (x.sh[a] || 0))[0]; return 'color-mix(in srgb, ' + cor(lid) + ' ' + Math.round(35 + 65 * p) + '%, #1a1a1a)'; };
-  const princ = [D.azul, D.verm].filter(Boolean), outros = D.ids.filter(i => !princ.includes(i)).sort((a, b) => E.v[b] - E.v[a]);
+  if (fim && !U.fim) { U.fim = true; add(W ? `Apuração concluída: ${W.nome} é eleito(a) com ${fmt(E.pct[W.id], 2)}% dos votos válidos` : `Apuração concluída: ${C(D.res.fin[0]).nome} e ${C(D.res.fin[1]).nome} vão ao 2º turno`); }
+  const corUF = (u) => { const x = D.ufs.find(z => z.u === u); const p = contProg(x, f); if (p < .02) return CONT_VAZIO; const lid = D.ids.slice().sort((a, b) => (x.sh[b] || 0) - (x.sh[a] || 0))[0]; return 'color-mix(in srgb, ' + cor(lid) + ' ' + Math.round(55 + 45 * p) + '%, #161616)'; };
+  const princ = [D.azul, D.verm].filter(Boolean).sort((a, b) => E.v[b] - E.v[a]), outros = D.ids.filter(i => i !== D.azul && i !== D.verm).sort((a, b) => E.v[b] - E.v[a]);
   const n0 = (x) => fmt(Math.round(x), 0);
-  return html`<div className="modal-wrap" role="dialog" aria-modal="true" aria-label="Apuração da eleição presidencial" data-contagem=${D.turno} style=${{ zIndex: 90, background: '#000', alignItems: 'stretch', padding: 0 }}>
+  const etiqueta = (i) => i !== D.azul ? '' : D.meuNaDisputa ? ' · você' + (ger.meuId === i ? '' : ' (governo)') : ' · mais próximo de você';
+  const btnContinuar = (extra) => html`<button type="button" ref=${extra ? null : btnFim} className="btn btn-gold" data-contagem-fim=${extra ? '2' : '1'} onClick=${onFim}>Continuar</button>`;
+  return ReactDOM.createPortal(html`<div className="modal-wrap" role="dialog" aria-modal="true" aria-label="Apuração da eleição presidencial" data-contagem=${D.turno} ref=${caixa} tabIndex=${-1} style=${{ zIndex: 90, background: '#000', alignItems: 'stretch', padding: 0, outline: 'none' }}>
     <div className="w-full flex flex-col gap-5" style=${{ maxWidth: '1400px', margin: '0 auto', padding: '28px 32px' }}>
       <div className="flex flex-wrap items-center justify-between gap-3"><div><div className="eyebrow">Apuração · eleição presidencial ${ger.ano} · ${D.turno}º turno</div><h2 className="disp" style=${{ fontSize: '34px' }}>${fim ? (W ? 'Resultado final' : '2º turno confirmado') : 'Contagem dos votos'}</h2></div>
-        ${fim ? html`<button type="button" className="btn btn-gold" data-contagem-fim="1" onClick=${onFim}>Continuar</button>` : html`<button type="button" className="btn btn-ghost" data-contagem-pular="1" onClick=${pular}>Pular contagem</button>`}</div>
-      <div><div className="flex justify-between text-sm mb-1"><span className="text-muted">Urnas apuradas</span><b className="num" data-contagem-ap=${E.ap.toFixed(1)}>${fmt(E.ap, E.ap < 100 ? 1 : 0)}%</b></div>
+        ${fim ? btnContinuar(false) : html`<button type="button" className="btn btn-ghost" data-contagem-pular="1" onClick=${pular}>Pular contagem</button>`}</div>
+      <div><div className="flex justify-between text-sm mb-1"><span className="text-muted">Urnas apuradas</span><b className="num" data-contagem-ap=${E.ap.toFixed(1)}>${contApTxt(E.ap)}%</b></div>
         <div style=${{ height: '14px', borderRadius: '7px', background: '#1a1a1a', overflow: 'hidden', display: 'flex' }}>${princ.map(i => html`<i key=${i} style=${{ display: 'block', width: (E.v[i] / D.tot * 100) + '%', background: cor(i), transition: 'width .2s linear' }}></i>`)}<i style=${{ display: 'block', width: (outros.reduce((a, i) => a + E.v[i], 0) / D.tot * 100) + '%', background: CONT_CINZA }}></i></div></div>
       <div className="grid gap-6" style=${{ gridTemplateColumns: 'minmax(0,1fr) minmax(0,560px)' }}>
         <div className="flex flex-col gap-3 min-w-0">
           ${princ.map(i => html`<div key=${i} data-contagem-cand=${i} style=${{ padding: '18px 20px', borderRadius: '14px', background: 'color-mix(in srgb, ' + cor(i) + ' 16%, #0b0b0b)', border: '2px solid ' + cor(i) }}>
-            <div className="flex items-baseline justify-between gap-3"><div className="min-w-0"><div className="disp" style=${{ fontSize: '26px', color: cor(i) }}>${C(i).nome}</div><div className="text-sm text-muted">${C(i).sigla}${i === D.azul ? ' · você' + (ger.meuId === i ? '' : ' (governo)') : ''}</div></div>
+            <div className="flex items-baseline justify-between gap-3"><div className="min-w-0"><div className="disp" style=${{ fontSize: '26px', color: cor(i) }}>${C(i).nome}</div><div className="text-sm text-muted">${C(i).sigla}${etiqueta(i)}</div></div>
               <div className="text-right"><div className="num disp" style=${{ fontSize: '46px', lineHeight: 1, color: cor(i) }}>${fmt(E.pct[i] || 0, 2)}%</div><div className="num text-sm text-muted">${n0(E.v[i])} votos</div></div></div>
             <div style=${{ height: '8px', borderRadius: '4px', background: '#1a1a1a', marginTop: '10px', overflow: 'hidden' }}><i style=${{ display: 'block', height: '100%', width: (E.pct[i] || 0) + '%', background: cor(i), transition: 'width .2s linear' }}></i></div></div>`)}
-          ${outros.length ? html`<div className="flex flex-col gap-1.5 text-sm">${outros.map(i => html`<div key=${i} className="flex justify-between gap-3" style=${{ color: '#a9a9a2' }}><span>${C(i).nome} <span className="text-muted">${C(i).sigla}</span></span><span className="num">${fmt(E.pct[i] || 0, 2)}% · ${n0(E.v[i])}</span></div>`)}</div>` : null}
-          <div className="flex flex-col gap-1.5 mt-2" data-contagem-manchetes="1" aria-live="polite">${notas.current.map((n, k) => html`<div key=${k + n.t} className="text-sm" style=${{ opacity: 1 - k * .14, fontWeight: k ? 400 : 600 }}><span className="num text-muted">${fmt(n.ap, 0)}% · </span>${n.t}</div>`)}</div>
+          ${outros.length ? html`<div className="flex flex-col gap-1.5 text-sm">${outros.map(i => html`<div key=${i} className="flex justify-between gap-3" style=${{ color: '#a9a9a2' }}><span>${C(i).nome} <span className="text-muted">${C(i).sigla}${etiqueta(i)}</span></span><span className="num">${fmt(E.pct[i] || 0, 2)}% · ${n0(E.v[i])}</span></div>`)}</div>` : null}
+          <div className="flex flex-col gap-1.5 mt-2" data-contagem-manchetes="1" aria-live="polite" aria-relevant="additions">${notas.current.map((n, k) => html`<div key=${n.id} className="text-sm" style=${{ opacity: 1 - k * .14, fontWeight: k ? 400 : 600 }}><span className="num text-muted">${contApTxt(n.ap)}% · </span>${n.t}</div>`)}</div>
         </div>
-        <div className="min-w-0"><${MapaUF} cor=${corUF} rotulo=${u => UF_INFO[u].nome} aria="Mapa da apuração por estado" larg=${560} tip=${u => { const x = D.ufs.find(z => z.u === u); const p = contProg(x, f); const lid = D.ids.slice().sort((a, b) => (x.sh[b] || 0) - (x.sh[a] || 0))[0]; return html`<div><div className="font-bold text-sm">${UF_INFO[u].nome}</div><div className="text-xs">${fmt(p * 100, 0)}% apurado${p > .03 ? ' · lidera ' + C(lid).nome : ''}</div></div>`; }} />
-          <div className="flex flex-wrap gap-4 text-xs text-muted mt-2" data-contagem-legenda="1"><span><i style=${{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '2px', background: CONT_AZUL, marginRight: '6px' }}></i>${C(D.azul).nome} lidera</span><span><i style=${{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '2px', background: CONT_VERM, marginRight: '6px' }}></i>${D.verm ? C(D.verm).nome + ' lidera' : ''}</span>${D.ids.length > 2 ? html`<span><i style=${{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '2px', background: CONT_CINZA, marginRight: '6px' }}></i>outro candidato lidera</span>` : null}<span><i style=${{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '2px', background: '#3a3a3a', marginRight: '6px' }}></i>ainda sem votos</span><span>cor mais forte = mais urnas apuradas</span></div></div>
+        <div className="min-w-0"><${MapaUF} interativo=${false} cor=${corUF} rotulo=${u => UF_INFO[u].nome} aria="Mapa da apuração por estado" larg=${560} tip=${u => { const x = D.ufs.find(z => z.u === u); const p = contProg(x, f); const lid = D.ids.slice().sort((a, b) => (x.sh[b] || 0) - (x.sh[a] || 0))[0]; return html`<div><div className="font-bold text-sm">${UF_INFO[u].nome}</div><div className="text-xs">${fmt(Math.floor(p * 100), 0)}% apurado${p >= .02 ? ' · lidera ' + C(lid).nome + ' (' + fmt((x.sh[lid] || 0) * 100, 1) + '%)' : ''}</div></div>`; }} />
+          <div className="flex flex-wrap gap-4 text-xs text-muted mt-2" data-contagem-legenda="1"><span><i style=${{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '2px', background: CONT_AZUL, marginRight: '6px' }}></i>${C(D.azul).nome} lidera</span>${D.verm ? html`<span><i style=${{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '2px', background: CONT_VERM, marginRight: '6px' }}></i>${C(D.verm).nome} lidera</span>` : null}${D.ids.length > 2 ? html`<span><i style=${{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '2px', background: CONT_CINZA, marginRight: '6px' }}></i>outro candidato lidera</span>` : null}<span><i style=${{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '2px', background: CONT_VAZIO, border: '1px solid #444', marginRight: '6px' }}></i>ainda sem votos</span><span>cor mais forte = mais urnas apuradas</span></div></div>
       </div>
-      ${fim ? html`<div data-contagem-resultado="1" style=${{ padding: '18px 20px', borderRadius: '14px', border: '2px solid ' + (W ? cor(W.id) : 'var(--ouro)'), background: '#0b0b0b' }}>
-        <div className="disp" style=${{ fontSize: '28px', color: W ? cor(W.id) : 'var(--ouro)' }}>${W ? W.nome + ' é eleito(a) presidente' : '2º turno: ' + C(D.res.fin[0]).nome + ' × ' + C(D.res.fin[1]).nome}</div>
-        <p className="text-sm mt-2 gl-inteiro">${elDiscurso(g, ger, D.res)}</p></div>` : null}
-    </div></div>`;
+      ${fim ? html`<div data-contagem-resultado="1" className="flex flex-wrap items-center justify-between gap-4" style=${{ padding: '18px 20px', borderRadius: '14px', border: '2px solid ' + (W ? cor(W.id) : 'var(--ouro)'), background: '#0b0b0b' }}>
+        <div className="min-w-0" style=${{ flex: '1 1 600px' }}><div className="disp" style=${{ fontSize: '28px', color: W ? cor(W.id) : 'var(--ouro)' }}>${W ? W.nome + ' é eleito(a) presidente' : '2º turno: ' + C(D.res.fin[0]).nome + ' × ' + C(D.res.fin[1]).nome}</div>
+        <p className="text-sm mt-2 gl-inteiro">${elDiscurso(g, ger, D.res)}</p></div>${btnContinuar(true)}</div>` : null}
+    </div></div>`, document.body);
 }
 function ElApurG({ g, ger }) {
   const res = ger.res; const [turno, setTurno] = useState(res && res.t2 ? 2 : 1); const [uf, setUf] = useState('SP');
@@ -33708,7 +33732,7 @@ function App() {
       </main>
     </div>
     ${dec && html`<${ErroTela} nome="modal-decisao" onVoltar=${() => setDec(null)}><${ModalDecisao} dec=${dec} g=${g} upd=${upd} setDec=${setDec} onClose=${() => setDec(null)} votarItem=${votarItem} /></${ErroTela}>`}
-    ${relMes && g && g.el && g.el.ger && g.el.ger.contagem && !g.el.ger.contagem.visto && g.el.ger.res ? html`<${ErroTela} nome="contagem" onVoltar=${() => upd(n => { n.el.ger.contagem.visto = true; })}><${ElContagem} g=${g} ger=${g.el.ger} onFim=${() => upd(n => { n.el.ger.contagem.visto = true; })} /></${ErroTela}>` : relMes && html`<${ErroTela} nome="modal-mes" onVoltar=${() => setRelMes(null)}><${ModalMes} rel=${relMes} g=${g} onClose=${() => setRelMes(null)} /></${ErroTela}>`}
+    ${g && !g.over && g.el && g.el.ger && g.el.ger.contagem && !g.el.ger.contagem.visto && g.el.ger.res ? html`<${ErroTela} nome="contagem" onVoltar=${() => upd(n => { n.el.ger.contagem.visto = true; })}><${ElContagem} g=${g} ger=${g.el.ger} onFim=${() => upd(n => { n.el.ger.contagem.visto = true; })} /></${ErroTela}>` : relMes && html`<${ErroTela} nome="modal-mes" onVoltar=${() => setRelMes(null)}><${ModalMes} rel=${relMes} g=${g} onClose=${() => setRelMes(null)} /></${ErroTela}>`}
     ${aviso && html`<div className="toast card px-4 py-3 text-sm flex items-center gap-2 fade-in" role="status" data-toast="1"><span className=${typeof aviso === 'string' ? 'text-ambar' : 'text-ouro'}><${Icon} n=${typeof aviso === 'string' ? 'TriangleAlert' : 'Award'} /></span>${typeof aviso === 'string' ? aviso : aviso.x}</div>`}
     ${cfgOpen && html`<${ErroTela} nome="modal-config" onVoltar=${() => setCfgOpen(false)}><${ModalConfig} ia=${ia} setIa=${setIa} temClaude=${temClaude} onClose=${() => setCfgOpen(false)} reiniciar=${reiniciar} voltarMenu=${voltarMenu} fotos=${g.ui.fotos !== false} setFotos=${setFotos} temFotos=${!!FOTO_ST.dados} logos=${g.ui.logos !== false} setLogos=${setLogos} temLogos=${!!LOGO_ST.dados} /></${ErroTela}>`}
   </div>`;
