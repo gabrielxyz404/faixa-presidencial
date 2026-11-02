@@ -19959,7 +19959,7 @@ function MapaUF({ cor, rotulo, tip, selecionado, onSel, aria, hatch, tipW = 176,
   const pos = (cx, cy) => { const r = wrap.current.getBoundingClientRect(); return { x: clamp(cx - r.left + 14, 0, Math.max(0, r.width - tipW)), y: clamp(cy - r.top + 14, 0, Math.max(0, r.height - 70)) }; };
   const onMove = (e) => { if (wrap.current) setTp(pos(e.clientX, e.clientY)); };
   const onFocus = (e, uf) => { if (wrap.current) { const b = e.currentTarget.getBoundingClientRect(); setTp(pos(b.left + b.width / 2, b.top + b.height / 2)); } setHov(uf); };
-  const ativos = hov && hov !== selecionado ? [selecionado, hov] : [selecionado];
+  const ativos = (hov && hov !== selecionado ? [selecionado, hov] : [selecionado]).filter(u => u && MAPA_BR.uf[u]);
   return html`<div ref=${wrap} className="relative w-full mx-auto" style=${{ maxWidth: larg }} onPointerMove=${onMove} onPointerLeave=${() => setHov(null)}>
     <svg viewBox=${MAPA_BR.viewBox} className="w-full h-auto block" aria-label=${aria}>
       ${hatch ? html`<defs><pattern id="mapa-hachura" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="#0b110f" strokeWidth="2.6"></line></pattern></defs>` : null}
@@ -30669,7 +30669,7 @@ function elGerApura1(g, ger, notas) {
   const ord = ger.cands.slice().sort((a, b) => t1.nac[b.id] - t1.nac[a.id]);
   const res = { t1: { nac: t1.nac, votos: t1.votos, validos: t1.validos, ufs: t1.ufs }, fin: null, venc: null, t2: null, fase: 't2' };
   if (t1.nac[ord[0].id] > .5) { res.venc = ord[0].id; res.fase = 'fim'; } else res.fin = [ord[0].id, ord[1].id];
-  ger.res = res; ger.fase = 'apur1'; ger.vista1 = false;
+  ger.res = res; ger.fase = 'apur1'; ger.vista1 = false; ger.contagem = { turno: 1, mes: g.mes, visto: false }; // contagem ao vivo em tela cheia antes do balanço
   const a = ord[0], b = ord[1];
   notas.push({ t: 'neu', x: res.venc ? `1º turno ${ger.ano}: ${a.nome} vence com ${fmt(t1.nac[a.id] * 100, 1)}% dos votos válidos.` : `1º turno ${ger.ano}: ${a.nome} (${fmt(t1.nac[a.id] * 100, 1)}%) e ${b.nome} (${fmt(t1.nac[b.id] * 100, 1)}%) vão ao 2º turno.` });
   g.feed.unshift({ mes: g.mes, src: 'globo', txt: res.venc ? `${a.nome} é eleito(a) presidente no 1º turno` : `${a.nome} e ${b.nome} disputam o 2º turno` }); g.feed = g.feed.slice(0, 40);
@@ -30680,7 +30680,7 @@ function elGerApura2(g, ger, notas) {
   const res = ger.res; if (!res || res.fase === 'fim' && res.venc && !res.fin) { if (res) { ger.fase = 'fim'; elGerFecha(g, ger, notas); } return; }
   const AE = aprovEstados(g); const t2 = elTurno2(g, ger, res.fin[0], res.fin[1], AE, 1, { ufs: res.t1.ufs, tU: Object.fromEntries(Object.keys(UF_INFO).map(u => [u, res.t1.validos * UF_INFO[u].eleit / 100 * 0 + UF_INFO[u].eleit / 100 * EL_ELEIT_TOT * EL_COMP * (1 - EL_BN)])) });
   res.t2 = { nac: t2.nac, votos: t2.votos, ufs: t2.ufs };
-  const a = res.fin[0], b = res.fin[1]; res.venc = t2.nac[a] >= .5 ? a : b; res.fase = 'fim'; ger.fase = 'fim'; ger.vista2 = false;
+  const a = res.fin[0], b = res.fin[1]; res.venc = t2.nac[a] >= .5 ? a : b; res.fase = 'fim'; ger.fase = 'fim'; ger.vista2 = false; ger.contagem = { turno: 2, mes: g.mes, visto: false };
   const W = ger.cands.find(c => c.id === res.venc), Lc = ger.cands.find(c => c.id === (res.venc === a ? b : a));
   notas.push({ t: 'pos', x: `2º turno ${ger.ano}: ${W.nome} é eleito(a) presidente com ${fmt(t2.nac[res.venc] * 100, 1)}% dos votos válidos.` });
   g.feed.unshift({ mes: g.mes, src: 'globo', txt: `${W.nome} vence o 2º turno com ${fmt(t2.nac[res.venc] * 100, 1)}% e será o(a) presidente a partir de 1º de janeiro` }); g.feed = g.feed.slice(0, 40);
@@ -31900,6 +31900,78 @@ function elDiscurso(g, ger, res) {
   if (!meu) return `Discurso (simulado) de ${W.nome}: “Recebo a confiança dos brasileiros com humildade. Vou governar para todos, ouvir quem votou e quem não votou em mim.”`;
   return ganhou ? `Discurso de vitória (simulado) de ${W.nome}: “Agradeço a cada brasileiro e brasileira. Esta vitória é de quem acredita no país. Vamos governar para todos e dialogar com o Congresso.”`
     : `Discurso de derrota (simulado) de ${meu.nome}: “Reconheço o resultado e cumprimento ${W.nome}. A democracia vive de alternância e continuaremos defendendo nossas propostas.”`;
+}
+/* ---------- contagem ao vivo da eleição presidencial (tela cheia, 3 minutos, dá para pular) ----------
+   Só revela aos poucos o resultado que a apuração já calculou: cada estado começa e termina de apurar num momento diferente (por isso pode haver virada).
+   Azul = você (ou o candidato do governo), vermelho = principal rival, cinza = demais. */
+const CONT_SEG = 180, CONT_AZUL = '#3d7bff', CONT_VERM = '#ff4b4b', CONT_CINZA = '#6b6b6b';
+function elContagemDados(g, ger) {
+  const res = ger.res, turno = ger.contagem.turno, R = turno === 2 && res.t2 ? res.t2 : res.t1;
+  const ids = Object.keys(R.nac), meu = ger.meuId || ger.sitId || ger.apoiadoId;
+  const azul = ids.includes(meu) ? meu : ids.slice().sort((a, b) => R.nac[b] - R.nac[a])[0];
+  const verm = ids.filter(i => i !== azul).sort((a, b) => R.nac[b] - R.nac[a])[0];
+  const ufs = Object.keys(UF_INFO).map(u => {
+    const vU = UF_INFO[u].eleit / 100 * EL_ELEIT_TOT * EL_COMP * (1 - EL_BN), h1 = hashStr(String(g.seed) + 'ct' + u + turno + ger.ano), h2 = hashStr(String(g.seed) + 'cd' + u + turno + ger.ano);
+    const ini = .02 + .4 * h1, dur = Math.min(.98 - ini, .3 + .35 * h2);
+    return { u, vU, ini, dur, sh: R.ufs[u] };
+  });
+  const tot = ufs.reduce((a, x) => a + x.vU, 0);
+  return { turno, ids, azul, verm, ufs, tot, res, nac: R.nac };
+}
+const contProg = (x, f) => { const t = clamp((f - x.ini) / x.dur, 0, 1); return t * t * (3 - 2 * t); };
+function contEstado(D, f) {
+  const v = {}; D.ids.forEach(i => { v[i] = 0; }); let ap = 0;
+  for (const x of D.ufs) { const p = contProg(x, f); ap += x.vU * p; for (const i of D.ids) v[i] += (x.sh[i] || 0) * x.vU * p; }
+  const sv = Object.values(v).reduce((a, b) => a + b, 0) || 1; const pct = {}; D.ids.forEach(i => { pct[i] = v[i] / sv * 100; });
+  const ord = D.ids.slice().sort((a, b) => v[b] - v[a]); const rest = D.tot - ap;
+  let decidido = null;
+  if (D.turno === 2 || D.res.venc && !D.res.t2) { if (v[ord[0]] - v[ord[1]] > rest * 1.02 && v[ord[0]] > 0) decidido = 'eleito'; } // eleito antes do fim
+  if (D.turno === 1 && D.res.fin && D.ids.every(i => (v[i] + rest) / D.tot < .5)) decidido = 'segundo';
+  return { v, pct, ap: ap / D.tot * 100, ord, decidido };
+}
+function ElContagem({ g, ger, onFim }) {
+  const D = useMemo(() => elContagemDados(g, ger), [ger.contagem.mes, ger.contagem.turno]);
+  const C = (id) => ger.cands.find(c => c.id === id); const cor = (id) => id === D.azul ? CONT_AZUL : id === D.verm ? CONT_VERM : CONT_CINZA;
+  const t0 = useRef(performance.now()); const [f, setF] = useState(0); const [pulou, setPulou] = useState(false);
+  const notas = useRef([]); const ult = useRef({ lider: null, marcos: {}, ufs: {}, dec: null });
+  const fim = f >= 1;
+  useEffect(() => { if (fim) return; const id = setInterval(() => setF(Math.min(1, (performance.now() - t0.current) / 1000 / CONT_SEG)), 200); return () => clearInterval(id); }, [fim]);
+  const pular = () => { setPulou(true); setF(1); };
+  useEffect(() => { const k = (e) => { if (e.key === 'Escape') { if (!fim) pular(); else onFim(); } }; window.addEventListener('keydown', k); return () => window.removeEventListener('keydown', k); }, [fim]);
+  const E = contEstado(D, f); const add = (t) => { notas.current.unshift({ t, ap: E.ap }); notas.current = notas.current.slice(0, 6); };
+  if (!pulou) { // manchetes ao longo da contagem
+    const U = ult.current;
+    if (E.ap > .5 && E.ord[0] !== U.lider) { if (U.lider) add(`Virada! ${C(E.ord[0]).nome} passa ${C(U.lider).nome} com ${fmt(E.ap, 0)}% das urnas apuradas`); else add(`Primeiros números: ${C(E.ord[0]).nome} larga na frente`); U.lider = E.ord[0]; }
+    for (const m of [25, 50, 75, 90]) if (E.ap >= m && !U.marcos[m]) { U.marcos[m] = 1; add(`${m}% das urnas apuradas: ${C(E.ord[0]).nome} ${fmt(E.pct[E.ord[0]], 1)}% × ${C(E.ord[1]).nome} ${fmt(E.pct[E.ord[1]], 1)}%`); }
+    for (const x of D.ufs) if (contProg(x, f) >= 1 && !U.ufs[x.u] && UF_INFO[x.u].eleit >= 4) { U.ufs[x.u] = 1; const lid = D.ids.slice().sort((a, b) => (x.sh[b] || 0) - (x.sh[a] || 0))[0]; add(`${UF_INFO[x.u].nome} termina a apuração: ${C(lid).nome} vence com ${fmt((x.sh[lid] || 0) * 100, 1)}%`); }
+    if (E.decidido && !U.dec) { U.dec = E.decidido; add(E.decidido === 'eleito' ? `Projeção: ${C(E.ord[0]).nome} não pode mais ser alcançado(a)` : 'Projeção: ninguém chega a 50% e haverá 2º turno'); }
+  }
+  const W = D.res.venc && (D.turno === 2 || !D.res.t2) ? C(D.res.venc) : null;
+  const corUF = (u) => { const x = D.ufs.find(z => z.u === u); const p = contProg(x, f); if (p < .03) return '#3a3a3a'; const lid = D.ids.slice().sort((a, b) => (x.sh[b] || 0) - (x.sh[a] || 0))[0]; return 'color-mix(in srgb, ' + cor(lid) + ' ' + Math.round(35 + 65 * p) + '%, #1a1a1a)'; };
+  const princ = [D.azul, D.verm].filter(Boolean), outros = D.ids.filter(i => !princ.includes(i)).sort((a, b) => E.v[b] - E.v[a]);
+  const n0 = (x) => fmt(Math.round(x), 0);
+  return html`<div className="modal-wrap" role="dialog" aria-modal="true" aria-label="Apuração da eleição presidencial" data-contagem=${D.turno} style=${{ zIndex: 90, background: '#000', alignItems: 'stretch', padding: 0 }}>
+    <div className="w-full flex flex-col gap-5" style=${{ maxWidth: '1400px', margin: '0 auto', padding: '28px 32px' }}>
+      <div className="flex flex-wrap items-center justify-between gap-3"><div><div className="eyebrow">Apuração · eleição presidencial ${ger.ano} · ${D.turno}º turno</div><h2 className="disp" style=${{ fontSize: '34px' }}>${fim ? (W ? 'Resultado final' : '2º turno confirmado') : 'Contagem dos votos'}</h2></div>
+        ${fim ? html`<button type="button" className="btn btn-gold" data-contagem-fim="1" onClick=${onFim}>Continuar</button>` : html`<button type="button" className="btn btn-ghost" data-contagem-pular="1" onClick=${pular}>Pular contagem</button>`}</div>
+      <div><div className="flex justify-between text-sm mb-1"><span className="text-muted">Urnas apuradas</span><b className="num" data-contagem-ap=${E.ap.toFixed(1)}>${fmt(E.ap, E.ap < 100 ? 1 : 0)}%</b></div>
+        <div style=${{ height: '14px', borderRadius: '7px', background: '#1a1a1a', overflow: 'hidden', display: 'flex' }}>${princ.map(i => html`<i key=${i} style=${{ display: 'block', width: (E.v[i] / D.tot * 100) + '%', background: cor(i), transition: 'width .2s linear' }}></i>`)}<i style=${{ display: 'block', width: (outros.reduce((a, i) => a + E.v[i], 0) / D.tot * 100) + '%', background: CONT_CINZA }}></i></div></div>
+      <div className="grid gap-6" style=${{ gridTemplateColumns: 'minmax(0,1fr) minmax(0,560px)' }}>
+        <div className="flex flex-col gap-3 min-w-0">
+          ${princ.map(i => html`<div key=${i} data-contagem-cand=${i} style=${{ padding: '18px 20px', borderRadius: '14px', background: 'color-mix(in srgb, ' + cor(i) + ' 16%, #0b0b0b)', border: '2px solid ' + cor(i) }}>
+            <div className="flex items-baseline justify-between gap-3"><div className="min-w-0"><div className="disp" style=${{ fontSize: '26px', color: cor(i) }}>${C(i).nome}</div><div className="text-sm text-muted">${C(i).sigla}${i === D.azul ? ' · você' + (ger.meuId === i ? '' : ' (governo)') : ''}</div></div>
+              <div className="text-right"><div className="num disp" style=${{ fontSize: '46px', lineHeight: 1, color: cor(i) }}>${fmt(E.pct[i] || 0, 2)}%</div><div className="num text-sm text-muted">${n0(E.v[i])} votos</div></div></div>
+            <div style=${{ height: '8px', borderRadius: '4px', background: '#1a1a1a', marginTop: '10px', overflow: 'hidden' }}><i style=${{ display: 'block', height: '100%', width: (E.pct[i] || 0) + '%', background: cor(i), transition: 'width .2s linear' }}></i></div></div>`)}
+          ${outros.length ? html`<div className="flex flex-col gap-1.5 text-sm">${outros.map(i => html`<div key=${i} className="flex justify-between gap-3" style=${{ color: '#a9a9a2' }}><span>${C(i).nome} <span className="text-muted">${C(i).sigla}</span></span><span className="num">${fmt(E.pct[i] || 0, 2)}% · ${n0(E.v[i])}</span></div>`)}</div>` : null}
+          <div className="flex flex-col gap-1.5 mt-2" data-contagem-manchetes="1" aria-live="polite">${notas.current.map((n, k) => html`<div key=${k + n.t} className="text-sm" style=${{ opacity: 1 - k * .14, fontWeight: k ? 400 : 600 }}><span className="num text-muted">${fmt(n.ap, 0)}% · </span>${n.t}</div>`)}</div>
+        </div>
+        <div className="min-w-0"><${MapaUF} cor=${corUF} rotulo=${u => UF_INFO[u].nome} aria="Mapa da apuração por estado" larg=${560} tip=${u => { const x = D.ufs.find(z => z.u === u); const p = contProg(x, f); const lid = D.ids.slice().sort((a, b) => (x.sh[b] || 0) - (x.sh[a] || 0))[0]; return html`<div><div className="font-bold text-sm">${UF_INFO[u].nome}</div><div className="text-xs">${fmt(p * 100, 0)}% apurado${p > .03 ? ' · lidera ' + C(lid).nome : ''}</div></div>`; }} />
+          <div className="flex flex-wrap gap-4 text-xs text-muted mt-2" data-contagem-legenda="1"><span><i style=${{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '2px', background: CONT_AZUL, marginRight: '6px' }}></i>${C(D.azul).nome} lidera</span><span><i style=${{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '2px', background: CONT_VERM, marginRight: '6px' }}></i>${D.verm ? C(D.verm).nome + ' lidera' : ''}</span>${D.ids.length > 2 ? html`<span><i style=${{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '2px', background: CONT_CINZA, marginRight: '6px' }}></i>outro candidato lidera</span>` : null}<span><i style=${{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '2px', background: '#3a3a3a', marginRight: '6px' }}></i>ainda sem votos</span><span>cor mais forte = mais urnas apuradas</span></div></div>
+      </div>
+      ${fim ? html`<div data-contagem-resultado="1" style=${{ padding: '18px 20px', borderRadius: '14px', border: '2px solid ' + (W ? cor(W.id) : 'var(--ouro)'), background: '#0b0b0b' }}>
+        <div className="disp" style=${{ fontSize: '28px', color: W ? cor(W.id) : 'var(--ouro)' }}>${W ? W.nome + ' é eleito(a) presidente' : '2º turno: ' + C(D.res.fin[0]).nome + ' × ' + C(D.res.fin[1]).nome}</div>
+        <p className="text-sm mt-2 gl-inteiro">${elDiscurso(g, ger, D.res)}</p></div>` : null}
+    </div></div>`;
 }
 function ElApurG({ g, ger }) {
   const res = ger.res; const [turno, setTurno] = useState(res && res.t2 ? 2 : 1); const [uf, setUf] = useState('SP');
@@ -33636,7 +33708,7 @@ function App() {
       </main>
     </div>
     ${dec && html`<${ErroTela} nome="modal-decisao" onVoltar=${() => setDec(null)}><${ModalDecisao} dec=${dec} g=${g} upd=${upd} setDec=${setDec} onClose=${() => setDec(null)} votarItem=${votarItem} /></${ErroTela}>`}
-    ${relMes && html`<${ErroTela} nome="modal-mes" onVoltar=${() => setRelMes(null)}><${ModalMes} rel=${relMes} g=${g} onClose=${() => setRelMes(null)} /></${ErroTela}>`}
+    ${relMes && g && g.el && g.el.ger && g.el.ger.contagem && !g.el.ger.contagem.visto && g.el.ger.res ? html`<${ErroTela} nome="contagem" onVoltar=${() => upd(n => { n.el.ger.contagem.visto = true; })}><${ElContagem} g=${g} ger=${g.el.ger} onFim=${() => upd(n => { n.el.ger.contagem.visto = true; })} /></${ErroTela}>` : relMes && html`<${ErroTela} nome="modal-mes" onVoltar=${() => setRelMes(null)}><${ModalMes} rel=${relMes} g=${g} onClose=${() => setRelMes(null)} /></${ErroTela}>`}
     ${aviso && html`<div className="toast card px-4 py-3 text-sm flex items-center gap-2 fade-in" role="status" data-toast="1"><span className=${typeof aviso === 'string' ? 'text-ambar' : 'text-ouro'}><${Icon} n=${typeof aviso === 'string' ? 'TriangleAlert' : 'Award'} /></span>${typeof aviso === 'string' ? aviso : aviso.x}</div>`}
     ${cfgOpen && html`<${ErroTela} nome="modal-config" onVoltar=${() => setCfgOpen(false)}><${ModalConfig} ia=${ia} setIa=${setIa} temClaude=${temClaude} onClose=${() => setCfgOpen(false)} reiniciar=${reiniciar} voltarMenu=${voltarMenu} fotos=${g.ui.fotos !== false} setFotos=${setFotos} temFotos=${!!FOTO_ST.dados} logos=${g.ui.logos !== false} setLogos=${setLogos} temLogos=${!!LOGO_ST.dados} /></${ErroTela}>`}
   </div>`;
