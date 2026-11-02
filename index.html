@@ -718,7 +718,7 @@ const GLOSSARIO = [
   ['Gecex', 'Gecex', 'Comitê Executivo de Gestão da Camex: o grupo de ministérios que, na prática, aprova as mudanças de tarifa de importação.'],
   ['PECs?', 'PEC', 'Proposta de Emenda à Constituição: muda a Constituição. Precisa de 3/5 dos votos (308 deputados e 49 senadores), em dois turnos em cada Casa. Não passa por sanção nem veto do presidente.'],
   ['PLPs?', 'PLP', 'Projeto de Lei Complementar: trata de temas que a Constituição reserva a lei complementar (como a Lei de Responsabilidade Fiscal). Precisa de maioria absoluta: 257 deputados e 41 senadores.'],
-  ['PL(?= \\d)|(?<=\\()PL(?=\\))', 'PL', 'Projeto de Lei (lei ordinária): precisa de maioria simples dos presentes na Câmara e no Senado, com quórum mínimo. Depois vai à sanção ou ao veto do presidente.'],
+  ['PL(?= \\d)|(?<=\\()PL(?=\\))', 'PL', 'Projeto de Lei (lei ordinária): precisa da maioria dos presentes na Câmara e no Senado. No jogo, com a Casa cheia, isso dá 257 deputados e 41 senadores. Depois vai à sanção ou ao veto do presidente.'],
   ['MPs?(?! Materials)', 'MP', 'Medida Provisória: ato do presidente com força de lei que vale na hora, por 60 dias prorrogáveis por mais 60. Se o Congresso não aprovar nesse prazo, perde a validade. Não pode tratar de alguns temas, como direito penal.'],
   ['[Mm]edidas? [Pp]rovisórias?', null, 'Ato do presidente com força de lei que vale na hora, por 60 dias prorrogáveis por mais 60. Se o Congresso não aprovar nesse prazo, perde a validade.'],
   ['PLOA', 'PLOA', 'Projeto de Lei Orçamentária Anual: a proposta de orçamento do ano seguinte que o governo envia ao Congresso até 31 de agosto.'],
@@ -2911,6 +2911,9 @@ function segPrevia(g, prop) {
   const corte = (prop.cost || 0) < 0 && (tipos.includes('dura') || tipos.includes('plano'));
   // lote A4: operação federal concentrada em 1-3 estados atua com mais intensidade onde está, e o efeito nacional sai ponderado pela população da UF (segMedia)
   const conc = esc.nomeado && esc.ufs.length <= 3 ? 2 : 1;
+  // lei só normativa (sem verba relevante e sem operação: GLO, Força Nacional, policiais, efetivo, investimento) tem 20% do efeito nas mortes, no crime organizado e na letalidade
+  const operacao = /\bglo\b|garantia da lei e da ordem|forca nacional|operac\w+|tropas?|policiais|efetivo|viaturas|contrat\w+|delegad\w+|agentes|centros? de juventude|cameras corporais|investi\w+|intelig\w+|equipa\w+|tecnolog\w+|programa|r\$/.test(tx);
+  const fNorm = (Math.abs(prop.cost || 0) < 1 && !operacao) ? .2 : 1; // o motor dá um custo padrão (~R$ 0,5 bi) a texto sem valor: abaixo de R$ 1 bi e sem operação ou investimento citado, conta como lei normativa
   const efeitos = [];
   for (const u of esc.ufs) {
     const w = fortes.includes(u) ? 1 : .35;
@@ -2920,7 +2923,7 @@ function segPrevia(g, prop) {
     if (tipos.includes('plano')) { e.mviP = -(2 + 3 * r('d')) * w; e.controle -= (5 + 5 * r('e')) * w; if (/cameras corporais|controle externo/.test(tx)) e.letal -= (10 + 10 * r('f')) * w; }
     if (tipos.includes('garantista')) { e.letal -= 20 * w; e.presos -= 3 * w; e.controle += 2 * w; e.mviP -= (.6 + 1.2 * r('g')) * w; } // menos mortes por intervenção policial: parte das mortes violentas
     if (tipos.includes('prevencao')) { e.mviP -= (.8 + 1.4 * r('h')) * w; e.controle -= (1 + 2 * r('i')) * w; }
-    e.mviD *= conc; e.mviP *= conc;
+    e.mviD *= conc * fNorm; e.mviP *= conc * fNorm; if (fNorm < 1) { e.controle *= fNorm; e.letal *= fNorm; e.retal = false; }
     if (corte) { e.mviD = -e.mviD; e.mviP = -e.mviP; e.controle = -e.controle; e.letal = 0; e.presos = 0; e.retal = false; }
     efeitos.push(e);
   }
@@ -3209,7 +3212,8 @@ P('sus_geral', 'o reforço no SUS', '\\bsus\\b|saude( publica)?|hospita\\w+|leit
 P('farmacia_popular', 'o Farmácia Popular', 'farmacia popular|remedio gratis|remedios gratuitos|medicamentos? gratuitos?|distribuir remedios?|medicamentos de graca', { ch: 'saude', base: 5, def: 3, cap: 15, ben: 20, b: 'saude', rg: 'pop', pob: .5, lag: 3, pa: 'saude', inst: 'ADM', idh: .001, cat: 'saude', iv: [-.3, 0] });
 P('mais_medicos', 'o Mais Médicos', 'mais medicos|medicos no interior|levar medicos|contratar medicos|medicos cubanos|revalida', { ch: 'saude', base: 3.5, def: 2.5, cap: 10, ben: .025, b: 'saude', rg: 'ne', pob: .5, lag: 5, pa: 'saude', inst: 'MP', idh: .002, val: { sindicatos: 0 }, cat: 'saude', iv: [-.3, 0] });
 P('hospital_novo', 'um hospital federal', 'hospital (federal|universitario|regional|de campanha|de referencia)|hospitais (novos|federais|universitarios|regionais)|novo hospital|construir (um )?hospital|hospital em', { ch: 'saude', base: 0, ex: 0, def: 2.5, cap: 15, b: 'saude', rg: 'pop', pob: .5, lag: 24, pa: 'saude', inst: 'ADM', idh: .002, uc: 300000000, emp: 1.4, cat: 'saude', iv: [-.3, 0] });
-P('reducao_ministerios', 'o número de ministérios', 'numero de ministerios|ministerios(?= (?:de |dos )?\\d+ para \\d+)|(?<=(?:reduzir|enxugar|cortar|diminuir|extinguir|fundir|enxugando|cortando|reduzindo|reducao dos|corte de|corte dos|corte nos) (?:os |alguns |varios |muitos |\\d+ )?)ministerios|secretarias do governo|cargos de confianca|cargos comissionados', { ch: 'custeio', base: 3, def: 2, cap: 10, b: 'serv', rg: 'se', lag: 6, pa: 'casacivil', inst: 'ADM', val: { classemedia: -1.5, mercado: -1, sindicatos: 1 }, ap: -.2, iv: [-.2, 0], cat: 'corte_gastos', cred: .9 });
+P('reducao_ministerios', 'o número de ministérios', 'numero de ministerios|ministerios(?= (?:de |dos )?\\d+ para \\d+)|(?<=(?:reduzir|enxugar|cortar|diminuir|extinguir|fundir|enxugando|cortando|reduzindo|reducao dos|corte de|corte dos|corte nos) (?:os |alguns |varios |muitos |\\d+ )?)ministerios|secretarias do governo', { ch: 'custeio', base: 3, def: 2, cap: 10, b: 'serv', rg: 'se', lag: 6, pa: 'casacivil', inst: 'ADM', val: { classemedia: -1.5, mercado: -1, sindicatos: 1 }, ap: -.2, iv: [-.2, 0], cat: 'corte_gastos', cred: .9 });
+P('cargos_comissionados', 'os cargos comissionados', 'cargos? de confianca|cargos? comissionados?|cargos? em comissao|funcoes (?:de confianca|comissionadas)', { ch: 'custeio', base: 3, def: 2, cap: 10, b: 'serv', rg: 'se', lag: 6, pa: 'casacivil', inst: 'ADM', val: { classemedia: -1.5, mercado: -1, sindicatos: 1 }, ap: -.2, iv: [-.2, 0], cat: 'corte_gastos', cred: .9 }); // gasto com cargos em comissão e funções de confiança do Executivo federal: ordem de R$ 3 bi/ano (estimativa)
 P('ubs', 'as UBS e a atenção básica', '\\bubs\\b|atencao basica|agentes? comunitari\\w+|saude da familia|estrategia saude da familia|postinho', { ch: 'saude', base: 25, def: 4, cap: 20, b: 'saude', rg: 'pop', pob: .5, lag: 6, pa: 'saude', inst: 'ADM', idh: .002, cat: 'saude', iv: [-.3, 0] });
 P('filas_sus', 'o mutirão de cirurgias e consultas', 'mutirao\\w*(?! carcerari\\w+)|fila\\w* (do|no) sus|cirurgias eletivas|filas de espera|cirurgias|consultas especializadas', { mal: 1, ch: 'saude', base: 0, def: 3, cap: 10, b: 'saude', rg: 'pop', pob: .5, lag: 4, pa: 'saude', inst: 'ADM', idh: .002, cat: 'saude', iv: [-.2, 0] });
 P('vacinas', 'a campanha de vacinação', 'vacin\\w+|imuniza\\w+|dengue|combate a dengue|campanha de saude', { ch: 'saude', base: 8, def: 1.5, cap: 10, b: 'saude', rg: 'pop', pob: .3, lag: 3, pa: 'saude', inst: 'ADM', idh: .002, cat: 'saude', iv: [-.1, 0] });
@@ -8832,7 +8836,9 @@ function efeitos(A, F, ctx, g) {
     if (o.r) for (const k in o.r) R[k] += sgE * o.r[k] * esc * qual;
     // sociais
     const sz = o.k === 'G' ? clamp(Math.sqrt(Math.max(it.B, .05) / Math.max(o.def || 1, .05)), .5, 2) : 1;
-    if (o.hom) fx.s.hom += sgE * o.hom * sz * esc * qual;
+    // item de segurança "de gasto" sem verba nenhuma (lei só normativa, ex.: autonomia da PF) mexe pouco nas mortes violentas
+    const semVerbaHom = o.k === 'G' && !(Math.max(Math.abs(it.y1spend || 0), Math.abs(it.hspend || 0)) >= .05);
+    if (o.hom) fx.s.hom += sgE * o.hom * sz * esc * qual * (semVerbaHom ? .2 : 1);
     if (o.desm) fx.s.desm += sgE * o.desm * sz * esc * qual;
     if (o.idh) fx.s.idh += sgE * o.idh * sz * esc * qual;
     if (o.d) for (const k in o.d) fx.d[k] = (fx.d[k] || 0) + sgE * o.d[k] * esc * qual;
@@ -11611,9 +11617,54 @@ function analiseJogo(g, prop) {
   vigenciaTributos(g, prop);
   MOTOR.CF.sync(prop);
 }
+// "Pagar R$ X por mês a N pessoas" caía na leitura genérica (custo chutado); vira "benefício de R$ X por mês para N", que o modelo de transferência de renda calcula (X × 12 × N)
+const RX_PAGA_MES = /^(\s*)(?:pagar|pague|paga|pagamento de|garantir|repassar|transferir)\s+(?:um |uma )?(?:(aux[ií]lio|benef[ií]cio|bolsa|renda|abono)\s+(?:de\s+)?)?(R\$\s*[\d.,]+(?:\s*mil)?(?:\s*reais)?)\s+(?:por m[eê]s|ao m[eê]s|mensais|mensal|todo m[eê]s)\s+(?:a|para|às|aos|à|ao)\s+/i;
+const normPagaMes = (t) => typeof t === 'string' ? t.replace(RX_PAGA_MES, (m, sp, tipo, val) => sp + (tipo ? tipo.toLowerCase().replace('auxilio', 'auxílio').replace('beneficio', 'benefício') : 'benefício') + ' de ' + val + ' por mês para ') : t;
+/* normalização do texto antes do motor: reescreve formas que o motor lia errado em formas que ele já lê certo (o texto original continua no parecer) */
+const NT_VERBO_RS = '(?:investir|gastar|aplicar|destinar|liberar|injetar|reservar|cortar|economizar|repassar|transferir|alocar|aportar|reduzir|tirar|retirar|enviar)';
+const ntValBi = (n, u) => { u = norm(u); return n * (/^tri/.test(u) ? 1000 : /^bi/.test(u) ? 1 : /^mil$/.test(u) ? 1e-6 : /^mi/.test(u) ? .001 : 1e-9); };
+const ntNum = (x) => +String(x).replace(/\.(?=\d{3}(?!\d))/g, '').replace(',', '.');
+const ntFmtBi = (bi) => bi >= 1000 ? fmt(bi / 1000, bi % 1000 ? 1 : 0) + (bi >= 2000 ? ' trilhões' : ' trilhão') : bi >= 1 ? fmt(bi, bi % 1 ? 1 : 0) + (bi >= 2 ? ' bilhões' : ' bilhão') : fmt(bi * 1000, 0) + ' milhões';
+let NT_UF_RX = null;
+function normTexto(g, t) {
+  if (typeof t !== 'string') return t;
+  let s = normPagaMes(t);
+  // 1) "R$ 2.000.000.000" -> "R$ 2 bilhões"
+  s = s.replace(/R\$\s*(\d{1,3}(?:\.\d{3}){2,})(?![\d.,])/g, (m, n) => 'R$ ' + ntFmtBi(ntNum(n) / 1e9));
+  // 2) valor sem "R$" logo depois de um verbo de dinheiro: "gastar 1 trilhão", "investir 10 bi"
+  s = s.replace(new RegExp('(\\b' + NT_VERBO_RS + '\\s+(?:mais\\s+)?)(\\d[\\d.,]*\\s*(?:trilh[^\\s,.;)]*|tri\\b|bilh[^\\s,.;)]*|bi\\b|milh[^\\s,.;)]*(?![^\\s,.;)])(?!\\s+de\\s+(?:pessoas|familias|famílias|casas|empregos|vagas|crianças|criancas|alunos|habitantes|brasileiros|trabalhadores))))', 'gi'), '$1R$ $2');
+  // 3) "cortar R$ 100 bi da saúde" -> "cortar R$ 100 bi do orçamento da saúde"
+  s = s.replace(/\b((?:cortar|reduzir|tirar|retirar|economizar|contingenciar)\s+R\$\s*[\d.,]+\s*(?:trilh[^\s,.;)]*|tri\b|bilh[^\s,.;)]*|bi\b|milh[^\s,.;)]*|mi\b))\s+(d[aoe]s?)\s+(?=(?:sa[uú]de|educa[cç][aã]o|defesa|seguran[cç]a|cultura|ci[eê]ncia|esportes?|turismo|meio ambiente|assist[eê]ncia|previd[eê]ncia|infraestrutura|transportes?|agricultura|universidades|habita[cç][aã]o|saneamento|minist[eé]rio)\b)/gi, '$1 do orçamento $2 ');
+  // 4) "1 milhão de casas a R$ 100 mil cada" -> "1 milhão de casas por R$ 100 bilhões"
+  s = s.replace(/(\b\d[\d.,]*)\s*(mil|milh(?:ão|ao|ões|oes))?(\s+(?:de\s+)?[^\d$]{2,60}?)\s+(?:a|por|de|ao custo de|custando)\s+R\$\s*([\d.,]+)\s*(trilh[^\s,.;)]*|tri\b|bilh[^\s,.;)]*|bi\b|milh[^\s,.;)]*|mi\b|mil\b)?\s+cada\b/gi, (m, n, mult, coisa, v, u) => {
+    const q = ntNum(n) * (mult ? (/^mil$/i.test(mult) ? 1e3 : 1e6) : 1), tot = q * ntValBi(ntNum(v), u || '');
+    return tot > 0 ? n + (mult ? ' ' + mult : '') + coisa + ' por R$ ' + ntFmtBi(tot) : m;
+  });
+  // 5) um verbo, dois valores: "investir R$ 5 bi no SUS e R$ 3 bi em escolas" -> repete o verbo
+  s = s.replace(new RegExp('^(\\s*)(' + NT_VERBO_RS + ')(\\s+R\\$[^,;]*?)\\s+e\\s+(R\\$)', 'i'), (m, sp, v, a, rs) => sp + v + a + ' e ' + v.toLowerCase() + ' ' + rs);
+  // 6) Selic "em N pontos" -> "para X%" (a partir da Selic de hoje)
+  s = s.replace(/\b(aumentar|elevar|subir|reduzir|baixar|cortar|diminuir)\s+(?:a\s+)?(?:taxa\s+)?(?:b[aá]sica\s+de\s+juros\s+|de\s+juros\s+)?\(?selic\)?\s+em\s+([\d.,]+)\s*(pontos?[\s-]+base|pontos?\s+percentua\w+|pontos?|p\.?\s?p\.?|%)/i, (m, v, n, u) => {
+    const sel = (g && g.eco && g.eco.selic) || 13.25; let d = ntNum(n); if (/base/i.test(u)) d /= 100; if (!(d > 0) || d > 10) return m;
+    const sobe = /aument|elev|sub/i.test(v), alvo = Math.max(0, Math.round((sel + (sobe ? d : -d)) * 100) / 100);
+    return v + ' a Selic para ' + fmt(alvo, 2) + '%';
+  });
+  // 7) "criar R$ 10 bi de crédito para X" -> "criar linha de crédito de R$ 10 bi para X"
+  s = s.replace(/\b(criar|abrir|liberar|oferecer|disponibilizar)\s+(R\$\s*[\d.,]+\s*(?:trilh[^\s,.;)]*|tri\b|bilh[^\s,.;)]*|bi\b|milh[^\s,.;)]*|mi\b))\s+(?:de|em)\s+cr[eé]dito/gi, '$1 linha de crédito de $2');
+  // 8) dinheiro para um estado: "liberar R$ 10 bi para o Rio Grande do Sul" -> repasse aos estados
+  if (!NT_UF_RX) NT_UF_RX = new RegExp('\\b(?:liberar|repassar|transferir|enviar|destinar|mandar)\\s+(R\\$\\s*[\\d.,]+\\s*(?:trilh[^\\s,.;)]*|tri\\b|bilh[^\\s,.;)]*|bi\\b|milh[^\\s,.;)]*|mi\\b))\\s+(?:para|ao|à|a|aos)\\s+(?:o\\s+|a\\s+)?(?:estado\\s+d[aoe]\\s+|governo\\s+d[aoe]\\s+)?(' + Object.values(UF_INFO).map(u => u.nome).sort((a, b) => b.length - a.length).join('|') + ')\\b', 'i');
+  s = s.replace(NT_UF_RX, (m, v, uf) => 'repasse aos estados de ' + v + ' (' + uf + ')');
+  // 8b) "medida provisória (de|liberando) R$ 10 bi para o RS" (sigla ou nome, sem verbo)
+  s = s.replace(/^(\s*)(medida provis[oó]ria|mp|decreto)\s+(?:de|liberando|para liberar|que libera|com)\s+(R\$\s*[\d.,]+\s*(?:trilh[^\s,.;)]*|tri\b|bilh[^\s,.;)]*|bi\b|milh[^\s,.;)]*|mi\b))\s+(?:para|ao|à|a)\s+(?:o\s+|a\s+)?(?:estado\s+d[aoe]\s+)?([A-Za-zÀ-ú ]{2,25}?)\s*$/i, (m, sp, inst, v, uf) => {
+    const k = uf.trim().toUpperCase(), U = UF_INFO[k] || Object.values(UF_INFO).find(x => norm(x.nome) === norm(uf.trim()));
+    return U ? sp + 'repasse aos estados de ' + v + ' (' + U.nome + ') por ' + (/decreto/i.test(inst) ? 'decreto' : 'medida provisória') : m;
+  });
+  // 9) "fechar o Ministério X" -> "extinguir o Ministério X" (fechar era lido como gasto no tema do ministério)
+  s = s.replace(/\b(?:fechar|acabar com)\s+(o\s+)?(minist[eé]rio)/gi, 'extinguir $1$2');
+  return s;
+}
 function analisaLocal(g, texto) {
   let prop;
-  try { prop = posMotor(g, MOTOR.analisar(g, texto, motorCtx(g)), texto); }
+  try { prop = posMotor(g, MOTOR.analisar(g, normTexto(g, texto), motorCtx(g)), texto); }
   catch (e) {
     if (!MOTOR_FALHOU) { MOTOR_FALHOU = true; console.warn('Motor v2 falhou; usando o motor legado de palavras-chave.', e); }
     return analisaLegado(g, texto);
@@ -26609,7 +26660,7 @@ function ModalDecisao({ dec, g, upd, setDec, onClose, votarItem }) {
       <${BaseJuridica} prop=${prop} g=${g} />
       <div className="flex flex-wrap justify-end gap-2 pt-3 border-t border-black/10">
         <button className="px-3 py-2 rounded border border-black/25 text-sm font-semibold hover:bg-black/5" onClick=${() => { upd(n => { n.log.unshift({ mes: n.mes, ato: 'Proposta retirada', texto: prop.texto, res: 'retirada' }); }); fecha(); }} title=${prop.gastosPrev && prop.gastosPrev.extra ? 'As emendas e a pesquisa já pagas serão devolvidas' : ''}>Retirar proposta</button>
-        ${congresso && !prop.jaPaga && html`<button className="px-3 py-2 rounded border border-black/25 text-sm font-semibold hover:bg-black/5 disabled:opacity-40" disabled=${!podeEnviar(g, prop).ok || g.acoes <= 0 || cfTravada(prop)} title="Vai para a Pauta do Congresso e gasta 1 ação" onClick=${tramitar}>Enviar e tramitar</button>`}
+        ${congresso && !prop.jaPaga && html`<button className="px-3 py-2 rounded border border-black/25 text-sm font-semibold hover:bg-black/5 disabled:opacity-40" disabled=${!podeEnviar(g, prop).ok || saldoDe(g, prop) <= 0 || cfTravada(prop)} title=${'Vai para a Pauta do Congresso e gasta 1 ' + (prop.daCaixa ? 'proposta' : 'ação')} onClick=${tramitar}>Enviar e tramitar</button>`}
         <button className="px-4 py-2 rounded text-sm font-bold text-black disabled:opacity-40" style=${{ background: 'var(--ouro)' }} disabled=${!!gvBloqPEC(g, prop) || cfTravada(prop)} title=${gvBloqPEC(g, prop) ? gvBloqPEC(g, prop).msg : cfTravada(prop) ? 'PEC não pode ser votada durante intervenção federal, estado de defesa ou de sítio (art. 60, §1º)' : ''} onClick=${votar}>${congresso ? 'Votar agora' : prop.stf.nivel === 'inconstitucional' ? 'Assinar mesmo assim' : 'Assinar e publicar no DOU'}</button>
       </div>
     </${Documento}></${Modal}>`;
@@ -29874,8 +29925,8 @@ const elMunVerbaEf = (v) => 1 - Math.exp(-(v || 0) / 70);
 const elMunDil = (mun) => 1 / (1 + .015 * Math.max(0, (mun.apoios || 0) - 15));
 function elMunRiscoTSE(g, verba, nCid) {
   if (!(verba > 0)) return 0;
-  const base = .015 + .16 * Math.pow(verba / EL_MUN_VERBA_MAX, 1.3);
-  return clamp(base * (1 + .06 * Math.max(0, nCid - 1)) * (1 + g.escandalo / 120), 0, .85);
+  const base = .008 + .14 * Math.pow(verba / EL_MUN_VERBA_MAX, 1.8); // pouca verba quase não chama atenção; o risco dispara perto do teto
+  return clamp(base * (1 + .03 * Math.max(0, nCid - 1)) * (1 + g.escandalo / 120), 0, .85);
 }
 // zb = true na apuração: surpresa (a zebra ganha um empurrão em ~13% das cidades); as pesquisas e as estimativas não enxergam a zebra
 function elMunScores(g, mun, ct, AE, zb) {
@@ -29889,7 +29940,7 @@ function elMunScores(g, mun, ct, AE, zb) {
       if (st === 'opos') s += .4 * (50 - ap) / 50; else if (st === 'base') s += .3 * (ap - 50) / 50;
       if (st === 'base') s -= .9 * esc; // escândalos do governo pesam sobre os candidatos da base, na proporção do escândalo
     }
-    if (S.apoio === cd.id) s += (.30 + .9 * pres + .18 * Math.min(2, S.visita)) * elMunDil(mun) + .40 * elMunVerbaEf(S.verba);
+    if (S.apoio === cd.id) s += (.30 + .9 * pres + .18 * Math.min(2, S.visita)) * elMunDil(mun) + .70 * elMunVerbaEf(S.verba);
     return s;
   });
   if (zb && sc.length > 2 && hashStr(String(g.seed) + 'zb' + ct.id + mun.ano) < .13) {
