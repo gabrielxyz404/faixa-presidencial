@@ -58,7 +58,7 @@ with sync_playwright() as p:
 
     # ---------- telas ----------
     secao(pg, 'Mundo'); chip(pg, 'Comércio exterior')
-    geral = pg.locator('[data-com-privado]').inner_text()
+    geral = pg.locator('[data-com-privado]').inner_text() + ' ' + ' '.join(pg.locator('[data-com-privado] [data-gv-tip]').evaluate_all('l=>l.map(e=>e.getAttribute("aria-label")||"")'))  # texto longo: a 1ª frase fica na tela e o resto no (?)
     ok('Visão geral: linha sobre comércio privado x contratos de governo a governo', 'quase tudo é feito por empresas privadas' in geral and 'governo a governo' in geral, geral)
     pg.locator('[data-com-aba=acordos]').click(); pg.wait_for_timeout(500)
     selos = pg.locator('[data-com-lista-ativos] [data-com-real]')
