@@ -31,7 +31,7 @@ def fecha_modais(pg):
 def G(pg, expr): return pg.evaluate("()=>{const g=__QV().gRef.current;return (" + expr + ")}")
 def SET(pg, js): pg.evaluate("()=>__QV().setG(p=>{const n=structuredClone(p);const X=__X();" + js + ";return n})"); pg.wait_for_timeout(600)
 def J(pg, js):  # roda em um clone do estado, com ensureIC e 9 ações; devolve o que o código retornar
-    return pg.evaluate("()=>{const X=__X();const g=structuredClone(__QV().gRef.current);X.ensureIC(g);g.acoes=9;g.pes.energia=90;" + js + "}")
+    return pg.evaluate("()=>{const X=__X();const g=structuredClone(__QV().gRef.current);X.ensureIC(g);g.acoes=9;g.props=9;g.pes.energia=90;" + js + "}")
 def secao(pg, nome): pg.locator('#sec-tab-' + nome.lower().replace('í', 'i')).click(timeout=6000); pg.wait_for_timeout(500)
 def chip(pg, nome):
     pg.locator('.chipnav [role=tab]').filter(has_text=re.compile(r'^\s*' + nome + r'\s*$')).first.click(timeout=6000); pg.wait_for_timeout(600)
@@ -44,7 +44,7 @@ with sync_playwright() as p:
     src = src.replace('function analisaLegado(g, texto) {', 'window.__QV = () => QV; window.__X = () => ({ ensureIC, IC_IMP, IC_PAIS, icCancela, icReduz, icAumenta, icRenova, icRenegocia, icAceitaContra, icSimAcPreco, icSemMulta, icMulta, icMultaDe, icVencendo, icPendencias, icPodeRenovar, fimDoMes, pendenciasMesa });\nfunction analisaLegado(g, texto) {', 1)
     pg.route('**/index.html', lambda r: r.fulfill(status=200, content_type='text/html; charset=utf-8', body=src))
     start(pg); fecha_modais(pg)
-    SET(pg, "n.acoes=9;n.pes.energia=90")
+    SET(pg, "n.acoes=9;n.props=9;n.pes.energia=90")
 
     # ---------- save novo ----------
     SET(pg, "X.ensureIC(n)")
@@ -69,13 +69,13 @@ with sync_playwright() as p:
     pctg = float(pg.locator('[data-com-sit-contratado]').get_attribute('data-com-sit-contratado'))
     ok('Gás: o acordo real conta no "já contratado" e aparece na lista com o selo', pctg > 0.9 and pg.locator('[data-com-sit] [data-com-real]').count() == 1 and 'Bolívia' in sit, (pctg, sit[:200]))
     item = pg.locator('[data-com-imp=gas_natural]').inner_text()
-    m = re.search(r'(\d+)% já contratado', item)
+    m = re.search(r'(\d+)% em acordo do governo', item)
     ok('Lista do gás mostra a % já contratada (> 0)', m and int(m.group(1)) >= 20, item.replace('\n', ' '))
     ok('Preço interno em palavras (sem "−2,6%" solto)', re.search(r'(\d+,\d+% mais (barato|caro) que em 2025|nível de 2025)', pg.locator('[data-com-sit-interno]').inner_text()), pg.locator('[data-com-sit-interno]').inner_text())
     # produto sem contrato: texto de 0%
     pg.locator('[data-com-imp=trigo]').click(); pg.wait_for_timeout(500)
     z = pg.locator('[data-com-sit-zero]')
-    ok('Produto sem contrato (trigo): texto do 0% contratado', z.count() == 1 and '0% contratado: tudo é comprado por empresas privadas no mercado, ao preço do dia. Contratos de governo são opcionais: fixam preço e volume, mas prendem o Brasil.' in z.inner_text().replace('\n', ' '), z.inner_text() if z.count() else '')
+    ok('Produto sem contrato (trigo): texto do 0% contratado', z.count() == 1 and '0% em acordo do governo: tudo é comprado por empresas privadas no mercado, ao preço do dia. Acordos do governo são opcionais: fixam preço e volume, mas prendem o Brasil.' in z.inner_text().replace('\n', ' '), z.inner_text() if z.count() else '')
     ok('Barra: rótulo "mercado (empresas, preço do dia)"', 'mercado (empresas, preço do dia)' in pg.locator('[data-com-sit=compra] .ic-leg').inner_text(), pg.locator('[data-com-sit=compra] .ic-leg').inner_text())
     pg.screenshot(path=OUT + '/trigo.png')
     # coluna "se fechar": novo formato
@@ -141,7 +141,7 @@ with sync_playwright() as p:
     ok('Renovar: com mais de 6 meses faltando não é possível', r[0] is False and r[1] is True, r)
     r = J(pg, base + "a.mFim=g.mes+6;const m0=a.mFim;const ok6=X.icPodeRenovar(g,a);a.mFim=g.mes+7;const ok7=X.icPodeRenovar(g,a);a.mFim=g.mes+6;X.icRenova(g,a.id,2);return [ok6,ok7,a.mFim-m0,a.renovado,ac0-g.acoes,a.estado]")
     ok('Renovar: só nos últimos 6 meses; estende o mFim em 24 meses e custa 1 ação', r[0] is True and r[1] is False and r[2] == 24 and r[3] == 1 and r[4] == 1 and r[5] == 'ativo', r)
-    SET(pg, "const a=n.comex.acordos.find(x=>x.k=='gas_natural'&&x.estado=='ativo');if(a)a.mFim=n.mes+5;n.acoes=9")
+    SET(pg, "const a=n.comex.acordos.find(x=>x.k=='gas_natural'&&x.estado=='ativo');if(a)a.mFim=n.mes+5;n.acoes=9;n.props=9")
     # a tela: botão Renovar e painel
     pg.locator('[data-com-aba=comprar]').click(); pg.wait_for_timeout(300); pg.locator('[data-com-imp=gas_natural]').click(); pg.wait_for_timeout(500)
     gid2 = G(pg, "g.comex.acordos.find(x=>x.k=='gas_natural'&&x.estado=='ativo').id")

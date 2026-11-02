@@ -42,13 +42,13 @@ with sync_playwright() as p:
     src = src.replace('function analisaLegado(g, texto) {', 'window.__QV = () => QV; window.__AL = analisaLocal; window.__X = () => ({ executaProposta, ensureIC, IC_IMP });\nfunction analisaLegado(g, texto) {', 1)
     pg.route('**/index.html', lambda r: r.fulfill(status=200, content_type='text/html; charset=utf-8', body=src))
     start(pg); fecha_modais(pg)
-    SET(pg, "n.acoes=5;n.pes.energia=90")
+    SET(pg, "n.acoes=5;n.props=5;n.pes.energia=90")
     secao(pg, 'Mundo'); chip(pg, 'Comércio exterior')
     pg.locator('[data-com-aba=comprar]').click(); pg.wait_for_timeout(400)
     # ---------- Comprar ----------
     itens = pg.locator('[data-com-picker=comprar] [data-com-imp]'); n = itens.count()
-    sem = [t for t in itens.all_inner_texts() if not (re.search(r'US\$ [\d.,]+ bi/ano', t) and re.search(r'\d+% já contratado', t) and re.search(r'preço no Brasil (no nível de 2025|[\d,]+% mais (barato|caro) que em 2025)', t))]
-    ok('Comprar: %d itens da lista com "US$ X bi/ano", "%% já contratado" e "preço no Brasil X%% mais barato/caro que em 2025"' % n, n >= 25 and not sem, sem[:2])
+    sem = [t for t in itens.all_inner_texts() if not (re.search(r'US\$ [\d.,]+ bi/ano', t) and re.search(r'\d+% em acordo do governo', t) and re.search(r'preço no Brasil (no nível de 2025|[\d,]+% mais (barato|caro) que em 2025)', t))]
+    ok('Comprar: %d itens da lista com "US$ X bi/ano", "%% em acordo do governo" e "preço no Brasil X%% mais barato/caro que em 2025"' % n, n >= 25 and not sem, sem[:2])
     pg.locator('[data-com-imp=trigo]').click(); pg.wait_for_timeout(500)
     sit = pg.locator('[data-com-sit=compra]')
     ok('Painel "Situação do Trigo" aparece', sit.count() == 1 and 'situação do trigo' in sit.inner_text().lower(), sit.inner_text()[:80])
@@ -86,7 +86,7 @@ with sync_playwright() as p:
     ok('Volume contratado soma os dois contratos (%.2f)' % soma, abs(c2 - soma) < 1e-3 and pg.locator('[data-com-sit-contrato]').count() == 2, (c2, soma))
     it = pg.locator('[data-com-imp=trigo]').inner_text()
     pct = G(pg, "Math.round(g.comex.acordos.filter(x=>x.estado=='ativo'&&x.k=='trigo').reduce((s,x)=>s+x.qtd,0)/__X().IC_IMP.trigo.imp_usd_bi*100)")
-    ok('Lista do trigo mostra "%d%% já contratado"' % pct, ('%d%% já contratado' % pct) in it, it.replace('\n', ' '))
+    ok('Lista do trigo mostra "%d%% em acordo do governo"' % pct, ('%d%% em acordo do governo' % pct) in it, it.replace('\n', ' '))
     pg.locator('[data-com-sit-cancelar]').first.click(); pg.wait_for_timeout(300)
     mt = pg.locator('[data-com-sit-multa]').inner_text()
     ok('Cancelar mostra a multa em R$ e a piora da relação', re.search(r'Multa de R\$ [\d,]+ bi', mt) and 'piora' in mt, mt)
@@ -95,11 +95,11 @@ with sync_playwright() as p:
     # ---------- Vender ----------
     pg.locator('[data-com-aba=vender]').click(); pg.wait_for_timeout(400)
     itens = pg.locator('[data-com-picker=vender] [data-com-prod]'); n = itens.count()
-    sem = [t for t in itens.all_inner_texts() if not (re.search(r'exportamos US\$ [\d.,]+ bi/ano', t) and re.search(r'\d+% da sobra já vendido', t) and re.search(r'preço mundial (US\$ [\d.,]+|índice \d+ \(2025 = 100\))', t))]
+    sem = [t for t in itens.all_inner_texts() if not (re.search(r'exportamos US\$ [\d.,]+ bi/ano', t) and re.search(r'\d+% da sobra em acordo do governo', t) and re.search(r'preço mundial (US\$ [\d.,]+|índice \d+ \(2025 = 100\))', t))]
     ok('Vender: %d itens com unidade (bi/ano, %% da sobra, preço mundial)' % n, n >= 30 and not sem, sem[:2])
     pg.locator('[data-com-prod=soja_grao]').click(); pg.wait_for_timeout(500)
     sv = pg.locator('[data-com-sit=venda]')
-    ok('Vender: situação com produção, sobra para vender e já vendido', all(x in sv.inner_text() for x in ['Produção nacional', 'Sobra para vender', 'Já vendido em contratos']), sv.inner_text()[:100].replace('\n', ' '))
+    ok('Vender: situação com produção, sobra para vender e já vendido', all(x in sv.inner_text() for x in ['Produção nacional', 'Sobra para vender', 'Vendido em acordos do governo']), sv.inner_text()[:100].replace('\n', ' '))
     cols = [c.lower() for c in pg.locator('[data-com-vender] .ic-tbl th').all_inner_texts()]
     ok('Vender: coluna do efeito no preço interno por comprador', any('no brasil se fechar' in c for c in cols) and pg.locator('[data-com-se-fechar]').count() >= 5, cols)
     e = float(pg.locator('[data-com-se-fechar=CHN]').get_attribute('data-delta')); p0 = G(pg, 'g.comex.fl.soja_grao.pdom')

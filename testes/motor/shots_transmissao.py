@@ -28,7 +28,7 @@ with sync_playwright() as p:
         try: pg.locator('.modal-wrap button').filter(has_text=re.compile(r'^(Fechar|Continuar|OK|Entendi|Seguir|Próximo mês|Voltar à Mesa|Arquivar|Cancelar|Desistir)')).first.click(timeout=1200)
         except Exception: pg.keyboard.press('Escape')
         pg.wait_for_timeout(300)
-    pg.evaluate("()=>__QV().setG(p=>{const n=structuredClone(p);n.acoes=9;n.pes.energia=90;return n})"); pg.wait_for_timeout(500)
+    pg.evaluate("()=>__QV().setG(p=>{const n=structuredClone(p);n.acoes=9;n.props=9;n.pes.energia=90;return n})"); pg.wait_for_timeout(500)
     pg.locator('#sec-tab-mundo').click(timeout=6000); pg.wait_for_timeout(500)
     pg.locator('.chipnav [role=tab]').filter(has_text=re.compile(r'^\s*Comércio exterior\s*$')).first.click(timeout=6000); pg.wait_for_timeout(700)
     pg.locator('[data-com-aba=comprar]').click(); pg.wait_for_timeout(500)

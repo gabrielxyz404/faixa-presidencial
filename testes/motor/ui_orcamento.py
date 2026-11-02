@@ -80,7 +80,7 @@ with sync_playwright() as p:
         m = re.search(r'R\$\s*([\d.,]+)\s*bi', t)
         ok('%s: o parecer cita o valor escolhido (R$ %d bi)' % (chip_nome, bi), bool(re.search(r'R\$\s*%d[,.]?0?\s*bi' % bi, t)) or bool(re.search(r'%d[,.]0 bi|%d bilh' % (bi, bi), t)), (m.group(0) if m else t[:80]))
         rx = (r'Custo anual\s*\n\s*R\$\s*%d[,.]0\s*bi' % bi) if esperado > 0 else (r'(?:Ganho anual|Economia anual)\s*\n\s*R\$\s*%d[,.]0\s*bi' % bi)
-        mm = re.search(rx, t)
+        mm = re.search(rx, t, re.I)
         ok('%s: o parecer informa custo %+d bi no financiamento' % (chip_nome, esperado), bool(mm), mm.group(0) if mm else re.findall(r'(?:[^\n]*\n){0,2}[^\n]{0,30}R\$ \d,\d bi', t)[:2])
         pg.screenshot(path=OUT + '/orc_%s_%s_parecer.png' % (area, modo))
         fecha_modais(pg)
@@ -102,7 +102,7 @@ with sync_playwright() as p:
     raiz.locator('[data-orc-confirm]').click(timeout=5000); pg.wait_for_timeout(2500)
     t = pega_parecer(None, 'Saúde')
     ok('Saúde: o parecer abre para o corte', pg.locator('.modal-wrap').count() >= 1 and len(t) > 150, t[:100].replace('\n', ' '))
-    mm = re.search(r'(?:Ganho anual|Economia anual)\s*\n\s*R\$\s*2[,.]0\s*bi', t)
+    mm = re.search(r'(?:Ganho anual|Economia anual)\s*\n\s*R\$\s*2[,.]0\s*bi', t, re.I)
     ok('Saúde: o parecer informa ganho anual de R$ 2,0 bi (custo -2, corte)', bool(mm), mm.group(0) if mm else re.findall(r'(?:[^\n]*\n){0,2}[^\n]{0,30}R\$ \d,\d bi', t)[:2])
     pg.screenshot(path=OUT + '/orc_saude_cut_parecer.png'); fecha_modais(pg)
 
@@ -118,10 +118,10 @@ with sync_playwright() as p:
     ok('Educação: programas mantidos (10 botões)', pg.locator('[data-pais=educacao] button[data-prog]').count() == 10)
 
     # --- travas: sem ações ou energia baixa
-    SET(pg, "n.acoes=0")
+    SET(pg, "n.acoes=0;n.props=0")
     pg.wait_for_timeout(400)
     ok('sem ações: Confirmar desabilitado', pg.locator('[data-orcamento=educacao] [data-orc-confirm]').is_disabled())
-    SET(pg, "n.acoes=5;n.pes.energia=5")
+    SET(pg, "n.acoes=5;n.props=5;n.pes.energia=5")
     ok('energia baixa: Confirmar desabilitado', pg.locator('[data-orcamento=educacao] [data-orc-confirm]').is_disabled())
     SET(pg, "n.pes.energia=80")
     ok('com ação e energia: Confirmar habilitado', pg.locator('[data-orcamento=educacao] [data-orc-confirm]').is_enabled())

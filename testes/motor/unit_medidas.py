@@ -10,7 +10,7 @@ def click(pg, t):
 JS = """()=>{
   const V = window.__V, out = []; let a = 7;
   Math.random = () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
-  const novo = () => { const c = JSON.parse(window.__cfg0); c.modo = 'lua'; c.seed = Math.floor(Math.random() * 4294967296); const g = V.novoJogo(c); g.acoes = 5; return g; };
+  const novo = () => { const c = JSON.parse(window.__cfg0); c.modo = 'lua'; c.seed = Math.floor(Math.random() * 4294967296); const g = V.novoJogo(c); g.acoes=5;g.props=5; return g; };
   const fis = (g) => +(g.fiscal.custo + g.fiscal.extra - g.fiscal.receita).toFixed(2);
   const ok = (n, c, d) => out.push((c ? 'OK   ' : 'FALHA ') + n + (d !== undefined ? ' | ' + d : ''));
   // a) decreto (IPI): ciclo, rampa e revogação direta
@@ -21,13 +21,13 @@ JS = """()=>{
   const f1 = fis(g); const alvo = (M.fis.custo + M.fis.extra - M.fis.receita);
   for (let i = 0; i < 8; i++) V.fimDoMes(g);
   ok('a2 fiscal chega perto do previsto (x' + M.mCusto.toFixed(2) + '/' + M.mRec.toFixed(2) + ')', Math.abs((fis(g) - f0) - alvo * (M.mCusto) ) < Math.abs(alvo) * .6 + .5, 'previsto ' + alvo.toFixed(2) + ' aplicado ' + (fis(g) - f0).toFixed(2) + ' (inicial ' + (f1 - f0).toFixed(2) + ')');
-  g.acoes = 5; const f2 = fis(g); V.medRevoga(g, M.id);
+  g.acoes=5;g.props=5; const f2 = fis(g); V.medRevoga(g, M.id);
   ok('a3 revogação direta', M.estado === 'revogada' && Math.abs(fis(g) - f0) < Math.abs(alvo) * .25 + .3, 'estado ' + M.estado + ' fis ' + (fis(g) - f0).toFixed(2) + ' (antes ' + (f2 - f0).toFixed(2) + ')');
   // b) lei + revogação por proposta
   g = novo(); f0 = fis(g);
   p = V.analisaLocal(g, 'Taxar dividendos em 15%'); V.executaProposta(g, p, 'aprovada'); M = g.medidas[0];
   ok('b1 PL criado', !!M && M.inst === 'PL', M && (M.tipo + ' reg=' + M.mReg + ' vig=' + M.vigMes));
-  g.acoes = 5; const dirOk = V.medRevoga(g, M.id); ok('b2 PL pede proposta (revogPend)', dirOk === true && !!g.revogPend && /^Revogar/.test(g.revogPend.texto), g.revogPend && g.revogPend.texto);
+  g.acoes=5;g.props=5; const dirOk = V.medRevoga(g, M.id); ok('b2 PL pede proposta (revogPend)', dirOk === true && !!g.revogPend && /^Revogar/.test(g.revogPend.texto), g.revogPend && g.revogPend.texto);
   const p2 = V.analisaLocal(g, g.revogPend.texto); const n0 = g.medidas.length; V.executaProposta(g, p2, 'aprovada');
   ok('b3 revogação aprovada marca a original e não cria outra', M.estado === 'revogada' && g.medidas.length === n0 && !g.revogPend, M.estado);
   // c) MP: caduca sem votação

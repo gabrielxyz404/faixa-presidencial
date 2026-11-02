@@ -39,7 +39,7 @@ def fecha(pg):
         pg.wait_for_timeout(350)
         if overlay(pg): pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
 def avanca(pg, n):
-    pg.evaluate("(n)=>{__QV().setG(p=>{const x=structuredClone(p);for(let i=0;i<n;i++){if(x.over)break;__X().fimDoMes(x);x.acoes=5;x.pes.energia=90;x.pes.saude=Math.max(x.pes.saude,80);x.pes.estresse=Math.min(x.pes.estresse,40);for(const k in x.parties){x.parties[k].rel=Math.max(x.parties[k].rel,55)}}return x})}", n)
+    pg.evaluate("(n)=>{__QV().setG(p=>{const x=structuredClone(p);for(let i=0;i<n;i++){if(x.over)break;__X().fimDoMes(x);x.acoes=5;x.props=5;x.pes.energia=90;x.pes.saude=Math.max(x.pes.saude,80);x.pes.estresse=Math.min(x.pes.estresse,40);for(const k in x.parties){x.parties[k].rel=Math.max(x.parties[k].rel,55)}}return x})}", n)
     pg.wait_for_timeout(700)
 def vai(pg, sec, chip=None):
     pg.locator('#sec-tab-' + sec).click(timeout=5000); pg.wait_for_timeout(400)
@@ -89,7 +89,7 @@ with sync_playwright() as p:
 
     # C4: inflação responde ao primário (termo quadrático)
     r = pg.evaluate("""()=>{const X=__X(); const run=(extra)=>{ const g=structuredClone(window.__G0); g.fiscal.extra += extra; let a=7; Math.random=()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
-      for(let i=0;i<30;i++){ X.fimDoMes(g); g.acoes=5; g.pes.energia=90; g.pes.saude=90; g.pes.estresse=20; g.impStreak=0; g.over=null; g.fiscal.extra = extra; } return { ipca: g.eco.ipca, prim: X.primario(g) } };
+      for(let i=0;i<30;i++){ X.fimDoMes(g); g.acoes=5;g.props=5; g.pes.energia=90; g.pes.saude=90; g.pes.estresse=20; g.impStreak=0; g.over=null; g.fiscal.extra = extra; } return { ipca: g.eco.ipca, prim: X.primario(g) } };
       return { base: run(0), grande: run(1000) } }""")
     ok('C4: com rombo de ~R$ 1 tri o IPCA passa de 9% em 30 meses', r['grande']['ipca'] > 9 and r['grande']['ipca'] > r['base']['ipca'] + 4, r)
 
@@ -143,13 +143,13 @@ with sync_playwright() as p:
     ok('I3: a mesma ação não se repete no mês', pg.locator('[data-suc-acao=palanque]').is_disabled())
     cb = pg.locator('[data-suc-coligar]').first
     if cb.count():
-        n0 = G(pg, 'g.el.suc.aliados.length'); SET(pg, "for(const k in n.parties) n.parties[k].rel=90; n.acoes=5")
+        n0 = G(pg, 'g.el.suc.aliados.length'); SET(pg, "for(const k in n.parties) n.parties[k].rel=90; n.acoes=5;n.props=5")
         pg.locator('[data-suc-coligar]').first.click(timeout=4000); pg.wait_for_timeout(600)
         ok('I3: coligação fechada entra na lista do candidato', G(pg, 'g.el.suc.aliados.length') == n0 + 1, G(pg, 'g.el.suc.aliados'))
     pg.locator('[data-suc-trocar]').click(timeout=4000); pg.wait_for_timeout(400)
     esc = pg.locator('[data-suc-escolher]:not([disabled])')
     if esc.count():
-        novo = esc.first.get_attribute('data-suc-escolher'); SET(pg, "n.acoes=5")
+        novo = esc.first.get_attribute('data-suc-escolher'); SET(pg, "n.acoes=5;n.props=5")
         pg.locator('[data-suc-escolher]:not([disabled])').first.click(timeout=4000); pg.wait_for_timeout(600)
         ok('I3: trocar o candidato na pré-campanha vale e fixa a escolha', G(pg, 'g.el.suc.id') == novo and G(pg, 'g.el.suc.fixado'), (novo, G(pg, 'g.el.suc.id')))
     else:

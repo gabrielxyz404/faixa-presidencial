@@ -93,11 +93,11 @@ with sync_playwright() as p:
     pg.locator('[data-conv=infra] [data-conv-tema=rod]').click(timeout=5000); pg.wait_for_timeout(400)
     ok('Infra: conversa sobre rodovias mostra a fala', pg.locator('[data-conv=infra] [data-conv-fala]').count() == 1)
     clica_programa(pg, 'infraestrutura', 'Duplicar trechos de BRs', 'Infra (rodovias)')
-    SET(pg, "n.acoes=5")
+    SET(pg, "n.acoes=5;n.props=5")
     clica_programa(pg, 'infraestrutura', 'Minha Casa Minha Vida', 'Infra (moradia)')
 
     # ---------- Justiça ----------
-    SET(pg, "n.acoes=5")
+    SET(pg, "n.acoes=5;n.props=5")
     chip(pg, 'Justiça')
     ok('Justiça: 1 ou 2 casos abertos desde o começo da partida', 1 <= pg.locator('[data-pais=justica] [data-caso]').count() <= 2, pg.locator('[data-pais=justica] [data-caso]').count())
     ok('Justiça: os casos iniciais têm alvo genérico (cargo + partido, sem estado)', G(pg, "g.jus.casos.every(c=>!/\\b(AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO)\\b/.test(c.alvo) && !c.gov)"), G(pg, "g.jus.casos.map(c=>c.alvo).join('; ')"))
@@ -105,7 +105,7 @@ with sync_playwright() as p:
     ok('Justiça: seção "Ações do governo" com 10 botões', pg.locator('[data-jus=acoes-gov] button[data-prog]').count() == 10 and 'ações do governo' in pg.locator('[data-jus=acoes-gov]').inner_text().lower())
     pg.screenshot(path=OUT + '/justica.png', full_page=True)
     clica_programa(pg, 'justica', 'cargos na PF', 'Justiça')
-    SET(pg, "n.acoes=5")
+    SET(pg, "n.acoes=5;n.props=5")
     clica_programa(pg, 'justica', 'Cortar penduricalhos', 'Justiça (PLP)')
     # sem casos abertos: explicação com dica
     SET(pg, "n.jus.casos=[]")

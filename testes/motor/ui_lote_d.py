@@ -71,7 +71,7 @@ with sync_playwright() as p:
     pg.add_init_script(SEED)
     pg.route('**/index.html', lambda r: r.fulfill(status=200, content_type='text/html; charset=utf-8', body=src))
     start(pg); fecha(pg)
-    SET(pg, "n.acoes=5;n.pes.energia=90;n.eu.embalo=-0.3999999999999999;n.mes=13")
+    SET(pg, "n.acoes=5;n.props=5;n.pes.energia=90;n.eu.embalo=-0.3999999999999999;n.mes=13")
     # três cadeiras vagas no STF
     SET(pg, "let k=0;for(const c of n.stfCadeiras){ if(!c.vaga && k<2){ c.vaga=true; c.de=c.nome; c.desde='2026-06'; k++ } }")
 
@@ -168,7 +168,7 @@ with sync_playwright() as p:
     SET(pg, "n.mes=13;n.el.mandatos=0")
 
     # ---------- D5: modal de votação ----------
-    SET(pg, "n.acoes=5;n.pes.energia=90")
+    SET(pg, "n.acoes=5;n.props=5;n.pes.energia=90")
     pg.fill('#caixa', 'Ampliar a isenção do Imposto de Renda para quem ganha até R$ 7 mil'); click(pg, 'Assinar e enviar', 2200)
     for _ in range(4):
         bb = pg.evaluate("()=>[...document.querySelectorAll('.modal-wrap button')].map(b=>b.innerText.trim())")

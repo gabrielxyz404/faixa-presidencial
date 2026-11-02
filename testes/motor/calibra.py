@@ -19,7 +19,7 @@ JS = """([modo, seed, pacote, dif]) => {
   const snap = () => ({ ap: V.aprovacao(g), ipca: g.eco.ipca, des: g.eco.des, div: g.eco.divida, prim: V.primario(g), imp: V.riscoImpeachment(g), pib: g.eco.pib, risco: g.eco.risco });
   for (let m = 1; m <= 48; m++) {
     if ((modo === 'pacote' || modo === 'amplo') && g.mes === 1) {
-      for (const t of (modo === 'amplo' ? window.__amplo : pacote)) { g.acoes = 5; try { const p = V.analisaLocal(g, t); V.executaProposta(g, p, 'aprovada'); } catch (e) { out.err = String(e).slice(0, 200); } }
+      for (const t of (modo === 'amplo' ? window.__amplo : pacote)) { g.acoes=5;g.props=5; try { const p = V.analisaLocal(g, t); V.executaProposta(g, p, 'aprovada'); } catch (e) { out.err = String(e).slice(0, 200); } }
     }
     try { V.fimDoMes(g); } catch (e) { out.err = String(e.stack).slice(0, 400); break; }
     if ([6, 12, 24, 48].includes(m)) out.snaps[m] = snap();

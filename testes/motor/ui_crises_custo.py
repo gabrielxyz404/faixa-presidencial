@@ -73,7 +73,7 @@ with sync_playwright() as p:
         fecha(pg)
         extra = "n.eventoUF='CE';" if cid == 'faccao' else ""
         if fav: extra += "for(const k in n.parties){n.parties[k].rel=88;n.parties[k].relS=88;}"  # base amiga: mais projetos de lei passam e podem ser comparados
-        pg.evaluate("(cid)=>{__QV().setG(p=>{const n=structuredClone(__g0);n.evento=cid;n.eventoOk=false;n.eventoIgn=false;n.acoes=5;n.pes.energia=100;" + extra + "return n})}", cid)
+        pg.evaluate("(cid)=>{__QV().setG(p=>{const n=structuredClone(__g0);n.evento=cid;n.eventoOk=false;n.eventoIgn=false;n.acoes=5;n.props=5;n.pes.energia=100;" + extra + "return n})}", cid)
         pg.wait_for_timeout(500)
     def abre_crise():
         pg.locator('[data-pend=crise]').first.click(timeout=6000); pg.wait_for_timeout(700)

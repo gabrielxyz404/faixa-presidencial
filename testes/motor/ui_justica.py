@@ -88,10 +88,10 @@ with sync_playwright() as p:
     ok('resultado da ação exibido na aba', pg.locator('[data-jus=resultado]').count() == 1)
     pg.screenshot(path=OUT + '/justica_casos.png', full_page=True)
     # 5) reação ao bloqueio (sorteio forçado): escândalo, STF e risco de impeachment sobem
-    r = pg.evaluate("()=>{const g=structuredClone(__QV().gRef.current);const J=__J();for(const k in g.groups)g.groups[k]=30;g.escandalo=20;const i0=J.riscoImpeachment(g),s0=g.stf,e0=g.escandalo;const o=Math.random;Math.random=()=>0;J.jusNovoCaso(g,{gov:true});const c=g.jus.casos[g.jus.casos.length-1];g.acoes=5;const R=J.jusAcao(g,c.id,'sigilo');Math.random=o;return {ok:R.ok,back:g.jus.ult.back,stf:g.stf-s0,esc:g.escandalo-e0,imp:J.riscoImpeachment(g)-i0,res:g.jus.ult.res}}")
+    r = pg.evaluate("()=>{const g=structuredClone(__QV().gRef.current);const J=__J();for(const k in g.groups)g.groups[k]=30;g.escandalo=20;const i0=J.riscoImpeachment(g),s0=g.stf,e0=g.escandalo;const o=Math.random;Math.random=()=>0;J.jusNovoCaso(g,{gov:true});const c=g.jus.casos[g.jus.casos.length-1];g.acoes=5;g.props=5;const R=J.jusAcao(g,c.id,'sigilo');Math.random=o;return {ok:R.ok,back:g.jus.ult.back,stf:g.stf-s0,esc:g.escandalo-e0,imp:J.riscoImpeachment(g)-i0,res:g.jus.ult.res}}")
     ok('bloqueio com reação sobe escândalo, STF e risco de impeachment', r['ok'] and r['back'] and r['stf'] > 0 and r['esc'] > 0 and r['imp'] > 0, r)
     # 6) arquivar e reabrir
-    SET(pg, "const c=n.jus.casos[1];c.fase='arquivado';c.ult=0;n.acoes=5")
+    SET(pg, "const c=n.jus.casos[1];c.fase='arquivado';c.ult=0;n.acoes=5;n.props=5")
     ok('caso arquivado oferece reabrir', pg.locator('[data-caso=j2] [data-jus-acao=reabrir]').count() == 1 and not pg.locator('[data-caso=j2] [data-jus-acao=reabrir]').first.is_disabled())
     pg.locator('[data-caso=j2] [data-jus-acao=reabrir]').first.click(timeout=5000); pg.wait_for_timeout(600)
     ok('reabrir volta ao inquérito', G(pg, "g.jus.casos[1].fase==='inquérito' && g.jus.casos[1].reab===1"))
@@ -110,7 +110,7 @@ with sync_playwright() as p:
     uf = re.compile(r'\b(AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO)\b')
     ok('alvos fictícios genéricos (sem pessoa real nem estado)', len(alvos) >= 5 and not any(uf.search(a) for a in alvos), alvos)
     # 9) prisão de parlamentar: o suplente aparece como linha extra e nenhum nome real some da lista
-    SET(pg, "n.jus.casos=[];n.jus.suplentes=[];n.jus.reacoes=[];n.acoes=5")
+    SET(pg, "n.jus.casos=[];n.jus.suplentes=[];n.jus.reacoes=[];n.acoes=5;n.props=5")
     secao(pg, 'poder')
     pg.select_option('#parl-casa', 'sen'); pg.select_option('#parl-bloco', 'PL'); pg.wait_for_timeout(500)
     NOMES = "()=>Array.from(document.querySelectorAll('span.font-medium.truncate[title]')).filter(e=>!e.closest('[data-suplente]')).map(e=>e.getAttribute('title'))"  # a linha do suplente também tem title (lote D): fica fora da contagem
