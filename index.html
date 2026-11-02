@@ -696,6 +696,14 @@
   .gl-tip:focus-visible { outline: 2px solid var(--ouro); outline-offset: 2px; }
   .gl-box { position: fixed; z-index: 9999; padding: 10px 12px; border: 1px solid var(--line2); border-radius: 8px; background: #101010; color: var(--fg); font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13px; font-weight: 400; line-height: 1.45; text-align: left; text-transform: none; letter-spacing: 0; box-shadow: 0 8px 24px rgba(0,0,0,.7); pointer-events: none; }
   .gl-box b { color: var(--ouro); font-weight: 600; }
+  /* o (?) com o mesmo visual em todas as páginas (antes só vinha no GV_CSS de algumas telas) */
+  .gv-tip{position:relative;display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;margin-left:6px;border-radius:50%;border:1px solid var(--muted);color:var(--muted);font-family:var(--f-mono);font-size:12px;line-height:1;cursor:help;vertical-align:middle;flex:none;text-transform:none;letter-spacing:0;font-weight:600}
+  .gv-tip:hover,.gv-tip:focus{color:var(--fg);border-color:var(--fg);outline:none}
+  .gv-tip:focus-visible{outline:2px solid var(--ouro);outline-offset:2px}
+  .gv-tipbox{display:none;position:absolute;z-index:50;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);width:280px;max-width:80vw;padding:10px 12px;border:1px solid var(--line2);border-radius:8px;background:#101010;color:var(--fg);font-family:var(--f-body);font-size:13px;line-height:1.45;text-align:left;font-weight:400;box-shadow:0 10px 28px rgba(0,0,0,.6)}
+  .gv-tip:hover .gv-tipbox,.gv-tip:focus .gv-tipbox{display:block}
+  .gv-tip.dir .gv-tipbox{left:auto;right:-8px;transform:none}
+  .gv-tip.esq .gv-tipbox{left:-8px;transform:none}
   .gv-tipbox-oculto { display: none !important; }
   button .gl-tip, a .gl-tip, summary .gl-tip, label .gl-tip, option .gl-tip, [role=tab] .gl-tip, [role=radio] .gl-tip, [role=button] .gl-tip, .gv-tipbox .gl-tip, .gl-box .gl-tip, .gl-no .gl-tip { display: none; }
 </style>
@@ -792,7 +800,21 @@ function glProc(s) {
   if (i < s.length) out.push(s.slice(i));
   return h0('span', { className: 'gl-w' }, ...out); // um só elemento: dentro de caixas flex o texto não se parte em pedaços
 }
+/* textos explicativos longos: na tela fica só a 1ª frase; o texto inteiro vai para o (?) ao lado (menos poluição visual).
+   Vale para parágrafos discretos (text-muted, mx-s, pd-s, gv-sub, medida-ajuda) feitos só de texto; className "gl-inteiro" desliga. */
+const TXT_LONGO = 150;
+function txtCurto(t) {
+  const m = t.match(/^([\s\S]{18,170}?[.!?])\s(?=[A-ZÀ-Ú"“(])/); if (m) return m[1];
+  const c = t.slice(0, 150); return c.slice(0, Math.max(60, c.lastIndexOf(' '))) + '…';
+}
 function h(type, props, ...ch) {
+  if (typeof type === 'string' && ch.length && props && typeof props.className === 'string' && /(?:^|\s)(?:text-muted|mx-s|pd-s|gv-sub|medida-ajuda)(?:\s|$)/.test(props.className) && !/(?:^|\s)(?:gl-inteiro|gv-tip|gv-tipbox|gl-tip|gl-box)(?:\s|$)/.test(props.className)) {
+    const flat = ch.flat ? ch.flat(Infinity) : ch;
+    if (flat.every(x => typeof x === 'string' || typeof x === 'number' || x == null || x === false)) {
+      const t = flat.filter(x => typeof x === 'string' || typeof x === 'number').join('').replace(/\s+/g, ' ').trim();
+      if (t.length > TXT_LONGO) { const c = txtCurto(t); if (c.length < t.length - 20) return h0(type, props, glProc(c), h0(GvTip, { txt: t })); }
+    }
+  }
   if (typeof type === 'string' && ch.length && !GL_SKIP.has(type) && !(props && typeof props.className === 'string' && /(?:^|\s)(?:gv-tip|gv-tipbox|gl-tip|gl-box|gl-no)(?:\s|$)/.test(props.className)))
   { // junta textos vizinhos (ex.: "peso no IPCA: " + "1,2%") para o trecho com o termo não ficar separado do resto dentro de caixas flex
     const out = []; let i = 0;
@@ -19856,7 +19878,7 @@ function RodapeFontes({ extra }) {
   return html`<footer className="sec min-w-0" data-rodape-fontes="1"><details>
     <summary className="cursor-pointer eyebrow">Fontes e notas sobre as estimativas</summary>
     <ul className="mt-2 flex flex-col gap-1 text-xs text-muted list-disc pl-4">${NOTAS_FONTES.map((x, i) => html`<li key=${i}>${x}</li>`)}</ul>
-    ${extra ? html`<div className="mt-2 text-xs text-muted leading-relaxed">${extra}</div>` : null}
+    ${extra ? html`<div className="mt-2 text-xs text-muted leading-relaxed gl-inteiro">${extra}</div>` : null}
     <div className="eyebrow mt-3 mb-1">Fontes (com o ano dos dados)</div>
     <ul className="grid gap-x-6 gap-y-0.5 sm:grid-cols-2 text-xs">${F.map(f => html`<li key=${f.id}><a href=${f.u} target="_blank" rel="noopener noreferrer" className="underline decoration-dotted hover:text-ouro">${f.t}</a> <span className="text-muted">· ${f.ano}</span></li>`)}</ul>
   </details></footer>`;
@@ -33601,10 +33623,11 @@ function App() {
         ${sec === 'mundo' && html`<${ErroTela} nome="mundo" resetKey=${sec} onVoltar=${() => irPara('mesa')}><${Diplomacia} g=${g} decidir=${decidir} upd=${upd} chip=${chipAtual(g, 'mundo')} setChip=${(c) => irPara('mundo', c)} abrirPend=${(p) => { PEND_ABRIR = p.id; irPara('mesa'); }} /></${ErroTela}>`}
         ${sec === 'eu' && html`<${ErroTela} nome="eu" resetKey=${sec} onVoltar=${() => irPara('mesa')}><${Eu} g=${g} upd=${upd} chip=${chipAtual(g, 'eu')} setChip=${(c) => irPara('eu', c)} abrirPend=${(p) => { PEND_ABRIR = p.id; irPara('mesa'); }} /></${ErroTela}>`}
         ${sec === 'x' && html`<${ErroTela} nome="x" resetKey=${sec} onVoltar=${() => irPara('mesa')}><${RedeX} g=${g} upd=${upd} /></${ErroTela}>`}
-        <footer className="mt-10 text-xs text-muted flex flex-col gap-2">
-          <p>Congresso real eleito em 2026 (dados do TSE). Votos e comportamentos dos parlamentares são simulados. Famosos, podcasts e políticos reais citados em posts e entrevistas têm falas inventadas pelo jogo (nos posts do X, com o selo “simulado”): tratam só de medidas e política e partem de posições públicas declaradas (seguidores são ordens de grandeza). Veículos de imprensa aparecem como referência satírica; os cidadãos entrevistados, as manchetes e os indicadores são fictícios. Efígies e emblemas de reserva são ilustrações originais do jogo. Relações bilaterais, pesos de comércio e valores da diplomacia são estimativas do jogo; a seção Bastidores é ficção, com pessoas e empresas inventadas e indisponível para personagens reais.</p>
+        <footer className="mt-10 text-xs text-muted"><details><summary className="cursor-pointer" style=${{ listStyle: 'revert' }} data-rodape="1">Sobre os dados, fotos e logotipos</summary><div className="flex flex-col gap-2 mt-2 gl-inteiro">
+          <p className="gl-inteiro">Congresso real eleito em 2026 (dados do TSE). Votos e comportamentos dos parlamentares são simulados. Famosos, podcasts e políticos reais citados em posts e entrevistas têm falas inventadas pelo jogo (nos posts do X, com o selo “simulado”): tratam só de medidas e política e partem de posições públicas declaradas (seguidores são ordens de grandeza). Veículos de imprensa aparecem como referência satírica; os cidadãos entrevistados, as manchetes e os indicadores são fictícios. Efígies e emblemas de reserva são ilustrações originais do jogo. Relações bilaterais, pesos de comércio e valores da diplomacia são estimativas do jogo; a seção Bastidores é ficção, com pessoas e empresas inventadas e indisponível para personagens reais.</p>
           <p data-credito-logos="1">Logotipos: sites oficiais de cada partido, usados apenas para identificação.</p>
           <p data-credito-fotos="1">Fotos: TSE (fotos de registro de candidatura, dados abertos) e Wikimedia Commons (licenças livres; créditos em Configurações). Personagens fictícios têm retratos ilustrados gerados pelo jogo.</p>
+        </div></details>
         </footer>
       </main>
     </div>
