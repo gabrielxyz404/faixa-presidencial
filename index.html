@@ -689,11 +689,12 @@
   [data-secao=x-famosos] .mx-post { margin: 4px 0 6px; font-size: 14px; line-height: 1.45; color: var(--fg); overflow-wrap: anywhere; }
   /* glossário: (?) automático ao lado de siglas e termos técnicos (ver GLOSSARIO) */
   .gl-t { white-space: nowrap; }
-  .gl-tip { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 15px; height: 15px; margin-left: 3px; border-radius: 50%; border: 1px solid var(--muted); color: var(--muted); font-family: var(--f-body, 'IBM Plex Sans', system-ui, sans-serif); font-size: 10px; font-weight: 600; line-height: 1; cursor: help; vertical-align: 1px; text-transform: none; letter-spacing: 0; white-space: normal; }
+  .gl-tip { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; margin-left: 3px; border-radius: 50%; border: 1px solid var(--muted); color: var(--muted); font-family: var(--f-body, 'IBM Plex Sans', system-ui, sans-serif); font-size: 12px; font-weight: 600; line-height: 1; cursor: help; vertical-align: 1px; text-transform: none; letter-spacing: 0; white-space: normal; }
   .gl-tip:hover, .gl-tip:focus { color: var(--fg); border-color: var(--fg); outline: none; }
   .gl-tip:focus-visible { outline: 2px solid var(--ouro); outline-offset: 2px; }
   .gl-box { position: fixed; z-index: 9999; padding: 10px 12px; border: 1px solid var(--line2); border-radius: 8px; background: #101010; color: var(--fg); font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13px; font-weight: 400; line-height: 1.45; text-align: left; text-transform: none; letter-spacing: 0; box-shadow: 0 8px 24px rgba(0,0,0,.7); pointer-events: none; }
   .gl-box b { color: var(--ouro); font-weight: 600; }
+  .gv-tipbox-oculto { display: none !important; }
   button .gl-tip, a .gl-tip, summary .gl-tip, label .gl-tip, option .gl-tip, [role=tab] .gl-tip, [role=radio] .gl-tip, [role=button] .gl-tip, .gv-tipbox .gl-tip, .gl-box .gl-tip, .gl-no .gl-tip { display: none; }
 </style>
 
@@ -766,11 +767,13 @@ const GLOSSARIO = [
 const GL_RX = new RegExp('(?<![\\p{L}\\p{N}])(?:' + GLOSSARIO.map(e => '(' + e[0] + ')').join('|') + ')(?![\\p{L}\\p{N}])', 'u');
 const GL_RXG = new RegExp(GL_RX.source, 'gu');
 const GL_SKIP = new Set(['button', 'a', 'option', 'select', 'textarea', 'input', 'title', 'style', 'script', 'summary', 'label', 'text', 'tspan', 'svg']);
+// posição do balão (fixa na tela): abaixo do (?) quando cabe, senão acima; nunca sai pelos lados
+function glPos(e) { if (!e) return null; const r = e.getBoundingClientRect(), W = Math.min(300, window.innerWidth - 24), x = Math.max(12, Math.min(window.innerWidth - W - 12, r.left + r.width / 2 - W / 2)); const baixo = r.bottom + 190 < window.innerHeight || r.top < 210; return { x, w: W, y: baixo ? r.bottom + 8 : null, yb: baixo ? null : window.innerHeight - r.top + 8 }; }
+function glBox(pos, ...ch) { return pos ? ReactDOM.createPortal(h0('div', { className: 'gl-box', role: 'tooltip', style: { left: pos.x + 'px', width: pos.w + 'px', top: pos.y != null ? pos.y + 'px' : 'auto', bottom: pos.yb != null ? pos.yb + 'px' : 'auto' } }, ...ch), document.body) : null; }
 function Termo({ t, n, d }) { // o balão vai para o fim do <body> (portal), com posição fixa: não fica atrás de outros cartões nem é cortado
   const [pos, setPos] = React.useState(null), ref = React.useRef(null);
-  const abre = () => { const e = ref.current; if (!e) return; const r = e.getBoundingClientRect(), W = Math.min(300, window.innerWidth - 24), x = Math.max(12, Math.min(window.innerWidth - W - 12, r.left + r.width / 2 - W / 2)); const baixo = r.bottom + 170 < window.innerHeight || r.top < 190; setPos({ x, w: W, y: baixo ? r.bottom + 8 : null, yb: baixo ? null : window.innerHeight - r.top + 8 }); };
-  const fecha = () => setPos(null);
-  const box = pos ? ReactDOM.createPortal(h0('div', { className: 'gl-box', role: 'tooltip', style: { left: pos.x + 'px', width: pos.w + 'px', top: pos.y != null ? pos.y + 'px' : 'auto', bottom: pos.yb != null ? pos.yb + 'px' : 'auto' } }, n ? h0('b', null, n) : null, n ? ' ' : null, d), document.body) : null;
+  const abre = () => setPos(glPos(ref.current)), fecha = () => setPos(null);
+  const box = glBox(pos, n ? h0('b', null, n) : null, n ? ' ' : null, d);
   return h0('span', { className: 'gl-t' }, t, h0('span', { ref, className: 'gl-tip', tabIndex: 0, role: 'note', 'aria-label': (n ? n + ': ' : '') + d, 'data-gl': n || t, onMouseEnter: abre, onMouseLeave: fecha, onFocus: abre, onBlur: fecha }, '?'), box);
 }
 function glProc(s) {
@@ -17065,8 +17068,10 @@ const GV_CSS = `
 .gv-idea-a{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}
 .gv-mini{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
 `;
-function GvTip({ txt, lado }) {
-  return html`<span className=${'gv-tip ' + (lado || '')} tabIndex="0" role="note" aria-label=${txt} data-gv-tip="1">?<span className="gv-tipbox" aria-hidden="true">${txt}</span></span>`;
+function GvTip({ txt, lado }) { // o balão é desenhado por cima da página (glBox): não fica atrás do cabeçalho nem é cortado; o gv-tipbox fica escondido, só para leitura
+  const [pos, setPos] = useState(null), ref = useRef(null);
+  const abre = () => setPos(glPos(ref.current)), fecha = () => setPos(null);
+  return html`<span ref=${ref} className=${'gv-tip ' + (lado || '')} tabIndex="0" role="note" aria-label=${typeof txt === 'string' ? txt : undefined} data-gv-tip="1" onMouseEnter=${abre} onMouseLeave=${fecha} onFocus=${abre} onBlur=${fecha}>?<span className="gv-tipbox gv-tipbox-oculto" aria-hidden="true">${txt}</span>${glBox(pos, txt)}</span>`;
 }
 const GV_PRI_IC = { obras: ['HardHat', 'var(--ambar)'], gastos: ['Scissors', 'var(--verde)'], comunicacao: ['Megaphone', 'var(--anil)'], despacho: ['Handshake', 'var(--ouro)'], cadastro: ['HeartHandshake', 'var(--rubro)'] };
 // etiquetas de efeito de uma prioridade, já multiplicadas pela competência do gabinete (as linhas de relação com partidos viram uma só)

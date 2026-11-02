@@ -75,7 +75,7 @@ with sync_playwright() as p:
     # produto sem contrato: texto de 0%
     pg.locator('[data-com-imp=trigo]').click(); pg.wait_for_timeout(500)
     z = pg.locator('[data-com-sit-zero]')
-    ok('Produto sem contrato (trigo): texto do 0% contratado', z.count() == 1 and '0% em acordo do governo: tudo é comprado por empresas privadas no mercado, ao preço do dia. Contratos de governo são opcionais: fixam preço e volume, mas prendem o Brasil.' in z.inner_text().replace('\n', ' '), z.inner_text() if z.count() else '')
+    ok('Produto sem contrato (trigo): texto do 0% contratado', z.count() == 1 and '0% em acordo do governo: tudo é comprado por empresas privadas no mercado, ao preço do dia. Acordos do governo são opcionais: fixam preço e volume, mas prendem o Brasil.' in z.inner_text().replace('\n', ' '), z.inner_text() if z.count() else '')
     ok('Barra: rótulo "mercado (empresas, preço do dia)"', 'mercado (empresas, preço do dia)' in pg.locator('[data-com-sit=compra] .ic-leg').inner_text(), pg.locator('[data-com-sit=compra] .ic-leg').inner_text())
     pg.screenshot(path=OUT + '/trigo.png')
     # coluna "se fechar": novo formato
