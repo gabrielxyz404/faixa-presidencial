@@ -95,7 +95,7 @@ with sync_playwright() as p:
     # ---------- Vender ----------
     pg.locator('[data-com-aba=vender]').click(); pg.wait_for_timeout(400)
     itens = pg.locator('[data-com-picker=vender] [data-com-prod]'); n = itens.count()
-    sem = [t for t in itens.all_inner_texts() if not (re.search(r'exportamos US\$ [\d.,]+ bi/ano', t) and re.search(r'\d+% da sobra já vendido', t) and re.search(r'preço mundial (US\$ [\d.,]+|índice \d+ \(2025 = 100\))', t))]
+    sem = [t for t in itens.all_inner_texts() if not (re.search(r'exportamos US\$ [\d.,]+ bi/ano', t) and re.search(r'\d+% da sobra em acordo do governo', t) and re.search(r'preço mundial (US\$ [\d.,]+|índice \d+ \(2025 = 100\))', t))]
     ok('Vender: %d itens com unidade (bi/ano, %% da sobra, preço mundial)' % n, n >= 30 and not sem, sem[:2])
     pg.locator('[data-com-prod=soja_grao]').click(); pg.wait_for_timeout(500)
     sv = pg.locator('[data-com-sit=venda]')

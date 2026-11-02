@@ -687,6 +687,14 @@
   [data-secao=x-famosos] .gv-chips > * { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
   [data-secao=x-famosos] .gv-acts .btn { white-space: normal; text-align: left; max-width: 100%; height: auto; }
   [data-secao=x-famosos] .mx-post { margin: 4px 0 6px; font-size: 14px; line-height: 1.45; color: var(--fg); overflow-wrap: anywhere; }
+  /* glossário: (?) automático ao lado de siglas e termos técnicos (ver GLOSSARIO) */
+  .gl-t { white-space: nowrap; }
+  .gl-tip { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 15px; height: 15px; margin-left: 3px; border-radius: 50%; border: 1px solid var(--muted); color: var(--muted); font-family: var(--f-body, 'IBM Plex Sans', system-ui, sans-serif); font-size: 10px; font-weight: 600; line-height: 1; cursor: help; vertical-align: 1px; text-transform: none; letter-spacing: 0; white-space: normal; }
+  .gl-tip:hover, .gl-tip:focus { color: var(--fg); border-color: var(--fg); outline: none; }
+  .gl-tip:focus-visible { outline: 2px solid var(--ouro); outline-offset: 2px; }
+  .gl-box { position: fixed; z-index: 9999; padding: 10px 12px; border: 1px solid var(--line2); border-radius: 8px; background: #101010; color: var(--fg); font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13px; font-weight: 400; line-height: 1.45; text-align: left; text-transform: none; letter-spacing: 0; box-shadow: 0 8px 24px rgba(0,0,0,.7); pointer-events: none; }
+  .gl-box b { color: var(--ouro); font-weight: 600; }
+  button .gl-tip, a .gl-tip, summary .gl-tip, label .gl-tip, option .gl-tip, [role=tab] .gl-tip, [role=radio] .gl-tip, [role=button] .gl-tip, .gv-tipbox .gl-tip, .gl-box .gl-tip, .gl-no .gl-tip { display: none; }
 </style>
 
 <div id="root"></div>
@@ -695,7 +703,95 @@
 (function () {
 'use strict';
 const { useState, useEffect, useMemo, useRef } = React;
-const h = React.createElement;
+const h0 = React.createElement;
+/* ---- GLOSSÁRIO: siglas e termos técnicos ganham um (?) com a explicação, em qualquer texto do jogo ----
+   Funciona no h (createElement): só em texto direto de elementos HTML, nunca em props de componentes. Dentro de botões, links, abas e
+   opções o (?) fica escondido por CSS (não atrapalha o clique). Siglas ambíguas têm regra própria: PL só como projeto ("PL 2.338", "(PL)"),
+   nunca o partido; MP não pega "MP Materials". Só a 1ª ocorrência de cada termo em cada trecho de texto. */
+const GLOSSARIO = [
+  ['Conab', 'Conab', 'Companhia Nacional de Abastecimento: estatal federal que forma estoques públicos de alimentos, compra da agricultura familiar e executa a política de preços mínimos.'],
+  ['TEC', 'TEC', 'Tarifa Externa Comum: o imposto de importação que os países do Mercosul cobram de produtos de fora do bloco. O Brasil pode baixar ou zerar a de um produto por um prazo (decisão da Camex/Gecex).'],
+  ['Camex', 'Camex', 'Câmara de Comércio Exterior: órgão do governo federal (ligado ao Ministério do Desenvolvimento, Indústria e Comércio) que decide tarifas de importação, cotas e regras do comércio exterior.'],
+  ['Gecex', 'Gecex', 'Comitê Executivo de Gestão da Camex: o grupo de ministérios que, na prática, aprova as mudanças de tarifa de importação.'],
+  ['PECs?', 'PEC', 'Proposta de Emenda à Constituição: muda a Constituição. Precisa de 3/5 dos votos (308 deputados e 49 senadores), em dois turnos em cada Casa. Não passa por sanção nem veto do presidente.'],
+  ['PLPs?', 'PLP', 'Projeto de Lei Complementar: trata de temas que a Constituição reserva a lei complementar (como a Lei de Responsabilidade Fiscal). Precisa de maioria absoluta: 257 deputados e 41 senadores.'],
+  ['PL(?= \\d)|(?<=\\()PL(?=\\))', 'PL', 'Projeto de Lei (lei ordinária): precisa de maioria simples dos presentes na Câmara e no Senado, com quórum mínimo. Depois vai à sanção ou ao veto do presidente.'],
+  ['MPs?(?! Materials)', 'MP', 'Medida Provisória: ato do presidente com força de lei que vale na hora, por 60 dias prorrogáveis por mais 60. Se o Congresso não aprovar nesse prazo, perde a validade. Não pode tratar de alguns temas, como direito penal.'],
+  ['[Mm]edidas? [Pp]rovisórias?', null, 'Ato do presidente com força de lei que vale na hora, por 60 dias prorrogáveis por mais 60. Se o Congresso não aprovar nesse prazo, perde a validade.'],
+  ['PLOA', 'PLOA', 'Projeto de Lei Orçamentária Anual: a proposta de orçamento do ano seguinte que o governo envia ao Congresso até 31 de agosto.'],
+  ['LDO', 'LDO', 'Lei de Diretrizes Orçamentárias: define as metas e prioridades (inclusive a meta de resultado primário) que o orçamento do ano seguinte precisa seguir.'],
+  ['LOA', 'LOA', 'Lei Orçamentária Anual: o orçamento do ano, com a estimativa de receitas e as despesas autorizadas de cada área.'],
+  ['PPA', 'PPA', 'Plano Plurianual: o plano de governo para 4 anos, com programas e metas, aprovado como lei.'],
+  ['LRF|Lei de Responsabilidade Fiscal', 'LRF', 'Lei de Responsabilidade Fiscal (LC 101/2000): regras para as contas públicas, como limites de gasto com pessoal e de endividamento. Descumprir pode virar crime de responsabilidade.'],
+  ['IPCA', 'IPCA', 'Índice Nacional de Preços ao Consumidor Amplo: a inflação oficial do Brasil, medida pelo IBGE. É por ele que se mede a meta de inflação (3% ao ano).'],
+  ['Selic', 'Selic', 'A taxa básica de juros da economia, definida pelo Copom do Banco Central. Juros altos seguram a inflação, mas freiam o crescimento e encarecem a dívida pública.'],
+  ['Copom', 'Copom', 'Comitê de Política Monetária do Banco Central: a diretoria do BC que se reúne a cada 45 dias e decide a Selic.'],
+  ['CPMI', 'CPMI', 'Comissão Parlamentar Mista de Inquérito: uma CPI formada por deputados e senadores juntos.'],
+  ['CPIs?', 'CPI', 'Comissão Parlamentar de Inquérito: grupo de parlamentares que investiga um fato. Pode convocar depoentes e quebrar sigilos, e no fim manda as conclusões ao Ministério Público.'],
+  ['TCU', 'TCU', 'Tribunal de Contas da União: órgão que fiscaliza o uso do dinheiro federal e ajuda o Congresso a julgar as contas do presidente. Não faz parte do Judiciário.'],
+  ['STF', 'STF', 'Supremo Tribunal Federal: a mais alta corte do país, com 11 ministros. Julga se leis e atos respeitam a Constituição e processa o presidente em crimes comuns.'],
+  ['STJ', 'STJ', 'Superior Tribunal de Justiça: a última instância para leis federais que não são da Constituição, e julga governadores.'],
+  ['TSE', 'TSE', 'Tribunal Superior Eleitoral: organiza as eleições e julga questões eleitorais, como abuso de poder e uso irregular de verba de campanha. Pode cassar mandatos.'],
+  ['PGR', 'PGR', 'Procuradoria-Geral da República: chefia o Ministério Público Federal. Só ela pode denunciar o presidente por crime comum ao STF.'],
+  ['AGU', 'AGU', 'Advocacia-Geral da União: os advogados do governo federal, que o defendem na Justiça e dão pareceres jurídicos.'],
+  ['CGU', 'CGU', 'Controladoria-Geral da União: órgão do governo que fiscaliza os próprios ministérios, combate a corrupção e firma acordos de leniência.'],
+  ['BNDES', 'BNDES', 'Banco Nacional de Desenvolvimento Econômico e Social: banco público federal que empresta a prazos longos e juros menores para obras, indústria e empresas.'],
+  ['Plano Safra', null, 'O pacote anual de crédito rural do governo, com juros menores para os produtores plantarem e investirem. Parte do custo (o subsídio aos juros) sai do Tesouro.'],
+  ['Centrão', null, 'Grupo de partidos de centro e centro-direita (como PP, União, Republicanos, PSD e MDB, em parte) sem ideologia forte, que apoia governos em troca de cargos e verbas.'],
+  ['[Aa]rcabouço fiscal|[Aa]rcabouço', 'arcabouço', 'Arcabouço fiscal (LC 200/2023): a regra das contas federais desde 2023. O gasto só pode crescer entre 0,6% e 2,5% acima da inflação por ano, e há uma meta de resultado primário.'],
+  ['(?:resultado|superávit|déficit|meta de) primário|primário', null, 'Resultado primário: receitas menos despesas do governo, sem contar os juros da dívida. Positivo (superávit) ajuda a segurar a dívida; negativo (déficit) aumenta.'],
+  ['contingenciamentos?|contingenciar', null, 'Contingenciamento: congelar parte das despesas do orçamento (sem cancelar) quando a receita fica abaixo do previsto, para cumprir a meta fiscal.'],
+  ['IBS', 'IBS', 'Imposto sobre Bens e Serviços: imposto da reforma tributária que substitui o ICMS (estadual) e o ISS (municipal), com transição de 2026 a 2033.'],
+  ['CBS', 'CBS', 'Contribuição sobre Bens e Serviços: tributo federal da reforma tributária que substitui o PIS e a Cofins a partir de 2027.'],
+  ['ICMS', 'ICMS', 'Imposto sobre Circulação de Mercadorias e Serviços: o principal imposto dos estados, cobrado sobre produtos, energia, combustível e comunicação. Vai sendo trocado pelo IBS até 2033.'],
+  ['OCDE', 'OCDE', 'Organização para a Cooperação e Desenvolvimento Econômico: clube de 38 países, a maioria ricos, com regras de boas práticas econômicas. O Brasil negocia a entrada desde 2022.'],
+  ['desonerações?', null, 'Desoneração: tirar ou reduzir um imposto de um setor ou produto. Alivia quem paga, mas o governo arrecada menos.'],
+  ['Fundeb', 'Fundeb', 'Fundo de Manutenção e Desenvolvimento da Educação Básica: fundo que divide dinheiro de impostos entre estados e municípios para pagar escolas e professores, com complemento da União.'],
+  ['BPC', 'BPC', 'Benefício de Prestação Continuada: um salário mínimo por mês para idosos a partir de 65 anos e pessoas com deficiência de baixa renda, mesmo sem terem contribuído ao INSS.'],
+  ['CadÚnico', 'CadÚnico', 'Cadastro Único: o cadastro das famílias de baixa renda usado para dar acesso ao Bolsa Família, ao BPC, à tarifa social de energia e a outros programas.'],
+  ['Cade', 'Cade', 'Conselho Administrativo de Defesa Econômica: órgão que julga fusões de empresas e pune cartéis e abuso de poder de mercado.'],
+  ['Coaf', 'Coaf', 'Conselho de Controle de Atividades Financeiras: unidade de inteligência que recebe avisos de movimentações suspeitas dos bancos e alerta polícia e Ministério Público sobre lavagem de dinheiro.'],
+  ['ANP', 'ANP', 'Agência Nacional do Petróleo, Gás Natural e Biocombustíveis: regula e fiscaliza o setor de petróleo, gás e combustíveis, e faz os leilões de áreas de exploração.'],
+  ['Anvisa', 'Anvisa', 'Agência Nacional de Vigilância Sanitária: aprova remédios e vacinas e fiscaliza alimentos, cosméticos e produtos de saúde.'],
+  ['Ibama', 'Ibama', 'Instituto Brasileiro do Meio Ambiente: dá licenças ambientais a grandes obras e fiscaliza e multa desmatamento e poluição.'],
+  ['MDIC', 'MDIC', 'Ministério do Desenvolvimento, Indústria, Comércio e Serviços: cuida da política industrial e do comércio exterior. As estatísticas de exportação e importação (Comex Stat) são dele.'],
+  ['PGPM', 'PGPM', 'Política de Garantia de Preços Mínimos: o governo fixa um preço mínimo para produtos agrícolas e, se o mercado pagar menos, compra ou cobre a diferença (via Conab).'],
+  ['quórum', null, 'Número mínimo de parlamentares presentes para que uma votação possa acontecer.'],
+  ['obstrução', null, 'Obstrução: tática da oposição (ou de quem quer barrar um projeto) para atrasar a votação, como sair do plenário para derrubar o quórum ou apresentar muitos requerimentos.'],
+  ['[Ff]undo [Ee]leitoral', null, 'Fundo Especial de Financiamento de Campanha: dinheiro público dividido entre os partidos para pagar as campanhas eleitorais.'],
+  ['(?:acordos? de )?leniência', null, 'Acordo de leniência: uma empresa que participou de corrupção confessa, devolve dinheiro e ajuda nas investigações; em troca, recebe punição menor e pode continuar contratando com o governo.'],
+  ['FPM', 'FPM', 'Fundo de Participação dos Municípios: parte do Imposto de Renda e do IPI que a União repassa às prefeituras. Para muitas cidades pequenas, é a maior receita.'],
+  ['precatórios?', null, 'Precatório: dívida que o governo é obrigado a pagar por decisão definitiva da Justiça. Entra no orçamento do ano seguinte.']
+];
+const GL_RX = new RegExp('(?<![\\p{L}\\p{N}])(?:' + GLOSSARIO.map(e => '(' + e[0] + ')').join('|') + ')(?![\\p{L}\\p{N}])', 'u');
+const GL_RXG = new RegExp(GL_RX.source, 'gu');
+const GL_SKIP = new Set(['button', 'a', 'option', 'select', 'textarea', 'input', 'title', 'style', 'script', 'summary', 'label', 'text', 'tspan', 'svg']);
+function Termo({ t, n, d }) { // o balão vai para o fim do <body> (portal), com posição fixa: não fica atrás de outros cartões nem é cortado
+  const [pos, setPos] = React.useState(null), ref = React.useRef(null);
+  const abre = () => { const e = ref.current; if (!e) return; const r = e.getBoundingClientRect(), W = Math.min(300, window.innerWidth - 24), x = Math.max(12, Math.min(window.innerWidth - W - 12, r.left + r.width / 2 - W / 2)); const baixo = r.bottom + 170 < window.innerHeight || r.top < 190; setPos({ x, w: W, y: baixo ? r.bottom + 8 : null, yb: baixo ? null : window.innerHeight - r.top + 8 }); };
+  const fecha = () => setPos(null);
+  const box = pos ? ReactDOM.createPortal(h0('div', { className: 'gl-box', role: 'tooltip', style: { left: pos.x + 'px', width: pos.w + 'px', top: pos.y != null ? pos.y + 'px' : 'auto', bottom: pos.yb != null ? pos.yb + 'px' : 'auto' } }, n ? h0('b', null, n) : null, n ? ' ' : null, d), document.body) : null;
+  return h0('span', { className: 'gl-t' }, t, h0('span', { ref, className: 'gl-tip', tabIndex: 0, role: 'note', 'aria-label': (n ? n + ': ' : '') + d, 'data-gl': n || t, onMouseEnter: abre, onMouseLeave: fecha, onFocus: abre, onBlur: fecha }, '?'), box);
+}
+function glProc(s) {
+  if (s.length < 3 || !GL_RX.test(s)) return s;
+  const out = [], vistos = new Set(); let i = 0, m, n = 0; GL_RXG.lastIndex = 0;
+  while ((m = GL_RXG.exec(s))) {
+    let k = 1; while (k < m.length && m[k] === undefined) k++;
+    const e = GLOSSARIO[k - 1]; if (!e || vistos.has(k)) continue; vistos.add(k);
+    if (m.index > i) out.push(s.slice(i, m.index));
+    out.push(h0(Termo, { key: 'gl' + (n++), t: m[0], n: e[1], d: e[2] }));
+    i = m.index + m[0].length;
+  }
+  if (!out.length) return s;
+  if (i < s.length) out.push(s.slice(i));
+  return out;
+}
+function h(type, props, ...ch) {
+  if (typeof type === 'string' && ch.length && !GL_SKIP.has(type) && !(props && typeof props.className === 'string' && /(?:^|\s)(?:gv-tip|gv-tipbox|gl-tip|gl-box|gl-no)(?:\s|$)/.test(props.className)))
+    for (let i = 0; i < ch.length; i++) if (typeof ch[i] === 'string') ch[i] = glProc(ch[i]);
+  return h0(type, props, ...ch);
+}
 const html = htm.bind(h);
 
 /* ============================== UTIL ============================== */
