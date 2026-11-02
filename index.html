@@ -29852,12 +29852,12 @@ const elGauss = (seed) => { const u = Math.max(1e-6, hashStr(seed + 'a')), v = h
    (aqui aproximados pela bancada), 48% pela bancada na Câmara e 15% pela bancada no Senado, com as bancadas do seu jogo.
    Peso moderado: mais dinheiro dá alguns pontos ao partido nas cidades, na Câmara/Senado e na disputa presidencial; o tamanho do fundo muda por lei. */
 const FEFC_2026 = [['PL', 881.6], ['PT', 615.3], ['UNIÃO', 526.2], ['PSD', 421], ['PP', 417], ['MDB', 400], ['REPUBLICANOS', 348.5], ['PODE', 245.9], ['PDT', 169], ['PSB', 152.2], ['PSDB', 147.8], ['PSOL', 131.5], ['SOLIDARIEDADE', 88.5], ['AVANTE', 72.5], ['PRD', 71.8], ['CIDADANIA', 60.1], ['PCDOB', 60], ['PV', 45.1], ['NOVO', 37], ['REDE', 35.8],
-  ['AGIR', 3.3], ['DC', 3.3], ['MOBILIZA', 3.3], ['PCB', 3.3], ['PCO', 3.3], ['PRTB', 3.3], ['PSTU', 3.3], ['UP', 3.3]];
-const FEFC_NOME = { 'UNIÃO': 'União Brasil', REPUBLICANOS: 'Republicanos', PODE: 'Podemos', SOLIDARIEDADE: 'Solidariedade', CIDADANIA: 'Cidadania', PCDOB: 'PCdoB', NOVO: 'Novo', REDE: 'Rede', AGIR: 'Agir', MOBILIZA: 'Mobiliza' };
+  ['MISSAO', 3.3], ['AGIR', 3.3], ['DC', 3.3], ['MOBILIZA', 3.3], ['PCB', 3.3], ['PCO', 3.3], ['PRTB', 3.3], ['PSTU', 3.3], ['UP', 3.3]];
+const FEFC_NOME = { 'UNIÃO': 'União Brasil', REPUBLICANOS: 'Republicanos', PODE: 'Podemos', SOLIDARIEDADE: 'Solidariedade', CIDADANIA: 'Cidadania', PCDOB: 'PCdoB', NOVO: 'Novo', REDE: 'Rede', AGIR: 'Agir', MOBILIZA: 'Mobiliza', MISSAO: 'Missão' };
 const FEFC_TOTAL_2026 = 4961.52; // R$ mi (TSE)
 const FEFC_BLOCO = (sig) => ({ 'UNIÃO': 'UNIAO', PP: 'UNIAO', PCDOB: 'PT', PV: 'PT', REPUBLICANOS: 'REP', REDE: 'PSOL', CIDADANIA: 'PSDB', SOLIDARIEDADE: 'PRD' })[sig] || (PMAP[sig] ? sig : 'OUTROS');
 const FEFC_REAL = (() => { const o = {}; for (const [sg2, v] of FEFC_2026) { const b = FEFC_BLOCO(sg2); o[b] = (o[b] || 0) + v; } return o; })();
-const FEFC_NPART = (() => { const o = {}; for (const [sg2] of FEFC_2026) { const b = FEFC_BLOCO(sg2); o[b] = (o[b] || 0) + 1; } o.MISSAO = (o.MISSAO || 0) + 1; return o; })(); // Missão: registrado depois da divisão de 2026
+const FEFC_NPART = (() => { const o = {}; for (const [sg2] of FEFC_2026) { const b = FEFC_BLOCO(sg2); o[b] = (o[b] || 0) + 1; } return o; })();
 const FEFC_REF = FEFC_TOTAL_2026 / 16; // dinheiro "médio" de um bloco com o fundo de 2026: referência do efeito
 const FEFC_MIN = 0, FEFC_MAX = 12000;
 function fefcEnsure(g) { if (!g.fefc) g.fefc = { total: FEFC_TOTAL_2026, hist: [] }; return g.fefc; }
@@ -29907,6 +29907,35 @@ function fefcAplicaProp(g, prop) {
   g.feed.unshift({ mes: g.mes, src: T1 < T0 ? 'globo' : 'antag', txt: T1 < T0 ? tx + (irrit.length ? `; ${irrit.slice(0, 3).join(', ')} reclamam` : '') : (tx + ' e a oposição fala em farra').toUpperCase() }); g.feed = g.feed.slice(0, 40);
   try { linhaAdd(g, 'CONGRESSO', tx + '. Vale para a próxima eleição.'); } catch (e) { }
   return { de: T0, para: T1, irrit, gostam };
+}
+/* ---- CLÁUSULA DE BARREIRA (EC 97/2017, art. 17 §3º da Constituição) ----
+   Sem atingir o desempenho mínimo na eleição para a Câmara, o partido perde o fundo partidário e o tempo de rádio e TV (o fundo eleitoral continua).
+   2026: 2,5% dos votos válidos em 9 estados (1,5% em cada) ou 13 deputados em 9 estados. 2030 em diante: 3% (2% em cada) ou 15 deputados em 9 estados.
+   Federações contam como um partido. No jogo, os votos são aproximados pela bancada; "Outros" reúne siglas pequenas que ficam abaixo.
+   Quem foi eleito por partido barrado pode trocar de partido sem perder o mandato (art. 17 §5º): depois de 2030, parte desses deputados migra. */
+const BARREIRA_REGRA = (ano) => (ano >= 2030 ? { voto: 3, uf: 2, dep: 15 } : { voto: 2.5, uf: 1.5, dep: 13 });
+let _barCache = { k: null, v: null };
+function elBarreira(g) {
+  const E = g && g.el; if (E && E.leg && E.barreira && E.barreira.desde === E.leg.desde) return E.barreira;
+  const k = (E && E.leg ? E.leg.desde : 0) + '|' + (E && E.leg ? E.leg.cam.length : 0); if (_barCache.k === k && _barCache.v) return _barCache.v;
+  const cam = elBaseCasa(g, 'cam'), tc = cam.length || 513, ano = (E && E.leg && E.leg.ano) || 2026, R = BARREIRA_REGRA(ano), P = {};
+  const ufs = {}; for (const L of cam) { (ufs[L.bloco] = ufs[L.bloco] || {})[L.uf] = ((ufs[L.bloco] || {})[L.uf] || 0) + 1; }
+  for (const X of PARTIDOS) {
+    const U = ufs[X.id] || {}, nDep = Object.values(U).reduce((a, b) => a + b, 0), nUF = Object.keys(U).length, voto = nDep / tc * 100;
+    const ok = X.id !== 'OUTROS' && (voto >= R.voto || (nDep >= R.dep && nUF >= 9)); // votos: aproximados pela bancada (os votos se espalham pelos estados mesmo onde o partido não elege); deputados: precisam estar em 9 estados
+    P[X.id] = { nDep, nUF, voto: Math.round(voto * 10) / 10, ok };
+  }
+  const v = { desde: E && E.leg ? E.leg.desde : 0, ano, R, P }; _barCache = { k, v }; return v;
+}
+const barreiraOk = (g, b) => { const x = elBarreira(g).P[b]; return !x || x.ok; };
+// depois da eleição: deputados de partido barrado podem migrar (60% migram, para o partido aprovado mais próximo nas ideias)
+function elBarreiraMigra(g, cam, ano) {
+  const bar = elBarreira(g); const ok = PARTIDOS.filter(P => bar.P[P.id] && bar.P[P.id].ok); if (!ok.length) return { n: 0, por: {} };
+  const perto = (b) => { const A = PMAP[b]; return ok.slice().sort((x, y) => Math.hypot(x.eco - A.eco, x.soc - A.soc) - Math.hypot(y.eco - A.eco, y.soc - A.soc))[0].id; };
+  let n = 0; const por = {};
+  for (let i = 0; i < cam.length; i++) { const L = cam[i]; if (!bar.P[L.bloco] || bar.P[L.bloco].ok) continue; if (hashStr(String(g.seed) + 'mg' + ano + L.nome + i) >= .6) continue;
+    const to = perto(L.bloco); cam[i] = Object.assign({}, L, { bloco: to, sigla: elSigBloco(to), migrou: L.bloco }); n++; por[to] = (por[to] || 0) + 1; }
+  return { n, por };
 }
 function elForcaPartidoUF(g, bl, uf, cache) {
   const c = cache || (elForcaPartidoUF.c = elForcaPartidoUF.c || {});
@@ -30010,6 +30039,7 @@ function elMunScores(g, mun, ct, AE, zb) {
       if (st === 'base') s -= .9 * esc; // escândalos do governo pesam sobre os candidatos da base, na proporção do escândalo
     }
     s += .14 * fefcEf(g, cd.bloco); // fundo eleitoral: mais dinheiro, alguns pontos a mais
+    if (!barreiraOk(g, cd.bloco)) s -= .12; // cláusula de barreira: sem fundo partidário nem tempo de TV
     if (S.apoio === cd.id) s += (.30 + .9 * pres + .18 * Math.min(2, S.visita)) * elMunDil(mun) + .70 * elMunVerbaEf(S.verba);
     return s;
   });
@@ -30423,8 +30453,8 @@ function elRejeicao(g, ger, c) {
   return clamp(base + cs.rejd + Math.abs(c.dir) * 3, 5, 85);
 }
 function elTVshare(g, ger, c) {
-  let s = (PMAP[c.bloco] ? elSeatsBloco(g, c.bloco) : 0) / 513;
-  const al = ger.aliancas || []; if (ger.meuId === c.id || (c.sit && !ger.meuId)) for (const b of al) s += elSeatsBloco(g, b) / 513;
+  let s = (PMAP[c.bloco] && barreiraOk(g, c.bloco) ? elSeatsBloco(g, c.bloco) : 0) / 513; // cláusula de barreira: partido barrado não tem tempo de TV
+  const al = ger.aliancas || []; if (ger.meuId === c.id || (c.sit && !ger.meuId)) for (const b of al) if (barreiraOk(g, b)) s += elSeatsBloco(g, b) / 513;
   else if (c.camp === 'dir' || c.camp === 'cdir') s += .04;
   return s;
 }
@@ -30449,6 +30479,7 @@ function elScoresUF(g, ger, uf, AE, prog) {
     s += cs.mom + (cs.uf[uf] || 0) + 1.5 * elTVshare(g, ger, c) * (rel >= 44 ? 1 : .3);
     if (ph && ph.depois) s += (ph.n ? 1.15 : .5) * (ph.depois[c.bloco] || 0) / (ph.n || 46);
     s += .10 * fefcEf(g, c.bloco); // fundo eleitoral do partido do candidato
+    if (PMAP[c.bloco] && !barreiraOk(g, c.bloco)) s -= .10; // cláusula de barreira: sem fundo partidário
     s += elMunBonusPres(g, uf, c.bloco, c); // prefeitos aliados/de oposição eleitos nas municipais (proporcional ao eleitorado)
     const gv = elGov(g, uf); if (gv && bloco(gv[1]) === c.bloco) s += .15;
     s += (hashStr(String(g.seed) + 'gs' + ger.ano + c.id + uf) - .5) * .3;
@@ -31032,6 +31063,14 @@ function elNovoCongresso(g, notas) {
     const b = elSorteiaBloco(pes, String(g.seed) + 'ns' + ano + L.uf + i); return elGenLeg('sen', b, L.uf, i + 1, ano);
   });
   E.leg = { desde: g.mes, rot: 'simulado (após ' + (ano) + ')', cam, sen, ano }; E.subs = { cam: {}, sen: {} }; _elSubCache = { k: null, v: null };
+  // cláusula de barreira: vale o resultado das urnas (antes das migrações); depois, parte dos deputados dos partidos barrados troca de partido
+  _barCache = { k: null, v: null }; E.barreira = Object.assign({}, elBarreira(g), { desde: g.mes });
+  const barrados = PARTIDOS.filter(P => E.barreira.P[P.id] && !E.barreira.P[P.id].ok && E.barreira.P[P.id].nDep > 0 && P.id !== 'OUTROS').map(P => P.curto);
+  const mig = elBarreiraMigra(g, cam, ano); E.leg.cam = cam; _fefcCache = { k: null, v: null };
+  if (barrados.length || mig.n) {
+    notas.push({ t: 'neu', x: `Cláusula de barreira (${fmt(E.barreira.R.voto, E.barreira.R.voto % 1 ? 1 : 0)}% dos votos ou ${E.barreira.R.dep} deputados em 9 estados): ${barrados.length ? barrados.join(', ') + ' ficam sem fundo partidário e sem tempo de TV' : 'só siglas pequenas ficam abaixo'}.${mig.n ? ` ${mig.n} deputado(s) de partidos barrados trocam de partido (${Object.keys(mig.por).map(k => PMAP[k].curto + ' +' + mig.por[k]).join(', ')}).` : ''}` });
+    linhaAdd(g, 'CONGRESSO', `Cláusula de barreira: ${barrados.length ? barrados.join(', ') : 'siglas pequenas'} abaixo do mínimo${mig.n ? '; ' + mig.n + ' deputados migram' : ''}.`);
+  }
   IDX_PARL.cam = null; IDX_PARL.sen = null;
   const cont2 = {}; cam.forEach(L => { cont2[L.bloco] = (cont2[L.bloco] || 0) + 1; });
   const topo = Object.keys(cont2).sort((a, b) => cont2[b] - cont2[a]).slice(0, 3).map(k => PMAP[k].curto + ' ' + cont2[k]).join(', ');
@@ -32249,7 +32288,7 @@ function ElDinastia({ g }) {
 const FEFC_REGRA = 'Lei 9.504/97, art. 16-D: 2% divididos igualmente entre os partidos registrados no TSE; 35% pelos votos para deputado federal (entre os que elegeram ao menos um deputado); 48% pela bancada eleita na Câmara; 15% pela bancada no Senado. Federações e a União-PP aparecem somadas. No jogo, os votos são aproximados pela bancada.';
 const FEFC_OPC = [2000, 3000, 4000, 6000, 7000];
 function ElFundo({ g, decidir }) {
-  const T = fefcTotal(g), fat = fefcFatias(g), H = (g.fefc && g.fefc.hist) || [];
+  const T = fefcTotal(g), fat = fefcFatias(g), H = (g.fefc && g.fefc.hist) || [], bar = elBarreira(g);
   const [alvo, setAlvo] = useState(T > 3500 ? 3000 : 6000);
   const ok = g.acoes > 0 && g.pes.energia >= 10 && !elSemGoverno(g);
   const blocos = PARTIDOS.map(P => ({ P, real: FEFC_REAL[P.id] || 0, prox: T * (fat[P.id] || 0) })).sort((a, b) => b.prox - a.prox);
@@ -32273,6 +32312,12 @@ function ElFundo({ g, decidir }) {
       <details className="mt-2"><summary className="text-sm cursor-pointer text-muted">Ver os 30 partidos de 2026, um a um</summary>
         <div className="grid gap-x-6 gap-y-1 mt-2 text-sm" style=${{ gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))' }}>${FEFC_2026.map(([sg2, v]) => html`<span key=${sg2} className="flex justify-between gap-2"><span>${FEFC_NOME[sg2] || sg2}</span><span className="num">${mi(v)} · ${fmt(v / FEFC_TOTAL_2026 * 100, 2)}%</span></span>`)}</div>
         <div className="text-sm text-muted mt-2">Fonte: TSE, divisão do FEFC para as eleições de 2026 (via g1, 13/10/2026).</div></details>
+    </div>
+    <div className="sec flex flex-col gap-2" data-barreira="1">
+      <div className="eyebrow">Cláusula de barreira<${GvTip} txt=${'EC 97/2017: o partido que não atinge o desempenho mínimo na eleição para a Câmara perde o fundo partidário e o tempo de rádio e TV (o fundo eleitoral continua). Regra de ' + bar.ano + ': ' + fmt(bar.R.voto, bar.R.voto % 1 ? 1 : 0) + '% dos votos válidos em 9 estados (' + fmt(bar.R.uf, bar.R.uf % 1 ? 1 : 0) + '% em cada) ou ' + bar.R.dep + ' deputados em 9 estados. Federações contam como um partido. Quem foi eleito por partido barrado pode trocar de partido sem perder o mandato. No jogo, os votos são aproximados pela bancada.'} /></div>
+      <div className="text-sm text-muted">Regra da eleição de ${bar.ano}: ${fmt(bar.R.voto, bar.R.voto % 1 ? 1 : 0)}% dos votos ou ${bar.R.dep} deputados, em pelo menos 9 estados. ${bar.ano < 2030 ? 'Na eleição de 2030 sobe para 3% ou 15 deputados.' : ''} Quem fica abaixo não tem tempo de TV na disputa presidencial e faz campanha mais fraca (sem fundo partidário).</div>
+      <div className="grid gap-x-6 gap-y-1 mt-1 text-sm" style=${{ gridTemplateColumns: 'repeat(auto-fill,minmax(260px,1fr))' }}>${PARTIDOS.map(P => { const x = bar.P[P.id]; return html`<span key=${P.id} className="flex justify-between gap-2" data-barreira-bloco=${P.id} data-ok=${x.ok ? '1' : '0'}><span>${P.curto}</span><span className="num">${x.nDep} dep. · ${x.nUF} UF · <b style=${{ color: x.ok ? 'var(--verde)' : 'var(--rubro)' }}>${x.ok ? 'passa' : 'barrado'}</b></span></span>`; })}</div>
+      ${bar.P.OUTROS ? html`<div className="text-sm text-muted">"Outros" reúne siglas pequenas que ficam abaixo do mínimo.</div>` : null}
     </div>
     <div className="sec flex flex-col gap-3" data-fefc-mudar="1">
       <div className="eyebrow">Mudar o tamanho do fundo</div>
