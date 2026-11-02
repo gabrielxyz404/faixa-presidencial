@@ -75,7 +75,7 @@ with sync_playwright() as p:
     a0 = G(pg, 'g.acoes')
     pg.locator('[data-ind-confirm=soja_grao]').click(timeout=5000); pg.wait_for_timeout(2500)
     t = pg.locator('.modal-wrap').first.inner_text() if pg.locator('.modal-wrap').count() else ''
-    mm = re.search(r'Custo anual\s*\n\s*R\$\s*5[,.]0\s*bi', t)
+    mm = re.search(r'Custo anual\s*\n\s*R\$\s*5[,.]0\s*bi', t, re.I)
     ok('Soja: o parecer abre e informa custo anual de R$ 5,0 bi', bool(mm) and len(t) > 150, mm.group(0) if mm else t[:120].replace('\n', ' '))
     pg.screenshot(path=OUT + '/ind_soja_parecer.png')
     fecha_modais(pg)
