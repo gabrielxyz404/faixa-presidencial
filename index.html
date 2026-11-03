@@ -11686,9 +11686,67 @@ function normTexto(g, t) {
   if (FEFC_RX.test(norm(s))) s = fefcCanon(g, s);
   return s;
 }
+/* ---------- motor 5, etapa 0: corte de gastos sem dizer onde = contingenciamento linear (como no Brasil real) ----------
+   "corta gastos", "enxugar a máquina", "ajuste fiscal": sem objeto nem valor, o governo só consegue bloquear despesas discricionárias de todos os ministérios
+   por decreto de programação orçamentária (LRF, art. 9º). Economiza pouco (R$ 3 bi), piora os serviços e irrita os ministros. Com valor no texto, o corte vale,
+   mas o custo cresce com o tamanho; o segundo corte linear em 12 meses rende metade (já não há onde bloquear sem parar serviços). */
+const V5_LIN_OBJ = ['corte_gastos', 'gastos_governo', 'contingenciamento', 'arcabouco', 'discricionarias'];
+// "cortar gastos da educação / com passagens": o alvo é o objeto citado, não um pacote genérico de R$ 12 bi somado a um reforço no objeto
+const V5_ALVO_RX = /\b(cort\w*|reduz\w*|diminu\w*|enxug\w*|economiz\w*)\s+(?:os\s+|as\s+)?(?:gastos?|despesas?)(?:\s+(?:p[uú]blic[oa]s|do governo|federais))?\s+(com|da|do|das|dos|de|em|na|no|nas|nos)\s+(?=\S)/i;
+const V5_LIN_BASE = 3, V5_LIN_TETO = 80;
+const V5_VALOR_RX = /r\$|\b\d+(?:[.,]\d+)?\s*(?:bi\b|bilh|mi\b|milh|tri\b|trilh|%|por cento)/;
+function v5LinRecentes(g) { const h = (g && g.v5lin) || []; return h.filter(m => g.mes - m < 12).length; }
+function v5CorteLinear(g, prop, texto) {
+  if (!prop || !(prop.cost < 0) || prop.rev > 0 || prop.absurdo) return prop;
+  const A = prop._A; if (!A || !A.items) return prop;
+  const ativos = A.items.filter(it => it.sg || it.own);
+  if (!prop.v5alvo && ativos.some(it => V5_LIN_OBJ.includes(it.o.id)) && ativos.some(it => !V5_LIN_OBJ.includes(it.o.id)) && V5_ALVO_RX.test(texto)) {
+    const t2 = texto.replace(V5_ALVO_RX, (m, v, pr) => v + ' o orçamento ' + (pr === 'com' || pr === 'em' ? 'de' : pr) + ' ');
+    try { const p2 = posMotor(g, MOTOR.analisar(g, normTexto(g, t2), motorCtx(g)), texto); const at2 = ((p2._A || {}).items || []).filter(it => it.sg || it.own);
+      if (at2.length && !at2.some(it => V5_LIN_OBJ.includes(it.o.id)) && !(p2.cost > 0)) { p2.v5alvo = true; p2.texto = prop.texto; return p2; } } catch (e) { }
+  }
+  if (!ativos.length || ativos.some(it => !V5_LIN_OBJ.includes(it.o.id))) return prop; // citou onde cortar (emendas, cargos, subsídios...): não é linear
+  const s = norm(texto), temValor = V5_VALOR_RX.test(s);
+  if (/\b(?:ampli\w+|aument\w+|invest\w+|cri(?:ar|e|em|ando)|expandi\w*|reforc\w+|elev\w+)\b/.test(s)) return prop; // "sem furar o arcabouço, ampliar...": o corte é a fonte de outra medida
+  const bi0 = temValor ? Math.min(V5_LIN_TETO, Math.abs(prop.cost)) : V5_LIN_BASE;
+  prop.v5lin = { bi0, temValor, rep: v5LinRecentes(g), topic0: prop.topic, inst0: prop.inst };
+  return v5AplicaLin(g, prop);
+}
+function v5AplicaLin(g, prop) {
+  const L = prop.v5lin, rend = Math.pow(.5, L.rep), bi = Math.round(L.bi0 * rend * 10) / 10;
+  const esc = Math.max(.6, L.bi0 / 10) * (1 + .5 * L.rep); // dano cresce com o tamanho e com a repetição
+  L.bi = bi; L.esc = Math.round(esc * 100) / 100;
+  prop.cost = -bi; prop.extra = 0; prop.once = 0;
+  const grande = L.bi0 >= 25; // acima do que dá para bloquear nas discricionárias: precisa mexer em despesa obrigatória, por lei
+  prop.inst = grande ? (['PL', 'PLP', 'PEC'].includes(L.inst0) ? L.inst0 : 'PL') : 'DEC'; if (!grande) prop.instDetalhe = null;
+  prop.topic = String(L.topic0 || 'o corte de gastos').replace(/\s*\((?:R\$|corte linear)[^)]*\)\s*$/, '') + ' (corte linear de R$ ' + fmt(bi, bi % 1 ? 1 : 0) + ' bi)';
+  const fx = prop.fx || (prop.fx = {}); fx.g = Object.assign({}, fx.g || {}); fx.e = Object.assign({}, fx.e || {}); fx.gx = true;
+  const fNeg = clamp(L.bi0 / 15, .35, 1.6) * (1 + .3 * L.rep); // as perdas que o motor já lia eram de um pacote de ~R$ 30 bi: escalam pelo tamanho deste corte
+  for (const k in fx.g) fx.g[k] = r2f(fx.g[k] > 0 ? Math.min(fx.g[k] * .4, 2) : fx.g[k] * fNeg); // o mercado sabe que corte linear não é estrutural
+  const perde = { servidores: 1.4, universitarios: 1.1, periferia: .7, classemedia: .3, sindicatos: .8 };
+  for (const k in perde) if (g.groups[k] != null) fx.g[k] = r2f((fx.g[k] || 0) - perde[k] * esc);
+  for (const k of ['conf', 'risco', 'dol', 'ipca']) if (fx.e[k]) fx.e[k] = r2f(fx.e[k] * .4);
+  fx.e.pib = r2f((fx.e.pib || 0) - .03 * esc); // obras e custeio param
+  prop.vago = !L.temValor;
+  const rep = L.rep ? ` Já houve ${L.rep === 1 ? 'um corte linear' : L.rep + ' cortes lineares'} nos últimos 12 meses: sobra menos para bloquear, então este rende ${L.rep === 1 ? 'metade' : 'bem menos'} e dói mais.` : '';
+  const nota = L.temValor
+    ? `Corte linear: sem dizer onde cortar, o valor sai de um bloqueio por igual das despesas de todos os ministérios${grande ? '. Acima de R$ 25 bi não cabe nas despesas discricionárias: é preciso mexer em despesa obrigatória, por projeto de lei' : ' (decreto de programação orçamentária, LRF art. 9º)'}. Serviços, obras e bolsas param na proporção do corte, e os ministros perdem lealdade.${rep}`
+    : `Proposta vaga: sem dizer onde nem quanto cortar, a Fazenda só consegue um contingenciamento linear de cerca de R$ ${fmt(bi, bi % 1 ? 1 : 0)} bi nas despesas discricionárias, por decreto. Serviços e obras sentem, e os ministros reclamam. Para economizar mais, diga onde cortar (emendas, cargos, subsídios, um programa) e quanto.${rep}`;
+  prop.tecnico = nota + (prop.tecnico ? ' ' + prop.tecnico : '');
+  return prop;
+}
+// aprovado: todos os ministérios perdem verba e os titulares, lealdade (a Fazenda, que pediu o corte, não)
+function v5LinAprovado(g, prop, k) {
+  const L = prop.v5lin; if (!L) return;
+  (g.v5lin = g.v5lin || []).push(g.mes); if (g.v5lin.length > 12) g.v5lin.shift();
+  const M = ensureMin(g), d = Math.min(9, 1.5 + 1.8 * L.esc) * (k || 1);
+  for (const P of PASTAS) if (P.k !== 'fazenda') { M.leal[P.k] = r2f((M.leal[P.k] || 0) - d); minEst(g, P.k).desgaste += Math.min(8, 2 * L.esc); }
+  g.feed.unshift({ mes: g.mes, src: 'globo', txt: `Corte linear de R$ ${fmt(L.bi, L.bi % 1 ? 1 : 0)} bi trava obras e custeio; ministros reclamam na Esplanada` });
+  linhaAdd(g, 'FAZENDA', `Contingenciamento linear de R$ ${fmt(L.bi, L.bi % 1 ? 1 : 0)} bi: todos os ministérios perdem verba (lealdade dos ministros −${fmt(d, 0)})`);
+}
 function analisaLocal(g, texto) {
   let prop;
-  try { prop = posMotor(g, MOTOR.analisar(g, normTexto(g, texto), motorCtx(g)), texto); }
+  try { prop = v5CorteLinear(g, posMotor(g, MOTOR.analisar(g, normTexto(g, texto), motorCtx(g)), texto), texto); }
   catch (e) {
     if (!MOTOR_FALHOU) { MOTOR_FALHOU = true; console.warn('Motor v2 falhou; usando o motor legado de palavras-chave.', e); }
     return analisaLegado(g, texto);
@@ -13020,6 +13078,7 @@ function propDeIA(g, texto, j) {
   });
   segNotaProp(g, base);
   fadigaAgenda(g, base);
+  if (base.v5lin) { if (base.v5lin.temValor && base.cost < 0) base.v5lin.bi0 = Math.min(V5_LIN_TETO, -base.cost); base.tecnico = String(j.parecer_tecnico || ''); v5AplicaLin(g, base); } // motor 5: a IA também não corta mais do que o contingenciamento linear permite
   base.vig = null; coerenciaFx(g, base); // a IA define os próprios números: sem divisão por vigência; a coerência partidária continua valendo
   return base;
 }
@@ -13834,6 +13893,7 @@ function executaProposta(g, prop, resultado) {
     }
     if (prop.inst === 'PEC') est.pec = (est.pec || 0) + 1;
     cfPosAprovada(g, prop);
+    if (prop.v5lin && !medRev && !repet) v5LinAprovado(g, prop, k);
     if (prop.cats.includes('estatizacao')) est.estat = (est.estat || 0) + 1;
     if (prop.cats.includes('demissao_ministro')) est.demissoes = (est.demissoes || 0) + 1;
     if (prop.pesquisa != null && prop.pesquisa >= 60) est.sondou = (est.sondou || 0) + 1;
@@ -26651,6 +26711,7 @@ function ModalDecisao({ dec, g, upd, setDec, onClose, votarItem }) {
       ${prop.repetida && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(240,166,58,.15)' }} data-parecer-repetida="1" role="status"><b>Já aprovada.</b> ${prop.repetida.ato} (${prop.repetida.nm}) segue em vigor desde ${dataCurta(prop.repetida.m0)}. Aprovar de novo não soma o efeito; revogue a anterior ou escreva uma medida diferente.</div>`}
       ${prop.custoVoto && prop.custoVoto.pts <= -2 && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,90,78,.08)' }} data-parecer-custo-voto="1" role="status"><b>Custo fiscal no voto.</b> Gasto líquido de R$ ${fmt(prop.custoVoto.net, 0)} bi/ano: Fazenda e mercado pressionam o Congresso (${fmt(prop.custoVoto.pts, 0)} pontos de apoio, no máximo).</div>`}
       <${BlocoCusto} prop=${prop} congresso=${congresso} />
+      ${prop.v5lin && html`<div className="text-sm p-3 rounded gl-inteiro" style=${{ background: 'rgba(240,166,58,.14)' }} data-parecer-corte-linear="1" role="status"><b>${prop.v5lin.temValor ? 'Corte linear.' : 'Proposta vaga.'}</b> ${prop.v5lin.temValor ? 'Sem dizer onde, o corte sai por igual de todos os ministérios.' : 'Sem dizer onde nem quanto, a Fazenda só bloqueia uns R$ ' + fmt(prop.v5lin.bi, prop.v5lin.bi % 1 ? 1 : 0) + ' bi de todos os ministérios.'} Custo: serviços e obras param, servidores e universitários reagem e cada ministro perde lealdade.${prop.v5lin.rep ? ' Já houve corte linear neste ano, então este rende menos.' : ''}${prop.v5lin.temValor ? '' : ' Para economizar mais, diga onde cortar e quanto.'}</div>`}
       ${dec.aviso && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,90,78,.08)' }} role="alert">${dec.aviso}</div>`}
       <div className="flex flex-col gap-2">
         ${!PQ ? html`<div className="flex flex-wrap items-center gap-3"><button onClick=${encomendar} className="text-sm px-3 py-2 rounded border border-black/25 font-semibold hover:bg-black/5 flex items-center gap-2"><${Icon} n="ClipboardList" s=${15} /> Fazer pesquisa popular (Instituto Bússola · R$ 2 mi)</button><span className="text-xs opacity-60">Uma pesquisa por proposta. Deputados tendem a seguir o que o povo apoia.</span></div>` :
