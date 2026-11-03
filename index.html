@@ -12080,9 +12080,37 @@ function v5LinAprovado(g, prop, k) {
   g.feed.unshift({ mes: g.mes, src: 'globo', txt: `Corte linear de R$ ${fmt(L.bi, L.bi % 1 ? 1 : 0)} bi trava obras e custeio; ministros reclamam na Esplanada` });
   linhaAdd(g, 'FAZENDA', `Contingenciamento linear de R$ ${fmt(L.bi, L.bi % 1 ? 1 : 0)} bi: todos os ministérios perdem verba (lealdade dos ministros −${fmt(d, 0)})`);
 }
+/* ---------- motor 5, etapa 2: tabela de tipo de proposta (lei, decreto, ato, PEC) por regra jurídica ----------
+   Cada regra diz quando o instrumento lido pelo motor está errado e qual é o certo, com a base legal. Texto que já diz o instrumento ("por decreto", "PEC") não muda. */
+const V5_INST_EXPL = /\b(?:por decreto|decret\w+|medida provisoria|mp|projeto de lei|pl|plp|pec|emenda (?:a )?constituc\w+|lei complementar|portaria|resolucao)\b/;
+const V5_INST = [
+  ['bc_cmn', 'ADM', null, (s, I) => /\b(?:(?<!emprestimo )compulsorio|fgc|fundo garantidor de creditos|drex|real digital|swap cambial|arranjo (?:do )?pix|ata do copom|meta de inflacao)\b|\busa\w* a reserva/.test(s) && ! /\b(?:lei|autonomia|mandato|imposto|iof|tribut\w+|privatiz\w+|lucro|dividendo|transferir|fundo soberano|pedir|pressionar|ordem)\b|^(?:se|caso|quando)\b|\?/.test(s)], // competência do BC/CMN: Selic, compulsório, FGC, reservas, Pix, Drex, câmbio (LC 179/2021, Lei 4.595/1964)
+  ['ato_gestao', 'ADM', null, (s, I) => /^(?:unificar|integrar|digitalizar|demarcar|homologar|firmar|assinar (?:um )?acordo|fazer (?:mais )?acordos?|abrir (?:novos )?mercados?|enviar (?:uma )?(?:delegacao|missao)|parceria|missao comercial|ponto facultativo|fazer ponto facultativo|zerar a fila|acabar c(?:om)? a fila|cortar o cafezinho)/.test(s) && ['PL', 'COM'].includes(I) && ! /\b(?:tribut\w+|impostos?|pis|cofins|judicia\w+|tribuna\w+|lei|agencias?|juntas?|orgaos?|ministerios?|autarquias?)\b/.test(s)], // gestão, acordos, missões, demarcação: atos do Executivo (CF 84; Decreto 1.775/1996)
+  ['lei_existente', 'PL', null, (s, I) => ['ADM', 'DEC', 'COM'].includes(I) && /\b(?:credito presumido|lucro presumido|margem presumida|fundo partidario|fundo eleitoral|(?:trocar|mudar|alterar) o nome d[oa](?! pais)|alterar a lei|mudar a lei|prazo de ressarcimento|ressarcimento de creditos)\b/.test(s)], // mudar o que está em lei: nome de autarquia ou tributo, fundos criados por lei, lucro presumido, crédito presumido
+  ['simples_plp', 'PL', 'LC', (s, I) => /\bsimples nacional\b|\banexo (?:i|ii|iii|iv|v)\b do simples/.test(s) && I !== 'PEC' && /\b(?:subir|aument\w+|reduz\w+|ampli\w+|elev\w+|limit\w+|cort\w+|mud\w+|alter\w+|teto|limite|aliquotas?|anexos?|beneficios?|incluir|excluir|permitir)\b/.test(s) && ! /\?|^o que|^quanto|mascote/.test(s)], 
+  ['estatal_decide', 'ADM', null, (s, I) => /^(?:vender (?:as |a )?(?:\w+ )?(?:refinarias?|participac\w+|subsidiari\w+|ativos?)\b)/.test(s) && !s.includes(',') && /\b(?:petrobras|bndes|bndespar|caixa|banco do brasil)\b/.test(s) && a.get('inst') == 'PL'], // venda de ativo ou participação por decisão da companhia ou do BNDES (Lei 13.303/2016)
+  ['pec_cf', 'PEC', null, (s, I) => ['PL', 'COM', 'ADM', 'DEC'].includes(I) && /\b(?:(?:mudar|aumentar|reduzir|controlar|fiscalizar|eleger|eleicao para|mandato (?:fixo )?(?:para|de|dos)) (?:os |o )?(?:ministros? do )?stf|composicao do stf|voto (?:seja )?(?:opcional|facultativo|obrigatorio)|fim do voto obrigatorio|monopolio (?:da uniao |do banco central )?(?:na |da |sobre a )?(?:moeda|nuclear|energia nuclear)|setor nuclear|reservar \d+% das cadeiras|cadeiras do (?:legislativo|congresso|senado|camara)|vincular \d+(?:[.,]\d+)?% da (?:receita|rcl)|prisao perpetua|pena de morte|cidadania brasileira|tribunal (?:so )?(?:pra|para) (?:crime|julgar)|idade (?:minima )?(?:pra|para) trabalhar|desvincular o bpc|indexar o bpc|emendas? (?:parlamentares? )?(?:individuais )?(?:impositivas|obrigatorias)|execucao das emendas|ministro d[aoe] \w+ (?:podia ser |ser )?eleito)\b/.test(s) && ! /\?$/.test(s)], // matéria fixada na Constituição: só emenda muda (CF 60)
+  ['gasto_lei', 'PL', null, (s, I) => ['ADM', 'DEC', 'COM'].includes(I) && /^(?:dar|pagar|estender|criar|garantir|instituir|conceder) (?:um |uma )?(?:r\$ ?[\d.,]+ (?:mil )?de )?(?:capital inicial|renda|auxilio|bolsa|beneficio|vale|abono|credito fiscal|credito presumido|subvencao|isencao|plano de saude de graca|programa de substituicao)/.test(s) && ! /^(?:se|caso|quando)\b|\?/.test(s)], // benefício ou renúncia nova a pessoas e empresas precisa de lei e dotação (CF 165-167; LRF 14 e 16-17)
+];
+const V5_INST_NOME = { bc_cmn: 'competência do Banco Central e do CMN (Lei 4.595/1964; LC 179/2021)', ato_gestao: 'ato de gestão do Executivo (CF, art. 84)', lei_existente: 'a regra está em lei: só outra lei muda', simples_plp: 'o Simples Nacional é lei complementar (LC 123/2006; CF, art. 146)', estatal_decide: 'venda de ativo decidida pela companhia ou pelo BNDES (Lei 13.303/2016)', pec_cf: 'matéria fixada na Constituição: só emenda constitucional muda (CF, art. 60)', gasto_lei: 'benefício ou renúncia nova precisa de lei e dotação (CF, arts. 165 a 167; LRF, arts. 14 e 16)' };
+function v5Inst(prop, texto) {
+  if (!prop || prop.absurdo || prop.ai) return prop;
+  const s = norm(String(texto || '')).trim(); if (V5_INST_EXPL.test(s)) return prop;
+  const I = prop.inst;
+  for (const [id, inst, det, f] of V5_INST) {
+    let ok = false; try { ok = !!f(s, I); } catch (e) { ok = false; }
+    if (!ok) continue;
+    if (inst === I && (det || null) === (prop.instDetalhe || null)) return prop;
+    prop.inst = inst; prop.instDetalhe = det; prop.v5inst = id;
+    const nm = { PL: det === 'LC' ? 'projeto de lei complementar' : 'projeto de lei', PEC: 'PEC', DEC: 'decreto', ADM: 'ato do Executivo', MP: 'medida provisória' }[inst] || inst;
+    prop.tecnico = 'Instrumento: ' + nm + ', porque ' + (V5_INST_NOME[id] || id) + '. ' + String(prop.tecnico || '').replace(/^A proposta \(([^)]*)\) seria editada como [^.]+\./, 'A proposta ($1) segue como ' + nm + '.');
+    return prop;
+  }
+  return prop;
+}
 function analisaLocal(g, texto) {
   let prop;
-  try { prop = v5CorteLinear(g, posMotor(g, MOTOR.analisar(g, normTexto(g, texto), motorCtx(g)), texto), texto); }
+  try { prop = v5Inst(v5CorteLinear(g, posMotor(g, MOTOR.analisar(g, normTexto(g, texto), motorCtx(g)), texto), texto), texto); }
   catch (e) {
     if (!MOTOR_FALHOU) { MOTOR_FALHOU = true; console.warn('Motor v2 falhou; usando o motor legado de palavras-chave.', e); }
     return analisaLegado(g, texto);
