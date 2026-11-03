@@ -9004,21 +9004,35 @@ function v5Precos(A) {
       const pct = it.q && it.q.pct && !it.q.pct.pib ? it.q.pct.v : null, zera = /\b(?:zer\w+|isent\w+|elimin\w+|acabar com|fim d[aoe]s?|extingu\w+|sem (?:imposto|ipi|iof|tributo))\b/.test(tx);
       const B0 = it.B; let B = null, conta = '';
       const fimBen = b.ren && /\b(?:acab\w+ com|fim d[aoe]s?|revog\w+|cort\w+|reduz\w+|limit\w+|tributar|taxar|cobrar)\b[^.;]{0,40}\b(?:isenc\w+|isent\w+|beneficios?|incentivos?|desonerac\w+|renuncias?|deduc\w+|imunidade|regime especial|subsidios?)\b/.test(tx);
+      if (b.ren && !fimBen) continue; // benefício fiscal (Simples, JCP, LCI...): só o fim do benefício usa a tabela; o resto segue a leitura do motor
+      if (it.sg < 0 && !(b.arrec > 0) && !fimBen) continue; // o tributo já é zero ou reduzido nesse produto: a tabela não diz nada novo
       if (it.sg > 0 && fimBen) { B = b.ren * (pct != null && pct < 100 ? pct / 100 : /\b(?:acab\w+|fim|revog\w+)\b/.test(tx) ? .8 : .4); conta = 'Benefício fiscal de ' + b.n + ': renúncia atual de ' + fmtBi(b.ren) + '/ano, recuperada em parte (adaptação e contencioso)'; }
       else if (it.sg < 0 && (zera || pct == null)) { B = zera ? (b.arrec || 0) : (b.arrec || 0) * .5; conta = (zera ? 'Zerar ' : 'Reduzir à metade ') + b.n + ': arrecadação atual de ' + fmtBi(b.arrec || 0) + '/ano'; }
       else if (it.sg < 0 && pct != null) { B = b.aliq ? (b.arrec || 0) * clamp((b.aliq - Math.min(pct, b.aliq)) / b.aliq, 0, 1) : (b.arrec || 0) * pct / 100; conta = b.n + ': ' + (b.aliq ? 'alíquota de ' + fmtNum(b.aliq, 1).replace(/,0$/, '') + '% para ' + fmtNum(pct, 1).replace(/,0$/, '') + '% sobre arrecadação de ' + fmtBi(b.arrec || 0) : 'redução de ' + fmtNum(pct, 0) + '% sobre ' + fmtBi(b.arrec || 0)); }
       else if (it.sg > 0 && pct != null && b.base) { const a0 = b.aliq || 0; B = Math.max(0, b.base * (pct - (pct > a0 ? a0 : 0)) / 100) * .85; conta = b.n + ': base de ' + fmtBi(b.base) + ' × ' + fmtNum(pct - (pct > a0 ? a0 : 0), 1).replace(/,0$/, '') + ' p.p.' + ' × 85% (evasão e queda da base)'; }
       else if (it.sg > 0 && b.base) { B = Math.min(B0, b.base * .05); conta = b.n + ': sem alíquota no texto, até 5% da base de ' + fmtBi(b.base); }
       if (B == null) continue;
+      if (it.sg < 0) B = Math.min(B, B0); // renúncia: a base do produto só corrige para baixo (o texto costuma mirar um grupo menor que o setor inteiro)
+      else B = Math.min(B, 60);
+      if (Math.abs(B - B0) < .01) continue;
       it.B = B; it.v5b = b.id; it.calc = (it.calc || []).concat([conta + ' = ' + fmtBi(B) + '/ano (' + b.f + '; era ' + fmtBi(B0) + ')']);
       continue;
     }
     if (o.k !== 'G' || o.sav || (o.uc && !o.gen) || (o.ucA && !o.gen)) continue; // objetos do catálogo com preço próprio ficam como estão
     let n = null, noun = '', cont = null;
     const cnt = it.q && it.q.count;
-    const P = V5_PRECOS.find(x => x.re.test(tx)); if (!P) continue;
-    if (cnt && cnt.n > 0 && !cnt.univ && (P.re.test(cnt.noun) || /^(?:unidades|novos|novas|vagas)$/.test(cnt.noun))) { n = cnt.n; noun = cnt.noun; }
-    else { cont = v5Melhor(V5_CONT, tx); if (cont && /\b(?:tod[ao]s?|cada|em (?:tod|cada))\b/.test(tx)) { n = cont.n; noun = cont.u; } }
+    let P = null;
+    if (cnt && cnt.n > 0 && !cnt.univ) { P = V5_PRECOS.find(x => x.re.test(tx) && (x.re.test(cnt.noun) || /^(?:unidades|novos|novas|vagas)$/.test(cnt.noun))); if (P) { n = cnt.n; noun = cnt.noun; } }
+    else if (/\b(?:tod[ao]s?|cada)\b/.test(tx)) { // "em todas as escolas", "cada município": o universo dá a quantidade; o preço é do que se entrega em cada um
+      cont = v5Melhor(V5_CONT, tx); const mu = cont && cont.re.exec(tx);
+      if (cont && mu && cont.u !== 'km') {
+        const pess = /^(?:crianças|docentes|famílias|médicos|MEIs|matrículas|pessoas|policiais|presos|beneficiários|benefícios|caminhoneiros|domicílios)$/.test(cont.u), i0 = mu.index, i1 = mu.index + mu[0].length;
+        P = V5_PRECOS.find(x => { if (pess ? !(x.t === 'beneficiario' || (x.t === 'unidade' && x.uc && x.uc <= 50000)) : !(x.t === 'unidade' || x.t === 'pessoa')) return false;
+          const r = new RegExp(x.rx, 'g'); let m; while ((m = r.exec(tx))) { if (m.index + m[0].length <= i0 || m.index >= i1) return true; if (!m[0].length) r.lastIndex++; } return false; });
+        if (P) { n = cont.n; noun = cont.u; }
+      }
+    }
+    if (!P) continue;
     if (!n) continue;
     const B0 = it.B; let B = 0; const partes = [];
     if (P.uc) { const T = n * P.uc / 1e9; B += T / yrs; partes.push(fmtPessoas(n) + ' × R$ ' + fmtNum(P.uc / 1e6, P.uc < 1e7 ? 2 : 0) + ' mi (' + P.n + ') = ' + fmtBi(T) + ' em ' + fmtNum(yrs, 0) + ' anos'); }
