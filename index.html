@@ -17454,11 +17454,11 @@ function Gaveta({ titulo, eyebrow, onClose, children }) {
       else if (!e.shiftKey && (at === z || !el.contains(at))) { e.preventDefault(); a.focus(); }
     };
     document.addEventListener('keydown', key);
-    const ov = document.body.style.overflow; document.body.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
     return () => {
       document.removeEventListener('keydown', key);
       const i = _gavStack.indexOf(tok); if (i >= 0) _gavStack.splice(i, 1);
-      document.body.style.overflow = _gavStack.length ? 'hidden' : ov;
+      document.body.style.overflow = _gavStack.length ? 'hidden' : ''; // nunca restaura um 'hidden' herdado de outro modal
       if (antes && antes.focus && document.contains(antes)) antes.focus();
     };
   }, []);
@@ -31657,11 +31657,11 @@ function useCenaFoco(ref, onClose) {
       else if (!e.shiftKey && (at === z || !el.contains(at))) { e.preventDefault(); a.focus(); }
     };
     document.addEventListener('keydown', key);
-    const ov = document.body.style.overflow; document.body.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
     return () => {
       document.removeEventListener('keydown', key);
       const i = _gavStack.indexOf(tok); if (i >= 0) _gavStack.splice(i, 1);
-      document.body.style.overflow = _gavStack.length ? 'hidden' : ov;
+      document.body.style.overflow = _gavStack.length ? 'hidden' : ''; // nunca restaura um 'hidden' herdado de outro modal
       if (antes && antes.focus && document.contains(antes)) antes.focus();
     };
   }, []);
@@ -31921,7 +31921,7 @@ function ContVotosLinha({ T, bn }) {
 }
 // tela cheia comum às contagens: tela de trás inerte, foco na contagem, Esc pula/fecha, Tab só pelos botões
 function useContagemShell(caixa, btnFim, fim, pular, onFim) {
-  useEffect(() => { const r = document.getElementById('root'); if (r) r.inert = true; try { caixa.current && caixa.current.focus(); } catch (e) { } return () => { if (r) r.inert = false; }; }, []);
+  useEffect(() => { const r = document.getElementById('root'); if (r) r.inert = true; document.body.style.overflow = 'hidden'; try { caixa.current && caixa.current.focus(); } catch (e) { } return () => { if (r) r.inert = false; document.body.style.overflow = _gavStack.length ? 'hidden' : ''; }; }, []);
   useEffect(() => { if (fim) { try { btnFim.current && btnFim.current.focus(); } catch (e) { } } }, [fim]);
   useEffect(() => {
     const k = (e) => {
@@ -31990,7 +31990,7 @@ function ElContagem({ g, ger, onFim }) {
   const n0 = (x) => fmt(Math.round(x), 0);
   const etiqueta = (i) => i !== D.azul ? '' : D.meuNaDisputa ? ' · você' + (ger.meuId === i ? '' : ' (governo)') : ' · mais próximo de você';
   const btnContinuar = (extra) => html`<button type="button" ref=${extra ? null : btnFim} className="btn btn-gold" data-contagem-fim=${extra ? '2' : '1'} onClick=${onFim}>Continuar</button>`;
-  return ReactDOM.createPortal(html`<div className="modal-wrap gl-no" role="dialog" aria-modal="true" aria-label="Apuração da eleição presidencial" data-contagem=${D.turno} ref=${caixa} tabIndex=${-1} style=${{ zIndex: 90, background: '#000', alignItems: 'stretch', padding: 0, outline: 'none' }}>
+  return ReactDOM.createPortal(html`<div className="modal-wrap gl-no" role="dialog" aria-modal="true" aria-label="Apuração da eleição presidencial" data-contagem=${D.turno} ref=${caixa} tabIndex=${-1} style=${{ zIndex: 90, background: '#000', alignItems: 'stretch', padding: 0, outline: 'none', overscrollBehavior: 'contain' }}>
     <div className="w-full flex flex-col gap-5" style=${{ maxWidth: '1400px', margin: '0 auto', padding: '28px 32px' }}>
       <div className="flex flex-wrap items-center justify-between gap-3"><div><div className="eyebrow">Apuração · eleição presidencial ${ger.ano} · ${D.turno}º turno</div><h2 className="disp" style=${{ fontSize: '34px' }}>${fim ? (W ? 'Resultado final' : '2º turno confirmado') : 'Contagem dos votos'}</h2></div>
         ${fim ? btnContinuar(false) : html`<button type="button" className="btn btn-ghost" data-contagem-pular="1" onClick=${pular}>Pular contagem</button>`}</div>
@@ -32081,7 +32081,7 @@ function ElContagemMun({ g, m, onFim }) {
   const caps = st.filter(z => z.x.ct.cap).sort((a, b) => b.x.ct.eleit - a.x.ct.eleit);
   const btnContinuar = (extra) => html`<button type="button" ref=${extra ? null : btnFim} className="btn btn-gold" data-contagem-fim=${extra ? '2' : '1'} onClick=${onFim}>Continuar</button>`;
   if (!D.it.length) return null; // sem cidades no turno: nada a contar
-  return ReactDOM.createPortal(html`<div role="dialog" aria-modal="true" aria-label="Apuração das eleições municipais" data-contagem-mun=${D.turno} ref=${caixa} tabIndex=${-1} className="modal-wrap gl-no" style=${{ zIndex: 90, background: '#000', alignItems: 'stretch', padding: 0, outline: 'none' }}>
+  return ReactDOM.createPortal(html`<div role="dialog" aria-modal="true" aria-label="Apuração das eleições municipais" data-contagem-mun=${D.turno} ref=${caixa} tabIndex=${-1} className="modal-wrap gl-no" style=${{ zIndex: 90, background: '#000', alignItems: 'stretch', padding: 0, outline: 'none', overscrollBehavior: 'contain' }}>
     <div className="w-full flex flex-col gap-4" style=${{ maxWidth: '1400px', margin: '0 auto', padding: '28px 32px' }}>
       <div className="flex flex-wrap items-center justify-between gap-3"><div><div className="eyebrow">Apuração · eleições municipais ${D.ano} · ${D.turno}º turno · ${D.it.length} cidades</div><h2 className="disp" style=${{ fontSize: '34px' }}>${fim ? 'Resultado final' : 'Contagem dos votos'}</h2></div>
         ${fim ? btnContinuar(false) : html`<button type="button" className="btn btn-ghost" data-contagem-pular="1" onClick=${pular}>Pular contagem</button>`}</div>
@@ -33696,6 +33696,8 @@ function App() {
   const [dec, setDec] = useState(null);
   const [relMes, setRelMes] = useState(null);
   const [cfgOpen, setCfgOpen] = useState(false);
+  // rede de segurança: sem modal nem contagem aberta, a página nunca fica travada (rolagem e cliques)
+  useEffect(() => { if (_gavStack.length || document.querySelector('[data-contagem],[data-contagem-mun]')) return; if (document.body.style.overflow === 'hidden') document.body.style.overflow = ''; const r = document.getElementById('root'); if (r && r.inert) r.inert = false; });
   const [wiz, setWiz] = useState(null);
   const iniMemo = useRef({});
   const [ia, setIa] = useState({ motor: 'local', key: '', model: '' });
