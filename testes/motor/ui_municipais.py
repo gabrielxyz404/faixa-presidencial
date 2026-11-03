@@ -144,7 +144,7 @@ with sync_playwright() as p:
     SET(pg, "const m=n.el.mun; for(const k in m.cidades){ m.cidades[k].apoio=null; m.cidades[k].verba=0 } m.apoios=0; n.fiscal.extra=n.fiscal.extra")
 
     # ---------- 1º turno (apura1) e retrato para os cenários ----------
-    SET(pg, "const X=__X(); window.__seed(5050); X.fimDoMes(n); n.acoes=5;n.props=5; n.pes.energia=90; n.pes.saude=Math.max(n.pes.saude,80); n.pes.estresse=Math.min(n.pes.estresse,40); n.escandalo=Math.min(n.escandalo,12); for(const k in n.parties){n.parties[k].rel=Math.max(n.parties[k].rel,55)}")
+    SET(pg, "const X=__X(); window.__seed(5050); X.fimDoMes(n); if(n.el&&n.el.mun&&n.el.mun.contagem)n.el.mun.contagem.visto=true; if(n.el&&n.el.ger&&n.el.ger.contagem)n.el.ger.contagem.visto=true; n.acoes=5;n.props=5; n.pes.energia=90; n.pes.saude=Math.max(n.pes.saude,80); n.pes.estresse=Math.min(n.pes.estresse,40); n.escandalo=Math.min(n.escandalo,12); for(const k in n.parties){n.parties[k].rel=Math.max(n.parties[k].rel,55)}")
     d = G(pg, "({mes:g.mes, fase:g.el.mun.fase, jan:__X().elMunJanela(g), seg:g.el.mun.nSeg})")
     ok('1º turno apurado no mês 22; janela segue aberta para o 2º turno', d['mes'] == 22 and d['fase'] == 'seg' and d['jan'] is True, d)
     pg.evaluate("()=>{window.__snap=structuredClone(__QV().gRef.current)}")
@@ -160,7 +160,7 @@ with sync_playwright() as p:
             let c=0; const big=X.EL_CIDADES.slice().sort((a,b)=>b.eleit-a.eleit);
             if(apoios>0){ for(const ct of big){ if(c>=apoios) break; const S=m.cidades[ct.id]; S.apoio=(kind==='lose'? (S.cands.find(k=>k.id!==S.venc&&X.status(n.parties[k.bloco].rel)==='base')||{}).id : S.venc)||null; if(S.apoio) c++; } }
             m.apoios=c; if(extra) eval(extra);
-            for(let i=0;i<meses;i++){ window.__seed(9000+i); X.fimDoMes(n); n.acoes=5;n.props=5; n.pes.energia=90; n.pes.saude=Math.max(n.pes.saude,80); n.pes.estresse=Math.min(n.pes.estresse,40); n.escandalo=Math.min(n.escandalo,20);
+            for(let i=0;i<meses;i++){ window.__seed(9000+i); X.fimDoMes(n); if(n.el&&n.el.mun&&n.el.mun.contagem)n.el.mun.contagem.visto=true; if(n.el&&n.el.ger&&n.el.ger.contagem)n.el.ger.contagem.visto=true; n.acoes=5;n.props=5; n.pes.energia=90; n.pes.saude=Math.max(n.pes.saude,80); n.pes.estresse=Math.min(n.pes.estresse,40); n.escandalo=Math.min(n.escandalo,20);
               const E=n.el; const ae=X.aprovEstados(n); ser.ap.push(X.aprovacao(n)); ser.sp.push(ae.SP); ser.efap.push(E.munEfeito?E.munEfeito.apAplic:null); ser.fator.push(X.elMunFator(n)); ser.cong.push(E.munEfeito?E.munEfeito.cong*X.elMunFator(n):null); if(i===0) g0=structuredClone(n); }
             window.__ser=ser; window.__g0=g0; window.__serDone=true; return n; });
           }""", [kind, apoios, meses, extra, '(' + FORCA + ')'])
@@ -263,7 +263,7 @@ with sync_playwright() as p:
     ok('Cassação: um prefeito eleito com verba investigada entra em julgamento', cid is not None, cid)
     if cid:
         for i in range(14):
-            SET(pg, "const X=__X(); window.__seed(7000+%d); X.fimDoMes(n); n.acoes=5;n.props=5; n.pes.energia=90; n.pes.saude=Math.max(n.pes.saude,80); n.pes.estresse=Math.min(n.pes.estresse,40); n.escandalo=Math.min(n.escandalo,40)" % i)
+            SET(pg, "const X=__X(); window.__seed(7000+%d); X.fimDoMes(n); if(n.el&&n.el.mun&&n.el.mun.contagem)n.el.mun.contagem.visto=true; if(n.el&&n.el.ger&&n.el.ger.contagem)n.el.ger.contagem.visto=true; n.acoes=5;n.props=5; n.pes.energia=90; n.pes.saude=Math.max(n.pes.saude,80); n.pes.estresse=Math.min(n.pes.estresse,40); n.escandalo=Math.min(n.escandalo,40)" % i)
             fase = G(pg, "g.el.mun.cidades['%s'].cass.fase" % cid)
             if fase == 'nova': break
         x = G(pg, "g.el.mun.res.lista.find(i=>i.cid==='%s')" % cid); hh = G(pg, "g.el.munHist[0].lista.find(i=>i.cid==='%s')" % cid)
