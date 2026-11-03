@@ -8873,7 +8873,6 @@ const V5_BTRIB = [ // arrecadação (arrec) e base anual em R$ bi por produto/se
   { id: "ii_carros_eletricos", trib: "ii", rx: "\\b(?:carros? eletricos?|veiculos? eletricos?|eletricos?|hibridos?|byd)\\b", arrec: 3, base: 15, aliq: 35, ren: null, n: "ii carros eletricos", f: "Gecex-Camex Resolução 597/2024 (II de elétricos 10%→18%→25%→35% em jul/2026); Comex Stat/MDIC 2024-2025" },
   { id: "ipi_caminhoes", trib: "ipi", rx: "\\b(?:caminho(?:es|ao)|onibus|veiculos? pesados?|implementos? rodoviarios?)\\b", arrec: 0.4, base: 80, aliq: null, ren: null, n: "ipi caminhoes", f: "TIPI (NCM 8701-8704, alíquotas baixas, muitas 0%); Anfavea 2024" },
   { id: "ii_onibus_eletricos", trib: "ii", rx: "\\bonibus eletricos?\\b", arrec: 0.1, base: 1, aliq: 35, ren: null, n: "ii onibus eletricos", f: "TEC/Gecex-Camex; Comex Stat/MDIC 2024" },
-  { id: "ipi_motos", trib: "ipi", rx: "\\b(?:motos?|motocicletas?|motonetas?)\\b", arrec: 0.1, base: 35, aliq: null, ren: null, n: "ipi motos", f: "Abraciclo 2024 (1,9 mi motos); produção na ZFM com isenção de IPI (DL 288/1967)" },
   { id: "ii_motos", trib: "ii", rx: "\\b(?:motos?|motocicletas?)\\b", arrec: 0.2, base: 1, aliq: 20, ren: null, n: "ii motos", f: "TEC/Gecex-Camex; Comex Stat/MDIC 2024" },
   { id: "ipi_bebidas", trib: "ipi", rx: "\\b(?:bebidas?|cervejas?|vinhos?|destilados?|cachacas?|whisky|vodkas?|alcool(?:icas?)?)\\b", arrec: 4.5, base: 130, aliq: null, ren: null, n: "ipi bebidas", f: "Receita Federal, Análise da Arrecadação das Receitas Federais 2024 (IPI-Bebidas); CervBrasil/Abrabe 2024" },
   { id: "ipi_artesanais_vinhos", trib: "ipi", rx: "\\b(?:cervejas? artesana(?:l|is)|vinhos? naciona(?:l|is)|vinicolas?|microcervejarias?)\\b", arrec: 0.2, base: 5, aliq: null, ren: null, n: "ipi artesanais vinhos", f: "Mapa, Anuário da Cerveja 2024; Ibravin/Uvibra; TIPI" },
@@ -9004,7 +9003,8 @@ function v5Precos(A) {
       const pct = it.q && it.q.pct && !it.q.pct.pib ? it.q.pct.v : null, zera = /\b(?:zer\w+|isent\w+|elimin\w+|acabar com|fim d[aoe]s?|extingu\w+|sem (?:imposto|ipi|iof|tributo))\b/.test(tx);
       const B0 = it.B; let B = null, conta = '';
       const fimBen = b.ren && /\b(?:acab\w+ com|fim d[aoe]s?|revog\w+|cort\w+|reduz\w+|limit\w+|tributar|taxar|cobrar)\b[^.;]{0,40}\b(?:isenc\w+|isent\w+|beneficios?|incentivos?|desonerac\w+|renuncias?|deduc\w+|imunidade|regime especial|subsidios?)\b/.test(tx);
-      if (b.ren && !fimBen) continue; // benefício fiscal (Simples, JCP, LCI...): só o fim do benefício usa a tabela; o resto segue a leitura do motor
+      if (b.ren && !fimBen) continue;
+      if (it.sg > 0 && zera && !fimBen) continue; // "extinguir o JCP": fim de uma dedução, a leitura do motor já cobre // benefício fiscal (Simples, JCP, LCI...): só o fim do benefício usa a tabela; o resto segue a leitura do motor
       if (it.sg < 0 && !(b.arrec > 0) && !fimBen) continue; // o tributo já é zero ou reduzido nesse produto: a tabela não diz nada novo
       if (it.sg > 0 && fimBen) { B = b.ren * (pct != null && pct < 100 ? pct / 100 : /\b(?:acab\w+|fim|revog\w+)\b/.test(tx) ? .8 : .4); conta = 'Benefício fiscal de ' + b.n + ': renúncia atual de ' + fmtBi(b.ren) + '/ano, recuperada em parte (adaptação e contencioso)'; }
       else if (it.sg < 0 && (zera || pct == null)) { B = zera ? (b.arrec || 0) : (b.arrec || 0) * .5; conta = (zera ? 'Zerar ' : 'Reduzir à metade ') + b.n + ': arrecadação atual de ' + fmtBi(b.arrec || 0) + '/ano'; }
@@ -9022,10 +9022,10 @@ function v5Precos(A) {
     let n = null, noun = '', cont = null;
     const cnt = it.q && it.q.count;
     let P = null;
-    if (cnt && cnt.n > 0 && !cnt.univ) { P = V5_PRECOS.find(x => x.re.test(tx) && (x.re.test(cnt.noun) || /^(?:unidades|novos|novas|vagas)$/.test(cnt.noun))); if (P) { n = cnt.n; noun = cnt.noun; } }
+    if (cnt && cnt.n > 0 && !cnt.univ) { P = V5_PRECOS.find(x => x.re.test(tx) && x.re.test(cnt.noun)); if (P) { n = cnt.n; noun = cnt.noun; } }
     else if (/\b(?:tod[ao]s?|cada)\b/.test(tx)) { // "em todas as escolas", "cada município": o universo dá a quantidade; o preço é do que se entrega em cada um
       cont = v5Melhor(V5_CONT, tx); const mu = cont && cont.re.exec(tx);
-      if (cont && mu && cont.u !== 'km') {
+      if (cont && mu && cont.u !== 'km' && !/^(?:populacao|domicilios)$/.test(cont.id)) { // "todo mundo" não diz quem recebe
         const pess = /^(?:crianças|docentes|famílias|médicos|MEIs|matrículas|pessoas|policiais|presos|beneficiários|benefícios|caminhoneiros|domicílios)$/.test(cont.u), i0 = mu.index, i1 = mu.index + mu[0].length;
         P = V5_PRECOS.find(x => { if (pess ? !(x.t === 'beneficiario' || (x.t === 'unidade' && x.uc && x.uc <= 50000)) : !(x.t === 'unidade' || x.t === 'pessoa')) return false;
           const r = new RegExp(x.rx, 'g'); let m; while ((m = r.exec(tx))) { if (m.index + m[0].length <= i0 || m.index >= i1) return true; if (!m[0].length) r.lastIndex++; } return false; });
