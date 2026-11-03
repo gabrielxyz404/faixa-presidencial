@@ -31990,7 +31990,7 @@ function ElContagem({ g, ger, onFim }) {
   const n0 = (x) => fmt(Math.round(x), 0);
   const etiqueta = (i) => i !== D.azul ? '' : D.meuNaDisputa ? ' · você' + (ger.meuId === i ? '' : ' (governo)') : ' · mais próximo de você';
   const btnContinuar = (extra) => html`<button type="button" ref=${extra ? null : btnFim} className="btn btn-gold" data-contagem-fim=${extra ? '2' : '1'} onClick=${onFim}>Continuar</button>`;
-  return ReactDOM.createPortal(html`<div className="modal-wrap" role="dialog" aria-modal="true" aria-label="Apuração da eleição presidencial" data-contagem=${D.turno} ref=${caixa} tabIndex=${-1} style=${{ zIndex: 90, background: '#000', alignItems: 'stretch', padding: 0, outline: 'none' }}>
+  return ReactDOM.createPortal(html`<div className="modal-wrap gl-no" role="dialog" aria-modal="true" aria-label="Apuração da eleição presidencial" data-contagem=${D.turno} ref=${caixa} tabIndex=${-1} style=${{ zIndex: 90, background: '#000', alignItems: 'stretch', padding: 0, outline: 'none' }}>
     <div className="w-full flex flex-col gap-5" style=${{ maxWidth: '1400px', margin: '0 auto', padding: '28px 32px' }}>
       <div className="flex flex-wrap items-center justify-between gap-3"><div><div className="eyebrow">Apuração · eleição presidencial ${ger.ano} · ${D.turno}º turno</div><h2 className="disp" style=${{ fontSize: '34px' }}>${fim ? (W ? 'Resultado final' : '2º turno confirmado') : 'Contagem dos votos'}</h2></div>
         ${fim ? btnContinuar(false) : html`<button type="button" className="btn btn-ghost" data-contagem-pular="1" onClick=${pular}>Pular contagem</button>`}</div>
@@ -32022,15 +32022,27 @@ function elContagemMunDados(g, m) {
     const S = m.cidades[ct.id], R = turno === 1 ? S.r1 : S.r2, eleitores = ct.eleit * 1000;
     const h1 = hashStr(String(g.seed) + 'mc' + ct.id + turno + m.ano), h2 = hashStr(String(g.seed) + 'md' + ct.id + turno + m.ano);
     const ids = Object.keys(R).sort((a, b) => R[b] - R[a]); const sh = {}; ids.forEach(i => { sh[i] = R[i] / 100; });
-    return { ct, S, ids, sh, eleitores, comp: MUN_COMP, vU: eleitores * MUN_COMP * (1 - MUN_BN[turno - 1]), ini: .12 * h1, fim: .14 + .86 * Math.pow(h2, ct.eleit > 1500 ? .7 : 1), venc: ids[0], seg: turno === 1 && sh[ids[0]] < .5 };
+    const seg = turno === 1 && !!S.fin, fw = turno === 1 ? (S.fin ? S.fin[0] : S.venc) : S.venc; // vencedor e 2º turno vêm da apuração oficial (não do % arredondado)
+    const ru = ids.map(i => hashStr(String(g.seed) + 'mr' + ct.id + i + turno + m.ano) - .5), mr = ru.reduce((a, b) => a + b, 0) / ru.length; const ruido = {}; ids.forEach((i, k) => { ruido[i] = (ru[k] - mr) * .26; }); // as primeiras urnas fogem do resultado final e convergem para ele
+    return { ct, S, ids, sh, ruido, eleitores, comp: MUN_COMP, vU: eleitores * MUN_COMP * (1 - MUN_BN[turno - 1]), ini: .12 * h1, fim: .14 + .86 * Math.pow(h2, ct.eleit > 1500 ? .7 : 1), venc: fw || ids[0], seg };
   });
   const i0 = Math.min(...it.map(x => x.ini)), f1 = Math.max(...it.map(x => x.fim));
   it = it.map(x => { const ini = x.ini - i0, fim = (x.fim - i0) / (f1 - i0); return Object.assign(x, { ini, dur: Math.max(.05, fim - ini) }); });
   const tot = it.reduce((a, x) => a + x.vU, 0);
-  return { turno, it, tot, bn: MUN_BN[turno - 1], ano: m.ano };
+  const base1 = {}; let n1 = 0; // no 2º turno, os prefeitos já eleitos no 1º turno entram no placar
+  if (turno === 2) for (const ct of EL_CIDADES) { const S = m.cidades[ct.id]; if (S && S.venc && !S.fin) { const c = S.cands.find(q => q.id === S.venc); const b = c ? c.bloco : 'OUTROS'; base1[b] = (base1[b] || 0) + 1; n1++; } }
+  return { turno, it, tot, bn: MUN_BN[turno - 1], ano: m.ano, base1, n1 };
+}
+// parcial de uma cidade com p das urnas apuradas: no fim é exatamente o resultado oficial
+function contParcialMun(x, p) {
+  if (p >= 1) return { sh: x.sh, lid: x.venc };
+  const k = Math.pow(1 - p, 1.3), sh = {}; let t = 0; for (const i of x.ids) { sh[i] = Math.max(.002, x.sh[i] + x.ruido[i] * k); t += sh[i]; }
+  let lid = x.ids[0]; for (const i of x.ids) { sh[i] /= t; if (sh[i] > sh[lid]) lid = i; }
+  return { sh, lid };
 }
 function ElContagemMun({ g, m, onFim }) {
   const D = useMemo(() => elContagemMunDados(g, m), [m.contagem.mes, m.contagem.turno]);
+  useEffect(() => { if (!D.it.length) onFim(); }, []);
   const t0 = useRef(performance.now()); const [f, setF] = useState(0); const [pulou, setPulou] = useState(false);
   const notas = useRef([]); const seq = useRef(0); const U = useRef({ cid: {}, lid: {}, fim: false }).current;
   const caixa = useRef(null), btnFim = useRef(null); const fim = f >= 1;
@@ -32042,9 +32054,9 @@ function ElContagemMun({ g, m, onFim }) {
   const corB = (b) => (PMAP[b] ? PMAP[b].cor : CONT_CINZA);
   const add = (t, ap) => { notas.current.unshift({ t, ap, id: ++seq.current }); notas.current = notas.current.slice(0, 6); };
   // estado de cada cidade agora
-  let ap = 0; const st = D.it.map(x => { const p = contProg(x, f); ap += x.vU * p; const lid = x.ids.slice().sort((a, b) => x.sh[b] - x.sh[a])[0]; return { x, p, lid, feito: p >= 1 }; });
-  const apPct = fim ? 100 : Math.min(99.9, ap / D.tot * 100);
-  const lidera = {}, eleitos = {}; let nDec = 0, nSeg = 0;
+  let ap = 0; const st = D.it.map(x => { const p = contProg(x, f); ap += x.vU * p; const pr = contParcialMun(x, p); return { x, p, lid: pr.lid, sh: pr.sh, feito: p >= 1 }; });
+  const apPct = fim ? 100 : Math.min(99.9, ap / (D.tot || 1) * 100);
+  const lidera = {}, eleitos = Object.assign({}, D.base1); let nDec = 0, nSeg = 0;
   for (const z of st) { if (z.p < .02) continue; const b = cand(z.x, z.lid).bloco; lidera[b] = (lidera[b] || 0) + 1; if (z.feito) { if (z.x.seg) nSeg++; else { nDec++; eleitos[b] = (eleitos[b] || 0) + 1; } } }
   const nApur = st.length - nDec - nSeg;
   if (!pulou && !fim) {
@@ -32055,17 +32067,21 @@ function ElContagemMun({ g, m, onFim }) {
       if (z.feito && !U.cid[x.ct.id]) { U.cid[x.ct.id] = 1; if (x.ct.cap || x.S.apoio || x.ct.eleit >= 1500) add(x.seg ? `${nome} vai ao 2º turno: ${cand(x, x.ids[0]).nome} × ${cand(x, x.ids[1]).nome}` : `${nome}: ${nomeC(c)} é eleito(a) com ${fmt(x.sh[z.lid] * 100, 1)}%${x.S.apoio ? (x.S.apoio === z.lid ? ' · seu apoio venceu' : ' · seu apoio perdeu') : ''}`, apPct); }
     }
   }
-  if (fim && !U.fim) { U.fim = true; const top = Object.keys(eleitos).sort((a, b) => eleitos[b] - eleitos[a]).slice(0, 3).map(b => PMAP[b].curto + ' ' + eleitos[b]).join(', '); add(D.turno === 1 ? `Apuração concluída: ${nDec} prefeitos eleitos e ${nSeg} cidades no 2º turno${top ? ' · ' + top : ''}` : `Apuração concluída: ${nDec} prefeitos eleitos no 2º turno${top ? ' · ' + top : ''}`, 100); }
-  const blocos = Object.keys(lidera).sort((a, b) => (eleitos[b] || 0) - (eleitos[a] || 0) || lidera[b] - lidera[a]);
+  if (fim && !U.fim) { U.fim = true; const top = Object.keys(eleitos).sort((a, b) => eleitos[b] - eleitos[a]).slice(0, 3).map(b => (PMAP[b] ? PMAP[b].curto : b) + ' ' + eleitos[b]).join(', '); add(D.turno === 1 ? `Apuração concluída: ${nDec} prefeitos eleitos e ${nSeg} cidades no 2º turno${top ? ' · ' + top : ''}` : `Apuração concluída: ${nDec} prefeitos eleitos no 2º turno (${D.n1 + nDec} no total)${top ? ' · ' + top : ''}`, 100); }
+  const blocos = [...new Set(Object.keys(lidera).concat(Object.keys(eleitos)))].sort((a, b) => (eleitos[b] || 0) - (eleitos[a] || 0) || (lidera[b] || 0) - (lidera[a] || 0));
   const corCid = (ct) => { const z = st.find(q => q.x.ct.id === ct.id); if (!z || z.p < .02) return CONT_VAZIO; return 'color-mix(in srgb, ' + corB(cand(z.x, z.lid).bloco) + ' ' + Math.round(55 + 45 * z.p) + '%, #161616)'; };
   const linhaCid = (z) => { const x = z.x, c = cand(x, z.lid); const sit = z.p < .02 ? null : z.feito ? (x.seg ? ['2º turno', 'var(--ouro)'] : ['eleito(a)', 'var(--verde)']) : [fmt(Math.floor(z.p * 100), 0) + '%', 'var(--muted)'];
     return html`<div key=${x.ct.id} data-contagem-cidade=${x.ct.id} style=${{ padding: '6px 10px', borderRadius: '8px', background: '#0d0d0d', border: '1px solid #222', borderLeft: '4px solid ' + (z.p < .02 ? CONT_VAZIO : corB(c.bloco)), minWidth: 0 }}>
-      <div className="flex items-center justify-between gap-2 text-sm"><b className="truncate">${x.ct.nome}</b>${sit ? html`<span className="text-xs font-semibold" style=${{ color: sit[1], whiteSpace: 'nowrap' }}>${sit[0]}</span>` : html`<span className="text-xs text-muted">aguardando</span>`}</div>
-      <div className="flex items-center justify-between gap-2 text-xs text-muted">${z.p < .02 ? html`<span>—</span>` : html`<span className="truncate">${c.nome}${sigC(c) ? ' · ' + sigC(c) : ''}</span><b className="num" style=${{ color: 'var(--fg)' }}>${fmt(x.sh[z.lid] * 100, 1)}%</b>`}</div></div>`; };
+      <div className="flex items-center justify-between gap-2 text-sm"><b className="truncate" title=${x.ct.nome + ' (' + x.ct.uf + ')'}>${x.ct.nome}</b>${sit ? html`<span className="text-xs font-semibold" style=${{ color: sit[1], whiteSpace: 'nowrap' }}>${sit[0]}</span>` : html`<span className="text-xs text-muted">aguardando</span>`}</div>
+      <div className="flex items-center justify-between gap-2 text-xs text-muted">${z.p < .02 ? html`<span>—</span>` : html`<span className="truncate" title=${nomeC(c)}>${c.nome}${sigC(c) ? ' · ' + sigC(c) : ''}</span><b className="num" style=${{ color: 'var(--fg)' }}>${fmt(z.sh[z.lid] * 100, 1)}%</b>`}</div></div>`; };
   const apoiados = st.filter(z => z.x.S.apoio && z.x.ids.includes(z.x.S.apoio)); // no 2º turno, só quem está na disputa
+  const apStatus = (z) => { const x = z.x, a = x.S.apoio; if (!z.feito) return z.lid === a ? 'na frente' : 'atrás'; if (x.seg) return x.S.fin.includes(a) ? (x.S.fin[0] === a ? 'vai ao 2º turno na frente' : 'vai ao 2º turno') : 'derrotado(a)'; return x.S.venc === a ? 'eleito(a)' : 'derrotado(a)'; };
+  const apBom = (z) => /na frente|eleito|vai ao 2º turno/.test(apStatus(z));
+  const apResumo = () => { const r = { e: 0, s: 0, d: 0 }; for (const z of apoiados) { const t = apStatus(z); if (/eleito/.test(t)) r.e++; else if (/2º turno/.test(t)) r.s++; else r.d++; } return [r.e ? r.e + (r.e === 1 ? ' eleito' : ' eleitos') : '', r.s ? r.s + ' no 2º turno' : '', r.d ? r.d + (r.d === 1 ? ' derrotado' : ' derrotados') : ''].filter(Boolean).join(', '); };
   const caps = st.filter(z => z.x.ct.cap).sort((a, b) => b.x.ct.eleit - a.x.ct.eleit);
   const btnContinuar = (extra) => html`<button type="button" ref=${extra ? null : btnFim} className="btn btn-gold" data-contagem-fim=${extra ? '2' : '1'} onClick=${onFim}>Continuar</button>`;
-  return ReactDOM.createPortal(html`<div className="modal-wrap" role="dialog" aria-modal="true" aria-label="Apuração das eleições municipais" data-contagem-mun=${D.turno} ref=${caixa} tabIndex=${-1} style=${{ zIndex: 90, background: '#000', alignItems: 'stretch', padding: 0, outline: 'none' }}>
+  if (!D.it.length) return null; // sem cidades no turno: nada a contar
+  return ReactDOM.createPortal(html`<div role="dialog" aria-modal="true" aria-label="Apuração das eleições municipais" data-contagem-mun=${D.turno} ref=${caixa} tabIndex=${-1} className="modal-wrap gl-no" style=${{ zIndex: 90, background: '#000', alignItems: 'stretch', padding: 0, outline: 'none' }}>
     <div className="w-full flex flex-col gap-4" style=${{ maxWidth: '1400px', margin: '0 auto', padding: '28px 32px' }}>
       <div className="flex flex-wrap items-center justify-between gap-3"><div><div className="eyebrow">Apuração · eleições municipais ${D.ano} · ${D.turno}º turno · ${D.it.length} cidades</div><h2 className="disp" style=${{ fontSize: '34px' }}>${fim ? 'Resultado final' : 'Contagem dos votos'}</h2></div>
         ${fim ? btnContinuar(false) : html`<button type="button" className="btn btn-ghost" data-contagem-pular="1" onClick=${pular}>Pular contagem</button>`}</div>
@@ -32074,22 +32090,22 @@ function ElContagemMun({ g, m, onFim }) {
         <div className="mt-2"><${ContVotosLinha} T=${contVotosTot(D.it, f, D.bn)} /></div></div>
       <div className="flex flex-wrap gap-3" data-contagem-decididas="1">
         <span className="gv-chip" style=${{ color: 'var(--verde)' }}><b className="num">${nDec}</b> ${D.turno === 1 ? 'decididas no 1º turno' : 'prefeitos eleitos'}</span>
-        ${D.turno === 1 ? html`<span className="gv-chip" style=${{ color: 'var(--ouro)' }}><b className="num">${nSeg}</b> vão ao 2º turno</span>` : null}
+        ${D.turno === 1 ? html`<span className="gv-chip" style=${{ color: 'var(--ouro)' }}><b className="num">${nSeg}</b> vão ao 2º turno</span>` : html`<span className="gv-chip"><b className="num">${D.n1}</b> já eleitos no 1º turno (entram no placar)</span>`}
         <span className="gv-chip"><b className="num">${nApur}</b> em apuração</span></div>
       <div className="grid gap-6" style=${{ gridTemplateColumns: 'minmax(0,1fr) minmax(0,520px)' }}>
         <div className="flex flex-col gap-4 min-w-0">
           <div data-contagem-partidos="1"><div className="eyebrow mb-2">Prefeituras por partido (eleitos · lidera)</div>
             <div className="grid gap-x-6 gap-y-1.5" style=${{ gridTemplateColumns: 'repeat(auto-fill,minmax(230px,1fr))' }}>${blocos.map(b => html`<div key=${b} className="flex items-center gap-2 text-sm"><i style=${{ display: 'inline-block', width: '12px', height: '12px', borderRadius: '3px', background: corB(b) }}></i><span className="min-w-0 truncate" style=${{ flex: 1 }}>${PMAP[b] ? PMAP[b].curto : b}</span><b className="num">${eleitos[b] || 0}</b><span className="num text-muted">· ${lidera[b]}</span></div>`)}</div></div>
           <div className="flex flex-col gap-1.5" data-contagem-manchetes="1" aria-live="polite" aria-relevant="additions">${notas.current.map((n, k) => html`<div key=${n.id} className="text-sm" style=${{ opacity: 1 - k * .14, fontWeight: k ? 400 : 600 }}><span className="num text-muted">${contApTxt(n.ap)}% · </span>${n.t}</div>`)}</div>
-          ${apoiados.length ? html`<div data-contagem-apoiados="1"><div className="eyebrow mb-2">Seus apoiados</div><div className="flex flex-col gap-1">${apoiados.map(z => { const x = z.x, a = cand(x, x.S.apoio), frente = z.lid === x.S.apoio; return html`<div key=${x.ct.id} className="flex items-center justify-between gap-3 text-sm"><span className="min-w-0 truncate"><b>${x.ct.nome}</b>: ${a.nome} <span className="text-muted">${sigC(a)}</span></span><span className="num" style=${{ whiteSpace: 'nowrap', color: z.p < .02 ? 'var(--muted)' : frente ? 'var(--verde)' : 'var(--rubro)' }}>${z.p < .02 ? 'aguardando' : fmt((x.sh[x.S.apoio] || 0) * 100, 1) + '% · ' + (z.feito ? (frente ? (x.seg ? 'vai ao 2º turno na frente' : 'eleito(a)') : (x.seg && x.ids.slice(0, 2).includes(x.S.apoio) ? 'vai ao 2º turno' : 'derrotado(a)')) : (frente ? 'na frente' : 'atrás'))}</span></div>`; })}</div></div>` : null}
+          ${apoiados.length ? html`<div data-contagem-apoiados="1"><div className="eyebrow mb-2">Seus apoiados</div><div className="flex flex-col gap-1">${apoiados.map(z => { const x = z.x, a = cand(x, x.S.apoio), frente = z.lid === x.S.apoio; return html`<div key=${x.ct.id} className="flex items-center justify-between gap-3 text-sm"><span className="min-w-0 truncate"><b>${x.ct.nome}</b>: ${a.nome} <span className="text-muted">${sigC(a)}</span></span><span className="num" style=${{ whiteSpace: 'nowrap', color: z.p < .02 ? 'var(--muted)' : apBom(z) ? 'var(--verde)' : 'var(--rubro)' }}>${z.p < .02 ? 'aguardando' : fmt((z.sh[x.S.apoio] || 0) * 100, 1) + '% · ' + apStatus(z)}</span></div>`; })}</div></div>` : null}
           <div data-contagem-capitais="1"><div className="eyebrow mb-2">Capitais</div><div className="grid gap-2" style=${{ gridTemplateColumns: 'repeat(auto-fill,minmax(190px,1fr))' }}>${caps.map(linhaCid)}</div></div>
         </div>
-        <div className="min-w-0"><${ElMunMapa} interativo=${false} larg=${520} cidades=${D.it.map(x => x.ct)} cor=${corCid} anel=${ct => { const z = st.find(q => q.x.ct.id === ct.id); return z && z.x.S.apoio ? '#ffffff' : null; }} rotulo=${ct => { const z = st.find(q => q.x.ct.id === ct.id); if (!z || z.p < .02) return ct.nome + ' (' + ct.uf + '): aguardando os primeiros votos'; const c = cand(z.x, z.lid); return ct.nome + ' (' + ct.uf + '): ' + nomeC(c) + ' ' + fmt(z.x.sh[z.lid] * 100, 1) + '% · ' + fmt(Math.floor(z.p * 100), 0) + '% apurado'; }} aria="Mapa da apuração: cidade na cor do partido que lidera" />
+        <div className="min-w-0"><${ElMunMapa} interativo=${false} larg=${520} cidades=${D.it.map(x => x.ct)} cor=${corCid} rEsc=${.72} anel=${ct => { const z = st.find(q => q.x.ct.id === ct.id); return z && z.x.S.apoio && z.x.ids.includes(z.x.S.apoio) ? '#ffffff' : null; }} rotulo=${ct => { const z = st.find(q => q.x.ct.id === ct.id); if (!z || z.p < .02) return ct.nome + ' (' + ct.uf + '): aguardando os primeiros votos'; const c = cand(z.x, z.lid); return ct.nome + ' (' + ct.uf + '): ' + nomeC(c) + ' ' + fmt(z.sh[z.lid] * 100, 1) + '% · ' + fmt(Math.floor(z.p * 100), 0) + '% apurado'; }} aria="Mapa da apuração: cidade na cor do partido que lidera" />
           <div className="flex flex-wrap gap-4 text-xs text-muted mt-2" data-contagem-legenda="1"><span>cor do partido que lidera</span><span><i style=${{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '50%', background: CONT_VAZIO, border: '1px solid #444', marginRight: '6px' }}></i>ainda sem votos</span><span><i style=${{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '50%', border: '2px solid #fff', marginRight: '6px' }}></i>seu apoio</span><span>tamanho = eleitorado</span></div></div>
       </div>
       ${fim ? html`<div data-contagem-resultado="1" className="flex flex-wrap items-center justify-between gap-4" style=${{ padding: '18px 20px', borderRadius: '14px', border: '2px solid var(--ouro)', background: '#0b0b0b' }}>
-        <div className="min-w-0" style=${{ flex: '1 1 600px' }}><div className="disp" style=${{ fontSize: '26px' }}>${D.turno === 1 ? nDec + ' prefeitos eleitos no 1º turno; ' + nSeg + ' cidades vão ao 2º turno' : nDec + ' prefeitos eleitos no 2º turno'}</div>
-        <p className="text-sm mt-2 text-muted gl-inteiro">${blocos.filter(b => eleitos[b]).slice(0, 5).map(b => (PMAP[b] ? PMAP[b].curto : b) + ' ' + eleitos[b]).join(' · ')}${apoiados.length ? ' · seus apoiados: ' + apoiados.filter(z => z.lid === z.x.S.apoio && !z.x.seg).length + ' eleitos' : ''}. O efeito no governo aparece no balanço do mês.</p></div>${btnContinuar(true)}</div>` : null}
+        <div className="min-w-0" style=${{ flex: '1 1 600px' }}><div className="disp" style=${{ fontSize: '26px' }}>${D.turno === 1 ? nDec + ' prefeitos eleitos no 1º turno; ' + nSeg + ' cidades vão ao 2º turno' : nDec + ' prefeitos eleitos no 2º turno (' + (D.n1 + nDec) + ' no total)'}</div>
+        <p className="text-sm mt-2 text-muted gl-inteiro">${blocos.filter(b => eleitos[b]).slice(0, 5).map(b => (PMAP[b] ? PMAP[b].curto : b) + ' ' + eleitos[b]).join(' · ')}${apoiados.length ? ' · seus apoiados: ' + apResumo() : ''}. O efeito no governo aparece no balanço do mês.</p></div>${btnContinuar(true)}</div>` : null}
     </div></div>`, document.body);
 }
 function ElApurG({ g, ger }) {
@@ -32328,14 +32344,14 @@ const elMunCorLado = (l) => (l === 'base' ? 'var(--verde)' : l === 'opos' ? 'var
 const elMunNomeLado = (l) => (l === 'base' ? 'Base' : l === 'opos' ? 'Oposição' : 'Independentes');
 const elMunPP = (v) => sgn(v, 1).replace('-', '−');
 // mapa do Brasil com as cidades como pontos (tamanho pelo eleitorado). cor(ct) = preenchimento; anel(ct) = contorno de destaque
-function ElMunMapa({ cidades, cor, rotulo, anel, sel, onSel, aria, interativo = true, larg = 620 }) {
+function ElMunMapa({ cidades, cor, rotulo, anel, sel, onSel, aria, interativo = true, larg = 620, rEsc = 1 }) {
   const [hov, setHov] = useState(null);
   const ord = useMemo(() => cidades.slice().sort((a, b) => b.eleit - a.eleit), [cidades]);
   const hc = hov ? cidades.find(c => c.id === hov) : null;
   return html`<div className="w-full mx-auto mun-mapa" style=${{ maxWidth: larg }} data-el="mapa-cidades">
     <svg viewBox=${MAPA_BR.viewBox} className="w-full h-auto block" role="group" aria-label=${aria}>
       ${Object.keys(MAPA_BR.uf).map(u => html`<path key=${u} d=${MAPA_BR.uf[u].d} fill="var(--panel2)" fillRule="evenodd" stroke="var(--line2)" strokeWidth="0.8" strokeLinejoin="round"></path>`)}
-      ${ord.map(ct => { const p = elMunXY(ct); const r = clamp(Math.sqrt(ct.eleit) / 5.2, 3.4, 15); const an = anel(ct);
+      ${ord.map(ct => { const p = elMunXY(ct); const r = clamp(Math.sqrt(ct.eleit) / 5.2, 3.4, 15) * rEsc; const an = anel(ct);
         return html`<circle key=${ct.id} cx=${p.x} cy=${p.y} r=${r} fill=${cor(ct)} fillOpacity=".93" stroke=${ct.id === sel ? 'var(--fg)' : an || 'var(--ink)'} strokeWidth=${ct.id === sel ? 2.8 : an ? 2.4 : .8} style=${{ cursor: 'pointer' }}
           tabIndex=${interativo ? 0 : -1} role=${interativo ? 'button' : 'img'} aria-label=${rotulo(ct)} aria-pressed=${interativo ? ct.id === sel : undefined} data-mapa-cidade=${ct.id}
           onClick=${() => { if (interativo && onSel) onSel(ct.id); }} onPointerEnter=${() => setHov(ct.id)} onPointerLeave=${() => setHov(null)} onFocus=${() => setHov(ct.id)} onBlur=${() => setHov(h => (h === ct.id ? null : h))}
