@@ -8706,6 +8706,52 @@ function v43Teto(A) {
     if (o.gen && !tem(it) && !(it.q && it.q.pct) && it.B > .5 && /\b(?:aviao|jatinho|jato|helicoptero|iate|lancha)\b/.test(tx) && !/\b(?:frota|fab|caca|militar|forca aerea)\b/.test(tx)) { const B0 = it.B; it.B = .5; it.calc = (it.calc || []).concat(['Bem único de uso oficial (aeronave, iate): ativo de algumas centenas de milhões, não ' + fmtBi(B0)]); }
   }
 }
+/* ---------- motor 5, etapa 1: preços unitários, universos e bases tributárias reais (com fonte) ----------
+   Substitui os chutes fixos (R$ 8 mi por unidade, R$ 140 mil por pessoa, alíquota sobre o tributo inteiro) por valores reais por item.
+   As tabelas ficam em V5_PRECOS, V5_CONT e V5_BTRIB (fontes no campo f); cada uso escreve a conta no parecer. */
+const V5_PRECOS = [], V5_CONT = [], V5_BTRIB = [];
+let V5_RX = null;
+function v5Prep() {
+  if (V5_RX) return; V5_RX = true;
+  for (const L of [V5_PRECOS, V5_CONT, V5_BTRIB]) for (const x of L) { try { x.re = new RegExp(x.rx); } catch (e) { x.re = /$^/; } }
+}
+const V5_TRIB_OBJ = { ipi: ['ipi'], imposto_importacao: ['ii'], ir_pf: ['irpf'], ir_pj: ['irpj_csll'], csll_bancos: ['irpj_csll'], iof: ['iof'], pis_cofins_diesel: ['pis_cofins', 'cide'], tributos_gasolina: ['pis_cofins', 'cide'], cbs_ibs: ['cbs_ibs', 'pis_cofins'], icms: ['icms'], imposto_exportacao: ['exportacao'], cide: ['cide'] };
+const V5_TRIB_LIVRE = /^(?:imposto_geral|gastos_tributarios|gen_|isencao_|zerar_impostos)/;
+const v5Tem = (it) => it.q && it.q.money && it.q.money.unit && it.q.money.v >= 1e8;
+function v5Melhor(L, tx, ok) { let b = null, bl = 0; for (const x of L) { if (ok && !ok(x)) continue; const m = x.re.exec(tx); if (m && m[0].length > bl) { b = x; bl = m[0].length; } } return b; }
+function v5Precos(A) {
+  if (!V5_PRECOS.length && !V5_BTRIB.length) return; v5Prep();
+  const yrs = A.Q && A.Q.hor ? A.Q.hor / 12 : 4;
+  for (const it of A.items) {
+    if (it.role !== 'main' || it.fora || it.talk || !it.sg || v5Tem(it)) continue;
+    const o = it.o, tx = it.ctxTxt || A.s || '';
+    if (o.k === 'T') { // base tributária do produto ou setor citado
+      const fam = V5_TRIB_OBJ[o.id], livre = V5_TRIB_LIVRE.test(o.id); if (!fam && !livre) continue;
+      const b = v5Melhor(V5_BTRIB, tx, x => livre || fam.includes(x.trib)); if (!b) continue;
+      const pct = it.q && it.q.pct && !it.q.pct.pib ? it.q.pct.v : null, zera = /\b(?:zer\w+|isent\w+|elimin\w+|acabar com|fim d[aoe]s?|extingu\w+|sem (?:imposto|ipi|iof|tributo))\b/.test(tx);
+      const B0 = it.B; let B = null, conta = '';
+      if (it.sg < 0 && (zera || pct == null)) { B = zera ? (b.arrec || 0) : (b.arrec || 0) * .5; conta = (zera ? 'Zerar ' : 'Reduzir à metade ') + b.n + ': arrecadação atual de ' + fmtBi(b.arrec || 0) + '/ano'; }
+      else if (it.sg < 0 && pct != null) { B = b.aliq ? (b.arrec || 0) * clamp((b.aliq - Math.min(pct, b.aliq)) / b.aliq, 0, 1) : (b.arrec || 0) * pct / 100; conta = b.n + ': ' + (b.aliq ? 'alíquota de ' + fmtNum(b.aliq, 1).replace(/,0$/, '') + '% para ' + fmtNum(pct, 1).replace(/,0$/, '') + '% sobre arrecadação de ' + fmtBi(b.arrec || 0) : 'redução de ' + fmtNum(pct, 0) + '% sobre ' + fmtBi(b.arrec || 0)); }
+      else if (it.sg > 0 && pct != null && b.base) { const a0 = b.aliq || 0; B = Math.max(0, b.base * (pct - (pct > a0 ? a0 : 0)) / 100) * .85; conta = b.n + ': base de ' + fmtBi(b.base) + ' × ' + fmtNum(pct - (pct > a0 ? a0 : 0), 1).replace(/,0$/, '') + ' p.p.' + ' × 85% (evasão e queda da base)'; }
+      else if (it.sg > 0 && b.base) { B = Math.min(B0, b.base * .05); conta = b.n + ': sem alíquota no texto, até 5% da base de ' + fmtBi(b.base); }
+      if (B == null) continue;
+      it.B = B; it.v5b = b.id; it.calc = (it.calc || []).concat([conta + ' = ' + fmtBi(B) + '/ano (' + b.f + '; era ' + fmtBi(B0) + ')']);
+      continue;
+    }
+    if (o.k !== 'G' || o.sav || (o.uc && !o.gen) || (o.ucA && !o.gen)) continue; // objetos do catálogo com preço próprio ficam como estão
+    let n = null, noun = '', cont = null;
+    const cnt = it.q && it.q.count;
+    const P = v5Melhor(V5_PRECOS, tx); if (!P) continue;
+    if (cnt && cnt.n > 0 && !cnt.univ && (P.re.test(cnt.noun) || /^(?:unidades|novos|novas|vagas)$/.test(cnt.noun))) { n = cnt.n; noun = cnt.noun; }
+    else { cont = v5Melhor(V5_CONT, tx); if (cont && /\b(?:tod[ao]s?|cada|em (?:tod|cada))\b/.test(tx)) { n = cont.n; noun = cont.u; } }
+    if (!n) continue;
+    const B0 = it.B; let B = 0; const partes = [];
+    if (P.uc) { const T = n * P.uc / 1e9; B += T / yrs; partes.push(fmtPessoas(n) + ' × R$ ' + fmtNum(P.uc / 1e6, P.uc < 1e7 ? 2 : 0) + ' mi (' + P.n + ') = ' + fmtBi(T) + ' em ' + fmtNum(yrs, 0) + ' anos'); }
+    if (P.ua) { const T = n * P.ua / 1e9; B += T; partes.push(fmtPessoas(n) + ' × R$ ' + fmtNum(P.ua / 1e3, 0) + ' mil por ano (' + (P.uc ? 'custeio' : P.n) + ') = ' + fmtBi(T) + '/ano'); }
+    B = Math.min(B, 400);
+    it.B = B; it.v5p = P.id; it.calc = (it.calc || []).concat([(cont ? 'Universo: ' + fmtPessoas(n) + ' ' + noun + ' (' + cont.f + '). ' : '') + partes.join(' + ') + ' = ' + fmtBi(B) + '/ano (' + P.f + '; era ' + fmtBi(B0) + ')']);
+  }
+}
 function calcFiscal(A, g) {
   const F = { cost: 0, rev: 0, extra: 0, once: 0, S: 0, offsetNom: 0, offsetEff: 0, cov: 1, fonte: null, fonteDesc: [], credPond: 1 };
   const main = A.items.filter(i => i.role === 'main'), fon = A.items.filter(i => i.role === 'fonte');
@@ -8729,6 +8775,7 @@ function calcFiscal(A, g) {
     it.B = 0; it.calc = (it.calc || []).concat(['Destinação de receita a programa que já existe (' + semArt(it.o.n) + '), sem valor novo no texto: a despesa já está no orçamento, o efeito fiscal é só o da fonte']);
   }
   try { v42Ajustes(A, main); } catch (e) { } // v4.2
+  try { v5Precos(A); } catch (e) { } // motor 5
   for (const it of main) if (it.o.k !== 'C') contabiliza(it, F);
   // necessidade a financiar (ano 1)
   let S = 0; for (const it of main) if (it.w > 0) S += it.w;
