@@ -8997,6 +8997,14 @@ function v5Precos(A) {
   for (const it of A.items) {
     if (it.role !== 'main' || it.fora || it.talk || !it.sg || v5Tem(it)) continue;
     const o = it.o, tx = it.ctxTxt || A.s || '';
+    if (o.id === 'teto_mei' && it.sg < 0) { // teto de faturamento: o valor no texto é o novo teto, não um gasto
+      const vals = []; String(A.s || tx).replace(/(\d+(?:[.,]\d+)?)\s*(milh\w*|mi\b|mil\b)/g, (m, n, u) => { vals.push(parseFloat(n.replace(',', '.')) * (/^mil$/.test(u) ? 1e3 : 1e6)); return m; });
+      const mei = /\bmei\b|microempreendedor/.test(tx) && !/\bsimples\b/.test(tx), Y = vals.length ? Math.max(...vals) : null, B0 = it.B;
+      let B = null, conta = '';
+      if (mei && Y && Y >= 81e3 && Y <= 1e6) { B = Math.min(15, (Y - 81e3) / 1e4 * .75); conta = 'Teto do MEI de R$ 81 mil para R$ ' + fmtNum(Y / 1e3, 0) + ' mil: cerca de R$ 0,75 bi de renúncia por R$ 10 mil a mais'; }
+      else if (!mei && Y && Y >= 4.8e6 && Y <= 50e6) { B = Math.min(30, (Y - 4.8e6) / 1e6 * 5.8); conta = 'Teto do Simples de R$ 4,8 mi para R$ ' + fmtNum(Y / 1e6, 1).replace(/,0$/, '') + ' mi: cerca de R$ 5,8 bi de renúncia por R$ 1 mi a mais (estimativa da Conof/Câmara para o projeto que amplia os limites, R$ 22,7 bi)'; }
+      if (B != null) { it.B = B; it.calc = [conta + ' = ' + fmtBi(B) + '/ano (estimativa; era ' + fmtBi(B0) + ')']; continue; }
+    }
     if (o.k === 'T') { // base tributária do produto ou setor citado
       const fam = V5_TRIB_OBJ[o.id], livre = V5_TRIB_LIVRE.test(o.id); if (!fam && !livre) continue;
       const b = v5Melhor(V5_BTRIB, tx, x => livre || fam.includes(x.trib)); if (!b) continue;
@@ -12018,6 +12026,8 @@ function normTexto(g, t) {
   });
   // 9) "fechar o Ministério X" -> "extinguir o Ministério X" (fechar era lido como gasto no tema do ministério)
   s = s.replace(/\b(?:fechar|acabar com)\s+(o\s+)?(minist[eé]rio)/gi, 'extinguir $1$2');
+  // 9b) "subir o teto do Simples Nacional" -> "aumentar o limite do Simples" (o verbo "subir" e o nome completo caíam na leitura genérica)
+  s = s.replace(/\b(?:subir|elevar|ampliar|aumentar|reajustar|atualizar)\s+(?:o\s+)?(?:teto|limite)\s+(?:de\s+faturamento\s+)?d[oa]\s+simples(?:\s+nacional)?/gi, 'aumentar o limite do Simples');
   // 10) fundo eleitoral: a oração do fundo vira a forma padrão (diferença para o tamanho atual, por ano)
   if (FEFC_RX.test(norm(s))) s = fefcCanon(g, s);
   return s;
