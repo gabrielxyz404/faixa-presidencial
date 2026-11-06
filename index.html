@@ -12167,6 +12167,7 @@ function analisaLocal(g, texto) {
     if (!MOTOR_FALHOU) { MOTOR_FALHOU = true; console.warn('Motor v2 falhou; usando o motor legado de palavras-chave.', e); }
     return analisaLegado(g, texto);
   }
+  if (prop && typeof texto === 'string' && typeof prop.texto === 'string' && prop.texto !== texto) prop.texto = texto; // a ementa mostra o que o jogador escreveu (a normalização é só para a leitura)
   // concordância: "500 mil de crianças" -> "500 mil crianças" (só "milhão/milhões/bilhão" pedem "de")
   if (prop && typeof prop.topic === 'string') { const cc = (t) => t.replace(/(\d) mil de (?=\p{L})/gu, '$1 mil '); prop.topic = cc(prop.topic); if (typeof prop.resumo === 'string') prop.resumo = cc(prop.resumo); }
   return prop;
