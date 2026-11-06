@@ -9081,7 +9081,7 @@ function v5FichaAplica(A) {
     const F = v5Ficha(s); if (!F.valor || !F.freq) continue;
     let n = null, pub = '', fonte = '';
     const c = it.q && it.q.count; if (c && c.n > 0 && !c.univ) { n = c.n; pub = c.noun; }
-    else if (!/\b(?:de baixa renda|pobres?|carentes?|vulnera\w+|inscrit\w+|que (?:\w+ )?(?:fizer|estud|trabalh|morar|tiver|perder|abrir|ganh|receb|for)\w*|de \d+ a \d+ anos|pesquisador\w*|cadastrad\w+)\b/.test(s)) { // público com qualificador é um subgrupo: o universo inteiro não serve
+    else if (!/\b(?:de baixa renda|pobres?|carentes?|vulnera\w+|inscrit\w+|que|quem|de \d+ a \d+ anos|pesquisador\w*|cadastrad\w+)\b/.test(s)) { // público com qualificador é um subgrupo: o universo inteiro não serve
       const k = v5Melhor(V5_CONT, s, x => V5_PESSOAS.test(x.u)); if (k && (k.n <= 2e7 || /\b(?:tod[oa]s|cada)\b/.test(s))) { n = k.n; pub = k.u; fonte = k.f; } }
     if (!n) continue;
     const anual = F.valor * F.freq * n / 1e9, B0 = it.B;
