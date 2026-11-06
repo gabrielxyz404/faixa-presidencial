@@ -13443,29 +13443,73 @@ async function chamaIA(motor, cfgIA, g, texto, signal) {
   const userMsg = 'ESTADO DO BRASIL:\n' + JSON.stringify(resumoEstado(g)) + '\n\nMEDIDA DO PRESIDENTE:\n' + texto;
   if (motor === 'claude' || motor === 'claude_rapido') {
     if (!SAMPLE) throw new Error('Claude integrado indisponível nesta visualização');
-    return await SAMPLE.json(SYS_PROMPT + '\n\n' + userMsg, { modelTier: motor === 'claude_rapido' ? 'quick' : 'default', cache: false, signal });
+    return await SAMPLE.json(SYS_PROMPT_FICHA + '\n\n' + userMsg, { modelTier: motor === 'claude_rapido' ? 'quick' : 'default', cache: false, signal });
   }
   const key = (cfgIA.key || '').trim();
   if (!key) throw new Error('Informe a chave de API nas configurações');
   let r, d, txt;
   if (motor === 'openai') {
     r = await fetch('https://api.openai.com/v1/chat/completions', { method: 'POST', signal, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + key },
-      body: JSON.stringify({ model: cfgIA.model || 'gpt-4o-mini', response_format: { type: 'json_object' }, messages: [{ role: 'system', content: SYS_PROMPT }, { role: 'user', content: userMsg }] }) });
+      body: JSON.stringify({ model: cfgIA.model || 'gpt-4o-mini', response_format: { type: 'json_object' }, messages: [{ role: 'system', content: SYS_PROMPT_FICHA }, { role: 'user', content: userMsg }] }) });
     d = await r.json(); if (!r.ok) throw new Error(d.error?.message || 'Erro OpenAI'); txt = d.choices[0].message.content;
   } else if (motor === 'anthropic') {
     r = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', signal, headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: cfgIA.model || 'claude-sonnet-5-5', max_tokens: 2500, system: SYS_PROMPT, messages: [{ role: 'user', content: userMsg }] }) });
+      body: JSON.stringify({ model: cfgIA.model || 'claude-sonnet-5-5', max_tokens: 2500, system: SYS_PROMPT_FICHA, messages: [{ role: 'user', content: userMsg }] }) });
     d = await r.json(); if (!r.ok) throw new Error(d.error?.message || 'Erro Anthropic'); txt = d.content.map(c => c.text || '').join('');
   } else if (motor === 'gemini') {
     const model = cfgIA.model || 'gemini-2.0-flash';
     r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, { method: 'POST', signal, headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-      body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: SYS_PROMPT + '\n\n' + userMsg }] }], generationConfig: { responseMimeType: 'application/json' } }) });
+      body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: SYS_PROMPT_FICHA + '\n\n' + userMsg }] }], generationConfig: { responseMimeType: 'application/json' } }) });
     d = await r.json(); if (!r.ok) throw new Error(d.error?.message || 'Erro Gemini'); txt = d.candidates[0].content.parts.map(p => p.text || '').join('');
   } else throw new Error('Motor desconhecido');
   return parseJSONsolto(txt);
 }
 function num(v, a, b) { const n = Number(v); return Number.isFinite(n) ? clamp(n, a, b) : 0; }
+/* ---------- motor 5, etapa 4: a IA preenche só a FICHA; valor, instrumento e Constituição saem das regras do jogo ---------- */
+const SYS_PROMPT_FICHA = `Você lê propostas escritas livremente pelo jogador de um jogo de Presidente do Brasil (ano 2027) e preenche uma FICHA de leitura. Você NÃO calcula custo, receita, instrumento jurídico nem constitucionalidade: o jogo faz isso com regras próprias a partir da ficha. Seu trabalho é entender a frase com precisão e reescrevê-la de forma explícita.
+Responda SOMENTE com um objeto JSON válido, sem texto fora dele, neste formato:
+{"medidas":[{"texto_canonico":"","acao":"criar|ampliar|reduzir|extinguir|proibir|obrigar|regular|liberar|privatizar|estatizar|tributar|isentar|pagar|construir|contratar|cortar|manter|comunicar|outra","objeto":"","publico":"","publico_n":null,"quantia_rs":null,"periodicidade":"mensal|anual|unica|null","duracao_meses":null,"instrumento_dito":null}],"pergunta":false,"ironia":false,"condicao":null,"resumo":"1 frase","vozes":[{"nome":"","papel":"","emoji":"","fala":""}],"manchetes":{"globo":"","carta":"","antagonista":""}}
+Regras do texto_canonico (é o campo mais importante):
+- Uma medida por item, no máximo 4, a principal primeiro. Não invente medidas que o jogador não pediu. A finalidade ("para financiar o SUS") não é medida nova, a menos que o texto dê valor ou programa novo; a fonte citada ("taxar os bancos para...") é medida.
+- Português simples: verbo no infinitivo + objeto explícito + números. Exemplos: "Pagar R$ 300 por mês a 200 mil desempregados durante 6 meses", "Zerar o IPI de consoles de videogame", "Construir 1.000 CRAS", "Elevar a Selic para 15%", "Cortar R$ 10 bilhões das emendas parlamentares".
+- Copie todo número que o texto der, com unidade (R$ 5 bilhões, R$ 800 por mês, 10%, 2 mil escolas). Não invente valores que o texto não deu. Quando o texto nomeia o público sem número ("aos caminhoneiros", "às famílias do Bolsa Família"), escreva o público no texto_canonico e ponha em publico_n uma estimativa realista do Brasil.
+- Gíria, erro de digitação, abreviação e "kkk" viram português padrão com o mesmo sentido.
+- Pedido para NÃO fazer algo vira "Manter ..." (ex.: "n privatiza a Petrobras" -> "Manter a Petrobras estatal").
+- Ironia ou sarcasmo: escreva a medida que o jogador de fato defende e marque ironia=true.
+- Condição ou gatilho ("se o dólar passar de 6, ...") fica no início do texto_canonico: "Se o dólar passar de R$ 6, ...", e também em "condicao".
+- Pergunta sem pedido de ação: medidas=[] e pergunta=true. Texto sem medida (uma sigla, um assunto solto): medidas=[].
+- instrumento_dito só quando o texto disser o instrumento (decreto, lei, lei complementar, MP, PEC); senão null.
+- vozes: 2 ou 3 cidadãos fictícios (sem pessoas reais) com falas curtas e humor ácido; manchetes curtas para os três jornais do jogo.`;
+const V5_INST_RANK = { COM: 0, ADM: 1, DEC: 2, MP: 3, PL: 4, PEC: 5 };
+const V5_CF_RANK = { ok: 0, controverso: 1, inconstitucional: 2 };
+function propDaFicha(g, texto, j) {
+  const meds = (Array.isArray(j && j.medidas) ? j.medidas : []).filter(m => m && typeof m.texto_canonico === 'string' && m.texto_canonico.trim()).slice(0, 4);
+  let prop;
+  if (!meds.length) { // pergunta ou texto sem medida: só comunicação, sem efeito fiscal
+    prop = analisaLocal(g, texto);
+    if (j && (j.pergunta || Array.isArray(j.medidas))) { prop.inst = 'COM'; prop.instDetalhe = null; prop.cost = 0; prop.rev = 0; prop.extra = 0; prop.once = 0; prop.vago = true; prop.tecnico = (j.pergunta ? 'Pergunta, sem pedido de ação: o governo responde em público, sem efeito no orçamento. ' : 'Texto sem medida concreta: vira manifestação política, sem efeito no orçamento. ') + (prop.tecnico || ''); }
+  } else {
+    const P = meds.map(m => { const p = analisaLocal(g, m.texto_canonico.trim()); const d = String(m.instrumento_dito || '').toLowerCase(); const di = /pec|emenda/.test(d) ? 'PEC' : /provis|\bmp\b/.test(d) ? 'MP' : /complementar/.test(d) ? 'PL' : /decreto/.test(d) ? 'DEC' : /\blei\b/.test(d) ? 'PL' : null; if (di) { p.inst = di; p.instDetalhe = /complementar/.test(d) ? 'LC' : null; } return p; });
+    prop = P[0];
+    if (P.length > 1) {
+      for (const k of ['cost', 'rev', 'extra', 'once']) prop[k] = P.reduce((a, p) => a + (p[k] || 0), 0);
+      const top = P.reduce((a, p) => (V5_INST_RANK[p.inst] || 0) > (V5_INST_RANK[a.inst] || 0) ? p : a, P[0]); prop.inst = top.inst; prop.instDetalhe = top.instDetalhe || null;
+      const pior = P.reduce((a, p) => (V5_CF_RANK[(p.stf || {}).nivel] || 0) > (V5_CF_RANK[(a.stf || {}).nivel] || 0) ? p : a, P[0]); if (pior !== P[0]) prop.stf = Object.assign({}, pior.stf);
+      prop.topic = P.slice(0, 3).map(p => p.topic).join(', ').replace(/, ([^,]*)$/, ' e $1');
+      const fg = prop.fx.g = Object.assign({}, prop.fx.g || {}); for (const p of P.slice(1)) for (const k in ((p.fx || {}).g || {})) fg[k] = r2f(clamp((fg[k] || 0) + p.fx.g[k] * .6, -15, 15));
+      prop.flags = [...new Set(P.flatMap(p => p.flags || []))]; prop.cats = [...new Set(P.flatMap(p => p.cats || []))];
+      prop.calculo = P.flatMap((p, i) => (p.calculo || []).slice(0, 2).map(c => 'Medida ' + (i + 1) + ': ' + c));
+    }
+    prop.tecnico = 'Leitura da IA (ficha): ' + meds.map(m => '"' + m.texto_canonico.trim() + '"').join('; ') + '. Valores, instrumento e Constituição calculados pelas regras do jogo. ' + (prop.tecnico || '');
+  }
+  prop.texto = texto; prop.ficha = { medidas: meds, pergunta: !!(j && j.pergunta), ironia: !!(j && j.ironia), condicao: (j && j.condicao) || null }; prop.ai = false; prop.aiFicha = true;
+  if (j && j.resumo) prop.resumo = String(j.resumo).slice(0, 300);
+  const M = (j && j.manchetes) || {}; if (M.globo && M.carta && M.antagonista) prop.aiManchetes = { globo: String(M.globo), carta: String(M.carta), antag: String(M.antagonista).toUpperCase() };
+  if (Array.isArray(j && j.vozes) && j.vozes.length) prop.aiVozes = j.vozes.slice(0, 3).map(v => ({ nome: String(v.nome || 'Cidadão'), papel: String(v.papel || ''), emoji: String(v.emoji || '🗣️').slice(0, 4), fala: String(v.fala || ''), tom: 'neu' }));
+  return prop;
+}
 function propDeIA(g, texto, j) {
+  if (j && Array.isArray(j.medidas)) return propDaFicha(g, texto, j); // motor 5: resposta em forma de ficha
   const base = analisaLocal(g, texto); // para categorias/tags e fallback
   const E = j.economia || {}, S = j.social || {}, D = j.diplomacia || {};
   const fx = {
