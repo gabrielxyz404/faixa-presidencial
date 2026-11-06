@@ -13480,6 +13480,7 @@ Regras do texto_canonico (é o campo mais importante):
 - Pergunta sem pedido de ação: medidas=[] e pergunta=true. Texto sem medida (uma sigla, um assunto solto): medidas=[].
 - instrumento_dito só quando o texto disser o instrumento (decreto, lei, lei complementar, MP, PEC); senão null.
 - vozes: 2 ou 3 cidadãos fictícios (sem pessoas reais) com falas curtas e humor ácido; manchetes curtas para os três jornais do jogo.`;
+const V5_ACAO_NORMA = /^(?:proibir|obrigar|regular|liberar|manter|comunicar)$/;
 const V5_INST_RANK = { COM: 0, ADM: 1, DEC: 2, MP: 3, PL: 4, PEC: 5 };
 const V5_CF_RANK = { ok: 0, controverso: 1, inconstitucional: 2 };
 function propDaFicha(g, texto, j) {
@@ -13499,6 +13500,10 @@ function propDaFicha(g, texto, j) {
       const fg = prop.fx.g = Object.assign({}, prop.fx.g || {}); for (const p of P.slice(1)) for (const k in ((p.fx || {}).g || {})) fg[k] = r2f(clamp((fg[k] || 0) + p.fx.g[k] * .6, -15, 15));
       prop.flags = [...new Set(P.flatMap(p => p.flags || []))]; prop.cats = [...new Set(P.flatMap(p => p.cats || []))];
       prop.calculo = P.flatMap((p, i) => (p.calculo || []).slice(0, 2).map(c => 'Medida ' + (i + 1) + ': ' + c));
+    }
+    if (meds.every(m => V5_ACAO_NORMA.test(String(m.acao || '')) && !(m.quantia_rs > 0) && !/R\$|\d+ ?%|bilh|milh/i.test(m.texto_canonico))) { // proibir, obrigar, regular, liberar, manter, comunicar sem valor: norma sem dotação
+      prop.cost = 0; prop.rev = 0; prop.extra = 0; prop.once = 0; prop.v5norma = true;
+      prop.tecnico = 'Medida normativa (' + meds.map(m => m.acao).join(', ') + ') sem valor no texto: não cria despesa nem receita direta. ' + (prop.tecnico || '');
     }
     prop.tecnico = 'Leitura da IA (ficha): ' + meds.map(m => '"' + m.texto_canonico.trim() + '"').join('; ') + '. Valores, instrumento e Constituição calculados pelas regras do jogo. ' + (prop.tecnico || '');
   }
@@ -26855,7 +26860,7 @@ function Documento({ prop, g, children }) {
     <div className="px-5 sm:px-8 pt-5 pb-3 border-b border-black/10 text-center">
       <div className="text-[11px] tracking-[.2em] uppercase font-semibold" style=${{ fontFamily: 'var(--f-mono)' }}>Presidência da República · Casa Civil · Subchefia para Assuntos Jurídicos</div>
       <div className="disp text-2xl sm:text-3xl font-black uppercase mt-2">${prop.instDetalhe === 'AUT' ? 'Pedido de autorização ao Congresso' : INST_NOME[prop.inst]}</div>
-      <div className="text-xs mt-1" style=${{ fontFamily: 'var(--f-mono)' }}>Brasília, ${MESES[(g.mes - 1) % 12]} de ${ano} · ${prop.ai ? 'parecer gerado por IA' : prop.motor === 'v3' ? 'parecer do motor v4.1' : prop.motor === 'v2' ? 'parecer do motor v2' : 'parecer do motor local'}</div>
+      <div className="text-xs mt-1" style=${{ fontFamily: 'var(--f-mono)' }}>Brasília, ${MESES[(g.mes - 1) % 12]} de ${ano} · ${prop.ai ? 'parecer gerado por IA' : prop.aiFicha ? 'leitura da IA, contas do motor 5' : prop.motor === 'v3' ? 'parecer do motor 5' : prop.motor === 'v2' ? 'parecer do motor v2' : 'parecer do motor local'}</div>
     </div>
     <div className="px-5 sm:px-8 py-5 flex flex-col gap-4">${children}</div>
   </div>`;
