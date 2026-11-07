@@ -9079,16 +9079,8 @@ function v5Ajustes(A) { // motor 5, rodada de calibração
     if (o.id === 'auxilio_generico' && /tamanho padrão do jogo/.test(calc) && it.B > 1 && !/\b(?:tod[oa]s?|cada brasileir\w*|universal)\b/.test(s)) { const B0 = it.B; it.B = 1; it.calc = (it.calc || []).concat(['Auxílio novo sem número e sem público de massa: ordem de grandeza de R$ 1 bi/ano (era ' + fmtBi(B0) + ')']); continue; }
     // benefício fiscal citado (Zona Franca, Lei de Informática...): renúncia do próprio benefício, não a soma de todos (R$ 500 bi)
     if (o.id === 'gastos_tributarios' && typeof V5_BTRIB !== 'undefined') { v5Prep();
-      const b = v5Melhor(V5_BTRIB, s, x => x.ren > 0); if (b) { const pct = it.q && it.q.pct && !it.q.pct.pib ? it.q.pct.v : /\bmetade\b/.test(s) ? 50 : /\b(?:acab\w+|extingu\w+|revog\w+|fim d)/.test(s) ? 80 : 30; const B0 = it.B; it.B = b.ren * Math.min(pct, 100) / 100; it.v5b = b.id;
+      const b = /\b(?:tod[oa]s|geral|gerais)\b/.test(s) ? null : v5Melhor(V5_BTRIB, s, x => x.ren > 0); if (b) { const pct = it.q && it.q.pct && !it.q.pct.pib ? it.q.pct.v : /\bmetade\b/.test(s) ? 50 : /\b(?:acab\w+|extingu\w+|revog\w+|fim d)/.test(s) ? 80 : 30; const B0 = it.B; it.B = b.ren * Math.min(pct, 100) / 100; it.v5b = b.id;
         it.calc = (it.calc || []).concat([b.n + ': renúncia de ' + fmtBi(b.ren) + '/ano × ' + fmtNum(pct, 0) + '% = ' + fmtBi(it.B) + '/ano (' + b.f + '; era ' + fmtBi(B0) + ')']); continue; } }
-    // "10 mil vagas de residência médica", "10 mil homens na Força Nacional": o preço é do que vem depois do número
-    const c = it.q && it.q.count;
-    if (o.k === 'G' && !o.sav && c && c.n > 0 && !c.univ && /custo médio da área|custo por unidade, estimativa/.test(calc) && typeof V5_PRECOS !== 'undefined') { v5Prep();
-      const m = new RegExp('\\b' + String(c.noun).replace(/[.*+?^${}()|[\]\\]/g, '') + '\\b').exec(s); const jan = m ? s.slice(m.index, m.index + 70) : '', ant = m ? s.slice(Math.max(0, m.index - 70), m.index) : '';
-      const P = (jan && V5_PRECOS.find(x => x.re.test(jan))) || (ant && /^(?:homens|pessoas|agentes|profissionais|servidores|vagas|unidades)$/.test(c.noun) && V5_PRECOS.find(x => x.re.test(ant)));
-      if (P) { const yrs = A.Q && A.Q.hor ? A.Q.hor / 12 : 4, B0 = it.B; let B = 0; if (P.uc) B += c.n * P.uc / 1e9 / (P.t === 'km' ? 1 : yrs); if (P.ua) B += c.n * P.ua / 1e9; B = Math.min(B, 400);
-        it.B = B; it.v5p = P.id; it.calc = [fmtPessoas(c.n) + ' ' + c.noun + ' (' + P.n + ') × ' + (P.ua ? 'R$ ' + fmtNum(P.ua / 1e3, 0) + ' mil por ano' : '') + (P.uc && P.ua ? ' + ' : '') + (P.uc ? 'R$ ' + fmtNum(P.uc / 1e6, 2) + ' mi por unidade em ' + fmtNum(yrs, 0) + ' anos' : '') + ' = ' + fmtBi(B) + '/ano (' + P.f + '; era ' + fmtBi(B0) + ')']; }
-    }
   }
 }
 function v5FichaAplica(A) {
