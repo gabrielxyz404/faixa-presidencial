@@ -963,3 +963,17 @@ Calibração com fichas do mega_dev3 e do dev2, com o teste cego congelado antes
 | motor 5 local | 338 (48,3%) | 343 (49,0%) |
 | modo IA (v84) | 350 (50,0%) | 356 (50,9%) |
 | modo IA (ficha com classes) | 363 (51,9%) | 367 (52,4%) |
+
+## Motor 5: segunda opinião da IA (valor e instrumento), teste cego novo e pergunta ao jogador (08/11/2026)
+
+- **Ficha da IA:** ganhou `valor_ia` (custo, receita e valor único com a conta) e `instrumento_sugerido` (com a base legal).
+  - O jogo só usa o valor da IA quando o motor ficou num valor padrão ou zerado sem ser norma.
+  - O instrumento sugerido só entra quando nenhuma regra jurídica do jogo decidiu e o texto não disse o instrumento.
+- **Calibração (mega_dev3, 700 frases):** 408 → 456 (+39 pelo valor e +17 pelo instrumento, medidos um de cada vez).
+- **Teste cego novo hold4:** 417 frases escritas por agentes que não viram o motor, 12 por área em 35 áreas (bem escritas, de jogador, zoeira, várias medidas, pergunta ou ironia, já é lei). Fica fora do repositório. O gabarito foi escrito por agentes Claude, da mesma família do modelo que preenche a ficha, o que pode favorecer um pouco o modo IA.
+- **Parecer:** quando o texto não traz números e o valor saiu de um padrão, a caixa "Faltou número" pergunta quem recebe e quanto e recalcula (`ui_falta_numero.py`).
+
+| teste cego | v4.3 | motor 5 local | modo IA (v86) | modo IA novo |
+|---|---|---|---|---|
+| hold4, novo (417) | 119 (28,5%) | 128 (30,7%) | — | 177 (42,4%) |
+| hold3, antigo (700) | 336 (48,0%) | 338 (48,3%) | 363 (51,9%) | 387 (55,3%) |
