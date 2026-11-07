@@ -9002,7 +9002,7 @@ function v5Precos(A) {
       const mei = /\bmei\b|microempreendedor/.test(tx) && !/\bsimples\b/.test(tx), Y = vals.length ? Math.max(...vals) : null, B0 = it.B;
       let B = null, conta = '';
       if (mei && Y && Y >= 81e3 && Y <= 1e6) { B = Math.min(15, (Y - 81e3) / 1e4 * .75); conta = 'Teto do MEI de R$ 81 mil para R$ ' + fmtNum(Y / 1e3, 0) + ' mil: cerca de R$ 0,75 bi de renúncia por R$ 10 mil a mais'; }
-      else if (!mei && Y && Y >= 4.8e6 && Y <= 50e6) { B = Math.min(30, (Y - 4.8e6) / 1e6 * 5.8); conta = 'Teto do Simples de R$ 4,8 mi para R$ ' + fmtNum(Y / 1e6, 1).replace(/,0$/, '') + ' mi: cerca de R$ 5,8 bi de renúncia por R$ 1 mi a mais (estimativa da Conof/Câmara para o projeto que amplia os limites, R$ 22,7 bi)'; }
+      else if (!mei && Y && Y >= 4.8e6 && Y <= 50e6) { B = Math.min(90, (Y - 4.8e6) / 1e6 * 11); conta = 'Teto do Simples de R$ 4,8 mi para R$ ' + fmtNum(Y / 1e6, 1).replace(/,0$/, '') + ' mi: cerca de R$ 11 bi de renúncia por R$ 1 mi a mais (Receita Federal e Fazenda: R$ 41 a 50 bi/ano para o PLP 108/2021, teto de ~R$ 8,7 mi)'; }
       if (B != null) { it.B = B; it.calc = [conta + ' = ' + fmtBi(B) + '/ano (estimativa; era ' + fmtBi(B0) + ')']; continue; }
     }
     if (o.k === 'T') { // base tributária do produto ou setor citado
