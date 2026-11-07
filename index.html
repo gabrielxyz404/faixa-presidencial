@@ -13510,9 +13510,9 @@ async function chamaIA(motor, cfgIA, g, texto, signal) {
 }
 function num(v, a, b) { const n = Number(v); return Number.isFinite(n) ? clamp(n, a, b) : 0; }
 /* ---------- motor 5, etapa 4: a IA preenche só a FICHA; valor, instrumento e Constituição saem das regras do jogo ---------- */
-const SYS_PROMPT_FICHA = `Você lê propostas escritas livremente pelo jogador de um jogo de Presidente do Brasil (ano 2027) e preenche uma FICHA de leitura. Você NÃO calcula custo, receita, instrumento jurídico nem constitucionalidade: o jogo faz isso com regras próprias a partir da ficha. Seu trabalho é entender a frase com precisão e reescrevê-la de forma explícita.
+const SYS_PROMPT_FICHA = `Você lê propostas escritas livremente pelo jogador de um jogo de Presidente do Brasil (ano 2027) e preenche uma FICHA de leitura. O jogo calcula custo, receita, instrumento jurídico e constitucionalidade com regras próprias a partir da ficha. Seu trabalho principal é entender a frase com precisão e reescrevê-la de forma explícita. Você também dá uma SEGUNDA OPINIÃO de valor e de instrumento, que o jogo só usa quando não tem conta própria.
 Responda SOMENTE com um objeto JSON válido, sem texto fora dele, neste formato:
-{"medidas":[{"texto_canonico":"","acao":"criar|ampliar|reduzir|extinguir|proibir|obrigar|regular|liberar|privatizar|estatizar|tributar|isentar|pagar|construir|contratar|cortar|manter|comunicar|outra","objeto":"","natureza":"norma|gasto|transferencia|obra|tributo|venda|credito|comunicacao","escopo":"geral|setor|nicho","publico":"","publico_n":null,"quantia_rs":null,"periodicidade":"mensal|anual|unica|null","duracao_meses":null,"instrumento_dito":null}],"pergunta":false,"ironia":false,"condicao":null,"resumo":"1 frase","vozes":[{"nome":"","papel":"","emoji":"","fala":""}],"manchetes":{"globo":"","carta":"","antagonista":""}}
+{"medidas":[{"texto_canonico":"","acao":"criar|ampliar|reduzir|extinguir|proibir|obrigar|regular|liberar|privatizar|estatizar|tributar|isentar|pagar|construir|contratar|cortar|manter|comunicar|outra","objeto":"","natureza":"norma|gasto|transferencia|obra|tributo|venda|credito|comunicacao","escopo":"geral|setor|nicho","publico":"","publico_n":null,"quantia_rs":null,"periodicidade":"mensal|anual|unica|null","duracao_meses":null,"instrumento_dito":null,"valor_ia":{"custo_bi":0,"receita_bi":0,"unico_bi":0,"conta":""},"instrumento_sugerido":"COM|ADM|DEC|MP|PL|PLP|PEC","base_legal":""}],"pergunta":false,"ironia":false,"condicao":null,"resumo":"1 frase","vozes":[{"nome":"","papel":"","emoji":"","fala":""}],"manchetes":{"globo":"","carta":"","antagonista":""}}
 Regras do texto_canonico (é o campo mais importante):
 - Uma medida por item, no máximo 4, a principal primeiro. Não invente medidas que o jogador não pediu. A finalidade ("para financiar o SUS") não é medida nova, a menos que o texto dê valor ou programa novo; a fonte citada ("taxar os bancos para...") é medida.
 - Português simples: verbo no infinitivo + objeto explícito + números. Exemplos: "Pagar R$ 300 por mês a 200 mil desempregados durante 6 meses", "Zerar o IPI de consoles de videogame", "Construir 1.000 CRAS", "Elevar a Selic para 15%", "Cortar R$ 10 bilhões das emendas parlamentares".
@@ -13524,6 +13524,8 @@ Regras do texto_canonico (é o campo mais importante):
 - Pergunta sem pedido de ação: medidas=[] e pergunta=true. Texto sem medida (uma sigla, um assunto solto): medidas=[].
 - natureza: norma = só muda regra (proibir, obrigar, regular, autorizar), sem dinheiro público; gasto = programa, serviço ou contratação; transferencia = dinheiro direto a pessoas (bolsa, auxílio, benefício); obra = construção ou compra de equipamento; tributo = criar, aumentar, reduzir ou isentar imposto ou contribuição; venda = privatizar ou vender ativo; credito = empréstimo ou financiamento; comunicacao = discurso, campanha, pedido, pressão.
 - escopo: geral = atinge o país todo, o tributo inteiro ou o programa inteiro; setor = um setor ou produto amplo (carros, combustíveis, agro, bancos, saúde); nicho = grupo pequeno ou produto específico (consoles, estúdios de jogos, microempresas de um ramo, indígenas de uma região, uma cidade).
+- valor_ia: sua estimativa realista do efeito fiscal DESSA medida no Brasil de 2027, em R$ bilhões por ano (unico_bi = valor de uma vez só, como venda de estatal ou obra). custo_bi positivo = gasto novo, negativo = economia; receita_bi positiva = arrecadação nova, negativa = renúncia. Use 0 quando o efeito for menor que R$ 1 bi ou não houver dinheiro público. Em "conta", escreva a conta curta (quantidade × preço × frequência, ou fração da base do tributo). Condição que ainda não ocorreu vale 0 hoje.
+- instrumento_sugerido: o instrumento correto no Brasil (COM = só discurso; ADM = ato do Executivo; DEC = decreto; MP; PL = lei ordinária; PLP = lei complementar; PEC = emenda à Constituição), com a base legal curta em base_legal.
 - instrumento_dito só quando o texto disser o instrumento (decreto, lei, lei complementar, MP, PEC); senão null.
 - vozes: 2 ou 3 cidadãos fictícios (sem pessoas reais) com falas curtas e humor ácido; manchetes curtas para os três jornais do jogo.`;
 const V5_ACAO_NORMA = /^(?:proibir|obrigar|regular|liberar|manter|comunicar)$/;
@@ -13543,6 +13545,17 @@ function v5FichaClasse(p, m) {
     const f = m.periodicidade === 'mensal' ? 12 : 1, anual = m.quantia_rs * f * m.publico_n / 1e9; p.cost = Math.min(anual, 3000); p.v5classe = 'ficha_conta';
     p.calculo = ['R$ ' + fmt(m.quantia_rs, 0) + (f === 12 ? ' × 12 meses' : '') + ' × ' + fmt(m.publico_n / 1e6, 1) + ' mi (público estimado pela IA) = ' + bi(anual) + '/ano'].concat(p.calculo || []);
   }
+  // segunda opinião da IA no valor: só onde o motor ficou num valor padrão (ou zerado sem ser norma)
+  const vi = m.valor_ia || {}; const nx = (x) => { const n = Number(x); return Number.isFinite(n) ? clamp(n, -2000, 5000) : 0; };
+  const motorPadrao = V5_DEF_G.test((p.calculo || []).join(' ')), motorZero = !(Math.abs(p.cost || 0) + Math.abs(p.rev || 0) + Math.abs(p.extra || 0) + Math.abs(p.once || 0) > .05);
+  if (!/valor/.test(off) && !p.v5classe && (motorPadrao || (!/zero/.test(off) && motorZero && nat !== 'norma' && nat !== 'comunicacao')) && (vi.custo_bi != null || vi.receita_bi != null || vi.unico_bi != null)) {
+    const c = nx(vi.custo_bi), r = nx(vi.receita_bi), u = nx(vi.unico_bi);
+    p.cost = c; p.rev = r; if (u) { if (nat === 'venda' || u < 0) p.once = Math.abs(u); else p.extra = u; } p.v5valorIA = true;
+    p.calculo = ['Estimativa da IA (o texto não traz números que o jogo saiba contar): ' + (vi.conta ? String(vi.conta).slice(0, 200) : 'ordem de grandeza') + ' = ' + [c ? 'custo ' + bi(c) + '/ano' : '', r ? 'receita ' + (r < 0 ? '−' : '') + bi(r) + '/ano' : '', u ? bi(u) + ' de uma vez' : ''].filter(Boolean).join(', ')].concat(p.calculo || []);
+  }
+  // instrumento sugerido pela IA: só quando nenhuma regra jurídica do jogo decidiu e o texto não disse o instrumento
+  const is = String(m.instrumento_sugerido || '').toUpperCase().trim();
+  if (!/inst/.test(off) && !p.v5inst && !m.instrumento_dito && /^(?:COM|ADM|DEC|MP|PL|PLP|PEC)$/.test(is)) { p.inst = is === 'PLP' ? 'PL' : is; p.instDetalhe = is === 'PLP' ? 'LC' : null; p.v5instIA = true; }
   return p;
 }
 const V5_INST_RANK = { COM: 0, ADM: 1, DEC: 2, MP: 3, PL: 4, PEC: 5 };
