@@ -27216,6 +27216,37 @@ function GruposResultado({ gd }) { // v3.8
     ${gd.length > 9 && html`<button type="button" className="text-xs underline opacity-70 mt-2" onClick=${() => setTodos(!todos)}>${todos ? 'Mostrar só os maiores efeitos' : 'Ver os demais ' + (gd.length - 9) + ' grupos'}</button>`}
   </div>`;
 }
+// motor 5: quando o valor saiu de um padrão (o texto não trouxe números), o parecer pergunta ao jogador quem recebe e quanto
+function v5FaltaNumero(prop) {
+  if (!prop || prop.v5norma || prop.v5lin || prop.absurdo || prop.inst === 'COM' || prop.repetida || prop.v5refinado) return false;
+  if (!(prop.cost > 0) || /\d/.test(String(prop.texto || ''))) return false; // com número no texto, a conta já é do texto
+  const c = (prop.calculo || []).join(' ');
+  return V5_DEF_G.test(c) || !!prop.v5valorIA;
+}
+const V5_PUB = [[1e4, '10 mil'], [1e5, '100 mil'], [1e6, '1 milhão'], [1e7, '10 milhões']];
+const V5_VAL = [['m', 200, 'R$ 200/mês'], ['m', 600, 'R$ 600/mês'], ['m', 1000, 'R$ 1.000/mês'], ['t', 1, 'R$ 1 bi/ano no total'], ['t', 5, 'R$ 5 bi/ano'], ['t', 20, 'R$ 20 bi/ano']];
+function CaixaFaltaNumero({ prop, g, dec, setDec }) {
+  const [pub, setPub] = useState(null), [val, setVal] = useState(null);
+  const total = val && val[0] === 't';
+  const pronto = val && (total || pub);
+  const recalcula = () => {
+    if (!pronto) return;
+    const base = String(prop.texto || '').trim().replace(/[.!]+$/, '');
+    const extra = total ? ', com R$ ' + val[1] + (val[1] === 1 ? ' bilhão' : ' bilhões') + ' por ano' : ', pagando R$ ' + fmt(val[1], 0) + ' por mês a ' + pub[1] + ' de pessoas';
+    const texto2 = base + extra;
+    const np = analisaLocal(g, texto2); if (!np) return;
+    for (const k of ['daCaixa', 'fromEvento', 'fromProtesto', 'trHook', 'icHook', 'gvHook', 'cfOrigem']) if (prop[k] !== undefined) np[k] = prop[k];
+    np.v5refinado = true; np.texto = texto2;
+    setDec({ ...dec, prop: np });
+  };
+  const chip = (on) => 'text-xs px-2.5 py-1.5 rounded-full border transition ' + (on ? 'border-ouro text-ouro font-semibold' : 'border-line hover:border-ouro');
+  return html`<div className="p-3 rounded flex flex-col gap-2" style=${{ background: 'rgba(61,123,255,.10)' }} data-falta-numero="1">
+    <div className="text-sm"><b>Faltou número.</b> O texto não diz quem recebe nem quanto, então o valor (${bi(prop.cost)}/ano) é uma estimativa. Escolha para o cálculo ficar exato:</div>
+    <div className="flex flex-wrap items-center gap-1.5"><span className="eyebrow mr-1">Quem recebe</span>${V5_PUB.map(x => html`<button key=${x[0]} type="button" className=${chip(pub === x)} disabled=${total} onClick=${() => setPub(pub === x ? null : x)}>${x[1]} de pessoas</button>`)}</div>
+    <div className="flex flex-wrap items-center gap-1.5"><span className="eyebrow mr-1">Quanto</span>${V5_VAL.map(x => html`<button key=${x[2]} type="button" className=${chip(val === x)} onClick=${() => setVal(val === x ? null : x)}>${x[2]}</button>`)}</div>
+    <div className="flex items-center gap-3"><button type="button" className="btn btn-pri btn-sm" disabled=${!pronto} onClick=${recalcula} data-falta-recalc="1">Recalcular</button><span className="text-xs text-muted">${pronto ? '' : total ? '' : val ? 'Escolha também quem recebe.' : 'Valor por pessoa precisa do público; total por ano não.'}</span></div>
+  </div>`;
+}
 function ModalDecisao({ dec, g, upd, setDec, onClose, votarItem }) {
   const [, force] = useState(0);
   if (dec.stage === 'loading') return html`<${Modal} label="Analisando medida"><div className="card p-8 text-center flex flex-col items-center gap-3">
@@ -27255,6 +27286,7 @@ function ModalDecisao({ dec, g, upd, setDec, onClose, votarItem }) {
       ${prop.repetida && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(240,166,58,.15)' }} data-parecer-repetida="1" role="status"><b>Já aprovada.</b> ${prop.repetida.ato} (${prop.repetida.nm}) segue em vigor desde ${dataCurta(prop.repetida.m0)}. Aprovar de novo não soma o efeito; revogue a anterior ou escreva uma medida diferente.</div>`}
       ${prop.custoVoto && prop.custoVoto.pts <= -2 && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,90,78,.08)' }} data-parecer-custo-voto="1" role="status"><b>Custo fiscal no voto.</b> Gasto líquido de R$ ${fmt(prop.custoVoto.net, 0)} bi/ano: Fazenda e mercado pressionam o Congresso (${fmt(prop.custoVoto.pts, 0)} pontos de apoio, no máximo).</div>`}
       <${BlocoCusto} prop=${prop} congresso=${congresso} />
+      ${v5FaltaNumero(prop) && html`<${CaixaFaltaNumero} prop=${prop} g=${g} dec=${dec} setDec=${setDec} />`}
       ${prop.v5lin && html`<div className="text-sm p-3 rounded gl-inteiro" style=${{ background: 'rgba(240,166,58,.14)' }} data-parecer-corte-linear="1" role="status"><b>${prop.v5lin.temValor ? 'Corte linear.' : 'Proposta vaga.'}</b> ${prop.v5lin.temValor ? 'Sem dizer onde, o corte sai por igual de todos os ministérios.' : 'Sem dizer onde nem quanto, a Fazenda só bloqueia uns R$ ' + fmt(prop.v5lin.bi, prop.v5lin.bi % 1 ? 1 : 0) + ' bi de todos os ministérios.'} Custo: serviços e obras param, servidores e universitários reagem e cada ministro perde lealdade.${prop.v5lin.rep ? ' Já houve corte linear neste ano, então este rende menos.' : ''}${prop.v5lin.temValor ? '' : ' Para economizar mais, diga onde cortar e quanto.'}</div>`}
       ${dec.aviso && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,90,78,.08)' }} role="alert">${dec.aviso}</div>`}
       <div className="flex flex-col gap-2">
