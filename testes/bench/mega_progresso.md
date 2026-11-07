@@ -937,3 +937,29 @@ Limitações que ficam: Lei Rouanet (acabar) segue ADM com custo -3 (é renúnci
 | motor 5, etapa 4 (modo IA, ficha) | 350/700 (50,0%) | 356/700 (50,9%) |
 
 Conclusão: o gabarito erra em cerca de 5% dos itens. Mesmo corrigido, isso explica só 4 a 6 pontos. Dos 226 erros de valor do motor, 195 são erros reais do motor. O limite está na conta de valor do motor, não no gabarito.
+
+## Motor 5: calibração do motor local e ficha da IA com natureza e escopo (07/11/2026)
+
+Motor local (`v5Valor`, `v5Ajustes` em `index.html`):
+- norma sem dinheiro no texto (proibir, obrigar, regular...) não cria despesa nem receita;
+- auxílio novo sem número usa R$ 1 bi (antes, R$ 20 bi);
+- corte de tributo para um grupo (micro, rural, estudantes...) usa 20% da base;
+- tributo sobre um alvo específico calculado sobre a base inteira usa 20% dela;
+- benefício fiscal citado (Zona Franca, Lei de Informática...) usa a renúncia da tabela da etapa 1.
+
+Testada e descartada por saldo negativo no treino: preço do item que vem depois do número ("10 mil vagas de residência"); valor padrão para gasto genérico classificado como norma; valor único de obra.
+
+Modo IA: a ficha ganhou `natureza` (norma, gasto, transferencia, obra, tributo, venda, credito, comunicacao) e `escopo` (geral, setor, nicho). O jogo aplica as regras por classe em `v5FichaClasse`:
+- norma ou comunicação sem número não tem valor;
+- tributo de setor usa 30% da base inteira e tributo de nicho, 10%;
+- gasto de nicho sem número custa R$ 1 bi;
+- quantia × público estimado pela IA quando o motor ficou num valor padrão.
+
+Calibração com fichas do mega_dev3 e do dev2, com o teste cego congelado antes. Com o Claude integrado disponível, ele é o motor padrão.
+
+| teste cego hold3 (700) | original | gabarito auditado |
+|---|---|---|
+| v4.3 | 336 (48,0%) | 340 (48,6%) |
+| motor 5 local | 338 (48,3%) | 343 (49,0%) |
+| modo IA (v84) | 350 (50,0%) | 356 (50,9%) |
+| modo IA (ficha com classes) | 363 (51,9%) | 367 (52,4%) |
