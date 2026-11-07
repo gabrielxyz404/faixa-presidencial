@@ -13530,15 +13530,16 @@ const V5_ACAO_NORMA = /^(?:proibir|obrigar|regular|liberar|manter|comunicar)$/;
 // a IA classifica (natureza, escopo, público); o jogo aplica a regra correspondente sobre a conta do motor
 const V5_DEF_G = /padrão|padrao|custo médio|base estimada|sem número|Sem número|pacote padrão|por real =|ordem de grandeza|Texto genérico/;
 function v5FichaClasse(p, m) {
+  const off = (typeof window !== 'undefined' && window.__V5NC) || ''; // só para testes: desliga regras por classe
   const nat = String(m.natureza || ''), esc = String(m.escopo || ''), c0 = String((p.calculo || [])[0] || '');
   const temNum = m.quantia_rs > 0 || /R\$|\d+ ?%|bilh|milh/i.test(m.texto_canonico);
-  if ((nat === 'norma' || nat === 'comunicacao') && !temNum) { p.cost = 0; p.rev = 0; p.extra = 0; p.once = 0; p.v5classe = nat; return p; }
+  if (!/norma/.test(off) && (nat === 'norma' || nat === 'comunicacao') && !temNum) { p.cost = 0; p.rev = 0; p.extra = 0; p.once = 0; p.v5classe = nat; return p; }
   // tributo de setor ou nicho calculado sobre a base inteira: fração da base (setor 30%, nicho 10%)
-  if (nat === 'tributo' && (esc === 'setor' || esc === 'nicho') && Math.abs(p.rev || 0) > 1 && V5_BASEINT_RX.test(c0) && !p.v5espec && !p.v5nicho) { p.rev = Math.round(p.rev * (esc === 'nicho' ? .1 : .3) * 100) / 100; p.v5classe = 'tributo_' + esc; }
+  if (!/tributo/.test(off) && nat === 'tributo' && (esc === 'setor' || esc === 'nicho') && Math.abs(p.rev || 0) > 1 && V5_BASEINT_RX.test(c0) && !p.v5espec && !p.v5nicho) { p.rev = Math.round(p.rev * (esc === 'nicho' ? .1 : .3) * 100) / 100; p.v5classe = 'tributo_' + esc; }
   // gasto ou transferência de nicho sem número: programa pequeno
-  if ((nat === 'gasto' || nat === 'transferencia') && esc === 'nicho' && !temNum && (p.cost || 0) > 1.5 && V5_DEF_G.test((p.calculo || []).join(' '))) { p.cost = 1; p.v5classe = 'gasto_nicho'; }
+  if (!/nicho/.test(off) && (nat === 'gasto' || nat === 'transferencia') && esc === 'nicho' && !temNum && (p.cost || 0) > 1.5 && V5_DEF_G.test((p.calculo || []).join(' '))) { p.cost = 1; p.v5classe = 'gasto_nicho'; }
   // transferência com quantia e público estimado pela IA, quando o motor ficou num valor padrão
-  if ((nat === 'transferencia' || nat === 'gasto') && m.quantia_rs > 0 && m.publico_n > 0 && V5_DEF_G.test((p.calculo || []).join(' '))) {
+  if (!/conta/.test(off) && (nat === 'transferencia' || nat === 'gasto') && m.quantia_rs > 0 && m.publico_n > 0 && V5_DEF_G.test((p.calculo || []).join(' '))) {
     const f = m.periodicidade === 'mensal' ? 12 : 1, anual = m.quantia_rs * f * m.publico_n / 1e9; p.cost = Math.min(anual, 3000); p.v5classe = 'ficha_conta';
     p.calculo = ['R$ ' + fmt(m.quantia_rs, 0) + (f === 12 ? ' × 12 meses' : '') + ' × ' + fmt(m.publico_n / 1e6, 1) + ' mi (público estimado pela IA) = ' + bi(anual) + '/ano'].concat(p.calculo || []);
   }

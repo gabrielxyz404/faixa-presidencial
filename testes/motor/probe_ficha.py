@@ -2,7 +2,7 @@
 # uso: python3 run_sandbox.py probe_ficha.py <pasta com index.html> <frases.json> <saida.json> [porta]
 import sys, threading, functools, http.server, json, re
 from playwright.sync_api import sync_playwright
-ROOT = sys.argv[1]; PH = json.load(open(sys.argv[2], encoding='utf-8-sig')); OUT = sys.argv[3]; PORT = int(sys.argv[4]) if len(sys.argv) > 4 else 8790
+ROOT = sys.argv[1]; PH = json.load(open(sys.argv[2], encoding='utf-8-sig')); OUT = sys.argv[3]; PORT = int(sys.argv[4]) if len(sys.argv) > 4 else 8790; NC = sys.argv[5] if len(sys.argv) > 5 else ''
 PH = [{'t': p['t'], 'f': p.get('ficha') or {}} for p in PH]
 handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=ROOT); handler.log_message = lambda *a, **k: None
 srv = http.server.ThreadingHTTPServer(('127.0.0.1', PORT), handler); threading.Thread(target=srv.serve_forever, daemon=True).start()
@@ -13,7 +13,7 @@ with sync_playwright() as p:
     b = p.chromium.launch(); pg = b.new_page(viewport={'width': 1440, 'height': 900})
     pg.on('pageerror', lambda e: errs.append('PAGEERR ' + str(e)[:300]))
     pg.on('console', lambda m: errs.append('CONSOLE ' + m.text[:300]) if m.type == 'error' else None)
-    src = open(ROOT + '/index.html', encoding='utf-8').read().replace('function analisaLegado(g, texto) {', 'window.__AL=analisaLocal; window.__PF=propDaFicha; window.__M=MOTOR;\nfunction analisaLegado(g, texto) {', 1)
+    src = open(ROOT + '/index.html', encoding='utf-8').read().replace('function analisaLegado(g, texto) {', 'window.__V5NC=' + json.dumps(NC) + '; window.__AL=analisaLocal; window.__PF=propDaFicha; window.__M=MOTOR;\nfunction analisaLegado(g, texto) {', 1)
     pg.route('**/index.html', lambda r: r.fulfill(status=200, content_type='text/html; charset=utf-8', body=src))
     pg.goto('http://127.0.0.1:%d/index.html' % PORT, wait_until='networkidle'); pg.wait_for_timeout(1200)
     for t in ["Presidente eleito", "Assumir o mandato", "3Personalidade", "Negociador", "Técnico", "Avançar"]: click(pg, t)
