@@ -917,3 +917,23 @@ Mudanças:
 `varias`: hold3 10/35 -> 12/35; fresh2 0/2 -> 2/2. O ganho no cego é pequeno porque os 3 erros típicos de `varias` no hold3 são valores por objeto (pensão -> aposentadoria, "bancos de móveis" -> CSLL, defaults de R$ 0,3 a 3 bi), não segmentação. Tentado e mantido desligado por padrão em essência: substituir todos os itens pela leitura oração a oração (regrediu 7 itens no mega_dev2 por defaults de "pacote padrão" nas orações curtas); ficou só a leitura à parte das orações sem objeto.
 
 Limitações que ficam: Lei Rouanet (acabar) segue ADM com custo -3 (é renúncia fiscal, receita 0,8 a 4); 300 mil vagas técnicas, loteria para o SUS, trem-bala SP-Rio, 100 mil casas/ano e satélite estatal seguem com valor baixo ou zerado (falta preço unitário por "vaga" e por "km de trem"); Força Nacional (ADM) e "nomear o vice para a Defesa" (PL em vez de ADM) não foram tocados; "Taxar plástico, proibir sacolinha..." perde 1 ponto no corretor só porque o tópico agora lista as 3 medidas e "proibe" não está no vocabulário de redução do `score.py`.
+
+## Auditoria do gabarito do teste cego hold3 (07/11/2026)
+
+301 dos 700 itens auditados às cegas, sem ver a resposta do motor: uma amostra aleatória de 100 itens mais os 226 em que o motor (motor 5, etapa 3) erra o valor; 25 itens estão nos dois grupos. Seis auditores receberam as mesmas instruções (convenções do gabarito, conta e fonte, julgamento conservador). Quase todos os vereditos se basearam no conhecimento dos auditores, com poucas buscas na web.
+
+| grupo | itens | gabarito com erro |
+|---|---|---|
+| amostra aleatória | 100 | 5 (5%) |
+| motor erra o valor | 226 | 27 (12%) |
+| amostra, motor sem erro de valor | 75 | 3 (4%) |
+
+37 campos foram corrigidos (faixas de valor, instrumentos aceitos, veredito constitucional). O gabarito corrigido fica fora do repositório, junto do hold3 original.
+
+| versão | gabarito original | gabarito corrigido |
+|---|---|---|
+| v4.3 | 336/700 (48,0%) | 340/700 (48,6%) |
+| motor 5, etapa 3 (local) | 337/700 (48,1%) | 342/700 (48,9%) |
+| motor 5, etapa 4 (modo IA, ficha) | 350/700 (50,0%) | 356/700 (50,9%) |
+
+Conclusão: o gabarito erra em cerca de 5% dos itens. Mesmo corrigido, isso explica só 4 a 6 pontos. Dos 226 erros de valor do motor, 195 são erros reais do motor. O limite está na conta de valor do motor, não no gabarito.
