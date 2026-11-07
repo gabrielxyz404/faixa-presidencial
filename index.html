@@ -9070,6 +9070,27 @@ function v5Ficha(s) {
   if (m) { const n = /\d/.test(m[1]) ? +m[1] : V5_NUM[m[1]]; f.durM = /^ano/.test(m[2]) ? n * 12 : n; }
   return f;
 }
+function v5Ajustes(A) { // motor 5, rodada de calibração
+  const s = A.s || '';
+  for (const it of A.items) {
+    if (it.role !== 'main' || it.fora || it.talk || !it.sg || v5Tem(it)) continue;
+    const o = it.o, calc = (it.calc || []).join(' ');
+    // auxílio novo sem número: R$ 1 bi (público de nicho), não o pacote de R$ 20 bi de um programa nacional
+    if (o.id === 'auxilio_generico' && /tamanho padrão do jogo/.test(calc) && it.B > 1 && !/\b(?:tod[oa]s?|cada brasileir\w*|universal)\b/.test(s)) { const B0 = it.B; it.B = 1; it.calc = (it.calc || []).concat(['Auxílio novo sem número e sem público de massa: ordem de grandeza de R$ 1 bi/ano (era ' + fmtBi(B0) + ')']); continue; }
+    // benefício fiscal citado (Zona Franca, Lei de Informática...): renúncia do próprio benefício, não a soma de todos (R$ 500 bi)
+    if (o.id === 'gastos_tributarios' && typeof V5_BTRIB !== 'undefined') { v5Prep();
+      const b = v5Melhor(V5_BTRIB, s, x => x.ren > 0); if (b) { const pct = it.q && it.q.pct && !it.q.pct.pib ? it.q.pct.v : /\bmetade\b/.test(s) ? 50 : /\b(?:acab\w+|extingu\w+|revog\w+|fim d)/.test(s) ? 80 : 30; const B0 = it.B; it.B = b.ren * Math.min(pct, 100) / 100; it.v5b = b.id;
+        it.calc = (it.calc || []).concat([b.n + ': renúncia de ' + fmtBi(b.ren) + '/ano × ' + fmtNum(pct, 0) + '% = ' + fmtBi(it.B) + '/ano (' + b.f + '; era ' + fmtBi(B0) + ')']); continue; } }
+    // "10 mil vagas de residência médica", "10 mil homens na Força Nacional": o preço é do que vem depois do número
+    const c = it.q && it.q.count;
+    if (o.k === 'G' && !o.sav && c && c.n > 0 && !c.univ && /custo médio da área|custo por unidade, estimativa/.test(calc) && typeof V5_PRECOS !== 'undefined') { v5Prep();
+      const m = new RegExp('\\b' + String(c.noun).replace(/[.*+?^${}()|[\]\\]/g, '') + '\\b').exec(s); const jan = m ? s.slice(m.index, m.index + 70) : '', ant = m ? s.slice(Math.max(0, m.index - 70), m.index) : '';
+      const P = (jan && V5_PRECOS.find(x => x.re.test(jan))) || (ant && /^(?:homens|pessoas|agentes|profissionais|servidores|vagas|unidades)$/.test(c.noun) && V5_PRECOS.find(x => x.re.test(ant)));
+      if (P) { const yrs = A.Q && A.Q.hor ? A.Q.hor / 12 : 4, B0 = it.B; let B = 0; if (P.uc) B += c.n * P.uc / 1e9 / (P.t === 'km' ? 1 : yrs); if (P.ua) B += c.n * P.ua / 1e9; B = Math.min(B, 400);
+        it.B = B; it.v5p = P.id; it.calc = [fmtPessoas(c.n) + ' ' + c.noun + ' (' + P.n + ') × ' + (P.ua ? 'R$ ' + fmtNum(P.ua / 1e3, 0) + ' mil por ano' : '') + (P.uc && P.ua ? ' + ' : '') + (P.uc ? 'R$ ' + fmtNum(P.uc / 1e6, 2) + ' mi por unidade em ' + fmtNum(yrs, 0) + ' anos' : '') + ' = ' + fmtBi(B) + '/ano (' + P.f + '; era ' + fmtBi(B0) + ')']; }
+    }
+  }
+}
 function v5FichaAplica(A) {
   if (typeof V5_CONT === 'undefined' || !V5_CONT.length) return; v5Prep();
   const s = A.s || '';
@@ -9114,6 +9135,7 @@ function calcFiscal(A, g) {
   }
   try { v42Ajustes(A, main); } catch (e) { } // v4.2
   try { v5Precos(A); } catch (e) { } // motor 5
+  try { v5Ajustes(A); } catch (e) { } // motor 5, calibração
   try { v5FichaAplica(A); } catch (e) { } // motor 5, ficha
   for (const it of main) if (it.o.k !== 'C') contabiliza(it, F);
   // necessidade a financiar (ano 1)
@@ -12145,6 +12167,28 @@ const V5_INST = [
   ['gasto_lei', 'PL', null, (s, I) => ['ADM', 'DEC', 'COM'].includes(I) && /^(?:dar|pagar|estender|criar|garantir|instituir|conceder) (?:um |uma )?(?:r\$ ?[\d.,]+ (?:mil )?de )?(?:capital inicial|renda|auxilio|bolsa|beneficio|vale|abono|credito fiscal|credito presumido|subvencao|isencao|plano de saude de graca|programa de substituicao)/.test(s) && ! /^(?:se|caso|quando)\b|\?/.test(s)], // benefício ou renúncia nova a pessoas e empresas precisa de lei e dotação (CF 165-167; LRF 14 e 16-17)
 ];
 const V5_INST_NOME = { bc_cmn: 'competência do Banco Central e do CMN (Lei 4.595/1964; LC 179/2021)', ato_gestao: 'ato de gestão do Executivo (CF, art. 84)', lei_existente: 'a regra está em lei: só outra lei muda', simples_plp: 'o Simples Nacional é lei complementar (LC 123/2006; CF, art. 146)', estatal_decide: 'venda de ativo decidida pela companhia ou pelo BNDES (Lei 13.303/2016)', pec_cf: 'matéria fixada na Constituição: só emenda constitucional muda (CF, art. 60)', gasto_lei: 'benefício ou renúncia nova precisa de lei e dotação (CF, arts. 165 a 167; LRF, arts. 14 e 16)' };
+const V5_NORMA_RX = /^(?:proibir|proibe|proiba|vedar|banir|obrigar|obriga|exigir|tornar obrigatori\w+|regulamentar|regular|permitir|autorizar|legalizar|descriminalizar|criminalizar|tipificar|tornar crime|endurecer|punir|estabelecer|fixar|determinar|definir|limitar|restringir|padronizar|simplificar|desburocratizar|flexibilizar|reconhecer|mudar o nome|renomear|incluir|proibicao|obrigatoriedade)\b/;
+const V5_DINHEIRO_RX = /r\$|bilh|milh|\bbolsas?\b|auxilio|subsidi|\bpagar|contrat|constru|isen|impost|tribut|aliquota|\btaxa|cobr|\bfundo|invest|financ|gratuit|de graca|desconto|reajust|\bpiso|salari|aposent|benefic|credito|emprest|compr|\bverba|orcament|recurso|gast|custe|dobr|ampli|vagas?\b|programa|obras?|conclu|\d/;
+const V5_NICHO_RX = /\b(?:micro\w*|pequen\w+|mei\b|rural|agricult\w+|startups?|venture|exportador\w*|construcao civil|remessas? de brasileir\w+|estudant\w+|indigen\w+|ribeirinh\w+|artesan\w+|cooperativ\w+|taxistas?|caminhoneir\w+|igrejas?|entidades?|aposentad\w+|idos\w+|deficien\w+|pcd)\b/;
+const V5_NICHO_OBJ = ['iof', 'ir_pj', 'ir_pf', 'imposto_geral', 'pis_cofins', 'cbs_ibs', 'ipi', 'imposto_importacao', 'csll_bancos', 'icms'];
+function v5Valor(prop, texto) {
+  if (!prop || prop.absurdo) return prop;
+  const s = norm(String(texto || '')).trim();
+  // norma (proibir, obrigar, regular...) sem dinheiro no texto: sem despesa nem receita direta
+  if (V5_NORMA_RX.test(s) && !V5_DINHEIRO_RX.test(s) && (prop.cost || prop.rev || prop.once || prop.extra)) {
+    prop.cost = 0; prop.rev = 0; prop.once = 0; prop.extra = 0; prop.v5norma = true;
+    prop.calculo = ['Medida normativa sem dinheiro público no texto: não cria despesa nem receita direta.'];
+    prop.tecnico = 'Medida normativa: não cria despesa nem receita direta. ' + (prop.tecnico || '');
+    return prop;
+  }
+  // corte de tributo para um grupo pequeno (microempresas, rural, estudantes...): uma fração da base do tributo inteiro
+  const main = ((prop._A || {}).items || []).find(i => i.role === 'main' && i.sg);
+  if (main && V5_NICHO_OBJ.includes(main.o.id) && prop.rev < -1 && V5_NICHO_RX.test(s) && !/r\$|\bbilh|\bmilh/.test(s)) {
+    const r0 = prop.rev; prop.rev = Math.round(prop.rev * .2 * 100) / 100; prop.v5nicho = true;
+    prop.calculo = ['Redução do tributo só para um grupo (' + (V5_NICHO_RX.exec(s) || [''])[0] + '): cerca de 20% da renúncia sobre a base inteira (' + bi(-r0) + ') = ' + bi(-prop.rev) + '/ano'].concat(prop.calculo || []);
+  }
+  return prop;
+}
 function v5Inst(prop, texto) {
   if (!prop || prop.absurdo || prop.ai) return prop;
   const s = norm(String(texto || '')).trim(); if (V5_INST_EXPL.test(s)) return prop;
@@ -12162,7 +12206,7 @@ function v5Inst(prop, texto) {
 }
 function analisaLocal(g, texto) {
   let prop;
-  try { prop = v5Inst(v5CorteLinear(g, posMotor(g, MOTOR.analisar(g, normTexto(g, texto), motorCtx(g)), texto), texto), texto); }
+  try { prop = v5Valor(v5Inst(v5CorteLinear(g, posMotor(g, MOTOR.analisar(g, normTexto(g, texto), motorCtx(g)), texto), texto), texto), texto); }
   catch (e) {
     if (!MOTOR_FALHOU) { MOTOR_FALHOU = true; console.warn('Motor v2 falhou; usando o motor legado de palavras-chave.', e); }
     return analisaLegado(g, texto);
