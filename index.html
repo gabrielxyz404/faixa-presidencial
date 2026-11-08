@@ -12177,7 +12177,7 @@ function v5Valor(prop, texto) {
   // ironia de fecho ("... só que não", "#sqn"): o jogador não está pedindo a medida
   if (/\b(?:so que nao|sqn)\W*$/.test(s)) { prop.cost = 0; prop.rev = 0; prop.once = 0; prop.extra = 0; prop.inst = 'COM'; prop.instDetalhe = null; prop.vago = true; prop.absurdo = false; prop.v5ironia = true; prop.calculo = ['Ironia ("só que não"): o texto não pede a medida, só comenta.']; prop.tecnico = 'Ironia: o texto termina com "só que não", então não é um pedido de medida; vira manifestação política, sem efeito no orçamento. ' + (prop.tecnico || ''); return prop; }
   // medida que já vale (o próprio parecer diz "já em vigor"): sem valor novo nem votação
-  if (/\bj[aá] em vigor\b/i.test(String(prop.topic || '')) && !/\b(?:ampli\w+|aument\w+|elev\w+|dobr\w+|acima de|para r\$)/.test(s)) { prop.cost = 0; prop.rev = 0; prop.once = 0; prop.extra = 0; prop.inst = 'COM'; prop.instDetalhe = null; prop.v5vigente = true; prop.calculo = ['A medida já está em vigor: repetir o pedido não muda o orçamento.'].concat(prop.calculo || []); }
+  if (/\bj[aá] em vigor\b/i.test(String(prop.topic || '')) && !/\b(?:ampli\w+|aument\w+|elev\w+|dobr\w+|acima de|para r\$)/.test(s)) { prop.cost = 0; prop.rev = 0; prop.once = 0; prop.extra = 0; prop.v5vigente = true; prop.calculo = ['A medida já está em vigor: repetir o pedido não muda o orçamento.'].concat(prop.calculo || []); }
   // valor por pessoa fora de escala (bolsa, auxílio ou benefício de R$ 100 mil ou mais por mês)
   { const mm = /r\$\s*([\d.]+)(?:,\d+)?\s*(mil|milh\w*|mi\b)?/.exec(s), v = mm ? parseFloat(mm[1].replace(/\./g, '')) * (mm[2] ? (/^mil$/.test(mm[2]) ? 1e3 : 1e6) : 1) : 0;
     if (v >= 1e5 && /\b(?:bolsa familia|bpc|auxilio\w*|beneficio\w*|aposentadoria|salario minimo|renda basica|abono)\b/.test(s) && !/\b(?:bilh|tri)\w*/.test(s)) { prop.absurdo = true; prop.v5escala = true; prop.tecnico = 'Valor fora de escala: R$ ' + fmt(v, 0) + ' por pessoa custaria trilhões por ano, várias vezes o orçamento inteiro da União. ' + (prop.tecnico || ''); return prop; } }
@@ -12201,7 +12201,7 @@ function v5Valor(prop, texto) {
     prop.calculo = ['Redução do tributo só para um grupo (' + (V5_NICHO_RX.exec(s) || [''])[0] + '): cerca de 20% da renúncia sobre a base inteira (' + bi(-r0) + ') = ' + bi(-prop.rev) + '/ano'].concat(prop.calculo || []);
   }
   // tributo sobre um produto ou setor citado, mas calculado sobre a base do tributo inteiro: cerca de 20% dela
-  if (main && !main.v5b && V5_TRIB_ESPEC.includes(main.o.id) && Math.abs(prop.rev) > 2 && V5_BASEINT_RX.test(c0) && !V5_GERAL_RX.test(s) && !/r\$|\bbilh/.test(s) && V5_ALVO_TRIB.test(s.replace(/\b(?:imposto de renda|imposto de importacao|imposto sobre produtos industrializados|imposto de exportacao|imposto sobre operacoes financeiras)\b/g, ''))) {
+  if (main && V5_TRIB_ESPEC.includes(main.o.id) && Math.abs(prop.rev) > 2 && V5_BASEINT_RX.test(c0) && !V5_GERAL_RX.test(s) && !/r\$|\bbilh/.test(s) && V5_ALVO_TRIB.test(s.replace(/\b(?:imposto de renda|imposto de importacao|imposto sobre produtos industrializados|imposto de exportacao|imposto sobre operacoes financeiras)\b/g, ''))) {
     const r0 = prop.rev; prop.rev = Math.round(prop.rev * .2 * 100) / 100; prop.v5espec = true;
     prop.calculo = ['Tributo sobre um alvo específico, não sobre a base inteira (' + bi(Math.abs(r0)) + '): cerca de 20% dela = ' + bi(Math.abs(prop.rev)) + '/ano'].concat(prop.calculo || []);
   }
