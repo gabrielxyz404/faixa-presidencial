@@ -3065,6 +3065,7 @@ const ACOES_MES = 3, PROPS_MES = 3;
 const saldoDe = (g, prop) => (prop && prop.daCaixa ? (g.props != null ? g.props : PROPS_MES) : g.acoes);
 function gastaDe(g, prop) { if (prop && prop.daCaixa) g.props = Math.max(0, (g.props != null ? g.props : PROPS_MES) - 1); else g.acoes = Math.max(0, g.acoes - 1); }
 function riscoImpeachment(g) {
+  if (g && g.dit && g.dit.regime) return 0; // Congresso fechado
   let hostil = 0;
   for (const P of PARTIDOS) { const r = g.parties[P.id].rel; hostil += P.cam * (r < 42 ? 1 : r < 62 ? .45 : .05); }
   const ap = aprovacao(g);
@@ -12245,7 +12246,8 @@ function analisaLocal(g, texto) {
     if (!MOTOR_FALHOU) { MOTOR_FALHOU = true; console.warn('Motor v2 falhou; usando o motor legado de palavras-chave.', e); }
     return analisaLegado(g, texto);
   }
-  if (prop && typeof texto === 'string' && typeof prop.texto === 'string' && prop.texto !== texto) prop.texto = texto; // a ementa mostra o que o jogador escreveu (a normalização é só para a leitura)
+  if (prop && typeof texto === 'string' && typeof prop.texto === 'string' && prop.texto !== texto) prop.texto = texto;
+  if (prop && g && g.dit && g.dit.regime && ['PL', 'PEC', 'MP'].includes(prop.inst)) { prop.inst = 'DEC'; prop.instDetalhe = null; prop.tecnico = 'Congresso fechado: a medida sai como decreto-lei, sem votação. ' + (prop.tecnico || ''); } // a ementa mostra o que o jogador escreveu (a normalização é só para a leitura)
   // concordância: "500 mil de crianças" -> "500 mil crianças" (só "milhão/milhões/bilhão" pedem "de")
   if (prop && typeof prop.topic === 'string') { const cc = (t) => t.replace(/(\d) mil de (?=\p{L})/gu, '$1 mil '); prop.topic = cc(prop.topic); if (typeof prop.resumo === 'string') prop.resumo = cc(prop.resumo); }
   return prop;
@@ -19843,6 +19845,41 @@ function PoderOposicao({ g, ir }) {
     <${CartaoPoderes} g=${g} />
   </div>`;
 }
+function DitPainel({ g, upd }) {
+  const D = g.dit || { dem: 100, mil: 45, feitos: {}, revolta: 0, regime: false };
+  const [msg, setMsg] = useState(null);
+  const act = (fn) => { let r = null; upd(n => { r = fn(n); }); setTimeout(() => setMsg(r), 0); };
+  const corD = D.dem >= 70 ? 'var(--verde)' : D.dem >= 40 ? 'var(--ambar)' : 'var(--rubro)';
+  const corM = D.mil >= 60 ? 'var(--verde)' : D.mil >= 35 ? 'var(--ambar)' : 'var(--rubro)';
+  const chance = Math.round(ditGolpeChance(g) * 100);
+  const frentes = ['Instituições', 'Imprensa e redes', 'Oposição e eleições', 'Forças Armadas e polícia'];
+  const estado = html`<div className="mx-grid g3" data-dit-estado="1">
+    <div className="mx-card panel" style=${{ '--st': corD }}><div className="mx-lab">Democracia</div><div className="num text-2xl font-bold" style=${{ color: corD }} data-dit-dem="1">${fmt(D.dem, 0)}<span className="text-sm text-muted"> de 100</span></div><div className="text-xs text-muted">${D.regime ? 'regime de exceção' : D.dem > 60 ? 'instituições fortes: golpe fora de alcance' : 'instituições minadas: o golpe é possível'}</div></div>
+    <div className="mx-card panel" style=${{ '--st': corM }}><div className="mx-lab">Apoio militar</div><div className="num text-2xl font-bold" style=${{ color: corM }}>${fmt(D.mil, 0)}<span className="text-sm text-muted"> de 100</span></div><div className="text-xs text-muted">${D.mil < 35 ? 'a caserna conspira' : D.mil < 60 ? 'comandantes divididos' : 'comandantes fiéis'}</div></div>
+    <div className="mx-card panel" style=${{ '--st': D.revolta >= 60 ? 'var(--rubro)' : 'var(--ambar)' }}><div className="mx-lab">${D.regime ? 'Revolta popular' : 'Golpe'}</div><div className="num text-2xl font-bold">${D.regime ? fmt(D.revolta, 0) : chance + '%'}<span className="text-sm text-muted">${D.regime ? ' de 100' : ' de chance'}</span></div><div className="text-xs text-muted">${D.regime ? 'em 100, o regime cai' : D.golpeFalhou ? 'já houve uma tentativa fracassada' : 'militares, democracia minada, aprovação e reação externa'}</div></div>
+  </div>`;
+  const aviso = msg && html`<div className=${'text-sm p-2 rounded ' + (msg.ok ? '' : 'text-rubro')} style=${{ background: 'rgba(255,90,78,.08)' }} role="status" data-dit-msg="1">${msg.msg}</div>`;
+  if (D.regime) return html`<div className="flex flex-col gap-3" data-dit="regime">
+    <${MxStyle} />
+    <h4 className="disp text-xl font-bold">Regime de exceção <span className="selo-sim">simulado</span></h4>
+    <p className="text-sm text-muted">Desde ${dataCurta(D.inicio)}, Congresso e STF estão fechados e não há eleições. Suas medidas saem como decreto-lei. Em troca: sanções que corroem a economia, revolta que cresce quando a aprovação cai e militares que se cansam do regime. O jogo segue até você cair, morrer no cargo ou negociar a saída.</p>
+    ${estado}${aviso}
+    <div className="mx-grid g2">
+      ${DIT_PASSOS.filter(P => P.rep).map(P => html`<div key=${P.k} className="mx-card panel" style=${{ '--st': 'var(--rubro)' }} data-dit-passo=${P.k}><div className="mx-h nr"><span className="gv-ic" style=${{ '--c': 'var(--rubro)' }}><${Icon} n=${P.ic} s=${20} /></span><div className="min-w-0"><div className="mx-t">${P.t}</div><div className="mx-s">${P.d}</div></div></div><button type="button" className="btn btn-ghost btn-sm mt-2 self-start" disabled=${g.acoes <= 0} data-dit-faz=${P.k} onClick=${() => act(n => ditFazRegime(n, P.k))}>Fazer (1 ação)</button></div>`)}
+      <div className="mx-card panel" style=${{ '--st': 'var(--verde)' }} data-dit-abertura="1"><div className="mx-h nr"><span className="gv-ic" style=${{ '--c': 'var(--verde)' }}><${Icon} n="DoorOpen" s=${20} /></span><div className="min-w-0"><div className="mx-t">Abertura negociada</div><div className="mx-s">${D.abertura ? 'Em curso: eleições livres em ' + dataCurta(D.abertura.mes + 6) + '. Até lá, a linha-dura militar pode reagir.' : 'Anistia e eleições livres em 6 meses. Você sai pela porta da frente, se a linha-dura deixar.'}</div></div></div>${!D.abertura && html`<button type="button" className="btn btn-ghost btn-sm mt-2 self-start" disabled=${g.acoes <= 0} data-dit-abrir="1" onClick=${() => act(n => ditAbertura(n))}>Anunciar abertura (1 ação)</button>`}</div>
+    </div></div>`;
+  return html`<div className="flex flex-col gap-3" data-dit="erosao">
+    <${MxStyle} />
+    <h4 className="disp text-xl font-bold">Caminho autoritário <span className="selo-sim">simulado</span></h4>
+    <p className="text-sm text-muted">Ficção do jogo. Cada passo mina as instituições, custa uma ação e vira manchete (sem nome de pessoa real). Abaixo de 60, o autogolpe fica possível; se falhar, você segue no cargo, mas em crise grave. A democracia se recupera devagar quando você para.</p>
+    ${estado}${aviso}
+    ${frentes.map(fr => html`<div key=${fr} data-dit-frente=${fr} className="mt-2"><div className="eyebrow mb-2">${fr}</div><div className="mx-grid g2">${DIT_PASSOS.filter(P => P.fr === fr).map(P => { const v = ditPassoOk(g, P); const n = D.feitos[P.k] || 0;
+      return html`<div key=${P.k} className=${'mx-card panel' + (!P.rep && n ? ' dim' : '')} style=${{ '--st': 'var(--rubro)' }} data-dit-passo=${P.k}><div className="mx-h nr"><span className="gv-ic" style=${{ '--c': 'var(--rubro)' }}><${Icon} n=${P.ic} s=${20} /></span><div className="min-w-0"><div className="mx-t">${P.t}${n && P.rep ? ' (' + n + '×)' : ''}</div><div className="mx-s">${P.d}</div></div></div>
+        <div className="flex items-center gap-2 mt-2 flex-wrap"><button type="button" className="btn btn-ghost btn-sm" disabled=${!v.ok} data-dit-faz=${P.k} onClick=${() => act(x => ditFaz(x, P.k))}>${!P.rep && n ? 'Feito' : 'Fazer (1 ação)'}</button><span className="text-xs text-muted">${v.ok ? 'democracia −' + P.dem : v.msg}</span></div></div>`; })}</div></div>`)}
+    <div className="mx-card panel" style=${{ '--st': 'var(--rubro)' }} data-dit-golpe="1"><div className="mx-h nr"><span className="gv-ic" style=${{ '--c': 'var(--rubro)' }}><${Icon} n="Siren" s=${20} /></span><div className="min-w-0"><div className="mx-t">Autogolpe</div><div className="mx-s">Fechar o Congresso e o STF e governar por decreto. Gasta todas as ações do mês. Chance agora: ${chance}%. Se falhar: escândalo, militares contra, partidos rompem e pedido de impeachment.</div></div></div>
+      <button type="button" className="btn btn-sm mt-2 self-start" style=${{ background: 'var(--rubro)', color: '#fff' }} disabled=${D.dem > 60 || g.acoes <= 0} data-dit-golpe-btn="1" onClick=${() => { if (typeof window !== 'undefined' && window.confirm && !window.__TESTE && !window.confirm('Tentar o autogolpe? Chance de ' + chance + '%. Se falhar, a crise é grave.')) return; act(n => ditGolpe(n, [])); }}>${D.dem > 60 ? 'Indisponível (democracia acima de 60)' : 'Tentar o golpe'}</button></div>
+  </div>`;
+}
 function Poder({ g, upd, decidir, votarItem, chip, setChip, abrirPend }) {
   const c = CHIPS.poder.some(x => x.k === chip) ? chip : 'congresso';
   return html`<${Subpagina} id="poder" chips=${CHIPS.poder} atual=${c} onSel=${setChip} rotulo="Instituições" eyebrow="Poder" pend=${pendDaSecao(g, 'poder')} abrirPend=${abrirPend}>
@@ -19853,6 +19890,7 @@ function Poder({ g, upd, decidir, votarItem, chip, setChip, abrirPend }) {
     ${c === 'eleicoes' && html`<${ElPainel} g=${g} upd=${upd} decidir=${decidir} />`}
     ${c === 'imprensa' && html`<${EntImprensa} g=${g} upd=${upd} />`}
     ${c === 'figuras' && html`<${ElFiguras} g=${g} />`}
+    ${c === 'democracia' && html`<${DitPainel} g=${g} upd=${upd} />`}
   </${Subpagina}>`;
 }
 /* ============================== ABA X (rede social simulada) ============================== */
@@ -24432,6 +24470,73 @@ function trocaPartido(g, pid) {
 }
 
 
+
+/* ============================== DEMOCRACIA, AUTOGOLPE E DITADURA (ficção do jogo, selo "simulado") ==============================
+   Índice de Democracia (0 a 100): os passos de erosão o derrubam. Abaixo de 60 abre-se a opção de autogolpe; a chance depende de militares,
+   democracia já minada, aprovação e reação externa. Golpe falho: crise grave, mas o presidente segue. Golpe vitorioso: modo ditadura
+   (sem eleições, Congresso fechado, sanções, revolta, risco de golpe militar), com saída por abertura negociada. Notícias sem nome de pessoa real. */
+const DIT_PASSOS = [
+  { k: 'stf', fr: 'Instituições', ic: 'Scale', t: 'Ampliar o STF e nomear aliados', d: 'Cinco cadeiras novas para ministros fiéis. O STF deixa de frear o governo.', dem: 12, f: (g) => { g.stf = clamp(g.stf + 15, 0, 100); ditRelOpos(g, -4); }, nt: 'Planalto amplia o STF e indica aliados para as novas cadeiras' },
+  { k: 'orgaos', fr: 'Instituições', ic: 'ShieldOff', t: 'Aparelhar PF, TCU e Ministério Público', d: 'Chefias trocadas e verbas cortadas: as investigações contra o governo param.', dem: 8, f: (g) => { const E = esqEnsure(g); E.abafa = g.mes + 12; g.escandalo = clamp(g.escandalo + 3, 0, 100); }, nt: 'Governo troca chefias da PF, do TCU e do Ministério Público' },
+  { k: 'censura', fr: 'Imprensa e redes', ic: 'MessageSquareOff', t: 'Decreto contra a "desinformação"', d: 'Remoção de conteúdo e multas a veículos críticos. Censura com outro nome.', dem: 12, f: (g) => { dgrp(g, 'universitarios', -3); dgrp(g, 'classemedia', -2); ditDip(g, -5); }, nt: 'Decreto contra a "desinformação" tira do ar reportagens críticas ao governo' },
+  { k: 'midia', fr: 'Imprensa e redes', ic: 'Ban', t: 'Fechar jornais e TVs críticos', req: 'censura', d: 'Concessões cassadas e redações lacradas. Só fica a imprensa amiga.', dem: 15, f: (g) => { g.escandalo = clamp(g.escandalo * .6, 0, 100); dgrp(g, 'universitarios', -4); dgrp(g, 'classemedia', -3); ditDip(g, -8); }, nt: 'Governo cassa concessões e fecha veículos críticos' },
+  { k: 'perseguir', fr: 'Oposição e eleições', ic: 'UserX', t: 'Perseguir e prender líderes da oposição', d: 'Inquéritos e prisões contra adversários. A rua reage.', dem: 15, f: (g) => { ditRelOpos(g, -10); ditEnsure(g).revolta += 12; ditDip(g, -6); }, nt: 'Líderes da oposição são presos em operação ordenada pelo governo' },
+  { k: 'adiar', fr: 'Oposição e eleições', ic: 'CalendarX', t: 'Adiar as eleições "por segurança"', req: 'dem55', d: 'Calendário eleitoral suspenso. Só com a democracia já abaixo de 55.', dem: 20, f: (g) => { ditEnsure(g).revolta += 10; ditDip(g, -10); }, nt: 'Governo suspende o calendário eleitoral "por razões de segurança"' },
+  { k: 'militares', fr: 'Forças Armadas e polícia', ic: 'Medal', t: 'Agradar os militares', rep: true, d: 'Soldos, cargos e verbas para a caserna (R$ 5 bi). Apoio militar +12.', dem: 3, f: (g) => { const D = ditEnsure(g); D.mil = clamp(D.mil + 12, 0, 100); g.fiscal.extra += 5; dgrp(g, 'militares', 3); }, nt: 'Governo anuncia reajuste e cargos para militares' },
+  { k: 'policia', fr: 'Forças Armadas e polícia', ic: 'Shield', t: 'Usar a polícia contra protestos', rep: true, d: 'Repressão: a revolta cai agora, mas a democracia e a imagem pagam.', dem: 6, f: (g) => { const D = ditEnsure(g); D.revolta = Math.max(0, D.revolta - 18); dgrp(g, 'periferia', -2); dgrp(g, 'universitarios', -3); ditDip(g, -4); }, nt: 'Polícia reprime protestos contra o governo' }
+];
+function ditEnsure(g) { return g.dit = g.dit || { dem: 100, mil: 45, feitos: {}, revolta: 0, regime: false, golpeMes: null, golpeFalhou: false, abertura: null, inicio: null }; }
+const ditRegime = (g) => !!(g && g.dit && g.dit.regime);
+function ditRelOpos(g, v) { for (const P of PARTIDOS) if (P.id !== g.cfg.partido && status(g.parties[P.id].rel) === 'opos') { g.parties[P.id].rel = clamp(g.parties[P.id].rel + v, 0, 99); g.parties[P.id].relS = clamp(g.parties[P.id].relS + v, 0, 99); } }
+function ditDip(g, v) { for (const k of ['eua', 'ue']) if (g.dip && g.dip[k] != null) g.dip[k] = clamp(g.dip[k] + v, 0, 100); }
+function ditPassoOk(g, P) { const D = ditEnsure(g); if (D.regime) return { ok: false, msg: 'O regime já está instalado.' }; if (!P.rep && D.feitos[P.k]) return { ok: false, msg: 'Já feito.' }; if (P.req === 'censura' && !D.feitos.censura) return { ok: false, msg: 'Precisa do decreto de censura antes.' }; if (P.req === 'dem55' && D.dem > 55) return { ok: false, msg: 'Só com a democracia abaixo de 55.' }; if (g.acoes <= 0) return { ok: false, msg: 'Sem ações neste mês.' }; return { ok: true }; }
+function ditFaz(g, k) {
+  const P = DIT_PASSOS.find(x => x.k === k); if (!P) return { ok: false, msg: 'Passo desconhecido.' };
+  const v = ditPassoOk(g, P); if (!v.ok) return v;
+  const D = ditEnsure(g); D.feitos[k] = (D.feitos[k] || 0) + 1; D.dem = clamp(D.dem - P.dem, 0, 100); P.f(g);
+  g.acoes = Math.max(0, g.acoes - 1); g.pes.energia = clamp(g.pes.energia - 8, 0, 100);
+  g.feed.unshift({ mes: g.mes, src: 'antag', txt: P.nt.toUpperCase() }); linhaAdd(g, 'DEMOCRACIA', P.t + ' (democracia ' + fmt(D.dem, 0) + ')');
+  return { ok: true, msg: P.t + ': democracia em ' + fmt(D.dem, 0) + '.' };
+}
+function ditFazRegime(g, k) { const P = DIT_PASSOS.find(x => x.k === k); if (!P || !P.rep) return { ok: false, msg: 'Indisponível.' }; if (g.acoes <= 0) return { ok: false, msg: 'Sem ações neste mês.' }; const D = ditEnsure(g); D.feitos[k] = (D.feitos[k] || 0) + 1; P.f(g); g.acoes--; g.feed.unshift({ mes: g.mes, src: 'antag', txt: P.nt.toUpperCase() }); return { ok: true, msg: P.t + ': feito.' }; }
+function ditGolpeChance(g) { const D = ditEnsure(g); const ap = aprovacao(g); const oci = ((g.dip && g.dip.eua != null ? g.dip.eua : 50) + (g.dip && g.dip.ue != null ? g.dip.ue : 50)) / 2; return clamp(.1 + (D.mil - 50) * .012 + (60 - D.dem) * .009 + (ap - 40) * .006 + (oci - 50) * -.002 - (D.golpeFalhou ? .15 : 0), .03, .92); }
+function ditGolpe(g, notas) {
+  const D = ditEnsure(g); if (D.regime || D.dem > 60 || g.acoes <= 0) return { ok: false, msg: D.dem > 60 ? 'As instituições ainda são fortes demais: mine a democracia antes (abaixo de 60).' : 'Indisponível agora.' };
+  const p = ditGolpeChance(g); g.acoes = 0; D.golpeMes = g.mes;
+  const dado = hashStr(String(g.seed) + 'golpe' + g.mes);
+  const ap = (v) => { for (const k of GKEYS) dgrp(g, k, v); };
+  if (dado < p) {
+    D.regime = true; D.inicio = g.mes; D.dem = Math.min(D.dem, 8); D.mil = clamp(D.mil + 5, 0, 100); ditDip(g, -20);
+    g.eco.risco = clamp(g.eco.risco + 150, 60, 2000); g.eco.conf = clamp(g.eco.conf - 15, 0, 100); g.eco.dol = clamp(g.eco.dol + .5, 2.5, 12);
+    if (g.oposicao) g.oposicao.pedidoImp = null; g.escandalo = clamp(g.escandalo * .5, 0, 100); D.revolta += 15;
+    g.feed.unshift({ mes: g.mes, src: 'antag', txt: 'TANQUES NA ESPLANADA: PRESIDENTE FECHA O CONGRESSO E O STF E ASSUME PODERES DE EXCEÇÃO' });
+    linhaAdd(g, 'GOLPE', 'Autogolpe vitorioso: começa o regime (simulado)');
+    return { ok: true, venceu: true, msg: 'O golpe deu certo. Congresso e STF fechados; eleições suspensas. Começa o regime.' };
+  }
+  D.golpeFalhou = true; D.mil = clamp(D.mil - 20, 0, 100); g.escandalo = clamp(g.escandalo + 30, 0, 100); ap(-4);
+  for (const P of PARTIDOS) if (P.id !== g.cfg.partido) { g.parties[P.id].rel = clamp(g.parties[P.id].rel - 15, 0, 99); g.parties[P.id].relS = clamp(g.parties[P.id].relS - 15, 0, 99); }
+  if (g.oposicao) g.oposicao.pedidoImp = g.mes; ditDip(g, -10);
+  g.feed.unshift({ mes: g.mes, src: 'globo', txt: 'Tentativa de golpe fracassa: comandantes não aderem e Congresso abre processo contra o presidente' });
+  linhaAdd(g, 'GOLPE', 'Autogolpe fracassou: crise institucional e pedido de impeachment (simulado)');
+  return { ok: true, venceu: false, msg: 'O golpe fracassou: os comandantes não aderiram. Você segue no cargo, mas o Congresso já fala em impeachment.' };
+}
+function ditAbertura(g) { const D = ditEnsure(g); if (!D.regime || D.abertura) return { ok: false, msg: 'Indisponível.' }; if (g.acoes <= 0) return { ok: false, msg: 'Sem ações neste mês.' }; g.acoes--; D.abertura = { mes: g.mes }; ditDip(g, 10); D.revolta = Math.max(0, D.revolta - 15); g.feed.unshift({ mes: g.mes, src: 'globo', txt: 'Governo anuncia abertura: anistia e eleições livres em seis meses' }); linhaAdd(g, 'DEMOCRACIA', 'Abertura negociada: eleições livres em 6 meses (simulado)'); return { ok: true, msg: 'A abertura começou: em 6 meses, eleições livres. Até lá, a linha-dura pode reagir.' }; }
+function ditFim(g, motivo) { g.over = { tipo: 'personagem', motivo, leg: elLegado(g), posse: null, venc: null, mes: g.mes }; }
+function ditMensal(g, notas) {
+  const D = g.dit; if (!D) return;
+  if (!D.regime) { if (D.dem < 100 && !D.golpeMes) D.dem = clamp(D.dem + .3, 0, 100); return; }
+  const ap = aprovacao(g);
+  // sanções e isolamento
+  g.eco.pib -= .04; g.eco.risco = clamp(g.eco.risco + 6, 60, 2000); g.eco.conf = clamp(g.eco.conf - .6, 0, 100); g.eco.dol = clamp(g.eco.dol + .02, 2.5, 12); ditDip(g, -1);
+  // revolta e caserna
+  D.revolta = clamp(D.revolta + clamp((45 - ap) / 6, -3, 6) + (g.soc.pob > 30 ? 1 : 0), 0, 100);
+  D.mil = clamp(D.mil - 1, 0, 100);
+  if (D.revolta >= 60 && D.revolta < 100) notas.push({ t: 'neg', x: 'Protestos tomam as capitais contra o regime (revolta ' + fmt(D.revolta, 0) + ' de 100).' });
+  if (D.abertura && g.mes - D.abertura.mes >= 6) { ditFim(g, 'abertura'); return; }
+  if (D.revolta >= 100) { ditFim(g, 'dit_queda'); return; }
+  const pm = D.mil < 35 ? (35 - D.mil) / 150 : 0, pl = D.abertura && D.mil < 40 ? .06 : 0;
+  if (hashStr(String(g.seed) + 'gmil' + g.mes) < pm + pl) { ditFim(g, 'golpe_militar'); return; }
+}
 /* ---------- esquemas de corrupção (escolha do jogador; ficção do jogo, com selo "simulado") ----------
    Cada esquema custa 1 ação e deixa rastro. O rastro acumula e pode ser descoberto: reportagem -> CPI -> operação da PF -> denúncia (com pedido de impeachment).
    As notícias falam em "o presidente" e "o Planalto", nunca no nome de uma pessoa real. */
@@ -24574,6 +24679,7 @@ function euMensal(g, notas) {
   if (E.embaloMov !== g.mes && E.embalo !== 0) E.embalo += E.embalo > 0 ? -1 : 1;
   if (E.embalo) for (const k of GKEYS) dgrp(g, k, E.embalo * .06);
   bastMensal(g, notas);
+  try { ditMensal(g, notas); } catch (e) { if (typeof console !== 'undefined') console.warn('ditMensal', e); }
   try { esqMensal(g, notas); } catch (e) { if (typeof console !== 'undefined') console.warn('esqMensal', e); }
   familiaMensal(g, notas);
 }
@@ -31771,6 +31877,7 @@ function elDebConclui(n, did) {
 /* ============================== ELEIÇÕES (el*): LÓGICA 4 — calendário, fim de personagem, novo Congresso, Mesa ==============================
    Hooks: elAbreMes (depois de mundoAbreMes), elPosChecks (no lugar do fim de jogo por eleição), elSubstitutos (votação), elGov (bonusGov). */
 function elAbreMes(g, notas) {
+  if (g.dit && g.dit.regime) { elEnsure(g); return; } // regime: sem eleições
   const E = elEnsure(g); const rel = elO(g.mes) + 1; const c = elCiclo(g.mes);
   elPopMensal(g);
   if (rel === 15) elMunCria(g);
@@ -31797,6 +31904,7 @@ function elVencedorPosse(g, ger, cand) {
   return { id: cand.persId || cand.id, nome: cand.nome, sigla: cand.sigla, bloco: cand.bloco, uf: cand.uf, ideo, idade: (cand.idade || 55) + (g.mes > 48 ? 4 : 0), real: cand.real || { tipo: 'politico', fonte: 'TSE' }, origem: 'Político de Carreira', viceNome: 'Vice-presidente' };
 }
 function elFimMandato(g, notas) {
+  if (g.dit && g.dit.regime) { notas.push({ t: 'neg', x: 'Sem eleições: o regime segue sem prazo de mandato.' }); return; }
   const E = elEnsure(g); const ger = E.ger;
   if (!ger || ger.c !== elCiclo(g.mes) - 1 || !ger.res || !ger.res.venc) {
     // sem eleição registrada (save antigo, por exemplo): o presidente elegível segue; o inelegível encerra o personagem
@@ -33064,7 +33172,7 @@ function ElCandidatura({ g, upd }) {
 }
 
 /* ============================== ELEIÇÕES (el*): INTERFACE 2 — painel Eleições, Figuras, fim de personagem ============================== */
-CHIPS.poder.push({ k: 'eleicoes', nome: 'Eleições' }, { k: 'imprensa', nome: 'Imprensa' }, { k: 'figuras', nome: 'Figuras' });
+CHIPS.poder.push({ k: 'eleicoes', nome: 'Eleições' }, { k: 'imprensa', nome: 'Imprensa' }, { k: 'figuras', nome: 'Figuras' }, { k: 'democracia', nome: 'Democracia' });
 ABAS_INICIO.push({ k: 'fig', nome: 'Figuras sem mandato' });
 const elDomOut = (ano, ult) => { let d = new Date(Date.UTC(ano, 9, ult ? 31 : 1)); if (ult) { while (d.getUTCDay() !== 0) d = new Date(d.getTime() - 864e5); return d.getUTCDate(); } while (d.getUTCDay() !== 0) d = new Date(d.getTime() + 864e5); return d.getUTCDate(); };
 function elMarcos(g) {
@@ -33459,9 +33567,9 @@ function ElFigurasInicio({ onEscolher }) { return html`<${ElFiguras} g=${null} o
 function ElFim({ g, upd, reiniciar }) {
   const o = g.over; const leg = o.leg || elLegado(g); const E = g.el || {}; const [q, setQ] = useState(''); const [campo, setCampo] = useState('todos');
   const motivo = o.motivo || o.tipo;
-  const titulo = motivo === 'sucessao' ? 'Fim do mandato: você passou a faixa' : motivo === 'limite' ? 'Fim do personagem: limite de mandatos' : motivo === 'derrota' ? 'Derrotado nas urnas' : motivo === 'impeachment' ? 'Impeachment' : motivo === 'saude' ? 'Afastamento' : motivo === 'eleicao' ? (o.reeleito ? 'Reeleito' : 'Derrotado nas urnas') : 'Fim do personagem';
+  const titulo = motivo === 'sucessao' ? 'Fim do mandato: você passou a faixa' : motivo === 'limite' ? 'Fim do personagem: limite de mandatos' : motivo === 'derrota' ? 'Derrotado nas urnas' : motivo === 'impeachment' ? 'Impeachment' : motivo === 'saude' ? (o.morte || g.morte ? 'Morte no cargo' : 'Afastamento') : motivo === 'abertura' ? 'Abertura: o regime acabou' : motivo === 'dit_queda' ? 'Derrubado pelas ruas' : motivo === 'golpe_militar' ? 'Deposto pelos militares' : motivo === 'eleicao' ? (o.reeleito ? 'Reeleito' : 'Derrotado nas urnas') : 'Fim do personagem';
   const sob = leg.nome;
-  const texto = motivo === 'sucessao' ? `${sob} cumpriu o mandato e não concorreu à reeleição${o.venc ? '; a eleição foi vencida por ' + o.venc.nome + ' (' + o.venc.sigla + ')' : ''}.` : motivo === 'limite' ? `${sob} cumpriu dois mandatos consecutivos e não pode concorrer de novo (CF art. 14 §5º).` : motivo === 'derrota' ? `${sob} perdeu a eleição${o.venc ? ' para ' + o.venc.nome + ' (' + o.venc.sigla + '), com ' + fmt(o.venc.pct * 100, 1) + '% dos votos válidos' : ''}.` : motivo === 'impeachment' ? `O Senado aprovou o impeachment de ${sob}.` : motivo === 'saude' ? `Por motivo de saúde, ${sob} se afasta do cargo.` : `Fim do mandato de ${sob}.`;
+  const texto = motivo === 'sucessao' ? `${sob} cumpriu o mandato e não concorreu à reeleição${o.venc ? '; a eleição foi vencida por ' + o.venc.nome + ' (' + o.venc.sigla + ')' : ''}.` : motivo === 'limite' ? `${sob} cumpriu dois mandatos consecutivos e não pode concorrer de novo (CF art. 14 §5º).` : motivo === 'derrota' ? `${sob} perdeu a eleição${o.venc ? ' para ' + o.venc.nome + ' (' + o.venc.sigla + '), com ' + fmt(o.venc.pct * 100, 1) + '% dos votos válidos' : ''}.` : motivo === 'impeachment' ? `O Senado aprovou o impeachment de ${sob}.` : motivo === 'saude' ? (o.morte || g.morte ? `${sob} morreu no exercício do cargo.` : `Por motivo de saúde, ${sob} se afasta do cargo.`) : motivo === 'abertura' ? `${sob} negociou a abertura: anistia, Congresso reaberto e eleições livres. O regime durou ${Math.max(1, (o.mes || g.mes) - ((g.dit && g.dit.inicio) || g.mes))} meses (simulado).` : motivo === 'dit_queda' ? `Protestos tomaram o país e as tropas se recusaram a atirar. ${sob} deixou o palácio e o regime caiu (simulado).` : motivo === 'golpe_militar' ? `Os comandantes perderam a paciência e depuseram ${sob}. Uma junta militar assume (simulado).` : `Fim do mandato de ${sob}.`;
   const alvoPosse = o.posse; const presNome = alvoPosse ? alvoPosse.nome : g.cfg.nome;
   const todos = useMemo(() => elPessoas(), []);
   const sugest = useMemo(() => { const dir = elDirIdeo(leg.bloco && PMAP[leg.bloco] ? ideoDoPartido((PMAP[leg.bloco].membros || ['PSD'])[0]) : g.cfg.ideo); return todos.map(p => ({ p, s: .55 * elPopDe(g, p.id).rec + .45 * elPopDe(g, p.id).apr - Math.abs((EL_CAMP_DIR[p.camp] || 0) - dir) * 25 + (p.cargo === 'dep' ? -15 : 0) })).sort((a, b) => b.s - a.s).slice(0, 8).map(x => x.p); }, [g.mes]);
