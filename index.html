@@ -9006,6 +9006,7 @@ function v5Precos(A) {
       if (B != null) { it.B = B; it.calc = [conta + ' = ' + fmtBi(B) + '/ano (estimativa; era ' + fmtBi(B0) + ')']; continue; }
     }
     if (o.k === 'T') { // base tributária do produto ou setor citado
+      if (/\bpor litro\b|\/ ?l\b/.test(tx)) continue; // valor por litro: a conta do motor (R$/litro × litros) vale
       const fam = V5_TRIB_OBJ[o.id], livre = V5_TRIB_LIVRE.test(o.id); if (!fam && !livre) continue;
       const b = v5Melhor(V5_BTRIB, tx, x => livre || fam.includes(x.trib)); if (!b) continue;
       const pct = it.q && it.q.pct && !it.q.pct.pib ? it.q.pct.v : null, zera = /\b(?:zer\w+|isent\w+|elimin\w+|acabar com|fim d[aoe]s?|extingu\w+|sem (?:imposto|ipi|iof|tributo))\b/.test(tx);
@@ -10882,6 +10883,7 @@ const SETORES = ['agro', 'industria', 'varejo', 'bancos', 'construcao', 'energia
 const SETOR_NOME = { agro: 'o agronegócio', industria: 'a indústria', varejo: 'o varejo e o consumo', bancos: 'os bancos e financeiras', construcao: 'a construção civil', energia: 'o setor elétrico', servicos: 'o setor de serviços', tecnologia: 'o setor de tecnologia e plataformas', petroleo: 'o setor de petróleo e combustíveis', mineracao: 'a mineração' };
 const GRUPO_NOME = { empresariado: 'o empresariado', agro: 'o agro', mercado: 'o mercado financeiro', evangelicos: 'os evangélicos', catolicos: 'os católicos', periferia: 'a periferia', classemedia: 'a classe média', sindicatos: 'os sindicatos e servidores', universitarios: 'universitários e meio cultural', indigenas: 'os povos indígenas', gamers: 'gamers e usuários da internet', caminhoneiros: 'os caminhoneiros', policiais: 'policiais e forças de segurança' };
 const REG_NOME = { N: 'o Norte', NE: 'o Nordeste', CO: 'o Centro-Oeste', SE: 'o Sudeste', S: 'o Sul' };
+const V5_EIXO_NOME = (k) => ({ economia: 'economia', tributacao: 'tributação', gasto_social: 'gasto social', trabalho: 'trabalho', privatizacao: 'privatização', costumes: 'costumes', seguranca: 'segurança', ambiente: 'meio ambiente', soberania_externa: 'soberania externa' })[k] || String(k).replace(/_/g, ' ');
 const EIXOS = ['economia', 'tributacao', 'gasto_social', 'trabalho', 'privatizacao', 'costumes', 'seguranca', 'ambiente', 'soberania_externa'];
 /* Convencao dos eixos (polo direita/liberal/conservador = +2): economia (+ mercado livre), tributacao (+ menos impostos),
    gasto_social (+ austeridade), trabalho (+ flexibilizacao), privatizacao (+ privatizar), costumes (+ conservador),
@@ -11148,8 +11150,8 @@ function motivoCoerencia(sigla, r, label) {
   const parts = [];
   if (r.bandeira >= .8) parts.push('A medida é bandeira histórica ' + label + '.');
   else if (r.bandeira <= -.8) parts.push('A medida vai contra uma bandeira histórica ' + label + '.');
-  if (neg && (r.score < 0 || !pos)) parts.push('Tensão no eixo ' + neg.eixo.replace('_', ' ') + ': a medida traz ' + dirTxt(neg) + ', enquanto o partido defende ' + pTxt(neg) + ' (posição ' + (neg.posicaoPartido > 0 ? '+' : '') + neg.posicaoPartido + ').');
-  if (pos && (r.score >= 0 || parts.length < 2)) parts.push('Convergência no eixo ' + pos.eixo.replace('_', ' ') + ': ' + dirTxt(pos) + ' combina com a linha ' + label + ' (posição ' + (pos.posicaoPartido > 0 ? '+' : '') + pos.posicaoPartido + ').');
+  if (neg && (r.score < 0 || !pos)) parts.push('Tensão no eixo ' + V5_EIXO_NOME(neg.eixo) + ': a medida traz ' + dirTxt(neg) + ', enquanto o partido defende ' + pTxt(neg) + ' (posição ' + (neg.posicaoPartido > 0 ? '+' : '') + neg.posicaoPartido + ').');
+  if (pos && (r.score >= 0 || parts.length < 2)) parts.push('Convergência no eixo ' + V5_EIXO_NOME(pos.eixo) + ': ' + dirTxt(pos) + ' combina com a linha ' + label + ' (posição ' + (pos.posicaoPartido > 0 ? '+' : '') + pos.posicaoPartido + ').');
   if (!parts.length) parts.push('A medida não mexe em eixos em que o programa ' + label + ' tenha posição clara.');
   return parts.slice(0, 2).join(' ');
 }
@@ -12084,6 +12086,8 @@ function normTexto(g, t) {
   s = s.replace(/\b(?:fechar|acabar com)\s+(o\s+)?(minist[eé]rio)/gi, 'extinguir $1$2');
   // 9b) "subir o teto do Simples Nacional" -> "aumentar o limite do Simples" (o verbo "subir" e o nome completo caíam na leitura genérica)
   s = s.replace(/\b(?:subir|elevar|ampliar|aumentar|reajustar|atualizar)\s+(?:o\s+)?(?:teto|limite)\s+(?:de\s+faturamento\s+)?d[oa]\s+simples(?:\s+nacional)?/gi, 'aumentar o limite do Simples');
+  // 9c) "reeleição ilimitada" é o oposto do fim da reeleição: vira "permitir reeleições ilimitadas"
+  s = s.replace(/\b(?:a\s+)?reelei[cç](?:ão|ao|ões|oes)\s+(?:ilimitad[ao]s?|infinit[ao]s?|sem limites?|sem fim|eterna)/gi, 'permitir reeleições ilimitadas, mandato após mandato,');
   // 10) fundo eleitoral: a oração do fundo vira a forma padrão (diferença para o tamanho atual, por ano)
   if (FEFC_RX.test(norm(s))) s = fefcCanon(g, s);
   return s;
@@ -12165,10 +12169,24 @@ const V5_NICHO_RX = /\b(?:micro\w*|pequen\w+|mei\b|rural|agricult\w+|startups?|v
 const V5_TRIB_ESPEC = ['imposto_geral', 'ipi', 'imposto_importacao', 'ir_pf', 'ir_pj', 'iof', 'pis_cofins', 'cbs_ibs', 'csll_bancos'];
 const V5_BASEINT_RX = /^(?:Fim d[oa]s? .*base estimada|Sem número informado: assumido recuo parcial|Sem número informado: usado o tamanho padrão|Texto genérico sem valores|Fonte: Texto genérico|\d+(?:,\d+)?% sobre a base de R\$ [\d.,]+ (?:bi|tri) d[oa]s? (?:IPI|imposto|Imposto|impostos|IOF)|\d+(?:,\d+)?% da base de R\$)/;
 const V5_GERAL_RX = /\b(?:tod[oa]s? (?:os |as )?(?:impostos|produtos|importac\w+|empresas|brasileir\w+)|em geral|de tudo|qualquer|tabela do ir|faixas? do ir|imposto de renda (?:de|da|do) (?:quem|todos|pessoa)|aliquota (?:geral|padrao)|carga tributaria)\b/;
+const V5_ALVO_TRIB = /\b(?:de|do|da|dos|das|sobre|para|nos?|nas?)\s+(?!\d|tod[oa]s?\b|tudo\b|imposto|impostos|tributos?|renda\b|importac|exportac|cem\b)[a-z]{3,}/;
 const V5_NICHO_OBJ = ['iof', 'ir_pj', 'ir_pf', 'imposto_geral', 'pis_cofins', 'cbs_ibs', 'ipi', 'imposto_importacao', 'csll_bancos', 'icms'];
 function v5Valor(prop, texto) {
-  if (!prop || prop.absurdo) return prop;
+  if (!prop) return prop;
   const s = norm(String(texto || '')).trim();
+  // ironia de fecho ("... só que não", "#sqn"): o jogador não está pedindo a medida
+  if (/\b(?:so que nao|sqn)\W*$/.test(s)) { prop.cost = 0; prop.rev = 0; prop.once = 0; prop.extra = 0; prop.inst = 'COM'; prop.instDetalhe = null; prop.vago = true; prop.absurdo = false; prop.v5ironia = true; prop.calculo = ['Ironia ("só que não"): o texto não pede a medida, só comenta.']; prop.tecnico = 'Ironia: o texto termina com "só que não", então não é um pedido de medida; vira manifestação política, sem efeito no orçamento. ' + (prop.tecnico || ''); return prop; }
+  // medida que já vale (o próprio parecer diz "já em vigor"): sem valor novo nem votação
+  if (/\bj[aá] em vigor\b/i.test(String(prop.topic || '')) && !/\b(?:ampli\w+|aument\w+|elev\w+|dobr\w+|acima de|para r\$)/.test(s)) { prop.cost = 0; prop.rev = 0; prop.once = 0; prop.extra = 0; prop.inst = 'COM'; prop.instDetalhe = null; prop.v5vigente = true; prop.calculo = ['A medida já está em vigor: repetir o pedido não muda o orçamento.'].concat(prop.calculo || []); }
+  // valor por pessoa fora de escala (bolsa, auxílio ou benefício de R$ 100 mil ou mais por mês)
+  { const mm = /r\$\s*([\d.]+)(?:,\d+)?\s*(mil|milh\w*|mi\b)?/.exec(s), v = mm ? parseFloat(mm[1].replace(/\./g, '')) * (mm[2] ? (/^mil$/.test(mm[2]) ? 1e3 : 1e6) : 1) : 0;
+    if (v >= 1e5 && /\b(?:bolsa familia|bpc|auxilio\w*|beneficio\w*|aposentadoria|salario minimo|renda basica|abono)\b/.test(s) && !/\b(?:bilh|tri)\w*/.test(s)) { prop.absurdo = true; prop.v5escala = true; prop.tecnico = 'Valor fora de escala: R$ ' + fmt(v, 0) + ' por pessoa custaria trilhões por ano, várias vezes o orçamento inteiro da União. ' + (prop.tecnico || ''); return prop; } }
+  // "pagar R$ 2 mil a cada brasileiro" sem dizer "por mês": pagamento único, não 12 parcelas
+  { const c0 = String((prop.calculo || [])[0] || ''), mm = /([\d.,]+) (mi|mil)? ?[a-zà-ú ]+? × R\$ ([\d.]+) × 12 pagamentos\/ano/i.exec(c0);
+    if (mm && !/\b(?:por mes|ao mes|mensa\w+|todo mes|por ano|anua\w+)\b/.test(s)) { const n = parseFloat(mm[1].replace(/\./g, '').replace(',', '.')) * (mm[2] === 'mi' ? 1e6 : mm[2] === 'mil' ? 1e3 : 1), v = parseFloat(mm[3].replace(/\./g, '')), T = n * v / 1e9;
+      if (T > 0) { prop.cost = 0; prop.extra = Math.round(T * 10) / 10; prop.v5unico = true; if (T < 1500) prop.absurdo = false; prop.calculo = ['Pagamento único (o texto não diz "por mês"): ' + c0.replace(/ × 12 pagamentos\/ano.*$/, '') + ' = ' + bi(T) + ' de uma vez'].concat(prop.calculo || []); } } }
+  if (/\breelei\w* ilimitad|\breelei\w* (?:sem limite|infinit)/.test(s) && prop.stf && prop.stf.nivel === 'ok') prop.stf = Object.assign({}, prop.stf, { nivel: 'controverso', parecer: 'Reeleições ilimitadas para presidente esbarram no princípio republicano e na alternância no poder; parte dos juristas vê limite implícito ao poder de reforma (CF, art. 60, §4º), e o STF pode ser acionado.' });
+  if (prop.absurdo) return prop;
   // norma (proibir, obrigar, regular...) sem dinheiro no texto: sem despesa nem receita direta
   if (V5_NORMA_RX.test(s) && !V5_DINHEIRO_RX.test(s) && (prop.cost || prop.rev || prop.once || prop.extra)) {
     prop.cost = 0; prop.rev = 0; prop.once = 0; prop.extra = 0; prop.v5norma = true;
@@ -12183,10 +12201,16 @@ function v5Valor(prop, texto) {
     prop.calculo = ['Redução do tributo só para um grupo (' + (V5_NICHO_RX.exec(s) || [''])[0] + '): cerca de 20% da renúncia sobre a base inteira (' + bi(-r0) + ') = ' + bi(-prop.rev) + '/ano'].concat(prop.calculo || []);
   }
   // tributo sobre um produto ou setor citado, mas calculado sobre a base do tributo inteiro: cerca de 20% dela
-  if (main && V5_TRIB_ESPEC.includes(main.o.id) && Math.abs(prop.rev) > 2 && V5_BASEINT_RX.test(c0) && !V5_GERAL_RX.test(s) && !/r\$|\bbilh/.test(s)) {
+  if (main && !main.v5b && V5_TRIB_ESPEC.includes(main.o.id) && Math.abs(prop.rev) > 2 && V5_BASEINT_RX.test(c0) && !V5_GERAL_RX.test(s) && !/r\$|\bbilh/.test(s) && V5_ALVO_TRIB.test(s.replace(/\b(?:imposto de renda|imposto de importacao|imposto sobre produtos industrializados|imposto de exportacao|imposto sobre operacoes financeiras)\b/g, ''))) {
     const r0 = prop.rev; prop.rev = Math.round(prop.rev * .2 * 100) / 100; prop.v5espec = true;
     prop.calculo = ['Tributo sobre um alvo específico, não sobre a base inteira (' + bi(Math.abs(r0)) + '): cerca de 20% dela = ' + bi(Math.abs(prop.rev)) + '/ano'].concat(prop.calculo || []);
   }
+  // PEC contra cláusula pétrea (CF, art. 60, §4º): "não será objeto de deliberação"; a CCJ barra e quase ninguém vota a favor
+  if (prop.inst === 'PEC' && prop.stf && prop.stf.nivel === 'inconstitucional' && !prop.v5petrea) {
+    prop.v5petrea = true; prop.bonus = prop.bonus || {}; for (const P of PARTIDOS) prop.bonus[P.id] = (prop.bonus[P.id] || 0) - 45;
+    prop.tecnico = 'Cláusula pétrea: pela CF (art. 60, §4º), PEC que tende a abolir direitos e garantias individuais, o voto direto, a separação de Poderes ou a forma federativa não pode nem ser votada; a CCJ da Câmara deve barrar, e o apoio no plenário despenca. ' + (prop.tecnico || '');
+  }
+  if (prop.rev > 0 && (prop.inst === 'COM' || prop.inst === 'ADM') && main && main.o.k === 'T') { prop.inst = 'PL'; prop.instDetalhe = null; prop.tecnico = 'Instrumento: projeto de lei, porque tributo novo ou maior só vem por lei (CF, art. 150, I). ' + (prop.tecnico || ''); }
   return prop;
 }
 function v5Inst(prop, texto) {
@@ -12206,7 +12230,17 @@ function v5Inst(prop, texto) {
 }
 function analisaLocal(g, texto) {
   let prop;
-  try { prop = v5Valor(v5Inst(v5CorteLinear(g, posMotor(g, MOTOR.analisar(g, normTexto(g, texto), motorCtx(g)), texto), texto), texto), texto); }
+  try {
+    const p0 = posMotor(g, MOTOR.analisar(g, normTexto(g, texto), motorCtx(g)), texto), liq0 = (p0.cost || 0) - (p0.rev || 0) + (p0.extra || 0);
+    prop = v5Valor(v5Inst(v5CorteLinear(g, p0, texto), texto), texto);
+    // coerência: o aviso de custo no voto e o texto técnico passam a usar o valor final
+    const liq1 = (prop.cost || 0) - (prop.rev || 0) + (prop.extra || 0);
+    if (Math.abs(liq1 - liq0) > .05) {
+      try { const cf = custoFiscalVoto(g, prop); prop.custoVoto = cf.pts ? { pts: Math.round(cf.pts * 10) / 10, net: Math.round(cf.net) } : null; } catch (e) { }
+      const fx = (v) => (v < 0 ? 'ganho de ' : 'custo de ') + bi(Math.abs(v)) + '/ano';
+      if (!/^Valor revisado/.test(prop.tecnico || '')) prop.tecnico = 'Valor revisado pelo motor 5: ' + fx(liq1) + ' (a primeira leitura dava ' + fx(liq0) + '; a conta está no destaque). ' + (prop.tecnico || '');
+    }
+  }
   catch (e) {
     if (!MOTOR_FALHOU) { MOTOR_FALHOU = true; console.warn('Motor v2 falhou; usando o motor legado de palavras-chave.', e); }
     return analisaLegado(g, texto);
@@ -14280,7 +14314,7 @@ function MedCartao({ g, M, upd, irPara, aberto, onToggle }) {
     ${ativo && html`<div className="med-acoes">
       <button type="button" className="btn btn-sm btn-ghost" disabled=${!pa.ok} title=${pa.t} onClick=${() => upd(n => { medAcelera(n, M.id); })}><${Icon} n="FastForward" s=${14} /> Acelerar</button>
       <button type="button" className="btn btn-sm btn-ghost" disabled=${!pj.ok} title=${pj.t} onClick=${() => upd(n => { medAjusta(n, M.id); })}><${Icon} n="Wrench" s=${14} /> ${pj.l}</button>
-      <button type="button" className="btn btn-sm btn-ghost" disabled=${!pv.ok} title=${pv.t} onClick=${() => { upd(n => { medRevoga(n, M.id); }); if (!medRevogaDireto(M)) irPara('mesa'); }}><${Icon} n="Undo2" s=${14} /> ${pv.l}</button>
+      <button type="button" className="btn btn-sm btn-ghost" disabled=${!pv.ok} title=${pv.t} onClick=${() => { if (medRevogaDireto(M) && typeof window !== 'undefined' && window.confirm && !window.confirm('Revogar ' + (M.ato || 'a medida') + ' por decreto? Custa 1 ação e o recuo desgasta o governo.')) return; upd(n => { medRevoga(n, M.id); }); if (!medRevogaDireto(M)) irPara('mesa'); }}><${Icon} n="Undo2" s=${14} /> ${pv.l}</button>
     </div>`}
     </div>`}
   </article>`;
@@ -27223,7 +27257,7 @@ function v5FaltaNumero(prop) {
   const c = (prop.calculo || []).join(' ');
   return V5_DEF_G.test(c) || !!prop.v5valorIA;
 }
-const V5_PUB = [[1e4, '10 mil'], [1e5, '100 mil'], [1e6, '1 milhão'], [1e7, '10 milhões']];
+const V5_PUB = [[1e4, '10 mil', '10 mil pessoas'], [1e5, '100 mil', '100 mil pessoas'], [1e6, '1 milhão', '1 milhão de pessoas'], [1e7, '10 milhões', '10 milhões de pessoas']];
 const V5_VAL = [['m', 200, 'R$ 200/mês'], ['m', 600, 'R$ 600/mês'], ['m', 1000, 'R$ 1.000/mês'], ['t', 1, 'R$ 1 bi/ano no total'], ['t', 5, 'R$ 5 bi/ano'], ['t', 20, 'R$ 20 bi/ano']];
 function CaixaFaltaNumero({ prop, g, dec, setDec }) {
   const [pub, setPub] = useState(null), [val, setVal] = useState(null);
@@ -27232,7 +27266,7 @@ function CaixaFaltaNumero({ prop, g, dec, setDec }) {
   const recalcula = () => {
     if (!pronto) return;
     const base = String(prop.texto || '').trim().replace(/[.!]+$/, '');
-    const extra = total ? ', com R$ ' + val[1] + (val[1] === 1 ? ' bilhão' : ' bilhões') + ' por ano' : ', pagando R$ ' + fmt(val[1], 0) + ' por mês a ' + pub[1] + ' de pessoas';
+    const extra = total ? ', com R$ ' + val[1] + (val[1] === 1 ? ' bilhão' : ' bilhões') + ' por ano' : ' (' + pub[2] + ', R$ ' + fmt(val[1], 0) + ' por mês por pessoa)';
     const texto2 = base + extra;
     const np = analisaLocal(g, texto2); if (!np) return;
     for (const k of ['daCaixa', 'fromEvento', 'fromProtesto', 'trHook', 'icHook', 'gvHook', 'cfOrigem']) if (prop[k] !== undefined) np[k] = prop[k];
@@ -27242,7 +27276,7 @@ function CaixaFaltaNumero({ prop, g, dec, setDec }) {
   const chip = (on) => 'text-xs px-2.5 py-1.5 rounded-full border transition ' + (on ? 'border-ouro text-ouro font-semibold' : 'border-line hover:border-ouro');
   return html`<div className="p-3 rounded flex flex-col gap-2" style=${{ background: 'rgba(61,123,255,.10)' }} data-falta-numero="1">
     <div className="text-sm"><b>Faltou número.</b> O texto não diz quem recebe nem quanto, então o valor (${bi(prop.cost)}/ano) é uma estimativa. Escolha para o cálculo ficar exato:</div>
-    <div className="flex flex-wrap items-center gap-1.5"><span className="eyebrow mr-1">Quem recebe</span>${V5_PUB.map(x => html`<button key=${x[0]} type="button" className=${chip(pub === x)} disabled=${total} onClick=${() => setPub(pub === x ? null : x)}>${x[1]} de pessoas</button>`)}</div>
+    <div className="flex flex-wrap items-center gap-1.5"><span className="eyebrow mr-1">Quem recebe</span>${V5_PUB.map(x => html`<button key=${x[0]} type="button" className=${chip(pub === x)} disabled=${total} onClick=${() => setPub(pub === x ? null : x)}>${x[2]}</button>`)}</div>
     <div className="flex flex-wrap items-center gap-1.5"><span className="eyebrow mr-1">Quanto</span>${V5_VAL.map(x => html`<button key=${x[2]} type="button" className=${chip(val === x)} onClick=${() => setVal(val === x ? null : x)}>${x[2]}</button>`)}</div>
     <div className="flex items-center gap-3"><button type="button" className="btn btn-pri btn-sm" disabled=${!pronto} onClick=${recalcula} data-falta-recalc="1">Recalcular</button><span className="text-xs text-muted">${pronto ? '' : total ? '' : val ? 'Escolha também quem recebe.' : 'Valor por pessoa precisa do público; total por ano não.'}</span></div>
   </div>`;
@@ -27281,7 +27315,7 @@ function ModalDecisao({ dec, g, upd, setDec, onClose, votarItem }) {
     return html`<${Modal} wide label="Parecer da medida" onClose=${fecha}><${Documento} prop=${prop} g=${g}>
       <${FaixaCF} prop=${prop} />
       <div><div className="text-[11px] uppercase tracking-widest opacity-60" style=${{ fontFamily: 'var(--f-mono)' }}>Ementa</div>
-        <div className="text-lg font-semibold leading-snug">${prop.texto}</div>
+        <div className="text-lg font-semibold leading-snug" style=${{ overflowWrap: 'anywhere' }}>${prop.texto}</div>
         ${prop.resumo && html`<div className="text-sm mt-1 opacity-80">${prop.resumo}</div>`}</div>
       ${prop.repetida && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(240,166,58,.15)' }} data-parecer-repetida="1" role="status"><b>Já aprovada.</b> ${prop.repetida.ato} (${prop.repetida.nm}) segue em vigor desde ${dataCurta(prop.repetida.m0)}. Aprovar de novo não soma o efeito; revogue a anterior ou escreva uma medida diferente.</div>`}
       ${prop.custoVoto && prop.custoVoto.pts <= -2 && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,90,78,.08)' }} data-parecer-custo-voto="1" role="status"><b>Custo fiscal no voto.</b> Gasto líquido de R$ ${fmt(prop.custoVoto.net, 0)} bi/ano: Fazenda e mercado pressionam o Congresso (${fmt(prop.custoVoto.pts, 0)} pontos de apoio, no máximo).</div>`}
@@ -27349,7 +27383,7 @@ function ModalDecisao({ dec, g, upd, setDec, onClose, votarItem }) {
       <div className="text-sm" style=${{ fontFamily: 'var(--f-mono)' }}>${R.ex.ato}</div>
       <span className="ml-auto px-3 py-1 rounded-full text-sm font-bold uppercase tracking-wide" style=${{ background: corRes, color: '#04130b' }}>${R.label}</span>
     </div>
-    <div className="text-lg font-semibold leading-snug">${prop.texto}</div>
+    <div className="text-lg font-semibold leading-snug" style=${{ overflowWrap: 'anywhere' }}>${prop.texto}</div>
     ${R.votacao && html`<div className="grid sm:grid-cols-2 gap-3 text-sm">
       <div className="p-3 rounded bg-black/5"><div className="text-[10px] uppercase tracking-widest opacity-60">Câmara dos Deputados</div><div className="num text-xl">${R.votacao.totC} sim · ${513 - R.votacao.totC} não/ausentes/abstenções</div></div>
       <div className="p-3 rounded bg-black/5"><div className="text-[10px] uppercase tracking-widest opacity-60">Senado Federal</div><div className="num text-xl">${R.votacao.semSenado ? 'a matéria não chegou ao Senado' : `${R.votacao.totS} sim · ${81 - R.votacao.totS} não/ausentes/abstenções`}</div></div>
