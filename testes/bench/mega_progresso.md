@@ -977,3 +977,8 @@ Calibração com fichas do mega_dev3 e do dev2, com o teste cego congelado antes
 |---|---|---|---|---|
 | hold4, novo (417) | 119 (28,5%) | 128 (30,7%) | — | 177 (42,4%) |
 | hold3, antigo (700) | 336 (48,0%) | 338 (48,3%) | 363 (51,9%) | 387 (55,3%) |
+
+## Constituição pela IA (testada e descartada) e auditoria do hold4 (08/11/2026)
+
+- **Campo `constituicao` na ficha** (nível e artigo), com uma regra que só sobe o veredito. Na calibração (mega_dev3), a nota foi de 456 para 454 e a Constituição certa de 666 para 665: a IA marca como controverso o que o gabarito aceita como ok. Desfeito antes de medir nos testes cegos.
+- **Auditoria às cegas do hold4:** amostra aleatória de 100 itens, auditada pelo Sonnet. Foram 96 ok, 2 erros (Copa de 2034 já atribuída à Arábia Saudita; renúncia abaixo de R$ 1 bi) e 2 ambíguos. A taxa de erro estimada é de cerca de 2%. Ressalva: um dos auditores registrou justificativas genéricas nos itens ok, sem buscas na web.
