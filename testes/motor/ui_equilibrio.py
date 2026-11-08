@@ -1,6 +1,6 @@
 # Teste de interface do reequilíbrio v2 ("equilibrio-v2"): impeachment com 1 mês de aviso (cartão de admissibilidade na Mesa, notícia e votação só no mês seguinte),
 # medida repetida sinalizada no parecer e sem soma de efeito, rendimento decrescente da comunicação (2º ato 50%, 3º 25%, teto global do efeito transitório),
-# recuperação passiva de estresse, afastamento temporário antes do fim por saúde, jantar com a bancada com efeito decrescente, aceite do Comércio pela demanda
+# saúde no lugar do estresse, afastamento temporário antes do fim por saúde, jantar com a bancada com efeito decrescente, aceite do Comércio pela demanda
 # já contratada, linha de retorno das decisões no Balanço do mês, base inicial do presidente Negociador e 0 erros de página/console.
 # uso: python3 run_sandbox.py ui_equilibrio.py <pasta com index.html, fotos.json e logos.json> <saida_dir> [porta]
 import sys, threading, functools, http.server, json, re, os
@@ -128,23 +128,25 @@ with sync_playwright() as p:
     secao(pg, 'Mesa')
 
     # ---------------- estresse ----------------
-    SET(pg, "n.pes.estresse=60; n.pes.saude=80; n.evento=null; n.eventoOk=true; n.acoes=1;n.props=1; n.escandalo=0; for(const k of Object.keys(n.groups)) n.groups[k]=55")
-    e = pg.evaluate("()=>{let out=null;__QV().setG(p=>{const n=structuredClone(p);__X().fimDoMes(n);out=n.pes.estresse;window.__r=out;n.acoes=5;n.props=5;n.eventoOk=true;n.evento=null;return n});return null}")
+    # o estresse saiu do jogo: o desgaste do cargo cai direto na saúde
+    SET(pg, "n.pes.saude=60; n.evento=null; n.eventoOk=true; n.acoes=1;n.props=1; n.escandalo=0; for(const k of Object.keys(n.groups)) n.groups[k]=55")
+    e = pg.evaluate("()=>{let out=null;__QV().setG(p=>{const n=structuredClone(p);__X().fimDoMes(n);window.__r={s:n.pes.saude,e:n.pes.estresse};n.acoes=5;n.props=5;n.eventoOk=true;n.evento=null;return n});return null}")
     pg.wait_for_timeout(400); e = pg.evaluate("()=>window.__r")
-    ok('Estresse recupera sozinho (~ -6/mês) quando não há crise: 60 -> menos de 58', e < 58, e)
-    SET(pg, "n.pes.estresse=60; n.eventoOk=false; n.evento='podcast'; n.acoes=1;n.props=1")
-    e2 = pg.evaluate("()=>{__QV().setG(p=>{const n=structuredClone(p);__X().fimDoMes(n);window.__r=n.pes.estresse;n.acoes=5;n.props=5;n.eventoOk=true;n.evento=null;return n});return null}")
+    ok('Mês sem crise não desgasta a saúde (60 -> 60 ou mais) e o estresse fica zerado', e['s'] >= 60 and e['e'] == 0, e)
+    SET(pg, "n.pes.saude=60; n.eventoOk=false; n.evento='podcast'; n.acoes=1;n.props=1")
+    e2 = pg.evaluate("()=>{__QV().setG(p=>{const n=structuredClone(p);__X().fimDoMes(n);window.__r=n.pes.saude;n.acoes=5;n.props=5;n.eventoOk=true;n.evento=null;return n});return null}")
     pg.wait_for_timeout(400); e2 = pg.evaluate("()=>window.__r")
-    ok('Com crise ignorada o estresse continua subindo', e2 > 60, e2)
+    ok('Com crise ignorada a saúde cai', e2 < 60 and e2 < e['s'] - 2, e2)
+    ok('A aba Eu não mostra mais a barra de estresse', pg.evaluate("()=>!document.body.innerText.includes('Estresse')"), '')
     # afastamento temporário
-    SET(pg, "n.pes.saude=0.2; n.pes.estresse=100; n.evento=null; n.eventoOk=true; n.afastUsado=null; n.over=null; n.acoes=5;n.props=5")
+    SET(pg, "n.pes.saude=0.2; n.evento='podcast'; n.eventoOk=false; n.afastUsado=null; n.over=null; n.acoes=5;n.props=5")
     pg.evaluate("()=>{__QV().setG(p=>{const n=structuredClone(p);const r=__X().fimDoMes(n);window.__r={over:n.over?n.over.tipo:null,acoes:n.acoes,saude:n.pes.saude,afast:n.afastUsado===n.mes,nota:r.notas.some(x=>/Afastamento temporário/.test(x.x))};return n})}"); pg.wait_for_timeout(700)
     a1 = pg.evaluate("()=>window.__r")
     ok('Saúde zerada pela 1ª vez: afastamento temporário (sem ações no mês, saúde volta a 30), não o fim do jogo', a1['over'] is None and a1['acoes'] == 0 and a1['afast'] and a1['saude'] >= 25 and a1['nota'], a1)
     fecha_modais(pg)
     ok('Mesa: cartão "Afastamento temporário"', pg.locator('[data-pend=afastamento]').count() == 1)
     pg.screenshot(path=OUT + '/eq_afastamento_mesa.png')
-    SET(pg, "n.pes.saude=0.2; n.pes.estresse=100; n.evento=null; n.eventoOk=true; n.acoes=5;n.props=5")
+    SET(pg, "n.pes.saude=0.2; n.evento='podcast'; n.eventoOk=false; n.acoes=5;n.props=5")
     pg.evaluate("()=>{__QV().setG(p=>{const n=structuredClone(p);__X().fimDoMes(n);window.__r={over:n.over?n.over.tipo:null};return n})}"); pg.wait_for_timeout(500)
     ok('Segunda vez com a saúde zerada: aí sim o afastamento é definitivo', pg.evaluate("()=>window.__r")['over'] == 'saude')
     SET(pg, "n.over=null; n.pes.saude=70; n.pes.estresse=20; n.acoes=5;n.props=5; n.afastUsado=null"); fecha_modais(pg)

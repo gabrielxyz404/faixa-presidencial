@@ -1286,7 +1286,7 @@ function indicaSTF(n, idx, nom) {
     E.stfRej = (E.stfRej || 0) + 1;
     n.stfRej.push({ nome: nom.nome, ano: anoDe(n.mes) });
     for (const k of GKEYS) gv(k, -1);
-    n.pes.estresse = clamp(n.pes.estresse + 5, 0, 100);
+    n.pes.saude = clamp(n.pes.saude - 0.6, 0, 100);
     n.feed.unshift({ mes: n.mes, src: 'globo', txt: `Senado rejeita indicado ao STF: ${nom.nome} é barrado(a) por ${r.nao} a ${r.sim}` });
   }
   checaMarcos(n);
@@ -2090,7 +2090,7 @@ const EV = (g) => { const e = g.evento ? EVENTOS.find(x => x.id === g.evento) ||
 const MODOS = {
   lua: { k: 'lua', nome: 'Lua de mel', d: 'Desgaste 40% mais lento, Congresso mais simpático (+5) e crises que cobram menos (×0,6).', drift: .6, apoio: 5, ignora: .6, estresse: 1, nota: .9, cor: 'var(--verde)' },
   brasilia: { k: 'brasilia', nome: 'Brasília', d: 'O equilíbrio original do jogo: nem lua de mel, nem inferno.', drift: 1, apoio: 0, ignora: 1, estresse: 1, nota: 1, cor: 'var(--ouro)' },
-  raiz: { k: 'raiz', nome: 'Brasília raiz', d: 'Desgaste 40% mais rápido, base arisca (−5), crises cobram ×1,4 e o estresse sobe 20% mais depressa.', drift: 1.4, apoio: -5, ignora: 1.4, estresse: 1.2, nota: 1.1, cor: 'var(--rubro)' }
+  raiz: { k: 'raiz', nome: 'Brasília raiz', d: 'Desgaste 40% mais rápido, base arisca (−5), crises cobram ×1,4 e a saúde se desgasta mais depressa.', drift: 1.4, apoio: -5, ignora: 1.4, estresse: 1.2, nota: 1.1, cor: 'var(--rubro)' }
 };
 const modoDe = (g) => MODOS[(g.cfg && g.cfg.modo)] || MODOS.brasilia;
 const estOf = (g) => (g.est = g.est || {});
@@ -2266,7 +2266,7 @@ function respondeProtesto(n, tipo) {
   const dg = (k, v) => { if (n.groups[k] != null) n.groups[k] = clamp(n.groups[k] + v, 1, 99); };
   if (tipo === 'comissao') {
     if (n.acoes <= 0) return;
-    n.acoes--; dg(p.grupo, 5); n.pes.estresse = clamp(n.pes.estresse + 4, 0, 100);
+    n.acoes--; dg(p.grupo, 5); n.pes.saude = clamp(n.pes.saude - 0.5, 0, 100);
     est.comissoes = (est.comissoes || 0) + 1;
     n.feed.unshift({ mes: n.mes, src: 'globo', txt: `Comissão de ${G.nome.toLowerCase()} é recebida no Planalto e o ato ${p.cidade} é encerrado` });
     fimProtesto(n);
@@ -2404,7 +2404,7 @@ function responderQQ(n, tom) {
   const dobro = n.cfg.tracos.includes('carismatico') ? 2 : 1;
   const sob = n.cfg.nome.split(' ').slice(-1)[0]; const rep = q.rep.nome;
   let ap = 0, cm = 0, gam = 0, out = 'aceitavel', esc = 0, meme = false;
-  if (n.pes.estresse > 75 && hashStr('gf' + n.mes + q.id + tom) < .3) { out = 'gafe'; ap = -2; }
+  if (n.pes.saude < 35 && hashStr('gf' + n.mes + q.id + tom) < .3) { out = 'gafe'; ap = -2; }
   else if (tom === 'desc') { out = 'desc'; ap = -1; esc = 1; }
   else {
     if (tom === q.bom) { out = 'bom'; ap = 1.5 * dobro; cm = 2 * dobro; }
@@ -2471,7 +2471,7 @@ const MARCOS_BASE = [
   { id: 'povo', nome: 'Povo na palma da mão', d: 'Aprovação a partir de 65%. Até o síndico do prédio elogia.', t: g => aprovacao(g) >= 65 },
   { id: 'pibao', nome: 'PIBão', d: 'Crescimento de 3,5% ou mais: o espetáculo, enfim, aconteceu.', t: g => g.eco.pib >= 3.5 },
   { id: 'metade', nome: 'Metade do caminho', d: 'Vinte e quatro meses de mandato. O cabelo é testemunha.', t: g => g.mes >= 24 },
-  { id: 'zen', nome: 'Presidente zen', d: 'Estresse sob controle. Devem ser as sessões de terapia.', t: g => g.mes > 1 && g.pes.estresse <= 10 },
+  { id: 'zen', nome: 'Presidente zen', d: 'Saúde acima de 90 depois do primeiro ano. Devem ser as sessões de terapia.', t: g => g.mes > 12 && g.pes.saude >= 90 },
   { id: 'colheita', nome: 'Colheu o que plantou', d: 'Três contas a vencer chegaram com saldo positivo. Paciência é virtude.', t: g => (estOf(g).bonus || 0) >= 3 },
   { id: 'ministro_stf', nome: 'Fez ministro do STF', d: 'Uma toga a mais com a sua assinatura: o Senado aprovou o seu indicado.', t: g => (estOf(g).stfOk || 0) >= 1 },
   { id: 'barrado', nome: 'Barrado na sabatina', d: 'O Senado disse não ao seu indicado. A Constituição previa essa hipótese; a sua agenda, nem tanto.', t: g => (estOf(g).stfRej || 0) >= 1 }
@@ -2533,7 +2533,7 @@ const CONQ_NOVAS = [
   { id: 'popular_pessoal', nome: 'Simpatia de quermesse', d: 'Aprovação pessoal acima de 80: o povo gosta de você, mesmo quando discorda do governo.', cat: 'Vida pessoal', raro: 'rara', t: g => g.pes.aprovPes >= 80 },
   { id: 'familia_unida', nome: 'Mesa de domingo', d: 'Cônjuge com aprovação de 80 ou mais e filhos à mesa. Só vale em família fictícia.', cat: 'Vida pessoal', raro: 'rara', t: g => !!(g.eu && g.eu.familia && g.eu.familia.modo === 'ficticia' && g.eu.familia.conjuge && g.eu.familia.conjuge.aprov >= 80 && g.eu.familia.filhos >= 1) },
   { id: 'trocou_legenda', nome: 'Camisa nova', d: 'Mudou de partido durante o mandato. A sede antiga ainda recebe a correspondência.', cat: 'Vida pessoal', raro: 'comum', secreto: true, t: g => !!(g.eu && g.eu.filiacao && g.eu.filiacao.trocou) },
-  { id: 'maratona', nome: 'Corpo de estadista', d: 'Chegou ao segundo ano com saúde acima de 95 e estresse sob controle.', cat: 'Vida pessoal', raro: 'epica', t: g => g.mes >= 24 && g.pes.saude >= 95 && g.pes.estresse <= 30 },
+  { id: 'maratona', nome: 'Corpo de estadista', d: 'Chegou ao segundo ano com saúde acima de 95.', cat: 'Vida pessoal', raro: 'epica', t: g => g.mes >= 24 && g.pes.saude >= 95 },
   // Fora do roteiro
   { id: 'piada_oficial', nome: 'Isso saiu no Diário Oficial?', d: 'Assinou uma medida que o próprio motor considerou absurda.', cat: 'Fora do roteiro', raro: 'comum', secreto: true, t: g => (estOf(g).absurdos || 0) >= 1 },
   { id: 'recusou_tudo', nome: 'Ficha de santo', d: 'Recusou três propostas fora da lei. Ou fora do mapa: ninguém sabe ao certo.', cat: 'Fora do roteiro', raro: 'rara', secreto: true, t: g => (estOf(g).recusas || 0) >= 3 }
@@ -2614,7 +2614,7 @@ function novoJogo(cfg) {
     soc: { idh: .786, pob: 23.1, hom: 19.1, hom0: 19.1, desm: 5730 - ideo.env * 12 },
     parties: {}, stf: 22, escandalo: 0,
     dip: { al: Math.round(ideo.eco * 0.3), eua: 55 + ideo.eco * .1, china: 60 - ideo.eco * .05, ue: 52 + ideo.env * .1, merc: 60, brics: 58 - ideo.eco * .08, ocde: 45 + ideo.eco * .1 },
-    pes: { energia: 100, estresse: 18, saude: clamp(100 - Math.max(0, cfg.idade - 45) * 0.6, 55, 100), conta: 850000 },
+    pes: { energia: 100, estresse: 0, saude: clamp(100 - Math.max(0, cfg.idade - 45) * 0.6, 55, 100), conta: 850000 },
     flags: [], evento: null, eventoOk: false, usados: [],
     hist: { ap: [], pib: [], ipca: [], des: [], dol: [], selic: [], risco: [] },
     feed: [], log: [], negMes: {}, pesMes: {}, impStreak: 0, extras: [], num: { MP: 1301, PL: 2104, PEC: 31, DEC: 12401, ADM: 1, COM: 1 }, stfCadeiras: cadeirasSTF(1), stfNomMes: 0, stfRej: [], stfUltima: null, minGen: {},
@@ -10741,7 +10741,7 @@ function analisar(g, texto, ctx) {
   const tr = (k) => !!(cfg && cfg.tracos && cfg.tracos.indexOf(k) >= 0);
   const hasCom = A.items.some(i => i.o.cat === 'comunicacao' && i.o.id === 'fala');
   if (hasCom) {
-    const mult = (tr('carismatico') ? 1.7 : 1) * (g && g.pes && g.pes.estresse > 75 ? .5 : 1) * (cfg && cfg.idade > 72 ? .8 : 1);
+    const mult = (tr('carismatico') ? 1.7 : 1) * (g && g.pes && g.pes.saude < 35 ? .5 : 1) * (cfg && cfg.idade > 72 ? .8 : 1);
     fx.ap = r2(fx.ap * mult);
     if (/influenciador|live|tiktok/.test(s)) fx.g.gamers = r2((fx.g.gamers || 0) + 4 * mult);
   }
@@ -12321,7 +12321,7 @@ function analisaLegado(g, texto) {
   // traços
   const tr = (k) => g.cfg.tracos.includes(k);
   if (cats.includes('comunicacao')) {
-    const mult = (tr('carismatico') ? 1.7 : 1) * (g.pes.estresse > 75 ? .5 : 1) * (g.cfg.idade > 72 ? .8 : 1);
+    const mult = (tr('carismatico') ? 1.7 : 1) * (g.pes.saude < 35 ? .5 : 1) * (g.cfg.idade > 72 ? .8 : 1);
     fx.ap = (fx.ap || 0) * mult;
     if (/influenciador|live|tiktok/.test(s)) deepAdd(fx, { g: { gamers: 4 * mult } });
   }
@@ -14150,7 +14150,7 @@ function medPodeAcelerar(g, M) {
 }
 function medAcelera(g, id) {
   const M = medL(g).find(m => m.id === id); if (!M || !medPodeAcelerar(g, M).ok) return;
-  g.acoes--; g.pes.energia = clamp(g.pes.energia - 8, 0, 100); g.pes.estresse = clamp(g.pes.estresse + 2, 0, 100);
+  g.acoes--; g.pes.energia = clamp(g.pes.energia - 8, 0, 100); g.pes.saude = clamp(g.pes.saude - 0.2, 0, 100);
   const rest = M.mPleno - Math.max(g.mes, M.mReg), d = clamp(Math.round(rest * .3), 1, rest - 1);
   medDesloca(M, -d); M.mCusto *= 1.06; M.acel++;
   medNoticia(g, M, 'pos', `Governo acelera ${M.nm}: força-tarefa antecipa o efeito pleno para ${medMesTxt(M.mPleno)}, com custo um pouco maior`);
@@ -14166,7 +14166,7 @@ function medPodeAjustar(g, M) {
 }
 function medAjusta(g, id) {
   const M = medL(g).find(m => m.id === id); if (!M || !medPodeAjustar(g, M).ok) return;
-  g.acoes--; g.pes.energia = clamp(g.pes.energia - 6, 0, 100); g.pes.estresse = clamp(g.pes.estresse + 1, 0, 100);
+  g.acoes--; g.pes.energia = clamp(g.pes.energia - 6, 0, 100); g.pes.saude = clamp(g.pes.saude - 0.1, 0, 100);
   const p = medProbRemedio(M);
   if (!p) { const d = 2; M.mReg -= d; medDesloca(M, -d); medNoticia(g, M, 'pos', `Regulamento ${medDe(M.nm)} sai antes do previsto: a implantação começa em ${medMesTxt(M.mReg)}`); return; }
   const tira = () => { M.probs = M.probs.filter(x => x !== p); };
@@ -14207,7 +14207,7 @@ function medRevoga(g, id) {
     g.minProp.aj = { texto, n: Date.now() };
     return true;
   }
-  g.acoes--; g.pes.energia = clamp(g.pes.energia - 8, 0, 100); g.pes.estresse = clamp(g.pes.estresse + 4, 0, 100);
+  g.acoes--; g.pes.energia = clamp(g.pes.energia - 8, 0, 100); g.pes.saude = clamp(g.pes.saude - 0.5, 0, 100);
   medidaReverte(g, M, .85, 'revogada');
   for (const kk of GKEYS) g.groups[kk] = clamp(g.groups[kk] - .8, 1, 99);
   g.escandalo = clamp(g.escandalo + 1, 0, 100); estOf(g).revogacoes = (estOf(g).revogacoes || 0) + 1;
@@ -14480,7 +14480,7 @@ function executaProposta(g, prop, resultado) {
     const ganhadores = Object.entries((prop.fx && prop.fx.g) || {}).filter(([, v]) => v > 0);
     for (const [kk, v] of ganhadores) g.groups[kk] = clamp(g.groups[kk] - v * .25, 1, 99);
     for (const kk of GKEYS) g.groups[kk] = clamp(g.groups[kk] - EQ_DERROTA_AP, 1, 99); // LOTE C: derrota no plenário pesa −0,5 (era −0,8) em todos os grupos
-    g.pes.estresse = clamp(g.pes.estresse + 6, 0, 100);
+    g.pes.saude = clamp(g.pes.saude - 0.7, 0, 100);
   } else if (resultado === 'derrubada') {
     est.stf = (est.stf || 0) + 1;
     minEst(g, prop.pastaExec || 'casacivil').derr++; if (g.poderes) { g.poderes.cs = clamp(g.poderes.cs + (precisaCongresso(prop.inst) ? 10 : 3), 0, 100); g.poderes.vetos = (g.poderes.vetos || 0) + 1; }
@@ -14490,7 +14490,7 @@ function executaProposta(g, prop, resultado) {
       applyFx(g, { ap: -6, e: { risco: 60, conf: -15, dol: .4 }, esc: 25, d: { eua: -12, ue: -18 } });
       for (const P of PARTIDOS) if (P.id !== g.cfg.partido) { g.parties[P.id].rel = clamp(g.parties[P.id].rel - 12, 0, 99); g.parties[P.id].relS = clamp(g.parties[P.id].relS - 12, 0, 99); }
     }
-    g.pes.estresse = clamp(g.pes.estresse + 8, 0, 100);
+    g.pes.saude = clamp(g.pes.saude - 1, 0, 100);
   }
   if (prop.icHook) { try { icResolve(g, prop, resultado); } catch (e) { if (typeof console !== 'undefined') console.warn('icResolve', e); } }
   if (prop.trHook) { try { trResolve(g, prop.trHook, resultado); } catch (e) { if (typeof console !== 'undefined') console.warn('trResolve', e); } }
@@ -14533,7 +14533,7 @@ function executaProposta(g, prop, resultado) {
     gastaDe(g, prop);
     g.medMes = (g.medMes || 0) + 1; if (resultado === 'aprovada') g.aprMes = (g.aprMes || 0) + 1;
     g.pes.energia = clamp(g.pes.energia - 14, 0, 100);
-    g.pes.estresse = clamp(g.pes.estresse + 3, 0, 100);
+    g.pes.saude = clamp(g.pes.saude - 0.4, 0, 100);
   }
   const depois = { ap: aprovacao(g), conf: g.eco.conf, risco: g.eco.risco, stf: g.stf, prim: primario(g) };
   if (resultado === 'aprovada' && precisaCongresso(prop.inst)) embaloMove(g, 1); else if (resultado !== 'aprovada') embaloMove(g, -1);
@@ -14644,7 +14644,7 @@ function fimDoMes(g) {
     const igA = Math.max(0, apIgn0 - aprovacao(g)), igE = Math.max(0, g.escandalo - escIgn0);
     const IA = g.ignAcum = g.ignAcum || { n: 0, ap: 0, esc: 0 }; IA.n++; IA.ap += igA; IA.esc += igE; escReg(g, 'crise ignorada', igE);
     notas.push({ t: 'neg', x: `Crise ignorada: "${evA.titulo}" cobrou seu preço: ${igA >= .05 ? '−' + fmt(igA, 1) + ' ponto' + (igA >= 1.05 ? 's' : '') + ' de aprovação' : 'sem perda imediata de aprovação'}${igE >= .5 ? ' e +' + fmt(igE, 0) + ' de escândalo' : ''}. Acumulado em ${IA.n} ${IA.n === 1 ? 'crise ignorada' : 'crises ignoradas'}: −${fmt(IA.ap, 1)} pontos de aprovação, +${fmt(IA.esc, 0)} de escândalo.` });
-    g.pes.estresse += 6;
+    g.pes.saude = clamp(g.pes.saude - .7, 0, 100);
   }
   AP.mark('crises');
   escFase(g, 'medidas e consequências adiadas', () => liquidaPendentes(g, notas));
@@ -14768,9 +14768,18 @@ function fimDoMes(g) {
   // vida pessoal
   const P = g.pes;
   const crises = (g.evento && !g.eventoOk ? 1 : 0);
-  P.estresse = clamp(P.estresse + (1.5 + crises * 4 + (ap < 30 ? 4 : 0) + (riscoImpeachment(g) > 60 ? 5 : 0)) * M.estresse - (g.acoes >= 3 ? 2 : 0) - (crises ? 0 : EQ_ESTRESSE_REC / M.estresse), 0, 100); // EQUILÍBRIO v2: recuperação passiva de ~6/mês sem crise
+  P.estresse = 0; // o estresse saiu do jogo: o desgaste do cargo cai direto na saúde
   P.energia = clamp(P.energia + 32, 0, 100);
-  P.saude = clamp(P.saude - Math.max(0, P.estresse - 75) * .06 - (g.cfg.idade > 72 ? .7 : g.cfg.idade > 62 ? .25 : 0) + (P.estresse < 40 ? .8 : 0), 0, 100);
+  { const desg = (.5 + crises * 1.6 + (ap < 30 ? 1.2 : 0) + (riscoImpeachment(g) > 60 ? 1.4 : 0)) * M.estresse + (g.cfg.idade > 72 ? .7 : g.cfg.idade > 62 ? .25 : 0);
+    const rec = (crises ? 0 : 1.2 / M.estresse) + (g.acoes >= 3 ? .5 : 0);
+    P.saude = clamp(P.saude - desg + rec, 0, 100); }
+  // doença: com saúde baixa, internação (perde ações no mês seguinte); com saúde crítica e idade alta, risco raro de morte no cargo
+  if (P.saude > 0 && P.saude < 25 && hashStr(String(g.seed) + 'intern' + g.mes) < .22 && g.internMes !== g.mes - 1) {
+    g.internMes = g.mes; g.acoes = Math.max(0, (g.acoes || 0) - 2); P.humor = clamp(P.humor - 5, 0, 100);
+    notas.push({ t: 'neg', x: 'Internação: com a saúde abaixo de 25, você passou dias no hospital e perde 2 ações. A equipe médica pede menos agenda.' });
+    g.feed.unshift({ mes: g.mes, src: 'globo', txt: 'PRESIDENTE É INTERNADO PARA EXAMES E CANCELA AGENDA DA SEMANA' }); linhaAdd(g, 'SAÚDE', 'Internação: −2 ações');
+  }
+  if (P.saude > 0 && P.saude < 10 && g.cfg.idade >= 70 && hashStr(String(g.seed) + 'morte' + g.mes) < .03) { P.saude = 0; g.afastUsado = g.afastUsado == null ? -1 : g.afastUsado; g.morte = true; }
   P.conta += 31500;
   euMensal(g, notas);
   if (P.saude < 25) notas.push({ t: 'neg', x: 'Equipe médica do Planalto recomenda repouso imediato. Sua saúde está em risco.' + (g.afastUsado == null ? ' Se a saúde chegar a zero, você será afastado por um mês (sem ações); na segunda vez, o afastamento é definitivo.' : ' Você já foi afastado uma vez: se a saúde zerar de novo, o afastamento será definitivo.') });
@@ -14836,12 +14845,12 @@ function fimDoMes(g) {
   // fim de jogo
   if (impeachment && impeachment.cassado) g.over = { tipo: 'impeachment', imp: { votosC: impeachment.votosC, votosS: impeachment.votosS, aberto: impeachment.aberto, cassado: impeachment.cassado } };
   else if (P.saude <= 0 && g.afastUsado == null) { // EQUILÍBRIO v2: afastamento temporário antes do fim definitivo (1 mês sem ações)
-    g.afastUsado = g.mes; P.saude = 30; P.estresse = Math.min(P.estresse, 45); P.humor = clamp(P.humor - 6, 0, 100); g.acoes = 0; g.props = 0;
+    g.afastUsado = g.mes; P.saude = 30; P.humor = clamp(P.humor - 6, 0, 100); g.acoes = 0; g.props = 0;
     notas.push({ t: 'neg', x: 'Afastamento temporário: internado por exaustão, você perde as ações deste mês. A saúde volta a 30, mas se zerar de novo o afastamento será definitivo.' });
     g.feed.unshift({ mes: g.mes - 1, src: 'globo', txt: `PRESIDENTE ${g.cfg.nome.split(' ').slice(-1)[0].toUpperCase()} É INTERNADO E FICA AFASTADO POR UM MÊS` });
     linhaAdd(g, 'SAÚDE', 'Afastamento temporário por internação: sem ações neste mês');
   }
-  else if (P.saude <= 0) g.over = { tipo: 'saude' };
+  else if (P.saude <= 0) g.over = { tipo: 'saude', morte: !!g.morte };
   try { elPosChecks(g, notas, impeachment); } catch (e) { if (typeof console !== 'undefined') console.warn('elPosChecks', e); }
   linhaDeNotas(g, notas, g.mes - 1);
   const depois = { ap: apN, pib: E.pib, ipca: E.ipca, des: E.des, dol: E.dol, selic: E.selic, risco: E.risco, prim: primario(g), pob: S.pob, hom: S.hom, imp: riscoImpeachment(g), desm: S.desm };
@@ -14993,7 +15002,7 @@ function descreveIgnorar(ev, g) {
 }
 function ignoraCrise(n) {
   const ev = EV(n); if (!ev || n.eventoOk || n.eventoIgn) return false;
-  n.eventoIgn = true; n.pes.estresse = clamp(n.pes.estresse - 3, 0, 100);
+  n.eventoIgn = true; n.pes.saude = clamp(n.pes.saude + 0.4, 0, 100);
   linhaAdd(n, 'CRISE', `Você decidiu não enfrentar agora: ${ev.titulo}`);
   return true;
 }
@@ -15151,7 +15160,7 @@ function viceAcao(n, tipo) {
   else if (tipo === 'enfrentar') {
     V.leal = clamp(V.leal - 20, 0, 100); for (const k of GKEYS) n.groups[k] = clamp(n.groups[k] + .4, 1, 99);
     for (const P of PARTIDOS) if (P.id !== n.cfg.partido) { n.parties[P.id].rel = clamp(n.parties[P.id].rel - 3, 0, 99); n.parties[P.id].relS = clamp(n.parties[P.id].relS - 3, 0, 99); }
-    n.pes.estresse = clamp(n.pes.estresse + 3, 0, 100); n.feed.unshift({ mes: n.mes, src: 'antag', txt: `PRESIDENTE ENQUADRA ${viceNomeDe(n).toUpperCase()} EM PÚBLICO E O CONGRESSO REAGE` });
+    n.pes.saude = clamp(n.pes.saude - 0.4, 0, 100); n.feed.unshift({ mes: n.mes, src: 'antag', txt: `PRESIDENTE ENQUADRA ${viceNomeDe(n).toUpperCase()} EM PÚBLICO E O CONGRESSO REAGE` });
   } else return false;
   V.acao = n.mes; n.acoes--; linhaAdd(n, 'AÇÃO', `Vice-presidência: ${tipo === 'protagonismo' ? 'protagonismo' : tipo === 'escantear' ? 'escanteado' : 'enfrentado em público'}`);
   return true;
@@ -15296,7 +15305,7 @@ function enviaParaPauta(g, prop) {
     ex = executaProposta(g, p, 'aprovada'); p.jaPaga = true; it.mpAplicada = true;
     linhaAdd(g, 'CONGRESSO', `MP em vigor: ${p.topic}. O Congresso tem 4 meses para votar.`);
   } else {
-    gastaDe(g, p); g.medMes = (g.medMes || 0) + 1; g.pes.energia = clamp(g.pes.energia - 14, 0, 100); g.pes.estresse = clamp(g.pes.estresse + 3, 0, 100);
+    gastaDe(g, p); g.medMes = (g.medMes || 0) + 1; g.pes.energia = clamp(g.pes.energia - 14, 0, 100); g.pes.saude = clamp(g.pes.saude - 0.4, 0, 100);
     p.jaPaga = true;
     const num = cfNum(g, p);
     g.log.unshift({ mes: g.mes, ato: `${p.inst === 'PEC' ? 'PEC' : p.instDetalhe === 'LC' ? 'PLP' : p.instDetalhe === 'AUT' ? 'Pedido de autorização (PDL)' : 'PL'} nº ${fmt(num, 0)} enviada ao Congresso`, texto: p.texto, res: 'tramitando', topic: p.topic });
@@ -15399,7 +15408,7 @@ function fechaMP(n, prop, res, plano) {
     reverteProposta(n, prop, .7, res); estOf(n).derrotas = (estOf(n).derrotas || 0) + 1; n.poderes.derr = (n.poderes.derr || 0) + 1;
     if (res === 'derrubada') n.poderes.cs = clamp(n.poderes.cs + 10, 0, 100);
     for (const kk of GKEYS) n.groups[kk] = clamp(n.groups[kk] - .8, 1, 99);
-    n.pes.estresse = clamp(n.pes.estresse + 6, 0, 100);
+    n.pes.saude = clamp(n.pes.saude - 0.7, 0, 100);
     n.log.unshift({ mes: n.mes, ato: res === 'derrubada' ? 'MP suspensa pelo STF' : 'MP rejeitada pelo Congresso', texto: prop.texto, res: res === 'derrubada' ? 'derrubada' : 'rejeitada', topic: prop.topic });
     linhaAdd(n, res === 'derrubada' ? 'STF' : 'CONGRESSO', `${res === 'derrubada' ? 'STF suspende' : 'Congresso rejeita'} a MP: ${prop.topic}`);
   }
@@ -18256,7 +18265,7 @@ function CartaoCrise({ g, upd, decidir }) {
           <${PreviaOpcao} key="ign" P=${pv.ign} g=${g} ev=${ev} ign=${true} />
         </div>`}
         ${!g.eventoOk && html`<div className="flex flex-wrap gap-2 mt-4">
-          <button className="btn btn-ghost text-sm" disabled=${g.eventoIgn} onClick=${() => upd(n => { ignoraCrise(n); })} title="Marca a crise como ignorada agora. A cobrança continua valendo no fim do mês; você ganha −3 de estresse."><${Icon} n="EyeOff" s=${14} /> Ignorar esta crise</button>
+          <button className="btn btn-ghost text-sm" disabled=${g.eventoIgn} onClick=${() => upd(n => { ignoraCrise(n); })} title="Marca a crise como ignorada agora. A cobrança continua valendo no fim do mês; você recupera um pouco de saúde."><${Icon} n="EyeOff" s=${14} /> Ignorar esta crise</button>
         </div>`}
         ${!g.eventoOk && temIgn && html`<div className="text-xs text-muted mt-3" data-se-ignorar="1">Se ignorar: ${descreveIgnorar(ev, g)}.${g.eventoIgn ? ' (será cobrado ao encerrar o mês)' : ''}</div>`}
       </div>
@@ -18356,7 +18365,7 @@ const GAVETA_TIT = { crise: 'Gabinete de crise', protesto: 'Termômetro das ruas
 
 // EQUILÍBRIO v2: gaveta do aviso de impeachment e do afastamento por saúde
 function CartaoAdmissibilidade({ g, kind }) {
-  if (kind === 'afastamento') return html`<div className="flex flex-col gap-3" data-cartao="afastamento"><p>Depois de meses de estresse, você foi internado. Neste mês não há ações políticas. A saúde volta a 30 e o estresse cai; se a saúde zerar outra vez, o afastamento será definitivo.</p><p className="text-sm text-muted">Saúde ${fmt(g.pes.saude, 0)} · estresse ${fmt(g.pes.estresse, 0)}. Em Eu há ações de bem-estar para recuperar.</p></div>`;
+  if (kind === 'afastamento') return html`<div className="flex flex-col gap-3" data-cartao="afastamento"><p>Depois de meses de desgaste, você foi internado. Neste mês não há ações políticas. A saúde volta a 30 e o estresse cai; se a saúde zerar outra vez, o afastamento será definitivo.</p><p className="text-sm text-muted">Saúde ${fmt(g.pes.saude, 0)} · estresse ${fmt(g.pes.estresse, 0)}. Em Eu há ações de bem-estar para recuperar.</p></div>`;
   const ad = impAdmissibilidade(g); const cam = bancadas(g, 'cam');
   return html`<div className="flex flex-col gap-3" data-cartao="admissibilidade">
     <p>O presidente da Câmara despachou o pedido de impeachment para a análise de admissibilidade. É o último aviso: se o risco de impeachment continuar em <b>80% ou mais</b> até o fim deste mês, a votação acontece (abertura exige 342 votos na Câmara; condenação, 54 no Senado).</p>
@@ -18407,7 +18416,7 @@ function alertasMesa(g) {
   if (prim < -60) L.push({ k: 'prim', cor: 'var(--ambar)', ic: 'TriangleAlert', x: `Déficit primário projetado de R$ ${fmt(-prim, 0)} bi no ano.` });
   if (g.stf > 60) L.push({ k: 'stf', cor: 'var(--ambar)', ic: 'Scale', x: `Tensão com o STF em ${fmt(g.stf, 0)}: medidas no limite serão derrubadas.` });
   if (g.pes.saude < 45) L.push({ k: 'saude', cor: 'var(--rubro)', ic: 'HeartPulse', x: `Saúde em ${fmt(g.pes.saude, 0)}: a equipe médica pede descanso.`, eu: true });
-  else if (g.pes.estresse > 80) L.push({ k: 'estresse', cor: 'var(--rubro)', ic: 'HeartPulse', x: `Estresse em ${fmt(g.pes.estresse, 0)}: seus discursos perdem força.`, eu: true });
+
   if (bcDisponivel(g)) L.push({ k: 'bc', cor: 'var(--ambar)', ic: 'Landmark', x: `Fim do mandato no Banco Central: indique o novo presidente em País › Economia até o mês ${BC_MES_LIMITE}.` });
   if (g.eco.cred < 40) L.push({ k: 'cred', cor: 'var(--rubro)', ic: 'TriangleAlert', x: `Credibilidade fiscal em ${fmt(g.eco.cred, 0)}: o risco e o dólar devem piorar nos próximos meses.` });
   if (g.eu && g.eu.embalo >= 2) L.push({ k: 'embalo', cor: 'var(--verde)', ic: 'TrendingUp', x: `Embalo do governo em +${fmt(g.eu.embalo, 1)}: votações mais fáceis e aprovação em leve alta.` });
@@ -18443,7 +18452,7 @@ function ApResumo({ g }) {
 /* aprovação em destaque (número grande, variação no mês e barra vermelho-amarelo-verde); impeachment fica no topo, ações do mês na caixa de decisão */
 function PulsoIndicadores({ g, irEu }) {
   const ap = aprovacao(g), K = KPIMAP.ap, I = kpiInfo(g, K);
-  const risco = g.pes.saude < 45 || g.pes.estresse > 80;
+  const risco = g.pes.saude < 45;
   const tit = 'Aprovação' + `: ${sgn(I.mesPass, K.d)} em relação ao mês anterior`;
   return html`<div className="aprov" role="group" aria-label="Indicadores do governo" data-indicadores="1">
     <div className="eyebrow">Aprovação</div>
@@ -18456,7 +18465,7 @@ function PulsoIndicadores({ g, irEu }) {
       ${g.eu && html`<div className="vit" data-vital="embalo" title="Embalo do governo: vitórias seguidas no Congresso facilitam as votações; derrotas pioram">
         <span className="eyebrow">Embalo</span> <span className="num flex items-center gap-1" data-embalo-chip=${g.eu.embalo} style=${{ color: g.eu.embalo > 0 ? 'var(--verde)' : g.eu.embalo < 0 ? 'var(--rubro)' : 'var(--muted)' }}><${Icon} n="Flame" s=${14} /> <span data-vital-v="embalo">${g.eu.embalo > 0 ? '+' : ''}${fmt(g.eu.embalo, 1)}</span></span>
       </div>`}
-      ${risco && html`<button type="button" className="chip !text-rubro !border-rubro justify-center" onClick=${irEu}><${Icon} n="HeartPulse" s=${12} /> ${g.pes.saude < 45 ? 'saúde em risco' : 'estresse alto'}</button>`}
+      ${risco && html`<button type="button" className="chip !text-rubro !border-rubro justify-center" onClick=${irEu}><${Icon} n="HeartPulse" s=${12} /> saúde em risco</button>`}
     </div>`}
   </div>`;
 }
@@ -22393,7 +22402,7 @@ function gvNegocia(g, u, t) {
   const erro = gvValidaTermos(t); if (erro) return { res: 'erro', msg: erro };
   if (g.acoes <= 0) return { res: 'semacao', msg: 'Sem ações políticas neste mês.' };
   if (gvIntervUF(g) === u) return { res: 'erro', msg: 'O estado está sob intervenção federal: o governador não negocia.' };
-  g.acoes = Math.max(0, g.acoes - 1); g.pes.energia = clamp(g.pes.energia - 8, 0, 100); g.pes.estresse = clamp(g.pes.estresse + 2, 0, 100);
+  g.acoes = Math.max(0, g.acoes - 1); g.pes.energia = clamp(g.pes.energia - 8, 0, 100); g.pes.saude = clamp(g.pes.saude - 0.2, 0, 100);
   const av = gvPrevia(g, u, t);
   const neg = { uf: u, mes: g.mes, termos: JSON.parse(JSON.stringify(t)), res: av.resp, U: Math.round(av.U), T: Math.round(av.T), p: av.p };
   S.nNeg++; S.ultNeg = g.mes;
@@ -22434,7 +22443,7 @@ function gvReuniao(g, regK, t) {
   const G = ensureGv(g); const R = GV_REG.find(x => x.k === regK); if (!R) return { res: 'erro', msg: 'Região desconhecida.' };
   const erro = gvValidaTermos(t); if (erro) return { res: 'erro', msg: erro };
   if (g.acoes <= 0) return { res: 'semacao', msg: 'Sem ações políticas neste mês.' };
-  g.acoes = Math.max(0, g.acoes - 1); g.pes.energia = clamp(g.pes.energia - 10, 0, 100); g.pes.estresse = clamp(g.pes.estresse + 3, 0, 100);
+  g.acoes = Math.max(0, g.acoes - 1); g.pes.energia = clamp(g.pes.energia - 10, 0, 100); g.pes.saude = clamp(g.pes.saude - 0.4, 0, 100);
   const ap = aprovEstados(g); const itv = gvIntervUF(g);
   const ufs = R.ufs.filter(u => u !== itv);
   const p1 = {}; for (const u of ufs) { G.uf[u].nNeg++; p1[u] = gvPrevia(g, u, t, ap, 0); }
@@ -23272,26 +23281,26 @@ const SEM_ACORDO = [
 /* ---- Eu: bem-estar (pago da conta pessoal, sem gastar ação política) ---- */
 // f(g, P): aplica. risco(g): texto da manchete se o risco de percepção pública se concretizar.
 const BEMESTAR = [
-  { k: 'terapia', l: 'Sessão de terapia', ic: 'Brain', custo: 1800, d: 'Estresse −16 · humor +6 · energia +4 · saúde +1', f: (g, P) => { P.estresse -= 16; P.humor += 6; P.energia += 4; P.saude += 1; estOf(g).terapia = (estOf(g).terapia || 0) + 1; } },
-  { k: 'fimsemana', l: 'Fim de semana fora de Brasília', ic: 'Palmtree', custo: 28000, d: 'Estresse −24 · humor +16 · energia +12 · risco de ser visto como descaso se houver crise ou aprovação baixa',
-    f: (g, P) => { P.estresse -= 24; P.humor += 16; P.energia += 12; if (g.evento && !g.eventoOk && EV(g) && EV(g).grav !== 'baixa' || aprovacao(g) < 40) { P.aprovPes -= 3; g.groups.classemedia = clamp(g.groups.classemedia - 1.5, 1, 99); g.feed.unshift({ mes: g.mes, src: 'antag', txt: 'PRESIDENTE DESCANSA FORA DE BRASÍLIA ENQUANTO O PAÍS ENFRENTA CRISE' }); } } },
-  { k: 'checkup', l: 'Check-up completo', ic: 'Stethoscope', custo: 9500, d: 'Saúde +10 (+15 se estiver abaixo de 50) · estresse −3', f: (g, P) => { P.saude += P.saude < 50 ? 15 : 10; P.estresse -= 3; } },
-  { k: 'jogo', l: 'Assistir ao jogo do seu time', ic: 'Trophy', custo: 9000, custoT: 4000, d: 'Estresse −8 · humor +6 (com o traço Torcedor: custa menos, estresse −18, humor +14). Pode ser vaiado se a aprovação estiver baixa.',
-    f: (g, P) => { const t = g.cfg.tracos.includes('torcedor'); P.estresse -= t ? 18 : 8; P.humor += t ? 14 : 6; estOf(g).estadio = (estOf(g).estadio || 0) + 1; if (aprovacao(g) < 38) { P.estresse += 10; P.humor -= 8; P.aprovPes -= 2; g.groups.periferia = clamp(g.groups.periferia - 2, 1, 99); g.feed.unshift({ mes: g.mes, src: 'antag', txt: 'ESTÁDIO INTEIRO VAIA O PRESIDENTE' }); } else { g.groups.periferia = clamp(g.groups.periferia + (t ? 2 : .8), 1, 99); g.groups.gamers = clamp(g.groups.gamers + (t ? 1 : .3), 1, 99); P.aprovPes += t ? 1.5 : .5; } } },
-  { k: 'atividade', l: 'Atividade física', ic: 'Dumbbell', custo: 600, d: 'Saúde +4 · energia +6 · humor +5 · estresse −8 · a foto do treino pode virar meme (aprovação pessoal +1)',
-    f: (g, P) => { P.saude += 4; P.energia += 6; P.humor += 5; P.estresse -= 8; P.aprovPes += 1; } },
-  { k: 'familia', l: 'Tempo em família', ic: 'Home', custo: 5000, fam: true, d: 'Estresse −14 · humor +12 · aprovação do cônjuge +6 (se houver) · aprovação pessoal +1,5',
-    f: (g, P) => { P.estresse -= 14; P.humor += 12; P.aprovPes += 1.5; const c = g.eu && g.eu.familia && g.eu.familia.conjuge; if (c) c.aprov = clamp(c.aprov + 6, 0, 100); } }
+  { k: 'terapia', l: 'Sessão de terapia', ic: 'Brain', custo: 1800, d: 'Saúde +1,9 · humor +6 · energia +4 · saúde +1', f: (g, P) => { P.saude += 1.9; P.humor += 6; P.energia += 4; P.saude += 1; estOf(g).terapia = (estOf(g).terapia || 0) + 1; } },
+  { k: 'fimsemana', l: 'Fim de semana fora de Brasília', ic: 'Palmtree', custo: 28000, d: 'Saúde +2,9 · humor +16 · energia +12 · risco de ser visto como descaso se houver crise ou aprovação baixa',
+    f: (g, P) => { P.saude += 2.9; P.humor += 16; P.energia += 12; if (g.evento && !g.eventoOk && EV(g) && EV(g).grav !== 'baixa' || aprovacao(g) < 40) { P.aprovPes -= 3; g.groups.classemedia = clamp(g.groups.classemedia - 1.5, 1, 99); g.feed.unshift({ mes: g.mes, src: 'antag', txt: 'PRESIDENTE DESCANSA FORA DE BRASÍLIA ENQUANTO O PAÍS ENFRENTA CRISE' }); } } },
+  { k: 'checkup', l: 'Check-up completo', ic: 'Stethoscope', custo: 9500, d: 'Saúde +10 (+15 se estiver abaixo de 50) · saúde +0,4', f: (g, P) => { P.saude += P.saude < 50 ? 15 : 10; P.saude += 0.4; } },
+  { k: 'jogo', l: 'Assistir ao jogo do seu time', ic: 'Trophy', custo: 9000, custoT: 4000, d: 'Saúde +1 · humor +6 (com o traço Torcedor: custa menos, saúde +2,2, humor +14). Pode ser vaiado se a aprovação estiver baixa.',
+    f: (g, P) => { const t = g.cfg.tracos.includes('torcedor'); P.saude += t ? 2.2 : 1; P.humor += t ? 14 : 6; estOf(g).estadio = (estOf(g).estadio || 0) + 1; if (aprovacao(g) < 38) { P.saude -= 1.2; P.humor -= 8; P.aprovPes -= 2; g.groups.periferia = clamp(g.groups.periferia - 2, 1, 99); g.feed.unshift({ mes: g.mes, src: 'antag', txt: 'ESTÁDIO INTEIRO VAIA O PRESIDENTE' }); } else { g.groups.periferia = clamp(g.groups.periferia + (t ? 2 : .8), 1, 99); g.groups.gamers = clamp(g.groups.gamers + (t ? 1 : .3), 1, 99); P.aprovPes += t ? 1.5 : .5; } } },
+  { k: 'atividade', l: 'Atividade física', ic: 'Dumbbell', custo: 600, d: 'Saúde +4 · energia +6 · humor +5 · saúde +1 · a foto do treino pode virar meme (aprovação pessoal +1)',
+    f: (g, P) => { P.saude += 4; P.energia += 6; P.humor += 5; P.saude += 1; P.aprovPes += 1; } },
+  { k: 'familia', l: 'Tempo em família', ic: 'Home', custo: 5000, fam: true, d: 'Saúde +1,7 · humor +12 · aprovação do cônjuge +6 (se houver) · aprovação pessoal +1,5',
+    f: (g, P) => { P.saude += 1.7; P.humor += 12; P.aprovPes += 1.5; const c = g.eu && g.eu.familia && g.eu.familia.conjuge; if (c) c.aprov = clamp(c.aprov + 6, 0, 100); } }
 ];
 
 /* ---- Eu: agenda pessoal de articulação (pago da conta pessoal, sem gastar ação política) ---- */
 const ARTICULACAO = [
-  { k: 'agro', l: 'Jantar com lideranças do agronegócio', ic: 'Wheat', custo: 22000, d: 'Agronegócio +4 · empresariado +1 · estresse +3 · universitários −1 se o desmatamento estiver alto',
-    f: (g, P) => { dgrp(g, 'agro', 4); dgrp(g, 'empresariado', 1); P.estresse += 3; if (g.soc.desm > 6500) dgrp(g, 'universitarios', -1); } },
-  { k: 'bancos', l: 'Almoço com banqueiros', ic: 'Banknote', custo: 15000, d: 'Mercado +4 · confiança do mercado +1 · periferia −1,5 · estresse +2',
-    f: (g, P) => { dgrp(g, 'mercado', 4); g.eco.conf = clamp(g.eco.conf + 1, 0, 100); dgrp(g, 'periferia', -1.5); P.estresse += 2; } },
-  { k: 'caravana', l: 'Caravana pelo interior', ic: 'Bus', custo: 60000, d: 'Grande ganho de aprovação (periferia +3, classe média +1,5, agricultura familiar +2, todos +0,8) · aprovação pessoal +4 · estresse +10 · energia −20 · saúde −1',
-    f: (g, P) => { for (const k of GKEYS) dgrp(g, k, .8); dgrp(g, 'periferia', 3); dgrp(g, 'classemedia', 1.5); dgrp(g, 'agfam', 2); P.aprovPes += 4; P.estresse += 10; P.energia -= 20; P.saude -= 1; estOf(g).caravana = (estOf(g).caravana || 0) + 1; } }
+  { k: 'agro', l: 'Jantar com lideranças do agronegócio', ic: 'Wheat', custo: 22000, d: 'Agronegócio +4 · empresariado +1 · saúde −0,4 · universitários −1 se o desmatamento estiver alto',
+    f: (g, P) => { dgrp(g, 'agro', 4); dgrp(g, 'empresariado', 1); P.saude -= 0.4; if (g.soc.desm > 6500) dgrp(g, 'universitarios', -1); } },
+  { k: 'bancos', l: 'Almoço com banqueiros', ic: 'Banknote', custo: 15000, d: 'Mercado +4 · confiança do mercado +1 · periferia −1,5 · saúde −0,2',
+    f: (g, P) => { dgrp(g, 'mercado', 4); g.eco.conf = clamp(g.eco.conf + 1, 0, 100); dgrp(g, 'periferia', -1.5); P.saude -= 0.2; } },
+  { k: 'caravana', l: 'Caravana pelo interior', ic: 'Bus', custo: 60000, d: 'Grande ganho de aprovação (periferia +3, classe média +1,5, agricultura familiar +2, todos +0,8) · aprovação pessoal +4 · saúde −1,2 · energia −20 · saúde −1',
+    f: (g, P) => { for (const k of GKEYS) dgrp(g, k, .8); dgrp(g, 'periferia', 3); dgrp(g, 'classemedia', 1.5); dgrp(g, 'agfam', 2); P.aprovPes += 4; P.saude -= 1.2; P.energia -= 20; P.saude -= 1; estOf(g).caravana = (estOf(g).caravana || 0) + 1; } }
 ];
 // visita a líder religioso: só mexe no grupo religioso correspondente; o efeito é maior quando bate com a religião do presidente
 const LIDERES = [
@@ -23581,7 +23590,7 @@ function decideDip(g, idx) {
   M.mesa.resolvida = true; M.mesa.esc = idx;
   M.hist.push({ id: a.d.id, mes: g.mes, op: idx, p: M.mesa.p });
   const est = estOf(g); est.decDip = (est.decDip || 0) + 1;
-  g.pes.estresse = clamp(g.pes.estresse + 1, 0, 100);
+  g.pes.saude = clamp(g.pes.saude - 0.1, 0, 100);
   linhaAdd(g, 'MUNDO', `${a.titulo}: ${o.l}`);
   g.feed.unshift({ mes: g.mes, src: 'globo', txt: `Itamaraty: ${a.titulo.charAt(0).toLowerCase() + a.titulo.slice(1)}; governo opta por "${o.l.toLowerCase()}"` });
   g.feed = g.feed.slice(0, 40);
@@ -23710,7 +23719,7 @@ function fazAcaoOrg(g, org, k) {
   const r = a.req(g); if (!r.ok) return { ok: false, msg: r.motivo || 'Requisitos não atendidos.' };
   const msg = a.run(g);
   M.msg = { x: msg, mes: g.mes };
-  M.blocoMes[org + ':' + k] = true; g.acoes = Math.max(0, g.acoes - 1); g.pes.energia = clamp(g.pes.energia - 8, 0, 100); g.pes.estresse = clamp(g.pes.estresse + 1, 0, 100);
+  M.blocoMes[org + ':' + k] = true; g.acoes = Math.max(0, g.acoes - 1); g.pes.energia = clamp(g.pes.energia - 8, 0, 100); g.pes.saude = clamp(g.pes.saude - 0.1, 0, 100);
   linhaAdd(g, 'MUNDO', `${ORG_MAP[org].nome}: ${a.l}`);
   checaMarcos(g);
   return { ok: true, msg };
@@ -23763,7 +23772,7 @@ function mundoAbreMes(g, notas) {
   // início da viagem: consome a agenda do mês
   if (M.visita && M.visita.mes === g.mes) {
     g.acoes = Math.min(g.acoes, 1); g.props = Math.min(g.props, 1);
-    g.pes.energia = clamp(g.pes.energia - 30, 0, 100); g.pes.estresse = clamp(g.pes.estresse + 8, 0, 100);
+    g.pes.energia = clamp(g.pes.energia - 30, 0, 100); g.pes.saude = clamp(g.pes.saude - 1, 0, 100);
     linhaAdd(g, 'MUNDO', `Presidente em viagem de Estado: ${PAIS_MAP[M.visita.pais].nome}`);
     if (notas) notas.push({ t: 'neu', x: `Começa a visita de Estado a ${PAIS_MAP[M.visita.pais].nome}: o mês tem só 2 ações e a crise do mês fica sem presença do presidente.` });
   }
@@ -23989,7 +23998,7 @@ function trProp(g, par, t) {
   if (g.acoes <= 0) { T.neg = { par, res: 'semacao', mes: g.mes }; return T.neg; }
   const livre = 100 - trComprometido(g); t = JSON.parse(JSON.stringify(t)); t.off = Math.min(t.off, Math.max(10, livre));
   if (T.acordos.some(a => a.par === par && ['negociado', 'congresso', 'vigente'].includes(a.estado))) { T.neg = { par, res: 'duplicado', mes: g.mes }; return T.neg; }
-  g.acoes = Math.max(0, g.acoes - 1); g.pes.energia = clamp(g.pes.energia - 8, 0, 100); g.pes.estresse = clamp(g.pes.estresse + 2, 0, 100);
+  g.acoes = Math.max(0, g.acoes - 1); g.pes.energia = clamp(g.pes.energia - 8, 0, 100); g.pes.saude = clamp(g.pes.saude - 0.2, 0, 100);
   T.nRodadas = (T.nRodadas || 0) + 1;
   const av = trAvalia(g, par, t); const neg = { par, termos: t, u: av.u, res: av.res, mes: g.mes };
   if (av.res === 'aceita') { neg.ac = trAssina(g, par, t, av.u); }
@@ -24189,7 +24198,7 @@ function trInveste(g, etapa, uf, porte, fonte) {
   const dfc = T.fin.dfc ? .15 * T.fin.dfc : 0, cn = T.fin.cn ? .15 * T.fin.cn : 0, vd = T.fin.verde ? .1 * T.fin.verde : 0;
   fin = { parc: Math.min(.85, fin.parc + dfc + cn + vd), fundo: fin.fundo };
   const pl = trNovaPlanta(g, { etapa, uf, porte, fin, parc: fonte === 'pub' ? null : 'misto' });
-  g.acoes--; g.pes.energia = clamp(g.pes.energia - 10, 0, 100); g.pes.estresse = clamp(g.pes.estresse + 2, 0, 100);
+  g.acoes--; g.pes.energia = clamp(g.pes.energia - 10, 0, 100); g.pes.saude = clamp(g.pes.saude - 0.2, 0, 100);
   g.ufBonus[uf] = (g.ufBonus[uf] || 0) + 1;
   if (fin.parc >= .5) trMudaRel(g, 'ueja', 1);
   trNoticia(g, { globo: `Governo lança ${pl.nome.toLowerCase()}: R$ ${fmt(pl.custo, 1)} bi e operação em ${pl.fim - g.mes} meses`, x: `Anunciada ${pl.nome.toLowerCase()}: R$ ${fmt(pl.custo, 1)} bi, ${pl.fim - g.mes} meses de obra, empregos em ${UF_INFO[uf].nome}.`, tom: 'pos', opo: 'Prazo e orçamento da obra serão fiscalizados.', linha: `Obra: ${pl.nome} (R$ ${fmt(pl.custo, 1)} bi)`, cat: 'pos' });
@@ -24343,10 +24352,10 @@ function famTem(g) { const f = g.eu && g.eu.familia; return !!(f && f.modo === '
 function bemEstarLista(g) {
   const rel = g.cfg.religiao;
   const L = BEMESTAR.filter(a => !a.fam || famTem(g)).map(a => Object.assign({}, a, { custoReal: a.k === 'jogo' && g.cfg.tracos.includes('torcedor') ? a.custoT : a.custo }));
-  L.splice(3, 0, { k: 'culto', l: rel === 'Evangélica' ? 'Ir ao culto' : rel === 'Católica' ? 'Ir à missa' : rel === 'Sem religião / Ateu' ? 'Retiro silencioso' : 'Cerimônia religiosa', ic: 'Church', custoReal: 0, d: 'Estresse −10 · humor +4 · o grupo religioso correspondente nota (+1,5)',
-    f: (gg, P) => { P.estresse -= 10; P.humor += 4; if (rel === 'Evangélica') dgrp(gg, 'evangelicos', 1.5); else if (rel === 'Católica') dgrp(gg, 'catolicos', 1.5); else if (rel === 'Matriz africana') dgrp(gg, 'negro', 1.5); } });
-  if (g.cfg.tracos.includes('motociclista')) L.push({ k: 'motociata', l: 'Motociata no fim de semana', ic: 'Bike', custoReal: 2000, d: 'Estresse −10 · humor +8 · caminhoneiros +3, policiais +2, universitários −3',
-    f: (gg, P) => { P.estresse -= 10; P.humor += 8; dgrp(gg, 'caminhoneiros', 3); dgrp(gg, 'policiais', 2); dgrp(gg, 'universitarios', -3); } });
+  L.splice(3, 0, { k: 'culto', l: rel === 'Evangélica' ? 'Ir ao culto' : rel === 'Católica' ? 'Ir à missa' : rel === 'Sem religião / Ateu' ? 'Retiro silencioso' : 'Cerimônia religiosa', ic: 'Church', custoReal: 0, d: 'Saúde +1,2 · humor +4 · o grupo religioso correspondente nota (+1,5)',
+    f: (gg, P) => { P.saude += 1.2; P.humor += 4; if (rel === 'Evangélica') dgrp(gg, 'evangelicos', 1.5); else if (rel === 'Católica') dgrp(gg, 'catolicos', 1.5); else if (rel === 'Matriz africana') dgrp(gg, 'negro', 1.5); } });
+  if (g.cfg.tracos.includes('motociclista')) L.push({ k: 'motociata', l: 'Motociata no fim de semana', ic: 'Bike', custoReal: 2000, d: 'Saúde +1,2 · humor +8 · caminhoneiros +3, policiais +2, universitários −3',
+    f: (gg, P) => { P.saude += 1.2; P.humor += 8; dgrp(gg, 'caminhoneiros', 3); dgrp(gg, 'policiais', 2); dgrp(gg, 'universitarios', -3); } });
   return L;
 }
 function fazBemEstar(g, k) {
@@ -24370,7 +24379,7 @@ function fazArticulacao(g, k, arg) {
     const L = LIDERES.find(x => x.k === arg); if (!L) return { ok: false, msg: 'Líder inválido.' };
     if (P.conta < CUSTO_LIDER) return { ok: false, msg: 'Saldo insuficiente na conta pessoal.' };
     P.conta -= CUSTO_LIDER; const rel = g.cfg.religiao; const bate = rel === L.rel; const ateu = rel === 'Sem religião / Ateu';
-    dgrp(g, L.grupo, ateu ? 1.5 : bate ? 4.5 : 2.2); if (ateu) P.aprovPes -= .5; P.estresse += 1; P.humor += 1;
+    dgrp(g, L.grupo, ateu ? 1.5 : bate ? 4.5 : 2.2); if (ateu) P.aprovPes -= .5; P.saude -= 0.1; P.humor += 1;
     g.pesMes.art_lider = true; g.pesMes[nome] = true; clampPes(P); return { ok: true };
   }
   if (k === 'bancada') {
@@ -24379,7 +24388,7 @@ function fazArticulacao(g, k, arg) {
     // EQUILÍBRIO v2: rendimento decrescente dentro do trimestre móvel (1º jantar 100%, 2º 50%, 3º e seguintes 25%): "a bancada estranha a frequência"
     P.conta -= cJ; const st = g.parties[arg];
     const jant = st.jant = (st.jant || []).filter(m => g.mes - m < 3), fJ = BANCADA_FATOR[Math.min(jant.length, BANCADA_FATOR.length - 1)];
-    st.rel = clamp(st.rel + 4 * fJ, 0, 99); st.relS = clamp(st.relS + 2 * fJ, 0, 99); P.estresse += 2; P.humor += 2; jant.push(g.mes);
+    st.rel = clamp(st.rel + 4 * fJ, 0, 99); st.relS = clamp(st.relS + 2 * fJ, 0, 99); P.saude -= 0.2; P.humor += 2; jant.push(g.mes);
     g.pesMes[nome] = true; clampPes(P);
     if (cJ >= 60000 && !g.pesMes.jantNota) { g.pesMes.jantNota = true; g.feed.unshift({ mes: g.mes, src: 'antag', txt: 'AGENDA CHEIA DE JANTARES NO PLANALTO CHAMA ATENÇÃO DA IMPRENSA' }); } // LOTE C5
     return { ok: true, fator: fJ, dica: fJ < 1 ? 'A bancada estranha a frequência: o jantar rendeu ' + Math.round(fJ * 100) + '% do efeito.' : null };
@@ -24440,7 +24449,7 @@ function bastResponde(g, modo) {
   const e = d.ef[modo]; if (!e) return { ok: false, msg: 'Opção inválida.' };
   const P = g.pes; const est = estOf(g);
   for (const [k, v] of (e.gAprov || [])) dgrp(g, k, v);
-  if (e.humor) P.humor += e.humor; if (e.estresse) P.estresse += e.estresse; if (e.aprovPes) P.aprovPes += e.aprovPes;
+  if (e.humor) P.humor += e.humor; if (e.estresse) P.saude -= e.estresse * .12; if (e.aprovPes) P.aprovPes += e.aprovPes;
   if (modo === 'por_fora') { B.caixa = clamp(B.caixa + e.caixa, 0, 100); B.rastro = clamp(B.rastro + e.rastro, 0, 100); B.aceitas++; est.bastAceitas = (est.bastAceitas || 0) + 1; }
   else if (modo === 'declarado') { g.escandalo = clamp(g.escandalo + e.esc, 0, 100); B.declaradas++; g.feed.unshift({ mes: g.mes, src: 'carta', txt: `Presidente declara à Comissão de Ética: ${d.titulo.toLowerCase()} oferecida por ${d.emp}` }); }
   else { B.inimigos++; B.recusas++; est.recusas = (est.recusas || 0) + 1; g.feed.unshift({ mes: g.mes, src: 'globo', txt: `Empresário do ${d.emp} diz ter ouvido "não" do Planalto a ${d.titulo.toLowerCase()}` }); }
@@ -24486,7 +24495,7 @@ function familiaMensal(g, notas) {
   const cand = EV_FAMILIA.filter(e => (e.so === 'conjuge' && f.conjuge) || (e.so === 'filhos' && f.filhos > 0) || (e.so === 'familia'));
   if (!cand.length) return;
   const e = cand[Math.floor(Math.random() * cand.length)]; f.ult = g.mes; const P = g.pes; const E = e.ef;
-  if (E.humor) P.humor += E.humor; if (E.estresse) P.estresse += E.estresse; if (E.aprovPes) P.aprovPes += E.aprovPes; if (E.energia) P.energia += E.energia;
+  if (E.humor) P.humor += E.humor; if (E.estresse) P.saude -= E.estresse * .12; if (E.aprovPes) P.aprovPes += E.aprovPes; if (E.energia) P.energia += E.energia;
   if (E.conj && f.conjuge) f.conjuge.aprov = clamp(f.conjuge.aprov + E.conj, 0, 100);
   if (e.ap) applyFx(g, { ap: e.ap });
   clampPes(P);
@@ -24499,7 +24508,7 @@ function familiaMensal(g, notas) {
 function euMensal(g, notas) {
   ensureF4(g); const P = g.pes; const E = g.eu; const ap = aprovacao(g);
   // humor
-  const tH = 58 + (ap - 45) * .35 - (P.estresse - 30) * .3 + (P.saude - 70) * .1 + E.embalo * 3 - g.escandalo * .15;
+  const tH = 58 + (ap - 45) * .35 + (P.saude - 70) * .25 + E.embalo * 3 - g.escandalo * .15;
   P.humor = clamp(P.humor + (tH - P.humor) * .3, 0, 100);
   // aprovação pessoal: mais calorosa que a do governo
   const carisma = g.cfg.tracos.includes('carismatico') ? 8 : 0;
@@ -24929,7 +24938,7 @@ function MundoViagens({ g, upd }) {
   const tp = (x) => (x.tipo === 'gafe' ? 'gafe' : x.tipo === 'sem' ? 'sem acordo' : TIPOS_VISITA[x.tipo].nome);
   return html`<div className="grid gap-6 lg:grid-cols-12" data-mundo="viagens">
     <section className="lg:col-span-7 sec flex flex-col gap-4" aria-labelledby="mv-t">
-      <${MxHead} id="mv-t" eb="Mundo · diplomacia presidencial" t="Visitas de Estado" tip="A viagem consome o mês inteiro seguinte: você terá só 2 ações, não responde à crise em pessoa (a cobrança por ignorá-la sobe um pouco), perde energia e ganha estresse. O resultado sai no fim desse mês." />
+      <${MxHead} id="mv-t" eb="Mundo · diplomacia presidencial" t="Visitas de Estado" tip="A viagem consome o mês inteiro seguinte: você terá só 2 ações, não responde à crise em pessoa (a cobrança por ignorá-la sobe um pouco), perde energia e um pouco de saúde. O resultado sai no fim desse mês." />
       ${emCurso && html`<div className="mx-card" style=${{ '--st': 'var(--ouro)' }} data-viagem="curso"><div className="mx-h nr"><span className="gv-ic" style=${{ '--c': 'var(--ouro)' }}><${Icon} n="Plane" s=${20} /></span><div><div className="mx-t">Em viagem: <${Pais} k=${v.pais} /></div><div className="mx-s">O resultado sai quando você encerrar o mês.</div></div></div></div>`}
       ${agendada && html`<div className="mx-card" style=${{ '--st': 'var(--anil)' }} data-viagem="agendada"><div className="mx-h nr"><span className="gv-ic" style=${{ '--c': 'var(--anil)' }}><${Icon} n="CalendarCheck" s=${20} /></span><div><div className="mx-t">Agendada: <${Pais} k=${v.pais} /></div><div className="mx-s">${dataMes(v.mes)}</div></div></div>
         <div className="mx-row">${!conf ? html`<button type="button" className="btn btn-ghost btn-sm" onClick=${() => setConf(true)}>Cancelar viagem</button>` : html`<span className="mx-s" style=${{ color: 'var(--rubro)' }}>Cancelar é uma desfeita diplomática (relação −8).</span><button type="button" className="btn btn-ghost btn-sm" style=${{ borderColor: 'var(--rubro)' }} onClick=${() => { U(n => { cancelaViagem(n); }); setConf(false); }}>Confirmar cancelamento</button><button type="button" className="btn btn-ghost btn-sm" onClick=${() => setConf(false)}>Manter</button>`}</div></div>`}
@@ -25575,7 +25584,7 @@ function icAvaliaVenda(g, k, iso, qtd, preco, anos, rodada) {
   return { res: 'rejeita', max, motivo: rodada >= 2 ? 'Última rodada: sem acordo no preço.' : 'O preço está muito acima do mercado.' };
 }
 const icAcaoOk = (g) => g.acoes > 0 && g.pes.energia >= 10 && !g.over;
-function icGastaAcao(g) { g.acoes = Math.max(0, g.acoes - 1); g.pes.energia = clamp(g.pes.energia - 6, 0, 100); g.pes.estresse = clamp(g.pes.estresse + 1, 0, 100); }
+function icGastaAcao(g) { g.acoes = Math.max(0, g.acoes - 1); g.pes.energia = clamp(g.pes.energia - 6, 0, 100); g.pes.saude = clamp(g.pes.saude - 0.1, 0, 100); }
 // reação de EUA e China a um acordo forte com o rival
 function icGeopolitica(g, c, qtd, anos) {
   if (!c.rival) return null;
@@ -26761,15 +26770,15 @@ function EuResumo({ g }) {
   return html`<section aria-label="Resumo pessoal" data-gv="eu-resumo"><div className="gv-kpis">
     <${GvKpi} dado="eu-energia" ic="Zap" cor=${P.energia < 30 ? 'var(--rubro)' : 'var(--verde)'} k="Energia" v=${fmt(P.energia, 0)} s=${P.energia < 30 ? 'baixa: descanse' : 'de 100'} />
     <${GvKpi} dado="eu-saude" ic="HeartPulse" cor=${corAprov(P.saude)} k="Saúde" v=${fmt(P.saude, 0)} s=${P.saude < 40 ? 'a equipe pede descanso' : 'de 100'} />
-    <${GvKpi} dado="eu-estresse" ic="Activity" cor=${P.estresse > 70 ? 'var(--rubro)' : 'var(--ambar)'} k="Estresse" v=${fmt(P.estresse, 0)} s=${P.estresse > 75 ? 'alto: corrói a saúde' : 'de 100'} />
+
     <${GvKpi} dado="eu-aprov" ic="Heart" cor=${corAprov(P.aprovPes)} k="Aprovação pessoal" v=${fmt(P.aprovPes, 0) + '%'} s=${'governo ' + fmt(ap, 0) + '%'} />
     <${GvKpi} dado="eu-bast" ic="EyeOff" cor=${o ? 'var(--ouro)' : 'var(--muted)'} k="Bastidores" sm=${true} v=${o ? 'Proposta na mesa' : nivel} s=${real ? 'só com personagem fictício' : B.inv ? 'investigação em curso' : B.inimigos + ' inimigos feitos'} />
   </div></section>`;
 }
-const MEDIDAS_PES = (g) => { const P = g.pes; return [['Saúde', P.saude, corAprov(P.saude), 'HeartPulse'], ['Energia', P.energia, 'var(--verde)', 'Zap'], ['Humor', P.humor, corAprov(P.humor), 'Smile'], ['Estresse', P.estresse, P.estresse > 70 ? 'var(--rubro)' : 'var(--ambar)', 'Activity']]; };
+const MEDIDAS_PES = (g) => { const P = g.pes; return [['Saúde', P.saude, corAprov(P.saude), 'HeartPulse'], ['Energia', P.energia, 'var(--verde)', 'Zap'], ['Humor', P.humor, corAprov(P.humor), 'Smile']]; };
 function EuCondicao({ g }) {
   const P = g.pes; const E = g.eu; const mult = multPlenario(g); const ap = aprovacao(g);
-  const dica = P.estresse > 75 ? 'Estresse alto reduz o efeito dos seus discursos e corrói a saúde.' : P.saude < 40 ? 'A equipe médica pede menos agenda e mais descanso.' : 'Presidente em forma para mais um mês de Brasília.';
+  const dica = P.saude < 35 ? 'Saúde baixa: seus discursos perdem força e há risco de internação.' : P.saude < 40 ? 'A equipe médica pede menos agenda e mais descanso.' : 'Presidente em forma para mais um mês de Brasília.';
   const embCor = E.embalo > 0 ? 'var(--verde)' : E.embalo < 0 ? 'var(--rubro)' : 'var(--muted)';
   return html`<div className="flex flex-col gap-6" data-secao-eu="condicao">
     <section className="sec" aria-labelledby="eu-cond">
@@ -26832,7 +26841,7 @@ function EuArticulacao({ g, upd }) {
         <div className="gv-chips"><${MxChip}>R$ ${fmt(CUSTO_LIDER, 0)}</${MxChip}></div>
         <div className="gv-acts">${LIDERES.map(L => html`<button key=${L.k} type="button" className="btn btn-ghost" disabled=${!!g.pesMes.art_lider || g.pes.conta < CUSTO_LIDER} data-lider=${L.k} onClick=${() => U(n => { fazArticulacao(n, 'lider', L.k); })}>${L.l}</button>`)}</div></div>
       <div className="mx-act" style=${{ '--c': 'var(--verde)', cursor: 'default' }} data-art="bancada">
-        <div className="mx-act-h"><span className="gv-ic" style=${{ '--c': 'var(--verde)' }}><${Icon} n="Utensils" s=${20} /></span><span>Jantar com a bancada de um bloco<${GvTip} txt="Relação com o bloco +4 na Câmara e +2 no Senado · estresse +2 · humor +2. Um jantar por bloco a cada mês, e o custo sobe com a agenda cheia (R$ 12 mil, R$ 30 mil, depois R$ 60 mil). Repetir com o mesmo bloco no trimestre rende 50% e depois 25%." /></span></div>
+        <div className="mx-act-h"><span className="gv-ic" style=${{ '--c': 'var(--verde)' }}><${Icon} n="Utensils" s=${20} /></span><span>Jantar com a bancada de um bloco<${GvTip} txt="Relação com o bloco +4 na Câmara e +2 no Senado · saúde −0,2 · humor +2. Um jantar por bloco a cada mês, e o custo sobe com a agenda cheia (R$ 12 mil, R$ 30 mil, depois R$ 60 mil). Repetir com o mesmo bloco no trimestre rende 50% e depois 25%." /></span></div>
         <div className="gv-chips"><${MxChip}>R$ ${fmt(custoJantar(g), 0)}</${MxChip}></div>
         <div className="gv-acts"><select aria-label="Bloco para o jantar" value=${sel} onChange=${e => setPid(e.target.value)}>${blocos.map(b => html`<option key=${b.id} value=${b.id}>${b.curto} (${b.cam} dep.)</option>`)}</select>
           <button type="button" className="btn btn-pri" disabled=${!sel || !!g.pesMes['art_bancada_' + sel] || g.pes.conta < custoJantar(g)} data-bancada=${sel} onClick=${() => U(n => { fazArticulacao(n, 'bancada', sel); })}>Jantar</button></div>
@@ -26944,7 +26953,7 @@ function Eu({ g, upd, chip, setChip, abrirPend }) {
 function CartaoViagem({ g, upd }) {
   const M = g.mundo; const v = M.visita; const U = upd || ZERO; const u = M.ultVisita; const [conf, setConf] = useState(false);
   if (v && v.mes > g.mes) return html`<div className="card p-4 flex flex-col gap-3" data-cartao="viagem"><div className="eyebrow">Visita de Estado agendada</div><h3 className="disp text-2xl font-extrabold uppercase"><${Pais} k=${v.pais} tam=${28} /> · ${dataMes(v.mes)}</h3>
-    <p className="text-sm">O mês inteiro será consumido: só 2 ações, energia −30, estresse +8, e a crise do mês fica sem presença do presidente. O resultado sai no fim da viagem.</p>
+    <p className="text-sm">O mês inteiro será consumido: só 2 ações, energia −30, saúde −1, e a crise do mês fica sem presença do presidente. O resultado sai no fim da viagem.</p>
     ${!conf ? html`<button type="button" className="btn btn-ghost self-start" onClick=${() => setConf(true)}>Cancelar viagem</button>` : html`<div className="flex flex-wrap gap-2 items-center"><span className="text-xs text-rubro">Cancelar derruba a relação em 8.</span><button type="button" className="btn btn-ghost !border-rubro" onClick=${() => { U(n => { cancelaViagem(n); }); setConf(false); }}>Confirmar</button><button type="button" className="btn btn-ghost" onClick=${() => setConf(false)}>Manter</button></div>`}</div>`;
   if (v && v.mes === g.mes) return html`<div className="card p-4" data-cartao="viagem"><div className="eyebrow">Em viagem</div><h3 className="disp text-2xl font-extrabold uppercase"><${Pais} k=${v.pais} tam=${28} /></h3><p className="text-sm mt-1">Você está fora: só 2 ações neste mês. O resultado sai quando o mês for encerrado.</p></div>`;
   if (u && u.mes + 1 === g.mes) return html`<div className="card p-4" data-cartao="viagem"><div className="eyebrow">Balanço da viagem</div><h3 className="disp text-2xl font-extrabold uppercase"><${Pais} k=${u.pais} tam=${28} />: ${u.tipo === 'gafe' ? 'gafe' : u.tipo === 'sem' ? 'sem acordo' : TIPOS_VISITA[u.tipo].nome}</h3><p className="text-sm mt-1">${u.txt}</p></div>`;
@@ -27488,10 +27497,10 @@ function ModalMes({ rel, g, onClose }) {
 function FimDeJogo({ g, reiniciar, upd }) {
   const o = g.over;
   if (typeof ElFim === 'function') return html`<${ElFim} g=${g} upd=${upd} reiniciar=${reiniciar} />`;
-  const titulo = o.tipo === 'impeachment' ? 'Impeachment' : o.tipo === 'saude' ? 'Afastamento' : o.reeleito ? 'Reeleito' : 'Derrotado nas urnas';
+  const titulo = o.tipo === 'impeachment' ? 'Impeachment' : o.tipo === 'saude' ? (o.morte ? 'Morte no cargo' : 'Afastamento') : o.reeleito ? 'Reeleito' : 'Derrotado nas urnas';
   const vice = g.cfg.viceNome || 'O vice';
   const texto0 = o.tipo === 'impeachment' ? `O Senado aprovou o impeachment por ${o.imp.votosS} votos. ${vice} assume a Presidência e você volta para ${g.cfg.estado} com os direitos políticos suspensos.`
-    : o.tipo === 'saude' ? `Após internação prolongada, a junta médica recomendou o afastamento definitivo. ${vice} assume o restante do mandato.`
+    : o.tipo === 'saude' ? (o.morte ? `O presidente morreu no exercício do cargo, depois de meses com a saúde em estado crítico. O país decreta luto oficial e ${vice} assume o restante do mandato.` : `Após internação prolongada, a junta médica recomendou o afastamento definitivo. ${vice} assume o restante do mandato.`)
       : o.reeleito ? `Com ${fmt(o.votos, 1)}% dos votos válidos no segundo turno, ${g.cfg.nome} conquista mais quatro anos no Planalto.` : `Com ${fmt(o.votos, 1)}% dos votos válidos, ${g.cfg.nome} perde a reeleição e passa a faixa ao adversário.`;
   const texto = g.cfg.real ? 'Nesta simulação, ' + texto0.charAt(0).toLowerCase() + texto0.slice(1) : texto0;
   return html`<div className="gutter py-10 max-w-3xl mx-auto fade-in">
@@ -29390,7 +29399,7 @@ function entCond(g, v, c) {
     case 'derrota': return v._no ? 3.6 : 0;
     case 'medida': return v._ok ? 2.4 : 0;
     case 'prom': return v._prom && g.mes >= 12 ? 2.4 : 0;
-    case 'estresse': return g.pes && g.pes.estresse > 60 ? 2.2 : 0;
+    case 'estresse': return g.pes && g.pes.saude < 50 ? 2.2 : 0;
     case 'stf': return g.stf > 32 || (g.stfCadeiras || []).some(c => c.vaga) ? 2.4 : 0;
     case 'seguranca': return g.soc.hom > g.soc.hom0 * .98 ? 2 : 0;
     case 'saude': return g.pes && g.pes.saude < 60 ? 2 : 0;
@@ -29625,7 +29634,7 @@ PV2.push(
   ['pes2', 'pessoal', 'estresse', 'classemedia,catolicos', 'o cansaço do cargo', `Dá para notar o cansaço do senhor. O cargo está pesando?`, `Pesa e muito, mas é parte da função. Sigo com disposição e cuidado.`, `Está pesando, sim. Estou fazendo ajustes de agenda e aceitando ajuda.`, `Quem se interessa pelo meu cansaço devia se interessar pelo cansaço do trabalhador.`],
   ['pes3', 'pessoal', 'sempre', 'classemedia,mulheres', 'a família', `Como a sua família lida com a pressão do cargo?`, `Com apoio e privacidade. Peço respeito, porque família não é pauta de governo.`, `É difícil, e preciso proteger mais o tempo em casa. Agradeço o apoio que recebo.`, `Quem usa a família para atacar o governo não tem proposta.`],
   ['pes4', 'pessoal', 'sempre', 'jovens,classemedia', 'um dia de folga', `O senhor tira folga? O que faz quando não está governando?`, `Pouco, mas tiro. Leio, caminho e converso com quem eu confio. Presidente também precisa respirar.`, `Pouco demais, reconheço. Vou reservar um dia por semana, porque cansaço ruim decide mal.`, `Quem acha que governar é só discurso nunca viu uma agenda de presidente.`],
-  ['pes5', 'pessoal', 'estresse', 'aposentados,classemedia', 'a saúde do presidente', `Com o estresse do cargo, a sua saúde preocupa. Está fazendo os exames?`, `Estou, e a equipe médica acompanha. A saúde está em dia.`, `Descuidei e estou corrigindo. Vou fazer o acompanhamento que a equipe pede.`, `Quem especula sobre saúde dos outros quer disputa sem ideia.`],
+  ['pes5', 'pessoal', 'estresse', 'aposentados,classemedia', 'a saúde do presidente', `Com o desgaste do cargo, a sua saúde preocupa. Está fazendo os exames?`, `Estou, e a equipe médica acompanha. A saúde está em dia.`, `Descuidei e estou corrigindo. Vou fazer o acompanhamento que a equipe pede.`, `Quem especula sobre saúde dos outros quer disputa sem ideia.`],
   ['pes6', 'pessoal', 'sempre', 'jovens,classemedia', 'o hábito de ler e estudar', `Como o senhor se informa? Lê relatório, assiste a debate, ouve o povo?`, `As três coisas: relatório, conversa e rua. Quem governa precisa ouvir quem discorda.`, `Falta ouvir mais gente de fora do Palácio. Vou ampliar a escuta.`, `Quem acha que governo é só relatório nunca esteve numa fila de posto.`],
   ['pes7', 'pessoal', 'energia', 'classemedia,mulheres', 'a agenda cheia', `A agenda cheia sobra para o que importa? Dá para dar atenção real aos problemas?`, `Dá, com disciplina e prioridade. O que não for essencial, espera.`, `Nem sempre dá. Vou cortar reuniões que não resolvem e focar nas decisões.`, `Quem critica a minha agenda é quem não tem nenhuma tarefa de verdade.`],
   ['pes8', 'pessoal', 'sempre', 'jovens,catolicos', 'o que o presidente quer deixar', `Se o senhor pudesse escolher uma coisa para deixar como legado, qual seria?`, `Um país mais justo e mais previsível. Com {ap}% de aprovação, o foco é entregar.`, `Ainda não sei se tenho um só. Quero deixar um governo que ouviu e corrigiu.`, `Quem pergunta pelo meu legado pode olhar o dele antes.`],
@@ -29743,7 +29752,7 @@ function pv2Cond(g, v, k) {
     case 'trib': return v.mTrib ? 2.6 : 0;
     case 'prev': return v.mPrev ? 2.6 : 0;
     case 'energia': return g.pes && g.pes.energia < 70 ? 2 : .5;
-    case 'estresse': return g.pes && g.pes.estresse > 55 ? 2.4 : .5;
+    case 'estresse': return g.pes && g.pes.saude < 55 ? 2.4 : .5;
     case 'ap_baixa': return ap < 40 ? 2.5 + (40 - ap) / 5 : 0;
     case 'ap_alta': return ap > 55 ? 1.8 : 0;
     default: return .7;
@@ -30143,7 +30152,7 @@ function entOposAlvo(g) {
   return L.length ? L[0].id : null;
 }
 function entGafeP(g, arq, livre) {
-  let p = .015 + Math.max(0, (g.pes.estresse || 0) - 70) / 160;
+  let p = .015 + Math.max(0, 40 - (g.pes.saude == null ? 70 : g.pes.saude)) / 160;
   if (livre) { if (livre.f.insulto) p += .55; if (livre.f.polar) p += .15; if (livre.contrad) p += .08; }
   if (arq === 'ataque') p += .03;
   return clamp(p, 0, .85);
