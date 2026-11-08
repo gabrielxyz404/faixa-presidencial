@@ -12207,7 +12207,7 @@ function v5Valor(prop, texto) {
   }
   // PEC contra cláusula pétrea (CF, art. 60, §4º): "não será objeto de deliberação"; a CCJ barra e quase ninguém vota a favor
   if (prop.inst === 'PEC' && prop.stf && prop.stf.nivel === 'inconstitucional' && !prop.v5petrea) {
-    prop.v5petrea = true; prop.bonus = prop.bonus || {}; for (const P of PARTIDOS) prop.bonus[P.id] = (prop.bonus[P.id] || 0) - 45;
+    prop.v5petrea = true; prop.bonus = prop.bonus || {}; for (const P of PARTIDOS) prop.bonus[P.id] = (prop.bonus[P.id] || 0) - 160;
     prop.tecnico = 'Cláusula pétrea: pela CF (art. 60, §4º), PEC que tende a abolir direitos e garantias individuais, o voto direto, a separação de Poderes ou a forma federativa não pode nem ser votada; a CCJ da Câmara deve barrar, e o apoio no plenário despenca. ' + (prop.tecnico || '');
   }
   if (prop.rev > 0 && (prop.inst === 'COM' || prop.inst === 'ADM') && main && main.o.k === 'T') { prop.inst = 'PL'; prop.instDetalhe = null; prop.tecnico = 'Instrumento: projeto de lei, porque tributo novo ou maior só vem por lei (CF, art. 150, I). ' + (prop.tecnico || ''); }

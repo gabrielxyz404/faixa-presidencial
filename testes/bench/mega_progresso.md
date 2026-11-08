@@ -982,3 +982,26 @@ Calibração com fichas do mega_dev3 e do dev2, com o teste cego congelado antes
 
 - **Campo `constituicao` na ficha** (nível e artigo), com uma regra que só sobe o veredito. Na calibração (mega_dev3), a nota foi de 456 para 454 e a Constituição certa de 666 para 665: a IA marca como controverso o que o gabarito aceita como ok. Desfeito antes de medir nos testes cegos.
 - **Auditoria às cegas do hold4:** amostra aleatória de 100 itens, auditada pelo Sonnet. Foram 96 ok, 2 erros (Copa de 2034 já atribuída à Arábia Saudita; renúncia abaixo de R$ 1 bi) e 2 ambíguos. A taxa de erro estimada é de cerca de 2%. Ressalva: um dos auditores registrou justificativas genéricas nos itens ok, sem buscas na web.
+
+## Revisão do jogo pelo Sonnet e correções (08/11/2026)
+
+O Sonnet jogou cerca de 70 meses e leu 116 pareceres. Achou 3 problemas graves, 11 médios e 11 leves, sem erros de página e sem lentidão.
+
+**Corrigido:**
+- valor de "alvo específico" só quando há alvo real (IPI 100% = R$ 70 bi);
+- aviso de custo no voto e texto técnico recalculados com o valor final;
+- tributo novo sem votação vira PL;
+- diesel por litro usa o R$/litro do texto;
+- medida "já em vigor" fica sem valor;
+- ironia com "só que não";
+- valor por pessoa fora de escala é marcado como absurdo;
+- "R$ X para cada brasileiro" sem "por mês" é pagamento único;
+- reeleição ilimitada (leitura e veredito controverso);
+- PEC de cláusula pétrea com apoio despencando (CCJ);
+- eixos com acento, ementa longa quebra a linha, rótulos da caixa "Faltou número", confirmação ao revogar por decreto.
+
+**Fluidez:** no modo IA, o parecer do motor local abre na hora e a IA refina o mesmo parecer.
+
+**Benches após as correções (motor local):** mega_dev 1355 (=), mega_dev2 793 (+1), mega_dev3 381 (=), dev 162, dev2 99, zoeira 73, cft 89; hold3 339 (+1).
+
+**Fica para conversa (balanceamento):** estresse travado em 100, partido do presidente votando o próprio impeachment, ritmo inicial da contagem das municipais, propostas vagas sem número tratadas de formas diferentes.
