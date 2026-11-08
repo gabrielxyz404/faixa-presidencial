@@ -62,7 +62,7 @@ def ok(nome, cond, det=''):
     checks.append((bool(cond), nome)); print(('OK    ' if cond else 'FALHA ') + nome + ((' | ' + str(det)[:300]) if det != '' else ''), flush=True)
 FICHA = {"medidas": [{"texto_canonico": "Zerar o IPI e o imposto de importação de consoles de videogame", "acao": "isentar", "objeto": "IPI e imposto de importação de consoles", "publico": "", "publico_n": None, "quantia_rs": None, "periodicidade": None, "duracao_meses": None, "instrumento_dito": None}],
          "pergunta": False, "ironia": False, "condicao": None, "resumo": "Zera os tributos federais sobre consoles.", "vozes": [{"nome": "Kauã", "papel": "gamer", "emoji": "🎮", "fala": "Agora sim, PS5 no preço de PS2."}], "manchetes": {"globo": "Governo zera IPI de consoles", "carta": "Videogame mais barato", "antagonista": "Planalto troca imposto por voto gamer"}}
-INIT = "window.__prompts=[];window.claude={use:async()=>({json:async(p,o)=>{window.__prompts.push(String(p));return %s;}})};" % json.dumps(FICHA, ensure_ascii=False)
+INIT = "window.__prompts=[];window.claude={use:async()=>({json:async(p,o)=>{window.__prompts.push(String(p));await new Promise(r=>setTimeout(r,1500));return %s;}})};" % json.dumps(FICHA, ensure_ascii=False)
 errs = []
 with sync_playwright() as p:
     b = p.chromium.launch(); pg = b.new_page(viewport={'width': 1440, 'height': 900})
@@ -73,12 +73,15 @@ with sync_playwright() as p:
     pg.locator('button[aria-label*="onfigura"], button[title*="onfigura"]').first.click(timeout=6000); pg.wait_for_timeout(600)
     pg.locator('.modal-wrap button').filter(has_text='Claude integrado · rápido').first.click(timeout=6000); pg.wait_for_timeout(300)
     pg.locator('.modal-wrap button[aria-label="Fechar"]').first.click(timeout=4000); pg.wait_for_timeout(500)
-    pg.locator('#caixa').scroll_into_view_if_needed(); pg.fill('#caixa', 'zera o imposto dos videogame q ta caro dms'); click(pg, 'Assinar e enviar', 3000)
+    pg.locator('#caixa').scroll_into_view_if_needed(); pg.fill('#caixa', 'zera o imposto dos videogame q ta caro dms'); click(pg, 'Assinar e enviar', 300)
+    ok('Enquanto a IA pensa, o parecer do motor local já está aberto com o aviso "refinando"', pg.locator('.modal-wrap [data-refinando]').count() == 1, '')
+    pg.screenshot(path=OUT + '/refinando.png'); pg.wait_for_timeout(2500)
     txt = pg.locator('.modal-wrap').first.inner_text()
     pr = pg.evaluate("()=>window.__prompts")
     ok('O jogo manda o prompt da ficha (não pede números à IA)', pr and 'FICHA de leitura' in pr[0] and 'custo_anual_bi' not in pr[0], (pr[0][:120] if pr else pr))
     ok('A ementa mostra o texto do jogador', 'zera o imposto dos videogame' in txt, txt[:200])
     ok('O valor sai das regras do jogo (consoles: menos de R$ 3 bi), não da IA', ('R$ 0,8 bi' in txt) or ('R$ 0,4 bi' in txt) or ('R$ 1' in txt and 'bi' in txt), txt[txt.find('ANUAL'):txt.find('ANUAL') + 60] if 'ANUAL' in txt else txt[:300])
+    ok('O parecer abre na hora e depois é refinado pela IA (aviso "Leitura refinada")', pg.locator('[data-refinado]').count() == 1 and pg.locator('[data-refinando]').count() == 0, '')
     ok('O cabeçalho diz que a leitura é da IA e as contas do motor', 'leitura da IA, contas do motor 5' in txt, txt[:300])
     pg.screenshot(path=OUT + '/ficha_ia.png')
     print('erros:', errs[:3])

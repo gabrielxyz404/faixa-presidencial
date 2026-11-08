@@ -27285,6 +27285,8 @@ function ModalDecisao({ dec, g, upd, setDec, onClose, votarItem }) {
         ${prop.resumo && html`<div className="text-sm mt-1 opacity-80">${prop.resumo}</div>`}</div>
       ${prop.repetida && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(240,166,58,.15)' }} data-parecer-repetida="1" role="status"><b>Já aprovada.</b> ${prop.repetida.ato} (${prop.repetida.nm}) segue em vigor desde ${dataCurta(prop.repetida.m0)}. Aprovar de novo não soma o efeito; revogue a anterior ou escreva uma medida diferente.</div>`}
       ${prop.custoVoto && prop.custoVoto.pts <= -2 && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,90,78,.08)' }} data-parecer-custo-voto="1" role="status"><b>Custo fiscal no voto.</b> Gasto líquido de R$ ${fmt(prop.custoVoto.net, 0)} bi/ano: Fazenda e mercado pressionam o Congresso (${fmt(prop.custoVoto.pts, 0)} pontos de apoio, no máximo).</div>`}
+      ${dec.refinando && html`<div className="text-xs p-2 rounded flex items-center gap-2" style=${{ background: 'rgba(61,123,255,.10)' }} data-refinando="1" role="status"><span className="animate-pulse">●</span> Claude está refinando a leitura; o valor e o instrumento podem mudar em alguns segundos.${dec.cancelRefino && html`<button type="button" className="ml-auto underline" onClick=${dec.cancelRefino}>Ficar com o motor local</button>`}</div>`}
+      ${dec.refinado && html`<div className="text-xs text-muted" data-refinado="1">Leitura refinada pela IA.</div>`}
       <${BlocoCusto} prop=${prop} congresso=${congresso} />
       ${v5FaltaNumero(prop) && html`<${CaixaFaltaNumero} prop=${prop} g=${g} dec=${dec} setDec=${setDec} />`}
       ${prop.v5lin && html`<div className="text-sm p-3 rounded gl-inteiro" style=${{ background: 'rgba(240,166,58,.14)' }} data-parecer-corte-linear="1" role="status"><b>${prop.v5lin.temValor ? 'Corte linear.' : 'Proposta vaga.'}</b> ${prop.v5lin.temValor ? 'Sem dizer onde, o corte sai por igual de todos os ministérios.' : 'Sem dizer onde nem quanto, a Fazenda só bloqueia uns R$ ' + fmt(prop.v5lin.bi, prop.v5lin.bi % 1 ? 1 : 0) + ' bi de todos os ministérios.'} Custo: serviços e obras param, servidores e universitários reagem e cada ministro perde lealdade.${prop.v5lin.rep ? ' Já houve corte linear neste ano, então este rende menos.' : ''}${prop.v5lin.temValor ? '' : ' Para economizar mais, diga onde cortar e quanto.'}</div>`}
@@ -34436,17 +34438,22 @@ function App() {
     const ctl = new AbortController();
     let cancelado = false;
     const usarLocal = (msg) => { const prop = marca(analisaLocal(gRef.current, texto)); setDec({ stage: 'parecer', prop }); if (msg) setAviso(msg); };
-    setDec({ stage: 'loading', texto, msg: ia.motor.startsWith('claude') ? 'Claude está redigindo o parecer…' : 'Consultando a IA externa…', cancel: () => { cancelado = true; ctl.abort(); usarLocal(null); } });
+    // fluidez: o parecer do motor local abre na hora; quando a IA responde, o mesmo parecer é refinado (se o jogador ainda não mexeu nele)
+    const refinoId = 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    const local = marca(analisaLocal(gRef.current, texto));
+    setDec({ stage: 'parecer', prop: local, refinando: refinoId, cancelRefino: () => { cancelado = true; ctl.abort(); setDec(d => d && d.refinando === refinoId ? { ...d, refinando: null } : d); } });
+    const intacto = (p) => p && !p.poll && !p.v5refinado && !(p.desidratada > 0) && !Object.values(p.bonus || {}).some(v => v);
     try {
       const j = await chamaIA(ia.motor, ia, gRef.current, texto, ctl.signal);
       if (cancelado) return;
       const prop = marca(propDeIA(gRef.current, texto, j));
-      setDec({ stage: 'parecer', prop });
+      setDec(d => d && d.refinando === refinoId && d.stage === 'parecer' && intacto(d.prop) ? { ...d, prop, refinando: null, refinado: true } : (d && d.refinando === refinoId ? { ...d, refinando: null } : d));
     } catch (e) {
       if (cancelado) return;
       const code = e && e.code;
       if (code === 'not_granted' || code === 'sampling_disabled') { setIa(x => ({ ...x, motor: 'local' })); }
-      usarLocal('IA indisponível (' + (code || (e && e.message) || 'erro') + '). Usando o motor local.');
+      setDec(d => d && d.refinando === refinoId ? { ...d, refinando: null } : d);
+      setAviso('IA indisponível (' + (code || (e && e.message) || 'erro') + '). Parecer do motor local.');
     }
   };
   const votarItem = (id) => { const gg = gRef.current; const it = gg.pauta.find(x => x.id === id); if (!it) return; { const b = gvBloqPEC(gg, it.prop); if (b) { setAviso(b.msg); return; } } const prop = propDoItem(it); setDec({ stage: 'votando', prop, item: id, plano: decideVotacao(gg, prop, true, quorum(prop.inst)) }); };
