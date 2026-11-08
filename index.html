@@ -12405,6 +12405,7 @@ function apoioPartido(g, pid, prop, casa) {
   const semEixos = !Object.keys(eixosDaProp(prop)).length;
   if (prop.cost > 0 && P.fisio > 60) s += 3; // gasto novo é emenda e obra na base: o Centrão gosta
   s += (prop.bonus[pid] || 0) + ((prop.aiApoio || {})[pid] || 0) + st.min * 3;
+  { const Ms = g.eu && g.eu.esq && g.eu.esq.mensalao; if (Ms && Ms.ate >= g.mes && pid !== g.cfg.partido) s += Ms.bonus; } // mensalão: mesada à base
   if (pid === g.cfg.partido) s += 18;
   if (semEixos) s += coerenciaApoio(g, prop, pid);
   s += articCasaCivil(g);
@@ -24430,8 +24431,63 @@ function trocaPartido(g, pid) {
   return { ok: true };
 }
 
-/* ---------- bastidores (somente personagem fictício) ---------- */
-function bastAtivo(g) { return !g.cfg.real; }
+
+/* ---------- esquemas de corrupção (escolha do jogador; ficção do jogo, com selo "simulado") ----------
+   Cada esquema custa 1 ação e deixa rastro. O rastro acumula e pode ser descoberto: reportagem -> CPI -> operação da PF -> denúncia (com pedido de impeachment).
+   As notícias falam em "o presidente" e "o Planalto", nunca no nome de uma pessoa real. */
+const ESQ_GRUPOS = { empresariado: 'grandes empresários', agro: 'agronegócio', mercado: 'bancos e mercado' };
+const ESQ_FASES = ['', 'Reportagem', 'CPI', 'Operação da PF', 'Denúncia'];
+function esqEnsure(g) { ensureF4(g); const e = g.eu.esq = g.eu.esq || { caixa2: 0, fortuna: 0, rastro: 0, fase: 0, faseMes: 0, mensalao: null, abafa: 0, feitos: 0, hist: [] }; return e; }
+function esqPode(g) { return g.acoes > 0 && !g.over && !(g.dit && g.dit.queda); }
+function esqLog(g, txt, rastro) { const E = esqEnsure(g); E.rastro = clamp(E.rastro + rastro, 0, 100); E.feitos++; E.hist.push({ mes: g.mes, txt }); if (E.hist.length > 30) E.hist.shift(); g.acoes = Math.max(0, g.acoes - 1); g.pes.energia = clamp(g.pes.energia - 6, 0, 100); estOf(g).esquemas = (estOf(g).esquemas || 0) + 1; }
+function esqFaz(g, tipo, arg) {
+  const E = esqEnsure(g); if (!esqPode(g)) return { ok: false, msg: 'Sem ações neste mês.' };
+  if (tipo === 'mensalao') {
+    const bancou = E.caixa2 >= 60; if (bancou) E.caixa2 -= 60;
+    E.mensalao = { ate: g.mes + 3, bonus: 14 };
+    esqLog(g, 'Mesada a parlamentares da base' + (bancou ? ' (paga com caixa 2)' : ' (desviada de contratos de estatais)'), bancou ? 16 : 24);
+    return { ok: true, msg: 'Pelos próximos 3 meses, os partidos votam com mais boa vontade (apoio +14).' };
+  }
+  if (tipo === 'caixa2') { E.caixa2 = Math.min(600, E.caixa2 + 150); esqLog(g, 'Caixa 2 de empreiteiras para a campanha (R$ 150 mi)', 14); return { ok: true, msg: 'R$ 150 mi sem registro entram no caixa da campanha do seu partido.' }; }
+  if (tipo === 'grupo') {
+    const k = ESQ_GRUPOS[arg] ? arg : 'empresariado'; dgrp(g, k, 6); g.fiscal.extra += 2;
+    esqLog(g, 'Contrato superfaturado para favorecer ' + ESQ_GRUPOS[k] + ' (R$ 2 bi)', 15);
+    return { ok: true, msg: ESQ_GRUPOS[k].charAt(0).toUpperCase() + ESQ_GRUPOS[k].slice(1) + ' +6 de apoio; o contrato custa R$ 2 bi ao Tesouro.' };
+  }
+  if (tipo === 'fortuna') { E.fortuna += 25; g.pes.humor = clamp(g.pes.humor + 3, 0, 100); esqLog(g, 'Propina em conta no exterior (R$ 25 mi)', 18); return { ok: true, msg: 'R$ 25 mi a mais na sua fortuna escondida.' }; }
+  if (tipo === 'abafar') {
+    E.abafa = g.mes + 6; g.escandalo = clamp(g.escandalo + 4, 0, 100); g.stf = clamp(g.stf + 4, 0, 100);
+    esqLog(g, 'Troca na direção da PF para segurar as investigações', 10);
+    g.feed.unshift({ mes: g.mes, src: 'globo', txt: 'Planalto troca o comando da Polícia Federal; delegados falam em interferência' });
+    return { ok: true, msg: 'Por 6 meses, as investigações andam mais devagar. A troca em si já deu manchete.' };
+  }
+  return { ok: false, msg: 'Esquema desconhecido.' };
+}
+function esqRiscoMes(g) { const E = g.eu && g.eu.esq; if (!E || E.rastro < 5) return 0; return clamp(((E.rastro - 10) / 260 + g.escandalo / 1200) * (E.abafa >= g.mes ? .5 : 1), 0, .35); }
+function esqMensal(g, notas) {
+  const E = g.eu && g.eu.esq; if (!E) return;
+  if (E.mensalao && E.mensalao.ate < g.mes) E.mensalao = null;
+  E.rastro = clamp(E.rastro * .99, 0, 100);
+  if (E.fase >= 4 || E.rastro < 5) return;
+  const h = hashStr(String(g.seed) + 'esq' + g.mes + E.feitos);
+  if (h >= esqRiscoMes(g)) return;
+  E.fase++; E.faseMes = g.mes;
+  const ap = (v) => { for (const k of GKEYS) dgrp(g, k, v); };
+  if (E.fase === 1) { g.escandalo = clamp(g.escandalo + 8, 0, 100); ap(-1.2); notas.push({ t: 'neg', x: 'Reportagem revela pagamentos suspeitos ligados ao Planalto (simulado). O rastro dos esquemas começou a aparecer.' }); g.feed.unshift({ mes: g.mes, src: 'globo', txt: 'Reportagem revela pagamentos suspeitos ligados ao Planalto' }); }
+  if (E.fase === 2) { g.escandalo = clamp(g.escandalo + 7, 0, 100); ap(-1); for (const P of PARTIDOS) if (P.id !== g.cfg.partido) { g.parties[P.id].rel = clamp(g.parties[P.id].rel - 3, 0, 99); } notas.push({ t: 'neg', x: 'A oposição instala uma CPI para investigar os pagamentos ligados ao Planalto (simulado).' }); g.feed.unshift({ mes: g.mes, src: 'antag', txt: 'CPI INSTALADA PARA INVESTIGAR ESQUEMA LIGADO AO PLANALTO' }); }
+  if (E.fase === 3) { g.escandalo = clamp(g.escandalo + 12, 0, 100); ap(-2); g.pes.aprovPes = clamp((g.pes.aprovPes || 50) - 6, 0, 100); notas.push({ t: 'neg', x: 'Operação da PF cumpre mandados contra o entorno do presidente (simulado).' }); g.feed.unshift({ mes: g.mes, src: 'antag', txt: 'PF FAZ OPERAÇÃO CONTRA O ENTORNO DO PRESIDENTE' }); }
+  if (E.fase === 4) { g.escandalo = clamp(g.escandalo + 10, 0, 100); ap(-2); if (g.oposicao) g.oposicao.pedidoImp = g.mes; notas.push({ t: 'neg', x: 'A Procuradoria-Geral denuncia o presidente ao STF e a oposição protocola pedido de impeachment (simulado).' }); g.feed.unshift({ mes: g.mes, src: 'antag', txt: 'PRESIDENTE É DENUNCIADO; OPOSIÇÃO PEDE IMPEACHMENT' }); }
+  linhaAdd(g, 'ESCÂNDALO', 'Esquema descoberto: ' + ESQ_FASES[E.fase]); xEvento(g, 'escandalo', { txt: ESQ_FASES[E.fase] + ' sobre esquema ligado ao Planalto' });
+}
+// depois do mandato: a conta chega
+function esqDesfecho(g) {
+  const E = g.eu && g.eu.esq; if (!E || (!E.feitos)) return null;
+  if (E.fase >= 3) return 'Depois do mandato, o ex-presidente é condenado por corrupção e lavagem de dinheiro e vai preso; a Justiça bloqueia ' + (E.fortuna > 0 ? 'os R$ ' + fmt(E.fortuna, 0) + ' mi escondidos no exterior' : 'os bens') + ' (simulado).';
+  if (E.fase >= 1) return 'Depois do mandato, as investigações seguem por anos; o ex-presidente responde a processos, mas não chega a ser preso (simulado).';
+  return 'Ninguém descobriu os esquemas' + (E.fortuna > 0 ? ': o ex-presidente deixa o cargo com R$ ' + fmt(E.fortuna, 0) + ' mi escondidos no exterior' : '') + ' (simulado).';
+}
+/* ---------- bastidores (ofertas de empresários; ficção do jogo, com selo "simulado") ---------- */
+function bastAtivo(g) { return true; }
 function bastOferta(g) {
   if (!g.eu || !bastAtivo(g)) return null; const o = g.eu.bast.oferta; if (!o) return null;
   const d = OFERTAS_BAST.find(x => x.id === o.id); return d ? Object.assign({}, d, { mes: o.mes }) : null;
@@ -24518,6 +24574,7 @@ function euMensal(g, notas) {
   if (E.embaloMov !== g.mes && E.embalo !== 0) E.embalo += E.embalo > 0 ? -1 : 1;
   if (E.embalo) for (const k of GKEYS) dgrp(g, k, E.embalo * .06);
   bastMensal(g, notas);
+  try { esqMensal(g, notas); } catch (e) { if (typeof console !== 'undefined') console.warn('esqMensal', e); }
   familiaMensal(g, notas);
 }
 // o que a aprovação pessoal acrescenta ao resultado da eleição
@@ -26875,15 +26932,14 @@ function EuFiliacao({ g, upd }) {
 }
 function EuBastidores({ g, upd }) {
   const U = upd || ZERO;
-  if (g.cfg.real) return html`<section className="sec" data-secao-eu="bastidores" data-bast="indisponivel"><${MxStyle} /><${MxHead} eb="Eu · ficção" t="Bastidores" /><p className="text-sm text-muted">Indisponível com personagem real.</p></section>`;
   const B = g.eu.bast; const o = bastOferta(g);
   const nivel = B.caixa <= 0 ? null : B.expo < 25 ? 'sem ruído' : B.expo < 50 ? 'alguns sinais' : 'rastro visível';
   const tile = (ic, cor, k, v) => html`<div className="mx-card panel" style=${{ '--st': cor }}><div className="mx-h nr"><span className="gv-ic" style=${{ '--c': cor }}><${Icon} n=${ic} s=${20} /></span><div className="min-w-0"><div className="mx-lab">${k}</div><div className="mx-t">${v}</div></div></div></div>`;
   return html`<section className="sec flex flex-col gap-4" data-secao-eu="bastidores" data-bast="ativo" aria-labelledby="eu-bas">
     <${MxStyle} />
-    <${MxHead} id="eu-bas" eb="Eu · ficção" t="Bastidores" tip="Personagens, empresas e valores desta seção são inventados e existem só para o jogo. Aceitar dinheiro por fora cria um rastro oculto que pode virar operação policial, investigação e pedido de impeachment." right=${html`<${Tag} cor="var(--ouro)">ficção</${Tag}>`} />
+    <${MxHead} id="eu-bas" eb="Eu · bastidores (simulado)" t="Bastidores" tip="Personagens, empresas e valores desta seção são inventados e existem só para o jogo. Aceitar dinheiro por fora cria um rastro oculto que pode virar operação policial, investigação e pedido de impeachment." right=${html`<${Tag} cor="var(--ouro)">ficção</${Tag}>`} />
     <div className="mx-grid g3" data-bast-estado="1">
-      ${tile('Footprints', nivel ? (B.expo < 25 ? 'var(--verde)' : B.expo < 50 ? 'var(--ambar)' : 'var(--rubro)') : 'var(--verde)', 'Sinais de rastro', nivel || 'nada a esconder')}
+      ${tile('Footprints', nivel ? (B.expo < 25 ? 'var(--verde)' : B.expo < 50 ? 'var(--ambar)' : 'var(--rubro)') : 'var(--verde)', 'Rastro das ofertas', nivel || 'nada a esconder')}
       ${tile('Swords', B.inimigos ? 'var(--ambar)' : 'var(--muted)', 'Inimigos feitos', html`<span className="num">${B.inimigos}</span>`)}
       ${tile('Siren', B.inv ? 'var(--rubro)' : 'var(--verde)', 'Investigação', B.inv ? 'em curso, fase ' + B.inv.fase : 'nenhuma')}
     </div>
@@ -26896,7 +26952,37 @@ function EuBastidores({ g, upd }) {
       <${MxDet} rot="O que cada escolha faz"><ul className="text-xs text-muted list-disc pl-5"><li>Por fora: ganho político e de bem-estar agora; cria um caixa oculto e rastro. Risco de operação da PF mais tarde.</li><li>Declarado: legal, mas rende constrangimento (escândalo +, aprovação pessoal −).</li><li>Recusar: história boa para a imprensa e um inimigo a mais, que pode vazar conversas.</li></ul></${MxDet}>
     </div>` : html`<div className="mx-card"><div className="mx-h nr"><span className="gv-ic"><${Icon} n="Inbox" s=${20} /></span><div><div className="mx-t">Nenhuma proposta na mesa</div><div className="mx-s">Elas aparecem de vez em quando; ignorar uma não tem custo.</div></div></div></div>`}
     ${B.hist.length > 0 && html`<${MxDet} rot=${'Histórico (' + B.hist.length + ')'}><ul className="mx-list">${B.hist.slice().reverse().slice(0, 5).map((h, i) => html`<li key=${i}><span className="mx-date">${dataCurta(h.mes)}</span><span className="flex-1 min-w-0">${OFERTAS_BAST.find(x => x.id === h.id).titulo}</span><${MxChip}>${h.modo === 'por_fora' ? 'aceita por fora' : h.modo === 'declarado' ? 'aceita e declarada' : 'recusada'}</${MxChip}></li>`)}</ul></${MxDet}>`}
+    <${EsquemasPainel} g=${g} upd=${U} />
   </section>`;
+}
+function EsquemasPainel({ g, upd }) {
+  const E = (g.eu && g.eu.esq) || { caixa2: 0, fortuna: 0, rastro: 0, fase: 0, mensalao: null, abafa: 0, feitos: 0, hist: [] };
+  const [msg, setMsg] = useState(null); const [grupo, setGrupo] = useState('empresariado');
+  const faz = (tipo, arg) => { let r = null; upd(n => { r = esqFaz(n, tipo, arg); }); setTimeout(() => setMsg(r), 0); };
+  const pode = g.acoes > 0, risco = Math.round(esqRiscoMes(g) * 100);
+  const corR = E.rastro < 25 ? 'var(--verde)' : E.rastro < 55 ? 'var(--ambar)' : 'var(--rubro)';
+  const card = (tipo, ic, tit, ganho, rastro, extra) => html`<div className="mx-card panel" style=${{ '--st': 'var(--rubro)' }} data-esq=${tipo}>
+    <div className="mx-h nr"><span className="gv-ic" style=${{ '--c': 'var(--rubro)' }}><${Icon} n=${ic} s=${20} /></span><div className="min-w-0"><div className="mx-t">${tit}</div><div className="mx-s">${ganho}</div></div></div>
+    ${extra || null}
+    <div className="flex items-center gap-2 mt-2"><button type="button" className="btn btn-ghost btn-sm" disabled=${!pode} data-esq-faz=${tipo} onClick=${() => faz(tipo, tipo === 'grupo' ? grupo : null)}>Fazer (1 ação)</button><span className="text-xs text-muted">rastro +${rastro}</span></div></div>`;
+  return html`<div className="flex flex-col gap-3" data-esquemas="1">
+    <div className="flex items-baseline gap-2"><h4 className="disp text-xl font-bold">Esquemas</h4><span className="selo-sim">simulado</span></div>
+    <p className="text-sm text-muted">Corrupção é escolha sua: cada esquema dá uma vantagem agora e deixa rastro. Com o tempo, imprensa, PF e delatores podem achar. As notícias falam em "o presidente", sem o nome de pessoas reais.</p>
+    <div className="mx-grid g3" data-esq-estado="1">
+      <div className="mx-card panel" style=${{ '--st': corR }}><div className="mx-lab">Rastro</div><div className="num text-2xl font-bold" style=${{ color: corR }}>${fmt(E.rastro, 0)}<span className="text-sm text-muted"> de 100</span></div><div className="text-xs text-muted">chance de descoberta neste mês: ${risco}%${E.abafa >= g.mes ? ' (PF freada até ' + dataCurta(E.abafa) + ')' : ''}</div></div>
+      <div className="mx-card panel" style=${{ '--st': E.fase ? 'var(--rubro)' : 'var(--verde)' }}><div className="mx-lab">Investigação</div><div className="font-bold">${E.fase ? ESQ_FASES[E.fase] : 'nada descoberto'}</div><div className="text-xs text-muted">reportagem → CPI → operação da PF → denúncia</div></div>
+      <div className="mx-card panel"><div className="mx-lab">Caixa 2 e fortuna</div><div className="font-bold num">R$ ${fmt(E.caixa2, 0)} mi · R$ ${fmt(E.fortuna, 0)} mi</div><div className="text-xs text-muted">${E.mensalao ? 'mensalão ativo até ' + dataCurta(E.mensalao.ate) : 'caixa 2 vai para a campanha do partido'}</div></div>
+    </div>
+    ${msg && html`<div className=${'text-sm p-2 rounded ' + (msg.ok ? '' : 'text-rubro')} style=${{ background: 'rgba(255,90,78,.08)' }} role="status" data-esq-msg="1">${msg.msg}</div>`}
+    <div className="mx-grid g2">
+      ${card('mensalao', 'HandCoins', 'Mesada à base no Congresso', 'Por 3 meses, os partidos votam com mais boa vontade (+14 de apoio). Paga com R$ 60 mi de caixa 2, se houver; senão, sai de contratos de estatais e deixa mais rastro.', E.caixa2 >= 60 ? 16 : 24)}
+      ${card('caixa2', 'Building2', 'Caixa 2 de empreiteiras', 'R$ 150 mi sem registro para a campanha do seu partido na próxima eleição.', 14)}
+      ${card('grupo', 'Briefcase', 'Favorecer um grupo', 'Contrato superfaturado de R$ 2 bi: o grupo escolhido ganha +6 de apoio.', 15, html`<div className="flex gap-1 flex-wrap mt-1">${Object.entries(ESQ_GRUPOS).map(([k, v]) => html`<button key=${k} type="button" className=${'chip ' + (grupo === k ? '!border-ouro !text-ouro' : '')} onClick=${() => setGrupo(k)}>${v}</button>`)}</div>`)}
+      ${card('fortuna', 'Gem', 'Propina para você', 'R$ 25 mi numa conta no exterior. Sem ganho político: só a fortuna e o risco.', 18)}
+      ${card('abafar', 'ShieldOff', 'Trocar o comando da PF', 'Por 6 meses, as investigações andam pela metade. A troca vira manchete (escândalo +4).', 10)}
+    </div>
+    ${E.hist.length > 0 && html`<${MxDet} rot=${'Esquemas feitos (' + E.hist.length + ')'}><ul className="mx-list">${E.hist.slice().reverse().slice(0, 8).map((h, i) => html`<li key=${i}><span className="mx-date">${dataCurta(h.mes)}</span><span className="flex-1 min-w-0">${h.txt}</span></li>`)}</ul></${MxDet}>`}
+  </div>`;
 }
 function MarcosLista({ g }) {
   const feitos = Object.fromEntries((g.marcos || []).map(m => [m.id, m.mes]));
@@ -30576,7 +30662,7 @@ function fefcFatias(g) {
   for (const P of PARTIDOS) v[P.id] = .02 * (FEFC_NPART[P.id] || 0) / tp + .35 * (nc[P.id] || 0) / tc + .48 * (nc[P.id] || 0) / tc + .15 * (ns[P.id] || 0) / ts;
   _fefcCache = { k, v }; return v;
 }
-const fefcDin = (g, b) => fefcTotal(g) * ((fefcFatias(g) || {})[b] || 0); // R$ mi do bloco na próxima eleição
+const fefcDin = (g, b) => fefcTotal(g) * ((fefcFatias(g) || {})[b] || 0) + (g && g.cfg && b === g.cfg.partido && g.eu && g.eu.esq ? (g.eu.esq.caixa2 || 0) : 0); // R$ mi do bloco na próxima eleição (+ caixa 2 do presidente, se houver)
 // efeito do dinheiro (moderado): log do dinheiro do bloco contra o bloco "médio" de 2026; cortar o fundo comprime a vantagem dos grandes
 const FEFC_PISO = 150; // R$ mi que um partido consegue sem o fundo (doações, militância, candidatos conhecidos): cortar o fundo aproxima grandes e pequenos
 const fefcEf = (g, b) => (PMAP[b] ? Math.log((fefcDin(g, b) + FEFC_PISO) / (FEFC_REF + FEFC_PISO)) : 0);
@@ -31372,6 +31458,7 @@ function elGerApura2(g, ger, notas) {
   elGerFecha(g, ger, notas);
 }
 function elGerFecha(g, ger, notas) {
+  if (g.eu && g.eu.esq && g.eu.esq.caixa2 > 0) { const E = g.eu.esq; E.rastro = clamp(E.rastro + Math.min(15, E.caixa2 / 30), 0, 100); E.hist.push({ mes: g.mes, txt: 'Caixa 2 de R$ ' + fmt(E.caixa2, 0) + ' mi gasto na campanha' }); E.caixa2 = 0; }
   const res = ger.res; const W = ger.cands.find(c => c.id === res.venc);
   if (W.pid) elPopMove(g, W.pid, 12, 6);
   for (const c of ger.cands) if (c !== W && c.pid) elPopMove(g, c.pid, 3, -4);
@@ -33385,6 +33472,7 @@ function ElFim({ g, upd, reiniciar }) {
     <div className="eyebrow">${dataMes(Math.min(g.mes, o.mes || g.mes))} · ${sob} · ${leg.sigla}${leg.real ? ' · personagem real' : ''}</div>
     <h1 className="disp text-5xl font-black uppercase leading-none" style=${{ color: motivo === 'eleicao' && o.reeleito ? 'var(--verde)' : 'var(--rubro)' }}>${titulo}</h1>
     <p className="text-lg">${texto}</p>
+    ${esqDesfecho(g) && html`<p className="text-base p-3 rounded" style=${{ background: 'rgba(255,90,78,.10)' }} data-esq-desfecho="1">${esqDesfecho(g)}</p>`}
     <div className="grid grid-cols-2 sm:grid-cols-5 gap-3"><div><div className="eyebrow">Aprovação final</div><div className="num text-2xl">${fmt(leg.ap, 0)}%</div></div><div><div className="eyebrow">PIB</div><div className="num text-2xl">${fmt(leg.pib)}%</div></div><div><div className="eyebrow">IPCA</div><div className="num text-2xl">${fmt(leg.ipca)}%</div></div><div><div className="eyebrow">Atos assinados</div><div className="num text-2xl">${leg.atos}</div></div><div><div className="eyebrow">Marcos</div><div className="num text-2xl">${leg.marcos}</div></div></div>
     ${html`<${ElLegadoPainel} g=${g} o=${o} />`}
     ${leg.mun && leg.mun.length > 0 && html`<div data-legado-mun="1"><div className="eyebrow mb-2">Eleições municipais</div><ul className="flex flex-col gap-1">${leg.mun.map((x, i) => html`<li key=${i} className="text-sm">Municipais ${x.ano}: base ${x.dN >= 0 ? '+' : '−'}${Math.abs(x.dN)} prefeituras (${x.base} de ${x.n}); ${x.capBase} de ${x.nCap} capitais${x.apoios ? '; ' + x.vit + ' de ' + x.apoios + ' apoios venceram' : '; neutro'}.</li>`)}</ul></div>`}
