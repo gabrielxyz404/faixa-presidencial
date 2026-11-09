@@ -204,7 +204,7 @@
   .gav-b { flex: 1; overflow-y: auto; padding: 24px max(24px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) 24px; }
   @keyframes gavIn { from { transform: translateX(24px); opacity: .4; } to { transform: none; opacity: 1; } }
   @media (max-width: 1023px) { .gav { width: 100%; border-left: 0; animation-name: fadeIn; } .gav-h { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); } .gav-b { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); } }
-  .toast { position: fixed; z-index: 36; right: max(16px, env(safe-area-inset-right, 0px)); top: calc(var(--bar-h, 64px) + 12px); max-width: min(420px, 92vw); } /* D9: topo direito, abaixo das gavetas (55+) e dos modais (62/70): nunca os cobre */
+  .toast { position: fixed; z-index: 36; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(16px, env(safe-area-inset-bottom, 0px)); max-width: min(420px, 92vw); } /* D9: topo direito, abaixo das gavetas (55+) e dos modais (62/70): nunca os cobre */
   .pulso-i { padding: 16px 0; border-top: 1px solid var(--line); }
   .pulso-i:first-child { border-top: 0; padding-top: 0; }
   @media (prefers-reduced-motion: reduce) { .gav { animation: none; } }
@@ -726,7 +726,7 @@ const GLOSSARIO = [
   ['Gecex', 'Gecex', 'Comitê Executivo de Gestão da Camex: o grupo de ministérios que, na prática, aprova as mudanças de tarifa de importação.'],
   ['PECs?', 'PEC', 'Proposta de Emenda à Constituição: muda a Constituição. Precisa de 3/5 dos votos (308 deputados e 49 senadores), em dois turnos em cada Casa. Não passa por sanção nem veto do presidente.'],
   ['PLPs?', 'PLP', 'Projeto de Lei Complementar: trata de temas que a Constituição reserva a lei complementar (como a Lei de Responsabilidade Fiscal). Precisa de maioria absoluta: 257 deputados e 41 senadores.'],
-  ['PL(?= \\d)|(?<=\\()PL(?=\\))', 'PL', 'Projeto de Lei (lei ordinária): precisa da maioria dos presentes na Câmara e no Senado. No jogo, com a Casa cheia, isso dá 257 deputados e 41 senadores. Depois vai à sanção ou ao veto do presidente.'],
+  ['PL(?= \\d)|(?<=\\()PL(?=\\))', 'PL', 'Projeto de Lei (lei ordinária): precisa da maioria dos presentes na Câmara e no Senado. No jogo, com a presença típica de uma votação importante (cerca de 470 deputados e 75 senadores), isso dá 236 deputados e 38 senadores. Depois vai à sanção ou ao veto do presidente.'],
   ['MPs?(?! Materials)', 'MP', 'Medida Provisória: ato do presidente com força de lei que vale na hora, por 60 dias prorrogáveis por mais 60. Se o Congresso não aprovar nesse prazo, perde a validade. Não pode tratar de alguns temas, como direito penal.'],
   ['[Mm]edidas? [Pp]rovisórias?', null, 'Ato do presidente com força de lei que vale na hora, por 60 dias prorrogáveis por mais 60. Se o Congresso não aprovar nesse prazo, perde a validade.'],
   ['PLOA', 'PLOA', 'Projeto de Lei Orçamentária Anual: a proposta de orçamento do ano seguinte que o governo envia ao Congresso até 31 de agosto.'],
@@ -10842,7 +10842,7 @@ function analisar(g, texto, ctx) {
   // saida compativel
   const idN = (g && g.mes != null ? g.mes : 0);
   const prop = {
-    id: 'm2-' + Math.floor(hashStr(s + '|' + idN) * 1e9).toString(36) + '-' + idN, texto: String(texto == null ? '' : texto).trim(), topic: topic, cats: cats, inst: inst,
+    id: 'm2-' + Math.floor(hashStr(s + '|' + idN) * 1e9).toString(36) + '-' + idN, texto: String(texto == null ? '' : texto).trim(), topic: topic, cats: cats, inst: inst, jaVigente: A.jaVigente ? A.jaVigente.id : null,
     cost: F.cost, rev: F.rev, once: F.once, extra: F.extra, iv: iv, fx: fx, flags: flags,
     stf: { nivel: legal.nivel, parecer: legal.parecer }, tecnico: tecnico, bonus: {}, scale: 1, transiente: (() => { const ia = A.items.filter(i => i.sg || i.pledge); return ia.length > 0 && ia.every(i => i.o.id === 'fala'); })(), desidratada: 0, ai: false, vago: A.vago, privAlvo: privAlvo,
     entendimento: entend, calculo: calculo, viabilidade: via,
@@ -12510,7 +12510,10 @@ function destaquesVotacao(g, vot) {
   tr.sort((a, b) => b.sup - a.sup); su.sort((a, b) => a.sup - b.sup);
   return { traicoes: tr.slice(0, 8), nTraicoes: tr.length, surpresas: su.slice(0, 8), nSurpresas: su.length };
 }
-function quorum(inst) { return inst === 'PEC' ? { c: 308, s: 49 } : { c: 257, s: 41 }; }
+/* Quórum: PEC 3/5 das duas Casas; lei complementar e autorizações, maioria absoluta (257/41); lei ordinária e MP, maioria dos presentes.
+   Presença típica numa votação importante: ~470 deputados e ~75 senadores → 236 e 38 votos. */
+const QUORUM_SIMPLES = { c: 236, s: 38 };
+function quorum(inst, det) { return inst === 'PEC' ? { c: 308, s: 49 } : (det === 'LC' || det === 'AUT') ? { c: 257, s: 41 } : QUORUM_SIMPLES; }
 function precisaCongresso(inst) { return ['PL', 'PEC', 'MP'].includes(inst); }
 function custoEmenda(g, pid) {
   const P = PMAP[pid];
@@ -14435,6 +14438,8 @@ function limitaImpactoAprovacao(g, g0, a0) {
   for (const kk of Object.keys(g0)) if (g.groups[kk] != null) g.groups[kk] = clamp(g0[kk] + (g.groups[kk] - g0[kk]) * f, 1, 99);
 }
 function executaProposta(g, prop, resultado) {
+  // AUDITORIA v92: resposta a crise é gasto de emergência, não programa permanente: o custo anual vira despesa extraordinária do exercício (sai da conta na virada do ano)
+  if (prop && prop.fromEvento && resultado === 'aprovada' && prop.cost > 0 && !prop.permanente && !['PL', 'PEC'].includes(prop.inst)) prop = Object.assign({}, prop, { extra: (prop.extra || 0) + prop.cost, cost: 0, emergencia: true });
   // lote A3: crédito do BNDES a um produto não é transferência de renda: sem efeito direto em pobreza/IDH/homicídios (só o industrial, via icResolve)
   if (prop.icHook && prop.icHook.tipo === 'cred' && prop.fx) { const e0 = prop.fx.e || {}; prop.fx = Object.assign({}, prop.fx, { s: {}, e: Object.assign({}, e0, { pib: (e0.pib || 0) * .25, des: (e0.des || 0) * .25, ipca: (e0.ipca || 0) * .25 }) }); } // crédito: o impulso macro é uma fração (25%) do que o mesmo valor investido diretamente gera; o resto vem de icResolve/icTick
   const numInst = cfNum(g, prop);
@@ -14453,7 +14458,7 @@ function executaProposta(g, prop, resultado) {
     if (!medRev) medRev = medAchaRevogada(g, prop); // v3.6: proposta que reverte uma medida em vigor (texto livre) desfaz a original
     if (medRev) { medidaReverte(g, medRev, 1, 'revogada'); estOf(g).revogacoes = (estOf(g).revogacoes || 0) + 1; medNoticia(g, medRev, 'neu', `Revogação aprovada (${ato}): ${medRev.ato} deixa de valer e os efeitos já produzidos são em grande parte desfeitos`); }
     else if (repet) { est.repetidas = (est.repetidas || 0) + 1; g.feed.unshift({ mes: g.mes, src: 'carta', txt: `${ato} repete ${repet.ato} (${repet.nm}), que já está em vigor: nada muda` }); linhaAdd(g, 'MEDIDAS', `${ato} já aprovada: ${repet.ato} segue em vigor e o efeito não se soma`); }
-    else { try { medM = medidaCria(g, prop, k, ato); } catch (e) { medM = null; if (typeof console !== 'undefined') console.warn('medidaCria', e); } } // v3.6
+    else if (!ehCom) { try { medM = medidaCria(g, prop, k, ato); } catch (e) { medM = null; if (typeof console !== 'undefined') console.warn('medidaCria', e); } } // v3.6
     const espera = !!(medM && medM.estado === 'aguardando'); // v3.9: medida condicional ainda não disparou
     if (!medRev && !repet) {
     applyFx(g, medM ? medM.ag : (ehCom ? fxComunicacao(prop.fx) : prop.fx), k * (espera ? .1 : 1) * (prop.fromEvento && ehCom ? .25 : 1)); // LOTE C: resposta de crise só em palavras (silêncio, "acalmar") não rende bônus: 25% do efeito lido
@@ -14551,8 +14556,8 @@ function executaProposta(g, prop, resultado) {
 
 /* ============================== FIM DO MÊS ============================== */
 function sorteiaEvento(g) {
-  const cand = EVENTOS.filter(e => !e.so && !g.usados.slice(-6).includes(e.id));
-  const ws = cand.map(e => (e.w ? e.w(g) : 1) * (e.id === 'jogo' && !g.cfg.tracos.includes('torcedor') ? .4 : 1) * (e.grav === 'alta' && g.poderes ? 1 + Math.max(0, poderesTensao(g) - 50) / 60 : 1) * qvCriseW(g, e));
+  const rec12 = g.usados.slice(-12); const cand = EVENTOS.filter(e => !e.so && !g.usados.slice(-6).includes(e.id));
+  const ws = cand.map(e => (e.w ? e.w(g) : 1) * (e.id === 'jogo' && !g.cfg.tracos.includes('torcedor') ? .4 : 1) * (e.grav === 'alta' && g.poderes ? 1 + Math.max(0, poderesTensao(g) - 50) / 60 : 1) * qvCriseW(g, e) * Math.pow(.6, rec12.filter(x => x === e.id).length)); // AUDITORIA v92: crise repetida no último ano pesa menos
   let t = ws.reduce((a, b) => a + b, 0) * Math.random();
   for (let i = 0; i < cand.length; i++) { t -= ws[i]; if (t <= 0) return cand[i]; }
   return cand[0];
@@ -14565,7 +14570,8 @@ function sorteiaEvento(g) {
    - hiperinflação e confiança perto de zero derrubam alvo e teto do PIB;
    - estresse recupera −6/mês sem crise; a saúde zerada afasta por 1 mês antes do fim definitivo. */
 const EQ_DERROTA_AP = .2, EQ_COM_CANSACO = .25; // LOTE C: peso da derrota no plenário e cansaço por ato de comunicação além do 2º no mês
-const EQ_EXPFIS_LIM = .6, EQ_EXPFIS_K = 1.7; // LOTE C4: limite (% do PIB em 12 meses) e peso mensal do desgaste da expansão fiscal
+const EQ_EXPFIS_LIM = .6, EQ_EXPFIS_K = 1.3; // AUDITORIA v92: era 1,7 (gastador e populista caíam em 100% das partidas)
+// // LOTE C4: limite (% do PIB em 12 meses) e peso mensal do desgaste da expansão fiscal
 const EQ_IMP_MESES = 3, EQ_IMP_MESES_LEVE = 4;       // meses seguidos com risco >= 80 até a votação
 const EQ_ESC_SEM_CASO = .07;                          // redução extra do fator de decaimento do escândalo quando não há caso aberto
 const EQ_ESTRESSE_REC = 6;                            // recuperação passiva de estresse por mês sem crise
@@ -14684,7 +14690,8 @@ function fimDoMes(g) {
   const desT = 6.3 - (E.pib - 1) * .9 + B.des + (MX.des || 0); // desemprego de equilíbrio ~5,6% com PIB de 1,8% (PNAD 2026: 5,3%, mínima da série)
   E.des = clamp(E.des + (desT - E.des) * .12 + rnd(-.05, .05), 2, 25);
   try { tbMensal(g); } catch (e) { if (typeof console !== 'undefined') console.warn('tbMensal', e); }
-  const confT = 50 + prim / 14 - (g.stf - 30) * .2 - g.escandalo * .2 + fazTec + B.conf + (g.cfg.tracos.includes('tecnico') ? 5 : 0) + F3.dConf;
+  const primC = prim >= 0 ? prim / 14 : Math.max(prim, -280) / 14 * qvDif(g).mercado; // AUDITORIA v92: rombo pesa até −20 (×0,7 no Fácil, ×1,35 no Brutal)
+  const confT = 50 + primC - (g.stf - 30) * .2 - g.escandalo * .13 + fazTec + B.conf + (g.cfg.tracos.includes('tecnico') ? 5 : 0) + F3.dConf;
   E.conf = clamp(E.conf + (confT - E.conf) * .2, 0, 100);
   E.divida = clamp(E.divida + (-prim / 12) / 120 + ((E.selic * .8 - E.ipca - E.pib) / 100) * E.divida / 12, 15, 200);
   try {
@@ -14719,10 +14726,10 @@ function fimDoMes(g) {
   dg('mercado', (E.conf - 50) * .08 + (prim > -20 ? .5 : -.5)); dg('empresariado', (E.pib - 1.5) * .6 + (E.conf - 50) * .03);
   dg('agro', (E.dol - 5) * .3 + (g.dip.china - 55) * .02 + MX.agro); dg('sindicatos', -(E.des - 6) * .3); dg('gamers', mood * .4);
   f3Grupos(g, dg);
-  if (E.conf < 20) for (const k of GKEYS) dg(k, -(20 - E.conf) * .04); // EQUILÍBRIO v2: confiança abaixo de 20 pesa em todos os grupos (zero = −0,8 ponto/mês)
+  if (E.conf < 20) for (const k of GKEYS) dg(k, -(20 - E.conf) * .04 * qvDif(g).mercado); // EQUILÍBRIO v2: confiança abaixo de 20 pesa em todos os grupos (zero = −0,8 ponto/mês)
   // LOTE C4: expansão fiscal acelerada (gasto líquido de receitas subindo mais de 0,6% do PIB em 12 meses) vira preço, juro futuro e dólar no bolso de todos os grupos: o benefício do gasto dura pouco
   const expFis = Math.max(0, impFis - EQ_EXPFIS_LIM);
-  if (expFis > 0) { for (const k of GKEYS) dg(k, -expFis * EQ_EXPFIS_K); if (g.mes % 3 === 0 && expFis * EQ_EXPFIS_K >= .4) notas.push({ t: 'neg', x: `Expansão fiscal acelerada: o gasto líquido cresce ${fmt(impFis, 1)}% do PIB em 12 meses. Os preços e os juros futuros já pesam no bolso: cerca de −${fmt(expFis * EQ_EXPFIS_K, 1)} ponto de aprovação por mês.` }); }
+  if (expFis > 0) { for (const k of GKEYS) dg(k, -expFis * EQ_EXPFIS_K * qvDif(g).mercado); if (g.mes % 3 === 0 && expFis * EQ_EXPFIS_K >= .4) notas.push({ t: 'neg', x: `Expansão fiscal acelerada: o gasto líquido cresce ${fmt(impFis, 1)}% do PIB em 12 meses. Os preços e os juros futuros já pesam no bolso: cerca de −${fmt(expFis * EQ_EXPFIS_K, 1)} ponto de aprovação por mês.` }); }
   AP.mark('economia');
   dg('periferia', O.social * .012 + O.saude * .008); dg('universitarios', O.educacao * .012 + O.ambiente * .01); dg('sindicatos', O.educacao * .008 + O.saude * .005);
   AP.mark('medidas');
@@ -14753,7 +14760,7 @@ function fimDoMes(g) {
   AP.mark('crises');
   fase2Mensal(g, notas, AP);
   const retorno = eqRetorno(g); g.retornoMes = retorno; // EQUILÍBRIO v2: retorno de contratos, projetos e prioridade no Balanço
-  { const eD0 = g.escandalo; g.escandalo *= eqEscDecaimento(g); escReg(g, 'decaimento', g.escandalo - eD0); } g.escRef = g.escandalo; g.stf += (20 - g.stf) * .04; // EQUILÍBRIO v2: decai mais rápido sem caso aberto
+  { const eD0 = g.escandalo; g.escandalo *= eqEscDecaimento(g); escReg(g, 'decaimento', g.escandalo - eD0); } g.escRef = g.escandalo; g.stf += (20 - g.stf) * .06; // AUDITORIA v92: era .04. EQUILÍBRIO v2: decai mais rápido sem caso aberto
   tickProtesto(g, notas);
   checaProtestoCrise(g);
   AP.mark('protestos');
@@ -15338,7 +15345,7 @@ function retiraItem(g, id) {
   return false;
 }
 function projecaoItem(g, it) {
-  const prop = propDoItem(it); const q = quorum(prop.inst); const v = projetaVotos(g, prop);
+  const prop = propDoItem(it); const q = quorum(prop.inst, prop.instDetalhe); const v = projetaVotos(g, prop);
   const mc = v.totC - q.c, ms = v.totS - q.s; const pior = Math.min(mc, ms);
   return { v, q, mc, ms, passa: pior >= 0, folga: pior };
 }
@@ -17421,7 +17428,7 @@ function Wizard({ onStart, temSave, onContinuar, onTrocar, inicial, passoInicial
         ${cfg.real && html`<div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted"><span>Dados públicos; o mandato é simulação.</span>${cfg.real.url && html`<a className="inline-flex items-center gap-1 underline decoration-dotted underline-offset-2 hover:text-fg" href=${cfg.real.url} target="_blank" rel="noopener noreferrer">ver fonte <${Icon} n="ExternalLink" s=${12} /></a>`}</div>`}
         <div className="flex items-center gap-2 text-sm text-muted">${cfg.partido && PMAP[cfg.partido] && html`<${LogoPartido} bloco=${cfg.partido} tam=${28} />`}<span>${cfg.idade} anos · ${cfg.estado} · <span className=${cfg.partido ? '' : 'text-rubro'}>${nomePartido(cfg)}</span> · ${cfg.religiao} · ${cfg.origem}</span></div>
         <div className="flex flex-wrap gap-1">${cfg.tracos.map(t => { const T = TRACOS.find(x => x.k === t); return html`<${Tag} key=${t} cor="var(--ouro)">${T.em} ${T.nome}</${Tag}>`; })}<${Tag} cor=${modoAt.cor}>${modoAt.nome}</${Tag}></div>
-        <div className="text-sm">Vice: <b>${cfg.viceNome || 'a definir'}</b> <span className="text-muted">(${VICES.find(v => v.k === cfg.vice).nome})</span></div>
+        <div className="text-sm">Vice: <b>${cfg.viceNome || 'a definir'}</b> <span className="text-muted">· efeito no jogo: ${VICES.find(v => v.k === cfg.vice).desc}</span></div>
         ${prev && html`<div className="wz-prev">
           <div><div className="eyebrow">Aprovação</div><b className="num" style=${{ color: corAprov(prev.ap) }}>${fmt(prev.ap, 0)}%</b></div>
           <div><div className="eyebrow">Base</div><b className="num">${prev.cam.base}</b></div>
@@ -17859,7 +17866,7 @@ function CartaoPrioridade({ g, upd }) {
 function ArticularModal({ g, upd, item, onClose }) {
   const [cv, setCv] = useState([{ pid: '', oferta: 'conversa' }]);
   const prop = propDoItem(item);
-  const vot0 = projetaVotos(g, prop); const q = quorum(prop.inst);
+  const vot0 = projetaVotos(g, prop); const q = quorum(prop.inst, prop.instDetalhe);
   const indecisos = vot0.cam.filter(v => v.id !== g.cfg.partido && v.total >= 4 && v.frac > .1 && v.frac < .9).sort((a, b) => b.total * (1 - b.frac) - a.total * (1 - a.frac)).map(v => v.id);
   const draft = Object.assign({}, prop, { bonus: Object.assign({}, prop.bonus) });
   const usados = []; for (const c of cv) if (c.pid && !usados.includes(c.pid)) { usados.push(c.pid); draft.bonus[c.pid] = (draft.bonus[c.pid] || 0) + bonusOferta(g, c.pid, c.oferta); }
@@ -18161,7 +18168,7 @@ function previaTexto(g, texto, grav) {
     const pc = (x) => (ce ? (ce[x] || 0) * pe : (prop[x] || 0));
     R.custo = pc('cost') * k; R.rec = pc('rev') * k; R.net = R.custo - R.rec; R.extra = pc('extra') * k; R.once = pc('once') * k;
     R.inst = prop.inst; R.instNome = PV_INST[prop.inst] || prop.inst; R.cong = precisaCongresso(prop.inst); R.stf = prop.stf && prop.stf.nivel; R.vago = !!prop.vago;
-    if (R.cong) { const q = quorum(prop.inst), v = projetaVotos(c, prop); R.chance = chanceVotos(v.totC, q.c, 4.5) * chanceVotos(v.totS, q.s, 1.7); }
+    if (R.cong) { const q = quorum(prop.inst, prop.instDetalhe), v = projetaVotos(c, prop); R.chance = chanceVotos(v.totC, q.c, 4.5) * chanceVotos(v.totS, q.s, 1.7); }
     const m0 = pvMede(c), g0 = { ...c.groups };
     const ex = executaProposta(c, prop, 'aprovada'); // a função real de aplicação
     R.d = pvDelta(m0, pvMede(c)); R.grupos = pvGrupos(g0, c.groups); R.medida = ex && ex.medida ? ex.medida.pleno : null; R.repetida = !!prop.repetida;
@@ -18190,7 +18197,7 @@ const PV_CSS = `
 .cr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:16px}
 .cr-op{display:flex;flex-direction:column;gap:8px;padding:12px 14px;background:var(--panel);border:1px solid var(--line2);border-radius:12px;min-width:0}
 .cr-op.nao{border-style:dashed}
-.cr-h{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cr-h{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap;min-width:0}.cr-h>b{min-width:0;overflow-wrap:anywhere}.cr-h .tag,.cr-h>span{flex-shrink:0;white-space:nowrap}
 .cr-h b{font-family:var(--f-disp);font-size:17px;text-transform:uppercase;letter-spacing:.01em}
 .cr-tx{font-size:12px;color:var(--muted);line-height:1.35}
 .cr-row{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
@@ -18205,7 +18212,7 @@ const PV_CSS = `
 const fmtD = (v, d) => (v > 0 ? '+' : v < 0 ? '−' : '') + fmt(Math.abs(v), d);
 function PreviaOpcao({ P, g, ev, o, idx, semAcoes, decidir, ign }) {
   const cor = { baixo: 'var(--verde)', 'médio': 'var(--ouro)', alto: 'var(--rubro)' };
-  const btn = !ign && html`<button type="button" className="btn btn-ghost text-sm cr-btn" disabled=${semAcoes} title=${o.t} onClick=${() => decidir(o.t, true)}><${Icon} n="ChevronRight" s=${14} />${o.l}</button>`;
+  const btn = !ign && html`<div className="flex gap-2 cr-btn" style=${{ marginTop: 'auto' }}>${!P.cong && html`<button type="button" className="btn btn-gold text-sm flex-1 justify-center" disabled=${semAcoes} title=${'Assina já, sem abrir o parecer: ' + o.t} data-crise-direto=${idx} onClick=${() => decidir(o.t, true, false, null, null, false, true)}><${Icon} n="PenLine" s=${14} />Assinar</button>`}<button type="button" className=${'btn btn-ghost text-sm justify-center ' + (P.cong ? 'flex-1' : '')} disabled=${semAcoes} title=${o.t} onClick=${() => decidir(o.t, true)}><${Icon} n="ChevronRight" s=${14} />${P.cong ? o.l : 'Ver parecer'}</button></div>`;
   if (!P || !P.ok) return html`<div className="cr-op" data-crise-op=${ign ? 'ignorar' : idx}><div className="cr-h"><b>${ign ? 'Não agir' : o.l}</b></div>${!ign && html`<div className="cr-tx">${o.t}</div>`}${btn}</div>`;
   const inerte = !ign && (pvInerte(P) || pvNada(ev, o));
   const ind = PV_IND.filter(i => Math.abs(P.d[i.k] || 0) >= i.min);
@@ -18218,8 +18225,8 @@ function PreviaOpcao({ P, g, ev, o, idx, semAcoes, decidir, ign }) {
     <div className="cr-row" data-pv="custo">
       ${ign ? html`<span className="cr-ch">sem ato · sem custo fiscal</span>` : html`
         <span className="cr-ch ouro" data-pv-inst="1">${P.instNome}${P.cong ? ' · precisa do Congresso' + (P.chance != null ? ' (' + fmtChance(P.chance) + ')' : '') : ''}</span>
-        ${tem(P.custo) && html`<span className="cr-ch mau" data-pv-custo="1">gasto ${bi(P.custo)}/ano</span>`}
-        ${tem(P.rec) && html`<span className="cr-ch bom" data-pv-rec="1">receita ${bi(P.rec)}/ano</span>`}
+        ${tem(P.custo) && (P.custo > 0 ? (P.cong && P.instNome !== 'Medida Provisória' ? html`<span className="cr-ch mau" data-pv-custo="1">gasto ${bi(P.custo)}/ano</span>` : html`<span className="cr-ch mau" data-pv-custo="1" title="Gasto de emergência: pesa até o fim do ano fiscal">gasto ${bi(P.custo)} no ano</span>`) : html`<span className="cr-ch bom" data-pv-custo="-1">corte ${bi(-P.custo)}/ano</span>`)}
+        ${tem(P.rec) && (P.rec > 0 ? html`<span className="cr-ch bom" data-pv-rec="1">receita ${bi(P.rec)}/ano</span>` : html`<span className="cr-ch mau" data-pv-rec="-1">perda de receita ${bi(-P.rec)}/ano</span>`)}
         ${P.extra > .005 && html`<span className="cr-ch mau" data-pv-extra="1">único ${bi(P.extra)}</span>`}
         ${P.once > .005 && html`<span className="cr-ch bom" data-pv-once="1">receita única ${bi(P.once)}</span>`}
         ${!(tem(P.custo) || tem(P.rec) || P.extra > .005 || P.once > .005) && html`<span className="cr-ch" data-pv-custo="0">sem custo fiscal</span>`}`}
@@ -18413,7 +18420,7 @@ function alertasMesa(g) {
   const L = []; const ap = aprovacao(g), imp = riscoImpeachment(g), prim = primario(g), cam = bancadas(g, 'cam'), sen = bancadas(g, 'sen');
   if (imp >= 30) L.push({ k: 'imp', cor: corRisco(imp), ic: 'TriangleAlert', x: `Risco de impeachment em ${fmt(imp, 0)}%.` });
   if (ap < 30) L.push({ k: 'ap', cor: 'var(--rubro)', ic: 'TriangleAlert', x: `Aprovação em ${fmt(ap, 0)}%: abaixo do piso de 30%.` });
-  if (cam.base < 257) L.push({ k: 'cam', cor: 'var(--ambar)', ic: 'Landmark', x: `Base na Câmara: ${cam.base}/513, faltam ${257 - cam.base} para a maioria simples.` });
+  if (cam.base < 257) L.push({ k: 'cam', cor: 'var(--ambar)', ic: 'Landmark', x: `Base na Câmara: ${cam.base}/513, faltam ${257 - cam.base} para a maioria absoluta.` });
   if (sen.base < 41) L.push({ k: 'sen', cor: 'var(--ambar)', ic: 'Landmark', x: `Base no Senado: ${sen.base}/81, faltam ${41 - sen.base} para a maioria.` });
   if (g.eco.ipca > 4.5) L.push({ k: 'ipca', cor: 'var(--ambar)', ic: 'TrendingUp', x: `Inflação de ${fmt(g.eco.ipca)}%: acima do teto da meta (4,5%).` });
   if (prim < -60) L.push({ k: 'prim', cor: 'var(--ambar)', ic: 'TriangleAlert', x: `Déficit primário projetado de R$ ${fmt(-prim, 0)} bi no ano.` });
@@ -18533,7 +18540,7 @@ function SinaisVitais({ g, onConfig, encerrar, irEu }) {
         <div className="vit vit-acoes" data-vital="acoes" data-acoes=${g.acoes} title=${'Ações para usar nas outras abas (País, Mundo, Poder...) neste mês: ' + g.acoes + ' de ' + ACOES_MES + '. As propostas escritas têm contador próprio na Caixa de decisão.'}><div className="vit-k">Ações</div><div className="vit-v num" style=${{ color: g.acoes > 0 ? 'var(--fg)' : 'var(--rubro)' }}><span className="acoes-sq vit-sq" aria-hidden="true">${Array.from({ length: ACOES_MES }, (_, i) => html`<i key=${i} data-on=${i < g.acoes ? '1' : '0'}></i>`)}</span><span data-vital-v="acoes">${g.acoes} de ${ACOES_MES}</span></div></div>
         <div className="flex items-center gap-2">
         <button type="button" className="btn btn-ghost" style=${{ padding: '8px' }} onClick=${onConfig} aria-label="Configurações e motor de IA" title="Motor de IA e configurações"><${Icon} n="Settings" s=${18} /></button>
-        <button type="button" className="btn btn-pri btn-enc" onClick=${encerrar}><${Icon} n="CalendarDays" s=${16} /> Encerrar mês</button>
+        ${(() => { let U = []; try { U = pendenciasMesa(g).filter(p => p.urg >= 86); } catch (e) { U = []; } return html`<button type="button" className="btn btn-pri btn-enc" onClick=${encerrar} title=${U.length ? "Ainda em aberto: " + U.map(p => p.titulo + (p.extra ? " (" + p.extra + ")" : "")).join("; ") : "Encerrar o mês"} data-enc-urg=${U.length}><${Icon} n="CalendarDays" s=${16} /> Encerrar mês${U.length ? html`<span className="chip-badge num" style=${{ position: "static", marginLeft: 6, background: "var(--rubro)", color: "#fff", padding: "0 6px", borderRadius: 999, fontSize: 11 }} aria-label=${U.length + " pendência(s) urgente(s)"}>${U.length} urgente${U.length > 1 ? "s" : ""}</span>` : null}</button>`; })()}
         </div>
       </div>
     </div>
@@ -18730,6 +18737,7 @@ function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino 
   const corAc = g.props > 0 ? 'var(--ouro)' : 'var(--rubro)';
   return html`<div className="mesa">
     <div className="mesa-esq">
+      ${!elSemGoverno(g) && g.mes <= 3 && elSemReeleicao(g) && html`<p className="text-sm p-2 rounded mb-3" style=${{ background: "rgba(212,160,23,.12)" }} data-aviso-ultimo="1"><b>Último mandato:</b> ${g.cfg.nome} não pode concorrer em ${2026 + 4 * Math.ceil(g.mes / 48)} (CF art. 14 §5º). O personagem termina na posse do sucessor; você pode escolher um herdeiro em Poder > Eleições e seguir jogando com quem vencer.</p>`}
       ${elSemGoverno(g) && html`<section className="modo-leve" aria-labelledby="ml-t" data-modo-leve="1">
         <div className="eyebrow">Modo leve</div>
         <h2 id="ml-t" className="disp tit-l mt-1">Você joga como ${(g.el && g.el.pj && g.el.pj.nome) || 'oposição'}</h2>
@@ -18746,7 +18754,7 @@ function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino 
           <div className="flex flex-wrap items-center gap-3 justify-end">
             
             <div className="acoes-q" data-vital="props" data-props=${g.props} title="Propostas que você ainda pode escrever e enviar neste mês, e energia do presidente. As outras abas usam as ações (no topo).">
-              <span className="acoes-rot">propostas do mês</span>
+              <span className="acoes-rot">propostas escritas do mês</span>
               <span className="acoes-sq" role="img" aria-label=${g.props + ' de ' + PROPS_MES + ' propostas'}>${Array.from({ length: PROPS_MES }, (_, i) => html`<i key=${i} data-on=${i < g.props ? '1' : '0'}></i>`)}</span>
               <span className="num acoes-n" style=${{ color: corAc }} data-vital-v="props">${g.props} de ${PROPS_MES}</span>
               <span className="meter-mini" role="meter" aria-label="Energia" aria-valuenow=${Math.round(g.pes.energia)} aria-valuemin="0" aria-valuemax="100" title=${'Energia ' + fmt(g.pes.energia, 0)}><i style=${{ width: clamp(g.pes.energia, 0, 100) + '%', background: g.pes.energia < 25 ? 'var(--rubro)' : 'var(--verde)' }}></i></span>
@@ -20145,14 +20153,14 @@ function Congresso({ g, upd, decidir, votarItem }) {
   return html`<div className="flex flex-col gap-6" data-pd="congresso">
     <style>${GV_CSS}${PD_CSS}</style>
     <${PdKpis} area="congresso" itens=${[
-      { dado: 'camara', ic: 'Landmark', cor: okC ? 'var(--verde)' : 'var(--ambar)', k: 'Base na Câmara', v: Bc.base + '/513', s: okC ? 'maioria para leis (257)' : 'faltam ' + (257 - Bc.base) + ' para leis' },
+      { dado: 'camara', ic: 'Landmark', cor: okC ? 'var(--verde)' : 'var(--ambar)', k: 'Base na Câmara', v: Bc.base + '/513', s: okC ? 'maioria absoluta (257)' : 'faltam ' + (257 - Bc.base) + ' para a maioria absoluta' },
       { dado: 'senado', ic: 'Building2', cor: okS ? 'var(--verde)' : 'var(--ambar)', k: 'Base no Senado', v: Bs.base + '/81', s: okS ? 'maioria para leis (41)' : 'faltam ' + (41 - Bs.base) + ' para leis' },
       { dado: 'pauta', ic: 'ListChecks', cor: g.pauta.length ? 'var(--ouro)' : 'var(--muted)', k: 'Itens na pauta', v: g.pauta.length, s: g.pauta.length ? nPass + ' com votos hoje' : 'nada tramitando' },
       { dado: 'ultvoto', ic: uv ? (uv.derrota ? 'ThumbsDown' : 'ThumbsUp') : 'Vote', cor: uv ? (uv.derrota ? 'var(--rubro)' : 'var(--verde)') : 'var(--muted)', k: 'Último voto', sm: true, v: uv ? (uv.derrota ? 'Derrota' : 'Aprovada') : 'Sem votação', s: uv ? dataCurta(uv.mes) : 'ainda não houve' },
       { dado: 'relacao', ic: 'Handshake', cor: corAtr(relMed), k: 'Relação média', v: fmt(relMed, 0), s: 'com as bancadas, por cadeira' }
     ]} />
     <div className="pd-two">
-      <${PdSec} eyebrow="Congresso · plenário" titulo="Plenário" dado="plenario" id="pl-t" dir="esq" tip=${'Leis e MPs exigem ' + (casa === 'cam' ? '257' : '41') + ' votos; PECs, ' + (casa === 'cam' ? '308' : '49') + ' em dois turnos. Impeachment abre com 342 deputados e cassa com 54 senadores. Passe o cursor sobre um assento para ver o parlamentar.'}
+      <${PdSec} eyebrow="Congresso · plenário" titulo="Plenário" dado="plenario" id="pl-t" dir="esq" tip=${'Leis e MPs exigem a maioria dos presentes (cerca de ' + (casa === 'cam' ? '236' : '38') + ' votos); leis complementares, ' + (casa === 'cam' ? '257' : '41') + '; PECs, ' + (casa === 'cam' ? '308' : '49') + ' em dois turnos. Impeachment abre com 342 deputados e cassa com 54 senadores. Passe o cursor sobre um assento para ver o parlamentar.'}
         right=${html`<div className="pd-seg" role="group" aria-label="Casa legislativa">${[['cam', 'Câmara · 513'], ['sen', 'Senado · 81']].map(([k, l]) => html`<button key=${k} type="button" onClick=${() => setCasa(k)} aria-pressed=${casa === k} className=${'btn btn-ghost ' + (casa === k ? '!border-ouro text-ouro' : '')}>${l}</button>`)}</div>`}>
         <div className="flex flex-col gap-4">
           <div className="flex justify-center"><${Hemiciclo} g=${g} casa=${casa} /></div>
@@ -24482,9 +24490,11 @@ const DIT_PASSOS = [
   { k: 'midia', fr: 'Imprensa e redes', ic: 'Ban', t: 'Fechar jornais e TVs críticos', req: 'censura', d: 'Concessões cassadas e redações lacradas. Só fica a imprensa amiga.', dem: 15, f: (g) => { g.escandalo = clamp(g.escandalo * .6, 0, 100); dgrp(g, 'universitarios', -4); dgrp(g, 'classemedia', -3); ditDip(g, -8); }, nt: 'Governo cassa concessões e fecha veículos críticos' },
   { k: 'perseguir', fr: 'Oposição e eleições', ic: 'UserX', t: 'Perseguir e prender líderes da oposição', d: 'Inquéritos e prisões contra adversários. A rua reage.', dem: 15, f: (g) => { ditRelOpos(g, -10); ditEnsure(g).revolta += 12; ditDip(g, -6); }, nt: 'Líderes da oposição são presos em operação ordenada pelo governo' },
   { k: 'adiar', fr: 'Oposição e eleições', ic: 'CalendarX', t: 'Adiar as eleições "por segurança"', req: 'dem55', d: 'Calendário eleitoral suspenso. Só com a democracia já abaixo de 55.', dem: 20, f: (g) => { ditEnsure(g).revolta += 10; ditDip(g, -10); }, nt: 'Governo suspende o calendário eleitoral "por razões de segurança"' },
-  { k: 'militares', fr: 'Forças Armadas e polícia', ic: 'Medal', t: 'Agradar os militares', rep: true, d: 'Soldos, cargos e verbas para a caserna (R$ 5 bi). Apoio militar +12.', dem: 3, f: (g) => { const D = ditEnsure(g); D.mil = clamp(D.mil + 12, 0, 100); g.fiscal.extra += 5; dgrp(g, 'militares', 3); }, nt: 'Governo anuncia reajuste e cargos para militares' },
-  { k: 'policia', fr: 'Forças Armadas e polícia', ic: 'Shield', t: 'Usar a polícia contra protestos', rep: true, d: 'Repressão: a revolta cai agora, mas a democracia e a imagem pagam.', dem: 6, f: (g) => { const D = ditEnsure(g); D.revolta = Math.max(0, D.revolta - 18); dgrp(g, 'periferia', -2); dgrp(g, 'universitarios', -3); ditDip(g, -4); }, nt: 'Polícia reprime protestos contra o governo' }
+  { k: 'militares', fr: 'Forças Armadas e polícia', ic: 'Medal', t: 'Agradar os militares', rep: true, d: 'Soldos, cargos e verbas para a caserna (R$ 5 bi). Apoio militar +12 na primeira vez; cada nova rodada rende menos.', dem: 3, f: (g) => { const D = ditEnsure(g); const n = (D.feitos.militares || 1) - 1; D.mil = clamp(D.mil + Math.max(3, 12 * Math.pow(.6, n)), 0, 100); g.fiscal.extra += 5; dgrp(g, 'militares', 3); }, nt: 'Governo anuncia reajuste e cargos para militares' },
+  { k: 'policia', fr: 'Forças Armadas e polícia', ic: 'Shield', t: 'Usar a polícia contra protestos', rep: true, d: 'Repressão: a revolta cai agora (cada vez menos), mas a democracia e a imagem pagam.', dem: 6, f: (g) => { const D = ditEnsure(g); const n = (D.feitos.policia || 1) - 1; D.revolta = Math.max(0, D.revolta - Math.max(4, 18 * Math.pow(.7, n))); ditDip(g, -2); dgrp(g, 'periferia', -2); dgrp(g, 'universitarios', -3); ditDip(g, -4); }, nt: 'Polícia reprime protestos contra o governo' }
 ];
+/* hash com mistura final (fmix32): o FNV puro varia pouco nos bits altos quando só o fim do texto muda (mês 12, 13, 14…), o que travava sorteios mensais */
+function hashMix(s) { let x = Math.round(hashStr(s) * 4294967295) >>> 0; x ^= x >>> 16; x = Math.imul(x, 0x85ebca6b); x ^= x >>> 13; x = Math.imul(x, 0xc2b2ae35); x ^= x >>> 16; return (x >>> 0) / 4294967296; }
 function ditEnsure(g) { return g.dit = g.dit || { dem: 100, mil: 45, feitos: {}, revolta: 0, regime: false, golpeMes: null, golpeFalhou: false, abertura: null, inicio: null }; }
 const ditRegime = (g) => !!(g && g.dit && g.dit.regime);
 function ditRelOpos(g, v) { for (const P of PARTIDOS) if (P.id !== g.cfg.partido && status(g.parties[P.id].rel) === 'opos') { g.parties[P.id].rel = clamp(g.parties[P.id].rel + v, 0, 99); g.parties[P.id].relS = clamp(g.parties[P.id].relS + v, 0, 99); } }
@@ -24499,11 +24509,11 @@ function ditFaz(g, k) {
   return { ok: true, msg: P.t + ': democracia em ' + fmt(D.dem, 0) + '.' };
 }
 function ditFazRegime(g, k) { const P = DIT_PASSOS.find(x => x.k === k); if (!P || !P.rep) return { ok: false, msg: 'Indisponível.' }; if (g.acoes <= 0) return { ok: false, msg: 'Sem ações neste mês.' }; const D = ditEnsure(g); D.feitos[k] = (D.feitos[k] || 0) + 1; P.f(g); g.acoes--; g.feed.unshift({ mes: g.mes, src: 'antag', txt: P.nt.toUpperCase() }); return { ok: true, msg: P.t + ': feito.' }; }
-function ditGolpeChance(g) { const D = ditEnsure(g); const ap = aprovacao(g); const oci = ((g.dip && g.dip.eua != null ? g.dip.eua : 50) + (g.dip && g.dip.ue != null ? g.dip.ue : 50)) / 2; return clamp(.1 + (D.mil - 50) * .012 + (60 - D.dem) * .009 + (ap - 40) * .006 + (oci - 50) * -.002 - (D.golpeFalhou ? .15 : 0), .03, .92); }
+function ditGolpeChance(g) { const D = ditEnsure(g); const ap = aprovacao(g); const oci = ((g.dip && g.dip.eua != null ? g.dip.eua : 50) + (g.dip && g.dip.ue != null ? g.dip.ue : 50)) / 2; return clamp(.1 + (D.mil - 50) * .012 + (60 - D.dem) * .009 + (ap - 40) * .006 + (oci - 50) * -.002 - (D.golpeFalhou ? .15 : 0), .03, .6); }
 function ditGolpe(g, notas) {
   const D = ditEnsure(g); if (D.regime || D.dem > 60 || g.acoes <= 0) return { ok: false, msg: D.dem > 60 ? 'As instituições ainda são fortes demais: mine a democracia antes (abaixo de 60).' : 'Indisponível agora.' };
   const p = ditGolpeChance(g); g.acoes = 0; D.golpeMes = g.mes;
-  const dado = hashStr(String(g.seed) + 'golpe' + g.mes);
+  const dado = hashMix(String(g.seed) + 'golpe' + g.mes);
   const ap = (v) => { for (const k of GKEYS) dgrp(g, k, v); };
   if (dado < p) {
     D.regime = true; D.inicio = g.mes; D.dem = Math.min(D.dem, 8); D.mil = clamp(D.mil + 5, 0, 100); ditDip(g, -20);
@@ -24529,13 +24539,13 @@ function ditMensal(g, notas) {
   // sanções e isolamento
   g.eco.pib -= .04; g.eco.risco = clamp(g.eco.risco + 6, 60, 2000); g.eco.conf = clamp(g.eco.conf - .6, 0, 100); g.eco.dol = clamp(g.eco.dol + .02, 2.5, 12); ditDip(g, -1);
   // revolta e caserna
-  D.revolta = clamp(D.revolta + clamp((45 - ap) / 6, -3, 6) + (g.soc.pob > 30 ? 1 : 0), 0, 100);
-  D.mil = clamp(D.mil - 1, 0, 100);
+  D.revolta = clamp(D.revolta + clamp((45 - ap) / 6, -3, 6) + (g.soc.pob > 30 ? 1 : 0) + (g.eco.divida >= 150 || g.eco.pib < -3 ? 2 : 0) + Math.max(0, (g.mes - (D.inicio || g.mes)) - 24) * .08, 0, 100); // AUDITORIA v92: colapso econômico e o tempo corroem o regime
+  D.mil = clamp(D.mil - 1 - (ap < 25 ? 1 : 0), 0, 100);
   if (D.revolta >= 60 && D.revolta < 100) notas.push({ t: 'neg', x: 'Protestos tomam as capitais contra o regime (revolta ' + fmt(D.revolta, 0) + ' de 100).' });
   if (D.abertura && g.mes - D.abertura.mes >= 6) { ditFim(g, 'abertura'); return; }
   if (D.revolta >= 100) { ditFim(g, 'dit_queda'); return; }
   const pm = D.mil < 35 ? (35 - D.mil) / 150 : 0, pl = D.abertura && D.mil < 40 ? .06 : 0;
-  if (hashStr(String(g.seed) + 'gmil' + g.mes) < pm + pl) { ditFim(g, 'golpe_militar'); return; }
+  if (hashMix(String(g.seed) + 'gmil' + g.mes) < pm + pl) { ditFim(g, 'golpe_militar'); return; }
 }
 /* ---------- esquemas de corrupção (escolha do jogador; ficção do jogo, com selo "simulado") ----------
    Cada esquema custa 1 ação e deixa rastro. O rastro acumula e pode ser descoberto: reportagem -> CPI -> operação da PF -> denúncia (com pedido de impeachment).
@@ -24573,8 +24583,13 @@ function esqMensal(g, notas) {
   const E = g.eu && g.eu.esq; if (!E) return;
   if (E.mensalao && E.mensalao.ate < g.mes) E.mensalao = null;
   E.rastro = clamp(E.rastro * .99, 0, 100);
-  if (E.fase >= 4 || E.rastro < 5) return;
-  const h = hashStr(String(g.seed) + 'esq' + g.mes + E.feitos);
+  if (E.fase >= 4) { // AUDITORIA v92: denunciado, o presidente sangra todo mês enquanto o processo corre (vale também no Fácil)
+    if (!(E.abafa >= g.mes)) { g.escandalo = clamp(g.escandalo + 1.5, 0, 100); for (const k of GKEYS) dgrp(g, k, -.3); }
+    if ((g.mes - (E.faseMes || g.mes)) % 6 === 5 && g.oposicao && !ditRegime(g)) g.oposicao.pedidoImp = g.mes;
+    return;
+  }
+  if (E.rastro < 5) return;
+  const h = hashMix(String(g.seed) + 'esq' + g.mes + '|' + E.feitos);
   if (h >= esqRiscoMes(g)) return;
   E.fase++; E.faseMes = g.mes;
   const ap = (v) => { for (const k of GKEYS) dgrp(g, k, v); };
@@ -26354,7 +26369,7 @@ function IndDetalhe({ g, p, decidir, fechar, upd }) {
   const v = acao === 'inv' || acao === 'cred' ? bi : icArred(base * (acao === 'isen' ? 1 : pct / 100));
   const texto = icTextoAcao(p, acao, v);
   const motor = useMemo(() => { try { return analisaLocal(g, texto) || null; } catch (e) { return null; } }, [g.mes, texto]);
-  const prev = useMemo(() => { try { if (!motor || !precisaCongresso(motor.inst)) return null; const vt = projetaVotos(g, motor), q = quorum(motor.inst); return { vt, q, ch: chanceVotos(vt.totC, q.c, 4.5) * chanceVotos(vt.totS, q.s, 1.7) }; } catch (e) { return null; } }, [g.mes, texto, motor]);
+  const prev = useMemo(() => { try { if (!motor || !precisaCongresso(motor.inst)) return null; const vt = projetaVotos(g, motor), q = quorum(motor.inst, motor.instDetalhe); return { vt, q, ch: chanceVotos(vt.totC, q.c, 4.5) * chanceVotos(vt.totS, q.s, 1.7) }; } catch (e) { return null; } }, [g.mes, texto, motor]);
   const dir = acao === 'inv' || acao === 'cred';
   const sentidoOk = !!motor && !motor.vago && (dir ? motor.cost > 0 : motor.rev < 0);
   const semAcoes = !icAcaoOk(g);
@@ -26928,14 +26943,14 @@ Object.assign(GAVETA_TIT, { comercio: 'Comércio exterior' });
 
 /* ============================== EU: VIDA PESSOAL ============================== */
 function EuResumo({ g }) {
-  const P = g.pes; const ap = aprovacao(g); const real = g.cfg.real; const B = g.eu.bast; const o = real ? null : bastOferta(g);
-  const nivel = real ? 'indisponível' : B.caixa <= 0 ? 'sem rastro' : B.expo < 25 ? 'sem ruído' : B.expo < 50 ? 'alguns sinais' : 'rastro visível';
+  const P = g.pes; const ap = aprovacao(g); const B = g.eu.bast || { caixa: 0, expo: 0, inimigos: 0 }; const o = bastOferta(g); const E = g.eu.esq;
+  const nivel = E && E.fase ? ESQ_FASES[E.fase] : E && E.rastro >= 10 ? 'rastro ' + fmt(E.rastro, 0) : B.caixa <= 0 ? 'sem rastro' : B.expo < 25 ? 'sem ruído' : B.expo < 50 ? 'alguns sinais' : 'rastro visível';
   return html`<section aria-label="Resumo pessoal" data-gv="eu-resumo"><div className="gv-kpis">
     <${GvKpi} dado="eu-energia" ic="Zap" cor=${P.energia < 30 ? 'var(--rubro)' : 'var(--verde)'} k="Energia" v=${fmt(P.energia, 0)} s=${P.energia < 30 ? 'baixa: descanse' : 'de 100'} />
     <${GvKpi} dado="eu-saude" ic="HeartPulse" cor=${corAprov(P.saude)} k="Saúde" v=${fmt(P.saude, 0)} s=${P.saude < 40 ? 'a equipe pede descanso' : 'de 100'} />
 
     <${GvKpi} dado="eu-aprov" ic="Heart" cor=${corAprov(P.aprovPes)} k="Aprovação pessoal" v=${fmt(P.aprovPes, 0) + '%'} s=${'governo ' + fmt(ap, 0) + '%'} />
-    <${GvKpi} dado="eu-bast" ic="EyeOff" cor=${o ? 'var(--ouro)' : 'var(--muted)'} k="Bastidores" sm=${true} v=${o ? 'Proposta na mesa' : nivel} s=${real ? 'só com personagem fictício' : B.inv ? 'investigação em curso' : B.inimigos + ' inimigos feitos'} />
+    <${GvKpi} dado="eu-bast" ic="EyeOff" cor=${o ? 'var(--ouro)' : 'var(--muted)'} k="Bastidores" sm=${true} v=${o ? 'Proposta na mesa' : nivel} s=${E && E.fase ? 'investigação em curso' : B.inv ? 'investigação em curso' : B.inimigos + ' inimigos feitos'} />
   </div></section>`;
 }
 const MEDIDAS_PES = (g) => { const P = g.pes; return [['Saúde', P.saude, corAprov(P.saude), 'HeartPulse'], ['Energia', P.energia, 'var(--verde)', 'Zap'], ['Humor', P.humor, corAprov(P.humor), 'Smile']]; };
@@ -27391,7 +27406,7 @@ function BlocoCusto({ prop, congresso }) { // v3.8
   const ganho = net < -.005, custoNet = net > .005; // v4: economia pequena (R$ 14 mi) não vira traço
   const unico = pc('extra') ? bi(pc('extra') * k) + ' de despesa única' : pc('once') ? '+' + bi(pc('once')) + ' de receita única' : null;
   const rot = ganho ? 'Ganho anual' : custoNet ? (rec > 0 ? 'Custo anual líquido' : 'Custo anual') : 'Impacto fiscal anual';
-  const tram = congresso ? (prop.inst === 'PEC' ? 'PEC: 308 deputados e 49 senadores' : prop.instDetalhe === 'LC' ? 'PLP: 257 deputados e 41 senadores' : prop.instDetalhe === 'AUT' ? 'Autorização: 257 deputados e 41 senadores' : INST_NOME[prop.inst] + ': 257 deputados e 41 senadores') : 'Sem votação no Congresso';
+  const tram = congresso ? (prop.inst === 'PEC' ? 'PEC: 308 deputados e 49 senadores' : prop.instDetalhe === 'LC' ? 'PLP: 257 deputados e 41 senadores' : prop.instDetalhe === 'AUT' ? 'Autorização: 257 deputados e 41 senadores' : INST_NOME[prop.inst] + ': maioria dos presentes (cerca de 236 deputados e 38 senadores)') : 'Sem votação no Congresso';
   return html`<div className="p-4 rounded bg-black/5 flex flex-wrap items-end gap-x-8 gap-y-2" data-secao="bloco-custo">
     <div><div className="text-[10px] uppercase tracking-widest opacity-60">${rot}</div>
       <div className="num text-3xl font-extrabold" style=${{ color: ganho ? '#2fd27a' : custoNet ? '#ff5a4e' : 'inherit' }}>${ganho ? bi(-net) : custoNet ? bi(net) : '—'}</div></div>
@@ -27492,7 +27507,7 @@ function ModalDecisao({ dec, g, upd, setDec, onClose, votarItem }) {
     ${dec.cancel && html`<button className="btn btn-ghost text-sm mt-2" onClick=${dec.cancel}>Usar o motor local agora</button>`}
   </div></${Modal}>`;
   const prop = dec.prop;
-  const q = quorum(prop.inst);
+  const q = quorum(prop.inst, prop.instDetalhe);
   const congresso = precisaCongresso(prop.inst);
   const votos = projetaVotos(g, prop);
   const passa = votos.totC >= q.c && votos.totS >= q.s;
@@ -27555,6 +27570,7 @@ function ModalDecisao({ dec, g, upd, setDec, onClose, votarItem }) {
         </div>`}
 
       </div>` : html`<div className="p-3 rounded bg-black/5 text-sm" data-secao="chance-aprovar">Esta medida não passa pelo Congresso: vale com a assinatura. As bancadas reagem na opinião pública e nas relações com o governo.</div>`}
+      ${prop.jaVigente && congresso && html`<div className="p-3 rounded text-sm flex flex-wrap items-center gap-3" style=${{ background: 'rgba(212,160,23,.14)' }} data-ja-vigente="1"><span className="flex-1 min-w-0"><b>Isso já é lei.</b> Votar de novo não muda nada e, se a votação perder, vira manchete de derrota. Dá para só divulgar a medida que já existe.</span><button type="button" className="btn btn-gold btn-sm" data-ja-vigente-com="1" onClick=${() => setDec(d => Object.assign({}, d, { prop: Object.assign({}, d.prop, { inst: 'COM', instDetalhe: null, tecnico: 'Medida já em vigor: o governo só a divulga, sem votação. ' + (d.prop.tecnico || '') }) }))}>Divulgar sem votação</button></div>`}
       <${MinistroSobDemanda} dec=${dec} setDec=${setDec} g=${g} upd=${upd} onClose=${onClose} />
       <${ParecerEspecialista} prop=${prop} g=${g} votos=${votos} q=${q} congresso=${congresso} so=${true} />
       <${BaseJuridica} prop=${prop} g=${g} />
@@ -31526,7 +31542,7 @@ function elGerMensal(g, notas) {
   if (rel === 43 && ger.sucAuto) { ger.sucAuto = false; const s = ger.cands[0]; notas.push({ t: 'neu', x: `Convenção: ${s.nome} (${s.sigla}) é o candidato do governo à sucessão.` }); }
   if (rel >= 37 && rel <= 45) elPesqMes(g, ger);
   if (rel === 46) { ger.pesq.unshift(elPesquisa(g, ger, { k: 0, so2: true })); ger.pesq.unshift(elPesquisa(g, ger, { k: 1, so2: true })); }
-  for (const d of ger.deb) if (d.estado === 'agendado' && rel > d.rel) { d.estado = 'perdido'; if (ger.meuId && ger.meuId === (E.pj ? ger.cands.find(c => c.persId === E.pj.id) : ger.cands[0]) .id) { ger.cs[ger.meuId].mom -= .25; notas.push({ t: 'neg', x: `Você faltou ao ${d.nome}: a cadeira vazia rendeu críticas.` }); } }
+  for (const d of ger.deb) if (d.estado === 'agendado' && rel > d.rel) { d.estado = 'perdido'; if (ger.meuId && ger.meuId === (E.pj ? ger.cands.find(c => c.persId === E.pj.id) : ger.cands[0]) .id) { ger.cs[ger.meuId].mom -= .1; notas.push({ t: 'neg', x: `Você faltou ao ${d.nome}: a cadeira vazia rendeu críticas.` }); } }
   if (rel === 46) elGerApura1(g, ger, notas);
   else if (rel === 47) elGerApura2(g, ger, notas);
 }
@@ -33569,7 +33585,7 @@ function ElFim({ g, upd, reiniciar }) {
   const motivo = o.motivo || o.tipo;
   const titulo = motivo === 'sucessao' ? 'Fim do mandato: você passou a faixa' : motivo === 'limite' ? 'Fim do personagem: limite de mandatos' : motivo === 'derrota' ? 'Derrotado nas urnas' : motivo === 'impeachment' ? 'Impeachment' : motivo === 'saude' ? (o.morte || g.morte ? 'Morte no cargo' : 'Afastamento') : motivo === 'abertura' ? 'Abertura: o regime acabou' : motivo === 'dit_queda' ? 'Derrubado pelas ruas' : motivo === 'golpe_militar' ? 'Deposto pelos militares' : motivo === 'eleicao' ? (o.reeleito ? 'Reeleito' : 'Derrotado nas urnas') : 'Fim do personagem';
   const sob = leg.nome;
-  const texto = motivo === 'sucessao' ? `${sob} cumpriu o mandato e não concorreu à reeleição${o.venc ? '; a eleição foi vencida por ' + o.venc.nome + ' (' + o.venc.sigla + ')' : ''}.` : motivo === 'limite' ? `${sob} cumpriu dois mandatos consecutivos e não pode concorrer de novo (CF art. 14 §5º).` : motivo === 'derrota' ? `${sob} perdeu a eleição${o.venc ? ' para ' + o.venc.nome + ' (' + o.venc.sigla + '), com ' + fmt(o.venc.pct * 100, 1) + '% dos votos válidos' : ''}.` : motivo === 'impeachment' ? `O Senado aprovou o impeachment de ${sob}.` : motivo === 'saude' ? (o.morte || g.morte ? `${sob} morreu no exercício do cargo.` : `Por motivo de saúde, ${sob} se afasta do cargo.`) : motivo === 'abertura' ? `${sob} negociou a abertura: anistia, Congresso reaberto e eleições livres. O regime durou ${Math.max(1, (o.mes || g.mes) - ((g.dit && g.dit.inicio) || g.mes))} meses (simulado).` : motivo === 'dit_queda' ? `Protestos tomaram o país e as tropas se recusaram a atirar. ${sob} deixou o palácio e o regime caiu (simulado).` : motivo === 'golpe_militar' ? `Os comandantes perderam a paciência e depuseram ${sob}. Uma junta militar assume (simulado).` : `Fim do mandato de ${sob}.`;
+  const texto = motivo === 'sucessao' ? `${sob} cumpriu o mandato e não concorreu à reeleição${o.venc ? '; a eleição foi vencida por ' + o.venc.nome + ' (' + o.venc.sigla + ')' : ''}.` : motivo === 'limite' ? `${sob} cumpriu dois mandatos consecutivos e não pode concorrer de novo (CF art. 14 §5º).${o.venc ? ' A sucessão foi vencida por ' + o.venc.nome + ' (' + o.venc.sigla + ')' + (o.venc.pct ? ', com ' + fmt(o.venc.pct * 100, 1) + '% dos votos válidos' : '') + '.' : ''}` : motivo === 'derrota' ? `${sob} perdeu a eleição${o.venc ? ' para ' + o.venc.nome + ' (' + o.venc.sigla + '), com ' + fmt(o.venc.pct * 100, 1) + '% dos votos válidos' : ''}.` : motivo === 'impeachment' ? `O Senado aprovou o impeachment de ${sob}.` : motivo === 'saude' ? (o.morte || g.morte ? `${sob} morreu no exercício do cargo.` : `Por motivo de saúde, ${sob} se afasta do cargo.`) : motivo === 'abertura' ? `${sob} negociou a abertura: anistia, Congresso reaberto e eleições livres. O regime durou ${Math.max(1, (o.mes || g.mes) - ((g.dit && g.dit.inicio) || g.mes))} meses (simulado).` : motivo === 'dit_queda' ? `Protestos tomaram o país e as tropas se recusaram a atirar. ${sob} deixou o palácio e o regime caiu (simulado).` : motivo === 'golpe_militar' ? `Os comandantes perderam a paciência e depuseram ${sob}. Uma junta militar assume (simulado).` : `Fim do mandato de ${sob}.`;
   const alvoPosse = o.posse; const presNome = alvoPosse ? alvoPosse.nome : g.cfg.nome;
   const todos = useMemo(() => elPessoas(), []);
   const sugest = useMemo(() => { const dir = elDirIdeo(leg.bloco && PMAP[leg.bloco] ? ideoDoPartido((PMAP[leg.bloco].membros || ['PSD'])[0]) : g.cfg.ideo); return todos.map(p => ({ p, s: .55 * elPopDe(g, p.id).rec + .45 * elPopDe(g, p.id).apr - Math.abs((EL_CAMP_DIR[p.camp] || 0) - dir) * 25 + (p.cargo === 'dep' ? -15 : 0) })).sort((a, b) => b.s - a.s).slice(0, 8).map(x => x.p); }, [g.mes]);
@@ -34367,7 +34383,7 @@ function minMensal(g, notas) {
 function minPrev(g, e) {
   const key = e.id + '|' + g.mes + '|' + Math.round(aprovacao(g)) + '|' + Math.round(compMin(g.cfg, e.pk) * 100) + '|' + Math.round((g.parties[g.cfg.partido] || {}).rel || 0);
   let c = MIN_CACHE.get(key); if (c) return c;
-  const pr = analisaLocal(g, e.texto); const q = quorum(pr.inst); const cong = precisaCongresso(pr.inst);
+  const pr = analisaLocal(g, e.texto); const q = quorum(pr.inst, pr.instDetalhe); const cong = precisaCongresso(pr.inst);
   let v = null; if (cong) { try { v = projetaVotos(g, pr); } catch (err) { } }
   c = { cost: pr.cost * pr.scale, rev: pr.rev * pr.scale, once: pr.once, extra: pr.extra * pr.scale, inst: pr.inst, topic: pr.topic, vago: !!pr.vago, stf: pr.stf.nivel, esp: pr.qualidade ? pr.qualidade.especificidade : null, pastaExec: pr.pastaExec, q, cong, totC: v ? v.totC : null, totS: v ? v.totS : null, passa: v ? (v.totC >= q.c && v.totS >= q.s) : null };
   if (MIN_CACHE.size > 160) MIN_CACHE.clear();
@@ -34666,8 +34682,9 @@ function App() {
   }, [jaG]);
 
   const [refino, setRefino] = useState(null); // texto devolvido pelo parecer à caixa de decisão
-  const decidir = async (texto, fromEvento, fromProtesto, trHook, icHook, daCaixa) => {
+  const decidir = async (texto, fromEvento, fromProtesto, trHook, icHook, daCaixa, direto) => {
     if (!g || (daCaixa ? g.props <= 0 : g.acoes <= 0) || elSemGoverno(g)) return;
+    if (direto) { const p0 = analisaLocal(gRef.current, texto); minMarca(p0, texto); gvMarca(gRef.current, p0, texto); p0.fromEvento = !!fromEvento; tbMarca(p0, texto); if (!precisaCongresso(p0.inst)) { setDec({ stage: 'resultado', prop: p0, direto: true, resultado: resolver(gRef.current, p0, false, quorum(p0.inst, p0.instDetalhe)) }); return; } }
     const marca = (prop) => { if (daCaixa) prop.daCaixa = true; minMarca(prop, texto); gvMarca(gRef.current || g, prop, texto); prop.fromEvento = !!fromEvento; tbMarca(prop, texto); if (trHook) trMarcaProp(gRef.current || g, prop, trHook); if (icHook) prop.icHook = icHook; if (fromProtesto) ajustaConcessao(prop, gRef.current.protesto); return prop; };
     if (ia.motor === 'local') {
       const prop = marca(analisaLocal(g, texto));
@@ -34695,7 +34712,7 @@ function App() {
       setAviso('IA indisponível (' + (code || (e && e.message) || 'erro') + '). Parecer do motor local.');
     }
   };
-  const votarItem = (id) => { const gg = gRef.current; const it = gg.pauta.find(x => x.id === id); if (!it) return; { const b = gvBloqPEC(gg, it.prop); if (b) { setAviso(b.msg); return; } } const prop = propDoItem(it); setDec({ stage: 'votando', prop, item: id, plano: decideVotacao(gg, prop, true, quorum(prop.inst)) }); };
+  const votarItem = (id) => { const gg = gRef.current; const it = gg.pauta.find(x => x.id === id); if (!it) return; { const b = gvBloqPEC(gg, it.prop); if (b) { setAviso(b.msg); return; } } const prop = propDoItem(it); setDec({ stage: 'votando', prop, item: id, plano: decideVotacao(gg, prop, true, quorum(prop.inst, prop.instDetalhe)) }); };
   const encerrarMes = () => { const n = structuredClone(gRef.current); const r = fimDoMes(n); gRef.current = n; setG(n); setRelMes(r); };
   // volta à tela inicial sem apagar o save: o botão Continuar retoma do mesmo ponto
   const voltarMenu = () => { const gg = gRef.current; if (gg) { gravaSave(gg); setSave(gg); } setG(null); setCfgOpen(false); setRelMes(null); setDec(null); setWiz(null); };
