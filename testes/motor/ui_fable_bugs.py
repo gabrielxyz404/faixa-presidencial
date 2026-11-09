@@ -73,7 +73,7 @@ with sync_playwright() as p:
     # ---------- B5: emendas e pesquisa devolvidas ao retirar a proposta ----------
     e0 = G(pg, 'g.fiscal.extra')
     pg.fill('#caixa', 'Reforma administrativa com fim da estabilidade para novos servidores'); click(pg, 'Assinar e enviar', 2200)
-    em = pg.locator('.modal-wrap button').filter(has_text=re.compile(r'^Emendas p/'))
+    em = pg.locator('.modal-wrap [data-emenda-pagar]')  # v92: emendas num seletor único + botão
     n_em = em.count()
     for i in range(3):  # a lista de indecisos encolhe a cada emenda: reconta a cada volta
         if not em.count(): break

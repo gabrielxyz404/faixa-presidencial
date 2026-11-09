@@ -120,6 +120,7 @@
   .pulse-dot { animation: pulse 1.4s ease-in-out infinite; }
   @keyframes pulse { 50% { opacity: .35; } }
   .dou { background: #000; color: var(--fg); font-family: var(--f-body); border: 1px solid var(--line); }
+  .acao-fixa { position: sticky; bottom: 0; z-index: 3; background: #000; padding-bottom: 14px; margin-bottom: -14px; box-shadow: 0 -12px 16px -10px rgba(0,0,0,.9); } /* botão principal sempre à vista */
   .dou .num { color: var(--fg); }
   /* utilitários de tema claro dentro do documento → equivalentes sobre preto */
   .dou .bg-black\/5 { background-color: rgba(255,255,255,.06); }
@@ -199,9 +200,10 @@
   /* gaveta (painel lateral) */
   .gav-wrap { position: fixed; inset: 0; display: flex; justify-content: flex-end; }
   .gav-scrim { position: absolute; inset: 0; background: rgba(0,0,0,.66); }
-  .gav { position: relative; width: min(640px, 100%); height: 100%; background: var(--ink); border-left: 1px solid var(--line); display: flex; flex-direction: column; outline: none; animation: gavIn .22s ease both; }
+  .gav { position: relative; width: min(760px, 100%); height: 100%; background: var(--ink); border-left: 1px solid var(--line); display: flex; flex-direction: column; outline: none; animation: gavIn .22s ease both; }
   .gav-h { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: calc(16px + env(safe-area-inset-top, 0px)) max(24px, env(safe-area-inset-right, 0px)) 16px 24px; border-bottom: 1px solid var(--line); }
-  .gav-b { flex: 1; overflow-y: auto; padding: 24px max(24px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) 24px; }
+  .gav-b table { max-width: 100%; } .gav-b td.num, .gav-b td.text-right { white-space: nowrap; } .gav-b [class*="lg:grid-cols-["] { grid-template-columns: minmax(0, 1fr) !important; } /* gaveta de 760px: tabelas largas e grades de 2 colunas empilham */
+  .gav-b { flex: 1; overflow-y: auto; overflow-x: auto; padding: 24px max(24px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) 24px; }
   @keyframes gavIn { from { transform: translateX(24px); opacity: .4; } to { transform: none; opacity: 1; } }
   @media (max-width: 1023px) { .gav { width: 100%; border-left: 0; animation-name: fadeIn; } .gav-h { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); } .gav-b { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); } }
   .toast { position: fixed; z-index: 36; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(16px, env(safe-area-inset-bottom, 0px)); max-width: min(420px, 92vw); } /* D9: topo direito, abaixo das gavetas (55+) e dos modais (62/70): nunca os cobre */
@@ -474,8 +476,8 @@
   .pend-ctx { margin: 3px 0 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
   .pend-extra { margin: 3px 0 0; color: var(--dim); font-size: 13px; }
   .pend-a { grid-column: 3; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
-  .pend .btn-pri { background: transparent; color: var(--fg); border: 1px solid var(--line2); font-weight: 500; }
-  .pend .btn-pri:hover { background: var(--panel2); border-color: var(--muted); }
+  .pend .btn-pri { background: rgba(245,197,24,.10); color: var(--ouro); border: 1px solid rgba(245,197,24,.5); font-weight: 600; }
+  .pend .btn-pri:hover { background: rgba(245,197,24,.2); border-color: var(--ouro); }
   @media (max-width: 760px) {
     .pend, .pend[data-nivel] { grid-template-columns: 28px minmax(0, 1fr); gap: 8px 12px; }
     .pend-a { grid-column: 2; justify-content: flex-start; }
@@ -691,6 +693,7 @@
   /* glossário: (?) automático ao lado de siglas e termos técnicos (ver GLOSSARIO) */
   .gl-t { white-space: nowrap; }
   .gl-tip { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; margin-left: 3px; border-radius: 50%; border: 1px solid var(--muted); color: var(--muted); font-family: var(--f-body, 'IBM Plex Sans', system-ui, sans-serif); font-size: 12px; font-weight: 600; line-height: 1; cursor: help; vertical-align: 1px; text-transform: none; letter-spacing: 0; white-space: normal; }
+  .gl-dup > .gl-tip { display: none; } /* (?) só na 1ª vez em que o termo aparece na tela */
   .gl-tip::after { content: '?'; } /* o '?' só no CSS: aparece na tela, mas não entra no texto da página (cópia, leitura, buscas) */
   .gl-tip:hover, .gl-tip:focus { color: var(--fg); border-color: var(--fg); outline: none; }
   .gl-tip:focus-visible { outline: 2px solid var(--ouro); outline-offset: 2px; }
@@ -776,7 +779,7 @@ const GLOSSARIO = [
 ];
 const GL_RX = new RegExp('(?<![\\p{L}\\p{N}])(?:' + GLOSSARIO.map(e => '(' + e[0] + ')').join('|') + ')(?![\\p{L}\\p{N}])', 'u');
 const GL_RXG = new RegExp(GL_RX.source, 'gu');
-const GL_SKIP = new Set(['button', 'a', 'option', 'select', 'textarea', 'input', 'title', 'style', 'script', 'summary', 'label', 'text', 'tspan', 'svg']);
+const GL_SKIP = new Set(['h1', 'h2', 'h3', 'button', 'a', 'option', 'select', 'textarea', 'input', 'title', 'style', 'script', 'summary', 'label', 'text', 'tspan', 'svg']);
 // posição do balão (fixa na tela): abaixo do (?) quando cabe, senão acima; nunca sai pelos lados
 function glPos(e) { if (!e) return null; const r = e.getBoundingClientRect(), W = Math.min(300, window.innerWidth - 24), x = Math.max(12, Math.min(window.innerWidth - W - 12, r.left + r.width / 2 - W / 2)); const baixo = r.bottom + 190 < window.innerHeight || r.top < 210; return { x, w: W, y: baixo ? r.bottom + 8 : null, yb: baixo ? null : window.innerHeight - r.top + 8 }; }
 function glBox(pos, ...ch) { return pos ? ReactDOM.createPortal(h0('div', { className: 'gl-box', role: 'tooltip', style: { left: pos.x + 'px', width: pos.w + 'px', top: pos.y != null ? pos.y + 'px' : 'auto', bottom: pos.yb != null ? pos.yb + 'px' : 'auto' } }, ...ch), document.body) : null; }
@@ -785,6 +788,26 @@ function Termo({ t, n, d }) { // o balão vai para o fim do <body> (portal), com
   const abre = () => setPos(glPos(ref.current)), fecha = () => setPos(null);
   const box = glBox(pos, n ? h0('b', null, n) : null, n ? ' ' : null, d);
   return h0('span', { className: 'gl-t' }, t, h0('span', { ref, className: 'gl-tip', tabIndex: 0, role: 'note', 'aria-label': (n ? n + ': ' : '') + d, 'data-gl': n || t, onMouseEnter: abre, onMouseLeave: fecha, onFocus: abre, onBlur: fecha }), box);
+}
+/* (?) uma vez por tela: depois de cada render, esconde o (?) de termos que já apareceram antes na mesma tela (página, gaveta ou modal) */
+function glDedupe() {
+  if (typeof document === 'undefined') return;
+  const scopes = [...document.querySelectorAll('.gav-wrap, .modal-wrap')];
+  const todos = [...document.querySelectorAll('.gl-t')];
+  const vistos = new Map();
+  for (const el of todos) {
+    const sc = el.closest('.gav-wrap, .modal-wrap'); const key = (sc ? scopes.indexOf(sc) : -1) + '|';
+    const tip = el.querySelector('.gl-tip'); if (!tip) continue; const k = key + tip.getAttribute('data-gl');
+    const dup = vistos.has(k); vistos.set(k, 1);
+    if (dup !== el.classList.contains('gl-dup')) el.classList.toggle('gl-dup', dup);
+  }
+}
+let GL_DED_T = 0;
+function glDedupeLigar() {
+  if (typeof MutationObserver === 'undefined' || glDedupeLigar.ok) return; glDedupeLigar.ok = true;
+  const run = () => { GL_DED_T = 0; try { glDedupe(); } catch (e) { } };
+  new MutationObserver(() => { if (!GL_DED_T) GL_DED_T = requestAnimationFrame(run); }).observe(document.body, { childList: true, subtree: true });
+  run();
 }
 function glProc(s) {
   if (s.length < 3 || !GL_RX.test(s)) return s;
@@ -808,14 +831,14 @@ function txtCurto(t) {
   const c = t.slice(0, 150); return c.slice(0, Math.max(60, c.lastIndexOf(' '))) + '…';
 }
 function h(type, props, ...ch) {
-  if (typeof type === 'string' && ch.length && props && typeof props.className === 'string' && /(?:^|\s)(?:text-muted|mx-s|pd-s|gv-sub|medida-ajuda)(?:\s|$)/.test(props.className) && !/(?:^|\s)(?:gl-inteiro|gv-tip|gv-tipbox|gl-tip|gl-box)(?:\s|$)/.test(props.className)) {
+  if (typeof type === 'string' && ch.length && props && typeof props.className === 'string' && /(?:^|\s)(?:text-muted|mx-s|pd-s|gv-sub|medida-ajuda|txt-curto)(?:\s|$)/.test(props.className) && !/(?:^|\s)(?:gl-inteiro|gv-tip|gv-tipbox|gl-tip|gl-box)(?:\s|$)/.test(props.className)) {
     const flat = ch.flat ? ch.flat(Infinity) : ch;
     if (flat.every(x => typeof x === 'string' || typeof x === 'number' || x == null || x === false)) {
       const t = flat.filter(x => typeof x === 'string' || typeof x === 'number').join('').replace(/\s+/g, ' ').trim();
       if (t.length > TXT_LONGO) { const c = txtCurto(t); if (c.length < t.length - 20) return h0(type, props, glProc(c), h0(GvTip, { txt: t })); }
     }
   }
-  if (typeof type === 'string' && ch.length && !GL_SKIP.has(type) && !(props && typeof props.className === 'string' && /(?:^|\s)(?:gv-tip|gv-tipbox|gl-tip|gl-box|gl-no)(?:\s|$)/.test(props.className)))
+  if (typeof type === 'string' && ch.length && !GL_SKIP.has(type) && !(props && typeof props.className === 'string' && /(?:^|\s)(?:gv-tip|gv-tipbox|gl-tip|gl-box|gl-no|j-hl|j-sub|j-nome|x-post|x-txt|cn-bal)(?:\s|$)/.test(props.className)))
   { // junta textos vizinhos (ex.: "peso no IPCA: " + "1,2%") para o trecho com o termo não ficar separado do resto dentro de caixas flex
     const out = []; let i = 0;
     while (i < ch.length) {
@@ -1605,6 +1628,7 @@ function trocaMinistro(g, pk, N) {
   return true;
 }
 
+const TRACO_IC = { carismatico: 'Sparkles', tecnico: 'Ruler', negociador: 'Handshake', populista: 'Megaphone', torcedor: 'Trophy', motociclista: 'Bike' };
 const TRACOS = [
   { k: 'carismatico', nome: 'Carismático', em: '✨', desc: '+aprovação geral, discursos rendem mais; −apoio partidário' },
   { k: 'tecnico', nome: 'Técnico', em: '📐', desc: '+confiança do mercado; periferia desconfia' },
@@ -12736,6 +12760,10 @@ function angulo(lista, F, jornal, sent, usados) {
   return { h: h.h, s: s2 };
 }
 /* manchetes: devolve { globo, carta, antag, sub:{...} } com null nos jornais sem ângulo; null se nenhum jornal tem fato */
+/* manchetes: siglas voltam a ser maiúsculas (o tópico vem em minúsculas: "inss" → "INSS") */
+const SIGLAS_MAI = ['inss', 'sus', 'ipi', 'pf', 'stf', 'stj', 'tse', 'tcu', 'bndes', 'mei', 'clt', 'fgts', 'pib', 'icms', 'iof', 'mst', 'cpi', 'pec', 'ipca', 'enem', 'fies', 'prouni', 'cadunico', 'bc', 'ibge', 'ibama', 'funai', 'pis', 'cofins', 'csll', 'irpf', 'irpj', 'iptu', 'ipva', 'itr', 'ubs', 'upa', 'pm', 'cnh', 'eua', 'ue', 'onu', 'otan', 'brics', 'ocde', 'pt', 'pl', 'psd', 'mdb', 'psdb', 'psol', 'pdt', 'psb'];
+const SIGLAS_RX = new RegExp('\\b(' + SIGLAS_MAI.join('|') + ')\\b', 'g');
+const siglasMai = (t) => t.replace(SIGLAS_RX, (m) => (m === 'cadunico' ? 'CadÚnico' : m === 'prouni' ? 'ProUni' : m.toUpperCase()));
 function manchetesFatos(g, prop, resultado, sents) {
   const F = fatosImprensa(g, prop, resultado);
   const fonte = resultado === 'aprovada' ? ANG : resultado === 'derrubada' ? ANG_STF : ANG_DERROTA;
@@ -12748,6 +12776,8 @@ function manchetesFatos(g, prop, resultado, sents) {
   }
   if (!n) return null;
   out.sub = sub;
+  for (const k of ['globo', 'carta', 'antag']) if (typeof out[k] === 'string') out[k] = siglasMai(out[k]);
+  if (out.sub) for (const k in out.sub) if (typeof out.sub[k] === 'string') out.sub[k] = siglasMai(out.sub[k]);
   return out;
 }
 /* ---- vozes das ruas: pessoas geradas para cada medida, ligadas aos grupos que ganham e perdem ---- */
@@ -17388,7 +17418,7 @@ function Wizard({ onStart, temSave, onContinuar, onTrocar, inicial, passoInicial
               ${slider('env', 'Desenvolvimentista', 'Ambientalista')}
             </div></div>`)}
         ${step === 2 && sec('Passo 3 de 5', 'Personalidade', `Escolha 2 traços (${cfg.tracos.length}/2).`, html`<div className="wz-opts">${TRACOS.map(t => html`<button key=${t.k} type="button" aria-pressed=${cfg.tracos.includes(t.k)} onClick=${() => toggle(t.k, 'tracos', 2)} className="wz-opt">
-              <span className="wz-opt-t"><span className="text-xl" aria-hidden="true">${t.em}</span>${t.nome}${cfg.tracos.includes(t.k) && html`<span className="ck"><${Icon} n="Check" s=${16} /></span>`}</span>
+              <span className="wz-opt-t"><span className="text-ouro inline-flex" aria-hidden="true"><${Icon} n=${TRACO_IC[t.k] || "Star"} s=${20} /></span>${t.nome}${cfg.tracos.includes(t.k) && html`<span className="ck"><${Icon} n="Check" s=${16} /></span>`}</span>
               <span className="wz-opt-d">${t.desc}</span></button>`)}</div>`)}
         ${step === 3 && html`${sec('Passo 4 de 5', 'Vice', null, html`<div className="wz-f">
               <label className="flex flex-col gap-1"><span className="eyebrow">Nome do vice</span><input id="w-vice" type="text" value=${cfg.viceNome} onChange=${e => set('viceNome', e.target.value)} /></label>
@@ -17402,7 +17432,7 @@ function Wizard({ onStart, temSave, onContinuar, onTrocar, inicial, passoInicial
                     ${N ? html`<${Ef} nome=${N.nome} cor=${corEfigie(N)} papel="ministro" s=${44} p=${N} /><div className="min-w-0"><div className="wz-pasta-n" title=${N.nome}>${N.nome}</div><div className="wz-pasta-s">${subNomeado(N)}</div></div>`
                     : html`<span className="text-sm text-rubro" style=${{ gridColumn: '1 / -1' }}>sem ministro: escolha um nome</span>`}
                   </div>
-                  ${N && html`<div className="ini-line"><${Tag} cor=${corNomeado(N)}>${rotuloNomeado(N)}</${Tag}><span className="num text-xs text-muted" title=${(N.fonteAtr && N.fonteAtr.pop) || ''}>comp. ${fmt(compMin(cfg, p.k) * 100, 0)} · pop. ${N.pop != null ? fmt(N.pop, 0) : '—'}</span></div>`}
+                  ${N && html`<div className="ini-line"><${Tag} cor=${corNomeado(N)}>${rotuloNomeado(N)}</${Tag}><span className="num text-xs text-muted" title=${(N.fonteAtr && N.fonteAtr.pop) || ''}>competência ${fmt(compMin(cfg, p.k) * 100, 0)} · popularidade ${N.pop != null ? fmt(N.pop, 0) : '—'}</span></div>`}
                   <button className=${'btn text-sm ' + (N ? 'btn-ghost' : 'btn-pri')} aria-label=${'Escolher nome para ' + p.nome} onClick=${() => setEscolhe(p.k)}><${Icon} n="UserPlus" s=${14} /> ${N ? 'Trocar' : 'Escolher nome'}</button>
                 </article>`; })}</div>
               <div>
@@ -18122,7 +18152,7 @@ function Gaveta({ titulo, eyebrow, onClose, children }) {
   return html`<div className="gav-wrap" style=${{ zIndex: 55 + prof * 2 }} role="dialog" aria-modal="true" aria-label=${titulo}>
     <div className="gav-scrim" onClick=${() => { if (onClose) onClose(); }}></div>
     <aside className="gav" ref=${ref} tabIndex="-1" data-gaveta=${titulo}>
-      <div className="gav-h"><div className="min-w-0">${eyebrow && html`<div className="eyebrow">${eyebrow}</div>`}<h2 className="disp text-3xl font-black uppercase leading-none mt-1">${titulo}</h2></div>
+      <div className="gav-h"><div className="min-w-0">${eyebrow && html`<div className="eyebrow">${eyebrow}</div>`}<h2 className="disp text-xl font-extrabold leading-tight mt-1">${titulo}</h2></div>
         <button type="button" className="btn btn-ghost shrink-0" onClick=${onClose} aria-label="Fechar painel"><${Icon} n="X" s=${16} /></button></div>
       <div className="gav-b"><${ErroTela} nome="gaveta" onVoltar=${onClose}>${children}</${ErroTela}></div>
     </aside></div>`;
@@ -18232,7 +18262,7 @@ function PreviaOpcao({ P, g, ev, o, idx, semAcoes, decidir, ign }) {
         ${P.once > .005 && html`<span className="cr-ch bom" data-pv-once="1">receita única ${bi(P.once)}</span>`}
         ${!(tem(P.custo) || tem(P.rec) || P.extra > .005 || P.once > .005) && html`<span className="cr-ch" data-pv-custo="0">sem custo fiscal</span>`}`}
     </div>
-    ${(P.grupos.gan.length > 0 || P.grupos.per.length > 0) && html`<div className="cr-row" data-pv="grupos"><span className="cr-k">grupos</span>${gr(P.grupos.gan)}${gr(P.grupos.per)}</div>`}
+    ${(P.grupos.gan.length > 0 || P.grupos.per.length > 0) && (() => { const T = P.grupos.gan.concat(P.grupos.per).sort((a, b) => Math.abs(b.d) - Math.abs(a.d)); const top = T.slice(0, 3), resto = T.slice(3); return html`<div className="cr-row" data-pv="grupos"><span className="cr-k">grupos</span>${gr(top)}${resto.length > 0 && html`<span className="cr-ch" data-pv-mais="1">+${resto.length}<${GvTip} txt=${resto.map(x => x.nome + ' ' + fmtD(x.d, 1)).join(' · ')} /></span>`}</div>`; })()}
     ${ind.length > 0 && html`<div className="cr-row" data-pv="ind"><span className="cr-k">${ign ? 'cobra' : P.cong ? 'se aprovada' : 'indicadores'}</span>${ind.map(i => { const v = P.d[i.k]; return html`<span key=${i.k} className=${'cr-ch ' + (v * i.b > 0 ? 'bom' : 'mau')} data-pv-ind=${i.k}>${i.n} ${fmtD(v, i.d)}${i.u}</span>`; })}</div>`}
     ${!ign && P.medida && html`<div className="cr-tx">Efeito pleno em ${P.medida}; o que vem depois chega mês a mês.</div>`}
     ${!ign && P.repetida && html`<div className="cr-tx">Medida parecida já está em vigor: não soma de novo.</div>`}
@@ -18260,7 +18290,7 @@ function CartaoCrise({ g, upd, decidir }) {
       <div className="w-1.5 shrink-0" style=${{ background: g.eventoOk ? 'var(--verde)' : gravCor[ev.grav] }}></div>
       <div className="p-4 sm:p-6 flex-1 min-w-0">
         <div className="flex flex-wrap items-center gap-2 mb-2">
-          <span className="eyebrow">Gabinete de crise · ${dataMes(g.mes)}</span>
+          <span className="eyebrow">${dataMes(g.mes)}</span>
           ${g.eventoOk ? html`<${Tag} cor="var(--verde)"><${Icon} n="Check" s=${11} /> enfrentada</${Tag}>` : html`<${Tag} cor=${gravCor[ev.grav]}>gravidade ${ev.grav}</${Tag}>`}
           ${stC === 'ignorada' && html`<${Tag} cor="var(--muted)">ignorada</${Tag}>`}
           <${Tag} cor="var(--anil)"><span data-atencao=${atencao}>Atenção pública ${atencao}%</span></${Tag}>
@@ -18269,7 +18299,7 @@ function CartaoCrise({ g, upd, decidir }) {
         <div className="flex gap-3 items-start">
           <span className="text-ouro mt-1 shrink-0"><${Icon} n=${ev.icone} s=${26} /></span>
           <div className="min-w-0"><h2 className="disp text-3xl font-extrabold uppercase leading-tight">${EVENTO_PAIS[ev.id] ? html`<${Bandeira} iso=${PAIS_REF[EVENTO_PAIS[ev.id]].iso} tam=${32} est=${{ marginRight: 10, verticalAlign: '-3px' }} />` : null}${ev.titulo}</h2>
-          <p className="text-[15px] mt-1 max-w-2xl">${ev.texto}</p></div>
+          <p className="text-[15px] mt-1 max-w-2xl txt-curto">${ev.texto}</p></div>
         </div>
         ${!g.eventoOk && pv && html`<style>${PV_CSS}</style><div className="cr-grid" data-crise-opcoes="1">
           ${ev.opcoes.map((o, i) => html`<${PreviaOpcao} key=${o.l} P=${pv.ops[i]} g=${g} ev=${ev} o=${o} idx=${i} semAcoes=${semAcoes} decidir=${decidir} />`)}
@@ -18740,13 +18770,13 @@ function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino 
   const corAc = g.props > 0 ? 'var(--ouro)' : 'var(--rubro)';
   return html`<div className="mesa">
     <div className="mesa-esq">
-      ${!elSemGoverno(g) && g.mes <= 3 && elSemReeleicao(g) && html`<p className="text-sm p-2 rounded mb-3" style=${{ background: "rgba(212,160,23,.12)" }} data-aviso-ultimo="1"><b>Último mandato:</b> ${g.cfg.nome} não pode concorrer em ${2026 + 4 * Math.ceil(g.mes / 48)} (CF art. 14 §5º). O personagem termina na posse do sucessor; você pode escolher um herdeiro em Poder > Eleições e seguir jogando com quem vencer.</p>`}
+      ${!elSemGoverno(g) && g.mes <= 3 && elSemReeleicao(g) && html`<p className="text-sm p-2 rounded mb-3" style=${{ background: "rgba(212,160,23,.12)" }} data-aviso-ultimo="1"><b>Último mandato:</b> ${g.cfg.nome} não pode concorrer em ${2026 + 4 * Math.ceil(g.mes / 48)}.<${GvTip} txt=${'CF art. 14 §5º: só uma reeleição seguida. O personagem termina na posse do sucessor; você pode escolher um herdeiro em Poder > Eleições e seguir jogando com quem vencer.'} /></p>`}
       ${elSemGoverno(g) && html`<section className="modo-leve" aria-labelledby="ml-t" data-modo-leve="1">
         <div className="eyebrow">Modo leve</div>
         <h2 id="ml-t" className="disp tit-l mt-1">Você joga como ${(g.el && g.el.pj && g.el.pj.nome) || 'oposição'}</h2>
         <p className="text-sm text-muted mt-2 max-w-2xl">Quem governa agora é ${g.cfg.nome}: as medidas de governo voltam se você vencer uma eleição presidencial. Até lá, o jogo está no X, nas entrevistas e na campanha.</p>
         <div className="flex flex-wrap gap-2 mt-3">
-          <button type="button" className="btn btn-pri btn-sm" data-ml="x" onClick=${() => irPara('x')}><${Icon} n="AtSign" s=${14} /> Abrir o X</button>
+          <button type="button" className="btn btn-ghost btn-sm" data-ml="x" onClick=${() => irPara('x')}><${Icon} n="AtSign" s=${14} /> Abrir o X</button>
           <button type="button" className="btn btn-ghost btn-sm" data-ml="imprensa" onClick=${() => irPara('poder', 'imprensa')}><${Icon} n="Mic" s=${14} /> Entrevistas</button>
           <button type="button" className="btn btn-ghost btn-sm" data-ml="eleicoes" onClick=${() => irPara('poder', 'eleicoes')}><${Icon} n="Vote" s=${14} /> Campanha e eleições</button>
         </div>
@@ -19842,7 +19872,7 @@ function PoderOposicao({ g, ir }) {
           <div className="pd-h"><span className="gv-ic" style=${{ '--c': corRisco(imp) }}><${Icon} n="Siren" s=${20} /></span><h4>Impeachment</h4><span className="pd-big" style=${{ color: corRisco(imp) }}>${fmt(imp, 0)}%</span></div>
           <${Bar} v=${imp} cor=${corRisco(imp)} h=${6} label="Risco de impeachment" />
           <div className="gv-chips"><span className=${'gv-chip ' + (ped ? 'neg' : '')}>${ped ? 'pedido protocolado' : 'sem pedido recente'}</span><span className="gv-chip">342 votos abrem</span></div>
-          <div className="gv-acts mt-auto"><button type="button" className="btn btn-pri" onClick=${() => go('congresso')}><${Icon} n="Landmark" s=${14} /> Ver base no Congresso</button><button type="button" className="btn btn-ghost" onClick=${() => go('governo')}>Ver Governo</button></div>
+          <div className="gv-acts mt-auto"><button type="button" className="btn btn-ghost" onClick=${() => go('congresso')}><${Icon} n="Landmark" s=${14} /> Ver base no Congresso</button><button type="button" className="btn btn-ghost" onClick=${() => go('governo')}>Ver Governo</button></div>
         </article>
         ${ameacas.map(ob => { const D = OBJ_OP.find(x => x.k === ob.k); const M = PD_AMEACA[ob.k] || ['Target', 'var(--ambar)', ['congresso', 'Ver Congresso'], ['governo', 'Ver Governo']]; const cor = ob.feita ? 'var(--muted)' : M[1];
           return html`<article key=${ob.k + (ob.feita ? 'f' : '')} className="pd-card" style=${{ '--st': cor }} data-ameaca=${ob.k}>
@@ -19864,16 +19894,16 @@ function DitPainel({ g, upd }) {
   const corM = D.mil >= 60 ? 'var(--verde)' : D.mil >= 35 ? 'var(--ambar)' : 'var(--rubro)';
   const chance = Math.round(ditGolpeChance(g) * 100);
   const frentes = ['Instituições', 'Imprensa e redes', 'Oposição e eleições', 'Forças Armadas e polícia'];
-  const estado = html`<div className="mx-grid g3" data-dit-estado="1">
-    <div className="mx-card panel" style=${{ '--st': corD }}><div className="mx-lab">Democracia</div><div className="num text-2xl font-bold" style=${{ color: corD }} data-dit-dem="1">${fmt(D.dem, 0)}<span className="text-sm text-muted"> de 100</span></div><div className="text-xs text-muted">${D.regime ? 'regime de exceção' : D.dem > 60 ? 'instituições fortes: golpe fora de alcance' : 'instituições minadas: o golpe é possível'}</div></div>
-    <div className="mx-card panel" style=${{ '--st': corM }}><div className="mx-lab">Apoio militar</div><div className="num text-2xl font-bold" style=${{ color: corM }}>${fmt(D.mil, 0)}<span className="text-sm text-muted"> de 100</span></div><div className="text-xs text-muted">${D.mil < 35 ? 'a caserna conspira' : D.mil < 60 ? 'comandantes divididos' : 'comandantes fiéis'}</div></div>
-    <div className="mx-card panel" style=${{ '--st': D.revolta >= 60 ? 'var(--rubro)' : 'var(--ambar)' }}><div className="mx-lab">${D.regime ? 'Revolta popular' : 'Golpe'}</div><div className="num text-2xl font-bold">${D.regime ? fmt(D.revolta, 0) : chance + '%'}<span className="text-sm text-muted">${D.regime ? ' de 100' : ' de chance'}</span></div><div className="text-xs text-muted">${D.regime ? 'em 100, o regime cai' : D.golpeFalhou ? 'já houve uma tentativa fracassada' : 'militares, democracia minada, aprovação e reação externa'}</div></div>
-  </div>`;
+  const estado = html`<section className="gv-kpis" data-dit-estado="1" aria-label="Estado da democracia">
+    <${GvKpi} dado="dit-dem" ic="Scale" cor=${corD} k="Democracia" v=${html`<span data-dit-dem="1">${fmt(D.dem, 0)}</span>`} s=${D.regime ? 'regime de exceção' : D.dem > 60 ? 'golpe fora de alcance' : 'golpe possível'} />
+    <${GvKpi} dado="dit-mil" ic="Medal" cor=${corM} k="Apoio militar" v=${fmt(D.mil, 0)} s=${D.mil < 35 ? 'a caserna conspira' : D.mil < 60 ? 'comandantes divididos' : 'comandantes fiéis'} />
+    ${D.regime ? html`<${GvKpi} dado="dit-rev" ic="Flame" cor=${D.revolta >= 60 ? 'var(--rubro)' : 'var(--ambar)'} k="Revolta popular" v=${fmt(D.revolta, 0)} s="em 100, o regime cai" />` : html`<${GvKpi} dado="dit-golpe" ic="Siren" cor="var(--rubro)" k="Chance de golpe" v=${chance + '%'} s=${D.golpeFalhou ? 'já falhou uma vez' : 'se tentar agora'} />`}
+  </section>`;
   const aviso = msg && html`<div className=${'text-sm p-2 rounded ' + (msg.ok ? '' : 'text-rubro')} style=${{ background: 'rgba(255,90,78,.08)' }} role="status" data-dit-msg="1">${msg.msg}</div>`;
   if (D.regime) return html`<div className="flex flex-col gap-3" data-dit="regime">
     <${MxStyle} />
-    <h4 className="disp text-xl font-bold">Regime de exceção <span className="selo-sim">simulado</span></h4>
-    <p className="text-sm text-muted">Desde ${dataCurta(D.inicio)}, Congresso e STF estão fechados e não há eleições. Suas medidas saem como decreto-lei. Em troca: sanções que corroem a economia, revolta que cresce quando a aprovação cai e militares que se cansam do regime. O jogo segue até você cair, morrer no cargo ou negociar a saída.</p>
+    <${MxHead} eb=${'Desde ' + dataCurta(D.inicio)} t=${html`Regime de exceção <span className="selo-sim">simulado</span>`} tip=${'Congresso e STF fechados, sem eleições: suas medidas saem como decreto-lei. Em troca: sanções que corroem a economia, revolta que cresce quando a aprovação cai e militares que se cansam do regime. O jogo segue até você cair, morrer no cargo ou negociar a saída.'} />
+    <p className="hidden">Desde ${dataCurta(D.inicio)}, Congresso e STF estão fechados e não há eleições. Suas medidas saem como decreto-lei. Em troca: sanções que corroem a economia, revolta que cresce quando a aprovação cai e militares que se cansam do regime. O jogo segue até você cair, morrer no cargo ou negociar a saída.</p>
     ${estado}${aviso}
     <div className="mx-grid g2">
       ${DIT_PASSOS.filter(P => P.rep).map(P => html`<div key=${P.k} className="mx-card panel" style=${{ '--st': 'var(--rubro)' }} data-dit-passo=${P.k}><div className="mx-h nr"><span className="gv-ic" style=${{ '--c': 'var(--rubro)' }}><${Icon} n=${P.ic} s=${20} /></span><div className="min-w-0"><div className="mx-t">${P.t}</div><div className="mx-s">${P.d}</div></div></div><button type="button" className="btn btn-ghost btn-sm mt-2 self-start" disabled=${g.acoes <= 0} data-dit-faz=${P.k} onClick=${() => act(n => ditFazRegime(n, P.k))}>Fazer (1 ação)</button></div>`)}
@@ -19881,8 +19911,8 @@ function DitPainel({ g, upd }) {
     </div></div>`;
   return html`<div className="flex flex-col gap-3" data-dit="erosao">
     <${MxStyle} />
-    <h4 className="disp text-xl font-bold">Caminho autoritário <span className="selo-sim">simulado</span></h4>
-    <p className="text-sm text-muted">Ficção do jogo. Cada passo mina as instituições, custa uma ação e vira manchete (sem nome de pessoa real). Abaixo de 60, o autogolpe fica possível; se falhar, você segue no cargo, mas em crise grave. A democracia se recupera devagar quando você para.</p>
+    <${MxHead} eb="Ficção do jogo" t=${html`Caminho autoritário <span className="selo-sim">simulado</span>`} tip=${'Cada passo mina as instituições, custa uma ação e vira manchete (sem nome de pessoa real). Abaixo de 60, o autogolpe fica possível; se falhar, você segue no cargo, mas em crise grave. A democracia se recupera devagar quando você para.'} />
+    <p className="hidden">Ficção do jogo. Cada passo mina as instituições, custa uma ação e vira manchete (sem nome de pessoa real). Abaixo de 60, o autogolpe fica possível; se falhar, você segue no cargo, mas em crise grave. A democracia se recupera devagar quando você para.</p>
     ${estado}${aviso}
     ${frentes.map(fr => html`<div key=${fr} data-dit-frente=${fr} className="mt-2"><div className="eyebrow mb-2">${fr}</div><div className="mx-grid g2">${DIT_PASSOS.filter(P => P.fr === fr).map(P => { const v = ditPassoOk(g, P); const n = D.feitos[P.k] || 0;
       return html`<div key=${P.k} className=${'mx-card panel' + (!P.rep && n ? ' dim' : '')} style=${{ '--st': 'var(--rubro)' }} data-dit-passo=${P.k}><div className="mx-h nr"><span className="gv-ic" style=${{ '--c': 'var(--rubro)' }}><${Icon} n=${P.ic} s=${20} /></span><div className="min-w-0"><div className="mx-t">${P.t}${n && P.rep ? ' (' + n + '×)' : ''}</div><div className="mx-s">${P.d}</div></div></div>
@@ -19912,8 +19942,10 @@ function LinhaRede({ g, prop }) {
   const r = resumoRede(g, prop); if (!r) return null;
   return html`<div className="text-xs p-2 rounded" data-secao="pressao-redes" style=${{ background: 'rgba(128,128,128,.14)', color: r.pts > 0 ? '#2a9a5c' : '#c2432e' }}><b>${r.txt}</b>${r.fonte.length ? ' · ' + r.fonte.join(', ') : ''}</div>`;
 }
+const xIniciais = (nome) => String(nome || '?').replace(/^@/, '').split(/\s+/).filter(w => /^[A-ZÀ-Úa-zà-ú0-9]/.test(w)).slice(0, 2).map(w => w[0].toUpperCase()).join('') || '?';
+const xCorAv = (nome) => ['#3d7bff', '#2fd27a', '#f0a63a', '#ff5a4e', '#a78bfa', '#22d3ee', '#f472b6'][Math.floor(hashStr(String(nome)) * 7)];
 function AvatarX({ a }) {
-  return html`<div className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-xl" style=${{ background: 'var(--panel2)', border: '1px solid var(--line)' }} aria-hidden="true">${a.em || '👤'}</div>`;
+  return html`<div className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold" style=${{ background: xCorAv(a.nome) + '22', color: xCorAv(a.nome), border: '1px solid ' + xCorAv(a.nome) + '66' }} aria-hidden="true">${xIniciais(a.nome)}</div>`;
 }
 function PostX({ p, mini }) {
   const a = p.a, resp = p.resp || [];
@@ -19931,7 +19963,7 @@ function PostX({ p, mini }) {
   </li>`;
   const fx = p.fx && p.fx.length > 0 ? p.fx.slice(0, 4) : [];
   return html`<li className="x-post" data-post=${p.kind}>
-    <div className="x-av" aria-hidden="true">${a.em || '👤'}</div>
+    <div className="x-av" aria-hidden="true" style=${{ background: xCorAv(a.nome) + '22', color: xCorAv(a.nome), fontSize: 14, fontWeight: 700 }}>${xIniciais(a.nome)}</div>
     <div className="min-w-0">
       <div className="x-who">${quem}${verif}${selo}${af}${handle}${p.mes != null && html`<span className="x-muted">· ${dataCurta(p.mes)}</span>`}</div>
       ${a.fam && html`<div className="x-muted">${a.area}${a.seg ? ' · ' + (a.seg >= 1 ? fmt(a.seg, 0) + ' mi' : fmt(a.seg * 1000, 0) + ' mil') + ' seguidores (aprox.)' : ''}</div>`}
@@ -24700,14 +24732,13 @@ function CvPainel({ g, upd }) {
   const ger = g.el && g.el.ger; const campanha = ger && ger.meuId && !ger.fimFeito && cvRel(g) >= 41 && cvRel(g) <= 47;
   const crime = cvCrime(g);
   return html`<div className="flex flex-col gap-4" data-cv-painel="1"><${MxStyle} />
-    <h4 className="disp text-xl font-bold">Câmara, Senado e contas <span className="selo-sim">simulado</span></h4>
-    <p className="text-sm text-muted">Os presidentes das Casas decidem o que vai a voto. Com humor abaixo de 30, a Câmara engaveta seus projetos (MPs seguem andando). Um pedido de impeachment só anda com base jurídica (crime de responsabilidade) ou com a presidência da Câmara hostil.</p>
+    <${MxHead} eb="Congresso por dentro" t=${html`Câmara, Senado e contas <span className="selo-sim">simulado</span>`} tip="Os presidentes das Casas decidem o que vai a voto. Com humor abaixo de 30, a Câmara engaveta seus projetos (MPs seguem andando). Um pedido de impeachment só anda com base jurídica (crime de responsabilidade) ou com a presidência da Câmara hostil." right=${html`<button type="button" className="btn btn-ghost btn-sm" disabled=${g.acoes <= 0 || C.emendasMes} data-cv-emendas="1" onClick=${emenda}><${Icon} n="HandCoins" s=${14} /> Liberar R$ 3 bi em emendas</button>`} />
     ${msg && html`<div className="text-sm p-2 rounded" style=${{ background: 'rgba(212,160,23,.12)' }} role="status" data-cv-msg="1">${msg.msg}</div>`}
-    <div className="mx-grid g3">
-      ${['cam', 'sen'].map(casa => html`<div key=${casa} className="mx-card panel" style=${{ '--st': cor(C.pres[casa].humor) }} data-cv-pres=${casa}><div className="mx-lab">${cvNomeCasa(g, casa)}</div><div className="num text-2xl font-bold" style=${{ color: cor(C.pres[casa].humor) }}>${fmt(C.pres[casa].humor, 0)}<span className="text-sm text-muted"> de 100</span></div><div className="text-xs text-muted">${C.pres[casa].humor < 30 ? 'hostil: segura a pauta do governo' : C.pres[casa].humor < 55 ? 'pragmático: cobra caro' : 'aliado: pauta o governo'}</div></div>`)}
-      <div className="mx-card panel" style=${{ '--st': crime ? 'var(--rubro)' : 'var(--verde)' }} data-cv-crime="1"><div className="mx-lab">Base para impeachment</div><div className="font-bold">${crime ? 'Existe' : 'Nenhuma'}</div><div className="text-xs text-muted">${crime || 'sem crime de responsabilidade, pedidos tendem a ser engavetados'}</div></div>
-    </div>
-    <div className="flex flex-wrap gap-2 items-center"><button type="button" className="btn btn-ghost btn-sm" disabled=${g.acoes <= 0 || C.emendasMes} data-cv-emendas="1" onClick=${emenda}>Liberar R$ 3 bi em emendas (1 ação)</button>
+    <section className="gv-kpis" aria-label="Presidências e base de impeachment">
+      ${['cam', 'sen'].map(casa => html`<div key=${casa} data-cv-pres=${casa} style=${{ display: 'contents' }}><${GvKpi} dado=${'cv-' + casa} ic="Landmark" cor=${cor(C.pres[casa].humor)} k=${casa === 'cam' ? 'Presidência da Câmara' : 'Presidência do Senado'} v=${fmt(C.pres[casa].humor, 0)} s=${((PMAP[C.pres[casa].partido] || {}).curto || C.pres[casa].partido) + ' · ' + (C.pres[casa].humor < 30 ? 'hostil' : C.pres[casa].humor < 55 ? 'pragmático' : 'aliado')} /></div>`)}
+      <div data-cv-crime="1" style=${{ display: 'contents' }}><${GvKpi} dado="cv-crime" ic="Gavel" cor=${crime ? 'var(--rubro)' : 'var(--verde)'} k="Impeachment" v=${crime ? 'Com base' : 'Sem base'} sm=${true} s=${crime || 'pedidos tendem a ser engavetados'} /></div>
+    </section>
+    <div className="flex flex-wrap gap-2 items-center">
       ${campanha && html`<button type="button" className="btn btn-ghost btn-sm" disabled=${g.acoes <= 0} data-cv-disparos="1" onClick=${disp} title="Rende votos, mas pode virar processo no TSE e cassar a chapa">Contratar disparos em massa (1 ação)</button>`}</div>
     <div className="mx-grid g2">
       <div className="mx-card panel"><div className="mx-lab">Orçamento</div><div className="text-sm">${C.ploa ? 'PLOA ' + C.ploa.ano + ': ' + ({ social: 'prioridade social', invest: 'prioridade investimento', ajuste: 'ajuste fiscal' })[C.ploa.op] : 'PLOA: o projeto vai em agosto'}${C.loa ? ' · LOA com +R$ ' + fmt(C.loa.emendas, 0) + ' bi em emendas' : ''}</div><div className="text-xs text-muted">Agosto: envio da PLOA · dezembro: LOA · março: contingenciamento</div></div>
@@ -25016,8 +25047,8 @@ function MxStyle() { return html`<style>${GV_CSS}${MX_CSS}</style>`; }
 function MxHead({ eb, t, tip, right, id, sub }) {
   return html`<div className="gv-sec-h"><div>${eb && html`<div className="eyebrow">${eb}</div>`}<h3 id=${id} className="disp text-2xl font-extrabold uppercase">${t}${tip && html`<${GvTip} txt=${tip} />`}</h3>${sub && html`<p className="gv-sub">${sub}</p>`}</div>${right || null}</div>`;
 }
-function MxDet({ rot, children, dado }) {
-  return html`<details className="gv-det" data-mx-det=${dado || null}><summary><span className="gv-car"><${Icon} n="ChevronRight" s=${14} /></span> ${rot}</summary><div className="gv-det-b">${children}</div></details>`;
+function MxDet({ rot, children, dado, open }) {
+  return html`<details className="gv-det" data-mx-det=${dado || null} open=${!!open}><summary><span className="gv-car"><${Icon} n="ChevronRight" s=${14} /></span> ${rot}</summary><div className="gv-det-b">${children}</div></details>`;
 }
 function MxChip({ c, cor, children, t }) {
   return html`<span className=${'gv-chip ' + (c || '')} title=${t || null} style=${cor ? { color: cor, borderColor: cor } : null}>${children}</span>`;
@@ -27300,11 +27331,7 @@ function EuBastidores({ g, upd }) {
   return html`<section className="sec flex flex-col gap-4" data-secao-eu="bastidores" data-bast="ativo" aria-labelledby="eu-bas">
     <${MxStyle} />
     <${MxHead} id="eu-bas" eb="Eu · bastidores (simulado)" t="Bastidores" tip="Personagens, empresas e valores desta seção são inventados e existem só para o jogo. Aceitar dinheiro por fora cria um rastro oculto que pode virar operação policial, investigação e pedido de impeachment." right=${html`<${Tag} cor="var(--ouro)">ficção</${Tag}>`} />
-    <div className="mx-grid g3" data-bast-estado="1">
-      ${tile('Footprints', nivel ? (B.expo < 25 ? 'var(--verde)' : B.expo < 50 ? 'var(--ambar)' : 'var(--rubro)') : 'var(--verde)', 'Rastro das ofertas', nivel || 'nada a esconder')}
-      ${tile('Swords', B.inimigos ? 'var(--ambar)' : 'var(--muted)', 'Inimigos feitos', html`<span className="num">${B.inimigos}</span>`)}
-      ${tile('Siren', B.inv ? 'var(--rubro)' : 'var(--verde)', 'Investigação', B.inv ? 'em curso, fase ' + B.inv.fase : 'nenhuma')}
-    </div>
+    <div className="flex flex-wrap gap-2 text-xs" data-bast-estado="1"><${MxChip} c=${nivel && B.expo >= 25 ? 'neg' : 'pos'}>ofertas: ${nivel || 'nada a esconder'}</${MxChip}><${MxChip} c=${B.inimigos ? 'ouro' : ''}>${B.inimigos} inimigo(s) feitos</${MxChip}><${MxChip} c=${B.inv ? 'neg' : 'pos'}>${B.inv ? 'investigação das ofertas: fase ' + B.inv.fase : 'sem investigação das ofertas'}</${MxChip}></div>
     ${o ? html`<div className="mx-card panel" style=${{ '--st': 'var(--ouro)' }} data-oferta=${o.id}>
       <div className="eyebrow">Proposta fora da agenda · ${o.emp}</div><h4 className="disp text-xl font-bold leading-tight">${o.titulo}</h4><p className="text-sm">${o.texto}</p>
       <div className="gv-acts">
@@ -27328,13 +27355,12 @@ function EsquemasPainel({ g, upd }) {
     ${extra || null}
     <div className="flex items-center gap-2 mt-2"><button type="button" className="btn btn-ghost btn-sm" disabled=${!pode} data-esq-faz=${tipo} onClick=${() => faz(tipo, tipo === 'grupo' ? grupo : null)}>Fazer (1 ação)</button><span className="text-xs text-muted">rastro +${rastro}</span></div></div>`;
   return html`<div className="flex flex-col gap-3" data-esquemas="1">
-    <div className="flex items-baseline gap-2"><h4 className="disp text-xl font-bold">Esquemas</h4><span className="selo-sim">simulado</span></div>
-    <p className="text-sm text-muted">Corrupção é escolha sua: cada esquema dá uma vantagem agora e deixa rastro. Com o tempo, imprensa, PF e delatores podem achar. As notícias falam em "o presidente", sem o nome de pessoas reais.</p>
-    <div className="mx-grid g3" data-esq-estado="1">
-      <div className="mx-card panel" style=${{ '--st': corR }}><div className="mx-lab">Rastro</div><div className="num text-2xl font-bold" style=${{ color: corR }}>${fmt(E.rastro, 0)}<span className="text-sm text-muted"> de 100</span></div><div className="text-xs text-muted">chance de descoberta neste mês: ${risco}%${E.abafa >= g.mes ? ' (PF freada até ' + dataCurta(E.abafa) + ')' : ''}</div></div>
-      <div className="mx-card panel" style=${{ '--st': E.fase ? 'var(--rubro)' : 'var(--verde)' }}><div className="mx-lab">Investigação</div><div className="font-bold">${E.fase ? ESQ_FASES[E.fase] : 'nada descoberto'}</div><div className="text-xs text-muted">reportagem → CPI → operação da PF → denúncia</div></div>
-      <div className="mx-card panel"><div className="mx-lab">Caixa 2 e fortuna</div><div className="font-bold num">R$ ${fmt(E.caixa2, 0)} mi · R$ ${fmt(E.fortuna, 0)} mi</div><div className="text-xs text-muted">${E.mensalao ? 'mensalão ativo até ' + dataCurta(E.mensalao.ate) : 'caixa 2 vai para a campanha do partido'}</div></div>
-    </div>
+    <${MxHead} eb="Bastidores" t=${html`Esquemas <span className="selo-sim">simulado</span>`} tip='Corrupção é escolha sua: cada esquema dá uma vantagem agora e deixa rastro. Com o tempo, imprensa, PF e delatores podem achar. As notícias falam em "o presidente", sem o nome de pessoas reais.' />
+    <section className="gv-kpis" data-esq-estado="1" aria-label="Rastro e investigação">
+      <${GvKpi} dado="esq-rastro" ic="Footprints" cor=${corR} k="Rastro" v=${fmt(E.rastro, 0)} s=${'descoberta neste mês: ' + risco + '%' + (E.abafa >= g.mes ? ' · PF freada' : '')} />
+      <${GvKpi} dado="esq-inv" ic="Search" cor=${E.fase ? 'var(--rubro)' : 'var(--verde)'} k="Investigação" v=${E.fase ? ESQ_FASES[E.fase] : 'nada'} sm=${true} s="reportagem → CPI → PF → denúncia" />
+      <${GvKpi} dado="esq-din" ic="Wallet" cor="var(--ouro)" k="Caixa 2 · fortuna" v=${'R$ ' + fmt(E.caixa2, 0) + ' · ' + fmt(E.fortuna, 0) + ' mi'} sm=${true} s=${E.mensalao ? 'mensalão até ' + dataCurta(E.mensalao.ate) : 'caixa 2 vai para a campanha'} />
+    </section>
     ${msg && html`<div className=${'text-sm p-2 rounded ' + (msg.ok ? '' : 'text-rubro')} style=${{ background: 'rgba(255,90,78,.08)' }} role="status" data-esq-msg="1">${msg.msg}</div>`}
     <div className="mx-grid g2">
       ${card('mensalao', 'HandCoins', 'Mesada à base no Congresso', 'Por 3 meses, os partidos votam com mais boa vontade (+14 de apoio). Paga com R$ 60 mi de caixa 2, se houver; senão, sai de contratos de estatais e deixa mais rastro.', E.caixa2 >= 60 ? 16 : 24)}
@@ -27385,7 +27411,7 @@ function Eu({ g, upd, chip, setChip, abrirPend }) {
   const c = CHIPS.eu.some(x => x.k === chip) ? chip : 'condicao';
   const corpo = html`<div className="flex flex-col gap-6">
     <${MxStyle} />
-    <${EuResumo} g=${g} />
+    ${c !== 'condicao' && c !== 'bastidores' && html`<${EuResumo} g=${g} />`}
     ${c === 'condicao' && html`<${EuCondicao} g=${g} />`}
     ${c === 'condicao' && html`<${Promessas} g=${g} />`}
     ${c === 'bemestar' && html`<${AgendaPrivada} g=${g} upd=${upd} />`}
@@ -27428,7 +27454,7 @@ function Documento({ prop, g, children }) {
     <div className="px-5 sm:px-8 pt-5 pb-3 border-b border-black/10 text-center">
       <div className="text-[11px] tracking-[.2em] uppercase font-semibold" style=${{ fontFamily: 'var(--f-mono)' }}>Presidência da República · Casa Civil · Subchefia para Assuntos Jurídicos</div>
       <div className="disp text-2xl sm:text-3xl font-black uppercase mt-2">${prop.instDetalhe === 'AUT' ? 'Pedido de autorização ao Congresso' : INST_NOME[prop.inst]}</div>
-      <div className="text-xs mt-1" style=${{ fontFamily: 'var(--f-mono)' }}>Brasília, ${MESES[(g.mes - 1) % 12]} de ${ano} · ${prop.ai ? 'parecer gerado por IA' : prop.aiFicha ? 'leitura da IA, contas do motor 5' : prop.motor === 'v3' ? 'parecer do motor 5' : prop.motor === 'v2' ? 'parecer do motor v2' : 'parecer do motor local'}</div>
+      <div className="text-xs mt-1" style=${{ fontFamily: 'var(--f-mono)' }}>Brasília, ${MESES[(g.mes - 1) % 12]} de ${ano} · ${prop.ai ? 'parecer gerado por IA' : prop.aiFicha ? 'leitura da IA, contas do motor 5' : prop.motor === 'v3' ? 'parecer da Casa Civil' : prop.motor === 'v2' ? 'parecer do motor v2' : 'parecer do motor local'}</div>
     </div>
     <div className="px-5 sm:px-8 py-5 flex flex-col gap-4">${children}</div>
   </div>`;
@@ -27696,10 +27722,10 @@ function BaseJuridica({ prop, g }) { // v3.8
 function GruposResultado({ gd }) { // v3.8
   const [todos, setTodos] = useState(false);
   const mx = Math.max(.5, ...gd.map(x => Math.abs(x.d)));
-  const lista = todos ? gd : gd.slice(0, 9);
+  const lista = todos ? gd : gd.slice(0, 6);
   return html`<div data-secao="grupos-resultado">
     <div className="text-[11px] uppercase tracking-widest opacity-60 mb-2" style=${{ fontFamily: 'var(--f-mono)' }}>Aprovação por grupo da população (p.p.)</div>
-    <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-1.5">${lista.map(x => { const G = GRUPOS.find(z => z.k === x.k) || { nome: x.k, em: '' }; const cor = x.d > 0 ? '#2fd27a' : '#ff5a4e';
+    <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-1.5">${lista.map(x => { const G = GRUPOS.find(z => z.k === x.k) || { nome: x.k, em: '' }; const cor = x.d > 0 ? '#2fd27a' : '#ff5a4e';
       return html`<li key=${x.k} className="flex items-center gap-2 text-sm min-w-0" data-grupo=${x.k}>
         <span className="shrink-0" aria-hidden="true">${G.em}</span><span className="flex-1 min-w-0 truncate" title=${G.nome}>${G.nome}</span>
         <span className="relative shrink-0 h-2 rounded bg-black/10" style=${{ width: 56 }}><span className="absolute top-0 h-full rounded" style=${{ background: cor, width: Math.max(4, Math.abs(x.d) / mx * 100) + '%', left: 0 }}></span></span>
@@ -27806,16 +27832,17 @@ function ModalDecisao({ dec, g, upd, setDec, onClose, votarItem }) {
         </details>
         ${!passa && html`<div className="p-3 rounded bg-black/5">
           <div className="font-semibold text-sm mb-2">Faltam votos. Negocie antes de pautar:</div>
-          <div className="flex flex-wrap gap-1.5">${indecisos.map(v => html`<button key=${v.id} onClick=${() => emenda(v.id)} className="text-xs px-2 py-1 rounded border border-black/25 hover:bg-black/5">Emendas p/ ${PMAP[v.id].nome} · ${bi(custoEmenda(g, v.id))}</button>`)}
+          <div className="flex flex-wrap gap-1.5 items-center">${indecisos.length > 0 && html`<select aria-label="Partido para receber emendas" className="text-xs px-2 py-1 rounded border border-black/25 bg-transparent" data-emenda-sel="1" id="emenda-sel">${indecisos.map(v => html`<option key=${v.id} value=${v.id}>${PMAP[v.id].nome} · ${bi(custoEmenda(g, v.id))}</option>`)}</select><button className="text-xs px-2 py-1 rounded border border-black/25 hover:bg-black/5" data-emenda-pagar="1" onClick=${() => { const el = document.getElementById('emenda-sel'); if (el && el.value) emenda(el.value); }}>Pagar emendas</button>`}
           <button disabled=${prop.desidratada >= 2} onClick=${desidratar} className="text-xs px-2 py-1 rounded border border-black/25 hover:bg-black/5 disabled:opacity-40">Desidratar o texto (−40% de impacto)</button></div>
         </div>`}
 
       </div>` : html`<div className="p-3 rounded bg-black/5 text-sm" data-secao="chance-aprovar">Esta medida não passa pelo Congresso: vale com a assinatura. As bancadas reagem na opinião pública e nas relações com o governo.</div>`}
       ${prop.jaVigente && congresso && html`<div className="p-3 rounded text-sm flex flex-wrap items-center gap-3" style=${{ background: 'rgba(212,160,23,.14)' }} data-ja-vigente="1"><span className="flex-1 min-w-0"><b>Isso já é lei.</b> Votar de novo não muda nada e, se a votação perder, vira manchete de derrota. Dá para só divulgar a medida que já existe.</span><button type="button" className="btn btn-gold btn-sm" data-ja-vigente-com="1" onClick=${() => setDec(d => Object.assign({}, d, { prop: Object.assign({}, d.prop, { inst: 'COM', instDetalhe: null, tecnico: 'Medida já em vigor: o governo só a divulga, sem votação. ' + (d.prop.tecnico || '') }) }))}>Divulgar sem votação</button></div>`}
       <${MinistroSobDemanda} dec=${dec} setDec=${setDec} g=${g} upd=${upd} onClose=${onClose} />
+      <details className="rounded border border-black/15" data-secao="pareceres"><summary className="cursor-pointer select-none px-3 py-2 text-sm font-semibold">Pareceres técnicos e base jurídica</summary><div className="px-3 pb-3 pt-1 flex flex-col gap-3">
       <${ParecerEspecialista} prop=${prop} g=${g} votos=${votos} q=${q} congresso=${congresso} so=${true} />
-      <${BaseJuridica} prop=${prop} g=${g} />
-      <div className="flex flex-wrap justify-end gap-2 pt-3 border-t border-black/10">
+      <${BaseJuridica} prop=${prop} g=${g} /></div></details>
+      <div className="flex flex-wrap justify-end gap-2 pt-3 border-t border-black/10 acao-fixa">
         <button className="px-3 py-2 rounded border border-black/25 text-sm font-semibold hover:bg-black/5" onClick=${() => { upd(n => { n.log.unshift({ mes: n.mes, ato: 'Proposta retirada', texto: prop.texto, res: 'retirada' }); }); fecha(); }} title=${prop.gastosPrev && prop.gastosPrev.extra ? 'As emendas e a pesquisa já pagas serão devolvidas' : ''}>Retirar proposta</button>
         ${congresso && !prop.jaPaga && html`<button className="px-3 py-2 rounded border border-black/25 text-sm font-semibold hover:bg-black/5 disabled:opacity-40" disabled=${!podeEnviar(g, prop).ok || saldoDe(g, prop) <= 0 || cfTravada(prop)} title=${'Vai para a Pauta do Congresso e gasta 1 ' + (prop.daCaixa ? 'proposta' : 'ação')} onClick=${tramitar}>Enviar e tramitar</button>`}
         <button className="px-4 py-2 rounded text-sm font-bold text-black disabled:opacity-40" style=${{ background: 'var(--ouro)' }} disabled=${!!gvBloqPEC(g, prop) || cfTravada(prop)} title=${gvBloqPEC(g, prop) ? gvBloqPEC(g, prop).msg : cfTravada(prop) ? 'PEC não pode ser votada durante intervenção federal, estado de defesa ou de sítio (art. 60, §1º)' : ''} onClick=${votar}>${congresso ? 'Votar agora' : prop.stf.nivel === 'inconstitucional' ? 'Assinar mesmo assim' : 'Assinar e publicar no DOU'}</button>
@@ -27842,6 +27869,12 @@ function ModalDecisao({ dec, g, upd, setDec, onClose, votarItem }) {
       <span className="ml-auto px-3 py-1 rounded-full text-sm font-bold uppercase tracking-wide" style=${{ background: corRes, color: '#04130b' }}>${R.label}</span>
     </div>
     <div className="text-lg font-semibold leading-snug" style=${{ overflowWrap: 'anywhere' }}>${prop.texto}</div>
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+      <div className="p-3 rounded bg-black/5"><div className="text-[10px] uppercase tracking-widest opacity-60">Aprovação</div>${delta(R.ex.antes.ap, R.ex.depois.ap)} p.p.</div>
+      <div className="p-3 rounded bg-black/5"><div className="text-[10px] uppercase tracking-widest opacity-60">Confiança mercado</div>${delta(R.ex.antes.conf, R.ex.depois.conf, 0)}</div>
+      <div className="p-3 rounded bg-black/5"><div className="text-[10px] uppercase tracking-widest opacity-60">Primário (R$ bi)</div>${delta(R.ex.antes.prim, R.ex.depois.prim, 1)}</div>
+      <div className="p-3 rounded bg-black/5"><div className="text-[10px] uppercase tracking-widest opacity-60">Tensão STF</div>${delta(R.ex.antes.stf, R.ex.depois.stf, 0, true)}</div>
+    </div>
     ${R.votacao && html`<div className="grid sm:grid-cols-2 gap-3 text-sm">
       <div className="p-3 rounded bg-black/5"><div className="text-[10px] uppercase tracking-widest opacity-60">Câmara dos Deputados</div><div className="num text-xl">${R.votacao.totC} sim · ${513 - R.votacao.totC} não/ausentes/abstenções</div></div>
       <div className="p-3 rounded bg-black/5"><div className="text-[10px] uppercase tracking-widest opacity-60">Senado Federal</div><div className="num text-xl">${R.votacao.semSenado ? 'a matéria não chegou ao Senado' : `${R.votacao.totS} sim · ${81 - R.votacao.totS} não/ausentes/abstenções`}</div></div>
@@ -27852,13 +27885,15 @@ function ModalDecisao({ dec, g, upd, setDec, onClose, votarItem }) {
     ${R.stfVoto && html`<${PlacarSTF} j=${R.stfVoto} />`}
     ${R.ex.resolveu && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(47,210,122,.12)' }}>A crise do mês foi enfrentada.</div>`}
     ${R.ex.protesto && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,90,78,.08)' }}>As ruas reagiram: um protesto foi convocado. Responda em “Precisa de você”, na Mesa.</div>`}
-    ${R.ex.seg && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,255,255,.06)' }}>${R.ex.seg}</div>`}
     ${coerMsg && html`<div className="text-sm p-3 rounded" data-secao="coerencia-resultado" style=${{ background: coerMsg.neg ? 'rgba(255,90,78,.08)' : 'rgba(47,210,122,.12)' }}>${coerMsg.txt}</div>`}
     ${R.ex.bloqueio && html`<div className="text-sm p-3 rounded" data-secao="bloqueio-resultado" style=${{ background: 'rgba(255,90,78,.08)' }}>${R.ex.bloqueio}</div>`}
+    ${[R.ex.seg, R.ex.vigencia && R.ex.vigencia.length, R.ex.medida, R.ex.revogou, R.ex.agendados > 0].filter(Boolean).length > 0 && html`<details className="rounded border border-black/15" data-secao="detalhes-ato"><summary className="cursor-pointer select-none px-3 py-2 text-sm font-semibold">Como a medida anda daqui para frente (${[R.ex.seg, R.ex.vigencia && R.ex.vigencia.length, R.ex.medida, R.ex.revogou, R.ex.agendados > 0].filter(Boolean).length})</summary><div className="px-3 pb-3 pt-1 flex flex-col gap-2">
+    ${R.ex.seg && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,255,255,.06)' }}>${R.ex.seg}</div>`}
     ${R.ex.vigencia && R.ex.vigencia.length > 0 && html`<div className="text-sm p-3 rounded" data-secao="vigencia-resultado" style=${{ background: 'rgba(255,255,255,.06)' }}>Anterioridade tributária: a arrecadação do aumento (${R.ex.vigencia.map(v => bi(v.rev) + '/ano').join(' e ')}) só entra a partir de ${R.ex.vigencia.map(v => dataCurta(g.mes + Math.max(1, v.em))).join(' e ')}. Nada disso chega ao caixa antes.</div>`}
     ${R.ex.medida && html`<div className="text-sm p-3 rounded" data-secao="medida-resultado" style=${{ background: 'rgba(47,210,122,.10)' }}><b>Ciclo de vida (${R.ex.medida.tipo}):</b> ${R.ex.medida.reg ? 'regulamentação até ' + R.ex.medida.reg + '; ' : ''}implantação até ${R.ex.medida.pleno}; efeito pleno e maturação até ${R.ex.medida.mat}. Opinião e expectativas reagem já; o efeito real e o fiscal chegam mês a mês. Acompanhe em Medidas.</div>`}
     ${R.ex.revogou && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,255,255,.06)' }}>Revogação aprovada: ${R.ex.revogou} deixa de valer.</div>`}
     ${R.ex.agendados > 0 && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(255,255,255,.06)' }}>${R.ex.agendados} ${R.ex.agendados === 1 ? 'efeito futuro agendado' : 'efeitos futuros agendados'} em Contas a vencer.</div>`}
+    </div></details>`}
     ${R.ex.marcos && R.ex.marcos.length > 0 && html`<div className="text-sm p-3 rounded" style=${{ background: 'rgba(245,197,24,.14)' }}>Marco do mandato: <b>${R.ex.marcos.join(' · ')}</b></div>`}
     ${R.ex.gd && R.ex.gd.length > 0 && html`<${GruposResultado} gd=${R.ex.gd} />`}
     <div>
@@ -27872,19 +27907,15 @@ function ModalDecisao({ dec, g, upd, setDec, onClose, votarItem }) {
           ${R.ex.manchetes.sub && R.ex.manchetes.sub.antag && html`<div className="text-xs mt-1 opacity-70 leading-snug">${R.ex.manchetes.sub.antag}</div>`}</div>
       </div>
     </div>
+    <details className="rounded border border-black/15"><summary className="cursor-pointer select-none px-3 py-2 text-sm font-semibold">Voz das ruas (personagens inventados)</summary><div className="px-3 pb-3 pt-1">
     <div data-secao="vozes-resultado">
       <div className="text-[11px] uppercase tracking-widest opacity-60 mb-2" style=${{ fontFamily: 'var(--f-mono)' }}>Voz das ruas · pessoas comentando <span className="normal-case tracking-normal">(personagens inventados)</span></div>
       <div className="grid md:grid-cols-3 gap-3">${R.ex.vozes.map((v, i) => html`<div key=${i} className="p-3 rounded bg-white border border-black/10 flex flex-col gap-1.5" data-voz="1">
         <div className="flex items-start gap-2"><span className="text-2xl leading-none">${v.emoji}</span><div className="text-sm leading-snug"><b>${v.idade ? v.nome + ', ' + v.idade + ' anos' + (v.estado ? ', ' + v.estado : '') : v.nome}:</b> “${v.fala}”</div></div>
         ${v.idade && v.papel && html`<div className="text-[11px] opacity-60">${v.papel.split(',')[0]}</div>`}</div>`)}</div>
     </div>
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-      <div className="p-3 rounded bg-black/5"><div className="text-[10px] uppercase tracking-widest opacity-60">Aprovação</div>${delta(R.ex.antes.ap, R.ex.depois.ap)} p.p.</div>
-      <div className="p-3 rounded bg-black/5"><div className="text-[10px] uppercase tracking-widest opacity-60">Confiança mercado</div>${delta(R.ex.antes.conf, R.ex.depois.conf, 0)}</div>
-      <div className="p-3 rounded bg-black/5"><div className="text-[10px] uppercase tracking-widest opacity-60">Primário (R$ bi)</div>${delta(R.ex.antes.prim, R.ex.depois.prim, 1)}</div>
-      <div className="p-3 rounded bg-black/5"><div className="text-[10px] uppercase tracking-widest opacity-60">Tensão STF</div>${delta(R.ex.antes.stf, R.ex.depois.stf, 0, true)}</div>
-    </div>
-    <div className="flex justify-end pt-3 border-t border-black/10"><button className="px-4 py-2 rounded text-sm font-bold text-black" style=${{ background: 'var(--ouro)' }} onClick=${onClose}>Arquivar e voltar ao gabinete</button></div>
+    </div></details>
+    <div className="flex justify-end pt-3 border-t border-black/10 acao-fixa"><button className="px-4 py-2 rounded text-sm font-bold text-black" style=${{ background: 'var(--ouro)' }} onClick=${onClose}>Arquivar e voltar ao gabinete</button></div>
   </${Documento}></${Modal}>`;
 }
 // decide o resultado e aplica no estado (via referência mutável dentro de upd)
@@ -27920,25 +27951,33 @@ function ModalMes({ rel, g, onClose }) {
     ['Homicídios', rel.antes.hom, rel.depois.hom, 1, true, ''], ['Desmatamento', rel.antes.desm, rel.depois.desm, 0, true, ' km²'], ['Risco de impeachment', rel.antes.imp, rel.depois.imp, 0, true, '%']
   ];
   if (vivoImp && rel.impeachment && rel.impeachment.nominal) return html`<${Modal} wide label="Votação do impeachment ao vivo"><${VotacaoViva} plano=${planoImpeachment(rel.impeachment)} onConcluir=${() => setVivoImp(false)} /></${Modal}>`;
-  return html`<${Modal} label="Balanço do mês" onClose=${onClose}><div className="card overflow-hidden">
+  const kpi = (rot, ic, a, b, d, inv, u, dado) => { const x = b - a; const neutro = Math.abs(x) < Math.pow(10, -d) / 2; const bom = inv ? x < 0 : x > 0; const c = neutro ? 'var(--muted)' : bom ? 'var(--verde)' : 'var(--rubro)';
+    return html`<div className="rounded-lg border border-line p-3 min-w-0" data-gv-kpi=${dado}><div className="flex items-center gap-1.5 text-xs text-muted"><span style=${{ color: c }}><${Icon} n=${ic} s=${14} /></span><span className="truncate">${rot}</span></div><div className="num text-xl font-bold mt-1 whitespace-nowrap">${fmt(b, d)}${u}</div><div className="num text-xs whitespace-nowrap" style=${{ color: c }}>${neutro ? 'estável' : (x > 0 ? '▲ ' : '▼ ') + fmt(Math.abs(x), d)}</div></div>`; };
+  const btnSeguir = html`<button className="btn btn-gold" data-mes-seguir="1" onClick=${onClose}>${g.over ? 'Ver o desfecho' : `Começar ${dataMes(g.mes)}`} <${Icon} n="ChevronRight" /></button>`;
+  const NT = rel.notas || []; const notasTop = NT.filter(n => n.t !== 'neu').slice(0, 4), notasResto = NT.filter(n => !notasTop.includes(n));
+  const notaLi = (n, i) => html`<li key=${i} className="text-sm flex gap-2"><span style=${{ color: n.t === 'neg' ? 'var(--rubro)' : n.t === 'pos' ? 'var(--verde)' : 'var(--ouro)' }}><${Icon} n=${n.t === 'neg' ? 'TriangleAlert' : n.t === 'pos' ? 'CircleCheck' : 'Info'} s=${16} /></span><span className="min-w-0">${n.x}</span></li>`;
+  return html`<${Modal} label="Balanço do mês" onClose=${onClose}><div className="card overflow-hidden" data-balanco="1">
     <div className="faixa"></div>
     <div className="p-5 sm:p-6 flex flex-col gap-4">
-      <div><div className="eyebrow">Balanço de ${dataMes(rel.mesAnterior)}</div><h2 className="disp text-4xl font-black uppercase leading-none mt-1">Fecha o mês</h2></div>
-      <div className="p-3 rounded-lg border border-line flex items-center gap-2 text-sm"><span className="text-ouro"><${Icon} n="Landmark" /></span>${rel.copom}</div>
-      <div className="scroll-x"><table className="w-full text-sm"><thead><tr className="text-muted text-xs"><th className="text-left font-normal py-1">Indicador</th><th className="text-right font-normal">Antes</th><th className="text-right font-normal">Agora</th><th className="text-right font-normal">Var.</th></tr></thead><tbody>
-        ${linhas.map(([l, a, b, d, inv, u]) => { const x = b - a; const neutro = Math.abs(x) < Math.pow(10, -d) / 2; const bom = inv ? x < 0 : x > 0; return html`<tr key=${l} className="border-t border-line"><td className="py-1.5">${l}</td><td className="num text-right text-muted">${fmt(a, d)}${u}</td><td className="num text-right">${fmt(b, d)}${u}</td><td className="num text-right" style=${{ color: neutro ? 'var(--muted)' : bom ? 'var(--verde)' : 'var(--rubro)' }}>${neutro ? '=' : sgn(x, d)}</td></tr>`; })}
-      </tbody></table></div>
-      ${g.apDecomp && g.apDecomp.length > 0 && html`<div className="p-3 rounded-lg border border-line" data-modal-apdecomp="1"><div className="eyebrow mb-2">Por que a aprovação mudou</div><${ApBarras} d=${g.apDecomp[g.apDecomp.length - 1]} /><${EscFontes} g=${g} /></div>`}
-      ${g.abin && g.abin.ativa && g.abin.prox && EVENTOS.find(e => e.id === g.abin.prox.id) && html`<div className="p-3 rounded-lg border border-line text-sm"><b>Alerta da inteligência:</b> no mês que vem, ${EVENTOS.find(e => e.id === g.abin.prox.id).titulo.toLowerCase()}.</div>`}
-      ${(rel.retorno && rel.retorno.length > 0 || rel.ignAcum) && html`<div className="p-3 rounded-lg border border-line" data-modal-retorno="1"><div className="eyebrow mb-2">Retorno das suas decisões</div><ul className="flex flex-col gap-1.5">${(rel.retorno || []).map(r => html`<li key=${r.k} className="text-sm flex gap-2" data-retorno=${r.k}><span className="text-ouro"><${Icon} n=${r.ic || 'Info'} s=${16} /></span><span>${r.x}</span></li>`)}${rel.ignAcum && html`<li className="text-sm flex gap-2" data-retorno="ignoradas"><span className="text-ouro"><${Icon} n="EyeOff" s=${16} /></span><span>Crises ignoradas até aqui: ${rel.ignAcum.n}, ao custo acumulado de −${fmt(rel.ignAcum.ap, 1)} pontos de aprovação e +${fmt(rel.ignAcum.esc, 0)} de escândalo.</span></li>`}</ul></div>`}
-      ${rel.notas.length > 0 && html`<ul className="flex flex-col gap-2">${rel.notas.map((n, i) => html`<li key=${i} className="text-sm flex gap-2"><span style=${{ color: n.t === 'neg' ? 'var(--rubro)' : n.t === 'pos' ? 'var(--verde)' : 'var(--ouro)' }}><${Icon} n=${n.t === 'neg' ? 'TriangleAlert' : n.t === 'pos' ? 'CircleCheck' : 'Info'} /></span>${n.x}</li>`)}</ul>`}
+      <div className="flex items-end justify-between gap-3 flex-wrap"><div><div className="eyebrow">Balanço de ${dataMes(rel.mesAnterior)}</div><h2 className="disp text-2xl font-extrabold leading-none mt-1">Fecha o mês</h2></div>${btnSeguir}</div>
+      <section className="grid grid-cols-5 gap-2" aria-label="Indicadores do mês">
+        ${kpi('Aprovação', 'Heart', rel.antes.ap, rel.depois.ap, 0, false, '%', 'm-ap')}${kpi('PIB', 'TrendingUp', rel.antes.pib, rel.depois.pib, 2, false, '%', 'm-pib')}${kpi('Inflação', 'ShoppingCart', rel.antes.ipca, rel.depois.ipca, 2, true, '%', 'm-ipca')}${kpi('Desemprego', 'Briefcase', rel.antes.des, rel.depois.des, 1, true, '%', 'm-des')}${kpi('Impeachment', 'Gavel', rel.antes.imp, rel.depois.imp, 0, true, '%', 'm-imp')}
+      </section>
       ${rel.impeachment && html`<div className="p-4 rounded-lg border-2 border-rubro">
         <div className="disp text-2xl font-black uppercase text-rubro">Votação do impeachment</div>
         <div className="text-sm mt-1">Câmara: <b className="num">${rel.impeachment.votosC}</b> votos pela abertura (precisava de 342). ${rel.impeachment.aberto ? html`Senado: <b className="num">${rel.impeachment.votosS}</b> pela condenação (precisava de 54).` : 'O processo foi arquivado. Você sobreviveu, por ora.'}</div>
         ${rel.impeachment.nominal && html`<button className="btn btn-ghost text-sm mt-2" onClick=${() => setVivoImp(true)}>Acompanhar a votação ao vivo</button>`}
       </div>`}
-      <ul className="flex flex-col gap-2">${['globo', 'carta', 'antag'].map(s => html`<${Manchete} key=${s} f=${{ src: s, mes: rel.mesAnterior, txt: rel.hd[s] }} />`)}</ul>
-      <div className="flex justify-end"><button className="btn btn-gold" onClick=${onClose}>${g.over ? 'Ver o desfecho' : `Começar ${dataMes(g.mes)}`} <${Icon} n="ChevronRight" /></button></div>
+      ${g.apDecomp && g.apDecomp.length > 0 && html`<div className="p-3 rounded-lg border border-line" data-modal-apdecomp="1"><div className="eyebrow mb-2">Por que a aprovação mudou</div><${ApBarras} d=${g.apDecomp[g.apDecomp.length - 1]} /><${EscFontes} g=${g} /></div>`}
+      ${notasTop.length > 0 && html`<ul className="flex flex-col gap-2" data-mes-notas="1">${notasTop.map(notaLi)}</ul>`}
+      ${(rel.retorno && rel.retorno.length > 0 || rel.ignAcum) && html`<div className="p-3 rounded-lg border border-line" data-modal-retorno="1"><div className="eyebrow mb-2">Retorno das suas decisões</div><ul className="flex flex-col gap-1.5">${(rel.retorno || []).map(r => html`<li key=${r.k} className="text-sm flex gap-2" data-retorno=${r.k}><span className="text-ouro"><${Icon} n=${r.ic || 'Info'} s=${16} /></span><span>${r.x}</span></li>`)}${rel.ignAcum && html`<li className="text-sm flex gap-2" data-retorno="ignoradas"><span className="text-ouro"><${Icon} n="EyeOff" s=${16} /></span><span>Crises ignoradas até aqui: ${rel.ignAcum.n}, ao custo acumulado de −${fmt(rel.ignAcum.ap, 1)} pontos de aprovação e +${fmt(rel.ignAcum.esc, 0)} de escândalo.</span></li>`}</ul></div>`}
+      ${g.abin && g.abin.ativa && g.abin.prox && EVENTOS.find(e => e.id === g.abin.prox.id) && html`<div className="p-3 rounded-lg border border-line text-sm"><b>Alerta da inteligência:</b> no mês que vem, ${EVENTOS.find(e => e.id === g.abin.prox.id).titulo.toLowerCase()}.</div>`}
+      <${MxDet} rot="Todos os indicadores" dado="mes-tabela"><div className="text-xs text-muted mb-2 flex items-center gap-2"><${Icon} n="Landmark" s=${14} />${rel.copom}</div><div className="scroll-x"><table className="w-full text-sm"><thead><tr className="text-muted text-xs"><th className="text-left font-normal py-1">Indicador</th><th className="text-right font-normal">Antes</th><th className="text-right font-normal">Agora</th><th className="text-right font-normal">Var.</th></tr></thead><tbody>
+        ${linhas.map(([l, a, b, d, inv, u]) => { const x = b - a; const neutro = Math.abs(x) < Math.pow(10, -d) / 2; const bom = inv ? x < 0 : x > 0; return html`<tr key=${l} className="border-t border-line"><td className="py-1.5">${l}</td><td className="num text-right text-muted">${fmt(a, d)}${u}</td><td className="num text-right">${fmt(b, d)}${u}</td><td className="num text-right" style=${{ color: neutro ? 'var(--muted)' : bom ? 'var(--verde)' : 'var(--rubro)' }}>${neutro ? '=' : sgn(x, d)}</td></tr>`; })}
+      </tbody></table></div></${MxDet}>
+      ${notasResto.length > 0 && html`<${MxDet} rot=${'Outras notícias do mês (' + notasResto.length + ')'} dado="mes-notas"><ul className="flex flex-col gap-2">${notasResto.map(notaLi)}</ul></${MxDet}>`}
+      <${MxDet} rot="Capas dos jornais" dado="mes-capas"><ul className="flex flex-col gap-2">${['globo', 'carta', 'antag'].map(s => html`<${Manchete} key=${s} f=${{ src: s, mes: rel.mesAnterior, txt: rel.hd[s] }} />`)}</ul></${MxDet}>
+      <div className="flex justify-end">${btnSeguir}</div>
     </div></div></${Modal}>`;
 }
 
@@ -32967,19 +33006,22 @@ function EntHistorico({ g }) {
 function EntImprensa({ g, upd }) {
   const E = g.ent || entEnsure(g); const [gav, setGav] = useState(null);
   const abertas = (E.prom || []).filter(p => p.estado === 'aberta'); const q = g.ent && g.ent.colet && g.ent.colet.mes === g.mes && !g.ent.colet.fim;
-  return html`<div className="grid gap-6 lg:grid-cols-12 items-start" data-ent="painel">
+  const temConv = E.convites.some(c => c.estado === 'pendente' && c.mes === g.mes) || (E.entrev && !E.entrev.fim) || (E.rival && E.rival.mes >= g.mes - 1);
+  return html`<div className="flex flex-col gap-5" data-ent="painel"><${MxStyle} />
+    <${MxHead} eb="Poder · mídia" t="Imprensa" tip="Coletivas e entrevistas mexem na credibilidade e na aprovação. Promessas feitas em texto livre são cobradas depois." right=${html`<div className="flex gap-2 flex-wrap">${q && html`<button type="button" className="btn btn-gold btn-sm" onClick=${() => setGav('entcol')}><${Icon} n="Mic" s=${14} /> Abrir a coletiva do mês</button>`}${temConv && html`<button type="button" className=${'btn btn-sm ' + (q ? 'btn-ghost' : 'btn-gold')} onClick=${() => setGav('entconv')}><${Icon} n="Radio" s=${14} /> Convites de entrevista</button>`}</div>`} />
+    <section className="gv-kpis" aria-label="Relação com a imprensa">
+      <${GvKpi} dado="ent-cred" ic="BadgeCheck" cor=${E.cred >= 55 ? 'var(--verde)' : E.cred >= 40 ? 'var(--ambar)' : 'var(--rubro)'} k="Credibilidade" v=${fmt(E.cred, 0)} s="de 100" />
+      <${GvKpi} dado="ent-feitas" ic="Mic" cor="var(--anil)" k="Entrevistas" v=${E.feitas} s=${E.recusas + ' recusada(s)'} />
+      <${GvKpi} dado="ent-resp" ic="MessageSquare" cor="var(--muted)" k="Respostas" v=${E.hist.length} s="na coletiva e em entrevistas" />
+      <${GvKpi} dado="ent-prom" ic="ListChecks" cor=${abertas.length ? 'var(--ambar)' : 'var(--verde)'} k="Promessas abertas" v=${abertas.length} s="a imprensa cobra depois" />
+    </section>
+    <div className="grid gap-6 lg:grid-cols-12 items-start">
     <section className="lg:col-span-4 sec flex flex-col gap-3 min-w-0">
-      <h3 className="disp text-2xl font-extrabold uppercase">Imprensa</h3>
-      <div><div className="flex justify-between text-sm"><span className="eyebrow">Credibilidade</span><span className="num">${fmt(E.cred, 0)}/100</span></div><${Bar} v=${E.cred} cor=${E.cred >= 55 ? 'var(--verde)' : E.cred >= 40 ? 'var(--ambar)' : 'var(--rubro)'} label="Credibilidade com a imprensa" /></div>
-      <div className="grid grid-cols-3 gap-2 text-center"><div><div className="num text-xl">${E.feitas}</div><div className="eyebrow">feitas</div></div><div><div className="num text-xl">${E.recusas}</div><div className="eyebrow">recusadas</div></div><div><div className="num text-xl">${E.hist.length}</div><div className="eyebrow">respostas</div></div></div>
-      <div className="flex flex-col gap-2">
-        ${q && html`<button type="button" className="btn btn-pri justify-center" onClick=${() => setGav('entcol')}><${Icon} n="Mic" s=${14} /> Abrir a coletiva do mês</button>`}
-        ${E.convites.some(c => c.estado === 'pendente' && c.mes === g.mes) || (E.entrev && !E.entrev.fim) || (E.rival && E.rival.mes >= g.mes - 1) ? html`<button type="button" className="btn btn-gold justify-center" onClick=${() => setGav('entconv')}><${Icon} n="Radio" s=${14} /> Convites de entrevista</button>` : null}
-      </div>
       <div><div className="eyebrow mb-1">Promessas feitas em entrevistas</div>
         ${(E.prom || []).length === 0 ? html`<p className="text-xs text-muted">Nenhuma ainda. Quando você promete algo em texto livre, a imprensa cobra depois.</p>` : html`<ul className="flex flex-col gap-1">${E.prom.slice(-6).reverse().map((p, i) => html`<li key=${i} className="text-xs flex gap-2"><${Tag} cor=${p.estado === 'cumprida' ? 'var(--verde)' : p.estado === 'quebrada' ? 'var(--rubro)' : 'var(--ouro)'}>${p.estado}</${Tag}><span className="flex-1">${p.topic} <span className="text-muted">(${dataCurta(p.mes)})</span></span></li>`)}</ul>`}</div>
     </section>
     <${EntHistorico} g=${g} />
+    </div>
     ${gav && html`<${CenaImprensa} kind=${gav} g=${g} upd=${upd} onClose=${() => setGav(null)} />`}
   </div>`;
 }
@@ -33442,7 +33484,7 @@ function elMarcos(g) {
     { m: b + 44, t: `16/ago/${aG}: campanha oficial, TV e debates`, k: 'ger' }, { m: b + 46, t: `${elDomOut(aG)}/out/${aG}: 1º turno presidencial`, k: 'ger' }, { m: b + 47, t: `${elDomOut(aG, 1)}/out/${aG}: 2º turno (apuração no balanço do mês seguinte)`, k: 'ger' }, { m: b + 49, t: `1/jan/${aG + 1}: posse do(a) presidente`, k: 'ger' }, { m: b + 50, t: `Fev/${aG + 1}: nova legislatura (simulada)`, k: 'ger' }
   ];
 }
-function ElPopBarra({ g, id }) { const p = elPopDe(g, id); return html`<span className="num text-xs text-muted whitespace-nowrap" title="Reconhecimento / aprovação do nome (simulado)">rec ${Math.round(p.rec)} · apr ${Math.round(p.apr)}</span>`; }
+function ElPopBarra({ g, id }) { const p = elPopDe(g, id); return html`<span className="num text-xs text-muted whitespace-nowrap inline-flex items-center gap-1" title=${'Reconhecimento: ' + Math.round(p.rec) + '% do eleitorado conhece o nome · Aprovação: ' + Math.round(p.apr) + '% de quem conhece aprova (simulado)'}><${Icon} n="Eye" s=${12} /> ${Math.round(p.rec)}% <${Icon} n="ThumbsUp" s=${12} /> ${Math.round(p.apr)}%</span>`; }
 function ElVisao({ g, upd, ir }) {
   const E = g.el; const pj = elPJ(g); const marcos = elMarcos(g).filter(x => x.m >= g.mes - 2).slice(0, 7); const leg = E.leg; const trocas = elMudancasCongresso(g);
   return html`<div className="grid gap-6 lg:grid-cols-12 items-start" data-el="visao">
@@ -33833,29 +33875,53 @@ function ElFim({ g, upd, reiniciar }) {
   const sugest = useMemo(() => { const dir = elDirIdeo(leg.bloco && PMAP[leg.bloco] ? ideoDoPartido((PMAP[leg.bloco].membros || ['PSD'])[0]) : g.cfg.ideo); return todos.map(p => ({ p, s: .55 * elPopDe(g, p.id).rec + .45 * elPopDe(g, p.id).apr - Math.abs((EL_CAMP_DIR[p.camp] || 0) - dir) * 25 + (p.cargo === 'dep' ? -15 : 0) })).sort((a, b) => b.s - a.s).slice(0, 8).map(x => x.p); }, [g.mes]);
   const busca = todos.filter(p => (campo === 'todos' || p.camp === campo) && q.length >= 2 && norm(p.nome + ' ' + p.uf).includes(norm(q))).slice(0, 24);
   const escolhe = (p, pres) => upd(n => { elEscolheProximo(n, pres ? Object.assign({ tipo: 'presidente' }, pres) : elPersonaDe(p, 'oposicao')); });
-  const linha = (p) => html`<li key=${p.id} className="py-2 flex items-center gap-3" data-prox=${p.id}><${Ef} nome=${p.nome} cor=${PMAP[p.bloco] ? PMAP[p.bloco].cor : '#7d8b86'} papel=${p.cargo === 'sen' ? 'senador' : p.cargo === 'gov' ? 'governador' : p.cargo === 'dep' ? 'deputado' : 'famoso'} s=${36} /><div className="min-w-0 flex-1"><div className="font-medium">${p.nome} <span className="text-xs text-muted">${p.sigla ? sg(p.sigla) : 'sem partido'}-${p.uf}</span></div><div className="text-xs text-muted">${p.cargo === 'gov' ? 'governador(a)' : p.cargo === 'sen' ? 'senador(a)' : p.cargo === 'dep' ? 'deputado(a) federal' : 'sem mandato federal'} · ${EL_CAMP_NOME[p.camp]} · rec ${Math.round(elPopDe(g, p.id).rec)}</div></div><button type="button" className="btn btn-ghost text-sm" onClick=${() => escolhe(p)}>Continuar como ${p.nome.split(' ')[0]}</button></li>`;
-  return html`<div className="gutter py-8 max-w-5xl mx-auto fade-in" data-el="fim-personagem"><div className="card overflow-hidden"><div className="faixa"></div><div className="p-6 sm:p-8 flex flex-col gap-5">
-    <div className="eyebrow">${dataMes(Math.min(g.mes, o.mes || g.mes))} · ${sob} · ${leg.sigla}${leg.real ? ' · personagem real' : ''}</div>
-    <h1 className="disp text-5xl font-black uppercase leading-none" style=${{ color: motivo === 'eleicao' && o.reeleito ? 'var(--verde)' : 'var(--rubro)' }}>${titulo}</h1>
-    <p className="text-lg">${texto}</p>
+  const linha = (p) => html`<li key=${p.id} className="py-2 flex items-center gap-3" data-prox=${p.id}><${Ef} nome=${p.nome} cor=${PMAP[p.bloco] ? PMAP[p.bloco].cor : '#7d8b86'} papel=${p.cargo === 'sen' ? 'senador' : p.cargo === 'gov' ? 'governador' : p.cargo === 'dep' ? 'deputado' : 'famoso'} s=${36} /><div className="min-w-0 flex-1"><div className="font-medium">${p.nome} <span className="text-xs text-muted">${p.sigla ? sg(p.sigla) : 'sem partido'}-${p.uf}</span></div><div className="text-xs text-muted">${p.cargo === 'gov' ? 'governador(a)' : p.cargo === 'sen' ? 'senador(a)' : p.cargo === 'dep' ? 'deputado(a) federal' : 'sem mandato federal'} · ${EL_CAMP_NOME[p.camp]} · conhecido por ${Math.round(elPopDe(g, p.id).rec)}%</div></div><button type="button" className="linklike" style=${{ color: 'var(--ouro)' }} onClick=${() => escolhe(p)}>Continuar como ${p.nome.split(' ')[0]} <${Icon} n="ChevronRight" s=${14} /></button></li>`;
+  const ruim = ['impeachment', 'saude', 'derrota', 'dit_queda', 'golpe_militar', 'cassacao'].includes(motivo) && !(motivo === 'eleicao' && o.reeleito);
+  const corTit = (motivo === 'eleicao' && o.reeleito) || motivo === 'abertura' ? 'var(--verde)' : ruim ? 'var(--rubro)' : 'var(--ouro)';
+  const metasOk = leg.metas ? leg.metas.filter(m => m.ok).length : 0, metasN = leg.metas ? leg.metas.length : 0;
+  const promOk = leg.prom ? leg.prom.filter(p => p.ok).length : 0, promN = leg.prom ? leg.prom.length : 0;
+  const nota = clamp(Math.round((leg.ap || 0) * .5 + (metasN ? metasOk / metasN * 25 : 12) + (promN ? promOk / promN * 25 : 12) - (ruim ? 15 : 0)), 0, 100);
+  const conceito = nota >= 80 ? 'A' : nota >= 65 ? 'B' : nota >= 50 ? 'C' : nota >= 35 ? 'D' : 'E';
+  const H = (g.hist && g.hist.ap) || []; const serie = H.slice(-60);
+  const graf = serie.length >= 3 ? (() => { const W = 640, Hh = 120, mx = Math.min(100, Math.max(...serie, 50) + 6), mn = Math.max(0, Math.min(...serie, 50) - 6); const x = (i) => i / (serie.length - 1) * W, y = (v) => Hh - (clamp(v, mn, mx) - mn) / (mx - mn) * Hh; const d = serie.map((v, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1)).join(' ');
+    return html`<svg viewBox=${'0 0 ' + W + ' ' + (Hh + 6)} preserveAspectRatio="none" width="100%" height="130" role="img" aria-label=${'Aprovação ao longo do mandato, de ' + fmt(serie[0], 0) + '% a ' + fmt(serie[serie.length - 1], 0) + '%'} data-fim-graf="1"><line x1="0" x2=${W} y1=${y(50)} y2=${y(50)} stroke="var(--line2)" stroke-dasharray="4 4" /><path d=${d + ' L' + W + ' ' + Hh + ' L0 ' + Hh + ' Z'} fill="rgba(245,197,24,.10)" /><path d=${d} fill="none" stroke="var(--ouro)" stroke-width="2.5" stroke-linejoin="round" /></svg>`; })() : null;
+  return html`<div className="gutter py-8 max-w-5xl mx-auto fade-in" data-el="fim-personagem"><${MxStyle} /><div className="card overflow-hidden"><div className="faixa"></div><div className="p-6 sm:p-8 flex flex-col gap-5">
+    <div className="flex items-start gap-5 flex-wrap">
+      <div className="flex-1 min-w-0" style=${{ minWidth: 280 }}>
+        <div className="eyebrow">${dataMes(Math.min(g.mes, o.mes || g.mes))} · ${sob} · ${leg.sigla}${leg.real ? ' · personagem real' : ''}</div>
+        <h1 className="disp text-5xl font-black leading-none mt-1" style=${{ color: corTit }}>${titulo}</h1>
+        <p className="text-lg mt-2">${texto}</p>
+      </div>
+      <div className="text-center shrink-0 px-5 py-3 rounded-xl border border-line" data-fim-nota=${conceito} title=${'Nota do mandato: ' + nota + ' de 100 (aprovação final, metas e promessas' + (ruim ? '; fim antecipado pesa' : '') + ')'}><div className="eyebrow">Nota do mandato</div><div className="disp font-black leading-none" style=${{ fontSize: 56, color: corTit }}>${conceito}</div><div className="num text-xs text-muted">${nota} de 100</div></div>
+    </div>
     ${esqDesfecho(g) && html`<p className="text-base p-3 rounded" style=${{ background: 'rgba(255,90,78,.10)' }} data-esq-desfecho="1">${esqDesfecho(g)}</p>`}
-    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3"><div><div className="eyebrow">Aprovação final</div><div className="num text-2xl">${fmt(leg.ap, 0)}%</div></div><div><div className="eyebrow">PIB</div><div className="num text-2xl">${fmt(leg.pib)}%</div></div><div><div className="eyebrow">IPCA</div><div className="num text-2xl">${fmt(leg.ipca)}%</div></div><div><div className="eyebrow">Atos assinados</div><div className="num text-2xl">${leg.atos}</div></div><div><div className="eyebrow">Marcos</div><div className="num text-2xl">${leg.marcos}</div></div></div>
-    ${html`<${ElLegadoPainel} g=${g} o=${o} />`}
-    ${leg.mun && leg.mun.length > 0 && html`<div data-legado-mun="1"><div className="eyebrow mb-2">Eleições municipais</div><ul className="flex flex-col gap-1">${leg.mun.map((x, i) => html`<li key=${i} className="text-sm">Municipais ${x.ano}: base ${x.dN >= 0 ? '+' : '−'}${Math.abs(x.dN)} prefeituras (${x.base} de ${x.n}); ${x.capBase} de ${x.nCap} capitais${x.apoios ? '; ' + x.vit + ' de ' + x.apoios + ' apoios venceram' : '; neutro'}.</li>`)}</ul></div>`}
-    ${leg.prom && leg.prom.length > 0 && html`<div><div className="eyebrow mb-2">Promessas</div><ul className="flex flex-col gap-1">${leg.prom.map((p, i) => html`<li key=${i} className="flex gap-2 items-center"><span style=${{ color: p.ok ? 'var(--verde)' : 'var(--rubro)' }}><${Icon} n=${p.ok ? 'CircleCheck' : 'CircleX'} /></span>${p.nome}</li>`)}</ul></div>`}
-    ${leg.metas && leg.metas.length > 0 && html`<div data-el="metas"><div className="eyebrow mb-2">Metas por área · ${leg.metas.filter(m => m.ok).length}/${leg.metas.length} atingidas</div><ul className="flex flex-col gap-1">${leg.metas.map(m => html`<li key=${m.id} className="flex gap-2 items-center" data-meta-leg=${m.id}><span style=${{ color: m.ok ? 'var(--verde)' : 'var(--rubro)' }}><${Icon} n=${m.ok ? 'CircleCheck' : 'CircleX'} s=${16} /></span><span>${m.txt}</span><span className="text-xs text-muted">${m.area}</span></li>`)}</ul></div>`}
-    ${E.din && E.din.length > 0 && html`<div><div className="eyebrow mb-2">Linha do tempo de personagens</div><ol className="flex flex-col gap-1">${E.din.map((d, i) => html`<li key=${i} className="text-sm"><b>${d.nome}</b> (${d.sigla}) · ${d.papel} · ${dataCurta(d.de)}–${d.ate ? dataCurta(d.ate) : dataCurta(o.mes || g.mes)}</li>`)}</ol></div>`}
-    <div className="border-t border-line pt-4 flex flex-col gap-3" data-el="proximo"><h2 className="disp text-3xl font-extrabold uppercase">Escolher próximo personagem</h2>
-      <p className="text-sm text-muted">O jogo continua. Escolha qualquer político: o presidente em exercício (governo pleno), um aliado ou adversário, alguém com ou sem mandato. Quem não for presidente joga em modo leve (X, entrevistas, campanha e apoios) até vencer uma eleição presidencial.</p>
+    <section className="gv-kpis" aria-label="Números finais">
+      <${GvKpi} dado="fim-ap" ic="Heart" cor=${corAprov(leg.ap || 0)} k="Aprovação final" v=${fmt(leg.ap, 0) + '%'} s="" />
+      <${GvKpi} dado="fim-pib" ic="TrendingUp" cor="var(--muted)" k="PIB" v=${fmt(leg.pib) + '%'} s="" />
+      <${GvKpi} dado="fim-ipca" ic="ShoppingCart" cor="var(--muted)" k="Inflação" v=${fmt(leg.ipca) + '%'} s="" />
+      ${metasN > 0 && html`<${GvKpi} dado="fim-metas" ic="Target" cor=${metasN && metasOk / metasN >= .5 ? 'var(--verde)' : 'var(--ambar)'} k="Metas" v=${metasOk + '/' + metasN} s="atingidas" />`}
+      <${GvKpi} dado="fim-prom" ic="ListChecks" cor=${promN && promOk / promN >= .5 ? 'var(--verde)' : 'var(--ambar)'} k="Promessas" v=${promOk + '/' + promN} s="cumpridas" />
+    </section>
+    ${graf && html`<div className="mx-card panel"><div className="mx-lab mb-1 flex justify-between"><span>Aprovação ao longo do mandato</span><span className="num normal-case tracking-normal">${fmt(serie[0], 0)}% → ${fmt(serie[serie.length - 1], 0)}% · linha tracejada: 50%</span></div>${graf}</div>`}
+    <div className="border-t border-line pt-4 flex flex-col gap-3" data-el="proximo"><div className="flex items-end justify-between gap-3 flex-wrap"><h2 className="disp text-2xl font-extrabold">Escolher próximo personagem<${GvTip} txt="O jogo continua. Escolha qualquer político: o presidente em exercício (governo pleno), um aliado ou adversário, alguém com ou sem mandato. Quem não for presidente joga em modo leve (X, entrevistas, campanha e apoios) até vencer uma eleição presidencial." /></h2>
       <div className="flex flex-wrap gap-2">
         ${(alvoPosse || motivo === 'eleicao' && o.reeleito) && html`<button type="button" className="btn btn-gold" data-prox-pres="1" onClick=${() => escolhe(null, alvoPosse ? { id: 'pres:' + alvoPosse.nome, nome: alvoPosse.nome, sigla: alvoPosse.sigla, bloco: alvoPosse.bloco, uf: alvoPosse.uf, ideo: alvoPosse.ideo, idade: alvoPosse.idade, real: alvoPosse.real, origem: alvoPosse.origem } : { id: 'pres:' + g.cfg.nome, nome: g.cfg.nome, sigla: nomePartido(g.cfg), bloco: g.cfg.partido, uf: g.cfg.estado, ideo: g.cfg.ideo, idade: g.cfg.idade, real: g.cfg.real, origem: g.cfg.origem })}><${Icon} n="Landmark" s=${14} /> Continuar como ${presNome} (presidente)</button>`}
-        <button type="button" className="btn btn-ghost" onClick=${reiniciar}><${Icon} n="RotateCcw" s=${14} /> Disputar nova eleição do zero</button></div>
-      <div><div className="eyebrow mb-1">Sugestões pelo reconhecimento e pelo campo</div><ul className="flex flex-col divide-y divide-line">${sugest.map(linha)}</ul></div>
+        <button type="button" className="btn btn-ghost" onClick=${reiniciar}><${Icon} n="RotateCcw" s=${14} /> Nova eleição do zero</button></div></div>
       <div className="flex flex-wrap gap-2 items-center"><input type="text" aria-label="Buscar político" placeholder="Buscar qualquer político (mín. 2 letras)" value=${q} onChange=${e => setQ(e.target.value)} data-prox-busca="1" /><div className="chipnav" role="group" aria-label="Campo">${[['todos', 'Todos'], ...Object.entries(EL_CAMP_NOME)].map(([k, n]) => html`<button key=${k} type="button" aria-selected=${campo === k} onClick=${() => setCampo(k)}>${cap(n)}</button>`)}</div></div>
       ${busca.length > 0 && html`<ul className="flex flex-col divide-y divide-line">${busca.map(linha)}</ul>`}
-    </div></div></div></div>`;
-}
-function elCorpo(kind, g, upd) {
+      ${busca.length === 0 && html`<div><div className="eyebrow mb-1">Sugestões</div><ul className="flex flex-col divide-y divide-line">${sugest.map(linha)}</ul></div>`}
+    </div>
+    <${MxDet} rot="Painel de legado: do primeiro ao último mês" dado="fim-legado" open=${!!o.suc}>${html`<${ElLegadoPainel} g=${g} o=${o} />`}</${MxDet}>
+    <div className="grid gap-4 md:grid-cols-2">
+      ${leg.prom && leg.prom.length > 0 && html`<div><div className="eyebrow mb-2">Promessas</div><ul className="flex flex-col gap-1">${leg.prom.map((p, i) => html`<li key=${i} className="flex gap-2 items-center"><span style=${{ color: p.ok ? 'var(--verde)' : 'var(--rubro)' }}><${Icon} n=${p.ok ? 'CircleCheck' : 'CircleX'} /></span>${p.nome}</li>`)}</ul></div>`}
+      ${leg.metas && leg.metas.length > 0 && html`<div data-el="metas"><div className="eyebrow mb-2">Metas por área · ${leg.metas.filter(m => m.ok).length}/${leg.metas.length} atingidas</div><ul className="flex flex-col gap-1">${leg.metas.map(m => html`<li key=${m.id} className="flex gap-2 items-center" data-meta-leg=${m.id}><span style=${{ color: m.ok ? 'var(--verde)' : 'var(--rubro)' }}><${Icon} n=${m.ok ? 'CircleCheck' : 'CircleX'} s=${16} /></span><span>${m.txt}</span><span className="text-xs text-muted">${m.area}</span></li>`)}</ul></div>`}
+    </div>
+    ${(leg.mun && leg.mun.length > 0 || E.din && E.din.length > 0) && html`<${MxDet} rot="Municipais e linha do tempo" dado="fim-mais">
+      ${leg.mun && leg.mun.length > 0 && html`<div data-legado-mun="1"><div className="eyebrow mb-2">Eleições municipais</div><ul className="flex flex-col gap-1">${leg.mun.map((x, i) => html`<li key=${i} className="text-sm">Municipais ${x.ano}: base ${x.dN >= 0 ? '+' : '−'}${Math.abs(x.dN)} prefeituras (${x.base} de ${x.n}); ${x.capBase} de ${x.nCap} capitais${x.apoios ? '; ' + x.vit + ' de ' + x.apoios + ' apoios venceram' : '; neutro'}.</li>`)}</ul></div>`}
+      ${E.din && E.din.length > 0 && html`<div><div className="eyebrow mb-2">Linha do tempo de personagens</div><ol className="flex flex-col gap-1">${E.din.map((d, i) => html`<li key=${i} className="text-sm"><b>${d.nome}</b> (${d.sigla}) · ${d.papel} · ${dataCurta(d.de)}–${d.ate ? dataCurta(d.ate) : dataCurta(o.mes || g.mes)}</li>`)}</ol></div>`}
+    </${MxDet}>`}
+  </div></div></div>`;
+}function elCorpo(kind, g, upd) {
   const ger = g.el && g.el.ger;
   if (kind === 'elmodo') return html`<${ElVisao} g=${g} upd=${upd} />`;
   if (kind === 'elmun') return html`<${ElMunicipal} g=${g} upd=${upd} />`;
@@ -34897,6 +34963,7 @@ function App() {
     return () => window.removeEventListener('hashchange', aplica);
   }, [jaG]);
   useEffect(() => { if (aviso) { const t = setTimeout(() => setAvisoAtual(null), 6000); return () => clearTimeout(t); } }, [aviso]);
+  useEffect(() => { glDedupeLigar(); }, []);
   // próximo aviso da fila: só entra quando não há gaveta, modal nem cena aberta
   useEffect(() => {
     if (aviso || !filaAv.current.length) return undefined;
@@ -34967,6 +35034,7 @@ function App() {
   const motorNome = MOTORES.find(m => m.k === ia.motor).nome;
   const sec = secAtual(g);
   return html`<div className="min-h-full flex flex-col">
+    <style>${GV_CSS}${PD_CSS}${MX_CSS}</style>
     <${SinaisVitais} g=${g} onConfig=${() => setCfgOpen(true)} encerrar=${encerrarMes} irEu=${() => irPara('eu')} />
     <div className="shell w-full flex-1">
       <${NavSecoes} atual=${sec} onSel=${(s) => irPara(s)} g=${g} />
