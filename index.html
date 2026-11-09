@@ -14453,7 +14453,7 @@ function executaProposta(g, prop, resultado) {
   // EQUILÍBRIO v2: todo ato de comunicação puro (inst COM, sem custo nem receita, que não seja resposta a crise/protesto) também é transitório: só mexe na opinião (grupos, aprovação, relações),
   // por poucas semanas. Antes só os marcados pelo motor eram, e discursos e visitas deixavam +1 ponto de aprovação permanente cada um e até derrubavam a pobreza (-12 p.p. de viés em 24 meses).
   const ehCom = !!prop.transiente || (prop.inst === 'COM' && !(prop.cost > 0) && !prop.rev && !prop.fromEvento && !prop.fromProtesto);
-  if (resultado === 'aprovada') {
+  if (resultado === 'aprovada') { try { const cvN = cvCondutaVedada(g, prop); if (cvN) linhaAdd(g, 'TSE', cvN); } catch (e) { }
     if (g.revogPend && g.revogPend.texto === prop.texto) { medRev = medidasDe(g).find(m => m.id === g.revogPend.mid && medAtivo(m)) || null; g.revogPend = null; }
     if (!medRev) medRev = medAchaRevogada(g, prop); // v3.6: proposta que reverte uma medida em vigor (texto livre) desfaz a original
     if (medRev) { medidaReverte(g, medRev, 1, 'revogada'); estOf(g).revogacoes = (estOf(g).revogacoes || 0) + 1; medNoticia(g, medRev, 'neu', `Revogação aprovada (${ato}): ${medRev.ato} deixa de valer e os efeitos já produzidos são em grande parte desfeitos`); }
@@ -14811,6 +14811,7 @@ function fimDoMes(g) {
   if (risco >= 80) g.impStreak++; else g.impStreak = Math.max(0, g.impStreak - 1);
   if (g.impGraca && g.mes < g.impGraca) g.impStreak = 0; // carência do sucessor: sem votação de impeachment nos 6 primeiros meses
   const impNec = eqImpNecessario(g); // EQUILÍBRIO v2: 3 meses seguidos (4 em Lua de mel/Fácil), com 1 mês de aviso de admissibilidade
+  if (g.impStreak >= impNec - 1 && g.cv && !cvCrime(g) && cvHumor(g, 'cam') >= 30) { g.impStreak = Math.max(0, impNec - 2); if ((g.cv.eng || 0) < g.mes - 3) { g.cv.eng = g.mes; notas.push({ t: 'neu', x: `${cvNomeCasa(g, 'cam')} engaveta os pedidos de impeachment: sem crime de responsabilidade, não há base para abrir o processo.` }); } }
   if (g.impStreak >= impNec) impeachment = votaImpeachment(g);
   else if (g.impStreak === impNec - 1 && g.impStreak > 0 && g.impAdmMes !== g.mes) {
     g.impAdmMes = g.mes;
@@ -18347,6 +18348,7 @@ function pendenciasMesa(g) {
     L.push({ id: 'contas', tipo: 'contas', urg: 38 + Math.min(14, prox.length * 3), cat: 'Contas a vencer', ic: 'Clock', titulo: prox.length === 1 ? 'Uma conta vence em breve' : `${prox.length} contas vencem em breve`, ctx: prox.slice(0, 2).map(p => p.txt).join(' · '), extra: null, abrir: 'contas', btns: [] });
   }
   try { const r = medResumoMesa(g); if (r && r.prob) L.push({ id: 'medidas', tipo: 'medidas', urg: 61, cat: 'Medidas em vigor', ic: 'ClipboardList', titulo: r.titulo, ctx: r.ctx, extra: null, abrir: 'medidas', btns: [] }); } catch (e) { } // v3.6
+  try { for (const d of ((g.cv && g.cv.dec) || [])) L.push({ id: 'cv-' + d.id, tipo: 'cvdec', urg: d.k === 'mesa' || d.k === 'ploa' || d.k === 'contingencia' ? 84 : d.prazo <= g.mes ? 88 : 70, cat: d.k === 'veto' ? 'Sanção ou veto' : d.k === 'ministerio' ? 'Partidos' : d.k === 'lider' ? 'Líderes' : d.k === 'mesa' ? 'Congresso' : 'Orçamento', ic: d.k === 'veto' ? 'Stamp' : d.k === 'ministerio' ? 'Briefcase' : d.k === 'lider' ? (d.ic || 'Users') : d.k === 'mesa' ? 'Landmark' : 'Wallet', titulo: d.tit, ctx: d.txt, extra: null, abrir: 'cvdec', btns: [] }); } catch (e) { }
   pendenciasF4(g).forEach(x => L.push(x));
   try { icPendencias(g).forEach(x => L.push(x)); } catch (e) { }
   entPendX(g, L);
@@ -18358,6 +18360,7 @@ function pendenciasMesa(g) {
 // o item da gaveta ainda faz sentido? (some sozinho quando é resolvido)
 function aindaPend(g, kind) {
   if (kind === 'crise') return statusCrise(g) === 'pendente';
+  if (kind === 'cvdec') return !!(g.cv && g.cv.dec.length);
   if (kind === 'protesto') return !!g.protesto;
   if (kind === 'stf') return (g.stfCadeiras || []).some(c => c.vaga);
   if (kind === 'qq') return !!(g.qq && QQMAP[g.qq.id] && !g.qq.respondida);
@@ -18371,7 +18374,7 @@ function aindaPend(g, kind) {
   if (/^(ent|el)/.test(kind)) return entAindaPend(g, kind);
   return true;
 }
-const GAVETA_TIT = { crise: 'Gabinete de crise', protesto: 'Termômetro das ruas', stf: 'Vaga no STF', pauta: 'Pauta do Congresso', qq: 'Quebra-queixo', abin: 'Serviço de inteligência', prioridade: 'Prioridade do trimestre', esplanada: 'Esplanada dos Ministérios', oposicao: 'Oposição rumo a 2030', contas: 'Contas a vencer', viagem: 'Visita de Estado', mesadip: 'Mesa diplomática', bastidores: 'Bastidores (ficção)', justica: 'Caso de corrupção', admissibilidade: 'Admissibilidade do impeachment', afastamento: 'Afastamento temporário' };
+const GAVETA_TIT = { cvdec: 'Congresso, partidos e líderes', crise: 'Gabinete de crise', protesto: 'Termômetro das ruas', stf: 'Vaga no STF', pauta: 'Pauta do Congresso', qq: 'Quebra-queixo', abin: 'Serviço de inteligência', prioridade: 'Prioridade do trimestre', esplanada: 'Esplanada dos Ministérios', oposicao: 'Oposição rumo a 2030', contas: 'Contas a vencer', viagem: 'Visita de Estado', mesadip: 'Mesa diplomática', bastidores: 'Bastidores (ficção)', justica: 'Caso de corrupção', admissibilidade: 'Admissibilidade do impeachment', afastamento: 'Afastamento temporário' };
 
 // EQUILÍBRIO v2: gaveta do aviso de impeachment e do afastamento por saúde
 function CartaoAdmissibilidade({ g, kind }) {
@@ -18732,7 +18735,7 @@ function Mesa({ g, decidir, motorNome, upd, votarItem, encerrar, irPara, refino 
     : kind === 'justica' ? html`<${CartaoJustica} g=${g} upd=${upd} />`
     : kind === 'comercio' ? html`<div className="flex flex-col gap-4"><${ComVencendo} g=${g} upd=${upd} />${(g.comex && g.comex.props.some(p => p.estado === 'aberta' && p.grande)) || !icVencendo(g).length ? html`<${ComPropostas} g=${g} upd=${upd} soGrandes=${true} />` : null}</div>`
     : kind === 'admissibilidade' || kind === 'afastamento' ? html`<${CartaoAdmissibilidade} g=${g} kind=${kind} />`
-    : kind === 'contas' ? html`<${CartaoContas} g=${g} />` : entCorpo(kind, g, upd));
+    : kind === 'contas' ? html`<${CartaoContas} g=${g} />` : kind === 'cvdec' ? html`<${CvDecisoes} g=${g} upd=${upd} />` : entCorpo(kind, g, upd));
   const itemArt = art ? g.pauta.find(x => x.id === art) : null;
   const corAc = g.props > 0 ? 'var(--ouro)' : 'var(--rubro)';
   return html`<div className="mesa">
@@ -19899,6 +19902,7 @@ function Poder({ g, upd, decidir, votarItem, chip, setChip, abrirPend }) {
     ${c === 'imprensa' && html`<${EntImprensa} g=${g} upd=${upd} />`}
     ${c === 'figuras' && html`<${ElFiguras} g=${g} />`}
     ${c === 'democracia' && html`<${DitPainel} g=${g} upd=${upd} />`}
+    ${c === 'casas' && html`<${CvPainel} g=${g} upd=${upd} />`}
   </${Subpagina}>`;
 }
 /* ============================== ABA X (rede social simulada) ============================== */
@@ -24479,6 +24483,242 @@ function trocaPartido(g, pid) {
 
 
 
+/* ============================== CONGRESSO VIVO (auditoria v92): Mesa da Câmara e do Senado, sanção e veto, pedidos de ministério,
+   ciclo do orçamento, contas no TCU, líderes de grupos e justiça eleitoral. Ficção do jogo: os presidentes das Casas e os líderes
+   aparecem só pelo cargo e partido, sem nome de pessoa real. ============================== */
+const CV_PAUTAS = [
+  { k: 'judiciario', t: 'Reajuste de 18% para o Judiciário e o Ministério Público', custo: 9, fx: { servidores: 3, classemedia: -1.5 }, ap: -.6, rel: 4, pop: 'impopular' },
+  { k: 'enfermagem', t: 'Piso nacional da enfermagem bancado pela União', custo: 14, fx: { mulheres: 3, servidores: 2, periferia: 1.5 }, ap: 1, rel: 3, pop: 'popular' },
+  { k: 'desoneracao', t: 'Prorrogação da desoneração da folha de 17 setores', custo: 18, fx: { empresariado: 4, carteira: 1.5, mercado: -1 }, ap: .3, rel: 5, pop: 'dividida' },
+  { k: 'rural', t: 'Renegociação das dívidas rurais com desconto de 60%', custo: 7, fx: { agro: 5, agfam: 2, mercado: -2 }, ap: 0, rel: 6, pop: 'dividida' },
+  { k: 'fundao', t: 'Fundo eleitoral de R$ 6 bilhões', custo: 1.1, fx: { classemedia: -3, jovens: -2, gamers: -2 }, ap: -1.5, rel: 8, pop: 'impopular' },
+  { k: 'anistia', t: 'Anistia a multas ambientais e de trânsito', custo: 2, fx: { agro: 3, caminhoneiros: 3, universitarios: -4, indigenas: -3 }, ap: -.4, rel: 5, pop: 'dividida' },
+  { k: 'policia', t: 'Aposentadoria integral para policiais federais e rodoviários', custo: 4, fx: { policiais: 6, servidores: 1, mercado: -1 }, ap: 0, rel: 4, pop: 'dividida' },
+  { k: 'combustivel', t: 'Corte de impostos federais sobre o diesel por um ano', custo: 12, fx: { caminhoneiros: 6, agro: 2, mercado: -2, universitarios: -1 }, ap: .8, rel: 4, pop: 'popular' },
+  { k: 'municipios', t: 'Aumento de 2 pontos no Fundo de Participação dos Municípios', custo: 10, fx: { periferia: 1, mercado: -1 }, ap: .2, rel: 7, pop: 'popular' },
+  { k: 'aposentados', t: 'Reajuste real de 5% para todas as aposentadorias do INSS', custo: 25, fx: { aposentados: 7, mercado: -4, jovens: -1 }, ap: 1.2, rel: 5, pop: 'popular' }
+];
+const CV_LIDERES = [
+  { k: 'sindicatos', cargo: 'Presidente da maior central sindical', ped: [['Reajuste real do salário mínimo acima do previsto', 8], ['Fim do trabalho intermitente', 0], ['Correção da tabela do IR pela inflação', 6]], recusa: 'convoca greve geral', ic: 'Factory' },
+  { k: 'evangelicos', cargo: 'Líder da Frente Parlamentar Evangélica', ped: [['Isenção de IPTU e tarifas para templos', 1], ['Veto a qualquer mudança na lei do aborto', 0], ['Cargo no Ministério da Família', 0]], recusa: 'manda a bancada votar contra o governo', ic: 'Church' },
+  { k: 'agro', cargo: 'Presidente da Frente Parlamentar da Agropecuária', ped: [['Plano Safra com juros subsidiados maiores', 7], ['Marco temporal das terras indígenas', 0], ['Licenciamento ambiental simplificado', 0]], recusa: 'trava a pauta do governo na Câmara', ic: 'Wheat' },
+  { k: 'militares', cargo: 'Comandante do Exército', ped: [['Reajuste dos soldos e nova carreira militar', 6], ['Orçamento para o programa de blindados', 4], ['Não punir oficiais citados em inquérito', 0]], recusa: 'deixa vazar desconforto da caserna', ic: 'Medal' },
+  { k: 'mercado', cargo: 'Presidente da federação dos bancos', ped: [['Meta de déficit zero no ano que vem', -10], ['Autonomia do BC também para o mandato da diretoria', 0], ['Fim da taxação de fundos exclusivos', 3]], recusa: 'vê o dólar e os juros futuros subirem', ic: 'Landmark' },
+  { k: 'agfam', cargo: 'Coordenação nacional dos movimentos de sem-terra', ped: [['Assentar 30 mil famílias neste ano', 3], ['Crédito do Pronaf ampliado', 4], ['Desapropriar fazendas improdutivas ocupadas', 1]], recusa: 'ocupa fazendas e prédios do Incra', ic: 'Sprout' }
+];
+const cvPastaNome = (pk) => ((typeof PASTAS !== 'undefined' && PASTAS.find(x => x.k === pk)) || { nome: pk }).nome;
+const CV_PASTAS = ['saude', 'educacao', 'infra', 'justica', 'defesa', 'ambiente'];
+function cvEnsure(g) {
+  if (g.cv) return g.cv;
+  const top = PARTIDOS.filter(P => P.id !== g.cfg.partido && P.id !== 'OUTROS').sort((a, b) => b.cam - a.cam);
+  const cen = top.find(P => P.fisio >= 60) || top[0], sen = top.find(P => P.fisio >= 60 && P.id !== cen.id) || top[1] || cen;
+  return g.cv = { pres: { cam: { partido: cen.id, humor: 50 }, sen: { partido: sen.id, humor: 52 } }, dec: [], hist: [], vetos: [], tcu: [], pedaladas: 0, tse: 0, tseHist: [], emendasMes: 0, crime: null, lideres: {}, prox: { pauta: 3, min: 7, lider: 4 }, eng: 0 };
+}
+const cvRel = (g) => ((g.mes - 1) % 48) + 1; // mês dentro do mandato (1 a 48)
+const cvRelAno = (g) => ((g.mes - 1) % 12) + 1; // mês do ano (1 = janeiro)
+function cvHumor(g, casa) { const C = g.cv; return C ? C.pres[casa].humor : 50; }
+function cvHum(g, casa, v) { const C = cvEnsure(g); C.pres[casa].humor = clamp(C.pres[casa].humor + v, 0, 100); }
+function cvLog(g, txt) { const C = cvEnsure(g); C.hist.unshift({ mes: g.mes, txt }); C.hist = C.hist.slice(0, 40); }
+function cvCrime(g) { // base jurídica para um impeachment (crime de responsabilidade)
+  const C = g.cv, E = g.eu && g.eu.esq, D = g.dit;
+  if (C && C.crime) return C.crime;
+  if (E && E.fase >= 2) return 'esquema de corrupção sob investigação';
+  if (D && (D.golpeFalhou || (D.feitos && (D.feitos.adiar || D.feitos.perseguir)))) return 'atentado contra as instituições';
+  return null;
+}
+const cvReqOk = (g, o) => !o.req || (o.req === 'cargos' ? (g.cargos || 0) > 0 : true);
+function cvNovaDec(g, d) { const C = cvEnsure(g); if (C.dec.some(x => x.k === d.k && x.ref === d.ref)) return; d.id = 'cv' + g.mes + '-' + C.dec.length + '-' + d.k; d.mes = g.mes; d.prazo = d.prazo || g.mes + 1; C.dec.push(d); }
+function cvNomeCasa(g, casa) { const P = PMAP[cvEnsure(g).pres[casa].partido]; return (casa === 'cam' ? 'Presidente da Câmara' : 'Presidente do Senado') + ' (' + (P ? P.curto || P.nome : '?') + ')'; }
+function cvGrupoFx(g, fx, k) { for (const x in fx) dgrp(g, x, fx[x] * k); }
+function cvAp(g, v) { for (const k of GKEYS) dgrp(g, k, v); }
+/* ---- resolução das decisões ---- */
+function cvResolve(g, id, op, auto) {
+  const C = cvEnsure(g); const d = C.dec.find(x => x.id === id); if (!d) return { ok: false, msg: 'Decisão não encontrada.' };
+  const O = d.ops.find(o => o.k === op); if (!O) return { ok: false, msg: 'Opção inválida.' };
+  if (!auto && !cvReqOk(g, O)) return { ok: false, msg: O.reqMsg || 'Indisponível.' };
+  if (O.acao && !auto) { if (g.acoes <= 0) return { ok: false, msg: 'Sem ações neste mês.' }; g.acoes--; }
+  C.dec = C.dec.filter(x => x.id !== id);
+  const msg = CV_RES[d.k](g, d, op, auto);
+  cvLog(g, d.tit + ': ' + O.l.toLowerCase() + (auto ? ' (prazo vencido)' : ''));
+  return { ok: true, msg };
+}
+const CV_RES = {
+  veto: (g, d, op) => {
+    const P = CV_PAUTAS.find(x => x.k === d.ref); const C = g.cv;
+    if (op === 'sancionar') { g.fiscal.custo += P.custo; cvGrupoFx(g, P.fx, 1); cvAp(g, P.ap * .5); cvHum(g, 'cam', 6); cvHum(g, 'sen', 6); relBase(g, P.rel * .5); g.feed.unshift({ mes: g.mes, src: 'globo', txt: `Presidente sanciona ${P.t.toLowerCase()} (custo de ${bi(P.custo)} por ano)` }); return 'Sancionada: custo de ' + bi(P.custo) + ' por ano, Congresso satisfeito.'; }
+    if (op === 'parcial') { g.fiscal.custo += P.custo * .5; cvGrupoFx(g, P.fx, .5); cvHum(g, 'cam', -2); cvHum(g, 'sen', -2); C.vetos.unshift({ mes: g.mes, k: P.k, t: P.t, tipo: 'parcial', sessao: g.mes + 1, frac: .5 }); g.feed.unshift({ mes: g.mes, src: 'globo', txt: `Presidente veta trechos de ${P.t.toLowerCase()}` }); return 'Veto parcial: metade do custo. O Congresso pode derrubar o veto no mês que vem.'; }
+    cvGrupoFx(g, P.fx, -.6); cvHum(g, 'cam', -9); cvHum(g, 'sen', -7); relBase(g, -P.rel * .4); g.eco.conf = clamp(g.eco.conf + 1.5, 0, 100);
+    C.vetos.unshift({ mes: g.mes, k: P.k, t: P.t, tipo: 'total', sessao: g.mes + 1, frac: 1 });
+    g.feed.unshift({ mes: g.mes, src: 'antag', txt: `PRESIDENTE VETA ${P.t.toUpperCase()}; CONGRESSO AMEAÇA DERRUBAR O VETO` });
+    return 'Veto total: o Congresso pode derrubar o veto no mês que vem (precisa de 257 deputados e 41 senadores).';
+  },
+  ministerio: (g, d, op) => {
+    const Pd = PMAP[d.partido]; const pr = g.parties[d.partido];
+    if (op === 'entregar') { pr.rel = clamp(pr.rel + 18, 0, 99); pr.relS = clamp(pr.relS + 15, 0, 99); g.escandalo = clamp(g.escandalo + 2, 0, 100); g.cv.loteados = (g.cv.loteados || 0) + 1; if (g.cv.loteados >= 3) g.eco.conf = clamp(g.eco.conf - 2, 0, 100); g.feed.unshift({ mes: g.mes, src: 'globo', txt: `${Pd.curto || Pd.nome} assume o Ministério ${d.pastaNome === 'Meio Ambiente' ? 'do' : 'da'} ${d.pastaNome} com "porteira fechada"` }); return `${Pd.curto || Pd.nome} leva a pasta: votos garantidos, mas a Esplanada fica mais loteada.`; }
+    if (op === 'segundo') { g.cargos = Math.max(0, (g.cargos || 0) - 1); pr.rel = clamp(pr.rel + 6, 0, 99); pr.relS = clamp(pr.relS + 5, 0, 99); return 'Cargos de segundo escalão acalmam o partido, por ora.'; }
+    const base = status(pr.rel) === 'base'; pr.rel = clamp(pr.rel - (base ? 22 : 12), 0, 99); pr.relS = clamp(pr.relS - (base ? 18 : 10), 0, 99);
+    if (base) { g.feed.unshift({ mes: g.mes, src: 'antag', txt: `${(Pd.curto || Pd.nome).toUpperCase()} DESEMBARCA DO GOVERNO APÓS PRESIDENTE NEGAR MINISTÉRIO` }); cvHum(g, 'cam', d.partido === g.cv.pres.cam.partido ? -10 : -3); return 'Recusado: o partido desembarca da base.'; }
+    return 'Recusado: o partido se afasta do governo.';
+  },
+  lider: (g, d, op, auto) => {
+    const L = CV_LIDERES.find(x => x.k === d.lider); const custo = d.custo || 0;
+    if (op === 'atender') { if (custo > 0) g.fiscal.custo += custo; else if (custo < 0) { g.fiscal.custo += custo; cvAp(g, -.4); } dgrp(g, L.k, 6); if (L.k === 'militares' && g.dit) g.dit.mil = clamp(g.dit.mil + 8, 0, 100); if (L.k === 'mercado') g.eco.conf = clamp(g.eco.conf + 4, 0, 100); if (L.k === 'agro' || L.k === 'evangelicos') relBase(g, 2); return 'Pedido atendido: ' + grupoDe(L.k).nome.toLowerCase() + ' +6.'; }
+    if (op === 'negociar') { dgrp(g, L.k, 2); return 'Meio-termo: o líder leva parte do que pediu (+2).'; }
+    dgrp(g, L.k, -5);
+    if (L.k === 'sindicatos') { g.eco.pib -= .05; g.escandalo = clamp(g.escandalo + 2, 0, 100); }
+    if (L.k === 'militares') { const D = ditEnsure(g); D.mil = clamp(D.mil - 8, 0, 100); }
+    if (L.k === 'mercado') { g.eco.conf = clamp(g.eco.conf - 3, 0, 100); g.eco.dol = clamp(g.eco.dol + .08, 2.5, 12); }
+    if (L.k === 'agro' || L.k === 'evangelicos') { cvHum(g, 'cam', -4); relBase(g, -2); }
+    if (L.k === 'agfam') { dgrp(g, 'agro', -2); g.escandalo = clamp(g.escandalo + 1, 0, 100); }
+    g.feed.unshift({ mes: g.mes, src: 'antag', txt: `${L.cargo.toUpperCase()} ROMPE COM O PLANALTO E ${L.recusa.toUpperCase()}` });
+    return (auto ? 'Sem resposta: ' : 'Recusado: ') + L.recusa + '.';
+  },
+  ploa: (g, d, op) => {
+    const C = g.cv; C.ploa = { ano: d.ano, op };
+    if (op === 'social') { cvLog(g, 'PLOA ' + d.ano + ': prioridade social'); return 'Orçamento enviado com prioridade social: em janeiro, R$ 15 bi a mais em programas (periferia e aposentados ganham).'; }
+    if (op === 'invest') return 'Orçamento enviado com prioridade a investimento: em janeiro, R$ 10 bi a mais em obras (PIB e emprego, com atraso).';
+    return 'Orçamento enviado com ajuste: em janeiro, R$ 20 bi a menos de despesa (mercado gosta; ministérios e grupos sociais reclamam).';
+  },
+  contingencia: (g, d, op) => {
+    if (op === 'contingenciar') { g.fiscal.custo -= 15; for (const k of ['periferia', 'universitarios', 'servidores']) dgrp(g, k, -2); cvHum(g, 'cam', -6); g.eco.conf = clamp(g.eco.conf + 3, 0, 100); return 'R$ 15 bi bloqueados, emendas incluídas: o mercado aprova, o Congresso reclama.'; }
+    g.cv.pedaladas++; return 'Sem bloqueio: o rombo segue e o TCU anota uma "pedalada" para o julgamento das contas.';
+  },
+  mesa: (g, d, op) => {
+    const C = g.cv; const casa = d.casa; const B = bancadas(g, casa); const tot = casa === 'cam' ? 513 : 81;
+    if (op === 'aliado') { const ch = clamp(.15 + (B.base / tot - .3) * 1.6 + (g.cargos > 0 ? .08 : 0), .05, .85); const win = hashMix(String(g.seed) + 'mesa' + casa + g.mes) < ch; g.fiscal.extra += 2;
+      if (win) { C.pres[casa] = { partido: g.cfg.partido === 'OUTROS' ? C.pres[casa].partido : (PARTIDOS.find(P => status(g.parties[P.id].rel) === 'base' && P.id !== g.cfg.partido && P[casa] > 0) || PMAP[g.cfg.partido] || { id: C.pres[casa].partido }).id, humor: 78 }; g.feed.unshift({ mes: g.mes, src: 'globo', txt: `Candidato do governo vence a eleição para a presidência ${casa === 'cam' ? 'da Câmara' : 'do Senado'}` }); return 'Seu candidato venceu: a presidência da Casa vai pautar o governo com boa vontade.'; }
+      C.pres[casa].humor = 22; g.feed.unshift({ mes: g.mes, src: 'antag', txt: `DERROTA DO PLANALTO: CANDIDATO DO GOVERNO PERDE A PRESIDÊNCIA ${casa === 'cam' ? 'DA CÂMARA' : 'DO SENADO'}` }); return 'Seu candidato perdeu: o novo presidente da Casa chega hostil.'; }
+    if (op === 'centrao') { g.cargos = Math.max(0, (g.cargos || 0) - 1); C.pres[casa].humor = 64; return 'Apoio ao favorito do centrão em troca de cargos: relação pragmática.'; }
+    C.pres[casa].humor = 48; return 'Neutralidade: o eleito não deve nada ao governo.';
+  }
+};
+function relBase(g, v) { for (const P of PARTIDOS) if (P.id !== g.cfg.partido && status(g.parties[P.id].rel) !== 'opos') { g.parties[P.id].rel = clamp(g.parties[P.id].rel + v, 0, 99); g.parties[P.id].relS = clamp(g.parties[P.id].relS + v, 0, 99); } }
+/* ---- geração mensal ---- */
+function cvMensal(g, notas) {
+  if (elSemGoverno(g)) return;
+  const C = cvEnsure(g); const rel = cvRel(g), ano = cvRelAno(g), h = (s) => hashMix(String(g.seed) + s + g.mes);
+  // prazos vencidos: o padrão é o pior caminho (veto tácito vira sanção; pedido sem resposta vira recusa)
+  for (const d of C.dec.slice()) if (g.mes > d.prazo) { const r = cvResolve(g, d.id, d.padrao, true); if (r.ok) notas.push({ t: 'neg', x: d.tit + ': prazo vencido. ' + r.msg }); }
+  if (ditRegime(g)) { C.dec = C.dec.filter(d => d.k === 'lider'); return; } // Congresso fechado: só os líderes de grupos seguem cobrando
+  // humor das presidências: volta ao meio, puxado pela base e pela aprovação
+  for (const casa of ['cam', 'sen']) { const B = bancadas(g, casa), tot = casa === 'cam' ? 513 : 81; const alvo = 35 + (B.base / tot) * 40 + (aprovacao(g) - 40) * .3; C.pres[casa].humor = clamp(C.pres[casa].humor + (alvo - C.pres[casa].humor) * .08, 0, 100); }
+  C.emendasMes = 0;
+  // sessão do Congresso: vetos em análise
+  for (const v of C.vetos) if (v.sessao === g.mes && !v.res) {
+    const B = bancadas(g, 'cam'), S = bancadas(g, 'sen'); const contraC = 513 - B.base * .9, contraS = 81 - S.base * .9;
+    const pDer = clamp((contraC - 257) / 120 + (50 - cvHumor(g, 'cam')) / 90 + .15, .03, .92) * (contraS >= 41 ? 1 : .4);
+    const P = CV_PAUTAS.find(x => x.k === v.k);
+    if (h('veto' + v.k) < pDer) { v.res = 'derrubado'; g.fiscal.custo += P.custo * v.frac; cvGrupoFx(g, P.fx, .6 * v.frac); cvAp(g, -.6); estOf(g).vetosDerr = (estOf(g).vetosDerr || 0) + 1; notas.push({ t: 'neg', x: `O Congresso derrubou seu veto a ${P.t.toLowerCase()}: o custo de ${bi(P.custo * v.frac)} por ano entra mesmo assim.` }); g.feed.unshift({ mes: g.mes, src: 'antag', txt: `CONGRESSO DERRUBA VETO DO PRESIDENTE: ${P.t.toUpperCase()} VIRA LEI` }); linhaAdd(g, 'CONGRESSO', 'Veto derrubado: ' + P.t); }
+    else { v.res = 'mantido'; cvHum(g, 'cam', -2); notas.push({ t: 'pos', x: `Veto mantido: o Congresso não reuniu votos para derrubar ${P.t.toLowerCase()}.` }); linhaAdd(g, 'CONGRESSO', 'Veto mantido: ' + P.t); }
+  }
+  // eleição da Mesa (fevereiro dos anos 1 e 3)
+  if (rel === 1 || rel === 25) for (const casa of ['cam', 'sen']) cvNovaDec(g, { k: 'mesa', ref: casa + g.mes, casa, tit: 'Eleição da presidência ' + (casa === 'cam' ? 'da Câmara' : 'do Senado'), txt: 'A Casa escolhe quem decide a pauta pelos próximos dois anos. ' + (casa === 'cam' ? 'Na Câmara, o presidente também decide se um pedido de impeachment anda.' : 'No Senado, o presidente conduz um eventual julgamento.'), padrao: 'neutro', prazo: g.mes,
+    ops: [{ k: 'aliado', l: 'Lançar candidato aliado', d: 'Custa 1 ação e R$ 2 bi em emendas. Se vencer, a Casa fica amiga; se perder, hostil.', acao: true }, { k: 'centrao', l: 'Apoiar o favorito do centrão', d: 'Entrega cargos de 2º escalão (1 vaga). Relação pragmática.', req: 'cargos', reqMsg: 'Sem cargos disponíveis.' }, { k: 'neutro', l: 'Ficar neutro', d: 'O eleito não deve nada ao governo.' }] });
+  // pauta própria do Congresso: sanção ou veto
+  if (g.mes >= C.prox.pauta && rel !== 1 && rel !== 25) {
+    const usados = C.vetos.map(v => v.k).concat(C.hist.filter(x => /sancion/i.test(x.txt)).map(() => '')); const livres = CV_PAUTAS.filter(P => !C.vetos.some(v => v.k === P.k) && !(C.sanc || []).includes(P.k));
+    if (livres.length) { const P = livres[Math.floor(h('pauta') * livres.length)];
+      cvNovaDec(g, { k: 'veto', ref: P.k, tit: 'Sanção ou veto: ' + P.t, txt: `O Congresso aprovou por conta própria. Custo de ${bi(P.custo)} por ano. Medida ${P.pop}. Prazo: até o fim do mês que vem (sem decisão, vira sanção tácita).`, padrao: 'sancionar', prazo: g.mes + 1,
+        ops: [{ k: 'sancionar', l: 'Sancionar', d: `Custo de ${bi(P.custo)}/ano. Agrada o Congresso e os grupos beneficiados.` }, { k: 'parcial', l: 'Vetar em parte', d: 'Metade do custo e do efeito. O Congresso pode derrubar o veto.' }, { k: 'vetar', l: 'Vetar tudo', d: 'Sem custo e o mercado gosta. Irrita o Congresso, e o veto pode cair na sessão seguinte.' }] });
+      C.prox.pauta = g.mes + 3 + Math.floor(h('pp') * 3); }
+  }
+  // partido pede ministério
+  if (g.mes >= C.prox.min && rel > 3) {
+    const cands = PARTIDOS.filter(P => P.id !== g.cfg.partido && P.id !== 'OUTROS' && P.cam >= 30 && status(g.parties[P.id].rel) !== 'opos');
+    if (cands.length) { const P = cands[Math.floor(h('min') * cands.length)]; const pk = CV_PASTAS[Math.floor(h('pasta') * CV_PASTAS.length)];
+      cvNovaDec(g, { k: 'ministerio', ref: P.id + pk, partido: P.id, pasta: pk, pastaNome: cvPastaNome(pk), tit: `${P.curto || P.nome} quer o Ministério ${pk === 'ambiente' ? 'do' : 'da'} ${cvPastaNome(pk)}`, txt: `Com ${P.cam} deputados, o partido quer a pasta "de porteira fechada", com todos os cargos. Sem resposta até o fim do mês que vem, o partido entende como recusa.`, padrao: 'recusar', prazo: g.mes + 1,
+        ops: [{ k: 'entregar', l: 'Entregar o ministério', d: 'Relação +18 com o partido. A Esplanada fica mais loteada (escândalo +2; a partir do 3º, a confiança cai).' }, { k: 'segundo', l: 'Oferecer cargos de 2º escalão', d: 'Gasta 1 vaga de cargo. Relação +6.', req: 'cargos', reqMsg: 'Sem cargos disponíveis.' }, { k: 'recusar', l: 'Recusar', d: status(g.parties[P.id].rel) === 'base' ? 'O partido está na base e desembarca (relação −22).' : 'Relação −12.' }] }); }
+    C.prox.min = g.mes + 7 + Math.floor(h('pm') * 4);
+  }
+  // líderes de grupos
+  if (g.mes >= C.prox.lider) {
+    const L = CV_LIDERES[Math.floor(h('lid') * CV_LIDERES.length)]; const [pedido, custo] = L.ped[Math.floor(h('ped') * L.ped.length)];
+    cvNovaDec(g, { k: 'lider', ref: L.k + g.mes, lider: L.k, custo, tit: L.cargo + ': ' + pedido.charAt(0).toLowerCase() + pedido.slice(1), txt: `Prazo de dois meses. Se recusar ou ignorar, ${L.recusa}.`, padrao: 'recusar', prazo: g.mes + 2, ic: L.ic,
+      ops: [{ k: 'atender', l: 'Atender', d: (custo > 0 ? `Custo de ${bi(custo)}/ano. ` : custo < 0 ? `Corta ${bi(-custo)}/ano; outros grupos reclamam. ` : 'Sem custo fiscal, mas tem preço político. ') + grupoDe(L.k).nome + ' +6.' }, { k: 'negociar', l: 'Negociar um meio-termo', d: 'Gasta 1 ação. ' + grupoDe(L.k).nome + ' +2.', acao: true }, { k: 'recusar', l: 'Recusar', d: grupoDe(L.k).nome + ' −5, e ' + L.recusa + '.' }] });
+    C.prox.lider = g.mes + 4 + Math.floor(h('pl') * 3);
+  }
+  // orçamento (a decisão criada no fim do mês M aparece no mês M+1): PLOA em agosto, LOA em dezembro, execução em janeiro, contingenciamento em março
+  if (ano === 7) cvNovaDec(g, { k: 'ploa', ref: 'ploa' + g.mes, ano: 2027 + Math.floor((g.mes - 1) / 12) + 1, tit: 'Projeto de Lei Orçamentária (PLOA ' + (2027 + Math.floor((g.mes - 1) / 12) + 1) + ')', txt: 'Até 31 de agosto, o governo envia o orçamento do ano que vem. A escolha vale a partir de janeiro, se o Congresso não mexer demais em dezembro.', padrao: 'ajuste', prazo: g.mes,
+    ops: [{ k: 'social', l: 'Prioridade social', d: '+R$ 15 bi/ano em programas sociais.' }, { k: 'invest', l: 'Prioridade investimento', d: '+R$ 10 bi/ano em obras: PIB e emprego com atraso.' }, { k: 'ajuste', l: 'Ajuste fiscal', d: '−R$ 20 bi/ano de despesa: mercado gosta, ministérios reclamam.' }] });
+  if (ano === 12) { // LOA: o Congresso vota e engorda as emendas conforme o humor
+    const hu = cvHumor(g, 'cam'); const em = hu < 35 ? 12 : hu < 55 ? 6 : 3; g.fiscal.custo += em * .5; C.loa = { mes: g.mes, emendas: em };
+    notas.push({ t: hu < 35 ? 'neg' : 'neu', x: `Congresso aprova o orçamento (LOA) com R$ ${fmt(em, 0)} bi a mais em emendas parlamentares${hu < 35 ? ': com a presidência da Câmara hostil, a conta engordou' : ''}.` }); cvLog(g, 'LOA aprovada com +R$ ' + fmt(em, 0) + ' bi em emendas');
+  }
+  if (ano === 1 && C.ploa && !C.ploa.feito) { const o = C.ploa.op; C.ploa.feito = true;
+    if (o === 'social') { g.fiscal.custo += 15; dgrp(g, 'periferia', 3); dgrp(g, 'aposentados', 2); dgrp(g, 'mercado', -2); }
+    else if (o === 'invest') { g.fiscal.custo += 10; g.eco.pib += .15; dgrp(g, 'empresariado', 2); dgrp(g, 'carteira', 1.5); }
+    else { g.fiscal.custo -= 20; dgrp(g, 'mercado', 3); g.eco.conf = clamp(g.eco.conf + 3, 0, 100); dgrp(g, 'servidores', -3); dgrp(g, 'universitarios', -2); }
+    notas.push({ t: 'neu', x: 'Começa a execução do orçamento do ano: vale a prioridade enviada em agosto.' }); }
+  if (ano === 2 && primario(g) < -80) cvNovaDec(g, { k: 'contingencia', ref: 'cont' + g.mes, tit: 'Relatório bimestral: contingenciar?', txt: `O primário está em ${bi(primario(g))}, longe da meta. A lei manda bloquear despesas; não bloquear vira "pedalada" no julgamento das contas pelo TCU.`, padrao: 'nao', prazo: g.mes,
+    ops: [{ k: 'contingenciar', l: 'Bloquear R$ 15 bi', d: 'Cumpre a meta com mais folga. Serviços e emendas sofrem.' }, { k: 'nao', l: 'Não bloquear', d: 'Evita o desgaste agora; conta como pedalada no TCU.' }] });
+  // TCU: em junho, julga as contas do ano anterior
+  if (ano === 6 && g.mes > 12) {
+    const sc = C.pedaladas + (primario(g) < -150 ? 2 : primario(g) < -80 ? 1 : 0) + (g.eu && g.eu.esq && g.eu.esq.fase >= 3 ? 1 : 0);
+    const res = sc >= 2 ? 'rejeitadas' : sc === 1 ? 'aprovadas com ressalvas' : 'aprovadas';
+    C.tcu.unshift({ mes: g.mes, ano: 2027 + Math.floor((g.mes - 1) / 12) - 1, res, sc }); C.pedaladas = 0;
+    if (res === 'rejeitadas') { C.crime = 'contas rejeitadas pelo TCU (pedaladas fiscais)'; g.escandalo = clamp(g.escandalo + 8, 0, 100); cvAp(g, -.8); if (g.oposicao) g.oposicao.pedidoImp = g.mes; notas.push({ t: 'neg', x: 'O TCU recomenda rejeitar suas contas: a oposição já tem base jurídica (crime de responsabilidade) para pedir impeachment.' }); g.feed.unshift({ mes: g.mes, src: 'antag', txt: 'TCU REJEITA AS CONTAS DO GOVERNO POR PEDALADAS FISCAIS; OPOSIÇÃO FALA EM IMPEACHMENT' }); }
+    else notas.push({ t: res === 'aprovadas' ? 'pos' : 'neu', x: 'TCU: contas do ano anterior ' + res + '.' });
+    linhaAdd(g, 'TCU', 'Contas ' + res);
+  }
+  // justiça eleitoral: a ação por abuso de poder anda depois da eleição (ver elFimMandato)
+}
+/* gasto eleitoreiro perto da eleição: conduta vedada (chamado em executaProposta) */
+function cvCondutaVedada(g, prop) {
+  if (!prop || elSemGoverno(g) || elSemReeleicao(g)) return null; const rel = cvRel(g); if (rel < 43 || rel > 46) return null;
+  if (!((prop.cost || 0) + (prop.extra || 0) > 3) || prop.fromEvento) return null;
+  const C = cvEnsure(g); C.tse += 1; C.tseHist.unshift({ mes: g.mes, txt: 'Gasto novo de ' + bi((prop.cost || 0) + (prop.extra || 0)) + ' em ano eleitoral' });
+  g.feed.unshift({ mes: g.mes, src: 'antag', txt: 'OPOSIÇÃO ACIONA O TSE: GASTO NOVO EM PLENA CAMPANHA SERIA CONDUTA VEDADA' });
+  return 'Conduta vedada? A oposição levou ao TSE o gasto novo em ano eleitoral (processos no TSE: ' + C.tse + ').';
+}
+function cvDisparos(g) { // milícia digital na campanha
+  const C = cvEnsure(g); const ger = g.el && g.el.ger; if (!ger || !ger.meuId || !ger.cs[ger.meuId]) return { ok: false, msg: 'Só durante a campanha, com candidatura sua.' };
+  if (g.acoes <= 0) return { ok: false, msg: 'Sem ações neste mês.' };
+  g.acoes--; ger.cs[ger.meuId].mom += .35; C.tse += 2; C.tseHist.unshift({ mes: g.mes, txt: 'Disparos em massa e perfis falsos na campanha' });
+  if (hashMix(String(g.seed) + 'disp' + g.mes) < .45) { g.escandalo = clamp(g.escandalo + 6, 0, 100); g.feed.unshift({ mes: g.mes, src: 'globo', txt: 'Agências de checagem ligam rede de perfis falsos à campanha do presidente' }); return { ok: true, msg: 'Os disparos rendem votos, mas a imprensa já ligou a rede à sua campanha.' }; }
+  return { ok: true, msg: 'Os disparos rendem votos. Por enquanto, ninguém ligou a rede à sua campanha.' };
+}
+function cvCassacao(g) { const C = g.cv; if (!C || C.tse < 2) return false; return hashMix(String(g.seed) + 'tse' + g.mes) < clamp(C.tse * .14, 0, .75); }
+/* ---- UI ---- */
+function CvDecisoes({ g, upd }) {
+  const C = g.cv || { dec: [] }; const [msg, setMsg] = useState(null);
+  const res = (id, op) => { let r = null; upd(n => { r = cvResolve(n, id, op); }); setTimeout(() => setMsg(r), 0); };
+  return html`<div className="flex flex-col gap-3" data-cv-decisoes="1"><${MxStyle} />
+    ${msg && html`<div className="text-sm p-2 rounded" style=${{ background: 'rgba(212,160,23,.12)' }} role="status" data-cv-msg="1">${msg.msg}</div>`}
+    ${C.dec.length === 0 && html`<p className="text-sm text-muted">Nada pendente no Congresso e com os líderes.</p>`}
+    ${C.dec.map(d => html`<div key=${d.id} className="mx-card panel" style=${{ '--st': 'var(--ouro)' }} data-cv-dec=${d.k}>
+      <div className="mx-t">${d.tit}</div><p className="mx-txt text-sm">${d.txt}</p>
+      <div className="flex flex-col gap-2 mt-2">${d.ops.map(o => { const bloq = (o.acao && g.acoes <= 0) || !cvReqOk(g, o); return html`<div key=${o.k} className="flex items-start gap-3"><button type="button" className="btn btn-ghost btn-sm shrink-0" style=${{ minWidth: 180, justifyContent: 'center' }} disabled=${bloq} data-cv-op=${o.k} onClick=${() => res(d.id, o.k)}>${o.l}</button><span className="text-xs text-muted pt-1">${o.d}${bloq && o.reqMsg ? ' (' + o.reqMsg + ')' : ''}</span></div>`; })}</div>
+    </div>`)}
+  </div>`;
+}
+function CvPainel({ g, upd }) {
+  const C = g.cv ? g.cv : null; const [msg, setMsg] = useState(null);
+  if (!C) return html`<p className="text-sm text-muted">As presidências das Casas aparecem a partir do primeiro mês de governo.</p>`;
+  const cor = (h) => (h >= 60 ? 'var(--verde)' : h >= 35 ? 'var(--ambar)' : 'var(--rubro)');
+  const emenda = () => { let r = null; upd(n => { const CC = cvEnsure(n); if (n.acoes <= 0) { r = { ok: false, msg: 'Sem ações neste mês.' }; return; } if (CC.emendasMes) { r = { ok: false, msg: 'Já liberou emendas neste mês.' }; return; } n.acoes--; CC.emendasMes = 1; n.fiscal.extra += 3; cvHum(n, 'cam', 12); cvHum(n, 'sen', 8); relBase(n, 2); r = { ok: true, msg: 'R$ 3 bi em emendas liberados: as presidências e a base respiram aliviadas.' }; }); setTimeout(() => setMsg(r), 0); };
+  const disp = () => { let r = null; upd(n => { r = cvDisparos(n); }); setTimeout(() => setMsg(r), 0); };
+  const ger = g.el && g.el.ger; const campanha = ger && ger.meuId && !ger.fimFeito && cvRel(g) >= 41 && cvRel(g) <= 47;
+  const crime = cvCrime(g);
+  return html`<div className="flex flex-col gap-4" data-cv-painel="1"><${MxStyle} />
+    <h4 className="disp text-xl font-bold">Câmara, Senado e contas <span className="selo-sim">simulado</span></h4>
+    <p className="text-sm text-muted">Os presidentes das Casas decidem o que vai a voto. Com humor abaixo de 30, a Câmara engaveta seus projetos (MPs seguem andando). Um pedido de impeachment só anda com base jurídica (crime de responsabilidade) ou com a presidência da Câmara hostil.</p>
+    ${msg && html`<div className="text-sm p-2 rounded" style=${{ background: 'rgba(212,160,23,.12)' }} role="status" data-cv-msg="1">${msg.msg}</div>`}
+    <div className="mx-grid g3">
+      ${['cam', 'sen'].map(casa => html`<div key=${casa} className="mx-card panel" style=${{ '--st': cor(C.pres[casa].humor) }} data-cv-pres=${casa}><div className="mx-lab">${cvNomeCasa(g, casa)}</div><div className="num text-2xl font-bold" style=${{ color: cor(C.pres[casa].humor) }}>${fmt(C.pres[casa].humor, 0)}<span className="text-sm text-muted"> de 100</span></div><div className="text-xs text-muted">${C.pres[casa].humor < 30 ? 'hostil: segura a pauta do governo' : C.pres[casa].humor < 55 ? 'pragmático: cobra caro' : 'aliado: pauta o governo'}</div></div>`)}
+      <div className="mx-card panel" style=${{ '--st': crime ? 'var(--rubro)' : 'var(--verde)' }} data-cv-crime="1"><div className="mx-lab">Base para impeachment</div><div className="font-bold">${crime ? 'Existe' : 'Nenhuma'}</div><div className="text-xs text-muted">${crime || 'sem crime de responsabilidade, pedidos tendem a ser engavetados'}</div></div>
+    </div>
+    <div className="flex flex-wrap gap-2 items-center"><button type="button" className="btn btn-ghost btn-sm" disabled=${g.acoes <= 0 || C.emendasMes} data-cv-emendas="1" onClick=${emenda}>Liberar R$ 3 bi em emendas (1 ação)</button>
+      ${campanha && html`<button type="button" className="btn btn-ghost btn-sm" disabled=${g.acoes <= 0} data-cv-disparos="1" onClick=${disp} title="Rende votos, mas pode virar processo no TSE e cassar a chapa">Contratar disparos em massa (1 ação)</button>`}</div>
+    <div className="mx-grid g2">
+      <div className="mx-card panel"><div className="mx-lab">Orçamento</div><div className="text-sm">${C.ploa ? 'PLOA ' + C.ploa.ano + ': ' + ({ social: 'prioridade social', invest: 'prioridade investimento', ajuste: 'ajuste fiscal' })[C.ploa.op] : 'PLOA: o projeto vai em agosto'}${C.loa ? ' · LOA com +R$ ' + fmt(C.loa.emendas, 0) + ' bi em emendas' : ''}</div><div className="text-xs text-muted">Agosto: envio da PLOA · dezembro: LOA · março: contingenciamento</div></div>
+      <div className="mx-card panel" data-cv-tcu="1"><div className="mx-lab">Contas no TCU</div><div className="text-sm">${C.tcu.length ? C.tcu.map(t => t.ano + ': ' + t.res).join(' · ') : 'primeiro julgamento em junho de 2028'}</div><div className="text-xs text-muted">pedaladas no ano: ${C.pedaladas}</div></div>
+      <div className="mx-card panel"><div className="mx-lab">Vetos</div><div className="text-sm">${C.vetos.length ? C.vetos.slice(0, 4).map(v => v.t + ' (' + (v.res || 'em análise') + ')').join(' · ') : 'nenhum veto até agora'}</div></div>
+      <div className="mx-card panel" data-cv-tse="1"><div className="mx-lab">Justiça eleitoral</div><div className="text-sm">${C.tse ? C.tse + ' processo(s) no TSE contra a chapa' : 'nenhum processo no TSE'}</div><div className="text-xs text-muted">gasto novo perto da eleição (jul.–out.) e disparos em massa viram processo; com processos, uma vitória pode ser cassada</div></div>
+    </div>
+    ${C.dec.length > 0 && html`<div><div className="eyebrow mb-2">Decisões pendentes</div><${CvDecisoes} g=${g} upd=${upd} /></div>`}
+    ${C.hist.length > 0 && html`<${MxDet} rot=${'Histórico (' + C.hist.length + ')'}><ul className="mx-list">${C.hist.slice(0, 12).map((x, i) => html`<li key=${i}><span className="mx-date">${dataCurta(x.mes)}</span><span className="flex-1 min-w-0">${x.txt}</span></li>`)}</ul></${MxDet}>`}
+  </div>`;
+}
 /* ============================== DEMOCRACIA, AUTOGOLPE E DITADURA (ficção do jogo, selo "simulado") ==============================
    Índice de Democracia (0 a 100): os passos de erosão o derrubam. Abaixo de 60 abre-se a opção de autogolpe; a chance depende de militares,
    democracia já minada, aprovação e reação externa. Golpe falho: crise grave, mas o presidente segue. Golpe vitorioso: modo ditadura
@@ -24694,6 +24934,7 @@ function euMensal(g, notas) {
   if (E.embaloMov !== g.mes && E.embalo !== 0) E.embalo += E.embalo > 0 ? -1 : 1;
   if (E.embalo) for (const k of GKEYS) dgrp(g, k, E.embalo * .06);
   bastMensal(g, notas);
+  try { cvMensal(g, notas); } catch (e) { if (typeof console !== 'undefined') console.warn('cvMensal', e); }
   try { ditMensal(g, notas); } catch (e) { if (typeof console !== 'undefined') console.warn('ditMensal', e); }
   try { esqMensal(g, notas); } catch (e) { if (typeof console !== 'undefined') console.warn('esqMensal', e); }
   familiaMensal(g, notas);
@@ -31933,6 +32174,7 @@ function elFimMandato(g, notas) {
   const posse = elVencedorPosse(g, ger, W);
   const meuCand = ger.cands.find(c => c.id === ger.meuId);
   if (reeleito) {
+    if (!E.pj && cvCassacao(g)) { g.over = { tipo: 'personagem', motivo: 'cassacao', leg: elLegado(g), posse, venc: null, mes: g.mes }; g.feed.unshift({ mes: g.mes, src: 'antag', txt: 'TSE CASSA A CHAPA REELEITA POR ABUSO DE PODER E USO DE DISPAROS EM MASSA' }); return; }
     E.mandatos = 2; notas.push({ t: 'pos', x: `${W.nome} é reeleito(a): começa o segundo mandato consecutivo (o último).` });
     if (!E.pj) return;
     return;
@@ -33188,7 +33430,7 @@ function ElCandidatura({ g, upd }) {
 }
 
 /* ============================== ELEIÇÕES (el*): INTERFACE 2 — painel Eleições, Figuras, fim de personagem ============================== */
-CHIPS.poder.push({ k: 'eleicoes', nome: 'Eleições' }, { k: 'imprensa', nome: 'Imprensa' }, { k: 'figuras', nome: 'Figuras' }, { k: 'democracia', nome: 'Democracia' });
+CHIPS.poder.push({ k: 'eleicoes', nome: 'Eleições' }, { k: 'imprensa', nome: 'Imprensa' }, { k: 'figuras', nome: 'Figuras' }, { k: 'casas', nome: 'Câmara e Senado' }, { k: 'democracia', nome: 'Democracia' });
 ABAS_INICIO.push({ k: 'fig', nome: 'Figuras sem mandato' });
 const elDomOut = (ano, ult) => { let d = new Date(Date.UTC(ano, 9, ult ? 31 : 1)); if (ult) { while (d.getUTCDay() !== 0) d = new Date(d.getTime() - 864e5); return d.getUTCDate(); } while (d.getUTCDay() !== 0) d = new Date(d.getTime() + 864e5); return d.getUTCDate(); };
 function elMarcos(g) {
@@ -33583,9 +33825,9 @@ function ElFigurasInicio({ onEscolher }) { return html`<${ElFiguras} g=${null} o
 function ElFim({ g, upd, reiniciar }) {
   const o = g.over; const leg = o.leg || elLegado(g); const E = g.el || {}; const [q, setQ] = useState(''); const [campo, setCampo] = useState('todos');
   const motivo = o.motivo || o.tipo;
-  const titulo = motivo === 'sucessao' ? 'Fim do mandato: você passou a faixa' : motivo === 'limite' ? 'Fim do personagem: limite de mandatos' : motivo === 'derrota' ? 'Derrotado nas urnas' : motivo === 'impeachment' ? 'Impeachment' : motivo === 'saude' ? (o.morte || g.morte ? 'Morte no cargo' : 'Afastamento') : motivo === 'abertura' ? 'Abertura: o regime acabou' : motivo === 'dit_queda' ? 'Derrubado pelas ruas' : motivo === 'golpe_militar' ? 'Deposto pelos militares' : motivo === 'eleicao' ? (o.reeleito ? 'Reeleito' : 'Derrotado nas urnas') : 'Fim do personagem';
+  const titulo = motivo === 'sucessao' ? 'Fim do mandato: você passou a faixa' : motivo === 'limite' ? 'Fim do personagem: limite de mandatos' : motivo === 'derrota' ? 'Derrotado nas urnas' : motivo === 'impeachment' ? 'Impeachment' : motivo === 'saude' ? (o.morte || g.morte ? 'Morte no cargo' : 'Afastamento') : motivo === 'cassacao' ? 'Chapa cassada pelo TSE' : motivo === 'abertura' ? 'Abertura: o regime acabou' : motivo === 'dit_queda' ? 'Derrubado pelas ruas' : motivo === 'golpe_militar' ? 'Deposto pelos militares' : motivo === 'eleicao' ? (o.reeleito ? 'Reeleito' : 'Derrotado nas urnas') : 'Fim do personagem';
   const sob = leg.nome;
-  const texto = motivo === 'sucessao' ? `${sob} cumpriu o mandato e não concorreu à reeleição${o.venc ? '; a eleição foi vencida por ' + o.venc.nome + ' (' + o.venc.sigla + ')' : ''}.` : motivo === 'limite' ? `${sob} cumpriu dois mandatos consecutivos e não pode concorrer de novo (CF art. 14 §5º).${o.venc ? ' A sucessão foi vencida por ' + o.venc.nome + ' (' + o.venc.sigla + ')' + (o.venc.pct ? ', com ' + fmt(o.venc.pct * 100, 1) + '% dos votos válidos' : '') + '.' : ''}` : motivo === 'derrota' ? `${sob} perdeu a eleição${o.venc ? ' para ' + o.venc.nome + ' (' + o.venc.sigla + '), com ' + fmt(o.venc.pct * 100, 1) + '% dos votos válidos' : ''}.` : motivo === 'impeachment' ? `O Senado aprovou o impeachment de ${sob}.` : motivo === 'saude' ? (o.morte || g.morte ? `${sob} morreu no exercício do cargo.` : `Por motivo de saúde, ${sob} se afasta do cargo.`) : motivo === 'abertura' ? `${sob} negociou a abertura: anistia, Congresso reaberto e eleições livres. O regime durou ${Math.max(1, (o.mes || g.mes) - ((g.dit && g.dit.inicio) || g.mes))} meses (simulado).` : motivo === 'dit_queda' ? `Protestos tomaram o país e as tropas se recusaram a atirar. ${sob} deixou o palácio e o regime caiu (simulado).` : motivo === 'golpe_militar' ? `Os comandantes perderam a paciência e depuseram ${sob}. Uma junta militar assume (simulado).` : `Fim do mandato de ${sob}.`;
+  const texto = motivo === 'sucessao' ? `${sob} cumpriu o mandato e não concorreu à reeleição${o.venc ? '; a eleição foi vencida por ' + o.venc.nome + ' (' + o.venc.sigla + ')' : ''}.` : motivo === 'limite' ? `${sob} cumpriu dois mandatos consecutivos e não pode concorrer de novo (CF art. 14 §5º).${o.venc ? ' A sucessão foi vencida por ' + o.venc.nome + ' (' + o.venc.sigla + ')' + (o.venc.pct ? ', com ' + fmt(o.venc.pct * 100, 1) + '% dos votos válidos' : '') + '.' : ''}` : motivo === 'derrota' ? `${sob} perdeu a eleição${o.venc ? ' para ' + o.venc.nome + ' (' + o.venc.sigla + '), com ' + fmt(o.venc.pct * 100, 1) + '% dos votos válidos' : ''}.` : motivo === 'impeachment' ? `O Senado aprovou o impeachment de ${sob}.` : motivo === 'saude' ? (o.morte || g.morte ? `${sob} morreu no exercício do cargo.` : `Por motivo de saúde, ${sob} se afasta do cargo.`) : motivo === 'cassacao' ? `${sob} venceu a eleição, mas o TSE cassou a chapa por abuso de poder (${(g.cv && g.cv.tse) || 0} processos: gasto em ano eleitoral e disparos em massa). Uma nova eleição será convocada (simulado).` : motivo === 'abertura' ? `${sob} negociou a abertura: anistia, Congresso reaberto e eleições livres. O regime durou ${Math.max(1, (o.mes || g.mes) - ((g.dit && g.dit.inicio) || g.mes))} meses (simulado).` : motivo === 'dit_queda' ? `Protestos tomaram o país e as tropas se recusaram a atirar. ${sob} deixou o palácio e o regime caiu (simulado).` : motivo === 'golpe_militar' ? `Os comandantes perderam a paciência e depuseram ${sob}. Uma junta militar assume (simulado).` : `Fim do mandato de ${sob}.`;
   const alvoPosse = o.posse; const presNome = alvoPosse ? alvoPosse.nome : g.cfg.nome;
   const todos = useMemo(() => elPessoas(), []);
   const sugest = useMemo(() => { const dir = elDirIdeo(leg.bloco && PMAP[leg.bloco] ? ideoDoPartido((PMAP[leg.bloco].membros || ['PSD'])[0]) : g.cfg.ideo); return todos.map(p => ({ p, s: .55 * elPopDe(g, p.id).rec + .45 * elPopDe(g, p.id).apr - Math.abs((EL_CAMP_DIR[p.camp] || 0) - dir) * 25 + (p.cargo === 'dep' ? -15 : 0) })).sort((a, b) => b.s - a.s).slice(0, 8).map(x => x.p); }, [g.mes]);
@@ -34712,7 +34954,7 @@ function App() {
       setAviso('IA indisponível (' + (code || (e && e.message) || 'erro') + '). Parecer do motor local.');
     }
   };
-  const votarItem = (id) => { const gg = gRef.current; const it = gg.pauta.find(x => x.id === id); if (!it) return; { const b = gvBloqPEC(gg, it.prop); if (b) { setAviso(b.msg); return; } } const prop = propDoItem(it); setDec({ stage: 'votando', prop, item: id, plano: decideVotacao(gg, prop, true, quorum(prop.inst, prop.instDetalhe)) }); };
+  const votarItem = (id) => { const gg = gRef.current; const it = gg.pauta.find(x => x.id === id); if (!it) return; { const b = gvBloqPEC(gg, it.prop); if (b) { setAviso(b.msg); return; } } if (gg.cv && !it.mp && cvHumor(gg, 'cam') < 30) { setAviso(cvNomeCasa(gg, 'cam') + ' não põe o projeto em votação: a relação está hostil. Libere emendas ou negocie em Poder > Câmara e Senado.'); return; } const prop = propDoItem(it); setDec({ stage: 'votando', prop, item: id, plano: decideVotacao(gg, prop, true, quorum(prop.inst, prop.instDetalhe)) }); };
   const encerrarMes = () => { const n = structuredClone(gRef.current); const r = fimDoMes(n); gRef.current = n; setG(n); setRelMes(r); };
   // volta à tela inicial sem apagar o save: o botão Continuar retoma do mesmo ponto
   const voltarMenu = () => { const gg = gRef.current; if (gg) { gravaSave(gg); setSave(gg); } setG(null); setCfgOpen(false); setRelMes(null); setDec(null); setWiz(null); };

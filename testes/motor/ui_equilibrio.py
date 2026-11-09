@@ -52,7 +52,7 @@ with sync_playwright() as p:
     ok('Negociador: relações respondem à economia (função eqRelEconomia existe e é neutra no ponto de partida)', abs(pg.evaluate("()=>{const g=__QV().gRef.current;const X=__X();return X.eqRelEconomia(g,X.primario(g))}")) < 2.5)
 
     # ---------------- impeachment: 3 meses + aviso de admissibilidade ----------------
-    SET(pg, DERRETE + "; n.impStreak=0; n.evento=null; n.eventoOk=true")
+    SET(pg, DERRETE + "; n.impStreak=0; n.evento=null; n.eventoOk=true; n.cv=n.cv||{pres:{cam:{partido:'PL',humor:50},sen:{partido:'PSD',humor:50}},dec:[],hist:[],vetos:[],tcu:[],pedaladas:0,tse:0,tseHist:[],emendasMes:0,crime:null,lideres:{},prox:{pauta:999,min:999,lider:999},eng:0}; n.cv.crime='contas rejeitadas pelo TCU (teste)'")  # v92: impeachment precisa de crime de responsabilidade
     need = G(pg, "__X().impAdmissibilidade(g).need")
     ok('Impeachment: exige 3 meses seguidos com risco >= 80 (modo Brasília, dificuldade Realista)', need == 3, need)
     def passa_mes():
